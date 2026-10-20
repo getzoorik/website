@@ -117,9 +117,9 @@ export const coralPageContent: ProductPageContent = {
       /* Its /learn article. */
       {
         kind: "page",
-        title: "Coral and the native autoscalers",
-        line: "VPA, HPA, KEDA, NAP and Karpenter compared",
-        href: learnPath("coral-and-native-autoscalers"),
+        title: "HPA vs VPA vs Cluster Autoscaler",
+        line: "Pod count, pod size and node count, compared",
+        href: learnPath("hpa-vs-vpa-vs-cluster-autoscaler"),
       },
     ],
   },
