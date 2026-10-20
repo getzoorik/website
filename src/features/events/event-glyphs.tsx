@@ -1,7 +1,7 @@
 /**
- * /events's two glyphs, drawn as the mock draws them. Each is `aria-hidden`: the place and "Details" are set in text
- * beside them. Size comes from the page's sheet (`.ev-pin`, `.ev-chev`); the new-tab arrow is the site's own
- * (`ExternalArrow`).
+ * /events's three glyphs, drawn as the mock draws them. Each is `aria-hidden`: the place, "Details" and the search
+ * box's name are set in text beside them. Size comes from the page's sheet (`.ev-pin`, `.ev-chev`, `.ev-search svg`);
+ * the new-tab arrow is the site's own (`ExternalArrow`).
  */
 
 const line = {
@@ -26,6 +26,16 @@ export function ChevronGlyph(): React.JSX.Element {
   return (
     <svg className="ev-chev" viewBox="0 0 24 24" {...line} strokeWidth={2.2} aria-hidden="true">
       <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
+/** A magnifier: the search box. */
+export function SearchGlyph(): React.JSX.Element {
+  return (
+    <svg viewBox="0 0 24 24" {...line} strokeWidth={2} aria-hidden="true">
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.5-3.5" />
     </svg>
   );
 }

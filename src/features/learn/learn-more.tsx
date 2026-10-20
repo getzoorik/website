@@ -4,8 +4,8 @@ import { named } from "@/features/legal/named";
 
 /**
  * /learn's More from Zoorik: the head's h2 alone, with no lede, then three navy cards,
- * to Zoorik News, Cloud cost optimization tools (/compare) and Community, each with its name, its line, one more line
- * (the week's headline, the map's groups, r/zoorik) and "Open". The pages Learn hands its old sections to. A server
+ * to Zoorik News, Cloud cost optimization tools and Community, each with its name, its line, one more line
+ * (the week's headline, the tools' kinds, r/zoorik) and "Open". The pages Learn hands its old sections to. A server
  * component: the cards' only motion is the arrow's hover nudge, the sheet's own (`.fx-read`).
  */
 export function MoreFromZoorik(): React.JSX.Element {

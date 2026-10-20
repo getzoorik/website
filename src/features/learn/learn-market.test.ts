@@ -12,9 +12,9 @@ import {
 import { marketOurs, marketTool } from "./market-rows";
 
 /**
- * The market data (`src/content/learn-market.ts`, checked 19 October 2026), which the comparison pages under
- * /compare print: only what the pages print, every claim about another tool with a source, the two live versus pages
- * and no more, and no SOC 2 row.
+ * The market data (`src/content/learn-market.ts`, checked 19 October 2026), which Cloud cost optimization tools and
+ * the comparison pages under /compare print: only what the pages print, every claim about another tool with a source,
+ * the two live versus pages and no more, and no SOC 2 row.
  */
 
 const URL_ONLY = /^https:\/\/[^\s;]+$/;

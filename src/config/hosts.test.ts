@@ -92,6 +92,21 @@ describe("the case studies' hub's old address", () => {
   });
 });
 
+describe("the comparison hub's old address", () => {
+  it("301s /compare to Cloud cost optimization tools, and leaves the pages under it alone", async () => {
+    const hub = await respond("https://zoorik.com/compare");
+    expect(hub.status).toBe(301);
+    expect(getRedirectUrl(hub)).toBe("https://zoorik.com/cloud-cost-optimization-tools");
+    for (const path of [
+      ...versusPages.map(versusRoute),
+      ...alternativesPages.map((page) => page.route),
+    ]) {
+      const page = await respond(`https://zoorik.com${path}`);
+      expect(page.status, path).not.toBe(301);
+    }
+  });
+});
+
 describe("the comparison pages' old addresses under /learn", () => {
   it("301 each live versus page and both alternatives pages to /compare", async () => {
     const moved = [

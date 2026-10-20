@@ -12,8 +12,8 @@ import "@/styles/learn.css";
 /**
  * `/compare/<slug>`: a versus page; its old address, /learn/compare/<slug>, 301-redirects here (next.config.ts). One
  * dynamic route, so no file or folder is named after a company: its slugs are data (`versusPages`), and one per
- * product is kept live. Each is prerendered at build, indexed, listed in the sitemap, and linked from /compare's cards
- * and its product's alternatives page; it takes the site's default card. Any other slug, a held page among them, is a
+ * product is kept live. Each is prerendered at build, indexed, listed in the sitemap, and linked from Cloud cost
+ * optimization tools' tiles and its product's alternatives page; it takes the site's default card. Any other slug, a held page among them, is a
  * 404 (`dynamicParams = false`, and `notFound()` for a direct call).
  */
 export const dynamicParams = false;

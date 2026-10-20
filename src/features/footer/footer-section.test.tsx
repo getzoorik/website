@@ -207,7 +207,7 @@ describe("the footer's columns", () => {
           ["Value Lab", "/value-lab"],
           ["Events", "/events"],
           ["News", "/news"],
-          ["Compare", "/compare"],
+          ["Cloud cost optimization tools", "/cloud-cost-optimization-tools"],
           ["Community", "/community"],
           ["Docs", "/docs"],
           ["Open source", "/open-source"],

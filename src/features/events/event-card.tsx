@@ -1,7 +1,15 @@
 import { ExternalArrow } from "@/components/primitives/external-arrow";
 import { eventsPage, type EventEntry } from "@/content/events";
 import { ChevronGlyph, PinGlyph } from "@/features/events/event-glyphs";
-import { details, place, split, topicLabel, when } from "@/features/events/event-facts";
+import {
+  banner,
+  cityTile,
+  details,
+  place,
+  split,
+  topicLabel,
+  when,
+} from "@/features/events/event-facts";
 import { NEW_TAB_HINT, offSiteProps } from "@/lib/links";
 
 /**
@@ -20,7 +28,7 @@ export function EventLink({
   large = false,
 }: {
   readonly event: EventEntry;
-  /** The light button on the navy "Next up" panel. */
+  /** The dark button on the "Next up" panel. */
   readonly large?: boolean;
 }): React.JSX.Element {
   return (
@@ -40,9 +48,48 @@ export function EventLink({
   );
 }
 
+/* The banner's box on a card and on "Next up", with a picture, with a logo and with the city instead. */
+const boxes = {
+  card: { picture: "evc-ban", logo: "evc-ban is-logo", plain: "evc-ban is-plain" },
+  next: { picture: "ev-next-ban", logo: "ev-next-ban is-logo", plain: "ev-next-ban is-plain" },
+} as const;
+
 /**
- * A card: the date tile and the topic's tag, the name, the place, the description's first sentence, the Details
- * (opened in place, a native disclosure), then the link. `hidden` while the filters leave it out.
+ * The event's banner: its own picture (a banner filling the box, or a logo whole on white), or, with none, its city
+ * over its country. The picture's `alt` is empty and the city's box is `aria-hidden`: the name and the place are
+ * set in text below. `children` is the card's date tile, set over the top left.
+ */
+function Banner({
+  event,
+  box,
+  children,
+}: {
+  readonly event: EventEntry;
+  readonly box: keyof typeof boxes;
+  readonly children?: React.ReactNode;
+}): React.JSX.Element {
+  const image = banner(event);
+  if (image)
+    return (
+      <div className={image.logo ? boxes[box].logo : boxes[box].picture}>
+        {/* eslint-disable-next-line @next/next/no-img-element -- the sheet owns this box (`.evc-ban img`), as the mock's. */}
+        <img src={image.src} alt="" loading="lazy" decoding="async" />
+        {children}
+      </div>
+    );
+  const tile = cityTile(event);
+  return (
+    <div className={boxes[box].plain} aria-hidden="true">
+      <span className="evb-c">{tile.city}</span>
+      <span className="evb-s">{tile.country}</span>
+      {children}
+    </div>
+  );
+}
+
+/**
+ * A card: the banner with the date tile over it, then the topic's tag, the name, the place, the description's first
+ * sentence, the Details (opened in place, a native disclosure) and the link. `hidden` while it is out of view.
  */
 export function EventCard({
   event,
@@ -54,40 +101,42 @@ export function EventCard({
   const { day, month } = when(event);
   return (
     <li className="evc" hidden={hidden}>
-      <div className="evc-top">
+      <Banner event={event} box="card">
         <div className="ev-date" aria-hidden="true">
           <b>{day}</b>
           <span>{month}</span>
         </div>
+      </Banner>
+      <div className="evc-b">
         <span className="ev-tag">{topicLabel(event)}</span>
-      </div>
-      <h3>{event.name}</h3>
-      <p className="ev-meta">
-        <PinGlyph />
-        <span>{place(event)}</span>
-      </p>
-      <p className="ev-desc">{split(event.description)[0]}</p>
-      <details className="ev-more">
-        <summary>
-          {copy.details} <ChevronGlyph />
-        </summary>
-        <dl className="ev-dl">
-          {details(event).map((row) => (
-            <div key={row.label}>
-              <dt>{row.label}</dt>
-              <dd>{row.value}</dd>
-            </div>
-          ))}
-        </dl>
-      </details>
-      <div className="evc-foot">
-        <EventLink event={event} />
+        <h3>{event.name}</h3>
+        <p className="ev-meta">
+          <PinGlyph />
+          <span>{place(event)}</span>
+        </p>
+        <p className="ev-desc">{split(event.description)[0]}</p>
+        <details className="ev-more">
+          <summary>
+            {copy.details} <ChevronGlyph />
+          </summary>
+          <dl className="ev-dl">
+            {details(event).map((row) => (
+              <div key={row.label}>
+                <dt>{row.label}</dt>
+                <dd>{row.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </details>
+        <div className="evc-foot">
+          <EventLink event={event} />
+        </div>
       </div>
     </li>
   );
 }
 
-/** "Next up": the first event with its days known, on the navy panel, with its whole description. */
+/** "Next up": the first event with its days known, its description's first sentence and its banner beside them. */
 export function NextUp({ event }: { readonly event: EventEntry }): React.JSX.Element {
   return (
     <section className="ev-next" aria-labelledby="next-h">
@@ -97,9 +146,10 @@ export function NextUp({ event }: { readonly event: EventEntry }): React.JSX.Ele
         <p className="ev-next-when">
           {when(event).text} · {place(event)}
         </p>
-        <p className="ev-next-d">{event.description}</p>
+        <p className="ev-next-d">{split(event.description)[0]}</p>
         <EventLink event={event} large />
       </div>
+      <Banner event={event} box="next" />
     </section>
   );
 }

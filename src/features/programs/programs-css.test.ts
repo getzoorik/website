@@ -25,36 +25,31 @@ function selectors(sheet: string): string[] {
 }
 
 /**
- * /referrals's and /partners's sheet (`programs.css`). The App Router keeps a visited page's sheet in the document,
- * so a rule here that reached past these two pages would restyle another one, and only on the second page view.
+ * The programs' close, links and hero buttons (`programs.css`), which /marketplaces draws. The App Router keeps a
+ * visited page's sheet in the document, so a rule here that reached past it would restyle another page, and only on
+ * the second page view.
  */
 describe("the programs' sheet", () => {
-  it("names one of the two pages' own classes in every selector", () => {
+  it("names one of its own `pv-` classes in every selector", () => {
     const found = selectors(css);
-    expect(found.length).toBeGreaterThan(100);
-    /* `pv-` is these pages' alone; `.pv-main` is their <main>. */
+    expect(found.length).toBeGreaterThan(10);
+    /* `pv-` is this sheet's alone; `.pv-main` is the page's <main>. */
     const stray = found.filter((s) => !/\.pv-/.test(s));
     expect(stray, `selector(s) in programs.css without a pv- class: ${stray.join(", ")}`).toEqual(
       [],
     );
   });
 
-  it("opens the mock's page-wide hero rules on `:where(.pv-main)`, keeping their specificity the mock's", () => {
+  it("opens the mock's page-wide hero rule on `:where(.pv-main)`, keeping its specificity the mock's", () => {
     /* `.hero-cta` is every hero's, and /brand-assets draws the same buttons: scoped, never page-wide. */
-    const hero = selectors(css).filter((s) => /hero-cta|pg-soon/.test(s));
-    expect(hero).toEqual([
-      ":where(.pv-main) .hero-cta .btn svg",
-      ":where(.pv-main) .hero-cta .btn",
-      ":where(.pv-main) .pg-soon",
-    ]);
+    const hero = selectors(css).filter((s) => /hero-cta/.test(s));
+    expect(hero).toEqual([":where(.pv-main) .hero-cta .btn"]);
   });
 
-  it("moves nothing outside `prefers-reduced-motion: no-preference`", () => {
-    /* Under reduced motion the page is static: no rule outside the query hides, offsets or animates anything. */
-    const outside = css.replace(/@media\(prefers-reduced-motion:no-preference\)\{[\s\S]*?\n\}/, "");
-    expect(outside).not.toMatch(/opacity:0[;}]/);
-    expect(outside).not.toMatch(/scaleX\(0\)/);
-    expect(outside).not.toMatch(/animation:/);
+  it("keeps no rule of the program pages, which have their own sheet", () => {
+    expect(css).not.toMatch(
+      /\.(pv-(panel|journey|step|term|who|proof|case|report|ranges|track|wcard|kit)|pg-soon|cp-)/,
+    );
   });
 
   it("leaves the shared tokens and the self-hosted faces alone", () => {

@@ -1,4 +1,10 @@
-import { eventTopics, eventsPage, type EventEntry, type EventPlace } from "@/content/events";
+import {
+  eventBanners,
+  eventTopics,
+  eventsPage,
+  type EventEntry,
+  type EventPlace,
+} from "@/content/events";
 
 /**
  * What /events prints about an event, worked out from the list's fields as the mock does, so the page reads
@@ -98,6 +104,57 @@ export function places(event: EventEntry): EventPlace[] {
   if (event.country === "India") found.push("india");
   if (event.format === "virtual" || event.format === "hybrid") found.push("online");
   return found;
+}
+
+/** The event's slug: its name in lower case, every run of other characters one hyphen, none at either end. */
+export function slug(event: EventEntry): string {
+  return event.name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/** The event's own picture: its file, and whether it is a logo (drawn whole on white) or a banner (filling the box). */
+export interface EventBanner {
+  readonly src: string;
+  readonly logo: boolean;
+}
+
+/** The event's own picture (`eventBanners`), or none: then its banner names its city (`cityTile`). */
+export function banner(event: EventEntry): EventBanner | undefined {
+  const name = slug(event);
+  const use = eventBanners[name];
+  return use ? { src: `/event-banners/${name}.webp`, logo: use === "logo" } : undefined;
+}
+
+/**
+ * The two lines a banner without a picture prints: the city ("To be announced" before it is) over the country, or
+ * "Online" alone for an online-only event.
+ */
+export function cityTile(event: EventEntry): { readonly city: string; readonly country: string } {
+  if (event.format === "virtual") return { city: placeCopy.online, country: "" };
+  return { city: event.city || placeCopy.cityUnknown, country: event.country };
+}
+
+/**
+ * What the search box looks in: the name, city, country, organizer, topic and format, in lower case. A search
+ * matches an event when its words, trimmed and in lower case, appear anywhere in this.
+ */
+export function searchText(event: EventEntry): string {
+  return [event.name, event.city, event.country, event.organizer, topicLabel(event), event.format]
+    .join(" ")
+    .toLowerCase();
+}
+
+/** The year and the month ("2026", "10") the Year and Month menus match an event by: those of its month group. */
+export function yearMonth(event: EventEntry): { readonly year: string; readonly month: string } {
+  const [y, m] = parts(when(event).group) as [number, number];
+  return { year: String(y), month: String(m) };
+}
+
+/** The Year menu's years: each year the list has an event in, in order. */
+export function years(list: readonly EventEntry[]): string[] {
+  return [...new Set(list.map((event) => yearMonth(event).year))].sort();
 }
 
 /** The topic's name, as its tag and its chip print it. */

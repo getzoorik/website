@@ -36,9 +36,9 @@ import { WatchAndRead } from "@/features/learn/learn-watch";
 /**
  * `/learn`: the hero and its search; Start here, one guide per subject, with the subject chips; Find the right
  * fix; Compare, the native tools' comparisons; Guides; Watch and read, the two product films and the Medium panel
- * (`WatchAndRead`); More from Zoorik, one card each for /news, /compare and /community (`MoreFromZoorik`); the case
- * study; then the site's closing row. Learn teaches only: the market map and Coral and Amoeba against the market
- * are /compare's, so the hub names no tool of the market. Only published articles are shown (`learn.ts`), each read
+ * (`WatchAndRead`); More from Zoorik, one card each for /news, Cloud cost optimization tools and /community
+ * (`MoreFromZoorik`); the case study; then the site's closing row. Learn teaches only: the tools in the market and
+ * Coral and Amoeba against them are Cloud cost optimization tools', so the hub names no tool of the market. Only published articles are shown (`learn.ts`), each read
  * from the Learn index.
  *
  * Drawn on the server. The search, the chips and Find the right fix share one state (`LearnFilters`); nothing else has
