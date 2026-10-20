@@ -62,7 +62,7 @@ describe("sitemap.xml", () => {
       `${site.url}/compare/amoeba-alternatives`,
       /* The live versus pages, read from their data: no test spells a competitor's name. */
       ...versusPages.map((page) => `${site.url}${versusRoute(page)}`),
-      `${site.url}/case-studies`,
+      `${site.url}/value-lab`,
       `${site.url}/case-studies/coral-dev-cluster`,
       `${site.url}/events`,
       `${site.url}/news`,
@@ -86,7 +86,7 @@ describe("sitemap.xml", () => {
     const updated = "2026-10-09";
     expect(dates).toEqual({
       /* The page descriptions in the current product words. */
-      "/": "2026-10-19",
+      "/": "2026-10-20",
       "/coral": "2026-10-17",
       "/amoeba": "2026-10-20",
       "/assessment": "2026-10-18",
@@ -116,7 +116,7 @@ describe("sitemap.xml", () => {
       "/compare/coral-alternatives": "2026-10-19",
       "/compare/amoeba-alternatives": "2026-10-19",
       ...Object.fromEntries(versusPages.map((page) => [versusRoute(page), "2026-10-19"])),
-      "/case-studies": "2026-10-20",
+      "/value-lab": "2026-10-20",
       "/case-studies/coral-dev-cluster": "2026-10-12",
       "/events": "2026-10-19",
       /* Zoorik News: the week of its latest Radar. */
@@ -124,7 +124,7 @@ describe("sitemap.xml", () => {
       /* Zoorik Community: the day it was published. */
       "/community": "2026-10-20",
       /* Milestones and Zoorik on the web. */
-      "/about": "2026-10-19",
+      "/about": "2026-10-20",
       /* The day its content last changed (the LinkedIn button), not the day it was published. */
       "/careers": "2026-10-19",
       /* The company pages: the day they were published. */
@@ -144,7 +144,7 @@ describe("sitemap.xml", () => {
   it("dates the home page by its content file, homeLastUpdated, and by nothing else", () => {
     const home = sitemap().find((entry) => new URL(entry.url).pathname === "/")!;
     expect(home.lastModified).toBe(isoDay(homeLastUpdated));
-    expect(homeLastUpdated).toBe("19 October 2026");
+    expect(homeLastUpdated).toBe("20 October 2026");
   });
 
   it("dates every page it lists, and none in the future", () => {

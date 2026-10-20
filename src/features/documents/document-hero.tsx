@@ -46,6 +46,8 @@ export interface DocumentHeroProps {
   readonly productSwitch?: HeroSwitch;
   /** The files beside the text; none draws no block. */
   readonly downloads?: readonly HeroDownload[];
+  /** Anything else beside the text, in the files' place (Value Lab's "Saved so far"). */
+  readonly aside?: ReactNode;
 }
 
 /**
@@ -115,6 +117,7 @@ export function DocumentHero({
   className,
   productSwitch,
   downloads = [],
+  aside,
 }: DocumentHeroProps): React.JSX.Element {
   const text = (
     <>
@@ -129,10 +132,10 @@ export function DocumentHero({
     <header className={className ? `hero doc-hero ${className}` : "hero doc-hero"} id="top">
       <TurningMark />
       <div className="wrap hero-in">
-        {downloads.length > 0 ? (
+        {downloads.length > 0 || aside ? (
           <div className="doc-hero-grid">
             <div>{text}</div>
-            <DownloadBlock downloads={downloads} />
+            {aside ?? <DownloadBlock downloads={downloads} />}
           </div>
         ) : (
           text

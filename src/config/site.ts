@@ -127,12 +127,13 @@ export const routes = {
   compare: "/compare",
   compareCoralAlternatives: "/compare/coral-alternatives",
   compareAmoebaAlternatives: "/compare/amoeba-alternatives",
-  /* Case studies: the hub, a library of study cards, and one page per study under it. Linked from the footer's
-     Resources column. */
-  caseStudies: "/case-studies",
+  /* Value Lab by Zoorik: the case studies' hub, with what the studies saved so far and the featured study, and one
+     page per study, which keeps its address under /case-studies. The hub's old address, /case-studies, redirects here.
+     Linked from the footer's Resources column. */
+  valueLab: "/value-lab",
   caseStudyCoralDevCluster: "/case-studies/coral-dev-cluster",
   /* Events: real conferences and community days, from the radar's checked list.
-     In the footer's Resources column, after Case studies. */
+     In the footer's Resources column, after Value Lab. */
   events: "/events",
   /* Zoorik News, at its own address rather than under /learn: our announcements, then Zoorik Radar, the week's
      changes. In the footer's Resources column, after Events. */

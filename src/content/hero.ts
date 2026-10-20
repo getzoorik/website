@@ -31,7 +31,7 @@ export const heroPhotoAlt = "Server racks in a data centre, lit by blue status l
  * `lastmod` only: the page does not print it. Whoever changes the home page's content
  * moves this to that day in the same PR; never the build's date.
  */
-export const homeLastUpdated = "19 October 2026";
+export const homeLastUpdated = "20 October 2026";
 
 export const heroContent = {
   /**

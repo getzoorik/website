@@ -58,6 +58,11 @@ export const pageCards = {
   ),
   assessment: card("assessment", "Zoorik. Free cloud cost assessment."),
   learn: card("learn", "Zoorik. Kubernetes and block storage cost, explained."),
+  /* The case study's own card: our own cluster, its bill before and with Coral. */
+  caseStudyCoralDevCluster: card(
+    "case-coral-dev-cluster",
+    "Value Lab by Zoorik: how we reduced our own cluster’s machine bill by 58%",
+  ),
 } as const;
 
 type OpenGraph = NonNullable<Metadata["openGraph"]>;

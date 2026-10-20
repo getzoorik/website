@@ -325,7 +325,7 @@ export const learnFixes: readonly {
 
 /**
  * On a real cluster: the case study's card, every word and figure read from the study (`caseStudiesHub.studies`):
- * what it is ("Validation Lab · Coral on AKS", its card's kicker without the month), its big figure, its title, its
+ * what it is ("Value Lab · Coral on AKS", its card's kicker without the month), its big figure, its title, its
  * card's line without the line's subject, and the card's own "Read the case study".
  */
 const study = caseStudiesHub.studies[0]!;

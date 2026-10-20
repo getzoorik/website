@@ -92,7 +92,7 @@ describe("/about", () => {
       "Company",
       "Milestones",
       "Zoorik Private Limited is founded",
-      "Validation Lab: −58% on our own cluster",
+      "Value Lab: −58% on our own cluster",
       "Coral installs with Helm and Terraform",
       "Free assessment 1.3",
       "Find us",
@@ -192,7 +192,7 @@ describe("/about", () => {
       [
         "2026-10-12",
         "12 Oct 2026",
-        "Validation Lab: −58% on our own cluster",
+        "Value Lab: −58% on our own cluster",
         "Coral reduced our own AKS development cluster’s machine bill from $368.65 to $154.76 a month in eight days. Read the case study.",
       ],
       [
@@ -260,8 +260,8 @@ describe("/about", () => {
     expect(about.what.lede).toMatch(/^Zoorik reduces cloud cost, autonomously\. /);
   });
 
-  it("moves its sitemap date to the day Milestones and Zoorik on the web landed", () => {
-    expect(aboutLastUpdated).toBe("19 October 2026");
+  it("moves its sitemap date to the day its milestone was relabelled Value Lab", () => {
+    expect(aboutLastUpdated).toBe("20 October 2026");
   });
 
   it("puts the two stores as buttons under Available on, naming no product", () => {
