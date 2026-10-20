@@ -57,13 +57,14 @@ export const learnPage = {
   path: routes.learn,
   meta: {
     /** "Zoorik Learn": the page's and the share card's title as is, never followed by " · Zoorik",
-     *  which would name the company twice. The h1 stays "Learn cloud cost optimization"; the menus still say "Learn". */
+     *  which would name the company twice. The h1 says the same, and the menus and the footer name the hub
+     *  "Zoorik Learn". */
     title: "Zoorik Learn: cloud cost optimization guides",
     description:
       "Guides and comparisons for Kubernetes, block storage and the whole cloud bill on Azure and AWS, from where the money goes to the right fix.",
   },
   hero: {
-    title: "Learn cloud cost optimization",
+    title: "Zoorik Learn: cloud cost optimization guides",
     deck: "Guides, comparisons and what changed this week, for Kubernetes, block storage and the whole cloud bill on Azure and AWS.",
   },
   /**

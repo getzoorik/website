@@ -69,7 +69,7 @@ export function LearnHub(): React.JSX.Element {
     >
       <LearnFrame
         hero={{
-          title: hero.title,
+          title: named(hero.title),
           deck: hero.deck,
           after: <LearnSearch label={search.label} placeholder={search.placeholder} />,
         }}

@@ -180,7 +180,10 @@ describe("/learn", () => {
   it("has one h1, the deck and the search in the hero, then the sections in the mock's order", () => {
     const root = page();
     expect(root.querySelectorAll("h1")).toHaveLength(1);
-    expect(text(root.querySelector("header.hero h1"))).toBe("Learn cloud cost optimization");
+    expect(text(root.querySelector("header.hero h1"))).toBe(
+      "Zoorik Learn: cloud cost optimization guides",
+    );
+    expect(root.querySelector("header.hero h1 [translate='no']")).toHaveTextContent("Zoorik");
     expect(text(root.querySelector(".doc-deck"))).toBe(
       "Guides, comparisons and what changed this week, for Kubernetes, block storage and the whole cloud bill on Azure and AWS.",
     );

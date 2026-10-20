@@ -157,7 +157,7 @@ describe.each(pages)("the product page %s", (path, content) => {
     const [left, right] = [...split.children];
     expect(left).toHaveClass("pf-hero-l");
     expect(left!.querySelector("h1")).not.toBeNull();
-    expect(left!.lastElementChild).toHaveClass(product === "coral" ? "hero-logos" : "hero-cta");
+    expect(left!.lastElementChild).toHaveClass(product === "coral" ? "hero-logos" : "hero-mkt");
     expect(right).toHaveClass("pf-hero-r");
     expect(right!.children).toHaveLength(1);
     /* The glass card, which does not rise: the hero is there from the first frame. */
@@ -695,11 +695,13 @@ describe("the Amoeba page", () => {
     expect(page.querySelector(".hero-badge svg.tux")).toHaveAttribute("data-mark", "linux");
   });
 
-  it("draws no marketplace line until Amoeba is listed: never Coral's listings", () => {
+  it("draws its marketplace line under the buttons: Microsoft Marketplace alone, its own listing, never Coral's", () => {
     const page = renderPage("/amoeba", amoebaPageContent);
-    expect(page.querySelector(".pp-hero .hero-mkt")).toBeNull();
-    expect(page.querySelector(".pp-hero .hero-cta")!.nextElementSibling).toBeNull();
-    expect(page.querySelector('main a[href*="marketplace"]')).toBeNull();
+    const line = page.querySelector(".pp-hero .hero-cta + p.hero-mkt")!;
+    expect(line.querySelector(":scope > span")!.firstChild).toHaveTextContent("Available in");
+    expect(
+      [...page.querySelectorAll('main a[href*="marketplace"]')].map((a) => a.getAttribute("href")),
+    ).toEqual(["https://marketplace.microsoft.com/en-us/product/zoorik.amoeba"]);
   });
 
   it.runIf(!amoebaDocs && !amoebaOnePager)(

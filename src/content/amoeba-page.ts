@@ -46,7 +46,7 @@ const guideAndFaq: readonly ReadMoreTile[] = [
  * `lastmod` only: the page does not print it. Whoever changes /amoeba's content
  * moves this to that day in the same PR; never the build's date.
  */
-export const amoebaPageLastUpdated = "17 October 2026";
+export const amoebaPageLastUpdated = "20 October 2026";
 
 export const amoebaPageContent: ProductPageContent = {
   product: "amoeba",

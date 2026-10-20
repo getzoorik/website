@@ -5,15 +5,15 @@ import { MarketplaceButtons } from "./marketplace-buttons";
 
 /**
  * The two stores as buttons: each its
- * mark, its name and the new-tab arrow, opening Coral's listing, the only one
- * live, since they name no product.
+ * mark, its name and the new-tab arrow, opening Zoorik's own page in that
+ * store, which lists both products, since they name no product.
  */
 describe("MarketplaceButtons", () => {
   const draw = (label?: string) =>
     render(<MarketplaceButtons className="foot-mb" idSuffix="t" label={label} />).container
       .firstElementChild!;
 
-  it("draws one button per store, mark, name, hint and arrow, to Coral's listings", () => {
+  it("draws one button per store, mark, name, hint and arrow, to Zoorik's page in each store", () => {
     const row = draw("Available in");
     expect(row).toHaveClass("mkt-btns", "foot-mb");
     expect(row.firstElementChild).toHaveClass("mkt-on");
@@ -21,11 +21,11 @@ describe("MarketplaceButtons", () => {
     expect(buttons.map((a) => [a.textContent, a.getAttribute("href")])).toEqual([
       [
         "AWS Marketplace (opens in a new tab)",
-        "https://aws.amazon.com/marketplace/pp/prodview-kx44lqme4vwys",
+        "https://aws.amazon.com/marketplace/seller-profile?id=seller-mtaavozrqchlk",
       ],
       [
         "Microsoft Marketplace (opens in a new tab)",
-        "https://marketplace.microsoft.com/en-us/product/zoorik.coral",
+        "https://marketplace.microsoft.com/en-us/partners/04f64eb0-8878-4f14-9578-bc5d104737e7/overview",
       ],
     ]);
     for (const a of buttons) {

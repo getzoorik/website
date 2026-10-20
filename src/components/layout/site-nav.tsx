@@ -13,6 +13,7 @@ import {
 } from "react";
 import { BrandLogo } from "@/components/brand/brand-mark";
 import { ProductMark } from "@/components/brand/product-marks";
+import { NamedText } from "@/components/primitives/named-text";
 import { NewTabHint } from "@/components/primitives/new-tab-hint";
 
 import {
@@ -287,7 +288,9 @@ function MenuRows({ menu, state }: { menu: NavMenu; state: NavState }) {
         >
           <BookIcon />
           <span>
-            <b>{menu.learn.label}</b>
+            <b>
+              <NamedText text={menu.learn.label} name={site.name} />
+            </b>
             <small>{menu.learn.line}</small>
           </span>
         </a>
@@ -652,7 +655,7 @@ export function SiteNav() {
                     aria-current={isHere(state, item.key, "learn") ? "page" : undefined}
                     onClick={closeDrawer}
                   >
-                    {item.learn.label}
+                    <NamedText text={item.learn.label} name={site.name} />
                   </a>
                 ) : null}
                 {item.open ? (

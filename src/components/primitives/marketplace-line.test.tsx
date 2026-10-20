@@ -67,9 +67,13 @@ describe("MarketplaceLine", () => {
     for (const a of links) expect(a.querySelector(".sr-only [translate='no']")).toBeNull();
   });
 
-  it("draws nothing for a product listed in no store: Amoeba's hero, until its listings exist", () => {
-    /* No Coral fallback: Amoeba's hero does not open Coral's listings. */
-    const { container } = render(<MarketplaceLine className="hero-mkt" product="amoeba" icon />);
-    expect(container).toBeEmptyDOMElement();
+  it("names only the stores that list a product: Amoeba's hero, in Microsoft Marketplace alone", () => {
+    /* No Coral fallback: Amoeba's line opens Amoeba's own listing and names no store that lacks one. */
+    const { p, links, hrefs } = line(
+      <MarketplaceLine className="hero-mkt" product="amoeba" icon />,
+    );
+    expect(p.textContent).toBe("Available in Amoeba in Microsoft Marketplace (opens in a new tab)");
+    expect(hrefs).toEqual(["https://marketplace.microsoft.com/en-us/product/zoorik.amoeba"]);
+    expect(links[0]!.querySelector(".sr-only [translate='no']")).toHaveTextContent("Amoeba");
   });
 });

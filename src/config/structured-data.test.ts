@@ -7,7 +7,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import sitemap from "@/app/sitemap";
 import { crunchbaseProfile, wikidataEntity } from "@/config/entity";
-import { awsSellerProfile } from "@/config/marketplaces";
+import { storeProfiles } from "@/config/marketplaces";
 import { calendarUrl, contactEmail, learnPath, routes, site } from "@/config/site";
 import { about, cin, registeredOffice } from "@/content/about";
 import { amoebaPageContent } from "@/content/amoeba-page";
@@ -189,13 +189,15 @@ describe("the home page's structured data", () => {
     expect(amoeba.softwareHelp).toMatchObject({ url: "https://zoorik.com/amoeba/guide" });
   });
 
-  it("links only the pages that exist about each product: Coral's two listings and its G2 page, none for Amoeba yet", () => {
+  it("links only the pages that exist about each product: Coral's two listings and its G2 page, Amoeba's one listing", () => {
     expect(coral.sameAs).toEqual([
       "https://aws.amazon.com/marketplace/pp/prodview-kx44lqme4vwys",
       "https://marketplace.microsoft.com/en-us/product/zoorik.coral",
       "https://www.g2.com/products/zoorik-coral/reviews",
     ]);
-    expect(amoeba).not.toHaveProperty("sameAs");
+    expect(amoeba.sameAs).toEqual([
+      "https://marketplace.microsoft.com/en-us/product/zoorik.amoeba",
+    ]);
   });
 
   it("points each product at its own page, published by the organisation", () => {
@@ -221,12 +223,12 @@ describe("the home page's structured data", () => {
       url: calendarUrl,
     });
     expect(calendarUrl).toBe("https://cal.com/zoorik/talk");
-    /* All six profiles, though the footer's row shows five, then the AWS seller page, the
+    /* All six profiles, though the footer's row shows five, then Zoorik's page in each store, the
        Crunchbase profile and the Wikidata entry, then the PyPI user and the Terraform Registry
        namespace, then the profiles the footer's row does not show, then the directories. */
     expect(org.sameAs).toEqual([
       ...socialProfiles.map((link) => link.href),
-      awsSellerProfile,
+      ...storeProfiles,
       crunchbaseProfile,
       wikidataEntity,
       "https://pypi.org/user/zoorik/",
@@ -249,9 +251,10 @@ describe("the home page's structured data", () => {
       "https://www.g2.com/sellers/zoorik",
       "https://saasbrowser.com/en/saas/1707340/zoorik",
     ]);
-    expect(awsSellerProfile).toBe(
+    expect(storeProfiles).toEqual([
       "https://aws.amazon.com/marketplace/seller-profile?id=seller-mtaavozrqchlk",
-    );
+      "https://marketplace.microsoft.com/en-us/partners/04f64eb0-8878-4f14-9578-bc5d104737e7/overview",
+    ]);
     expect(crunchbaseProfile).toBe("https://www.crunchbase.com/organization/zoorik");
     expect(wikidataEntity).toBe("https://www.wikidata.org/wiki/Q141717592");
     expect(org.description).toBe(
@@ -376,7 +379,7 @@ describe("every indexed page's structured data", () => {
     }
   });
 
-  it("trails a guide or FAQ through Docs, an article through Learn, the study through Case studies", () => {
+  it("trails a guide or FAQ through Docs, an article through Zoorik Learn, the study through Validation Labs by Zoorik", () => {
     const names = (path: string) =>
       (ofType(graphOf(path), "BreadcrumbList")[0]!.itemListElement as readonly Node[]).map(
         (step) => step.name,
@@ -384,11 +387,15 @@ describe("every indexed page's structured data", () => {
     expect(names(routes.coralGuide)).toEqual(["Zoorik", "Docs", "Coral guide"]);
     expect(names(routes.amoebaFaq)).toEqual(["Zoorik", "Docs", "Amoeba FAQ"]);
     for (const article of learnArticles) {
-      expect(names(articleRoute(article)), article.slug).toEqual(["Zoorik", "Learn", article.h1]);
+      expect(names(articleRoute(article)), article.slug).toEqual([
+        "Zoorik",
+        "Zoorik Learn",
+        article.h1,
+      ]);
     }
     expect(names(routes.caseStudyCoralDevCluster)).toEqual([
       "Zoorik",
-      "Case studies",
+      "Validation Labs by Zoorik",
       "How we reduced our own cluster’s machine bill by 58%",
     ]);
     expect(names(routes.privacy)).toEqual(["Zoorik", "Privacy"]);

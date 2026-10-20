@@ -406,7 +406,7 @@ export const navMenus: readonly NavMenu[] = [
     ],
     all: { label: "All docs", chip: "All", href: routes.docs },
     learn: {
-      label: "Learn",
+      label: "Zoorik Learn",
       href: routes.learn,
       line: "Articles on Kubernetes and block storage cost",
     },
