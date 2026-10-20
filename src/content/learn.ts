@@ -63,9 +63,9 @@ export const learnPage = {
     description:
       "Guides and comparisons for Kubernetes, block storage and the whole cloud bill on Azure and AWS, from where the money goes to the right fix.",
   },
+  /** The h1 and the search, with no line between them. */
   hero: {
     title: "Zoorik Learn: cloud cost optimization guides",
-    deck: "Guides, comparisons and what changed this week, for Kubernetes, block storage and the whole cloud bill on Azure and AWS.",
   },
   /**
    * The day the hub's own content last changed, for the sitemap; it is not printed. A new article moves the hub's

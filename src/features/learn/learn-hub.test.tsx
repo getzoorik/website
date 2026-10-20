@@ -177,16 +177,15 @@ describe("/learn's metadata", () => {
 });
 
 describe("/learn", () => {
-  it("has one h1, the deck and the search in the hero, then the sections in the mock's order", () => {
+  it("has one h1 and the search in the hero, with no deck between them, then the sections in the mock's order", () => {
     const root = page();
     expect(root.querySelectorAll("h1")).toHaveLength(1);
     expect(text(root.querySelector("header.hero h1"))).toBe(
       "Zoorik Learn: cloud cost optimization guides",
     );
     expect(root.querySelector("header.hero h1 [translate='no']")).toHaveTextContent("Zoorik");
-    expect(text(root.querySelector(".doc-deck"))).toBe(
-      "Guides, comparisons and what changed this week, for Kubernetes, block storage and the whole cloud bill on Azure and AWS.",
-    );
+    expect(root.querySelector("header.hero .doc-deck")).toBeNull();
+    expect(root.querySelector("header.hero h1")!.nextElementSibling).toHaveClass("lv-search");
     expect(root.querySelector("header.hero .vp-kick")).toBeNull();
     const field = root.querySelector("header.hero .hero-in > label.lv-search")!;
     expect(text(field.querySelector(".sr-only"))).toBe("Search Learn");
