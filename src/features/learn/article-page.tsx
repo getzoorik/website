@@ -399,15 +399,22 @@ function Source({ source }: { readonly source: ArticleSource }): React.JSX.Eleme
   );
 }
 
-/** " · By <name>, <role>": the name a new tab to their LinkedIn profile where they have one. */
+/**
+ * " · By <name>, <role>": the name a new tab to their LinkedIn profile where they have one, its last word holding the
+ * arrow beside it at a line end (`.nw-nb`), as a source's title does.
+ */
 function Byline({ author }: { readonly author: Author }): React.JSX.Element {
+  const space = author.name.lastIndexOf(" ");
   return (
     <>
       {articleWords.author}
       {author.linkedin ? (
         <a href={author.linkedin} {...offSiteProps(author.linkedin)}>
-          {author.name}
-          <ExternalArrow />
+          {author.name.slice(0, space + 1)}
+          <span className="nw-nb">
+            {author.name.slice(space + 1)}
+            <ExternalArrow />
+          </span>
           <NewTabHint href={author.linkedin} />
         </a>
       ) : (
@@ -437,7 +444,7 @@ export function ArticlePage({ article }: { readonly article: Article }): React.J
               {printedDay(article.published)}
               {author ? <Byline author={author} /> : null}
               {articleWords.by}
-              <a href={routes.about}>Zoorik</a>
+              <a href={routes.about}>{named("Zoorik")}</a>
             </p>
             {article.short ? (
               <p className="ar-short">

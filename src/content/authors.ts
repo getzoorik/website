@@ -167,7 +167,7 @@ export const authors = {
   },
   swapnil: {
     name: "Swapnil Srivastav",
-    role: "Software development manager, Zoorik · 11 years' experience",
+    role: "Software development manager, Zoorik · 11 years’ experience",
     linkedin: "https://www.linkedin.com/in/swapnil-srivastav/",
     guest: false,
   },

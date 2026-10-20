@@ -246,7 +246,9 @@ describe.each(learnArticles.map((article) => article.slug))("/learn/%s", (slug) 
     const top = (await main(slug)).querySelector(".ar-frame > .fq-upd.doc-prose:first-child")!;
     const byline = top.querySelector(":scope > p.doc-updated:first-child")!;
     expect(text(byline)).toBe(bylineOf(article));
-    expect([...byline.querySelectorAll("a")].at(-1)).toHaveAttribute("href", "/about");
+    const publisher = [...byline.querySelectorAll("a")].at(-1)!;
+    expect(publisher).toHaveAttribute("href", "/about");
+    expect(publisher.querySelector("span[translate='no']")).toHaveTextContent(/^Zoorik$/);
     const author = articleAuthor(article);
     const profile = byline.querySelector("a[href^='https://']");
     if (author?.linkedin) {
@@ -254,6 +256,10 @@ describe.each(learnArticles.map((article) => article.slug))("/learn/%s", (slug) 
       expect(profile).toHaveAttribute("target", "_blank");
       expect(profile).toHaveAttribute("rel", "noopener noreferrer");
       expect(text(profile)).toBe(`${author.name} (opens in a new tab)`);
+      /* The name's last word and the arrow stay on one line. */
+      const held = profile!.querySelector(".nw-nb")!;
+      expect(held.textContent).toBe(author.name.split(" ").at(-1));
+      expect(held.lastElementChild).toHaveClass("ext");
     } else {
       expect(profile).toBeNull();
     }

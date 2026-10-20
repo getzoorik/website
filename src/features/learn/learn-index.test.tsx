@@ -82,6 +82,7 @@ describe("the Learn index", () => {
     for (const [key, author] of Object.entries(authors)) {
       expect(author.guest, key).toBe(author.role.startsWith("Guest author"));
       expect(author.name.trim(), key).not.toBe("");
+      expect(`${author.name} ${author.role}`, key).not.toMatch(/["']/);
       if (author.linkedin)
         expect(author.linkedin, key).toMatch(/^https:\/\/www\.linkedin\.com\/in\/[^/]+\/$/);
     }
@@ -112,6 +113,8 @@ describe("the Learn index", () => {
           true,
         );
         expect(figure.label, name).toMatch(/^Diagram\. \S/);
+        /* The label is an attribute's text, set as given: a character reference in it would be read out as written. */
+        expect(figure.label, name).not.toMatch(/&(#x[0-9a-f]+|#[0-9]+|[a-z][a-z0-9]*);/i);
         expect(figure.html.trim(), name).not.toBe("");
         for (const rule of figure.style.replace(/\/\*[\s\S]*?\*\//g, "").match(/[^{}]+(?=\{)/g) ??
           []) {

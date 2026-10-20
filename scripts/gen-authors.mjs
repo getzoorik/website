@@ -5,13 +5,15 @@
 //
 // The JSON holds `authors`, an object of author records by key, each with `name`, `role` and `linkedin` (empty when
 // there is no profile to link). Every author is written, so an article can name any of them by key. An author whose
-// role starts with "Guest author" works outside Zoorik.
+// role starts with "Guest author" works outside Zoorik. Names and roles get the articles' curly quotes.
 
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import * as prettier from "prettier";
+
+import { curly } from "./curly-quotes.mjs";
 
 const source = process.argv[2];
 if (!source) {
@@ -33,8 +35,8 @@ const entries = Object.entries(authors).map(([key, author]) => {
   return [
     key,
     {
-      name: author.name.trim(),
-      role: author.role.trim(),
+      name: curly(author.name.trim()),
+      role: curly(author.role.trim()),
       linkedin,
       guest: author.role.trim().startsWith("Guest author"),
     },

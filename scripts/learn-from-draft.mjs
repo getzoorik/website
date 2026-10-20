@@ -29,6 +29,8 @@ import { fileURLToPath } from "node:url";
 
 import * as prettier from "prettier";
 
+import { curly } from "./curly-quotes.mjs";
+
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ARTICLES = join(ROOT, "src", "content", "learn", "articles");
 const FIGURES = join(ROOT, "src", "features", "learn", "figures");
@@ -85,13 +87,6 @@ const UNITS =
   "seconds?|minutes?|hours?|days?|weeks?|months?|ms|GiB|GB|TiB|TB|MiB|MB|KiB|KB|MB/s|MiB/s|IOPS|CPUs?|vCPUs?|cores?|" +
   "nodes?|pods?|replicas?|disks?|volumes?|snapshots?|copies|millicores";
 const UNIT = new RegExp(`(\\d) (${UNITS})\\b`, "g");
-
-/** Curly quotes: a double quote opens after the start, a space, a bracket or a slash, and closes anywhere else. */
-const curly = (s) =>
-  s
-    .replace(/(^|[\s([/])"/g, "$1\u201c")
-    .replace(/"/g, "\u201d")
-    .replace(/'/g, "\u2019");
 
 /** A plain string as the page prints it: curly quotes, and a figure held to its unit. */
 const typo = (s) => curly(s).replace(UNIT, "$1\u00a0$2");
@@ -531,15 +526,17 @@ function convert(slug) {
   const product = { Coral: "coral", Amoeba: "amoeba", Both: "both" }[meta.product];
   if (!product) throw new Error(`${slug}: product "${meta.product}"`);
   const card = `/og/zoorik-learn-${slug}-1200x630.png`;
-  const title = curly(meta.title);
+  const h1 = typo(meta.h1);
 
   const article = {
     slug,
-    title,
+    title: curly(meta.title),
     meta: curly(meta.meta),
-    h1: typo(meta.h1),
+    h1,
     deck: typo(meta.deck),
-    card: typo(meta.card),
+    /* The hub card's line takes curly quotes only: no card line holds a figure and its unit, and the unit rule would
+       hold the "2" of "gp2" to the word after it. */
+    card: curly(meta.card),
     product,
     hub: meta.hub_group,
     topic,
@@ -547,8 +544,9 @@ function convert(slug) {
     published: day.date,
     updated: day.date,
     author: day.author,
+    /* A share card's picture draws the h1, so its alt text reads the h1. */
     ...(existsSync(join(ROOT, "public", card))
-      ? { shareCard: { url: card, alt: `Zoorik. ${title}${/[.?!]$/.test(title) ? "" : "."}` } }
+      ? { shareCard: { url: card, alt: `Zoorik. ${h1}${/[.?!]$/.test(h1) ? "" : "."}` } }
       : {}),
     short: inline(short),
     sections: drawn,
@@ -568,6 +566,36 @@ const template = (s) =>
 /** A value as source: JSON, with the no-break space written as its escape so it can be seen. */
 const literal = (value) => JSON.stringify(value).replace(/\u00a0/g, "\\u00a0");
 
+/** The named character references a figure file's label may use, beside numeric ones; any other fails the run. */
+const ENTITIES = {
+  amp: "&",
+  lt: "<",
+  gt: ">",
+  quot: '"',
+  apos: "'",
+  nbsp: "\u00a0",
+  times: "\u00d7",
+  ndash: "\u2013",
+  mdash: "\u2014",
+  hellip: "\u2026",
+  rarr: "\u2192",
+};
+
+/**
+ * An attribute's text as its characters: the label is set as a React attribute, which escapes what it is given, so
+ * a character reference left in it would be read out as written. One pass, so "&amp;lt;" reads "&lt;".
+ */
+const decode = (s, name) =>
+  s.replace(/&(#x[0-9a-f]+|#[0-9]+|[a-z][a-z0-9]*);/gi, (_, ref) => {
+    if (ref[0] === "#")
+      return String.fromCodePoint(
+        ref[1] === "x" || ref[1] === "X" ? parseInt(ref.slice(2), 16) : Number(ref.slice(1)),
+      );
+    if (!Object.hasOwn(ENTITIES, ref))
+      throw new Error(`${name}: the label's &${ref}; is not one this script reads`);
+    return ENTITIES[ref];
+  });
+
 function figureModule(slug, n) {
   const file = join(figuresDir, `${slug}-${n}.html`);
   if (!existsSync(file)) throw new Error(`${slug}: no figure file for diagram ${n}`);
@@ -580,18 +608,11 @@ function figureModule(slug, n) {
   const [, style, className, label, html] = m;
   if (className !== `ln-d fg-${slug}-${n}`)
     throw new Error(`${slug}-${n}: its class is ${className}`);
-  const decode = (s) =>
-    s
-      .replace(/&quot;/g, '"')
-      .replace(/&#39;/g, "'")
-      .replace(/&lt;/g, "<")
-      .replace(/&gt;/g, ">")
-      .replace(/&amp;/g, "&");
   return `import type { LearnFigure } from "@/content/learn/article";
 
 export const figure: LearnFigure = {
   className: ${JSON.stringify(className)},
-  label: ${JSON.stringify(decode(label))},
+  label: ${literal(decode(label, `${slug}-${n}`))},
   style: ${template(style)},
   html: ${template(html)},
 };
