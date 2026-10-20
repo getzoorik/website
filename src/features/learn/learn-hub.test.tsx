@@ -626,7 +626,7 @@ describe("/learn", () => {
     expect(root.querySelector("main > section#proof")).toHaveClass("sec-band");
     const proof = root.querySelector("#proof a.lv-proof")!;
     expect(proof).toHaveAttribute("href", study.href);
-    expect(text(proof.querySelector(".lv-pk"))).toBe("Validation Lab · Coral on AKS");
+    expect(text(proof.querySelector(".lv-pk"))).toBe("Value Lab · Coral on AKS");
     expect(text(proof.querySelector(".lv-pbig"))).toBe(study.figure);
     expect(text(proof.querySelector(".lv-pt b"))).toBe(study.title);
     expect(text(proof.querySelector(".lv-pt small"))).toBe(

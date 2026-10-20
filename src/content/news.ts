@@ -90,7 +90,7 @@ export const newsPage = {
 export interface NewsAnnouncement {
   /** The day it shipped, ISO ("2026-10-17"); the page prints "17 October 2026". */
   readonly date: string;
-  /** What it is about: a product, the assessment, the Validation Lab. */
+  /** What it is about: a product, the assessment, the Value Lab. */
   readonly tag: string;
   readonly title: string;
   readonly line: string;
@@ -298,7 +298,7 @@ export const newsFromZoorik: readonly NewsAnnouncement[] = [
   },
   {
     date: "2026-10-12",
-    tag: "Validation Lab",
+    tag: "Value Lab",
     title: "How we reduced our own cluster’s machine bill by 58%",
     line: "Eight days after we connected Coral to our own AKS development cluster, it cost $154.76 a month instead of $368.65.",
     href: routes.caseStudyCoralDevCluster,

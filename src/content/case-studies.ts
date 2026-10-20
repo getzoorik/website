@@ -99,7 +99,7 @@ export const caseStudy = {
       "Before we ask anyone to trust Coral with their cluster, we run it on ours. Eight days after we connected it, our AKS development cluster cost $154.76 a month instead of $368.65.",
   },
   hero: {
-    kicker: "Validation Lab · Coral on Azure Kubernetes Service · October 2026",
+    kicker: "Value Lab · Coral on Azure Kubernetes Service · October 2026",
     /** The h1, its second half on a line of its own in the good green. */
     title: "How we reduced our own cluster’s",
     titleGreen: "machine bill by 58%",
@@ -404,12 +404,12 @@ export interface CaseStudyCoverFigure {
 }
 
 /**
- * One study on the hub: one card in the library.
+ * One study: what the hub and /learn's "On a real cluster" card read about it.
  * Every figure is the study's own, read from its content above, never typed
  * twice.
  */
 export interface CaseStudyCard {
-  /** Its product: the filter's chip, once the studies cover two products. */
+  /** Its product. */
   readonly product: ProductId;
   readonly href: string;
   /** Its PDF, the site's one entry for it (`documents.ts`); a study without one offers none. */
@@ -431,81 +431,87 @@ const coralConnected = coralCosts.steps[0]!;
 const coralToday = coralCosts.steps[coralCosts.steps.length - 1]!;
 /** The month the study was published, from its date ("12 October 2026" → "October 2026"). */
 const coralMonth = caseStudy.band.date.replace(/^\d+ /, "");
-/** What the study is, the first part of its own kicker: "Validation Lab". */
+/** What the study is, the first part of its own kicker: "Value Lab". */
 const coralLabel = caseStudy.hero.kicker.split(" · ")[0]!;
 
+/** The yearly figure as the hub prints it, to the dollar: $213.89 a month is "$2,567". */
+const perYear = (monthly: number): string => `$${Math.round(monthly * 12).toLocaleString("en-US")}`;
+
+/** A study's day as the hub's "As of" prints it: "12 October 2026" → "12 Oct 2026". */
+const shortDay = (day: string): string => day.replace(/ (\w{3})\w* /, " $1 ");
+
 /**
- * The hub: the library, one card per study in `studies`, then "Your cluster
- * next" (the free assessment), "How we write them" and the closing cards. The
- * product filter is drawn only once the studies cover two products (show only
- * what applies: no chip that finds nothing). A new study is one more entry in
- * `studies`.
+ * Value Lab by Zoorik, the hub: what the studies saved so far, the featured study beside "Want to be next?", then the
+ * closing row. Every figure is the studies' own, read from their content above, never typed twice. The hub draws no
+ * client studies until the first one exists; a new study is one more entry in `studies`.
  */
+const studies = [
+  {
+    product: "coral",
+    href: caseStudy.route,
+    document: caseStudy.document,
+    /* "Value Lab · Coral on AKS · October 2026". */
+    kicker: [coralLabel, `${products.coral.name} on ${platformLabel.aks}`, coralMonth].join(" · "),
+    title: caseStudy.end.title,
+    /* "eight days" is the study's own "8 days" (`band.stats[3]`), in words as its prose says it. */
+    line: `Our own development cluster: ${coralToday.label} a month instead of ${coralConnected.label}, eight days after we connected Coral.`,
+    /* The three features the study shows Coral using, by their own titles. */
+    tags: caseStudy.connect.features.map((feature) => feature.title),
+    figure: caseStudy.band.stats[0].value,
+    before: { value: coralConnected.amount, label: coralConnected.label },
+    after: { value: coralToday.amount, label: coralToday.label },
+    cap: "machine bill a month, before and after",
+  },
+] satisfies readonly CaseStudyCard[] as readonly CaseStudyCard[];
+
+/** What every study saved each month, at list prices: each bill before less each bill after. */
+const savedMonthly = studies.reduce(
+  (sum, study) => sum + study.before.value - study.after.value,
+  0,
+);
+
 export const caseStudiesHub = {
-  route: routes.caseStudies,
-  /** "Validation Labs by Zoorik": the page's and the share card's title as is, never followed by " · Zoorik". */
+  route: routes.valueLab,
+  /** The page's and the share card's title as is: "Value Lab by Zoorik: …" names the company, so no " · Zoorik". */
   meta: {
-    title: "Validation Labs by Zoorik",
+    title: "Value Lab by Zoorik: cloud cost case studies",
     description: "What Coral does on real clusters, with the figures.",
   },
   hero: {
-    title: "Validation Labs by Zoorik",
-    deck: "What Coral does on real clusters, with the figures. We start with our own.",
+    title: "Value Lab by Zoorik",
+    deck: "What Coral and Amoeba reduced on real cloud bills, every figure at list prices.",
   },
-  /** The library's section, named for a screen reader only. */
-  label: "Validation Labs by Zoorik",
-  studies: [
-    {
-      product: "coral",
-      href: caseStudy.route,
-      document: caseStudy.document,
-      /* "Validation Lab · Coral on AKS · October 2026". */
-      kicker: [coralLabel, `${products.coral.name} on ${platformLabel.aks}`, coralMonth].join(
-        " · ",
-      ),
-      title: caseStudy.end.title,
-      /* "eight days" is the study's own "8 days" (`band.stats[3]`), in words as its prose says it. */
-      line: `Our own development cluster: ${coralToday.label} a month instead of ${coralConnected.label}, eight days after we connected Coral.`,
-      /* The three features the study shows Coral using, by their own titles. */
-      tags: caseStudy.connect.features.map((feature) => feature.title),
-      figure: caseStudy.band.stats[0].value,
-      before: { value: coralConnected.amount, label: coralConnected.label },
-      after: { value: coralToday.amount, label: coralToday.label },
-      cap: "machine bill a month, before and after",
-    },
-  ] satisfies readonly CaseStudyCard[] as readonly CaseStudyCard[],
-  /** The product filter, and its live count of the cards it shows. */
-  filter: {
-    label: "Filter case studies",
-    all: "All",
-    one: "case study",
-    many: "case studies",
+  /** Beside the hero's words: what the studies saved so far, as of the newest study's day. */
+  total: {
+    label: "Saved so far",
+    /* The newest study's day: "12 October 2026", printed "As of 12 Oct 2026". */
+    asOf: caseStudy.band.date,
+    asOfLabel: `As of ${shortDay(caseStudy.band.date)}`,
+    amount: savedMonthly,
+    unit: "a month",
+    line: `About ${perYear(savedMonthly)} a year, across ${studies.length} case ${studies.length === 1 ? "study" : "studies"}, at list prices.`,
   },
-  /** Each card's two ways in: the study, and its PDF. */
-  card: { read: "Read the case study", pdf: "PDF" },
-  /** The card after the studies: the free assessment. */
+  studies,
+  /** The pair on the band, named for a screen reader: the featured study and "Want to be next?". */
+  label: "Value Lab studies",
+  /** The featured study: our own cluster, its bill before and with Coral, on one scale. */
+  featured: {
+    flag: "Featured",
+    title: "Our own AKS cluster",
+    /* "58%" is the study's own "−58%" (`band.stats[0]`). */
+    line: `We reduced its monthly machine bill by ${caseStudy.band.stats[0].value.replace("−", "")} with Coral.`,
+    before: { ...studies[0]!.before, name: "Before" },
+    after: { ...studies[0]!.after, name: "With Coral" },
+    per: "a month",
+    href: caseStudy.route,
+  },
+  /** Each study's way in. */
+  card: { read: "Read the case study" },
+  /** The navy card beside it: the free assessment. */
   next: {
-    title: "Your cluster next",
-    body: "Run the free assessment to see your own number: one command, one PDF with your estimated saving at list price.",
+    title: "Want to be next?",
+    body: "Run the free assessment on your clusters or disks: one command, one PDF with your estimated saving at list price.",
     go: "Run the free assessment",
     href: routes.assessment,
-  },
-  trust: {
-    id: "how-we-write-them",
-    title: "How we write them",
-    items: [
-      {
-        title: "On a real cluster",
-        text: "Measured on a cluster that runs real work, from the day Coral was connected.",
-      },
-      {
-        title: "At list prices",
-        text: "Every figure at the cloud’s pay-as-you-go list prices, 730 hours a month.",
-      },
-      {
-        title: "Nothing named",
-        text: "No cluster, machine or app is named. Apps stay generic, as in the PDF.",
-      },
-    ],
   },
 } as const;

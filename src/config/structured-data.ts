@@ -23,7 +23,7 @@ import {
 import { openSourceLinks } from "@/config/open-source";
 import { liveListings, storeProfiles } from "@/config/marketplaces";
 import { amoebaDocs, calendarUrl, contactEmail, homeUrl, routes, site } from "@/config/site";
-import { socialImage } from "@/config/social";
+import { pageCards } from "@/config/social";
 import { about, cin, registeredOffice } from "@/content/about";
 import { amoebaFaqPage } from "@/content/amoeba-faq";
 import { amoebaGuide } from "@/content/amoeba-guide";
@@ -420,25 +420,25 @@ const pages: Readonly<Record<string, PageEntry>> = {
   [routes.docsInstallHelm]: osGuideEntry("helm"),
   [routes.docsInstallTerraform]: osGuideEntry("terraform"),
   [routes.docsContributing]: osGuideEntry("contributing"),
-  /* "Validation Labs by Zoorik" is absolute too, as the page prints it. */
-  [routes.caseStudies]: {
+  /* "Value Lab by Zoorik: …" is absolute too, as the page prints it. */
+  [routes.valueLab]: {
     kind: "CollectionPage",
     name: caseStudiesHub.meta.title,
     description: caseStudiesHub.meta.description,
-    trail: [step(routes.caseStudies)],
+    trail: [step(routes.valueLab)],
   },
   /* The study prints one date, "12 October 2026 · Published by Zoorik": published, and not changed since. */
   [routes.caseStudyCoralDevCluster]: {
     kind: "WebPage",
     name: titled(caseStudy.meta.title),
     description: caseStudy.meta.description,
-    trail: [step(routes.caseStudies), { name: studyHeadline, path: caseStudy.route }],
+    trail: [step(routes.valueLab), { name: studyHeadline, path: caseStudy.route }],
     about: "coral",
     article: {
       headline: studyHeadline,
       published: studyDate,
       modified: studyDate,
-      image: socialImage,
+      image: pageCards.caseStudyCoralDevCluster,
     },
   },
   /* Two more absolute titles, /about's and /careers's: no " · Zoorik" after them (/learn's is above). */

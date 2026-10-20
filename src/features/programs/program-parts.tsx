@@ -137,7 +137,7 @@ const studyCosts = caseStudy.result.costs;
 
 /**
  * The case study's figures, as both pages print them: what the study is (the first part of its own kicker, so the label
- * follows the study: ours reads "Validation Lab", and a client's study will read "Customer"), its headline figure
+ * follows the study: ours reads "Value Lab", and a client's study will read "Customer"), its headline figure
  * (−58%), and the machine bill when Coral was connected and today, each with its label. Read from the study, never
  * typed twice.
  */

@@ -98,7 +98,7 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   ...Object.fromEntries(
     learnArticles.map((article) => [articleRoute(article), articleModule(article.slug)]),
   ),
-  "/case-studies": () => import("@/app/case-studies/page"),
+  "/value-lab": () => import("@/app/value-lab/page"),
   "/case-studies/coral-dev-cluster": () => import("@/app/case-studies/coral-dev-cluster/page"),
   "/about": () => import("@/app/about/page"),
   "/careers": () => import("@/app/careers/page"),
@@ -379,7 +379,7 @@ describe("every indexed page's structured data", () => {
     }
   });
 
-  it("trails a guide or FAQ through Docs, an article through Zoorik Learn, the study through Validation Labs by Zoorik", () => {
+  it("trails a guide or FAQ through Docs, an article through Zoorik Learn, the study through Value Lab", () => {
     const names = (path: string) =>
       (ofType(graphOf(path), "BreadcrumbList")[0]!.itemListElement as readonly Node[]).map(
         (step) => step.name,
@@ -395,7 +395,7 @@ describe("every indexed page's structured data", () => {
     }
     expect(names(routes.caseStudyCoralDevCluster)).toEqual([
       "Zoorik",
-      "Validation Labs by Zoorik",
+      "Value Lab",
       "How we reduced our own cluster’s machine bill by 58%",
     ]);
     expect(names(routes.privacy)).toEqual(["Zoorik", "Privacy"]);
@@ -419,7 +419,7 @@ describe("every indexed page's structured data", () => {
   it("types the hubs as collections and /about as the organisation's page", () => {
     for (const { path } of listed) {
       const kind = graphOf(path)[2]!["@type"];
-      if (["/docs", "/learn", "/case-studies", "/events", "/news", "/compare"].includes(path))
+      if (["/docs", "/learn", "/value-lab", "/events", "/news", "/compare"].includes(path))
         expect(kind, path).toBe("CollectionPage");
       else if (path === "/about") expect(kind).toBe("AboutPage");
       else expect(kind, path).toBe("WebPage");

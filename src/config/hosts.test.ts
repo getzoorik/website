@@ -82,6 +82,16 @@ describe("the Docs hub's old address", () => {
   });
 });
 
+describe("the case studies' hub's old address", () => {
+  it("301s /case-studies to Value Lab, and leaves the study's own address alone", async () => {
+    const hub = await respond("https://zoorik.com/case-studies");
+    expect(hub.status).toBe(301);
+    expect(getRedirectUrl(hub)).toBe("https://zoorik.com/value-lab");
+    const study = await respond("https://zoorik.com/case-studies/coral-dev-cluster");
+    expect(study.status).not.toBe(301);
+  });
+});
+
 describe("the comparison pages' old addresses under /learn", () => {
   it("301 each live versus page and both alternatives pages to /compare", async () => {
     const moved = [

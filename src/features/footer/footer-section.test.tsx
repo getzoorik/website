@@ -204,7 +204,7 @@ describe("the footer's columns", () => {
         heading: ["P", "Resources"],
         links: [
           ["Zoorik Learn", "/learn"],
-          ["Validation Labs by Zoorik", "/case-studies"],
+          ["Value Lab", "/value-lab"],
           ["Events", "/events"],
           ["News", "/news"],
           ["Compare", "/compare"],

@@ -137,7 +137,7 @@ describe("/news", () => {
         "See the install options",
       ],
       [
-        "Validation Lab",
+        "Value Lab",
         "2026-10-12",
         "12 October 2026",
         "How we reduced our own cluster’s machine bill by 58%",

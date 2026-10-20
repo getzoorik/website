@@ -1,23 +1,23 @@
-import { fireEvent, render } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { caseStudiesHub, caseStudy, type CaseStudyCard } from "@/content/case-studies";
+import { caseStudiesHub, caseStudy } from "@/content/case-studies";
 import { documents } from "@/content/documents";
 
 /* The nav and the footer read the pathname. */
-const pathname = vi.hoisted(() => ({ current: "/case-studies" }));
+const pathname = vi.hoisted(() => ({ current: "/value-lab" }));
 vi.mock("next/navigation", () => ({ usePathname: () => pathname.current }));
 
-import CaseStudiesRoute, { metadata as hubMeta } from "@/app/case-studies/page";
+import ValueLabRoute, { metadata as hubMeta } from "@/app/value-lab/page";
 import CaseStudyRoute, { metadata as studyMeta } from "@/app/case-studies/coral-dev-cluster/page";
-import { CaseStudiesHub } from "@/features/case-studies/case-studies-hub";
 
 /**
- * The case studies: the metadata, the hub's library (one card per study, the
- * product filter only once the studies cover two products), the study's hero
- * and download, the result band, the six numbered sections in /security's
- * frame, the drawings, the closing row for Coral, no placeholder, and their one
- * place on the site: the footer's Resources column, never the header. Their
+ * Value Lab and its case study: the metadata, the hub (what the studies saved
+ * so far, the featured study beside "Want to be next?", the closing row), the
+ * study's hero and download, the result band, the six numbered sections in
+ * /security's frame, the drawings, the closing row for Coral, no placeholder,
+ * and their one place on the site: the footer's Resources column, never the
+ * header. Their
  * sitemap entries are in `src/app/sitemap.test.ts`; the PDF's file and header
  * in `src/features/documents/document-facts.test.ts`.
  */
@@ -25,8 +25,8 @@ import { CaseStudiesHub } from "@/features/case-studies/case-studies-hub";
 const text = (el: Element | null): string => (el?.textContent ?? "").replace(/[\s ]+/g, " ").trim();
 
 const hub = () => {
-  pathname.current = "/case-studies";
-  return render(<CaseStudiesRoute />).container;
+  pathname.current = "/value-lab";
+  return render(<ValueLabRoute />).container;
 };
 const study = () => {
   pathname.current = "/case-studies/coral-dev-cluster";
@@ -39,14 +39,14 @@ const SPOKEN = /^Download the case study, PDF, \d+ pages?, \d\.\d MB, A4$/;
 
 describe("the case studies' metadata", () => {
   it("titles, describes and canonicalises the hub in the mock's words", () => {
-    /* "Validation Labs by Zoorik" already names the company, so no " · Zoorik" after it. */
-    expect(hubMeta.title).toEqual({ absolute: "Validation Labs by Zoorik" });
+    /* "Value Lab by Zoorik: …" already names the company, so no " · Zoorik" after it. */
+    expect(hubMeta.title).toEqual({ absolute: "Value Lab by Zoorik: cloud cost case studies" });
     expect(hubMeta.description).toBe("What Coral does on real clusters, with the figures.");
-    expect(hubMeta.alternates).toEqual({ canonical: "/case-studies" });
+    expect(hubMeta.alternates).toEqual({ canonical: "/value-lab" });
     expect(hubMeta).not.toHaveProperty("robots");
     expect(hubMeta.openGraph).toMatchObject({
-      url: "/case-studies",
-      title: "Validation Labs by Zoorik",
+      url: "/value-lab",
+      title: "Value Lab by Zoorik: cloud cost case studies",
     });
   });
 
@@ -61,208 +61,109 @@ describe("the case studies' metadata", () => {
     expect(studyMeta.openGraph).toMatchObject({
       url: "/case-studies/coral-dev-cluster",
       title: "Case study: how we reduced our own cluster’s machine bill by 58% · Zoorik",
+      images: [
+        {
+          url: "/og/zoorik-case-coral-dev-cluster-1200x630.png",
+          width: 1200,
+          height: 630,
+          alt: "Value Lab by Zoorik: how we reduced our own cluster’s machine bill by 58%",
+        },
+      ],
     });
   });
 });
 
-describe("/case-studies", () => {
-  /* A second product's study, for the tests only: the filter is drawn once the studies cover two products. */
-  const amoebaStudy: CaseStudyCard = {
-    product: "amoeba",
-    href: "/case-studies/amoeba-test-study",
-    kicker: "Amoeba · Azure · Test",
-    title: "A test study",
-    line: "A line for the test study.",
-    tags: ["Test"],
-    figure: "−1%",
-    before: { value: 2, label: "$2.00" },
-    after: { value: 1, label: "$1.00" },
-    cap: "a test caption",
-  };
-  const both = () => {
-    pathname.current = "/case-studies";
-    return render(<CaseStudiesHub studies={[...caseStudiesHub.studies, amoebaStudy]} />).container;
-  };
-  const library = (container: HTMLElement) =>
-    container.querySelector(
-      "main > section.sec.cx-sec[aria-label='Validation Labs by Zoorik'] > .wrap",
-    )!;
-
-  it("opens on the utility hero", () => {
-    const hero = hub().querySelector("main header.hero.doc-hero#top")!;
-    expect(text(hero.querySelector("h1"))).toBe("Validation Labs by Zoorik");
-    expect(hero.querySelector("h1 [translate='no']")).toHaveTextContent("Zoorik");
-    expect(text(hero.querySelector(".doc-deck"))).toBe(
-      "What Coral does on real clusters, with the figures. We start with our own.",
+describe("/value-lab", () => {
+  it("opens on its name and line, and beside them what the studies saved so far", () => {
+    /* Reduced motion: the figure shows at once, with no count from $0.00 (`saved-so-far.test.tsx` counts it). */
+    const reduce = vi.spyOn(window, "matchMedia").mockImplementation(
+      (query: string) =>
+        ({
+          matches: query.includes("reduce"),
+          media: query,
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+          addListener: vi.fn(),
+          removeListener: vi.fn(),
+        }) as unknown as MediaQueryList,
+    );
+    const hero = hub().querySelector("main > header.hero.doc-hero#top")!;
+    reduce.mockRestore();
+    const [words, total] = [...hero.querySelectorAll(".doc-hero-grid > *")];
+    expect(text(words!.querySelector("h1"))).toBe("Value Lab by Zoorik");
+    expect(words!.querySelector("h1 [translate='no']")).toHaveTextContent("Zoorik");
+    expect(text(words!.querySelector(".doc-deck"))).toBe(
+      "What Coral and Amoeba reduced on real cloud bills, every figure at list prices.",
+    );
+    expect(total).toHaveClass("dl", "vl-total");
+    expect(total!.querySelector(".vl-tk .vl-sig")).toHaveAttribute("aria-hidden", "true");
+    /* The label, then the date pushed to the right edge by its own margin, as the mock writes them. */
+    expect(text(total!.querySelector(".vl-tk"))).toBe("Saved so farAs of 12 Oct 2026");
+    expect(text(total!.querySelector(".vl-tk time"))).toBe("As of 12 Oct 2026");
+    expect(total!.querySelector(".vl-tk time")).toHaveAttribute("datetime", "2026-10-12");
+    expect(text(total!.querySelector(".vl-tn"))).toBe("$213.89 a month");
+    expect(text(total!.querySelector(".vl-tl"))).toBe(
+      "About $2,567 a year, across 1 case study, at list prices.",
     );
   });
 
-  it("draws one card per study in the list, then Your cluster next", () => {
-    const grid = library(hub()).querySelector(":scope > .cx-grid")!;
-    const cards = [...grid.querySelectorAll(":scope > article.cx-card")];
-    expect(cards).toHaveLength(caseStudiesHub.studies.length);
+  it("reads the total from the studies: each bill before less each bill after", () => {
+    const [only] = caseStudiesHub.studies;
     expect(caseStudiesHub.studies).toHaveLength(1);
-    expect(cards[0]).toHaveAttribute("data-p", "coral");
-    expect(cards[0]).not.toHaveAttribute("hidden");
-    expect(grid.lastElementChild).toHaveClass("cx-next");
+    expect(caseStudiesHub.total.amount).toBeCloseTo(only!.before.value - only!.after.value, 6);
+    /* The study's own figure for it. */
+    expect(caseStudy.band.stats[1].value).toBe("$213.89");
   });
 
-  it("draws the Coral study's card with the study's own title and figures", () => {
-    const card = hub().querySelector("article.cx-card")!;
-    const cover = card.querySelector(":scope > a.cx-cover")!;
-    expect(cover).toHaveAttribute("href", "/case-studies/coral-dev-cluster");
-    /* The same link as the title: hidden from a screen reader and the keyboard, as the mock marks it. */
-    expect(cover).toHaveAttribute("aria-hidden", "true");
-    expect(cover).toHaveAttribute("tabindex", "-1");
-    expect(text(cover.querySelector(".cx-big"))).toBe("−58%");
-    expect(text(cover.querySelector(".cx-big"))).toBe(caseStudy.band.stats[0].value);
-    const bars = [...cover.querySelectorAll(".cx-bars > span")];
-    expect(bars.map((bar) => [bar.className, text(bar.querySelector("em"))])).toEqual([
-      ["cx-b1", "$368.65"],
-      ["cx-b2", "$154.76"],
-    ]);
-    /* The bill after on the bill before's scale, to a tenth as the mock prints it: 154.76 / 368.65 = 42.0%
-       (the style reads it back without the trailing zero). */
-    expect(bars.map((bar) => (bar.querySelector("i") as HTMLElement).style.width)).toEqual([
-      "100%",
-      "42%",
-    ]);
-    expect(text(cover.querySelector(".cx-cap"))).toBe("machine bill a month, before and after");
-
-    const body = card.querySelector(":scope > .cx-cbody")!;
-    const kicker = body.querySelector("p.cx-kick")!;
-    expect(text(kicker)).toBe("Validation Lab · Coral on AKS · October 2026");
-    /* The month is the study's own date's ("12 October 2026"), not typed again. */
-    expect(text(kicker)).toMatch(new RegExp(` · ${caseStudy.band.date.replace(/^\d+ /, "")}$`));
-    expect(kicker.querySelector("span[translate='no']")).toHaveTextContent("Coral");
-    const title = body.querySelector("h3 > a")!;
-    expect(title).toHaveAttribute("href", "/case-studies/coral-dev-cluster");
-    expect(text(title)).toBe("How we reduced our own cluster’s machine bill by 58%");
-    expect(text(title)).toBe(`${caseStudy.hero.title} ${caseStudy.hero.titleGreen}`);
-    expect(text(body.querySelector("p.cx-line"))).toBe(
-      "Our own development cluster: $154.76 a month instead of $368.65, eight days after we connected Coral.",
+  it("puts the featured study and Want to be next? side by side on the band, rising as they arrive", () => {
+    const section = hub().querySelector("main > section#studies.sec.sec-band")!;
+    expect(section).toHaveAttribute("aria-label", "Value Lab studies");
+    const [featured, next] = [...section.querySelectorAll(".as-grid > div")];
+    expect(featured).toHaveClass("as-card", "as-mini", "vl-fc", "rise");
+    expect(next).toHaveClass("as-cal", "rise");
+    expect(text(featured!.querySelector(".vl-flag"))).toBe("Featured");
+    expect(featured!.querySelector("svg.vl-own")).toHaveAttribute("viewBox", "0 0 512 512");
+    expect(featured!.querySelectorAll("svg.vl-own rect")).toHaveLength(15);
+    expect(text(featured!.querySelector("h2.as-h"))).toBe("Our own AKS cluster");
+    expect(text(featured!.querySelector("p"))).toBe(
+      "We reduced its monthly machine bill by 58% with Coral.",
     );
-    /* "eight days" in the line is the study's "8 days" from connecting Coral to the result. */
-    expect(caseStudy.band.stats[3]).toMatchObject({ value: "8 days" });
-    const chips = [...body.querySelectorAll(".cx-chips > span")].map(text);
-    expect(chips).toEqual(["Workload optimization", "Node optimization", "Rebalancing"]);
-    expect(chips).toEqual(caseStudy.connect.features.map((feature) => feature.title));
-    const read = body.querySelector(".cx-cfoot > a.cx-read")!;
-    expect(read).toHaveAttribute("href", "/case-studies/coral-dev-cluster");
-    expect(text(read)).toBe("Read the case study");
-    expect(read.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
-  });
-
-  it("offers the study's PDF from the site's one entry for it", () => {
-    const pdf = hub().querySelector("article.cx-card .cx-cfoot > a.cx-pdf")!;
-    expect(pdf).toHaveAttribute("href", PDF);
-    expect(pdf).toHaveAttribute("href", documents["coral-case-study"].pdf);
-    expect(pdf).toHaveAttribute("download");
-    expect(pdf).not.toHaveAttribute("target");
-    expect(pdf.getAttribute("aria-label")).toMatch(SPOKEN);
-    expect(text(pdf)).toBe("PDF");
-  });
-
-  it("draws no product filter while the studies cover one product", () => {
-    const container = hub();
-    expect(container.querySelector(".cx-filter")).toBeNull();
-    expect(library(container).querySelector("button, [role='group'], [aria-live]")).toBeNull();
-  });
-
-  it("draws the product filter once the studies cover two, with All pressed and the count of every card", () => {
-    const filter = library(both()).querySelector(":scope > .cx-filter")!;
-    expect(filter).toHaveAttribute("role", "group");
-    expect(filter).toHaveAttribute("aria-label", "Filter case studies");
-    const buttons = [...filter.querySelectorAll("button")];
-    expect(buttons.map((b) => [text(b), b.getAttribute("type"), b.getAttribute("data-p")])).toEqual(
-      [
-        ["All", "button", ""],
-        ["Coral", "button", "coral"],
-        ["Amoeba", "button", "amoeba"],
-      ],
-    );
-    expect(buttons.map((b) => b.getAttribute("aria-pressed"))).toEqual(["true", "false", "false"]);
-    expect(buttons[1]!.querySelector("span[translate='no']")).toHaveTextContent("Coral");
-    const count = filter.querySelector(":scope > .cx-count")!;
-    expect(count).toHaveAttribute("aria-live", "polite");
-    expect(text(count)).toBe("2 case studies");
-  });
-
-  it("filters the cards by product as the mock's script does, the live count following", () => {
-    const container = both();
-    const filter = container.querySelector(".cx-filter")!;
-    const [all, coral, amoeba] = [...filter.querySelectorAll("button")];
-    const count = () => text(filter.querySelector(".cx-count"));
-    const pressed = () =>
-      [...filter.querySelectorAll("button")].map((b) => b.getAttribute("aria-pressed"));
-    const shown = () =>
-      [...container.querySelectorAll("article.cx-card")]
-        .filter((card) => !card.hasAttribute("hidden"))
-        .map((card) => card.getAttribute("data-p"));
-
-    expect(shown()).toEqual(["coral", "amoeba"]);
-    fireEvent.click(amoeba!);
-    expect(pressed()).toEqual(["false", "false", "true"]);
-    expect(shown()).toEqual(["amoeba"]);
-    expect(count()).toBe("1 case study");
-    /* Your cluster next is never filtered. */
-    expect(container.querySelector("a.cx-next")).not.toHaveAttribute("hidden");
-
-    fireEvent.click(coral!);
-    expect(pressed()).toEqual(["false", "true", "false"]);
-    expect(shown()).toEqual(["coral"]);
-    expect(count()).toBe("1 case study");
-
-    fireEvent.click(all!);
-    expect(pressed()).toEqual(["true", "false", "false"]);
-    expect(shown()).toEqual(["coral", "amoeba"]);
-    expect(count()).toBe("2 case studies");
-  });
-
-  it("closes the library on Your cluster next, the free assessment", () => {
-    const next = hub().querySelector(".cx-grid > a.cx-next")!;
-    expect(next).toHaveAttribute("href", "/assessment");
-    expect(next.querySelector(".cx-plus")).toHaveAttribute("aria-hidden", "true");
-    expect(text(next.querySelector("h3"))).toBe("Your cluster next");
-    expect(text(next.querySelector("p"))).toBe(
-      "Run the free assessment to see your own number: one command, one PDF with your estimated saving at list price.",
-    );
-    expect(text(next.querySelector(".cx-read"))).toBe("Run the free assessment");
-  });
-
-  it("says how the studies are written, three cards on the band", () => {
-    const band = hub().querySelector("main > section.sec.sec-band#how-we-write-them")!;
-    expect(band).toHaveAttribute("aria-labelledby", "how-we-write-them-h");
-    expect(text(band.querySelector(".sec-head > h2#how-we-write-them-h"))).toBe(
-      "How we write them",
-    );
+    const bars = featured!.querySelector(".vl-bars")!;
+    expect(bars).toHaveAttribute("aria-hidden", "true");
     expect(
-      [...band.querySelectorAll(".cx-trust > div")].map((card) => [
-        text(card.querySelector("h3")),
-        text(card.querySelector("p")),
+      [...bars.querySelectorAll(".vl-col")].map((col) => [
+        text(col.querySelector("b")),
+        (col.querySelector("i") as HTMLElement).style.getPropertyValue("--h"),
+        text(col.querySelector("small")),
       ]),
     ).toEqual([
-      [
-        "On a real cluster",
-        "Measured on a cluster that runs real work, from the day Coral was connected.",
-      ],
-      [
-        "At list prices",
-        "Every figure at the cloud’s pay-as-you-go list prices, 730 hours a month.",
-      ],
-      ["Nothing named", "No cluster, machine or app is named. Apps stay generic, as in the PDF."],
+      ["$368.65", "1", "Before"],
+      ["$154.76", "0.420", "With Coral"],
     ]);
+    expect(text(bars.querySelector(".vl-per"))).toBe("a month");
+    const read = featured!.querySelector("a.btn-ink")!;
+    expect(read).toHaveAttribute("href", "/case-studies/coral-dev-cluster");
+    expect(text(read)).toBe("Read the case study");
+    expect(text(next!.querySelector("h2.as-h"))).toBe("Want to be next?");
+    expect(text(next!.querySelector("p"))).toBe(
+      "Run the free assessment on your clusters or disks: one command, one PDF with your estimated saving at list price.",
+    );
+    const go = next!.querySelector("a.cta-go")!;
+    expect(go).toHaveAttribute("href", "/assessment");
+    expect(text(go)).toBe("Run the free assessment");
   });
 
-  it("ends on the closing row for Coral", () => {
+  it("lists no client study until the first one exists, and ends on the closing row for Coral", () => {
     const container = hub();
+    expect([...container.querySelectorAll("main > section")].map((s) => s.id)).toEqual([
+      "studies",
+      "assess",
+    ]);
     const row = container.querySelector("main > section#assess:last-child")!;
     expect(row.querySelector("a.btn-ink")).toHaveAttribute("href", "/assessment?p=coral");
     expect(text(row.querySelector("#contact p"))).toBe(
       "Thirty minutes with the people who build Coral.",
     );
-    /* Nothing on the page rises into place, as the mock draws it. */
-    expect(container.querySelector("main .rise, main .rv, main [data-i]")).toBeNull();
   });
 });
 
@@ -270,7 +171,7 @@ describe("/case-studies/coral-dev-cluster", () => {
   it("opens on the PDF's kicker, headline and opening, with its download beside them", () => {
     const hero = study().querySelector("main > header.hero.doc-hero.cs-hero#top")!;
     expect(text(hero.querySelector(".cs-kick"))).toBe(
-      "Validation Lab · Coral on Azure Kubernetes Service · October 2026",
+      "Value Lab · Coral on Azure Kubernetes Service · October 2026",
     );
     const h1 = hero.querySelector("h1")!;
     expect(text(h1)).toBe("How we reduced our own cluster’s machine bill by 58%");
@@ -457,14 +358,13 @@ describe("both pages", () => {
     (_, page) => {
       const container = page();
       expect(container.innerHTML).not.toMatch(/\[OWNER|ph-chip|To come/);
-      const outside = [...container.querySelectorAll("a[href^='/case-studies']")].filter(
+      const outside = [...container.querySelectorAll("a[href='/value-lab']")].filter(
         (a) => !a.closest("main"),
       );
       expect(outside).toHaveLength(1);
       const link = outside[0]!;
       expect(link.closest("footer")).not.toBeNull();
-      expect(link).toHaveAttribute("href", "/case-studies");
-      expect(text(link)).toBe("Validation Labs by Zoorik");
+      expect(text(link)).toBe("Value Lab");
       expect(text(link.previousElementSibling)).toBe("Zoorik Learn");
       expect(container.querySelector(".nav [aria-current], .nav .is-cur")).toBeNull();
     },

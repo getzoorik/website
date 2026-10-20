@@ -33,7 +33,7 @@ describe("the case study band", () => {
     expect(mark).toHaveAttribute("aria-hidden", "true");
     expect(mark).toHaveAttribute("data-mark", "kubernetes");
     expect(words!.tagName).toBe("SPAN");
-    expect(words!.textContent).toBe("Validation Lab · Coral");
+    expect(words!.textContent).toBe("Value Lab · Coral");
     expect(words!.querySelector("[translate='no']")).toHaveTextContent(/^Coral$/);
   });
 
