@@ -64,7 +64,7 @@ describe("/open-source", () => {
     expect(page().querySelector("svg.op-ok")).toBeNull();
   });
 
-  it("lists the five projects 01–05 with their licence and links; the Helm chart has neither licence nor GitHub", () => {
+  it("lists the six projects 01–06 with their licence and links; the Helm chart has neither licence nor GitHub", () => {
     const rows = [...page().querySelectorAll("#projects .op-row")];
     expect(
       rows.map((row) => [
@@ -130,6 +130,12 @@ describe("/open-source", () => {
       ],
       [
         "05",
+        "website",
+        "Apache-2.0",
+        [["GitHub (opens in a new tab)", "https://github.com/getzoorik/website"]],
+      ],
+      [
+        "06",
         "Helm chart",
         null,
         [
@@ -161,7 +167,7 @@ describe("/open-source", () => {
     }
   });
 
-  it("makes each Contribute row one link, 06–10, the off-site ones in a new tab", () => {
+  it("makes each Contribute row one link, 07–11, the off-site ones in a new tab", () => {
     const rows = [...page().querySelectorAll("#contribute a.ln-row")];
     expect(
       rows.map((row) => [
@@ -171,27 +177,27 @@ describe("/open-source", () => {
         row.getAttribute("target"),
       ]),
     ).toEqual([
-      ["06", "How to contribute", "/docs/contributing", null],
+      ["07", "How to contribute", "/docs/contributing", null],
       [
-        "07",
+        "08",
         "Good first issues",
         "https://github.com/search?q=org%3Agetzoorik+label%3A%22good+first+issue%22+state%3Aopen&type=issues",
         "_blank",
       ],
       [
-        "08",
+        "09",
         "Contributing guide",
         "https://github.com/getzoorik/.github/blob/main/CONTRIBUTING.md",
         "_blank",
       ],
       [
-        "09",
+        "10",
         "Code of conduct",
         "https://github.com/getzoorik/.github/blob/main/CODE_OF_CONDUCT.md",
         "_blank",
       ],
       [
-        "10",
+        "11",
         "Security policy",
         "https://github.com/getzoorik/.github/blob/main/SECURITY.md",
         "_blank",
