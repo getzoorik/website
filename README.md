@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/brand/zoorik-logo-tagline-rings-opposite-bone.svg">
+    <img alt="Zoorik. Reduce cloud cost, autonomously." src=".github/brand/zoorik-logo-tagline-rings-opposite-navy.svg" width="320">
+  </picture>
+</p>
+
 # zoorik.com
 
 The source of [zoorik.com](https://zoorik.com), the website of Zoorik. Zoorik reduces cloud cost
@@ -66,3 +73,8 @@ for it.
 The code is licensed under the [Apache License 2.0](LICENSE). The Zoorik, Coral and Amoeba names
 and marks, and the site's content (its text, films, images and PDFs), are not covered by the
 licence; see [NOTICE](NOTICE).
+
+---
+
+<p align="center"><sub><a href="https://zoorik.com">zoorik.com</a> · <a href="https://zoorik.com/docs">Docs</a> · <a href="https://zoorik.com/security">Security</a> · <a href="https://github.com/getzoorik">Zoorik on GitHub</a></sub></p>
+<p align="center"><sub>The Zoorik, Coral and Amoeba names and logos belong to Zoorik Private Limited.</sub></p>
