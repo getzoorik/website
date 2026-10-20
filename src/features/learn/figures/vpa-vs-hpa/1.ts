@@ -1,0 +1,12 @@
+import type { LearnFigure } from "@/content/learn/article";
+
+export const figure: LearnFigure = {
+  className: "ln-d fg-vpa-vs-hpa-1",
+  label:
+    "Diagram. The VPA changes pod size, taking one pod's CPU request from 500m to 250m, while the HPA changes pod count, taking 4 pods to 8.",
+  style: `.fg-vpa-vs-hpa-1 .zf-w{position:relative;max-width:var(--cap,200px);margin:0 auto}
+.fg-vpa-vs-hpa-1 .zf-l{position:absolute;left:62.5%;transform:translateY(-50%);font-family:var(--code);font-size:var(--fs-micro);
+  font-weight:500;line-height:1;color:var(--muted);white-space:nowrap}
+.fg-vpa-vs-hpa-1 .zf-l.zf-a{color:var(--accent)}`,
+  html: `<div class="lk-vh"><div><div class="lk-art"><div class="zf-w"><svg class="lk-svg" viewBox="0 0 160 86" style="aspect-ratio:160/86" aria-hidden="true" focusable="false"><rect class="g" x="62" y="6" width="30" height="74" rx="3"/><rect class="a" x="62" y="43" width="30" height="37" rx="3"/><path class="m" d="M48 9v31M44.5 36.5 48 40l3.5-3.5"/></svg><span class="zf-l" style="top:6.98%">500m</span><span class="zf-l zf-a" style="top:50%">250m</span></div></div><p class="lk-t">VPA changes pod size</p><p class="lk-s">One pod's CPU request</p></div><div><div class="lk-art"><svg class="lk-svg" viewBox="0 0 160 86" style="aspect-ratio:160/86" aria-hidden="true" focusable="false"><rect class="k" x="6" y="22" width="15" height="42" rx="3"/><rect class="uk" x="9" y="39" width="9" height="22" rx="1.5"/><rect class="k" x="25" y="22" width="15" height="42" rx="3"/><rect class="uk" x="28" y="39" width="9" height="22" rx="1.5"/><rect class="k" x="44" y="22" width="15" height="42" rx="3"/><rect class="uk" x="47" y="39" width="9" height="22" rx="1.5"/><rect class="k" x="63" y="22" width="15" height="42" rx="3"/><rect class="uk" x="66" y="39" width="9" height="22" rx="1.5"/><rect class="ad" x="82" y="22" width="15" height="42" rx="3"/><rect class="u" x="85" y="39" width="9" height="22" rx="1.5"/><rect class="ad" x="101" y="22" width="15" height="42" rx="3"/><rect class="u" x="104" y="39" width="9" height="22" rx="1.5"/><rect class="ad" x="120" y="22" width="15" height="42" rx="3"/><rect class="u" x="123" y="39" width="9" height="22" rx="1.5"/><rect class="ad" x="139" y="22" width="15" height="42" rx="3"/><rect class="u" x="142" y="39" width="9" height="22" rx="1.5"/></svg></div><p class="lk-t">HPA changes pod count</p><p class="lk-s">4 pods become 8</p></div></div>`,
+};
