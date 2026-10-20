@@ -23,7 +23,7 @@ import {
 import { openSourceLinks } from "@/config/open-source";
 import { awsSellerProfile, liveListings } from "@/config/marketplaces";
 import { amoebaDocs, calendarUrl, contactEmail, homeUrl, routes, site } from "@/config/site";
-import { pageCards, socialImage } from "@/config/social";
+import { socialImage } from "@/config/social";
 import { about, cin, registeredOffice } from "@/content/about";
 import { amoebaFaqPage } from "@/content/amoeba-faq";
 import { amoebaGuide } from "@/content/amoeba-guide";
@@ -52,7 +52,8 @@ import {
 import { marketplacesPage } from "@/content/marketplaces";
 import { openSourceGuides, openSourcePage, type OpenSourceGuideId } from "@/content/open-source";
 import { partnersPage } from "@/content/partners";
-import { articles, type ArticleId } from "@/content/learn-articles";
+import type { Article } from "@/content/learn/article";
+import { articleAuthor, articleCard, articleRoute, learnArticles } from "@/content/learn/published";
 import { privacy } from "@/content/privacy";
 import { referralsPage } from "@/content/referrals";
 import type { ProductPageContent } from "@/content/product-page";
@@ -246,11 +247,19 @@ interface PageEntry {
   readonly apps?: readonly ProductId[];
   readonly article?: {
     readonly headline: string;
-    /** The person it is published under, where it is not Zoorik (the fourth article). */
-    readonly author?: { readonly name: string; readonly jobTitle: string; readonly url: string };
-    /** The printed date a page calls "Published", as an ISO day. */
+    /**
+     * The person it is published under, where it is not Zoorik alone: their LinkedIn profile where they have one,
+     * and Zoorik as their employer unless they are a guest.
+     */
+    readonly author?: {
+      readonly name: string;
+      readonly jobTitle: string;
+      readonly url?: string;
+      readonly worksForZoorik: boolean;
+    };
+    /** The day it was published, as an ISO day. */
     readonly published?: string;
-    /** The printed "Updated" date, or the published one where that is all it prints. */
+    /** The day it last changed (a Learn article's `updated`), or the published one where that is all it has. */
     readonly modified: string;
     /** The page's share card. */
     readonly image: { readonly url: string };
@@ -293,11 +302,6 @@ function documentEntry(
   };
 }
 
-/**
- * An article: its h1 as the headline, its own Updated date as published and
- * modified (the only day it prints), its product, the card its page shows, and
- * its author where it names one.
- */
 /** An install or contributing guide under /docs: the Docs step, then the guide by its h1. */
 function osGuideEntry(id: OpenSourceGuideId): PageEntry {
   const guide = openSourceGuides[id];
@@ -310,26 +314,31 @@ function osGuideEntry(id: OpenSourceGuideId): PageEntry {
   };
 }
 
-function articleEntry(id: ArticleId, image: { readonly url: string }): PageEntry {
-  const article = articles[id];
-  const day = isoDay(article.updated);
+/**
+ * A Learn article: its h1 as the headline, its published and updated days, the
+ * product it is about (none for an article about both), the card its page
+ * shows, and its author where it is published under a person.
+ */
+function articleEntry(article: Article): PageEntry {
+  const author = articleAuthor(article);
   return {
     kind: "WebPage",
-    name: titled(article.meta.title),
-    description: article.meta.description,
-    trail: [step(routes.learn), { name: article.hero.title, path: article.route }],
-    ...(article.product ? { about: article.product } : {}),
+    name: titled(article.title),
+    description: article.meta,
+    trail: [step(routes.learn), { name: article.h1, path: articleRoute(article) }],
+    ...(article.product === "both" ? {} : { about: article.product }),
     article: {
-      headline: article.hero.title,
-      published: day,
-      modified: day,
-      image,
-      ...(article.author
+      headline: article.h1,
+      published: article.published,
+      modified: article.updated,
+      image: articleCard(article),
+      ...(author
         ? {
             author: {
-              name: article.author.name,
-              jobTitle: article.author.role,
-              url: article.author.url,
+              name: author.name,
+              jobTitle: author.role,
+              ...(author.linkedin ? { url: author.linkedin } : {}),
+              worksForZoorik: !author.guest,
             },
           }
         : {}),
@@ -383,19 +392,9 @@ const pages: Readonly<Record<string, PageEntry>> = {
     description: learnPage.meta.description,
     trail: [step(routes.learn)],
   },
-  /* Each article's card is the one its page's metadata shows: /learn's for vpa-vs-hpa. */
-  [routes.learnPoorArchitecture]: articleEntry(
-    "poor-architecture-cloud-bill",
-    pageCards.learnPoorArchitecture,
-  ),
-  [routes.learnVpaVsHpa]: articleEntry("vpa-vs-hpa", pageCards.learn),
-  [routes.learnCoralAutoscalers]: articleEntry(
-    "coral-and-native-autoscalers",
-    pageCards.learnCoralAutoscalers,
-  ),
-  [routes.learnShrinkAzureDisk]: articleEntry(
-    "shrink-azure-managed-disk",
-    pageCards.learnShrinkAzureDisk,
+  /* Every published article, from the Learn index. */
+  ...Object.fromEntries(
+    learnArticles.map((article) => [articleRoute(article), articleEntry(article)]),
   ),
   /* The comparison pages: the hub at /compare, then each page under it by its title; about its product. */
   [routes.compare]: documentEntry(routes.compare, compareHubPage.meta, [], {
@@ -548,14 +547,16 @@ export function pageStructuredData(path: string) {
               mainEntityOfPage: ref(pageId),
               ...(page.article.published ? { datePublished: page.article.published } : {}),
               dateModified: page.article.modified,
-              /* The person, working for Zoorik, where the article names one; Zoorik otherwise. */
+              /* The person, where the article names one (working for Zoorik unless a guest); Zoorik otherwise. */
               author: page.article.author
                 ? {
                     "@type": "Person",
                     name: page.article.author.name,
                     jobTitle: page.article.author.jobTitle,
-                    url: page.article.author.url,
-                    worksFor: ref(organizationId),
+                    ...(page.article.author.url ? { url: page.article.author.url } : {}),
+                    ...(page.article.author.worksForZoorik
+                      ? { worksFor: ref(organizationId) }
+                      : {}),
                   }
                 : ref(organizationId),
               publisher: ref(organizationId),

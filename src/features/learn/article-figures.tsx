@@ -1,6 +1,6 @@
 import { Fragment, type CSSProperties, type JSX, type ReactNode } from "react";
 
-import type { ArticleFigureId, ArticleStripStep } from "@/content/learn-articles";
+import type { ArticleFigureId, ArticleStripStep } from "@/content/learn/article";
 
 /**
  * The VPA article's still diagrams, which make it easier to read and to

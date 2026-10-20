@@ -8,14 +8,15 @@ import { describe, expect, it, vi } from "vitest";
 import sitemap from "@/app/sitemap";
 import { crunchbaseProfile, wikidataEntity } from "@/config/entity";
 import { awsSellerProfile } from "@/config/marketplaces";
-import { calendarUrl, contactEmail, routes, site } from "@/config/site";
+import { calendarUrl, contactEmail, learnPath, routes, site } from "@/config/site";
 import { about, cin, registeredOffice } from "@/content/about";
 import { amoebaPageContent } from "@/content/amoeba-page";
 import { caseStudy } from "@/content/case-studies";
 import { versusPages, versusRoute } from "@/content/learn-compare";
 import { coralPageContent } from "@/content/coral-page";
+import { authors } from "@/content/authors";
 import { socialProfiles } from "@/content/footer";
-import { articles } from "@/content/learn-articles";
+import { articleAuthor, articleCard, articleRoute, learnArticles } from "@/content/learn/published";
 import { products } from "@/content/products";
 
 import {
@@ -69,6 +70,19 @@ function versusModule(slug: string): () => Promise<PageModule> {
   };
 }
 
+/** A Learn article is one dynamic route (`/learn/[slug]`) too: its module, resolved for one slug. */
+function articleModule(slug: string): () => Promise<PageModule> {
+  return async () => {
+    const page = await import("@/app/learn/[slug]/page");
+    const params = Promise.resolve({ slug });
+    const [metadata, element] = await Promise.all([
+      page.generateMetadata({ params }),
+      page.default({ params }),
+    ]);
+    return { metadata, default: () => element };
+  };
+}
+
 /** Each indexed page's module, by path. */
 const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/": () => import("@/app/page"),
@@ -81,12 +95,9 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/amoeba/guide": () => import("@/app/amoeba/guide/page"),
   "/amoeba/faq": () => import("@/app/amoeba/faq/page"),
   "/learn": () => import("@/app/learn/page"),
-  "/learn/poor-architecture-cloud-bill": () =>
-    import("@/app/learn/poor-architecture-cloud-bill/page"),
-  "/learn/vpa-vs-hpa": () => import("@/app/learn/vpa-vs-hpa/page"),
-  "/learn/coral-and-native-autoscalers": () =>
-    import("@/app/learn/coral-and-native-autoscalers/page"),
-  "/learn/shrink-azure-managed-disk": () => import("@/app/learn/shrink-azure-managed-disk/page"),
+  ...Object.fromEntries(
+    learnArticles.map((article) => [articleRoute(article), articleModule(article.slug)]),
+  ),
   "/case-studies": () => import("@/app/case-studies/page"),
   "/case-studies/coral-dev-cluster": () => import("@/app/case-studies/coral-dev-cluster/page"),
   "/about": () => import("@/app/about/page"),
@@ -296,7 +307,7 @@ describe("the home page's structured data", () => {
 
 describe("every indexed page's structured data", () => {
   it("renders on every page in the sitemap as one block that parses to the page's graph", async () => {
-    expect(listed).toHaveLength(38);
+    expect(listed).toHaveLength(34 + learnArticles.length);
     for (const { path } of listed) {
       pathname.current = path;
       const { default: Page } = await pageModule(path);
@@ -372,11 +383,9 @@ describe("every indexed page's structured data", () => {
       );
     expect(names(routes.coralGuide)).toEqual(["Zoorik", "Docs", "Coral guide"]);
     expect(names(routes.amoebaFaq)).toEqual(["Zoorik", "Docs", "Amoeba FAQ"]);
-    expect(names(routes.learnShrinkAzureDisk)).toEqual([
-      "Zoorik",
-      "Learn",
-      articles["shrink-azure-managed-disk"].hero.title,
-    ]);
+    for (const article of learnArticles) {
+      expect(names(articleRoute(article)), article.slug).toEqual(["Zoorik", "Learn", article.h1]);
+    }
     expect(names(routes.caseStudyCoralDevCluster)).toEqual([
       "Zoorik",
       "Case studies",
@@ -426,74 +435,111 @@ describe("every indexed page's structured data", () => {
 
   it("points the product pages, guides, FAQs, articles and the study at their product", () => {
     const about = (path: string) => graphOf(path)[2]!.about;
-    for (const path of [routes.coral, routes.coralGuide, routes.coralFaq, routes.learnVpaVsHpa]) {
+    for (const path of [routes.coral, routes.coralGuide, routes.coralFaq]) {
       expect(about(path), path).toEqual({ "@id": "https://zoorik.com/coral#software" });
     }
-    for (const path of [
-      routes.learnCoralAutoscalers,
-      routes.learnPoorArchitecture,
-      routes.caseStudyCoralDevCluster,
-    ]) {
-      expect(about(path), path).toEqual({ "@id": "https://zoorik.com/coral#software" });
-    }
+    expect(about(routes.caseStudyCoralDevCluster)).toEqual({
+      "@id": "https://zoorik.com/coral#software",
+    });
     for (const path of [routes.amoeba, routes.amoebaGuide, routes.amoebaFaq]) {
       expect(about(path), path).toEqual({ "@id": "https://zoorik.com/amoeba#software" });
     }
-    expect(about(routes.learnShrinkAzureDisk)).toEqual({
-      "@id": "https://zoorik.com/amoeba#software",
-    });
+    /* An article points at the product it is about, and at none when it is about both. */
+    for (const article of learnArticles) {
+      expect(about(articleRoute(article)), article.slug).toEqual(
+        article.product === "both"
+          ? undefined
+          : { "@id": `https://zoorik.com/${article.product}#software` },
+      );
+    }
     for (const path of ["/", routes.assessment, routes.docs, routes.learn, routes.privacy]) {
       expect(about(path), path).toBeUndefined();
     }
   });
 
-  it("makes the articles and the study TechArticles: their date, their author, with their page's card", async () => {
-    const articlePaths = [
-      routes.learnPoorArchitecture,
-      routes.learnVpaVsHpa,
-      routes.learnCoralAutoscalers,
-      routes.learnShrinkAzureDisk,
-      routes.caseStudyCoralDevCluster,
-    ] as string[];
+  it("makes the articles and the study TechArticles: their dates, their author, with their page's card", async () => {
+    const articles = new Map<string, (typeof learnArticles)[number]>(
+      learnArticles.map((article) => [articleRoute(article), article]),
+    );
+    const articlePaths = [...articles.keys(), routes.caseStudyCoralDevCluster] as string[];
     for (const { path, url, lastModified } of listed) {
       const found = ofType(graphOf(path), "TechArticle");
       if (!articlePaths.includes(path)) {
         expect(found, path).toHaveLength(0);
         continue;
       }
-      const [article] = found;
+      const [node] = found;
       const { metadata } = await pageModule(path);
       const card = (metadata?.openGraph?.images as readonly { url: string }[])[0]!;
-      expect(article, path).toMatchObject({
+      expect(node, path).toMatchObject({
         "@id": `${url}#article`,
         mainEntityOfPage: { "@id": `${url}#webpage` },
-        datePublished: lastModified,
         dateModified: lastModified,
-        /* Zoorik, but for the essay published under Vineet's name. */
-        author:
-          path === routes.learnPoorArchitecture
-            ? {
-                "@type": "Person",
-                name: "Vineet",
-                jobTitle: "Infrastructure engineer",
-                url: "https://www.linkedin.com/in/yadavvineet/",
-                worksFor: orgRef,
-              }
-            : orgRef,
         publisher: orgRef,
-        about: graphOf(path)[2]!.about,
         image: `https://zoorik.com${card.url}`,
       });
+      expect(node!.about, path).toEqual(graphOf(path)[2]!.about);
+      const article = articles.get(path);
+      if (!article) continue;
+      /* Published and updated as the article's file dates it; its card is the one its page shows. */
+      expect(node, path).toMatchObject({
+        headline: article.h1,
+        datePublished: article.published,
+        dateModified: article.updated,
+        image: `https://zoorik.com${articleCard(article).url}`,
+      });
+      /* Zoorik, or the person it is published under: their LinkedIn profile where they have one, and Zoorik as
+         their employer unless they are a guest. */
+      const author = articleAuthor(article);
+      expect(node!.author, path).toEqual(
+        author
+          ? {
+              "@type": "Person",
+              name: author.name,
+              jobTitle: author.role,
+              ...(author.linkedin ? { url: author.linkedin } : {}),
+              ...(author.guest ? {} : { worksFor: orgRef }),
+            }
+          : orgRef,
+      );
     }
     const [study] = ofType(graphOf(routes.caseStudyCoralDevCluster), "TechArticle");
     expect(study).toMatchObject({ datePublished: "2026-10-12", dateModified: "2026-10-12" });
     expect(caseStudy.band.date).toBe("12 October 2026");
-    /* Each article's own Updated day is both its published and its modified date: the only day it prints. */
-    const [article] = ofType(graphOf(routes.learnVpaVsHpa), "TechArticle");
-    expect(article).toMatchObject({ datePublished: "2026-10-09", dateModified: "2026-10-09" });
-    const [essay] = ofType(graphOf(routes.learnPoorArchitecture), "TechArticle");
-    expect(essay).toMatchObject({ datePublished: "2026-10-14", dateModified: "2026-10-14" });
     expect(orgRef).toEqual({ "@id": "https://zoorik.com/#organization" });
+  });
+
+  it("writes an article's author as a person: no employer for a guest, no address without a profile", async () => {
+    const [base] = learnArticles;
+    const guest = Object.entries(authors).find(([, author]) => author.guest && author.linkedin)!;
+    const bare = Object.entries(authors).find(([, author]) => !author.linkedin)!;
+    vi.resetModules();
+    vi.doMock("@/content/learn/articles.generated", () => ({
+      articleFiles: [guest, bare].map(([key]) => ({
+        file: `by-${key}`,
+        article: { ...base, slug: `by-${key}`, author: key },
+      })),
+    }));
+    try {
+      const { pageStructuredData: fresh } = await import("./structured-data");
+      const authorOf = (key: string) =>
+        ofType(fresh(learnPath(`by-${key}`))["@graph"] as readonly Node[], "TechArticle")[0]!
+          .author;
+      for (const [key, author] of [guest, bare]) {
+        expect(authorOf(key), key).toEqual({
+          "@type": "Person",
+          name: author.name,
+          jobTitle: author.role,
+          ...(author.linkedin ? { url: author.linkedin } : {}),
+          ...(author.guest ? {} : { worksFor: orgRef }),
+        });
+      }
+      expect(authorOf(guest[0])).not.toHaveProperty("worksFor");
+      expect(authorOf(bare[0])).not.toHaveProperty("url");
+    } finally {
+      vi.doUnmock("@/content/learn/articles.generated");
+      vi.resetModules();
+    }
   });
 
   it("carries an app in full only on the home and product pages", () => {

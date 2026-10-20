@@ -1,4 +1,4 @@
-import { routes } from "@/config/site";
+import { learnPath, routes } from "@/config/site";
 import { assessContent, assessmentHref } from "@/content/assess";
 import { howItWorksSteps } from "@/content/how-it-works";
 import { kubernetesContent } from "@/content/kubernetes";
@@ -119,7 +119,7 @@ export const coralPageContent: ProductPageContent = {
         kind: "page",
         title: "Coral and the native autoscalers",
         line: "VPA, HPA, KEDA, NAP and Karpenter compared",
-        href: routes.learnCoralAutoscalers,
+        href: learnPath("coral-and-native-autoscalers"),
       },
     ],
   },

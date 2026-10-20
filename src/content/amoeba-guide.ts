@@ -1,4 +1,4 @@
-import { routes } from "@/config/site";
+import { learnPath, routes } from "@/config/site";
 import type { GuideContent } from "@/content/guide";
 
 /**
@@ -199,7 +199,10 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
         },
       ],
       related: [
-        { text: "Can you shrink an Azure managed disk?", href: routes.learnShrinkAzureDisk },
+        {
+          text: "Can you shrink an Azure managed disk?",
+          href: learnPath("shrink-azure-managed-disk"),
+        },
       ],
     },
     {

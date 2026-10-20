@@ -19,23 +19,33 @@ export const socialImage = {
   alt: "Zoorik. Reduce cloud cost, autonomously.",
 } as const;
 
+/** A share card: a 1200 × 630 PNG in `public/og/`, and the words it shows. */
+export interface ShareImage {
+  readonly url: `/og/${string}.png`;
+  readonly width: 1200;
+  readonly height: 630;
+  readonly type: "image/png";
+  readonly alt: string;
+}
+
+/** A card from its picture and its words. */
+export const shareImage = (url: ShareImage["url"], alt: string): ShareImage => ({
+  url,
+  width: 1200,
+  height: 630,
+  type: "image/png",
+  alt,
+});
+
 /**
  * The pages with a card of their own, drawn by the brand kit and copied byte
  * for byte under a new name each. Every other page uses the home card above.
- * Each `alt` reads the card: its mark, then its words.
- *
- * /learn/vpa-vs-hpa has none: its card still reads "right-size first", which
- * the page now says as "rebalance first", so it takes the /learn card until the
- * kit redraws it.
+ * Each `alt` reads the card: its mark, then its words. A Learn article's own
+ * card is in its file (`Article.shareCard`); an article without one takes the
+ * /learn card.
  */
-const card = (name: string, alt: string) =>
-  ({
-    url: `/og/zoorik-${name}-1200x630.png`,
-    width: 1200,
-    height: 630,
-    type: "image/png",
-    alt,
-  }) as const;
+const card = (name: string, alt: string): ShareImage =>
+  shareImage(`/og/zoorik-${name}-1200x630.png`, alt);
 
 export const pageCards = {
   coral: card(
@@ -48,23 +58,7 @@ export const pageCards = {
   ),
   assessment: card("assessment", "Zoorik. Free cloud cost assessment."),
   learn: card("learn", "Zoorik. Kubernetes and block storage cost, explained."),
-  learnCoralAutoscalers: card(
-    "learn-coral-and-native-autoscalers",
-    "Zoorik. Coral and the native Kubernetes autoscalers.",
-  ),
-  learnShrinkAzureDisk: card(
-    "learn-shrink-azure-managed-disk",
-    "Zoorik. Can you shrink an Azure managed disk?",
-  ),
-  /* Drawn by the brand kit like the three above; the kit's card list does not carry it yet,
-     so a rebuild there must add it. */
-  learnPoorArchitecture: card(
-    "learn-poor-architecture-cloud-bill",
-    "Zoorik. How poor architecture increases your cloud bill.",
-  ),
 } as const;
-
-type PageCard = (typeof pageCards)[keyof typeof pageCards];
 
 type OpenGraph = NonNullable<Metadata["openGraph"]>;
 
@@ -87,7 +81,7 @@ export const baseTwitter = {
 export function pageOpenGraph(
   path: `/${string}`,
   copy: { readonly title: string; readonly description: string },
-  image?: PageCard,
+  image?: ShareImage,
 ): OpenGraph {
   return {
     ...baseOpenGraph,

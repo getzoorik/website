@@ -3,10 +3,13 @@ import { dirname, join } from "node:path";
 
 import { describe, expect, it, vi } from "vitest";
 
-import { amoebaDocs, routes, site } from "@/config/site";
+import { amoebaDocs, learnPath, routes, site } from "@/config/site";
 import { homeLastUpdated } from "@/content/hero";
+import { learnPage } from "@/content/learn";
+import { learnArticles } from "@/content/learn/published";
 import { versusPages, versusRoute } from "@/content/learn-compare";
 import { isoDay } from "@/lib/content-date";
+import { learnToday } from "@/lib/learn-today";
 
 import sitemap from "./sitemap";
 
@@ -36,7 +39,7 @@ function importGraph(file: string, seen = new Set<string>()): Set<string> {
 }
 
 describe("sitemap.xml", () => {
-  it("lists the home page, the product pages, the assessment, the documents, the install and contributing guides, open source, Learn and its articles, Learn's comparison pages, the case studies, /events, /about, /careers, /brand-assets, /referrals, /partners, /design-partners, the privacy policy, the terms and security, absolute, and nothing else", () => {
+  it("lists the home page, the product pages, the assessment, the documents, the install and contributing guides, open source, Learn and every article in its index, Learn's comparison pages, the case studies, /events, /about, /careers, /brand-assets, /referrals, /partners, /design-partners, the privacy policy, the terms and security, absolute, and nothing else", () => {
     expect(sitemap().map((entry) => entry.url)).toEqual([
       `${site.url}/`,
       `${site.url}/coral`,
@@ -52,10 +55,8 @@ describe("sitemap.xml", () => {
       `${site.url}/docs/contributing`,
       `${site.url}/open-source`,
       `${site.url}/learn`,
-      `${site.url}/learn/poor-architecture-cloud-bill`,
-      `${site.url}/learn/vpa-vs-hpa`,
-      `${site.url}/learn/coral-and-native-autoscalers`,
-      `${site.url}/learn/shrink-azure-managed-disk`,
+      /* Every article in the Learn index, A–Z by slug. */
+      ...learnArticles.map((article) => `${site.url}${learnPath(article.slug)}`),
       `${site.url}/compare`,
       `${site.url}/compare/coral-alternatives`,
       `${site.url}/compare/amoeba-alternatives`,
@@ -102,12 +103,14 @@ describe("sitemap.xml", () => {
       "/docs/install-coral-with-terraform": "2026-10-16",
       "/docs/contributing": "2026-10-16",
       "/open-source": "2026-10-16",
-      /* The hub: the day it was redesigned. The newest article: the day it was published. */
-      "/learn": "2026-10-19",
-      "/learn/poor-architecture-cloud-bill": "2026-10-14",
-      "/learn/vpa-vs-hpa": updated,
-      "/learn/coral-and-native-autoscalers": updated,
-      "/learn/shrink-azure-managed-disk": updated,
+      /* The hub: its own day or its newest article's, whichever is later. Each article: the day it last changed. */
+      "/learn": learnArticles.reduce(
+        (day, article) => (article.updated > day ? article.updated : day),
+        isoDay(learnPage.updated),
+      ),
+      ...Object.fromEntries(
+        learnArticles.map((article) => [learnPath(article.slug), article.updated]),
+      ),
       /* The comparison pages: the day they were checked and published. */
       "/compare": "2026-10-19",
       "/compare/coral-alternatives": "2026-10-19",
@@ -148,10 +151,10 @@ describe("sitemap.xml", () => {
     /* The page's own printed date, or its content file's `lastUpdated`: a page
        without one is never told to recrawl. */
     const entries = sitemap();
-    expect(entries).toHaveLength(amoebaDocs ? 38 : 36);
-    /* The latest calendar day anywhere on Earth (UTC+14), so a date set to
-       today in any time zone is not "the future". */
-    const latestToday = new Date(Date.now() + 14 * 3_600_000).toISOString().slice(0, 10);
+    expect(entries).toHaveLength((amoebaDocs ? 34 : 32) + learnArticles.length);
+    /* Today is `LEARN_TODAY` when set (articles dated ahead, checked as of the day they go live), else the latest
+       calendar day anywhere on Earth (UTC+14), so a date set to today in any time zone is not "the future". */
+    const latestToday = learnToday();
     for (const entry of entries) {
       expect(entry.lastModified, entry.url).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       expect(String(entry.lastModified) <= latestToday, entry.url).toBe(true);
@@ -177,9 +180,14 @@ describe("sitemap.xml", () => {
     const listed = sitemap().map((entry) => new URL(entry.url).pathname);
     /* A held page answers 404 (`amoebaDocs`). */
     const held: string[] = amoebaDocs ? [] : [routes.amoebaGuide, routes.amoebaFaq];
-    /* A dynamic route stands for the pages it prerenders: /compare/[slug] for the live versus pages. */
+    /* A dynamic route stands for the pages it prerenders: /compare/[slug] for the live versus pages, /learn/[slug]
+       for every article in the Learn index. */
     const pages = (route: string) =>
-      route === `${routes.compare}/[slug]` ? versusPages.map(versusRoute) : [route];
+      route === `${routes.compare}/[slug]`
+        ? versusPages.map(versusRoute)
+        : route === `${routes.learn}/[slug]`
+          ? learnArticles.map((article) => learnPath(article.slug))
+          : [route];
     for (const folder of pageRoutes()) {
       const source = readFileSync(`src/app${folder === "/" ? "" : folder}/page.tsx`, "utf8");
       const noindex = /robots:\s*\{\s*index:\s*false/.test(source);

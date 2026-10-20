@@ -4,25 +4,40 @@ import { fireEvent, render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { routes } from "@/config/site";
+import { learnPath, routes } from "@/config/site";
 import { pageCards } from "@/config/social";
 import { caseStudiesHub } from "@/content/case-studies";
 import { socialProfiles } from "@/content/footer";
 import {
-  learnComingNext,
+  learnComparisons,
   learnFilmLines,
+  learnFirst,
   learnFixes,
+  learnGuides,
+  learnGuidesLast,
   learnMarketGroupNames,
   learnMedium,
   learnMore,
   learnPage,
+  learnPillars,
   learnStart,
+  learnSubjects,
+  type LearnCard,
 } from "@/content/learn";
-import { articleOrder, articles } from "@/content/learn-articles";
+import type { Article } from "@/content/learn/article";
+import {
+  articleAuthor,
+  articleRoute,
+  findArticle,
+  learnArticles,
+  titleLink,
+} from "@/content/learn/published";
 import { alternativesPages } from "@/content/learn-compare";
 import { marketGroups, versusFacts } from "@/content/learn-market";
 import { newsPage, newsRadar } from "@/content/news";
 import { productFilms } from "@/content/product-films";
+import { isoDay, shortDay } from "@/lib/content-date";
+import { learnToday } from "@/lib/learn-today";
 
 /* The nav and the footer read the pathname. */
 vi.mock("next/navigation", () => ({ usePathname: () => "/learn" }));
@@ -33,10 +48,11 @@ import { CoverArt } from "./learn-cards";
 
 /**
  * `/learn`: the metadata, the hero and its search, then Start here, Find the right fix, Compare, Guides, Watch and
- * read, More from Zoorik and the case study, and the page's rules: only published articles, only the native tools'
- * comparisons (the market's are /compare's), no tool of the market named anywhere on the page, the Coming next flag,
- * and search, chips and the fix picker that work in the page and store nothing. Its sitemap entry is in
- * `src/app/sitemap.test.ts`, its page graph in `src/config/structured-data.test.ts`.
+ * read, More from Zoorik and the case study, and the page's rules: only published articles, each card read from the
+ * Learn index and placed by the hub's rules, only the native tools' comparisons (the market's are /compare's), no
+ * tool of the market named anywhere on the page, and search, chips and the fix picker that work in the page and store
+ * nothing. Every card, title and count is worked out from the index, so a new article is checked with no change here.
+ * Its sitemap entry is in `src/app/sitemap.test.ts`, its page graph in `src/config/structured-data.test.ts`.
  */
 
 const text = (el: Element | null): string =>
@@ -63,21 +79,59 @@ const chip = (root: ParentNode, label: string) =>
   [...root.querySelectorAll<HTMLButtonElement>(".lv-chips button")].find((b) => text(b) === label)!;
 const search = (root: ParentNode) => root.querySelector<HTMLInputElement>("input[data-search]")!;
 
-/** A card's foot: its date, or Start here's "Coming next" (its label, then the planned guide). */
-const foot = (el: Element) => {
-  const next = el.querySelector(".lv-next");
-  if (!next) return text(el.querySelector(".lv-date"));
-  return [text(next.querySelector("i")), text(next.lastChild as Element)].join(": ");
-};
-
-/** What a card prints: where it goes, its subject's tag, then the title, the line and its foot. */
+/** What a card prints: where it goes, its subject's tag, then the title, the line and its date. */
 const card = (el: Element) => [
   el.getAttribute("href"),
   text(el.querySelector(".lv-tag")),
   text(el.querySelector(".lv-cb b")),
   text(el.querySelector(".lv-cb small")),
-  foot(el),
+  text(el.querySelector(".lv-date")),
 ];
+
+const tagOf = (article: Article) =>
+  learnSubjects.find((subject) => subject.label === article.hub)!.label;
+
+/** What an article's card should print, read from the article itself. */
+const expected = (article: Article) => {
+  const author = articleAuthor(article);
+  return [
+    articleRoute(article),
+    tagOf(article),
+    article.h1,
+    article.card,
+    `${shortDay(article.published)}${author ? ` · By ${author.name}` : ""}`,
+  ];
+};
+
+const pillarSlugs = new Set(learnPillars.map((entry) => entry.pillar));
+
+/** The hub's order: the first nine days' articles, then the rest, each A–Z by slug. */
+const inHubOrder = (articles: readonly Article[]) => [
+  ...articles.filter((article) => learnFirst.has(article.slug)),
+  ...articles.filter((article) => !learnFirst.has(article.slug)),
+];
+
+/** Every card on the page, in its order: Start here, Compare, Guides. */
+const allCards: readonly LearnCard[] = [...learnStart, ...learnComparisons, ...learnGuides];
+
+/** A card's words for the search: its title, its line and its subject, in lower case. */
+const findable = (entry: LearnCard) =>
+  `${entry.title} ${entry.line} ${learnSubjects.find((s) => s.id === entry.subject)!.label}`.toLowerCase();
+
+/** The sections a search or a subject leaves, in the page's order. */
+const sectionsLeft = (matches: (entry: LearnCard) => boolean) => {
+  const any = allCards.some(matches);
+  return [
+    ...(learnStart.some(matches) || !any ? ["start"] : []),
+    "fix",
+    ...(learnComparisons.some(matches) ? ["compare"] : []),
+    ...(learnGuides.some(matches) ? ["guides"] : []),
+    "watch",
+    "more",
+    "proof",
+    "assess",
+  ];
+};
 
 /**
  * The market's competitors, read from the market data as `market-names.test.ts` reads them: every tool but the
@@ -117,8 +171,8 @@ describe("/learn's metadata", () => {
       title: "Zoorik Learn: cloud cost optimization guides",
       images: [pageCards.learn],
     });
-    /* The sitemap's date for the hub. */
-    expect(learnPage.updated).toBe("Updated 19 October 2026");
+    /* The sitemap's date for the hub: a printed day, not ahead of today. */
+    expect(isoDay(learnPage.updated) <= learnToday()).toBe(true);
   });
 });
 
@@ -183,82 +237,50 @@ describe("/learn", () => {
     const root = page();
     expect(root.querySelector(".is-soon, .lv-soon")).toBeNull();
     expect(root.querySelector("div.lv-card")).toBeNull();
-    const published = new Set(articleOrder.map((id) => articles[id].route));
+    const published = new Set(learnArticles.map(articleRoute));
     const linked = [...root.querySelectorAll("a.lv-card")].map((a) => a.getAttribute("href")!);
     expect(new Set(linked)).toEqual(published);
     for (const a of root.querySelectorAll("a.lv-card")) {
-      const article = articleOrder
-        .map((id) => articles[id])
-        .find((x) => x.route === a.getAttribute("href"))!;
-      expect(text(a.querySelector(".lv-cb b"))).toBe(article.hero.title);
+      const article = learnArticles.find((x) => articleRoute(x) === a.getAttribute("href"))!;
+      expect(card(a)).toEqual(expected(article));
     }
+  });
 
-    expect([...root.querySelectorAll("#start a.lv-card")].map(card)).toEqual([
-      [
-        routes.learnPoorArchitecture,
-        "Cloud cost",
-        "How Poor Infrastructure Architecture Quietly Increases Your Cloud Bill",
-        articles["poor-architecture-cloud-bill"].card,
-        "Coming next: How to reduce cloud costs in 2026 · soon",
-      ],
-      [
-        routes.learnCoralAutoscalers,
-        "Kubernetes",
-        "Coral and the native Kubernetes autoscalers",
-        articles["coral-and-native-autoscalers"].card,
-        "Coming next: How to reduce Kubernetes cost: rebalance requests, then remove spare nodes · 8 Dec",
-      ],
-      [
-        routes.learnShrinkAzureDisk,
-        "Block storage",
-        "Can you shrink an Azure managed disk?",
-        "Not in place. The manual copy route, and how Amoeba rightsizes a pool autonomously, without any downtime.",
-        "Coming next: Azure disk cost optimization: stop paying for empty disk space · 3 Nov",
-      ],
-    ]);
-    expect([...root.querySelectorAll("#guides a.lv-card")].map(card)).toEqual([
-      [
-        routes.learnPoorArchitecture,
-        "Cloud cost",
-        "How Poor Infrastructure Architecture Quietly Increases Your Cloud Bill",
-        articles["poor-architecture-cloud-bill"].card,
-        "14 Oct · By Vineet",
-      ],
-      [
-        routes.learnShrinkAzureDisk,
-        "Block storage",
-        "Can you shrink an Azure managed disk?",
-        "Not in place. The manual copy route, and how Amoeba rightsizes a pool autonomously, without any downtime.",
-        "9 Oct",
-      ],
-    ]);
-    /* Compare holds the native tools' comparisons only, in one grid. */
+  it("starts each subject on its pillar once published, and on its stand-in until then", () => {
+    const root = page();
+    const want = learnPillars.flatMap(({ pillar, until }) => {
+      const article = findArticle(pillar) ?? findArticle(until);
+      return article ? [expected(article)] : [];
+    });
+    expect([...root.querySelectorAll("#start a.lv-card")].map(card)).toEqual(want);
+    /* No "Coming next" line under any card. */
+    expect(root.querySelector(".lv-next")).toBeNull();
+    /* A pillar is in Start here only. */
+    for (const a of root.querySelectorAll("#compare a.lv-card, #guides a.lv-card")) {
+      const slug = a.getAttribute("href")!.slice("/learn/".length);
+      expect(pillarSlugs.has(slug), slug).toBe(false);
+    }
+  });
+
+  it("lists the comparisons under Compare and every other article under Guides, the first nine days first", () => {
+    const root = page();
+    const listed = learnArticles.filter((article) => !pillarSlugs.has(article.slug));
+    const comparisons = inHubOrder(listed.filter((article) => article.versus));
+    const guides = inHubOrder(listed.filter((article) => !article.versus));
+    const last = guides.filter((article) => article.slug === learnGuidesLast);
+    /* Compare holds the native tools' comparisons only, in one grid, each with its two sides on its cover. */
     const compare = root.querySelectorAll("#compare .lv-grid3");
     expect(compare).toHaveLength(1);
     expect(
       [...compare[0]!.querySelectorAll("a.lv-card")].map((a) => [
-        a.getAttribute("href"),
-        text(a.querySelector(".lv-tag")),
+        ...card(a),
         [...a.querySelectorAll(".lv-vs > b")].map(text),
-        text(a.querySelector(".lv-cb b")),
-        text(a.querySelector(".lv-date")),
       ]),
-    ).toEqual([
-      [
-        routes.learnVpaVsHpa,
-        "Kubernetes",
-        ["VPA", "HPA"],
-        "VPA vs HPA: rebalance first, then scale out",
-        "9 Oct",
-      ],
-      [
-        routes.learnCoralAutoscalers,
-        "Kubernetes",
-        ["Coral", "Native"],
-        "Coral and the native Kubernetes autoscalers",
-        "9 Oct",
-      ],
-    ]);
+    ).toEqual(comparisons.map((article) => [...expected(article), [...article.versus!]]));
+    expect([...root.querySelectorAll("#guides a.lv-card")].map(card)).toEqual(
+      [...guides.filter((article) => article.slug !== learnGuidesLast), ...last].map(expected),
+    );
+    expect(root.querySelector("#guides .lv-vs")).toBeNull();
   });
 
   it("names no tool of the market, and links the comparisons only through /compare", () => {
@@ -290,64 +312,21 @@ describe("/learn", () => {
     ).toEqual([root.querySelector(`#more a.lv-mc[href="${routes.compare}"]`)]);
   });
 
-  it("draws Start here's Coming next while the flag is on", () => {
-    expect(learnComingNext).toBe(true);
-    const root = page();
-    const next = [...root.querySelectorAll("#start .lv-next")];
-    expect(next).toHaveLength(3);
-    expect(next.map((el) => text(el.querySelector("i")))).toEqual([
-      "Coming next",
-      "Coming next",
-      "Coming next",
-    ]);
-    expect(next.map((el) => text(el.lastChild as Element))).toEqual(
-      learnStart.map((entry) => `${entry.next.title} · ${entry.next.when}`),
-    );
-    expect(root.querySelector("#start .lv-date")).toBeNull();
-  });
-
-  it("leaves Start here's cards on their dates when the flag is off", async () => {
-    vi.resetModules();
-    vi.doMock("@/content/learn", async (original) => ({
-      ...(await original<typeof import("@/content/learn")>()),
-      learnComingNext: false,
-    }));
-    try {
-      const { LearnHub: Hub } = await import("./learn-hub");
-      const root = render(<Hub />).container;
-      expect(root.querySelector(".lv-next")).toBeNull();
-      expect([...root.querySelectorAll("#start .lv-date")].map(text)).toEqual([
-        "14 Oct · By Vineet",
-        "9 Oct",
-        "9 Oct",
-      ]);
-    } finally {
-      vi.doUnmock("@/content/learn");
-      vi.resetModules();
-    }
-  });
-
   it("narrows the cards and their sections to the search, and says when nothing matches", async () => {
     const user = userEvent.setup();
     const root = page();
-    expect(cards(root)).toHaveLength(7);
+    expect(cards(root)).toHaveLength(allCards.length);
     expect(root.querySelector(".lv-empty")).toHaveAttribute("hidden");
 
-    await user.type(search(root), "Karpenter");
-    expect(cards(root)).toEqual([
-      "Coral and the native Kubernetes autoscalers",
-      "Coral and the native Kubernetes autoscalers",
-    ]);
     /* Watch and read, More from Zoorik and the case study hold nothing findable: the search never hides them. */
-    expect(sections(root)).toEqual(["start", "fix", "compare", "watch", "more", "proof", "assess"]);
-
-    await user.clear(search(root));
-    await user.type(search(root), "  DISK ");
-    expect(cards(root)).toEqual([
-      "Can you shrink an Azure managed disk?",
-      "Can you shrink an Azure managed disk?",
-    ]);
-    expect(sections(root)).toEqual(["start", "fix", "guides", "watch", "more", "proof", "assess"]);
+    for (const typed of ["Karpenter", "  DISK "]) {
+      const query = typed.trim().toLowerCase();
+      const matches = (entry: LearnCard) => findable(entry).includes(query);
+      await user.clear(search(root));
+      await user.type(search(root), typed);
+      expect(cards(root), typed).toEqual(allCards.filter(matches).map((entry) => entry.title));
+      expect(sections(root), typed).toEqual(sectionsLeft(matches));
+    }
 
     /* Nothing matches: Start here stays, its cards hidden, with the line and its button. */
     await user.clear(search(root));
@@ -360,7 +339,7 @@ describe("/learn", () => {
 
     await user.click(empty.querySelector("button.lv-reset")!);
     expect(search(root).value).toBe("");
-    expect(cards(root)).toHaveLength(7);
+    expect(cards(root)).toHaveLength(allCards.length);
     expect(root.querySelector(".lv-empty")).toHaveAttribute("hidden");
     expect(sections(root)).toHaveLength(8);
   });
@@ -384,11 +363,12 @@ describe("/learn", () => {
       "false",
       "true",
     ]);
+    const storage = (entry: LearnCard) => entry.subject === "storage";
     expect(
       [...root.querySelectorAll(".lv-card")].filter(shown).map((a) => a.getAttribute("data-p")),
-    ).toEqual(["storage", "storage"]);
-    /* Compare's comparisons are all Kubernetes: the section hides, and the rest stay. */
-    expect(sections(root)).toEqual(["start", "fix", "guides", "watch", "more", "proof", "assess"]);
+    ).toEqual(allCards.filter(storage).map(() => "storage"));
+    /* A section with no storage card hides, and the rest stay. */
+    expect(sections(root)).toEqual(sectionsLeft(storage));
     /* The open question was another subject's: the first storage question opens in its place. */
     expect(fixTabs(root).map((b) => [text(b), b.getAttribute("aria-selected")])).toEqual([
       ["Disks are bigger than their data", "true"],
@@ -398,7 +378,7 @@ describe("/learn", () => {
     ).toEqual(["Bring each disk back to the space its data needs."]);
 
     await user.click(chip(root, "All"));
-    expect(cards(root)).toHaveLength(7);
+    expect(cards(root)).toHaveLength(allCards.length);
     expect(fixTabs(root)).toHaveLength(6);
     expect(fixTabs(root)[3]).toHaveAttribute("aria-selected", "true");
   });
@@ -434,8 +414,8 @@ describe("/learn", () => {
         text(panel.querySelector("h3")),
         [...panel.querySelectorAll(".fx-tools span")].map(text),
         text(panel.querySelector(".fx-z")),
-        panel.querySelector("a.fx-read")!.getAttribute("href"),
-        text(panel.querySelector("a.fx-read")),
+        panel.querySelector("a.fx-read")?.getAttribute("href") ?? null,
+        text(panel.querySelector(".fx-read")),
       ]),
     ).toEqual(
       learnFixes.map((entry) => [
@@ -447,14 +427,33 @@ describe("/learn", () => {
         `Read: ${entry.read.title}`,
       ]),
     );
-    expect(learnFixes.map((entry) => entry.read.href)).toEqual([
-      routes.learnCoralAutoscalers,
-      routes.learnVpaVsHpa,
-      routes.learnCoralAutoscalers,
-      routes.learnShrinkAzureDisk,
-      routes.assessment,
-      routes.learnPoorArchitecture,
-    ]);
+    /* Each reads one article, named by its h1 once published and by its own words, unlinked, until then; or the
+       assessment. */
+    const reads = [
+      ["kubernetes-bin-packing", "Kubernetes bin packing: fewer nodes for the same pods"],
+      ["kubernetes-pod-right-sizing", "Kubernetes pod right sizing: set requests from real use"],
+      ["keda-vs-hpa-vs-vpa", "KEDA vs HPA vs VPA: where event-driven scaling fits"],
+      ["azure-disk-cost-optimization", "Azure disk cost optimization: stop paying for empty space"],
+      null,
+      [
+        "poor-architecture-cloud-bill",
+        "How Poor Infrastructure Architecture Quietly Increases Your Cloud Bill",
+      ],
+    ] as const;
+    expect(learnFixes.map((entry) => entry.read)).toEqual(
+      reads.map((read) => {
+        if (!read) return { title: "The free assessment", href: routes.assessment };
+        const link = titleLink({ text: read[1], href: learnPath(read[0]) });
+        return { title: link.text, href: link.href };
+      }),
+    );
+    for (const panel of panels) {
+      if (!panel.querySelector("a.fx-read"))
+        expect(panel.querySelector(".fx-read svg"), panel.id).toBeNull();
+    }
+    expect(learnFixes[1]!.fits).toBe(
+      "Coral rebalances requests to what apps use, and raises them when an app needs more.",
+    );
   });
 
   it("shows the two product films, each opening on YouTube in a new tab and saying so", () => {

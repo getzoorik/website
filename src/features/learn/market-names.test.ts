@@ -5,6 +5,8 @@ import { cleanup, render } from "@testing-library/react";
 import { createElement, type ComponentType } from "react";
 import { describe, expect, it, vi } from "vitest";
 
+import { learnPath } from "@/config/site";
+import { learnArticles } from "@/content/learn/published";
 import { marketGroups, versusFacts } from "@/content/learn-market";
 
 /* The nav and the footer read the pathname: each page is rendered at its own. */
@@ -209,9 +211,33 @@ describe("competitors' names", () => {
         .default;
     const matchers = names.map((name) => [name, found(name)] as const);
     const offenders: string[] = [];
-    for (const path of others) {
-      pathname.current = path.slice("src/app".length).replace(/\/?page\.tsx$/, "") || "/";
-      const shown = printed(render(createElement(await load(path))).container);
+    /* Each page, at its address; the one dynamic route outside /compare, /learn/[slug], once per article. */
+    const article = "src/app/learn/[slug]/page.tsx";
+    expect(others).toContain(article);
+    const drawn: [string, () => Promise<React.ReactElement>][] = [
+      ...others
+        .filter((path) => path !== article)
+        .map(
+          (path) =>
+            [
+              path.slice("src/app".length).replace(/\/?page\.tsx$/, "") || "/",
+              async () => createElement(await load(path)),
+            ] as [string, () => Promise<React.ReactElement>],
+        ),
+      ...learnArticles.map(
+        (entry) =>
+          [
+            learnPath(entry.slug),
+            async () => {
+              const page = (await import("@/app/learn/[slug]/page")).default;
+              return page({ params: Promise.resolve({ slug: entry.slug }) });
+            },
+          ] as [string, () => Promise<React.ReactElement>],
+      ),
+    ];
+    for (const [route, draw] of drawn) {
+      pathname.current = route;
+      const shown = printed(render(await draw()).container);
       for (const [name, pattern] of matchers)
         if (pattern.test(shown)) offenders.push(`${pathname.current}  ${name}`);
       cleanup();

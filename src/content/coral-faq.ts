@@ -1,4 +1,4 @@
-import { routes } from "@/config/site";
+import { learnPath, routes } from "@/config/site";
 import type { FaqSection } from "@/content/faq";
 
 /**
@@ -151,7 +151,7 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
           [
             "Compared in full: ",
             {
-              href: routes.learnCoralAutoscalers,
+              href: learnPath("coral-and-native-autoscalers"),
               text: "Coral and the native Kubernetes autoscalers",
             },
             ".",

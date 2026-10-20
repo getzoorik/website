@@ -31,3 +31,28 @@ export function isoDay(printed: string): string {
   if (day.getUTCDate() !== Number(match[1])) throw new Error(`No such day: "${printed}"`);
   return day.toISOString().slice(0, 10);
 }
+
+/** An ISO day's parts, or a throw for anything that is not a real day. */
+function dayParts(iso: string): {
+  readonly day: number;
+  readonly month: number;
+  readonly year: number;
+} {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  const date = match ? new Date(`${iso}T00:00:00Z`) : null;
+  if (!match || !date || Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== iso)
+    throw new Error(`Not an ISO day: "${iso}"`);
+  return { day: date.getUTCDate(), month: date.getUTCMonth(), year: date.getUTCFullYear() };
+}
+
+/** An ISO day as a page prints it in full: "2026-10-09" is "9 October 2026". */
+export function printedDay(iso: string): string {
+  const { day, month, year } = dayParts(iso);
+  return `${day} ${MONTHS[month]} ${year}`;
+}
+
+/** An ISO day as a card prints it: "2026-10-09" is "9 Oct". */
+export function shortDay(iso: string): string {
+  const { day, month } = dayParts(iso);
+  return `${day} ${MONTHS[month]!.slice(0, 3)}`;
+}

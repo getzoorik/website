@@ -2,7 +2,8 @@ import { render, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { amoebaDocs } from "@/config/site";
-import { coralGuideRowIds, coralGuideSectionIds } from "@/content/coral-guide";
+import { coralGuide, coralGuideRowIds, coralGuideSectionIds } from "@/content/coral-guide";
+import { learnSlugOf, titleLink } from "@/content/learn/published";
 import { documentFacts } from "@/features/documents/document-facts";
 
 /* The nav and the footer read the pathname. */
@@ -174,14 +175,28 @@ describe("/coral/guide groups and rows", () => {
         text(line),
         [...line.querySelectorAll("a")].map((a) => a.getAttribute("href")),
       ]),
-    ).toEqual([
-      [
-        "workload-optimization",
-        "Related: VPA vs HPA: rebalance first, then scale out · Coral and the native Kubernetes autoscalers",
-        ["/learn/vpa-vs-hpa", "/learn/coral-and-native-autoscalers"],
-      ],
-      ["savings-and-figures", "Related: Free AKS and EKS cost assessment", ["/assessment?p=coral"]],
+    ).toEqual(
+      coralGuide.sections.flatMap((section) => {
+        if (!section.related) return [];
+        /* A Learn article is named by its h1, and stands as plain words until it is published. */
+        const links = section.related.map(titleLink);
+        return [
+          [
+            section.id,
+            `Related: ${links.map((link) => link.text).join(" · ")}`,
+            links.flatMap((link) => (link.href ? [link.href] : [])),
+          ],
+        ];
+      }),
+    );
+    expect(related.map((line) => line.closest("section")!.id)).toEqual([
+      "workload-optimization",
+      "savings-and-figures",
     ]);
+    expect(text(related[1]!)).toBe("Related: Free AKS and EKS cost assessment");
+    /* Workload optimization's line names Learn articles only. */
+    const learn = coralGuide.sections.find((section) => section.id === "workload-optimization")!;
+    expect(learn.related!.every((link) => learnSlugOf(link.href) !== null)).toBe(true);
     for (const line of related) expect(line.previousElementSibling).toHaveClass("fq-list");
   });
 

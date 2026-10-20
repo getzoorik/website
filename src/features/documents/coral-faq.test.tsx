@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { amoebaDocs } from "@/config/site";
 import { coralFaqSections } from "@/content/coral-faq";
+import { learnSlugOf, titleLink } from "@/content/learn/published";
 import { documentFacts } from "@/features/documents/document-facts";
 
 /* The nav and the footer read the pathname. */
@@ -218,6 +219,15 @@ describe("each question", () => {
     expect(text(page.querySelector(".fq-main"))).not.toMatch(
       /\(question \d+\)|next question|\(see /,
     );
+    const stored = coralFaqSections
+      .flatMap((section) => section.questions)
+      .find((question) => question.id === "do-i-need-coral-with-karpenter")!
+      .short.flatMap((line) => (typeof line === "string" ? [] : line))
+      .find((part) => typeof part !== "string" && "href" in part && learnSlugOf(part.href))!;
+    const compared = titleLink(stored as { readonly text: string; readonly href: string });
+    expect(text(page.querySelector("#do-i-need-coral-with-karpenter .fq-a"))).toContain(
+      `Compared in full: ${compared.text}.`,
+    );
     const links = [...page.querySelectorAll(".fq-body a")];
     expect(
       links.map((link) => [link.closest("details")!.id, text(link), link.getAttribute("href")]),
@@ -228,11 +238,8 @@ describe("each question", () => {
         "What leaves your cluster",
         "/coral/guide#what-leaves-your-cluster",
       ],
-      [
-        "do-i-need-coral-with-karpenter",
-        "Coral and the native Kubernetes autoscalers",
-        "/learn/coral-and-native-autoscalers",
-      ],
+      /* "Compared in full": the Learn article by its h1, a link once it is published. */
+      ...(compared.href ? [["do-i-need-coral-with-karpenter", compared.text, compared.href]] : []),
       ["how-much-can-coral-save", "free AKS and EKS cost assessment", "/assessment?p=coral"],
     ]);
   });

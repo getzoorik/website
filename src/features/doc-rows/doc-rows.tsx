@@ -1,5 +1,6 @@
 import { Fragment, type ReactNode } from "react";
 
+import { titleLink } from "@/content/learn/published";
 import { ArrowGlyph, ChevronGlyph } from "@/features/documents/document-glyphs";
 import { DocumentFolds } from "@/features/documents/document-folds";
 import { FaqChips } from "@/features/documents/faq-chips";
@@ -211,12 +212,16 @@ export function DocRelated({
   return (
     <p className="doc-related">
       Related:{" "}
-      {links.map((link, index) => (
-        <Fragment key={link.href}>
-          {index > 0 ? " · " : null}
-          <a href={link.href}>{link.text}</a>
-        </Fragment>
-      ))}
+      {links.map((stored, index) => {
+        /* A Learn article is named by its h1, and stands as plain words until it is published. */
+        const link = titleLink(stored);
+        return (
+          <Fragment key={stored.href}>
+            {index > 0 ? " · " : null}
+            {link.href ? <a href={link.href}>{link.text}</a> : link.text}
+          </Fragment>
+        );
+      })}
     </p>
   );
 }

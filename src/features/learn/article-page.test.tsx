@@ -3,31 +3,38 @@ import { readFileSync } from "node:fs";
 import { render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { articleOrder, articles, type ArticleId } from "@/content/learn-articles";
+import { learnPath } from "@/config/site";
+import type { Article, ArticleBlock, ArticleText } from "@/content/learn/article";
+import {
+  articleAt,
+  articleAuthor,
+  articleCard,
+  isLiveHref,
+  learnArticles,
+  titleLink,
+} from "@/content/learn/published";
+import { products } from "@/content/products";
+import { printedDay } from "@/lib/content-date";
 
 /* The nav and the footer read the pathname. */
-const pathname = vi.hoisted(() => ({ current: "/learn/vpa-vs-hpa" }));
-vi.mock("next/navigation", () => ({ usePathname: () => pathname.current }));
+const pathname = vi.hoisted(() => ({ current: "/learn" }));
+vi.mock("next/navigation", async (original) => ({
+  ...(await original<typeof import("next/navigation")>()),
+  usePathname: () => pathname.current,
+}));
 
-import CoralAutoscalers, {
-  metadata as coralAutoscalersMeta,
-} from "@/app/learn/coral-and-native-autoscalers/page";
-import PoorArchitecture, {
-  metadata as poorArchitectureMeta,
-} from "@/app/learn/poor-architecture-cloud-bill/page";
-import ShrinkAzureDisk, {
-  metadata as shrinkAzureDiskMeta,
-} from "@/app/learn/shrink-azure-managed-disk/page";
-import VpaVsHpa, { metadata as vpaVsHpaMeta } from "@/app/learn/vpa-vs-hpa/page";
+import LearnArticle, {
+  dynamicParams,
+  generateMetadata,
+  generateStaticParams,
+} from "@/app/learn/[slug]/page";
 
 /**
- * The Learn articles (laid out like /security, and the architecture essay): the
- * metadata, the outline and its addresses, the frame (each section's name
- * beside its text, the names as chips, no "On this page" list), the byline, the
- * short answer, the diagrams and pictures, the help box, the sources, the
- * Related row and the closing row for the article's product, and no
- * placeholder. The contract is written out here, so the content file cannot
- * redefine it. Their sitemap entries are in `src/app/sitemap.test.ts`.
+ * The Learn articles, every one in the index, laid out like /security: the metadata, the outline and its addresses,
+ * the frame (each section's name beside its text, the names as chips, no "On this page" list), the byline, the short
+ * answer, the diagrams and pictures, the help box, the sources, the Related row and the closing row for the article's
+ * product, and no placeholder. Every expectation is read from the article's own file, so a new article is checked
+ * with no change here. Their sitemap entries are in `src/app/sitemap.test.ts`.
  */
 
 afterEach(() => {
@@ -36,170 +43,53 @@ afterEach(() => {
 
 const text = (el: Element | null): string => (el?.textContent ?? "").replace(/[\s ]+/g, " ").trim();
 
-interface Contract {
-  readonly Page: () => React.JSX.Element;
-  readonly meta: typeof vpaVsHpaMeta;
-  readonly route: string;
-  readonly title: string;
-  readonly description: string;
-  readonly h1: string;
-  readonly deck: string;
-  readonly sections: readonly string[];
-  readonly parts: readonly string[];
-  /** The byline as read, the new-tab hint included. */
-  readonly byline: string;
-  /** Whether it opens on "Short answer." (the essay does not). */
-  readonly short: boolean;
-  readonly figures: number;
-  /** Pictures carried as files (`figure.ar-img`). */
-  readonly images: number;
-  readonly sources: number;
-  /** The help box's title and its two links; none on the essay. */
-  readonly help: readonly [string, string, string] | null;
-  readonly related: readonly string[];
-  readonly product: "coral" | "amoeba";
-}
+const params = (slug: string) => ({ params: Promise.resolve({ slug }) });
 
-/** The first three articles' byline, unchanged by the essay. */
-const ZOORIK_BYLINE = "Updated 9 October 2026 · Published by Zoorik";
-
-const CONTRACTS: Record<ArticleId, Contract> = {
-  "vpa-vs-hpa": {
-    Page: VpaVsHpa,
-    meta: vpaVsHpaMeta,
-    route: "/learn/vpa-vs-hpa",
-    title: "VPA vs HPA: rebalance first, then scale out",
-    description:
-      "The VPA sets how much CPU and memory a pod requests; the HPA sets how many pods run. Why they clash on CPU, and why rebalancing comes first.",
-    h1: "VPA vs HPA: rebalance first, then scale out",
-    deck: "What each Kubernetes autoscaler changes, why they clash on CPU, and the order that works.",
-    sections: [
-      "what-are-the-vpa-and-the-hpa",
-      "requests-decide-what-you-pay-for",
-      "why-they-clash-on-cpu",
-      "rebalance-first-then-scale-out",
-      "where-coral-fits",
-    ],
-    parts: ["what-is-the-vpa", "what-is-the-hpa"],
-    byline: ZOORIK_BYLINE,
-    short: true,
-    figures: 5,
-    images: 0,
-    sources: 5,
-    help: ["How Coral helps", "/coral", "/assessment?p=coral"],
-    related: [
-      "/learn/coral-and-native-autoscalers",
-      "/coral/faq#working-with-hpa",
-      "/coral/guide#hpas-and-vpas",
-    ],
-    product: "coral",
-  },
-  "coral-and-native-autoscalers": {
-    Page: CoralAutoscalers,
-    meta: coralAutoscalersMeta,
-    route: "/learn/coral-and-native-autoscalers",
-    title: "Coral and the native Kubernetes autoscalers",
-    description:
-      "What VPA, HPA, KEDA, Cluster Autoscaler, NAP and Karpenter each do on AKS and EKS, what Coral adds, and how they work together.",
-    h1: "Coral and the native Kubernetes autoscalers",
-    deck: "What VPA, HPA, KEDA, the Cluster Autoscaler, NAP and Karpenter each do, and what Coral adds.",
-    sections: [
-      "what-each-autoscaler-does",
-      "what-coral-does-with-each",
-      "what-coral-adds",
-      "how-they-work-together-in-a-surge",
-      "what-coral-doesnt-do",
-    ],
-    parts: [],
-    byline: ZOORIK_BYLINE,
-    short: true,
-    figures: 0,
-    images: 0,
-    sources: 6,
-    help: ["How Coral helps", "/coral", "/assessment?p=coral"],
-    related: [
-      "/learn/vpa-vs-hpa",
-      "/coral/faq#nodes-and-spare-capacity",
-      "/coral/guide#labels-and-annotations",
-    ],
-    product: "coral",
-  },
-  "shrink-azure-managed-disk": {
-    Page: ShrinkAzureDisk,
-    meta: shrinkAzureDiskMeta,
-    route: "/learn/shrink-azure-managed-disk",
-    title: "Can you shrink an Azure managed disk?",
-    description:
-      "No, not in place: Azure managed disks and Amazon EBS volumes only grow. The manual copy route, its downtime, and how Amoeba resizes a pool online.",
-    h1: "Can you shrink an Azure managed disk?",
-    deck: "Not in place. What works instead, what it costs you, and how Amoeba does it online.",
-    sections: [
-      "why-the-space-you-bought-stays-on",
-      "why-a-disk-cant-shrink-in-place",
-      "the-manual-route-copy-to-a-smaller",
-      "how-amoeba-does-it-online",
-      "what-about-amazon-ebs",
-    ],
-    parts: [],
-    byline: ZOORIK_BYLINE,
-    short: true,
-    figures: 0,
-    images: 0,
-    sources: 3,
-    help: ["How Amoeba helps", "/amoeba", "/assessment?p=amoeba"],
-    related: [
-      "/amoeba/guide#how-the-pool-is-sized",
-      "/amoeba/faq#is-there-downtime",
-      "/amoeba/faq#can-a-shrink-lose-data",
-    ],
-    product: "amoeba",
-  },
-  "poor-architecture-cloud-bill": {
-    Page: PoorArchitecture,
-    meta: poorArchitectureMeta,
-    route: "/learn/poor-architecture-cloud-bill",
-    title: "How poor architecture increases your cloud bill",
-    description:
-      "Cloud waste is often an architecture problem, not a billing problem: VMs vs containers, where poor design adds cost, and how one client cut compute 44%.",
-    h1: "How Poor Infrastructure Architecture Quietly Increases Your Cloud Bill",
-    deck: "Why cloud waste is often an architecture problem, not a billing problem.",
-    sections: [
-      "the-hidden-cost-of-architectural-decisions",
-      "vms-versus-containers-understanding-the-architectural-trade-off",
-      "where-poor-architecture-translates-into-higher-costs",
-      "how-we-approach-cloud-cost-optimization-as",
-      "what-we-found-in-that-engagement",
-      "the-bigger-lesson-cloud-waste-is-often",
-      "final-thoughts",
-    ],
-    parts: [
-      "overprovisioning-compute-and-storage",
-      "running-workloads-in-isolation-when-they-could",
-      "scaling-infrastructure-instead-of-optimizing-applications",
-      "ignoring-non-production-environments",
-      "designing-for-peak-traffic-without-a-scaling",
-      "establish-a-baseline",
-      "understand-the-workload",
-      "compare-realistic-architecture-options",
-      "model-the-expected-savings",
-      "validate-through-measurement",
-      "prevent-the-same-waste-from-returning",
-    ],
-    byline:
-      "Updated 14 October 2026 · By Vineet (opens in a new tab), infrastructure engineer · Published by Zoorik",
-    short: false,
-    figures: 0,
-    images: 2,
-    sources: 0,
-    help: null,
-    related: [
-      "/case-studies/coral-dev-cluster",
-      "/learn/shrink-azure-managed-disk",
-      "/learn/vpa-vs-hpa",
-    ],
-    product: "coral",
-  },
+const main = async (slug: string): Promise<HTMLElement> => {
+  pathname.current = learnPath(slug);
+  return render(await LearnArticle(params(slug))).container.querySelector("main")!;
 };
+
+const blocksOf = (article: Article): readonly ArticleBlock[] => [
+  ...(article.lead ?? []),
+  ...article.sections.flatMap((section) => section.blocks),
+];
+
+/** Every link piece of a run of text. */
+const linksOf = (run: ArticleText): readonly { readonly a: string; readonly href: string }[] =>
+  typeof run === "string"
+    ? []
+    : run.flatMap((piece) => (typeof piece !== "string" && "a" in piece ? [piece] : []));
+
+const runsOf = (article: Article): readonly ArticleText[] =>
+  blocksOf(article).flatMap((block): readonly ArticleText[] => {
+    switch (block.kind) {
+      case "p":
+      case "quote":
+      case "note":
+        return [block.text];
+      case "ul":
+      case "steps":
+        return block.items;
+      case "table":
+        return block.rows.flat();
+      default:
+        return [];
+    }
+  });
+
+/** The byline as read: the day, the author with the new-tab hint where they link, and the publisher. */
+const bylineOf = (article: Article): string => {
+  const author = articleAuthor(article);
+  const by = author
+    ? ` · By ${author.name}${author.linkedin ? " (opens in a new tab)" : ""}, ${author.role}`
+    : "";
+  return `Published ${printedDay(article.published)}${by} · Published by Zoorik`;
+};
+
+/** The product the closing row offers: the help box's, else the article's own. */
+const closingProduct = (article: Article) =>
+  article.help?.product ?? (article.product === "both" ? null : article.product);
 
 /** Where each page a Related tile links to keeps its anchors. */
 const ANCHOR_SOURCES: Record<string, string> = {
@@ -209,59 +99,86 @@ const ANCHOR_SOURCES: Record<string, string> = {
   "/amoeba/guide": "src/content/amoeba-guide.ts",
 };
 
-describe.each(articleOrder)("/learn/%s", (id) => {
-  const c = CONTRACTS[id];
-  const main = () => {
-    pathname.current = c.route;
-    return render(<c.Page />).container.querySelector("main")!;
-  };
+describe("/learn/[slug]", () => {
+  it("prerenders every article in the index and nothing else", async () => {
+    expect(dynamicParams).toBe(false);
+    expect(generateStaticParams()).toEqual(
+      learnArticles.map((article) => ({ slug: article.slug })),
+    );
+    await expect(LearnArticle(params("no-such-article"))).rejects.toThrow();
+  });
+});
 
-  it("titles, describes and canonicalises the page in the mock's words", () => {
-    expect(c.meta.title).toBe(c.title);
-    expect(c.meta.description).toBe(c.description);
-    expect(c.meta.alternates).toEqual({ canonical: c.route });
-    expect(c.meta).not.toHaveProperty("robots");
-    expect(c.meta.openGraph).toMatchObject({ url: c.route, title: `${c.title} · Zoorik` });
-    expect(articles[id].route).toBe(c.route);
+describe.each(learnArticles.map((article) => article.slug))("/learn/%s", (slug) => {
+  const article = articleAt(slug);
+  const route = learnPath(slug);
+
+  it("titles, describes and canonicalises the page in its own words, with its card", async () => {
+    const meta = await generateMetadata(params(slug));
+    expect(meta.title).toBe(article.title);
+    expect(meta.description).toBe(article.meta);
+    expect(meta.alternates).toEqual({ canonical: route });
+    expect(meta).not.toHaveProperty("robots");
+    expect(meta.openGraph).toMatchObject({
+      url: route,
+      title: `${article.title} · Zoorik`,
+      description: article.meta,
+      images: [articleCard(article)],
+    });
   });
 
-  it("opens on the utility hero, with no date, photo or author", () => {
-    const hero = main().querySelector("header.hero.doc-hero#top")!;
-    expect(text(hero.querySelector("h1"))).toBe(c.h1);
-    expect(text(hero.querySelector(".doc-deck"))).toBe(c.deck);
+  it("opens on the utility hero, with no date, photo or author", async () => {
+    const hero = (await main(slug)).querySelector("header.hero.doc-hero#top")!;
+    expect(text(hero.querySelector("h1"))).toBe(article.h1);
+    expect(text(hero.querySelector(".doc-deck"))).toBe(article.deck);
     expect(hero.querySelector(".as-switch, .dl, img")).toBeNull();
   });
 
-  it("keeps the mock's section ids, in order, each its name beside its open text", () => {
-    const frame = main().querySelector("article.doc-main.fq-main.ar-frame")!;
+  it("keeps its section and part ids, in order, each section's name beside its open text", async () => {
+    const frame = (await main(slug)).querySelector("article.doc-main.fq-main.ar-frame")!;
     const sections = [...frame.querySelectorAll(":scope > section.fq-sec")];
-    expect(sections.map((section) => section.id)).toEqual(c.sections);
+    expect(sections.map((section) => section.id)).toEqual(article.sections.map((s) => s.id));
+    expect(sections.map((section) => text(section.querySelector("h2")))).toEqual(
+      article.sections.map((s) => s.title),
+    );
     for (const section of sections) {
       expect(section).toHaveAttribute("aria-labelledby", `${section.id}-h`);
       expect(section.firstElementChild).toHaveAttribute("id", `${section.id}-h`);
       expect(section.firstElementChild!.tagName).toBe("H2");
       expect(section.lastElementChild).toHaveClass("fq-sec-b", "doc-prose");
     }
-    expect([...frame.querySelectorAll("h3[id]")].map((h3) => h3.id)).toEqual(c.parts);
+    expect([...frame.querySelectorAll("h3[id]")].map((h3) => h3.id)).toEqual(
+      blocksOf(article).flatMap((block) => (block.kind === "h3" ? [block.id] : [])),
+    );
     /* Nothing is folded, and nothing lists the sections but the chips. */
     expect(frame.querySelector("details")).toBeNull();
   });
 
-  it("names the sections as chips on a phone, and has no On this page list", () => {
-    const container = main();
+  it("names the sections as chips on a phone, and has no On this page list", async () => {
+    const container = await main(slug);
     expect(
       [...container.querySelectorAll("nav.fq-chips a")].map((a) => a.getAttribute("href")),
-    ).toEqual(c.sections.map((section) => `#${section}`));
+    ).toEqual(article.sections.map((section) => `#${section.id}`));
     expect(container.querySelector(".doc-rail, .doc-toc, .rl")).toBeNull();
   });
 
-  it("opens the frame on its Updated line, published by Zoorik, then the short answer where it has one", () => {
-    const top = main().querySelector(".ar-frame > .fq-upd.doc-prose:first-child")!;
-    const updated = top.querySelector(":scope > p.doc-updated:first-child")!;
-    expect(text(updated)).toBe(c.byline);
-    expect([...updated.querySelectorAll("a")].at(-1)).toHaveAttribute("href", "/about");
+  it("opens the frame on its byline, published by Zoorik, then the short answer where it has one", async () => {
+    const top = (await main(slug)).querySelector(".ar-frame > .fq-upd.doc-prose:first-child")!;
+    const byline = top.querySelector(":scope > p.doc-updated:first-child")!;
+    expect(text(byline)).toBe(bylineOf(article));
+    expect([...byline.querySelectorAll("a")].at(-1)).toHaveAttribute("href", "/about");
+    const author = articleAuthor(article);
+    const profile = byline.querySelector("a[href^='https://']");
+    if (author?.linkedin) {
+      expect(profile).toHaveAttribute("href", author.linkedin);
+      expect(profile).toHaveAttribute("target", "_blank");
+      expect(profile).toHaveAttribute("rel", "noopener noreferrer");
+      expect(text(profile)).toBe(`${author.name} (opens in a new tab)`);
+    } else {
+      expect(profile).toBeNull();
+    }
     const short = top.querySelector(":scope > p.ar-short");
-    if (!c.short) {
+    if (!article.short) {
       expect(short).toBeNull();
       return;
     }
@@ -269,9 +186,9 @@ describe.each(articleOrder)("/learn/%s", (id) => {
     expect(text(short)).toMatch(/^Short answer\. \S/);
   });
 
-  it("carries its pictures as files, each with its alt text and caption", () => {
-    const images = [...main().querySelectorAll("figure.ar-img")];
-    expect(images).toHaveLength(c.images);
+  it("carries its pictures as files, each with its alt text and caption", async () => {
+    const images = [...(await main(slug)).querySelectorAll("figure.ar-img")];
+    expect(images).toHaveLength(blocksOf(article).filter((block) => block.kind === "image").length);
     for (const figure of images) {
       const img = figure.querySelector("img")!;
       expect(img.getAttribute("src")).toMatch(/^\/articles\/[a-z0-9-]+\.(webp|svg)$/);
@@ -284,9 +201,12 @@ describe.each(articleOrder)("/learn/%s", (id) => {
     }
   });
 
-  it("draws the diagrams the mock draws, each one image with its words", () => {
-    const figures = [...main().querySelectorAll("figure.ln-d")];
-    expect(figures).toHaveLength(c.figures);
+  it("draws each diagram it names, each one image with its words", async () => {
+    const container = await main(slug);
+    const figures = [...container.querySelectorAll("figure.ln-d")];
+    expect(figures).toHaveLength(
+      blocksOf(article).filter((block) => block.kind === "figure").length,
+    );
     for (const figure of figures) {
       expect(figure).toHaveAttribute("role", "img");
       expect(figure.getAttribute("aria-label")).toMatch(/^Diagram\. /);
@@ -294,66 +214,103 @@ describe.each(articleOrder)("/learn/%s", (id) => {
         expect(svg).toHaveAttribute("aria-hidden", "true");
       }
     }
-    const strip = main().querySelectorAll(".ln-strip > li");
-    expect(strip).toHaveLength(c.figures ? 3 : 0);
+    expect(container.querySelectorAll(".ln-strip > li")).toHaveLength(article.strip?.length ?? 0);
   });
 
-  it("closes the frame on the help box and the sources, each source a new tab", () => {
-    const foot = main().querySelector(".ar-frame > .fq-upd.ar-foot");
-    if (!c.help) {
+  it("closes the frame on the help box and the sources, each source a new tab", async () => {
+    const container = await main(slug);
+    const foot = container.querySelector(".ar-frame > .fq-upd.ar-foot");
+    const sources = article.sources ?? [];
+    if (!article.help && sources.length === 0) {
       /* An essay has neither, so the frame has no closing block. */
-      expect(c.sources).toBe(0);
       expect(foot).toBeNull();
       return;
     }
-    const prose = main().querySelector(".ar-frame > .fq-upd.ar-foot.doc-prose:last-child")!;
-    const help = prose.querySelector(":scope > aside.doc-call.doc-help")!;
-    expect(text(help.querySelector(".doc-call-t"))).toBe(c.help[0]);
-    expect([...help.querySelectorAll("a.alink")].map((a) => a.getAttribute("href"))).toEqual([
-      c.help[1],
-      c.help[2],
-    ]);
-    const sources = prose.lastElementChild!;
-    expect(sources).toHaveClass("ar-src");
-    expect(text(sources)).toMatch(/^Sources: .*\.$/);
-    const links = [...sources.querySelectorAll("a")];
-    expect(links).toHaveLength(c.sources);
+    const prose = container.querySelector(".ar-frame > .fq-upd.ar-foot.doc-prose:last-child")!;
+    const help = prose.querySelector(":scope > aside.doc-call.doc-help");
+    if (article.help) {
+      expect(text(help!.querySelector(".doc-call-t"))).toBe(
+        `How ${products[article.help.product].name} helps`,
+      );
+      expect([...help!.querySelectorAll("a.alink")].map((a) => a.getAttribute("href"))).toEqual(
+        article.help.links.map((link) => link.href),
+      );
+    } else {
+      expect(help).toBeNull();
+    }
+    const line = prose.querySelector(":scope > p.ar-src");
+    if (sources.length === 0) {
+      expect(line).toBeNull();
+      return;
+    }
+    expect(prose.lastElementChild).toBe(line);
+    expect(text(line)).toMatch(/^Sources: .*\.$/);
+    const links = [...line!.querySelectorAll("a")];
+    expect(links.map((link) => link.getAttribute("href"))).toEqual(sources.map((s) => s.url));
     for (const link of links) {
-      expect(link.getAttribute("href")).toMatch(/^https:\/\//);
       expect(link).toHaveAttribute("target", "_blank");
       expect(link).toHaveAttribute("rel", "noopener noreferrer");
       expect(link.textContent).toMatch(/ \(opens in a new tab\)$/);
     }
   });
 
-  it("relates three pages, each to an anchor its page still has", () => {
-    const related = main().querySelector("section.sec.ar-rel#related")!;
+  it("relates three to five pages, each named as its page names it, each anchor one its page still has", async () => {
+    const related = (await main(slug)).querySelector("section.sec.ar-rel#related")!;
     expect(related).toHaveAttribute("aria-labelledby", "related-h");
     expect(text(related.querySelector("h2#related-h"))).toBe("Related");
-    const hrefs = [...related.querySelectorAll("article.dt > a.dt-a")].map((a) =>
-      a.getAttribute("href"),
-    );
-    expect(hrefs).toEqual(c.related);
-    for (const href of hrefs) {
-      const [path, anchor] = href!.split("#");
-      if (!anchor) continue;
-      expect(readFileSync(ANCHOR_SOURCES[path!]!, "utf8"), href!).toContain(`"${anchor}"`);
+    expect(article.related.length).toBeGreaterThanOrEqual(3);
+    expect(article.related.length).toBeLessThanOrEqual(5);
+    const tiles = [...related.querySelectorAll("article.dt > .dt-a")];
+    expect(tiles).toHaveLength(article.related.length);
+    article.related.forEach((tile, index) => {
+      const link = titleLink({ text: tile.title, href: tile.href });
+      const drawn = tiles[index]!;
+      expect(text(drawn.querySelector(".dt-t")), tile.href).toBe(link.text);
+      expect(text(drawn.querySelector(".dt-l")), tile.href).toBe(tile.where);
+      /* A tile to an article not yet published is its own words, with no link and no arrow. */
+      expect(drawn.tagName, tile.href).toBe(link.href ? "A" : "DIV");
+      if (link.href) expect(drawn).toHaveAttribute("href", link.href);
+      else expect(drawn.querySelector(".dt-go")).toBeNull();
+      const [path, anchor] = tile.href.split("#");
+      if (anchor && ANCHOR_SOURCES[path!])
+        expect(readFileSync(ANCHOR_SOURCES[path!]!, "utf8"), tile.href).toContain(`"${anchor}"`);
+    });
+  });
+
+  it("links a body's words only to pages that are published, and keeps the words of the rest", async () => {
+    const frame = (await main(slug)).querySelector(".ar-frame")!;
+    /* The links of the short answer, the opening and the sections, to pages of this site: not the byline's, nor the
+       help box's and the sources'. */
+    const drawn = [...frame.querySelectorAll("a")]
+      .filter((a) => !a.closest("p.doc-updated, .ar-foot"))
+      .map((a) => a.getAttribute("href")!)
+      .filter((href) => href.startsWith("/"));
+    const pieces = [...(article.short ? [article.short] : []), ...runsOf(article)]
+      .flatMap(linksOf)
+      .filter((piece) => piece.href.startsWith("/"));
+    expect(drawn).toEqual(pieces.filter((piece) => isLiveHref(piece.href)).map((p) => p.href));
+    for (const piece of pieces.filter((p) => !isLiveHref(p.href))) {
+      expect(text(frame), piece.href).toContain(piece.a);
     }
   });
 
-  it("ends on the closing row for its product", () => {
-    const row = main().querySelector("section#assess")!;
-    expect(row.querySelector("a.btn-ink")).toHaveAttribute("href", `/assessment?p=${c.product}`);
+  it("ends on the closing row for its product", async () => {
+    const row = (await main(slug)).querySelector("section#assess")!;
+    const product = closingProduct(article);
+    expect(row.querySelector("a.btn-ink")).toHaveAttribute(
+      "href",
+      product ? `/assessment?p=${product}` : "/assessment",
+    );
     expect(text(row.querySelector("#contact p"))).toBe(
-      `Thirty minutes with the people who build ${c.product === "coral" ? "Coral" : "Amoeba"}.`,
+      `Thirty minutes with the people who build ${product ? products[product].name : "Coral and Amoeba"}.`,
     );
   });
 
-  it("keeps product names out of translation and ships no placeholder", () => {
-    const container = main();
+  it("keeps product names out of translation and ships no placeholder", async () => {
+    const container = await main(slug);
     expect(container.innerHTML).not.toMatch(/\[OWNER|ph-chip|To come/);
     const prose = container.querySelector(".ar-frame")!;
-    /* Every Coral and Amoeba in running text sits in a translate="no" span, as the mock marks them; the help box's title is the mock's plain text. */
+    /* Every Coral and Amoeba in running text sits in a translate="no" span; the help box's title is plain text. */
     const loose = [...prose.querySelectorAll("p, li, td, th, h2, h3")].filter((el) => {
       if (el.matches(".doc-call-t")) return false;
       const own = [...el.childNodes]
@@ -367,18 +324,14 @@ describe.each(articleOrder)("/learn/%s", (id) => {
 });
 
 /**
- * The architecture essay: first published here, every word as its source
- * article writes it. Its headings are listed here from that source, so a drift
- * from the source fails.
+ * The architecture essay: first published here, every word as its source article writes it. Its headings are listed
+ * here from that source, so a drift from the source fails.
  */
 describe("/learn/poor-architecture-cloud-bill, against its source", () => {
-  const main = () => {
-    pathname.current = "/learn/poor-architecture-cloud-bill";
-    return render(<PoorArchitecture />).container.querySelector("main")!;
-  };
+  const slug = "poor-architecture-cloud-bill";
 
-  it("renders every h3 of the source as a section, in order, and every h4 as a part", () => {
-    const frame = main().querySelector(".ar-frame")!;
+  it("renders every h3 of the source as a section, in order, and every h4 as a part", async () => {
+    const frame = (await main(slug)).querySelector(".ar-frame")!;
     expect([...frame.querySelectorAll("section.fq-sec > h2")].map(text)).toEqual([
       "The hidden cost of architectural decisions",
       "VMs versus containers: understanding the architectural trade-off",
@@ -403,8 +356,8 @@ describe("/learn/poor-architecture-cloud-bill, against its source", () => {
     ]);
   });
 
-  it("opens under the byline on its five paragraphs, its question and the infographic, in the source's order", () => {
-    const top = main().querySelector(".ar-frame > .fq-upd.doc-prose:first-child")!;
+  it("opens under the byline on its five paragraphs, its question and the infographic, in the source's order", async () => {
+    const top = (await main(slug)).querySelector(".ar-frame > .fq-upd.doc-prose:first-child")!;
     const kinds = [...top.children].map((el) =>
       el.matches("p.doc-updated") ? "byline" : el.tagName.toLowerCase(),
     );
@@ -414,17 +367,14 @@ describe("/learn/poor-architecture-cloud-bill, against its source", () => {
     );
   });
 
-  it("names Vineet in the byline, a new tab to his profile, and does not print his byline twice", () => {
-    const container = main();
-    const vineet = container.querySelector("p.doc-updated a[href^='https://www.linkedin.com']")!;
-    expect(vineet).toHaveAttribute("href", "https://www.linkedin.com/in/yadavvineet/");
-    expect(vineet).toHaveAttribute("target", "_blank");
-    expect(vineet).toHaveAttribute("rel", "noopener noreferrer");
-    expect(text(container.querySelector(".ar-frame")).match(/By Vineet/g)).toHaveLength(1);
+  it("names its author once, in the byline", async () => {
+    const author = articleAuthor(articleAt(slug))!;
+    const frame = (await main(slug)).querySelector(".ar-frame")!;
+    expect(text(frame).split(`By ${author.name}`)).toHaveLength(2);
   });
 
-  it("gives both pictures the source's alt text, and the infographic its smaller copy", () => {
-    const [infographic, diagram] = [...main().querySelectorAll("figure.ar-img img")];
+  it("gives both pictures the source's alt text, and the infographic its smaller copy", async () => {
+    const [infographic, diagram] = [...(await main(slug)).querySelectorAll("figure.ar-img img")];
     expect(infographic).toHaveAttribute(
       "alt",
       "Infographic comparing the VM approach, where each app runs on its own VM with fixed resources even when idle, with the Kubernetes approach, where containers share a compute pool, plus when to use each.",
@@ -443,8 +393,8 @@ describe("/learn/poor-architecture-cloud-bill, against its source", () => {
     expect(diagram).toHaveAttribute("src", "/articles/dedicated-vms-vs-shared-pool.svg");
   });
 
-  it("links only words already in the text: the disk article, the case study twice, the assessment", () => {
-    const links = [...main().querySelectorAll(".ar-frame .fq-sec-b a")].map((a) => [
+  it("links only words already in the text: the disk article, the case study twice, the assessment", async () => {
+    const links = [...(await main(slug)).querySelectorAll(".ar-frame .fq-sec-b a")].map((a) => [
       text(a),
       a.getAttribute("href"),
     ]);

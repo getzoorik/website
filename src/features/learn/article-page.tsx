@@ -3,23 +3,25 @@ import { Fragment, type ReactNode } from "react";
 import { Arrow } from "@/components/primitives/arrow";
 import { ExternalArrow } from "@/components/primitives/external-arrow";
 import { NewTabHint } from "@/components/primitives/new-tab-hint";
+import { routes } from "@/config/site";
+import type { Author } from "@/content/authors";
 import {
-  articleByline,
   articleWords,
-  articles,
   type Article,
   type ArticleBlock,
   type ArticleColumn,
-  type ArticleId,
   type ArticleSource,
   type ArticleText,
-} from "@/content/learn-articles";
+} from "@/content/learn/article";
+import { articleAuthor, isLiveHref, titleLink } from "@/content/learn/published";
+import { products } from "@/content/products";
 import { DocRows } from "@/features/doc-rows/doc-rows";
 import { DocumentPage } from "@/features/documents/document-page";
 import { LinkTile } from "@/features/documents/link-tile";
 import { codeBreaks } from "@/features/documents/prose";
 import { named } from "@/features/legal/named";
 import { ArticleFigure, ArticleStrip } from "@/features/learn/article-figures";
+import { printedDay } from "@/lib/content-date";
 import { offSiteProps } from "@/lib/links";
 
 /**
@@ -29,15 +31,18 @@ import { offSiteProps } from "@/lib/links";
  * The frame is /security's (`DocRows`, `frame="article"`):
  * each section's name in the left column beside its text, the text open, the
  * names as chips on a phone, and no "On this page" list. Over the sections, the
- * Updated line with "Published by Zoorik", the short answer and the strip (the
- * VPA article); under them, "How Coral helps" (or Amoeba) and the sources,
- * each a new tab.
+ * byline ("Published 9 October 2026 · Published by Zoorik", with the author
+ * between the two where the article has one), the short answer and the strip
+ * where there is one; under them, "How Coral helps" (or Amoeba) and the
+ * sources, each a new tab.
  *
- * An essay (the fourth article) has no short answer, help box or
- * sources: its byline names its author too ("By Vineet, infrastructure
- * engineer", a new tab to their profile), its opening stands under the byline
- * (`lead`), and it carries pictures, a quote and lines in italics. Each part is
- * drawn only where an article has it, so the first three render as before.
+ * An essay has no short answer, help box or sources: its opening stands under
+ * the byline (`lead`), and it carries pictures, a quote and lines in italics.
+ * Each part is drawn only where an article has it.
+ *
+ * A link to another article is drawn only once that article is published: until
+ * then its words stand as plain text (`isLiveHref`), and a Related tile shows its
+ * own words with no link (`titleLink`).
  *
  * A server component: an article is prerendered whole. Its only script is the
  * chips' (which section is being read, on a phone).
@@ -51,10 +56,12 @@ function Text({ text }: { readonly text: ArticleText }): ReactNode {
     if (typeof piece === "string") return <Fragment key={index}>{named(piece)}</Fragment>;
     if ("b" in piece) return <b key={index}>{named(piece.b)}</b>;
     if ("a" in piece)
-      return (
+      return isLiveHref(piece.href) ? (
         <a href={piece.href} key={index}>
           {named(piece.a)}
         </a>
+      ) : (
+        <Fragment key={index}>{named(piece.a)}</Fragment>
       );
     return <code key={index}>{codeBreaks(piece.code)}</code>;
   });
@@ -72,7 +79,7 @@ function Table({
   rows,
 }: {
   readonly columns: readonly ArticleColumn[];
-  readonly rows: readonly (readonly string[])[];
+  readonly rows: readonly (readonly ArticleText[])[];
 }): React.JSX.Element {
   return (
     <table className="doc-tbl nw-tbl" role="table">
@@ -95,7 +102,9 @@ function Table({
           <tr role="row" key={row}>
             {cells.map((cell, index) => (
               <td role="cell" data-label={columns[index]?.label} key={index}>
-                <div>{named(cell)}</div>
+                <div>
+                  <Text text={cell} />
+                </div>
               </td>
             ))}
           </tr>
@@ -214,51 +223,53 @@ function Source({ source }: { readonly source: ArticleSource }): React.JSX.Eleme
         )}
         <NewTabHint href={source.url} />
       </a>
+      {source.note ? named(source.note) : null}
     </>
   );
 }
 
-/** "By Vineet, infrastructure engineer": the name a new tab to their profile, the role in the line's own case. */
-function Author({
-  author,
-}: {
-  readonly author: NonNullable<Article["author"]>;
-}): React.JSX.Element {
+/** " · By <name>, <role>": the name a new tab to their LinkedIn profile where they have one. */
+function Byline({ author }: { readonly author: Author }): React.JSX.Element {
   return (
     <>
-      {articleByline.author}
-      <a href={author.url} {...offSiteProps(author.url)}>
-        {author.name}
-        <ExternalArrow />
-        <NewTabHint href={author.url} />
-      </a>
-      {`, ${author.role.charAt(0).toLowerCase()}${author.role.slice(1)}`}
+      {articleWords.author}
+      {author.linkedin ? (
+        <a href={author.linkedin} {...offSiteProps(author.linkedin)}>
+          {author.name}
+          <ExternalArrow />
+          <NewTabHint href={author.linkedin} />
+        </a>
+      ) : (
+        author.name
+      )}
+      , {named(author.role)}
     </>
   );
 }
 
-export function ArticlePage({ id }: { readonly id: ArticleId }): React.JSX.Element {
-  const article = articles[id];
+export function ArticlePage({ article }: { readonly article: Article }): React.JSX.Element {
   const sources = article.sources ?? [];
+  const author = articleAuthor(article);
+  /* The closing row leads to the help box's product, else the article's own; an article about both offers both. */
+  const product =
+    article.help?.product ?? (article.product === "both" ? undefined : article.product);
 
   return (
-    <DocumentPage
-      hero={{ title: named(article.hero.title), deck: named(article.hero.deck) }}
-      product={article.product}
-    >
+    <DocumentPage hero={{ title: named(article.h1), deck: named(article.deck) }} product={product}>
       <DocRows
         frame="article"
         top={
           <>
             <p className="doc-updated">
-              {article.updated}
-              {article.author ? <Author author={article.author} /> : null}
-              {articleByline.by}
-              <a href={articleByline.publisher.href}>{articleByline.publisher.text}</a>
+              {articleWords.published}
+              {printedDay(article.published)}
+              {author ? <Byline author={author} /> : null}
+              {articleWords.by}
+              <a href={routes.about}>Zoorik</a>
             </p>
             {article.short ? (
               <p className="ar-short">
-                <b>{articleWords.short}</b> {named(article.short)}
+                <b>{articleWords.short}</b> <Text text={article.short} />
               </p>
             ) : null}
             {article.strip ? <ArticleStrip steps={article.strip} /> : null}
@@ -278,8 +289,10 @@ export function ArticlePage({ id }: { readonly id: ArticleId }): React.JSX.Eleme
             <>
               {article.help ? (
                 <aside className="doc-call doc-help">
-                  <p className="doc-call-t">{article.help.title}</p>
-                  <p>{named(article.help.text)}</p>
+                  <p className="doc-call-t">{`How ${products[article.help.product].name} helps`}</p>
+                  <p>
+                    <Text text={article.help.text} />
+                  </p>
                   <p className="doc-help-a">
                     {article.help.links.map((link) => (
                       <a className="alink" href={link.href} key={link.href}>
@@ -311,14 +324,17 @@ export function ArticlePage({ id }: { readonly id: ArticleId }): React.JSX.Eleme
         <div className="wrap">
           <h2 id="related-h">{articleWords.related}</h2>
           <div className="dt-grid">
-            {article.related.map((tile) => (
-              <LinkTile
-                key={tile.href}
-                href={tile.href}
-                title={named(tile.title)}
-                line={named(tile.where)}
-              />
-            ))}
+            {article.related.map((tile) => {
+              const link = titleLink({ text: tile.title, href: tile.href });
+              return (
+                <LinkTile
+                  key={tile.href}
+                  href={link.href}
+                  title={named(link.text)}
+                  line={named(tile.where)}
+                />
+              );
+            })}
           </div>
         </div>
       </section>

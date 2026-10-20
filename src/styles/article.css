@@ -127,3 +127,8 @@
 .doc-prose blockquote.ar-quote + p{margin-top:24px}
 .doc-prose .ar-quote p{margin:0;font-size:1.0625rem;font-weight:500;line-height:1.55;color:var(--text);text-wrap:pretty}
 .doc-prose p.ar-note{font-size:var(--fs-small);line-height:1.6;color:var(--muted)}
+
+/* ── a Related tile whose article is not published yet: the tile's words with no link, so hovering it changes
+   nothing (`LinkTile` with no address draws a `div.dt-a`). ── */
+@media (hover:hover){.ar-rel div.dt-a:hover .dt-t{color:inherit}}
+.ar-rel .dt:has(div.dt-a:hover){border-color:var(--line)}

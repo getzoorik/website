@@ -1,4 +1,4 @@
-import { routes } from "@/config/site";
+import { learnPath, routes } from "@/config/site";
 import type { GuideContent } from "@/content/guide";
 
 /**
@@ -803,8 +803,11 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
         },
       ],
       related: [
-        { text: "VPA vs HPA: rebalance first, then scale out", href: routes.learnVpaVsHpa },
-        { text: "Coral and the native Kubernetes autoscalers", href: routes.learnCoralAutoscalers },
+        { text: "VPA vs HPA: rebalance first, then scale out", href: learnPath("vpa-vs-hpa") },
+        {
+          text: "Coral and the native Kubernetes autoscalers",
+          href: learnPath("coral-and-native-autoscalers"),
+        },
       ],
     },
     {
