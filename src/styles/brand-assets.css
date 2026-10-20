@@ -1,0 +1,120 @@
+/* Zoorik marketing: `/brand-assets`.
+ *
+ * Ported from the mock's shared `<style>` block, rule for rule, in its order: the `.hero-cta` and `.bk-*` rules this
+ * page draws. The `.pg-*` rules of that block are /referrals's and /partners's and live in their own sheets. Imported
+ * by the page itself, so Next loads it after globals.css: where the mock carries the block, after the site system.
+ *
+ * ─── EVERY RULE IS THIS PAGE'S ALONE ──────────────────────────────────────────
+ * The App Router keeps a visited page's sheet in the document, so a rule here must not reach another page: every
+ * selector names a `bk-` class, which only this page draws, or opens on the page's <main> (`.bk-main`). The mock's
+ * two page-wide `.hero-cta .btn` rules open on `:where(.bk-main)`, which keeps their specificity the mock's
+ * (`brand-assets-css.test.ts`).
+ *
+ * The mock's `:root`, reset and base are not copied: they are the site's own (`tokens.css`, the site system), and
+ * `--sans` / `--code` stay next/font's.
+ *
+ * Changes from the mock, each marked where it stands:
+ *   - the "repo:" lines stop a site-wide rule from changing the mock's computed result;
+ *   - `.bk-g4 .bk-small img{width:48px;height:48px}` is left out: the mock's tiles carry `small`, not `bk-small`, so
+ *     the rule matches nothing there and the small marks are drawn at their file's own 64 px, as here.
+ *   - the Copy button's tick (`.bk-c1` / `.bk-c2`): the mock's script says "Copied" "with a tick" but swaps no icon;
+ *     here the tick replaces the copy squares for the 1.6 s, as on every other copy button of the site.
+ *   - the photograph behind "Don't place it on photographs" is the mock's own `hero-racks.png` (as WebP, beside the
+ *     page's feature), set by the page (`style="background-image"`) so Next serves it hashed; the rule keeps only
+ *     its place and size.
+ */
+
+/* repo: sections.css sets `.sec-head p{text-wrap:pretty}` on every page; the mock's sheet has no such rule, so its
+   section ledes wrap greedily (at 320px "The logo only works as it is drawn." breaks before "drawn.", not "is") */
+.bk-main .sec-head p{text-wrap:wrap}
+
+/* /brand-assets */
+:where(.bk-main) .hero-cta .btn svg{width:18px;height:18px}
+:where(.bk-main) .hero-cta .btn{display:inline-flex;align-items:center;gap:10px}
+.bk-sz{font-size:.8125rem;font-weight:500;opacity:.6}
+.bk-grid{display:grid;gap:16px}
+.bk-g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.bk-g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.bk-tile{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:var(--r-card);background:#fff;overflow:hidden}
+.bk-prev{display:grid;place-items:center;aspect-ratio:16/9;padding:12% 14%;border-bottom:1px solid var(--line)}
+.bk-prev img{max-width:100%;max-height:100%;width:auto;height:auto}
+.bk-g4 .bk-prev{aspect-ratio:1/1;padding:22%}
+.bk-navy{background:#050B3D}
+.bk-white{background:#fff}
+.bk-light{background:var(--surface-2)}
+.bk-tb{display:flex;flex-direction:column;flex:1;padding:18px 20px 20px}
+.bk-tb h3{font-size:1rem;font-weight:600;line-height:1.35}
+.bk-tb p{margin-top:4px;font-size:.875rem;line-height:1.5;color:var(--muted)}
+.bk-dls{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:16px}
+.bk-dl{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid var(--line);border-radius:var(--r-ctl);font-size:.8125rem;font-weight:500;color:var(--text);text-decoration:none;transition:border-color var(--d-fast) var(--ease),color var(--d-fast) var(--ease)}
+.bk-dl svg{width:14px;height:14px}
+.bk-dl:hover{border-color:var(--accent);color:var(--accent)}
+.bk-sw-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.bk-sw{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden;background:#fff}
+.bk-chip{min-height:220px}
+.bk-sw-navy .bk-chip{background:#050B3D}
+.bk-sw-bone .bk-chip{background:#FAF7F3;border-right:1px solid var(--line)}
+.bk-swb{display:flex;flex-direction:column;align-items:flex-start;padding:24px}
+.bk-swb h3{font-size:1.125rem;font-weight:600}
+.bk-hex{margin-top:10px;font:500 1.5rem/1.1 var(--code);letter-spacing:-.01em}
+.bk-rgb{margin-top:4px;font:500 .8125rem/1.4 var(--code);color:var(--muted)}
+.bk-swb > p:not(.bk-hex):not(.bk-rgb){margin-top:12px;font-size:.875rem;line-height:1.5;color:var(--muted)}
+.bk-swb .bk-copy{margin-top:auto}
+.bk-copy{display:inline-flex;align-items:center;gap:6px;margin-top:16px;padding:7px 10px;border:1px solid var(--line);border-radius:var(--r-ctl);background:#fff;font:500 .8125rem/1 var(--sans);color:var(--text);cursor:pointer;white-space:nowrap}
+.bk-copy svg{width:14px;height:14px}
+/* repo: the tick replaces the copy squares while the button says "Copied" (see the header) */
+.bk-copy .bk-c2{display:none}
+.bk-copy[data-done] .bk-c1{display:none}
+.bk-copy[data-done] .bk-c2{display:block}
+.bk-copy:hover{border-color:var(--accent);color:var(--accent)}
+.bk-copy[data-done]{border-color:var(--good);color:var(--good)}
+.bk-copy:focus-visible,.bk-dl:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.bk-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 32px;margin-top:28px}
+.bk-facts p{font-size:.9375rem;line-height:1.6;color:var(--muted)}
+.bk-facts b{color:var(--text);font-weight:600}
+.bk-space{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px}
+.bk-clear,.bk-sizes{margin:0;padding:clamp(24px,3vw,40px);border:1px solid var(--line);border-radius:var(--r-card);background:#fff}
+.bk-cbox{position:relative;width:min(100%,420px);margin:0 auto;padding:clamp(28px,4vw,46px);outline:1.5px dashed color-mix(in srgb,var(--accent) 55%,transparent);outline-offset:0;background:repeating-linear-gradient(45deg,var(--accent-wash) 0 6px,transparent 6px 12px)}
+.bk-cbox img{display:block;width:100%;height:auto;background:#fff}
+.bk-clear figcaption{margin-top:18px;text-align:center;font-size:.875rem;color:var(--muted)}
+.bk-ladder{display:flex;align-items:flex-end;gap:28px;padding-bottom:20px;border-bottom:1px solid var(--line-soft)}
+.bk-ladder span{display:flex;flex-direction:column;align-items:center;gap:8px}
+.bk-ladder small{font:500 .75rem/1 var(--code);color:var(--muted)}
+.bk-ladder .bk-sm small{color:var(--accent)}
+.bk-list{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:12px}
+.bk-list li{display:flex;gap:10px;font-size:.9375rem;line-height:1.5}
+.bk-ok{flex:none;display:grid;place-items:center;width:22px;height:22px;border-radius:var(--r-pill);background:color-mix(in srgb,var(--good) 14%,#fff);color:var(--good)}
+.bk-ok svg,.bk-no svg{width:12px;height:12px}
+.bk-donts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.bk-dont{margin:0;border:1px solid var(--line);border-radius:var(--r-card);background:#fff;overflow:hidden}
+.bk-dprev{display:grid;place-items:center;height:170px;padding:24px 40px;background:var(--surface-2);border-bottom:1px solid var(--line);overflow:hidden}
+.bk-dprev img{max-width:100%;height:auto}
+.bk-x-stretch{width:70%;transform:scaleX(1.35) scaleY(.8)}
+.bk-x-rot{width:78%;transform:rotate(-14deg)}
+.bk-x-glow{width:78%;filter:drop-shadow(0 0 10px rgba(59,91,245,.85)) drop-shadow(0 6px 6px rgba(0,0,0,.35))}
+.bk-x-mark svg{display:block;width:96px;height:96px}
+/* repo: the picture is the page's (`background-image`, the site's hero frame); the rule keeps its place and size */
+.bk-x-photo{display:grid;place-items:center;width:100%;height:100%;background-position:center;background-size:cover}
+.bk-x-photo img{width:62%}
+.bk-dprev:has(.bk-x-photo){padding:0}
+.bk-x-type{display:flex;align-items:center;gap:12px}
+.bk-x-type img{width:52px;height:52px}
+.bk-x-type span{font:italic 700 2.6rem/1 Georgia,"Times New Roman",serif;color:#050B3D}
+.bk-dont figcaption{display:flex;align-items:center;gap:10px;padding:16px 18px;font-size:.9375rem;font-weight:500}
+.bk-no{flex:none;display:grid;place-items:center;width:22px;height:22px;border-radius:var(--r-pill);background:color-mix(in srgb,var(--crit) 12%,#fff);color:var(--crit)}
+.bk-also{margin-top:20px;font-size:.9375rem;color:var(--muted)}
+.bk-rows{border-top:1px solid var(--line)}
+.bk-row{display:grid;grid-template-columns:200px minmax(0,1fr) auto;gap:24px;align-items:start;padding:20px 0;border-bottom:1px solid var(--line)}
+.bk-rk{font-size:.875rem;font-weight:500;color:var(--muted);padding-top:2px}
+.bk-text{font-size:1rem;line-height:1.6;max-width:72ch}
+.bk-note{margin-top:4px;font-size:.8125rem;color:var(--muted)}
+.bk-row .bk-copy{margin-top:0}
+.bk-ask{margin-top:32px;padding:20px 24px;border-radius:var(--r-card);background:var(--surface-2);font-size:.9375rem}
+.bk-ask a{color:var(--accent)}
+@media(max-width:1000px){.bk-g3,.bk-donts{grid-template-columns:repeat(2,minmax(0,1fr))}.bk-g4{grid-template-columns:repeat(2,minmax(0,1fr))}.bk-facts{grid-template-columns:minmax(0,1fr)}.bk-space{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:760px){
+  .bk-g3,.bk-donts,.bk-sw-grid{grid-template-columns:minmax(0,1fr)}
+  .bk-sw{grid-template-columns:96px minmax(0,1fr)}.bk-chip{min-height:0}
+  .bk-row{grid-template-columns:minmax(0,1fr);gap:8px}.bk-row .bk-copy{justify-self:start}
+  .bk-ladder{gap:18px}
+}

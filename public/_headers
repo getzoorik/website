@@ -1,0 +1,72 @@
+# Cloudflare Workers Static Assets: custom response headers. Applies only to files served from .open-next/assets.
+# 🔴 ONE Cache-Control RULE PER PATH. Matching rules merge, and two Cache-Control values on one
+# response would be joined into one contradictory header. /* sets none, so each path below has one.
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# The share cards: a month, like the PDFs. A changed picture gets a new file name, so a cached one is never stale.
+/og/*
+  Cache-Control: public, max-age=2592000
+
+# The home page's two product films and their posters:
+# a month, like the share cards. A new cut gets a new file name, so a cached one is never stale.
+/motion/*
+  Cache-Control: public, max-age=2592000
+
+# The product pages' film posters (the films' white YouTube thumbnails): a month, like
+# the share cards. A new poster gets a new file name, so a cached one is never stale.
+/films/*
+  Cache-Control: public, max-age=2592000
+
+# The Learn articles' pictures: a month, like the share cards. A changed picture gets a
+# new file name, so a cached one is never stale. Not under /learn/: a /learn/* rule would match the pages too.
+/articles/*
+  Cache-Control: public, max-age=2592000
+
+# The assessment's example reports' first pages: a month, like the PDFs they show.
+# A changed page gets a new file name, so a cached one is never stale.
+/reports/*
+  Cache-Control: public, max-age=2592000
+
+# The example report's first page at card size (/referrals): a month, like /reports. A changed page gets
+# a new file name, so a cached one is never stale.
+/programs/*
+  Cache-Control: public, max-age=2592000
+
+# The brand kit (/brand-assets): the logo and mark files and the kit's ZIP. A month in the browser, not
+# immutable: the names are stable and a redrawn file replaces its predecessor at the same address.
+/brand-kit/*
+  Cache-Control: public, max-age=2592000
+
+# The documents' PDFs. A month in the browser, but not immutable:
+# the names are stable and a rebuilt file replaces its predecessor at the same address.
+# 🔴 ONLY WHAT SHIPS. A held document has no file and no rule here; releasing one adds
+# both (src/content/documents.ts and its flag in src/config/site.ts).
+/docs/*
+  Cache-Control: public, max-age=2592000
+
+# Each PDF names the page that is its web version, so search engines index the page, not the file.
+/docs/coral-product-guide.pdf
+  Link: <https://zoorik.com/coral/guide>; rel="canonical"
+
+/docs/coral-faq.pdf
+  Link: <https://zoorik.com/coral/faq>; rel="canonical"
+
+/docs/coral-one-pager.pdf
+  Link: <https://zoorik.com/coral>; rel="canonical"
+
+/docs/amoeba-one-pager.pdf
+  Link: <https://zoorik.com/amoeba>; rel="canonical"
+
+/docs/coral-case-study-dev-cluster.pdf
+  Link: <https://zoorik.com/case-studies/coral-dev-cluster>; rel="canonical"
+
+/docs/coral-assessment-example.pdf
+  Link: <https://zoorik.com/assessment>; rel="canonical"
+
+/docs/amoeba-assessment-example.pdf
+  Link: <https://zoorik.com/assessment>; rel="canonical"

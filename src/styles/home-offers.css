@@ -1,0 +1,154 @@
+/* Zoorik marketing: the home page's motion pass, What we offer (the mock's motion block, option B
+ * of the offers concept): the free assessment as a navy card, and one 0-100% scale with a band for
+ * each range; each band sweeps in once while its figure rolls up like a counter. VERBATIM, in the
+ * mock's order: from "what we offer" to its reduced-motion rule, the shared part and "B: one
+ * scale".
+ *
+ * What differs from the mock, and why:
+ *  · THE TRIGGER. The mock's own script puts `.is-on` on the section once 35% of it is in view,
+ *    and every end state reads `.ofx.is-on …`. Here the site's one observer does it (`HomeMotion`):
+ *    the side and each row carry `.mo-r` and get `.is-in` once each is a little inside the window,
+ *    so each end state reads off its own `.is-in`. The rows keep the mock's one start: their list's
+ *    clock gives each row `--late`, which comes off its 260ms stagger (`--d0`), so rows that come in
+ *    together or close behind each other play 260ms apart from the first, and a row that comes in
+ *    after its turn plays at once. Its band and counter still wait on its `--d0`.
+ *  · THE HEADINGS. A row's name and the free card's label are h3s, where the mock sets a <p>, and
+ *    are set exactly as the mock's <p>.
+ *  · THE FOCUS RING on the navy card is the dark grounds' --accent-dark (motion.css), not --accent.
+ *  · THE ENTRANCE'S SELECTOR, `.ofx .ofx-in`. `.mo-r` is the same fade up 14px, but its rule loads
+ *    after this sheet (home-motion.css): written as the mock writes it, `.ofx-in` would lose the
+ *    tie and take `.mo-r`'s .9s and `--d` in place of its own .7s and the rows' `--d0`.
+ *  · THE COUNTER'S STRIP. The mock's strip is twenty <i> in the DOM (`.od-s`, `.od-s i`), so the
+ *    page's text reads "0123…" where it shows a 4. Here a digit holds only itself, painted
+ *    transparent, and its strip is generated content, `.od-d::before`: the same twenty figures,
+ *    1em apart, sliding up by `--v` in the same 1.5s, 90ms a digit, on the same ease. The text a
+ *    crawler, a copy or a reader without scripting gets is the range: "40–50%". The row of digits
+ *    is set inline rather than as the mock's flex row, whose items a copy splits onto six lines.
+ *  · THE ICON SLOT. It holds the Zoorik mark, its rings turning (nav.css `.zl-mark`), where the
+ *    mock draws a still sheet; the mock's two `.ofx-free-i` rules give way to the slot's own, below
+ *    them.
+ *  · CUT: `.ofx-head`, option A's head, in its rule and the two selector lists that name it. B sets
+ *    its title in `.ofx-side`, and nothing here draws one.
+ *  · Each rule that is the repo's says so ("repo:") and why, where the mock's rule it stands for
+ *    sits; two more at the foot: the end state at once under reduced motion, and the real digits
+ *    in forced colours.
+ *
+ * A mock defect kept as the mock draws it (the mock is frozen): the figure's column is a fixed
+ * 7.5rem (`.ofx-axis`, `.ofx-row`), and the figure's own size grows with the window
+ * (`.ofx-rn .od`), so from about 1150px wide the figure is wider than its column and runs past
+ * the row rules into the card's padding: 4.5px at 1280, 10px at 1440, 19px at 1920 (measured,
+ * the same in the mock). A third track of minmax(7.5rem,max-content), or about 9rem, on both
+ * would end every figure on the rules; it waits on a fix in the mock first.
+ */
+/* what we offer: the figures, a counter that rolls up and each range drawn to one scale */
+.ofx{--ease:cubic-bezier(.22,.9,.3,1)}
+.ofx-side h2{margin:0}
+.ofx-note{margin:0;font-size:var(--fs-small);color:var(--muted)}
+.ofx-h{display:flex;align-items:center;gap:10px;margin:0;font-size:1rem;font-weight:600;line-height:1.35;color:var(--text)}
+/* repo: a row's name and the free card's label are h3s where the mock sets a <p> (offers-section.tsx), so they shed
+   what the site gives every h3 (tokens.css, site-system.css) and set exactly as the mock's <p>: the tracking and the
+   balanced wrap, and for the label, which names no line height of its own, the card's. */
+.ofx-h,.ofx-free-l{letter-spacing:normal;text-wrap:wrap}
+.ofx-free-l{line-height:inherit}
+.ofx-m{display:inline-flex;flex:none}
+.ofx-m svg{width:26px;height:26px}
+.ofx-m.is-two svg + svg{margin-left:-6px}
+.ofx-cap{margin:6px 0 0;font-size:.875rem;line-height:1.45;color:var(--muted)}
+/* the rolling counter: each digit a window one figure tall over a strip of 0-9 twice over */
+.od{display:inline-block;font-variant-numeric:tabular-nums;line-height:1}
+/* repo, in place of the mock's `.od-r{display:inline-flex;align-items:flex-end}`: the same row, set inline. In a flex
+   row each digit is a block, and a copy of the figure comes out one character a line; inline, it reads "40–50%".
+   Set to the line's foot, as flex-end set them, every part lands on the mock's box (measured at 1440, to 0.01px:
+   the digits' windows sit a 64th of a pixel lower than the dash and the sign, as they do in the mock, and a window
+   set to the top instead lands one of its 0s a pixel off). */
+.od{white-space:nowrap}
+.od-r{display:inline}
+.od-d,.od-x{vertical-align:bottom}
+.od-d{display:inline-block;height:1em;overflow:hidden}
+/* repo: the strip as generated content, in the mock's `.od-s` place. The digit's own character keeps the window's
+   width and the page's text, unpainted; the strip, painted in the digit's colour, starts on its first 0 and rolls
+   to its second pass of the digit (`--v`). The mock's `.od-s` transition, word for word. Its lines are 1em rounded
+   DOWN to a 64th of a pixel: the mock's figures are boxes 1em tall, which the browser lays out at whole 64ths,
+   rounding down, while a line of text 1em tall rounds to the nearest. Fifteen figures down, that is a fifth of a
+   pixel, and the 5 of 40–50% at 1440 settled a pixel lower than the mock's (measured); `round()` puts every line
+   where the mock's box is. A browser without `round()` keeps the line of 1em. */
+.od-d{position:relative;-webkit-text-fill-color:transparent}
+.od-d::before{content:"0\A 1\A 2\A 3\A 4\A 5\A 6\A 7\A 8\A 9\A 0\A 1\A 2\A 3\A 4\A 5\A 6\A 7\A 8\A 9";position:absolute;top:0;left:0;
+  white-space:pre;line-height:round(down,1em,.015625px);-webkit-text-fill-color:currentColor;transform:translateY(0);
+  transition:transform 1.5s var(--ease) calc(var(--d0,0ms) + var(--k) * 90ms)}
+.ofx-row.is-in .od-d::before{transform:translateY(calc(var(--v) * -1em))}
+.od-x{display:inline-block}
+/* the free assessment: a navy card, its own button */
+.ofx-free{position:relative;display:flex;flex-direction:column;height:100%;box-sizing:border-box;padding:28px 26px 26px;border-radius:12px;
+  background:var(--brand);color:#fff;overflow:hidden}
+.ofx-free::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(420px 260px at 80% 0%,rgba(128,149,249,.28),rgba(128,149,249,0) 70%)}
+.ofx-free > *{position:relative}
+.ofx-free-l{display:flex;align-items:center;gap:10px;margin:0;font-size:1rem;font-weight:600}
+.ofx-free-i{display:grid;place-items:center;width:28px;height:28px;border-radius:7px;background:rgba(255,255,255,.1)}
+.ofx-free-i svg{width:16px;height:16px}
+/* repo: the slot holds the Zoorik mark, alone and at the slot's full 28px, white and one colour on the navy; its rings
+   turn by nav.css's `.zl-mark` rules. The mock's wash square with a 16px icon in it suits a line drawing, not the
+   mark. */
+.ofx-free-i{background:none;border-radius:0}
+.ofx-free-i .zl-mark{width:28px;height:28px;color:#FFFFFF;overflow:visible}
+.ofx-free-n{margin:18px 0 0;font-size:clamp(2.5rem,1.8rem + 1.4vw,3.25rem);font-weight:600;line-height:1;letter-spacing:-.045em;color:#43D9A8}
+.ofx-free-c{margin:12px 0 0;max-width:24rem;font-size:.9375rem;line-height:1.5;color:rgba(255,255,255,.7)}
+.ofx-free-go{align-self:flex-start;margin-top:auto}
+.ofx-free-c + .ofx-free-go{margin-top:24px}
+.ofx-free-go svg{width:16px;height:16px}
+/* repo: the focus ring on the navy takes the dark grounds' --accent-dark, as motion.css gives every dark ground (`.hero`,
+   `.cta-panel`, `.as-cal`): the mock's --accent ring measures 3.3:1 on #070F52, at the 3:1 floor; --accent-dark 6.3:1. */
+.ofx-free{--z-focus:var(--accent-dark)}
+/* the one entrance: up 14px, fade, a short stagger */
+.ofx .ofx-in{opacity:0;transform:translateY(14px);transition:opacity .7s var(--ease) var(--d0,0ms),transform .7s var(--ease) var(--d0,0ms)}
+.ofx .ofx-in.is-in{opacity:1;transform:none}
+
+/* ── B: one scale ── */
+.ofx-split{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.6fr);gap:clamp(32px,5vw,72px);align-items:stretch}
+.ofx-side{display:flex;flex-direction:column;gap:14px}
+.ofx-side .ofx-free{flex:1;margin-top:18px}
+.ofx-scale{display:flex;flex-direction:column;padding:28px 30px 18px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.ofx-axis{display:grid;grid-template-columns:minmax(0,15rem) minmax(0,1fr) 7.5rem;gap:24px;align-items:end;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.ofx-axis-l{font-size:.8125rem;font-weight:500;color:var(--muted)}
+.ofx-ticks{position:relative;height:18px;grid-column:2}
+.ofx-ticks span{position:absolute;left:calc(var(--t) * 1%);bottom:0;transform:translateX(-50%);font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.ofx-ticks span:first-child{transform:none}.ofx-ticks span:last-child{transform:translateX(-100%)}
+.ofx-rows{flex:1;display:flex;flex-direction:column;margin:0;padding:0;list-style:none}
+.ofx-row{--d0:calc(var(--i) * 260ms);flex:1;display:grid;grid-template-columns:minmax(0,15rem) minmax(0,1fr) 7.5rem;gap:24px;align-items:center;
+  min-height:96px;margin:0;border-bottom:1px solid var(--line-soft)}
+/* repo: the stagger keeps the mock's one start. The mock marks every row at once from its one observer, and `--i * 260ms`
+   spaces them from that moment; here each row is marked as it comes in (`HomeMotion`), and the rows' list keeps a clock
+   (`data-mo-clock`) that gives each row `--late`, how long after the first row in it came. Taken off its turn, rows that
+   come in together or close behind each other play 260ms apart from the first, as the mock's do, and a row that comes
+   in after its turn plays at once, where it would otherwise wait its stagger out again once already in view. With no
+   `--late` (no observer, reduced motion, no scripting) it is the mock's rule. */
+.ofx-row{--d0:max(0ms,calc(var(--i) * 260ms - var(--late,0ms)))}
+.ofx-row:last-child{border-bottom:0}
+.ofx-track{position:relative;height:14px;border-radius:7px;background:repeating-linear-gradient(90deg,var(--line-soft) 0 calc(25% - 1px),#fff calc(25% - 1px) 25%)}
+.ofx-track i{position:absolute;top:0;bottom:0;left:0;border-radius:7px;transform-origin:left;transform:scaleX(0)}
+.ofx-track .lo{width:calc(var(--a) * 1%);background:color-mix(in srgb,var(--accent) 16%,#fff);transition:transform 1s var(--ease) calc(var(--d0) + .2s)}
+.ofx-track .hi{left:calc(var(--a) * 1%);width:calc(var(--b) * 1%);background:var(--accent);box-shadow:0 6px 16px -6px color-mix(in srgb,var(--accent) 70%,transparent);
+  transition:transform .55s var(--ease) calc(var(--d0) + 1.05s)}
+.ofx-row[data-k="both"] .hi{background:var(--good);box-shadow:0 6px 16px -6px color-mix(in srgb,var(--good) 70%,transparent)}
+.ofx-row[data-k="both"] .lo{background:color-mix(in srgb,var(--good) 16%,#fff)}
+.ofx-row.is-in .ofx-track i{transform:none}
+.ofx-rn .od{font-size:clamp(1.75rem,1.3rem + .9vw,2.25rem);font-weight:600;letter-spacing:-.04em;color:var(--text)}
+.ofx-rn{text-align:right}
+@media (max-width:1100px){.ofx-split{grid-template-columns:minmax(0,1fr)}.ofx-side .ofx-free{margin-top:8px}}
+@media (max-width:760px){
+  .ofx-scale{padding:22px 18px 10px}
+  .ofx-axis{grid-template-columns:minmax(0,1fr)}.ofx-axis-l{display:none}.ofx-ticks{grid-column:1}
+  .ofx-row{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"l n" "t t";gap:12px 16px;padding:18px 0}
+  .ofx-rl{grid-area:l}.ofx-rn{grid-area:n;align-self:start}.ofx-track{grid-area:t}}
+@media (prefers-reduced-motion:reduce){.ofx *{transition:none!important}}
+/* repo: under reduced motion, everything in its end state from the sheet alone. The mock's script adds `.is-on` before
+   its first paint; `HomeMotion` adds `.is-in` only once the page has hydrated, so without these the side and the rows
+   would sit hidden until then. `.ofx *` reaches no pseudo-element, so the strip's transition is stopped here too. */
+@media (prefers-reduced-motion:reduce){
+  .ofx .ofx-in{opacity:1;transform:none}
+  .ofx-track i{transform:none}
+  .od-d::before{transform:translateY(calc(var(--v) * -1em));transition:none}
+}
+/* repo: in forced colours a transparent fill may be forced visible, which would set each real digit under its strip;
+   the strip goes and the digits stand as text. */
+@media (forced-colors:active){.od-d{-webkit-text-fill-color:currentColor}.od-d::before{content:none}}

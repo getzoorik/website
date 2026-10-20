@@ -1,0 +1,143 @@
+/* Zoorik marketing — the product chooser at `/login`, ported from the mock as a scoped sheet.
+ *
+ * ─── EVERY RULE IS SCOPED UNDER `.login`, AND THAT IS NOT COSMETIC ─────────────
+ * (The product's rules open on `html[data-ap]`, the page's product, then `.login`.)
+ * The mock is a STANDALONE document, so its selectors are page-wide and generic:
+ * `h1`, `main`, `.card`, `.panel`, `.foot`, `.btn-ink`. But `globals.css` is loaded by the
+ * ROOT layout, so this sheet and every other page's share one cascade, and the App Router
+ * keeps a visited route's stylesheet in the document after a client-side navigation away
+ * from it. Unscoped, one trip to `/login` and back would restyle the home page.
+ *
+ * ─── THE MOCK'S `:root` AND RESET ARE NOT COPIED ──────────────────────────────
+ * Its tokens are the site's own (`tokens.css`, `motion.css`, the site system), and its
+ * sans stack names "Inter" literally, a family next/font registers under a HASHED name:
+ * the page would quietly render in the system face. What is below is only what this page
+ * draws for itself.
+ *
+ * ─── THE "repo:" LINES ARE NOT MOCK RULES ─────────────────────────────────────
+ * Each one stops a global rule from changing the mock's computed result: Tailwind's
+ * preflight (`svg{display:block}`, `small{font-size:80%}`), tokens.css's 3px ring offset,
+ * the site system's `h1{max-width:20ch}` and its 1px-bordered `.btn-ink`, and the older
+ * `.btn-ink` in elastic.css and motion.css with its lift and its .985 press.
+ *
+ * Loaded only by `src/app/login/page.tsx`, so no other page carries a byte of it.
+ */
+
+.login{min-height:100vh;min-height:100dvh;display:grid;grid-template-columns:minmax(0,46fr) minmax(0,54fr);
+  background:var(--bg);color:var(--text);font-size:16px;line-height:1.6}
+/* repo: tokens.css offsets every ring 3px; the mock offsets 2px */
+.login :focus-visible{outline-offset:2px}
+.login a,.login button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+
+/* ---- the column: the lockup, the chooser, the legal row ---- */
+.login .col{display:flex;flex-direction:column;min-width:0;padding:clamp(28px,4vw,48px) clamp(24px,5vw,72px)}
+.login .lock{align-self:flex-start}
+/* The lockup: 47.3 × 189.8, 40.9 × 163.9 on phones. One component, two inks: the artwork paints in
+   `currentColor`, navy #050B3D in the column and bone #FAF7F3 in the panel. */
+.login .lock .brand-logo{height:47.3px;width:189.8px;color:inherit}
+@media(max-width:760px){.login .lock .brand-logo{height:40.9px;width:163.9px}}
+.login .lock.navy{color:#050B3D}
+.login .lock.bone{display:none;color:#FAF7F3}
+.login main{width:100%;max-width:480px;margin:auto 0;padding:clamp(24px,4.5vh,56px) 0}
+/* repo: max-width:none undoes the site system's global h1{max-width:20ch}; at 900px the mock's h1 is one line */
+.login h1{font-size:var(--fs-h2,clamp(1.75rem,1.3rem + 1.25vw,2.35rem));line-height:1.14;letter-spacing:-.028em;max-width:none}
+/* the product: the site's Coral | Amoeba switch, made to read as a switch on this white column: a recessed track as
+   wide as the card, two equal halves, and a black thumb that slides to the chosen product. The page's product
+   (html[data-ap], from ?p= before paint) places the thumb and the white words, so ?p=amoeba opens on Amoeba with
+   nothing to correct. One card for the chosen product below. */
+.login .lg-switch{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:32px;padding:4px;border:1px solid var(--line);
+  border-radius:var(--r-shell);background:var(--surface-2);box-shadow:inset 0 1px 2px rgba(15,18,34,.06)}
+.login .lg-switch::before{content:"";position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 6px);border-radius:var(--r-card);
+  background:var(--text);box-shadow:0 1px 2px rgba(15,18,34,.18),0 6px 14px -6px rgba(15,18,34,.45);
+  transition:transform .32s cubic-bezier(.34,1.32,.5,1)}
+html[data-ap="amoeba"] .login .lg-switch::before{transform:translateX(calc(100% + 4px))}
+.login .lg-switch a{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 12px;
+  border-radius:var(--r-card);font-size:.9375rem;font-weight:500;line-height:1.4;color:rgba(15,18,34,.74);cursor:pointer;
+  transition:color .2s var(--ease)}
+.login .lg-switch svg{width:18px;height:18px;flex:none}
+.login .lg-switch small{font-size:.8125rem;font-weight:400;color:var(--muted);transition:color .2s var(--ease)}
+html:not([data-ap="amoeba"]) .login .lg-switch a[data-p="coral"],html[data-ap="amoeba"] .login .lg-switch a[data-p="amoeba"]{color:#fff}
+html:not([data-ap="amoeba"]) .login .lg-switch a[data-p="coral"] small,html[data-ap="amoeba"] .login .lg-switch a[data-p="amoeba"] small{color:rgba(255,255,255,.62)}
+@media (hover:hover){html:not([data-ap="amoeba"]) .login .lg-switch a[data-p="amoeba"]:hover,html[data-ap="amoeba"] .login .lg-switch a[data-p="coral"]:hover{color:var(--text)}}
+.login .lg-switch a:active{scale:.98;transition-duration:var(--z-press)}
+@media (max-width:560px){.login .lg-switch a{display:grid;grid-template-columns:auto auto;column-gap:8px;justify-content:center}
+  .login .lg-switch a svg{grid-row:span 2}.login .lg-switch small{grid-column:2;margin-top:-2px}}
+@media (prefers-reduced-motion:reduce){.login .lg-switch::before{transition:none}}
+
+/* the chosen product's card */
+.login .card{margin-top:16px;padding:24px;background:#fff;border:1px solid var(--line);border-radius:var(--r-card);animation:lgSwap .26s var(--ease) both}
+html:not([data-ap="amoeba"]) .login .card[data-p="amoeba"],html[data-ap="amoeba"] .login .card[data-p="coral"]{display:none}
+@keyframes lgSwap{from{opacity:0;transform:translateY(4px)}}
+.login .card .line{font-size:1.0625rem;color:var(--text)}
+/* where each runs, as tags with their marks, the pill of the product pages' hero tags */
+.login .lg-tags{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0;padding:0;list-style:none}
+.login .lg-tag{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 11px 0 9px;border:1px solid var(--line);border-radius:var(--r-pill);
+  background:var(--surface-2);font-size:.8125rem;font-weight:500;line-height:1;color:var(--text)}
+.login .lg-tag svg{width:14px;height:14px;flex:none}
+.login .lg-tag svg.aws{width:20px;height:11px}
+.login .lg-tag svg.tux{color:var(--text)}
+.login .card .act{display:flex;flex-direction:column;align-items:flex-start;gap:2px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line-soft);
+  font-size:.875rem;color:var(--muted)}
+.login .card .soon-t{font-size:.8125rem;font-weight:500;color:var(--muted)}
+
+/* repo: border:0 and every transform:none keep the older global .btn-ink (elastic.css, motion.css)
+   and the site system's 1px transparent border out */
+.login .btn-ink{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 22px;border:0;border-radius:var(--r-ctl);
+  background:var(--text);color:#fff;font-size:.9375rem;font-weight:500;line-height:1;white-space:nowrap;transform:none;
+  transition:background var(--d-fast) var(--ease),scale var(--d-fast) var(--ease)}
+.login .btn-ink svg{width:16px;height:16px;flex:none;transition:transform var(--d-fast) var(--ease)}
+@media (hover:hover){.login .btn-ink:hover{background:var(--ink-hover,#262B40);transform:none}.login .btn-ink:hover svg{transform:translateX(2px)}}
+.login .btn-ink:focus-visible svg{transform:translateX(2px)}
+.login .btn-ink:active{transform:none;scale:.98;transition-duration:var(--z-press)}
+
+/* inline links: accent, a light underline; the hover is not gated, as in the mock */
+.login .lk{color:var(--accent);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;
+  text-decoration-color:color-mix(in srgb,var(--accent) 35%,transparent);transition:text-decoration-color var(--d-fast) var(--ease)}
+.login .lk:hover{text-decoration-color:var(--accent)}
+/* repo: display:inline undoes Tailwind preflight's svg{display:block}, which would drop the arrow onto its own line */
+.login .ext{display:inline;width:12px;height:12px;margin-left:2px;vertical-align:-1px}
+.login .new{margin-top:28px;font-size:.9375rem;color:var(--muted)}
+.login .foot{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-top:16px;
+  border-top:1px solid var(--line);font-size:.8125rem;color:var(--muted)}
+/* repo: the browser's own `smaller` (10.83px here); Tailwind preflight's small{font-size:80%} gives 10.4px */
+.login .foot small{font-size:smaller}
+/* Privacy and Terms. The colour changes at once and on any device: the mock has no transition and
+   no hover gate on this link. */
+.login .foot-legals{display:flex;gap:20px}
+.login .foot-legal{color:var(--muted);transition:none}
+.login .foot-legal:hover{color:var(--text)}
+
+/* ---- the panel: the home hero's ground and photograph, one line of brand ---- */
+.login .panel{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;
+  padding:clamp(28px,4vw,56px) clamp(28px,5vw,64px) clamp(56px,7vw,112px);background:var(--ground);color:#fff;
+  --z-focus:var(--accent-dark);--art:min(78vh,760px);--glow:min(90vh,900px)}
+.login .panel .photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;transform:scaleX(-1);
+  z-index:-2;pointer-events:none;user-select:none}
+.login .panel::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(0deg,var(--ground) 0%,rgba(11,13,20,.9) 26%,rgba(11,13,20,.45) 62%,rgba(11,13,20,.55) 100%)}
+.login .panel h2{max-width:18ch;font-size:var(--fs-h2-doc,clamp(1.5rem,1.25rem + .7vw,2rem));line-height:1.2;letter-spacing:-.025em}
+.login .panel p{margin-top:12px;max-width:40ch;font-size:1.125rem;color:rgba(255,255,255,.78);text-wrap:pretty}
+/* HALF THE MARK, TURNING (`TurningMark`). Its centre sits on the panel's right edge, centred with
+   negative margins, never a translate: `rotate` composes after `transform`, so a translate would make
+   it orbit instead of spin. The glow is stronger than the heroes' `.zk-glow`. */
+.login .panel .art{position:absolute;z-index:0;pointer-events:none;width:var(--art);height:var(--art);
+  top:50%;right:calc(var(--art) / -2);margin-top:calc(var(--art) / -2)}
+.login .panel .glow{position:absolute;z-index:0;pointer-events:none;top:50%;right:calc(var(--glow) / -2);margin-top:calc(var(--glow) / -2);
+  width:var(--glow);aspect-ratio:1;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(250,247,243,.079),rgba(250,247,243,.023) 40%,transparent 72%)}
+.login .panel > :not(.photo):not(.art):not(.glow){position:relative;z-index:1}
+/* `@keyframes zkTurn` is the site system's, one definition for every hero and this panel. The turn
+   exists only under no-preference, so reduced motion gets no animation at all. */
+@media (prefers-reduced-motion:no-preference){.login .panel .art{animation:zkTurn 48s linear infinite;will-change:rotate}}
+
+@media (max-width:900px){
+  .login{grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr}
+  .login .panel{order:-1;min-height:160px;justify-content:center;padding:24px clamp(24px,5vw,72px);--art:300px;--glow:420px}
+  .login .panel h2,.login .panel p{display:none}
+  .login .panel::after{background:rgba(11,13,20,.72)}
+  .login .lock.bone{display:block}
+  .login .lock.navy{display:none}
+  .login .col{padding-top:8px}
+}
+@media (max-width:400px){.login .card{padding:20px}}
+@media (prefers-reduced-motion:reduce){.login *,.login *::before,.login *::after{transition:none!important}.login .card{animation:none}}

@@ -1,0 +1,389 @@
+/* Zoorik marketing: the documents section, `/docs`, `/coral/guide`, `/coral/faq` and
+ * `/amoeba/guide` and `/amoeba/faq`, and the reading layout `/privacy` shares with them.
+ *
+ * Ported from the mocks' `doc-pages` block (identical in every document mock), rule for rule,
+ * in its order. Imported from globals.css after the site system and the header's menus, where
+ * the mocks put it, so a rule here is the last word for these pages.
+ *
+ * The later mocks' additions, each in the block's own place: the hub's line to the articles
+ * (`.res-more`), and the shared blocks at the end, the Updated line (`.doc-updated`) and the
+ * help box (`.doc-help`). The block's `.rl-sub` rules (a section's parts under "On this page")
+ * style nothing since the articles left the rail, so they are not ported. The /about and
+ * article pages import their own sheets after this one (about.css, article.css), as the mocks
+ * carry `new-pages` and `learn-figs` after `doc-pages`.
+ *
+ * Not ported: the mock bar and its Notes dialog, the resources row's labels (`.rr-on`), the
+ * internal answers' "More detail" disclosure (`.fq-more`, `.fq-detail`, and their mentions in
+ * the bullet, reduced-motion and print rules), and rules that style nothing here
+ * (`.dl-r.is-none`).
+ *
+ * Brought to the later mocks for the numbered rows (the guides, the FAQs, /terms, /security,
+ * /learn; their own block is doc-rows.css): the h4 sub-heading a row's prose may hold, the
+ * open block over the rows (`.fq-upd`), the placeholder's own "To come: " text (`.ph-k`), and
+ * the shared Updated and Related lines at the end.
+ *
+ * What differs from the mock, and why:
+ *  - The command well's rules are guarded with `:where(.doc-well)`: `/assessment` still draws
+ *    its own `.as-well` and `.as-copy`, and an unguarded `.as-copy .c2{display:none}` would
+ *    hide its tick. The guard adds no specificity, so every tie resolves as in the mock. It
+ *    goes when /assessment is rebuilt.
+ *  - The plain numbered lists set `list-style:decimal` and their 1em bottom margin outright:
+ *    the mock takes both from the browser, and Tailwind's preflight takes them away. The
+ *    numbered steps take the same bottom margin back: in a guide's row it is the 16px between
+ *    the last step and the row's foot.
+ *  - /privacy keeps its measured 104px landing (`.pp-prose`).
+ *  - Print also hides the bar, the skip link, the turning mark, the closing row and the footer
+ *    on a document, beyond what the mock's print block hides. */
+:root{--doc-col:720px;--doc-rail:228px;--doc-top:96px}
+.pp-prose{--doc-top:104px}
+
+/* ── the utility hero: no photo; h1, then a deck or a switch; the download block at the right ── */
+.doc-hero .hero-in{padding-top:calc(var(--nav-h) + clamp(40px,5vw,72px));padding-bottom:clamp(40px,4.5vw,64px)}
+/* reached through `.hero-in`, one class more than the hero sheet's `.hero h1`, so the 20ch
+   measure holds whatever the import order */
+.doc-hero .hero-in h1{max-width:20ch;font-size:clamp(2.5rem,1.5rem + 2.8vw,3.5rem);font-weight:600;line-height:1.06;letter-spacing:-.035em}
+.doc-deck{margin-top:16px;max-width:44rem;font-size:1.125rem;line-height:1.6;color:rgba(255,255,255,.78);text-wrap:pretty}
+/* the product switch (assessment, guides, FAQs): the product is set here, so no title repeats it */
+.as-switch{display:inline-flex;align-items:center;gap:2px;margin-top:16px;padding:3px;border:1px solid rgba(255,255,255,.16);
+  border-radius:var(--r-card);background:rgba(255,255,255,.04)}
+.as-switch a{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:var(--r-ctl);font-size:.9375rem;font-weight:500;
+  color:rgba(255,255,255,.74);-webkit-tap-highlight-color:transparent;transition:background-color var(--d-fast) var(--ease),color var(--d-fast) var(--ease)}
+.as-switch svg{width:17px;height:17px;flex:none}
+.as-switch a[aria-current="page"]{background:#fff;color:var(--text)}
+@media (hover:hover){.as-switch a:not([aria-current]):hover{color:#fff;background:rgba(255,255,255,.08)}}
+.as-switch a:focus-visible{outline:2px solid var(--accent-dark);outline-offset:2px}
+.as-switch + .doc-deck{margin-top:16px}
+/* the switch with each product's category (the assessment, the product guides and the FAQs), and on the
+   guides and FAQs the small line above it that says to choose */
+.ax-pick{margin-top:20px;font-size:.8125rem;font-weight:500;letter-spacing:.01em;line-height:1.4;color:rgba(255,255,255,.62)}
+.ax-pick + .as-switch{margin-top:8px}
+.ax-switch a small{font-size:.8125rem;font-weight:400;color:rgba(255,255,255,.58)}
+.ax-switch a[aria-current="page"] small{color:var(--muted)}
+@media(max-width:560px){.ax-switch{display:grid;grid-template-columns:1fr 1fr;width:100%}.ax-switch a{display:grid;grid-template-columns:auto 1fr;column-gap:8px;align-items:center}
+  .ax-switch a svg{grid-row:span 2}.ax-switch a small{grid-column:2;margin-top:-2px}}
+.doc-hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:clamp(28px,4vw,64px);align-items:end}
+@media (max-width:980px){
+  .doc-hero-grid{grid-template-columns:minmax(0,1fr);gap:28px}
+  .doc-hero-grid > .dl{max-width:480px}
+}
+
+/* the download block: one bordered block, one row per file (its frosted ground is the site
+   system's `.hero .dl`) */
+.dl{border:1px solid rgba(255,255,255,.16);border-radius:var(--r-card);overflow:hidden}
+.dl-r{display:grid;grid-template-columns:18px minmax(0,1fr) auto;align-items:center;gap:12px;padding:14px 16px;color:#fff;
+  -webkit-tap-highlight-color:transparent;transition:background-color var(--d-fast) var(--ease)}
+.dl-r + .dl-r{border-top:1px solid rgba(255,255,255,.1)}
+.dl-r svg{width:18px;height:18px;color:rgba(255,255,255,.72)}
+.dl-t{font-size:.9375rem;font-weight:500;line-height:1.35}
+.dl-f{font-size:.8125rem;font-weight:500;color:rgba(255,255,255,.6);font-variant-numeric:tabular-nums;white-space:nowrap}
+.dl-r:focus-visible{outline:2px solid var(--accent-dark);outline-offset:-2px;border-radius:var(--r-card)}
+@media (hover:hover){a.dl-r:hover{background:rgba(255,255,255,.05)}}
+
+/* ── the reading layout: a rail, then one column; one left edge with the hero ── */
+.doc-body{padding-bottom:clamp(56px,6vw,88px)}
+.doc-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:64px;align-items:start}
+.doc-main{min-width:0;max-width:var(--doc-col)}
+.doc-rail{display:none}
+@media (min-width:981px){ .doc-layout{grid-template-columns:var(--doc-rail) minmax(0,var(--doc-col))} .doc-rail{display:block} .doc-toc{display:none} }
+/* the rail scrolls itself when taller than the window, then hands the wheel on to the page */
+.doc-rail{position:sticky;top:104px;max-height:calc(100vh - 128px);overflow:auto;padding:2px 0 2px 2px}
+.doc-rail > p{margin-bottom:12px;font-size:.8125rem;font-weight:500;color:var(--muted)}
+.doc-rail ol,.doc-toc ol{list-style:none;margin:0;padding:0}
+.doc-rail ol a,.doc-rail .rl{display:block;padding:6px 0 6px 14px;border-left:2px solid var(--line-soft);font-size:.875rem;line-height:1.45;color:var(--muted);
+  transition:color var(--d-fast) var(--ease),border-color var(--d-fast) var(--ease)}
+.doc-rail ol a[aria-current="true"]{color:var(--text);border-left-color:var(--accent)}
+@media (hover:hover){.doc-rail ol a:hover{color:var(--text)}}
+.doc-rail a:focus-visible{outline-offset:-2px}
+.doc-rail .doc-top{margin-top:20px}
+.doc-top svg{transition:transform var(--d-fast) var(--ease)}
+@media (hover:hover){.doc-top:hover svg{transform:translateY(-2px) !important}}
+.doc-top:focus-visible svg{transform:translateY(-2px) !important}
+
+/* under 981px the rail folds into one line at the top of the column */
+.doc-toc{margin-bottom:20px;border:1px solid var(--line);border-radius:var(--r-card);background:#fff}
+.doc-toc > summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;padding:0 16px;cursor:pointer;list-style:none;
+  font-size:.9375rem;font-weight:500;-webkit-tap-highlight-color:transparent}
+.doc-toc > summary::-webkit-details-marker{display:none}
+.doc-toc > summary:focus-visible{outline-offset:-2px;border-radius:var(--r-card)}
+.doc-toc > summary svg{width:16px;height:16px;color:var(--muted);transition:transform var(--d-fast) var(--ease)}
+.doc-toc[open] > summary svg{transform:rotate(180deg)}
+.doc-toc ol{padding:0 16px 8px}
+.doc-toc ol a{display:block;padding:10px 0;border-top:1px solid var(--line-soft);font-size:.9375rem;line-height:1.4;color:var(--text)}
+@media (hover:hover){.doc-toc ol a:hover{color:var(--accent)}}
+
+/* the summary: what the guide says first, as terms and their text */
+.doc-sum{margin:0 0 64px;border-top:1px solid var(--line)}
+.doc-sum > div{display:grid;grid-template-columns:180px minmax(0,1fr);gap:24px;padding:16px 0;border-bottom:1px solid var(--line)}
+.doc-sum dt{font-size:.9375rem;font-weight:600;line-height:1.55;letter-spacing:-.006em}
+.doc-sum dd{margin:0;font-size:.9375rem;line-height:1.6;color:var(--muted);text-wrap:pretty}
+.doc-sum dd p + p{margin-top:8px}
+.doc-sum dd b{font-weight:600;color:var(--text)}
+/* on a phone each term runs into its text, so the first section starts within the first screen and a half */
+@media (max-width:640px){
+  .doc-sum{margin-bottom:24px}
+  .doc-sum > div{display:block;padding:10px 0}
+  /* the hero and the folded contents close up a little, so the first section starts on the first screen */
+  .doc-hero-grid{gap:20px}
+  .dl-r{padding-block:12px}
+  .as-switch a{padding-block:6px}
+  .doc-toc{margin-bottom:16px}
+  .doc-sum dt,.doc-sum dd{font-size:.875rem;line-height:1.55}
+  .doc-sum dt,.doc-sum dd,.doc-sum dd > p:first-child{display:inline}
+  .doc-sum dt{margin-right:.3em;color:var(--text)}
+  .doc-sum dd > p + p{display:block}
+}
+
+/* links in running text (`.pp-short`: the privacy policy's short version, above its prose) */
+.doc-sum a,.doc-prose a,.fq-body a,.doc-call a,.pp-short a{color:var(--accent);text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--accent) 35%,transparent);
+  text-underline-offset:3px;transition:text-decoration-color var(--d-fast) var(--ease)}
+@media (hover:hover){.doc-sum a:hover,.doc-prose a:hover,.fq-body a:hover,.doc-call a:hover,.pp-short a:hover{text-decoration-color:var(--accent)}}
+.doc-main [id][tabindex="-1"]:focus{outline:none}
+
+/* ── prose: one measure, one rhythm ── */
+.doc-prose{font-size:1.0625rem;line-height:1.7;color:var(--text);overflow-wrap:break-word}
+.doc-prose > section + section{margin-top:72px}
+.doc-prose section[id],.doc-prose h2,.doc-prose h3,.doc-fold,section.fq-sec[id],.fq-sec h2,.fq{scroll-margin-top:var(--doc-top)}
+.doc-prose h2,.res-head h2{font-size:clamp(1.5rem,1.25rem + .7vw,2rem);font-weight:600;line-height:1.2;letter-spacing:-.022em}
+.doc-prose h3{margin-top:40px;font-size:1.125rem;font-weight:600;line-height:1.35;letter-spacing:-.015em}
+.doc-prose h4,.doc-prose h3.doc-sub{margin-top:28px;font-size:1rem;font-weight:600;letter-spacing:-.006em;line-height:1.5}
+.doc-prose h2 + *,.doc-prose h3 + *,.doc-prose h4 + *{margin-top:12px}
+.doc-prose p{margin-top:16px}
+.doc-prose p,.doc-prose li,.fq-body li,.fq-body p{text-wrap:pretty}
+.doc-prose .doc-lede{margin-top:12px;font-size:1.125rem;line-height:1.6;color:var(--muted)}
+.doc-prose b,.doc-prose strong,.fq-body b{font-weight:600}
+.doc-prose code,.fq-body code,.doc-call code,.doc-sum code{padding:.1em .38em;border:1px solid var(--line-soft);border-radius:var(--r-ctl);background:var(--surface-2);
+  font-family:var(--code);font-size:.85em;overflow-wrap:anywhere;font-variant-numeric:normal}
+.doc-main code .nb{white-space:nowrap}
+/* bullets: one 5px dot, the only marker */
+.doc-prose ul,.fq-a,.doc-call ul{list-style:none;margin:16px 0 0;padding:0 0 0 18px}
+.doc-prose ul > li,.fq-a > li,.doc-call ul > li{position:relative;margin-top:8px}
+.doc-prose ul > li::before,.fq-a > li::before,.doc-call ul > li::before{content:"";position:absolute;left:-18px;top:.7em;
+  width:5px;height:5px;border-radius:50%;background:color-mix(in srgb,var(--muted) 60%,transparent)}
+.doc-prose ol:not(.doc-steps){margin-top:16px;padding-left:1.4em;list-style:decimal;margin-bottom:1em}
+.doc-prose ol:not(.doc-steps) > li{margin-top:8px;padding-left:.2em}
+.doc-prose ol:not(.doc-steps) > li::marker{color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* numbered steps: accent mono numerals, no box */
+.doc-steps{list-style:none;counter-reset:st;display:grid;gap:24px;margin-top:24px;padding:0;margin-bottom:1em}
+.doc-steps > li{counter-increment:st;display:grid;grid-template-columns:40px minmax(0,1fr);margin:0;padding:0}
+.doc-steps > li::before{content:counter(st,decimal-leading-zero);font-family:var(--code);font-size:.875rem;font-weight:500;
+  line-height:calc(1.0625rem * 1.7);color:var(--accent);font-variant-numeric:tabular-nums}
+.doc-steps > li > div > :first-child{margin-top:0}
+.doc-steps .doc-st{font-weight:600}
+.doc-steps .doc-st + *{margin-top:4px}
+
+/* the long sections: each subsection folds under its own heading (a link or an address that names one opens it) */
+.doc-fold{border-bottom:1px solid var(--line)}
+.doc-prose .doc-fold:not(.doc-fold + .doc-fold){margin-top:32px;border-top:1px solid var(--line)}
+.doc-fold > summary{display:grid;grid-template-columns:minmax(0,1fr) 16px;gap:16px;align-items:start;padding:18px 0;cursor:pointer;list-style:none;
+  -webkit-tap-highlight-color:transparent}
+.doc-fold > summary::-webkit-details-marker{display:none}
+.doc-fold > summary:focus-visible{outline-offset:2px}
+.doc-prose .doc-fold > summary h3{margin:0;transition:color var(--d-fast) var(--ease)}
+@media (hover:hover){.doc-fold > summary:hover h3{color:var(--accent)}}
+.doc-fold > summary .fq-chev{margin-top:calc((1.125rem * 1.35 - 16px) / 2)}
+.doc-fold[open] > summary .fq-chev{transform:rotate(180deg);color:var(--text)}
+.doc-fold-b{padding:0 0 28px}
+.doc-fold-b > :first-child{margin-top:0}
+
+/* the callout: one kind, a wash and a hairline */
+.doc-call{margin-top:24px;padding:20px 22px;border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);border-radius:var(--r-card);
+  background:var(--accent-wash);font-size:1rem;line-height:1.65}
+.doc-call > *{margin-top:8px}
+.doc-call > .doc-call-t,.doc-call > :first-child{margin-top:0}
+.doc-call-t{font-size:1rem;font-weight:600;line-height:1.5;letter-spacing:-.006em}
+.doc-call p{margin-top:8px}
+.doc-call > .doc-call-t + p{margin-top:4px}
+
+/* tables, stacking below 640px */
+.doc-tbl{width:100%;margin-top:20px;border-collapse:collapse;font-size:.9375rem;line-height:1.55}
+.doc-tbl th{text-align:left;padding:0 16px 10px 0;border-bottom:1px solid var(--line);font-size:.8125rem;font-weight:500;color:var(--muted)}
+.doc-tbl td{vertical-align:top;padding:13px 16px 13px 0;border-bottom:1px solid var(--line-soft);overflow-wrap:break-word}
+.doc-tbl code{overflow-wrap:break-word}
+.doc-tbl .sub{font-size:.8125rem;font-weight:400;color:var(--muted)}
+.doc-tbl tr > :last-child{padding-right:0}
+.doc-tbl td:first-child,.doc-tbl td:first-child b{font-weight:500}
+.doc-tbl.is-cont{margin-top:8px}
+.doc-tbl.is-cont thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media (max-width:640px){
+  .doc-tbl,.doc-tbl tbody,.doc-tbl tr,.doc-tbl td{display:block;width:100%}
+  .doc-tbl colgroup{display:none}
+  .doc-tbl thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .doc-tbl tr{padding:14px 0;border-bottom:1px solid var(--line-soft)}
+  .doc-tbl tr:first-child{border-top:1px solid var(--line)}
+  .doc-tbl td{display:grid;grid-template-columns:minmax(0,7.5em) minmax(0,1fr);gap:12px;padding:3px 0;border:0}
+  .doc-tbl td::before{content:attr(data-label);content:attr(data-label) / "";font-size:.8125rem;font-weight:500;color:var(--muted);padding-top:.15em}
+  .doc-tbl td:first-child{display:block;padding-bottom:6px;font-size:1rem}
+  .doc-tbl td:first-child::before{display:none}
+}
+
+/* ── the command well: one for the site (the guides and the assessment) ── */
+.as-well:where(.doc-well){position:relative;display:flex;align-items:stretch;min-width:0;border-radius:var(--r-card);background:var(--ground);overflow:hidden}
+.as-well:where(.doc-well) pre{flex:1 1 auto;min-width:0;margin:0;padding:14px 18px;font-family:var(--code);font-size:.875rem;line-height:1.6;color:#E9ECFB;
+  white-space:pre-wrap;overflow-wrap:anywhere;font-variant-numeric:normal}
+.as-well:where(.doc-well) pre i{font-style:normal;color:rgba(255,255,255,.5);-webkit-user-select:none;user-select:none}
+:where(.doc-well) .as-copy{flex:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:104px;padding:0 16px;border:0;
+  border-left:1px solid rgba(255,255,255,.12);background:transparent;color:#fff;font:500 .875rem/1 var(--sans);cursor:pointer;
+  -webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;transition:background-color var(--d-fast) var(--ease),color var(--d-fast) var(--ease)}
+:where(.doc-well) .as-copy svg{width:16px;height:16px;flex:none}
+:where(.doc-well) .as-copy .c2{display:none}
+:where(.doc-well) .as-copy[data-done]{color:#83DDB7}
+:where(.doc-well) .as-copy[data-done] .c1{display:none}
+:where(.doc-well) .as-copy[data-done] .c2{display:block}
+@media (hover:hover){:where(.doc-well) .as-copy:hover{background:rgba(255,255,255,.06)}}
+:where(.doc-well) .as-copy:active{background:rgba(255,255,255,.1);transition-duration:var(--z-press,90ms)}
+.as-well:where(.doc-well) :focus-visible{outline:2px solid var(--accent-dark);outline-offset:-3px}
+.doc-well{margin-top:16px}
+.doc-well-note{margin-top:8px !important;font-size:.875rem;color:var(--muted)}
+/* a one-line command stays one line at every width: it scrolls sideways under a fade, the copy button stays put */
+.as-well:where(.doc-well).is-line pre{line-height:24px;white-space:pre;overflow-wrap:normal;overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:none;overscroll-behavior-x:contain}
+.as-well:where(.doc-well).is-line pre::-webkit-scrollbar{display:none}
+.as-well:where(.doc-well).is-line pre.is-clip{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent);
+  mask-image:linear-gradient(90deg,#000 calc(100% - 36px),transparent)}
+@media (max-width:400px){.as-well:where(.doc-well).is-line .as-copy{min-width:0;padding:0 14px}}
+/* the YAML example scrolls inside its well instead of wrapping: a wrapped line would read as a new key */
+.as-well:where(.doc-well).is-yaml pre{white-space:pre;overflow-wrap:normal;overflow-x:auto;overscroll-behavior-x:contain;
+  scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.28) transparent}
+/* on a phone a guide's command keeps its lines: a narrower numeral column, a smaller face, and the copy button
+   down to its icon (the tick and the colour still say "Copied"; the label stays for screen readers) */
+@media (max-width:560px){
+  .doc-steps > li{grid-template-columns:30px minmax(0,1fr)}
+  .doc-well pre{padding:12px 14px;font-size:.8125rem}
+  .doc-well .as-copy{min-width:44px;padding:0 13px}
+  .doc-well .as-copy span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+}
+
+/* the install's OS switch: a light segmented control over the one well */
+.os{margin-top:16px}
+.os-sw{display:inline-flex;gap:2px;padding:2px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--surface-2)}
+.os-sw button{height:30px;padding:0 14px;border:0;border-radius:var(--r-ctl);background:transparent;color:var(--muted);
+  font:500 .875rem/1 var(--sans);cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:background-color var(--d-fast) var(--ease),color var(--d-fast) var(--ease),box-shadow var(--d-fast) var(--ease)}
+.os-sw button[aria-checked="true"]{background:#fff;color:var(--text);box-shadow:0 1px 2px rgba(15,18,34,.08)}
+@media (hover:hover){.os-sw button[aria-checked="false"]:hover{color:var(--text)}}
+.os-sw button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.os .as-well{margin-top:10px}
+
+/* ── the FAQ: a page of questions. Each group's name sits beside its questions (above them on a phone, where a
+   row of the group names stays under the bar); the download is one quiet line at the end ── */
+.fq-main{max-width:none}
+.fq-chips{display:none}
+.fq-sec + .fq-sec{margin-top:48px}
+.fq-sec h2{margin:0;font-size:1.25rem;font-weight:600;line-height:1.35;letter-spacing:-.015em;text-wrap:balance}
+.fq-sec-b{min-width:0}
+.fq-sec h2 + .fq-sec-b{margin-top:16px}
+.fq-sec-b > .doc-call{margin-top:0}
+.fq-list{border-top:1px solid var(--line)}
+.doc-call + .fq-list{margin-top:20px}
+.fq-dl{display:flex;flex-wrap:wrap;align-items:center;gap:10px 24px;margin-top:48px;padding-top:20px;border-top:1px solid var(--line);
+  font-size:.875rem;color:var(--muted)}
+.fq-dl a{display:inline-flex;align-items:center;gap:8px;font-weight:500;color:var(--text);transition:color var(--d-fast) var(--ease)}
+.fq-dl a svg{width:14px;height:14px;flex:none;color:var(--accent)}
+.fq-dl small{margin-left:2px;font-size:.8125rem;font-weight:500;color:var(--muted);white-space:nowrap}
+@media (hover:hover){.fq-dl a:hover{color:var(--accent)}}
+@media (min-width:981px){
+  .fq-sec{display:grid;grid-template-columns:var(--doc-rail) minmax(0,var(--doc-col));gap:0 64px;align-items:start}
+  .fq-sec h2{position:sticky;top:var(--doc-top);padding-right:8px}
+  .fq-sec h2 + .fq-sec-b{margin-top:0}
+  .fq-sec + .fq-sec{margin-top:64px}
+  .fq-dl{max-width:var(--doc-col);margin-left:calc(var(--doc-rail) + 64px)}
+  .fq-upd{max-width:var(--doc-col);margin-left:calc(var(--doc-rail) + 64px)}
+}
+@media (max-width:980px){
+  .fq-chips{position:sticky;top:var(--nav-h);z-index:20;display:flex;gap:8px;margin:-8px calc(-1 * var(--pad)) 28px;padding:10px var(--pad);
+    overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;background:#fff;border-bottom:1px solid var(--line-soft)}
+  .fq-chips::-webkit-scrollbar{display:none}
+  .fq-chips a{flex:none;display:inline-flex;align-items:center;height:32px;padding:0 12px;border:1px solid var(--line);border-radius:var(--r-pill);
+    font-size:.8125rem;font-weight:500;color:var(--text);white-space:nowrap;-webkit-tap-highlight-color:transparent;
+    transition:background-color var(--d-fast) var(--ease),border-color var(--d-fast) var(--ease),color var(--d-fast) var(--ease)}
+  .fq-chips a[aria-current="true"]{border-color:var(--text);background:var(--text);color:#fff}
+  .fq-chips a:focus-visible{outline-offset:-2px}
+  section.fq-sec[id],.fq-sec h2,.fq{scroll-margin-top:calc(var(--doc-top) + 56px)}
+}
+.fq{border-bottom:1px solid var(--line)}
+.fq > summary{display:grid;grid-template-columns:32px minmax(0,1fr) 16px;align-items:start;padding:18px 0;cursor:pointer;list-style:none;
+  -webkit-tap-highlight-color:transparent}
+.fq > summary::-webkit-details-marker{display:none}
+.fq > summary:focus-visible{outline-offset:2px}
+.fq-n{font-family:var(--code);font-size:.8125rem;font-weight:500;line-height:calc(1.0625rem * 1.5);color:var(--muted);font-variant-numeric:tabular-nums}
+.fq > summary h3{padding-right:16px;font-size:1.0625rem;font-weight:500;line-height:1.5;letter-spacing:-.01em;text-wrap:pretty;
+  transition:color var(--d-fast) var(--ease)}
+.fq[open] > summary h3{font-weight:600}
+@media (hover:hover){.fq > summary:hover h3{color:var(--accent)}}
+.fq-chev{width:16px;height:16px;margin-top:calc((1.0625rem * 1.5 - 16px) / 2);color:var(--muted);transition:transform var(--d-fast) var(--ease)}
+.fq[open] > summary .fq-chev{transform:rotate(180deg);color:var(--text)}
+.fq-body{padding:0 0 24px 32px;font-size:1rem;line-height:1.65}
+.fq-a{margin-top:0}
+.fq-a > li:first-child{margin-top:0}
+
+
+/* ── the Docs hub: one group per product, doc tiles with their PDFs ──
+   The tiles themselves (.dt*) are the site system's; the group h2 shares the document h2's rule above. */
+/* the one-pager has no page to open: its head names it, the PDF row under it downloads it */
+.dt-h{display:grid;grid-template-columns:22px minmax(0,1fr);align-items:start;gap:14px;min-height:84px;padding:20px 22px;color:var(--text)}
+.res-group + .res-group{margin-top:clamp(48px,5vw,72px)}
+.res-head{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.res-head .res-mk{width:24px;height:24px;flex:none}
+.res-head p{flex:1 1 auto;min-width:0;font-size:.9375rem;color:var(--muted)}
+.res-head h2 + p{margin-left:4px}
+.res-group .dt-grid{margin-top:24px}
+/* a PDF link keeps its label on one line; in a narrow tile its facts drop under the label */
+.res-group .dt-pdf{container-type:inline-size}
+.res-group .dt-pdf a span{white-space:nowrap}
+@container (max-width:280px){
+  .res-group .dt-pdf a{display:grid;grid-template-columns:14px minmax(0,auto);column-gap:8px;row-gap:0}
+  .res-group .dt-pdf a small{grid-column:2}
+}
+@supports (grid-template-rows:subgrid){
+  @media (min-width:981px){
+    .res-group .dt-grid{grid-template-rows:auto auto}
+    .res-group .dt{display:grid;grid-row:span 2;grid-template-rows:subgrid;row-gap:0}
+    .res-group .dt-pdf{margin-top:0;align-content:flex-start}
+  }
+}
+@media (max-width:560px){.res-head p{flex-basis:100%;margin-left:0 !important;order:3}.res-head .alink{margin-left:auto}
+  /* stacked on a phone: the tiles close up a little, so both groups fit in about three screens */
+  .res-group + .res-group{margin-top:40px}
+  .res-group .dt-grid{gap:12px;margin-top:20px}
+  .res-group .dt-pdf{padding-block:10px}}
+
+/* after the two groups, one line to the articles */
+.res-more{margin-top:clamp(40px,4.5vw,64px);padding-top:20px;border-top:1px solid var(--line)}
+@media (max-width:560px){.res-more{margin-top:32px}}
+
+/* ── placeholders: a fact the sources don't give yet (the Amoeba guide and FAQ). "To come: " is the placeholder's own
+   text, at 500 (`.ph-k`), and each one carries data-nosnippet, so a search result never quotes it ── */
+.ph{padding:0;border:0;border-radius:0;background:none;color:var(--muted);font-style:normal;text-decoration:none}
+.ph-k{font-weight:500}
+.hero .ph{border:0;background:none;color:rgba(255,255,255,.62)}
+/* guarded like the well's own rules: `:where()` adds no specificity, so it ties as in the mock */
+.as-well:where(.doc-well) .ph{color:rgba(255,255,255,.66)}
+
+@media (prefers-reduced-motion:reduce){
+  .dl-r,.doc-rail ol a,.doc-toc > summary svg,.fq > summary h3,.fq-chev,:where(.doc-well) .as-copy,.os-sw button,.doc-top svg,
+  .as-switch a,.fq-chips a,.fq-dl a,.doc-fold > summary h3{transition:none}
+  .doc-top:hover svg,.doc-top:focus-visible svg{transform:none !important}
+}
+@media print{
+  .doc-rail,.doc-toc,.fq-chips,.fq-chev{display:none}
+  .fq-sec h2{position:static}
+  .fq-body{padding-left:32px}
+  /* a document prints its text: no fixed bar over every page, no skip link at the foot of each, no
+     turning mark, closing row or footer */
+  body:has(.doc-main) :is(.nav,.skip,.zk-art,.zk-glow,#assess,.site-foot){display:none}
+}
+
+/* ══ SHARED BLOCKS ══ */
+/* the Updated line: the reading column's first line, /privacy's date-line pattern */
+.doc-updated{margin:0 0 18px;font-size:.875rem;line-height:1.5;color:var(--muted)}
+.doc-updated a{color:inherit;text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--muted) 45%,transparent);text-underline-offset:3px}
+/* the Help box: the guide's callout, a title, one paragraph, two .alinks */
+.doc-help .doc-help-a{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:14px}
+.doc-help .doc-help-a .alink{text-decoration:none;color:var(--text)}
+/* the Related line: a muted .875rem line after a named guide section */
+.doc-related{margin-top:16px;font-size:.875rem;line-height:1.6;color:var(--muted)}
+.doc-prose .doc-related a,.doc-related a{color:var(--accent)}
+
+/* the hub's Open source group: the code brackets in the accent, in the product marks' slot */
+.res-head .op-mk{color:var(--accent)}

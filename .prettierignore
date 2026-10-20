@@ -1,0 +1,20 @@
+node_modules
+.next
+out
+.open-next
+.wrangler
+cloudflare-env.d.ts
+next-env.d.ts
+package-lock.json
+*.md
+
+# 🔴 THE PORTED DESIGN SHEET IS NOT OURS TO REFORMAT.
+#
+# `src/styles/*.css` is the design mock's stylesheet, copied verbatim and split
+# only where the mock's own section markers fall. Its value is that it stays
+# diffable against the file it came from — reformatting it (Prettier expands the
+# multi-declaration single lines the sheet is authored in) would rewrite roughly
+# every line and make the next comparison against the mock impossible to read.
+#
+# TypeScript and TSX in this repo ARE formatted; only the port is exempt.
+src/styles/

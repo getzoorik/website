@@ -1,0 +1,71 @@
+{
+  // Cloudflare Workers config for the Zoorik marketing site.
+  //
+  // The Next.js app is bundled by @opennextjs/cloudflare (OpenNext) into
+  // `.open-next/worker.js` + `.open-next/assets`. OpenNext rather than a static
+  // export because the site has a route handler, `/api/lead`, behind the
+  // contact form.
+  //
+  // 🔴 THIS WORKER IS "zoorik-marketing" AND OWNS ONLY THE ZOORIK HOSTNAMES
+  // LISTED BELOW. Never give it the name of another Worker on the account: the
+  // first deploy would point that Worker's live domains at this app.
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "zoorik-marketing",
+  // OpenNext's Worker, wrapped so the home page's films are served by byte
+  // range (custom-worker.ts; Safari plays a video only from a server that
+  // answers ranges, and the static assets do not).
+  "main": "custom-worker.ts",
+  "compatibility_date": "2026-07-24",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+    // The films' folder only: the Worker answers the films' byte ranges and
+    // hands their posters straight back to the assets. A pattern can only end
+    // in "*" (measured: "/motion/*.mp4" matched nothing). Every other file is
+    // served by the assets directly.
+    "run_worker_first": ["/motion/*"],
+  },
+  // Custom-domain routes. Declaring them here keeps the hostname attachments on
+  // this Worker across deploys instead of orphaning or duplicating them. Both
+  // apex and www must stay listed: www only redirects (next.config.ts 308s it to
+  // the apex) if its requests reach this Worker.
+  //
+  // These were written for zoorik.com specifically, NOT copied from another
+  // site's config — copying that block would rebind that site's live domains
+  // to this Worker.
+  //
+  // 🔴 Now that this Worker owns these hostnames, "name" MUST stay
+  // "zoorik-marketing". Renaming it creates a second Worker and leaves
+  // zoorik.com pointing at the old one.
+  // The alias hosts, www.zoorik.com included, do NOT serve the site;
+  // next.config.ts 308s them to zoorik.com. REDIRECT_HOSTS there and this list must stay in step: a host
+  // routed but not redirected silently serves a second copy of the site.
+  //
+  "routes": [
+    { "pattern": "zoorik.com", "custom_domain": true },
+    { "pattern": "www.zoorik.com", "custom_domain": true },
+    { "pattern": "zoorik.in", "custom_domain": true },
+    { "pattern": "www.zoorik.in", "custom_domain": true },
+    { "pattern": "zoorik.net", "custom_domain": true },
+    { "pattern": "www.zoorik.net", "custom_domain": true },
+    // Attaching these fails while the zone still has the registrar's parking
+    // records (A 207.207.210.x, www CNAME uixie.porkbun.com): delete them first.
+    { "pattern": "zoorick.com", "custom_domain": true },
+    { "pattern": "www.zoorick.com", "custom_domain": true },
+  ],
+  "vars": {
+    // 🔴 EMPTY ON PURPOSE: THE LEAD PROXY IS OFF. It forwarded to an insights
+    // gateway on a domain Zoorik no longer uses, and no Zoorik host serves
+    // insights yet. While this is empty, /api/lead answers 503 and the contact
+    // form asks the visitor to e-mail hello@zoorik.com instead.
+    //
+    // The key stays, set to "", because the deploy runs with --keep-vars:
+    // removing it would leave the old value in place on the Worker. Set it to
+    // the Zoorik insights origin once one exists.
+    "INSIGHTS_URL": "",
+  },
+  "observability": {
+    "enabled": true,
+  },
+}

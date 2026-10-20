@@ -1,0 +1,80 @@
+/* Zoorik marketing — the design tokens, verbatim, including the sanctioned palette exception.
+ *
+ * Ported VERBATIM from the mock's inline stylesheet. It is a contiguous
+ * slice of the original, split only where the mock's own section markers
+ * fall, so this file stays diffable against the design it came from.
+ * Values are copied, never reinterpreted.
+ */
+/* ===== Zoorik - Direction 01, Deep Navy ===== */
+:root{
+  --brand:#070F52; --accent:#3B5BF5;
+  /* Dark-ground variants. Derived exactly the way the brand sheet derives #8E98EB
+     from #070F52: hue and saturation held, lightness raised until the value clears
+     the sheet's own 7:1 bar on the dark ground #0B0D14.
+       --ground       #0B0D14  the sheet's dark ground
+       --brand-dark   #8E98EB  7.25:1  (the sheet's own value, wordmark on dark)
+       --accent-dark  #8095F9  7.01:1  (accent on dark)
+     --good #12A97A (6.45:1) and --warn #D9821F (6.62:1) already clear AA on the
+     dark ground unchanged, so they are used verbatim on both grounds. */
+  --ground:#0B0D14; --brand-dark:#8E98EB; --accent-dark:#8095F9;
+  --bg:#FFFFFF; --surface:#FFFFFF; --surface-2:#F6F7FB;
+  --text:#0F1222; --muted:#6B7086;
+  --good:#12A97A; --warn:#D9821F; --crit:#E03E5C;
+  --line:#E4E7F2; --line-soft:#EFF1F8;
+
+  --accent-wash:color-mix(in srgb,var(--accent) 9%,transparent);
+  --shadow-3:0 24px 60px -28px rgba(15,18,34,.20);
+  --shadow-2:0 2px 8px rgba(15,18,34,.05);
+  /* 🔴 THE VARIABLE COMES FIRST, THE NAME IS ONLY A FALLBACK. next/font
+     registers a hashed family, so the literal "Inter" never matches it and a
+     stack that led with the name would quietly render in the system face. */
+  --sans:var(--font-inter),"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --code:var(--font-plex-mono),"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;
+  /* ---------- RADIUS ----------
+     Four tokens. Every corner on the page is one of them, 0, or 50%.
+
+       --r-ctl    things you OPERATE or read as a single glyph: buttons, inputs,
+                  the nav toggle, social tiles, the product-mark tile, the readout
+                  bar segments.
+       --r-card   surfaces that HOLD content: cards, panels, KPI tiles.
+       --r-shell  the singular outer frame of a whole composition, and the CEILING:
+                  the console window and the closing panel. Nothing exceeds 6px.
+       --r-pill   capsule, and only where the capsule IS the meaning - chips and
+                  badges. NEVER retune this to a finite value: three sites depend
+                  on it and all three would silently become rounded rectangles.
+       50%        true circles. A shape, not a scale step, so it stays a literal.
+
+     Nothing lands between --r-shell and --r-pill. A control is always tighter than
+     the card it sits in, and a card is always tighter than the shell it sits in, so
+     nesting is correct by construction rather than by tuning. If a new component
+     thinks it wants 10px, it wants --r-card.
+
+     The old names (--r-sm/--r-md/--r-lg/--r-xl) are DELETED rather than retuned, so
+     that no site can silently inherit a new value: a site missed during the sweep
+     resolves to an invalid var, computes to 0, and goes visibly square. */
+  --r-hair:1px;/* marks thinner than the smallest control: a 5px bar given --r-ctl
+     clamps to 2.5px and silently becomes a CAPSULE, which is the one shape the
+     radius rule reserves for chips and badges. This step keeps a thin rule a rule. */
+  --r-ctl:3px;--r-card:4px;--r-shell:6px;--r-pill:999px;
+  --d-fast:200ms;--d-mid:380ms;--d-slow:600ms;
+  --ease:cubic-bezier(.22,.9,.3,1);--spring:cubic-bezier(.34,1.32,.5,1);
+  --col:1520px;--pad:clamp(20px,4.5vw,52px);
+}
+
+*{box-sizing:border-box}
+html{font-family:var(--sans)}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);
+  font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.wrap{max-width:var(--col);margin:0 auto;padding-inline:var(--pad)}
+h1,h2,h3,h4{margin:0;text-wrap:balance;font-weight:600}
+h1{font-size:clamp(2.4rem,5.4vw,4.1rem);line-height:1.04;letter-spacing:-.04em}
+h2{font-size:clamp(1.7rem,3.1vw,2.35rem);line-height:1.14;letter-spacing:-.028em}
+h3{font-size:1.125rem;line-height:1.35;letter-spacing:-.015em}
+h4{font-size:.9375rem;letter-spacing:-.01em}
+p{margin:0}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--z-focus,var(--accent));outline-offset:3px;border-radius:var(--r-ctl)}
+.num{font-variant-numeric:tabular-nums}
+.lab{font-size:.8125rem;font-weight:500;color:var(--muted)}
+.mono{font-family:var(--code);font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums}

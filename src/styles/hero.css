@@ -1,0 +1,57 @@
+/* Zoorik marketing — the hero header.
+ *
+ * Ported VERBATIM from the mock's inline stylesheet. It is a contiguous
+ * slice of the original, split only where the mock's own section markers
+ * fall, so this file stays diffable against the design it came from.
+ * Values are copied, never reinterpreted.
+ */
+/* ---------- hero ---------- */
+.hero{position:relative;isolation:isolate;background:var(--ground);color:#fff;overflow:hidden}
+
+/* The photograph. Measured on the source frame: the lit racks occupy x 0.35-0.70
+   and the right 30% is empty black (band mean 6-8/255 against --ground's 13/255).
+   scaleX(-1) mirrors that empty third under the headline, so the type sits on the
+   photo's own negative space and the scrim can stay light over the racks. The box
+   is inset from the left as well, so the rack edge lands clear of the text column. */
+.hero-photo{position:absolute;top:0;right:0;height:100%;width:min(70%,1160px);
+  object-fit:cover;object-position:50% 50%;transform:scaleX(-1);
+  z-index:-2;pointer-events:none;user-select:none}
+
+/* Two scrims. Horizontal: opaque ground across the type column, releasing over the
+   racks and closing part-way at the right edge so the frame holds. Vertical: darkens
+   the strip under the fixed nav so the wordmark holds 7.25:1 there. It does NOT fade
+   to solid at the bottom - the photograph runs to the edge and the hero ends on a
+   clean cut against the white section below, not on a soft grey shelf. */
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:
+    linear-gradient(90deg,var(--ground) 0%,var(--ground) 34%,rgba(11,13,20,.90) 47%,
+      rgba(11,13,20,.55) 60%,rgba(11,13,20,.30) 76%,rgba(11,13,20,.44) 100%),
+    linear-gradient(180deg,rgba(11,13,20,.62) 0%,rgba(11,13,20,0) 18%,
+      rgba(11,13,20,0) 74%,rgba(11,13,20,.34) 100%)}
+.hero-in{padding-top:calc(var(--nav-h) + clamp(64px,9vw,132px));padding-bottom:clamp(76px,9.5vw,124px)}
+.hero h1{max-width:21ch;color:#fff;text-wrap:balance}
+.hero-sub{margin-top:24px;max-width:56ch;color:rgba(255,255,255,.80);font-size:1.09rem;line-height:1.7}
+.hero-cta{display:flex;gap:var(--s3);margin-top:var(--s6);flex-wrap:wrap}
+/* The stat row that stood here is gone with its three figures. The product
+   lockups that replaced it are `.hero-prods` in site-system.css. */
+
+/* Narrower viewports: the text column takes the full width, so the photo widens and
+   drops behind a flatter, heavier scrim - it becomes texture rather than subject. */
+@media(max-width:1080px){
+  .hero-photo{width:82%}
+  .hero::after{background:
+    linear-gradient(90deg,var(--ground) 0%,var(--ground) 26%,rgba(11,13,20,.93) 42%,
+      rgba(11,13,20,.72) 60%,rgba(11,13,20,.50) 80%,rgba(11,13,20,.58) 100%),
+    linear-gradient(180deg,rgba(11,13,20,.62) 0%,rgba(11,13,20,0) 18%,
+      rgba(11,13,20,0) 74%,rgba(11,13,20,.34) 100%)}
+}
+@media(max-width:760px){
+  .hero-photo{width:100%}
+  /* Full-bleed here, so the vertical scrim pins the nav strip to flat ground for the
+     nav's own 80px - in px, not %, so it cannot drift with hero height. The wordmark
+     must hold the sheet's #8E98EB-on-#0B0D14 figure of 7.25:1, not merely clear 4.5. */
+  .hero::after{background:
+    linear-gradient(90deg,rgba(11,13,20,.84) 0%,rgba(11,13,20,.74) 55%,rgba(11,13,20,.80) 100%),
+    linear-gradient(180deg,var(--ground) 0,var(--ground) 84px,rgba(11,13,20,.24) 26%,
+      rgba(11,13,20,.30) 74%,rgba(11,13,20,.52) 100%)}
+}

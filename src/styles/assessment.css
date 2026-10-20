@@ -1,0 +1,186 @@
+/* /assessment: the mocks' flow sheet, verbatim but for the h1's selector and the placeholder pill (the site never shows
+   one). */
+/* ══ THE ASSESSMENT ══════════════════════════════════════════════════════════════════════════════════════════════════
+   Hero: the words, the product switch and three chips on the left; the two lines to copy on the right. What you get:
+   Coral's run and Amoeba's run side by side, each typed, then its PDF to download. What it does: the navy band.
+   After the run: two cards. */
+.ax-hero{overflow:hidden}
+.ax-hero::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(48% 64% at 80% 58%,rgba(59,91,245,.22),transparent 72%),radial-gradient(30% 40% at 96% 100%,rgba(9,18,77,.9),transparent 80%)}
+/* two sides: on the left the title, and under it the line saying to choose and the switch; on the
+   right the command the switch picks and its two lines */
+.ax-hero-in{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;align-items:center}
+/* the right side is exactly one What you get column wide ((100% - 40px) / 2), so the hero's shell stands right above the
+   Amoeba run's; 400: the title on two lines */
+@media(min-width:1100px){.ax-hero-in{grid-template-columns:minmax(400px,1fr) calc((100% - 40px) / 2);gap:72px}}
+.ax-hero-r{width:100%;min-width:0}
+/* the site's utility-hero rule is .doc-hero .hero-in h1 (20ch), so the assessment's narrower h1 matches its selector */
+.ax-hero .hero-in h1{max-width:13ch}
+/* the line to choose is set like the lines under the command */
+.ax-sub{margin:0;font-size:var(--fs-small,.875rem);line-height:1.6;color:rgba(255,255,255,.78);text-wrap:pretty}
+.ax-switch{margin-top:12px}
+.ax-pick{margin-top:28px}
+/* the switch's own look (the category under each name) is shared with the product guides */
+/* under the switch: the chosen product's line to copy, what to do first, and where Cloud Shell keeps the PDF */
+.ax-hero-run{width:100%}
+/* the shell is What you get's terminal: one box with one hairline and its bar, nothing round it, the line, the switch,
+   the shell and the two lines on one left edge, 16 px apart; a soft blue under-light lifts it off the dark hero, and
+   Copy is the one white button. The product mark sits under the bar's first dot, 14 px in, at every width. */
+.ax-hero .ax-cmds{background:#121629;box-shadow:0 30px 80px -36px rgba(59,91,245,.55),0 24px 48px -28px rgba(0,0,0,.7)}
+.ax-hero .ax-copy{height:34px;padding:0 12px;font-size:.8125rem;background:#fff;border-color:#fff;color:var(--text)}
+@media (hover:hover){.ax-hero .ax-copy:hover{background:#E9ECFB;border-color:#E9ECFB}}
+.ax-hero .ax-copy:active{background:#DCE1EE;border-color:#DCE1EE}
+.ax-hero .ax-copy[data-done]{background:#83DDB7;border-color:#83DDB7;color:var(--ground)}
+.ax-hero .ax-pm{justify-self:start;margin-left:14px}
+@media(max-width:560px){.ax-hero .ax-copy{width:36px;padding:0}.ax-hero .ax-lines li{grid-template-columns:40px minmax(0,1fr) auto}}
+.ax-hero .ax-under{color:rgba(255,255,255,.62)}
+.ax-hero .ax-under b{color:#fff}
+.ax-hero .ax-under code{color:#fff;background:rgba(255,255,255,.08)}
+/* the run's output, as a terminal prints it */
+.ax-term{border:1px solid rgba(255,255,255,.10);border-radius:6px;background:#121629;box-shadow:0 30px 60px -32px rgba(15,18,34,.45)}
+.ax-term-bar{display:flex;align-items:center;gap:6px;height:34px;padding:0 14px;border-bottom:1px solid rgba(255,255,255,.07)}
+.ax-term-bar i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.16)}
+.ax-term-bar span{margin-left:8px;font-size:.75rem;font-weight:500;color:rgba(255,255,255,.55)}
+.ax-term-b{padding:18px 20px 22px;font-family:var(--code);font-size:.875rem;line-height:1.9;color:#E9ECFB}
+.ax-term-b .ln{white-space:pre-wrap;overflow-wrap:anywhere}
+.ax-term-b .p,.ax-term-b .k{color:rgba(255,255,255,.48)}
+.ax-term-b .ok{color:#83DDB7}
+.ax-term-b .v{color:#83DDB7;font-weight:500}
+.ax-term-b .f{color:#fff}
+@media(max-width:560px){.ax-term-b{font-size:.75rem;padding:14px 14px 18px}}
+
+/* ── Run it: one block, two lines, a copy button on each ── */
+.ax-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 40px;margin-bottom:28px}
+.ax-head h2{margin:0}
+.ax-head p{margin-top:12px;max-width:52ch;font-size:var(--fs-deck,1.125rem);line-height:1.6;color:var(--muted);text-wrap:pretty}
+/* What you get: both products' runs side by side; each types its one line, prints its result, then hands over its PDF */
+.ax-get-in{display:grid;grid-template-columns:minmax(0,1fr);gap:48px 40px;align-items:start}
+@media(min-width:981px){.ax-get-in{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ax-demo{min-width:0}
+.ax-demo-h{display:flex;align-items:center;gap:8px;margin:0 0 14px;font-size:1rem;font-weight:600;color:var(--text)}
+.ax-demo-h svg{width:20px;height:20px;flex:none}
+.ax-demo-h small{font-size:.875rem;font-weight:400;color:var(--muted)}
+.ax-demo .ax-term-b{min-height:calc(4 * 1.9em + 40px)}
+.ax-demo .ty::after{content:"";display:none;width:.55em;height:1.15em;margin-left:2px;vertical-align:-3px;background:#E9ECFB}
+.ax-demo .ty.is-typing::after{display:inline-block;animation:axCaret 1s steps(1) infinite}
+@keyframes axCaret{50%{opacity:0}}
+.ax-file{display:flex;align-items:center;gap:16px;margin-top:16px;padding:14px 14px 14px 16px;border:1px solid var(--line);border-radius:6px;
+  background:#fff;box-shadow:0 1px 2px rgba(15,18,34,.04),0 18px 36px -24px rgba(15,18,34,.30)}
+.ax-file-th{width:46px;height:auto;aspect-ratio:909/1287;flex:none;border-radius:2px;box-shadow:0 0 0 1px var(--line)}
+.ax-file-t{display:flex;flex-direction:column;gap:3px;min-width:0;margin-right:auto}
+.ax-file-t b{font-family:var(--code);font-size:.8125rem;font-weight:500;color:var(--text);overflow-wrap:anywhere}
+.ax-file-t span{font-size:.8125rem;color:var(--muted)}
+.ax-dl{display:inline-flex;align-items:center;gap:8px;flex:none;height:40px;padding:0 16px;border-radius:var(--r-ctl);background:var(--text);color:#fff;
+  font-size:.875rem;font-weight:500;text-decoration:none;transition:transform var(--d-fast) var(--spring),background-color var(--d-fast) var(--ease)}
+.ax-dl svg{width:16px;height:16px}
+@media (hover:hover){.ax-dl:hover{background:#262a3d}}
+.ax-dl:active{transform:scale(.97)}
+.ax-dl:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media(max-width:420px){.ax-file{flex-wrap:wrap}.ax-dl{width:100%;justify-content:center}}
+/* the motion, only once the run is in view and only for readers who allow motion: the page draws the finished runs, and
+   the script arms them (hides what is still to come) just before playing */
+.ax-demo.is-armed .ln{opacity:0}
+.ax-demo.is-armed .ln.on{opacity:1;transition:opacity .28s var(--ease)}
+.ax-demo.is-armed .ax-file{opacity:0;transform:translateY(14px)}
+.ax-demo.is-armed .ax-file.on{opacity:1;transform:none;transition:opacity .4s var(--ease),transform .55s var(--spring)}
+.ax-demo .ax-file.on .ax-dl{animation:axNudge .6s var(--spring) .35s 1}
+@keyframes axNudge{40%{transform:scale(1.05)}100%{transform:none}}
+.ax-cmds{border-radius:6px;background:var(--ground);box-shadow:0 30px 60px -32px rgba(15,18,34,.45);overflow:hidden}
+.ax-cmds-bar{display:flex;align-items:center;gap:6px;height:36px;padding:0 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.ax-cmds-bar i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.16)}
+.ax-cmds-bar span{margin-left:8px;font-size:.75rem;font-weight:500;color:rgba(255,255,255,.55)}
+.ax-lines{margin:0;padding:6px 0;list-style:none}
+.ax-lines li{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;min-height:64px;padding:0 10px 0 0}
+html:not([data-ap="amoeba"]) .ax-lines li[data-p="amoeba"],html[data-ap="amoeba"] .ax-lines li[data-p="coral"]{display:none}
+.ax-lines li{animation:axSwap .26s var(--ease) both}
+@keyframes axSwap{from{opacity:0;transform:translateY(4px)}}
+.ax-pm{justify-self:center;display:grid;place-items:center}
+.ax-pm svg{width:20px;height:20px}
+.ax-lines pre{min-width:0;margin:0;padding:14px 12px 14px 0;font-family:var(--code);font-size:1rem;line-height:1.5;color:#E9ECFB;
+  white-space:pre-wrap;font-variant-numeric:normal}
+.ax-lines pre i{font-style:normal;color:rgba(255,255,255,.45);-webkit-user-select:none;user-select:none}
+.ax-copy{display:inline-flex;align-items:center;gap:8px;height:38px;padding:0 14px;border:1px solid rgba(255,255,255,.14);border-radius:var(--r-ctl);
+  background:transparent;color:#fff;font:500 .875rem/1 var(--sans);cursor:pointer;-webkit-tap-highlight-color:transparent;
+  transition:background-color var(--d-fast) var(--ease),border-color var(--d-fast) var(--ease),color var(--d-fast) var(--ease)}
+.ax-copy svg{width:15px;height:15px;flex:none}
+.ax-copy .c2{display:none}
+.ax-copy[data-done]{color:#83DDB7;border-color:rgba(131,221,183,.4)}
+.ax-copy[data-done] .c1{display:none}
+.ax-copy[data-done] .c2{display:block}
+@media (hover:hover){.ax-copy:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.28)}}
+.ax-copy:active{background:rgba(255,255,255,.12)}
+.ax-copy:focus-visible{outline:2px solid var(--accent-dark);outline-offset:2px}
+.ax-under{margin-top:16px;font-size:var(--fs-small,.875rem);line-height:1.6;color:var(--muted);text-wrap:pretty}
+.ax-under b{font-weight:500;color:var(--text)}
+/* the clouds' marks in place of "(Azure)" and "(AWS)"; the names stay for screen readers */
+.ax-cl{white-space:nowrap}
+.ax-cl svg{display:inline-block;flex:none;margin-right:6px;vertical-align:-2px}
+.ax-cl svg.az{width:14px;height:14px}
+.ax-cl svg.aws{width:22px;height:12px;vertical-align:-1px}
+.ax-under code{font-family:var(--code);font-size:.92em;padding:1px 6px;border-radius:var(--r-ctl);white-space:nowrap}
+.ax-under + .ax-under{margin-top:8px}
+@media(max-width:560px){
+  .ax-lines li{grid-template-columns:36px minmax(0,1fr) auto;padding-right:8px}
+  .ax-pm svg{width:18px;height:18px}
+  .ax-lines pre{font-size:.875rem}
+  .ax-copy{width:40px;padding:0;justify-content:center}
+  .ax-copy span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+}
+@media (prefers-reduced-motion:reduce){.ax-copy{transition:none}.ax-lines li{animation:none}}
+
+
+/* ── What it does, as drawn ── */
+.oc{background:var(--brand);color:#fff}
+.oc .ax-head h2{color:#fff}
+.oc-facts{display:grid;grid-template-columns:minmax(0,1fr);margin:0;border-top:1px solid rgba(255,255,255,.14)}
+@media(min-width:900px){.oc-facts{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.oc-facts>div{padding:28px 0 30px;border-bottom:1px solid rgba(255,255,255,.14);min-width:0}
+@media(min-width:900px){.oc-facts>div{padding:30px 32px 34px 0;border-bottom:0}.oc-facts>div+div{padding-left:32px;border-left:1px solid rgba(255,255,255,.14)}}
+.oc-facts dt{display:flex;align-items:center;gap:12px;font-size:1.0625rem;font-weight:600;color:#fff}
+.oc-facts dt svg{width:22px;height:22px;color:var(--accent-dark)}
+.oc-facts dd{margin:12px 0 0;font-size:.9375rem;line-height:1.65;color:rgba(255,255,255,.72);text-wrap:pretty}
+.oc-facts dd code{font-family:var(--code);font-size:.84em;color:#fff;background:rgba(255,255,255,.1);padding:2px 6px;border-radius:var(--r-ctl)}
+.oc-send dd b{display:block;font-size:2rem;font-weight:500;letter-spacing:-.02em;color:#fff;margin-top:4px}
+.oc-trust{display:flex;flex-wrap:wrap;gap:10px;margin:32px 0 0;padding:0;list-style:none}
+.oc-tl{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 16px;border:1px solid rgba(255,255,255,.22);border-radius:var(--r-pill);color:#fff;text-decoration:none;font-size:.9375rem}
+a.oc-tl:hover{border-color:rgba(255,255,255,.5)}
+.oc-tl svg{width:18px;height:18px;color:var(--accent-dark)} .oc-tl .ext{width:11px;height:11px}
+.brs{display:flex;flex-wrap:wrap;gap:12px;margin:28px 0 0;align-items:center}
+.br{display:inline-flex;align-items:center;gap:14px;min-height:60px;padding:10px 18px 10px 14px;border:1px solid var(--line);border-radius:var(--r-card);background:#fff;color:var(--text);text-decoration:none;transition:border-color var(--d-fast) var(--ease),box-shadow var(--d-fast) var(--ease)}
+.br:hover{border-color:#C9CEDF;box-shadow:0 2px 10px rgba(15,18,34,.06)}
+.br-m{display:grid;place-items:center;width:36px;height:36px;border-radius:var(--r-card);background:var(--line-soft);color:#181717;flex:none}
+.br-m svg,.br-m img{width:24px;height:24px;display:block}
+.br-t{display:flex;flex-direction:column;line-height:1.25}
+.br-t b{font-size:.9375rem;font-weight:600}
+.br-t span{font-size:.8125rem;color:var(--muted);margin-top:2px}
+.br .ext{width:11px;height:11px;color:var(--accent);margin-left:6px;align-self:flex-start;margin-top:4px}
+.brs .ro{display:inline-flex;align-items:center;gap:9px;margin-left:8px;font-size:.9375rem;color:var(--text)}
+.brs .ro svg{width:18px;height:18px;color:var(--good)}
+.oc .br{border-color:transparent}
+.oc .brs .ro{color:#fff} .oc .brs .ro svg{color:#7FE0BF}
+
+/* ── After the run ── */
+/* the band before it is a .sec, which would take this section's top spacing away (site rule .sec + .sec) */
+#what-it-does + .sec{padding-top:clamp(40px,5.2vw,72px)}
+.ax-after .as-card .btn-ink svg{width:16px;height:16px}
+/* the address never pushes past a narrow card: the button grows a line instead */
+.ax-after .as-card .btn-ink{max-width:100%;height:auto;min-height:48px;padding-block:12px;line-height:1.3}
+.ax-after .as-card .btn-ink span{min-width:0;overflow-wrap:anywhere}
+.ax-foot{display:flex;flex-wrap:wrap;gap:8px 28px;margin-top:32px}
+.ax-foot .alink{font-size:.9375rem}
+
+/* ── two site rules on top of the mock: a card still to rise shows as soon as its Download link
+   has focus, so a keyboard never rests on an invisible button (WCAG 2.4.7); and on the navy band the focus ring takes
+   the dark-ground colour, as every navy ground does (motion.css) ── */
+.ax-demo.is-armed .ax-file:focus-within{opacity:1;transform:none}
+.oc{--z-focus:var(--accent-dark)}
+
+/* ── first paint: before React hydrates, an inline script has already set html[data-ap] (the product); each line that
+   follows the product is in the page once per product, tagged `data-if-p`, and these rules hide the one the address
+   rules out. The switch follows the same attribute through `[data-boot]` until the provider takes over. ── */
+html[data-ap="amoeba"] [data-if-p="coral"],
+html:not([data-ap="amoeba"]) [data-if-p="amoeba"]{display:none}
+html[data-ap="amoeba"] .as-switch[data-boot] a[href$="p=amoeba"]{background:#fff;color:var(--text)}
+html[data-ap="amoeba"] .as-switch[data-boot] a[href$="p=amoeba"] small{color:var(--muted)}
+html[data-ap="amoeba"] .as-switch[data-boot] a[href$="p=coral"]{background:transparent;color:rgba(255,255,255,.74)}
+html[data-ap="amoeba"] .as-switch[data-boot] a[href$="p=coral"] small{color:rgba(255,255,255,.58)}

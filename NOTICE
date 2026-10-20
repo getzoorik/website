@@ -1,0 +1,19 @@
+Zoorik website (zoorik.com)
+Copyright 2026 Zoorik Private Limited
+
+The source code in this repository is licensed under the Apache License,
+Version 2.0 (see LICENSE).
+
+The licence covers the code. It does not cover the following, which remain
+the property of Zoorik Private Limited, all rights reserved:
+
+- the names Zoorik, Coral and Amoeba, and their logos and marks;
+- the site's content: the page and article text (including the copy under
+  src/content/ and the legal texts in src/content/legal/), the films, images,
+  PDFs and other files under public/.
+
+You may run, study and reuse the code. Do not publish a site that uses these
+names, marks or content, or that could be taken for Zoorik.
+
+Names and marks of other companies and projects that appear on the site belong
+to their owners.

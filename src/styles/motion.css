@@ -1,0 +1,165 @@
+/* Zoorik marketing — the motion system and its tokens.
+ *
+ * Ported VERBATIM from the mock's inline stylesheet. It is a contiguous
+ * slice of the original, split only where the mock's own section markers
+ * fall, so this file stays diffable against the design it came from.
+ * Values are copied, never reinterpreted.
+ */
+/* ============================================================================
+   ITEMS D / F - provider marks, surface rhythm
+   ============================================================================
+
+   F. SURFACE RHYTHM. The page ran unbroken white from the first product section
+   to the footer, which is why it read as one field rather than one document.
+   The sanctioned surfaces alternate; no fourth surface is invented:
+
+     hero              --ground     dark
+     Amoeba            --surface    white
+     Coral             --surface    white
+     By design         --surface    white
+     How it works      --surface-2  tinted band
+     Assessment row    --surface    white, with its own --ground card
+     footer            --surface-2
+
+   The accent wash on the band is decoration, which is exactly what the accent
+   is for. No semantic colour appears in it.
+
+   ITEM E, the savings ledger, and the dark Cloud economics band it stood on
+   (`.sec-ground`) are gone with the pricing section; their rules were removed
+   from this slice rather than left for nothing to match.                     */
+/* The accent wash is anchored to the BOTTOM of the band, behind the opaque step
+   cards. Measured: at the top it sat under .sec-head p and dropped --muted on
+   --surface-2 from 4.57:1 to 4.38:1 - below AA. Down here it tints only band
+   padding, and the section head keeps the sheet's own 4.57 on clean --surface-2. */
+.sec-band{background:
+    radial-gradient(118% 86% at 50% 100%,color-mix(in srgb,var(--accent) 8%,transparent) 0%,transparent 64%),
+    var(--surface-2);
+  border-block:1px solid var(--line-soft)}
+
+/* D. PROVIDER AND TECHNOLOGY MARKS.
+   Azure (#114A8B #0669BC #0078D4 #2892DF #3CCBF4), AWS (#FF9900) and Kubernetes
+   (#326CE5) are third-party trademarks reproduced in their own colours - they are
+   not Zoorik palette entries and carry no state meaning. Each mark sits where it
+   answers a question the reader is already asking - which product is this, and
+   what does it run on. There is no logo row anywhere.
+   The rules for the old disk mark stood here (`.eng-disk`, `.mk-disk`, in the
+   platter's orange and black). That mark is retired and its rules went with it. */
+.az-badge .az-mark + .az-mark{margin-left:-3px}
+/* the AWS swoosh is 2.45:1, not square - a square box letterboxes it to a sliver */
+.az-badge .az-mark.az-aws{width:20px;height:8px;align-self:center}
+
+
+/* ---------- motion: rise + settle, nothing starts hidden ----------
+   THE BACKBONE, RE-FOUNDED. `.rise{transform:translateY(16px)}` is deleted rather
+   than retuned. The base rule holds NO offset any more: the authored position IS
+   the end state, so a page with scripting off, a stalled observer, a screenshot
+   taken mid-scroll or a reader landing from an anchor link is correct in its FIRST
+   painted frame. Measured before: all 15 risers sat 16px low for ever with JS off.
+   Measured after: 0.00px on all 15. The 16px exists only inside the keyframe,
+   where nothing can be stranded in it.
+
+   `translate`, not `transform`, so component-local transforms stay free - the
+   engine marks' rotate(var(--mk-a)), .hw-dot's translateY(-1px), the FAQ chevron.
+   Both endpoints explicit.
+
+   NO animation-delay AND NO animation-fill-mode, deliberately, and this is the
+   whole of the fix for the one defect the reviewers found in this rule:
+     · fill-mode `both` (or `backwards`) applies the FROM state through the delay,
+       so a delayed element JUMPED DOWN 16px at reveal and SAT there for its whole
+       delay before rising - a dwell at the bottom that reads as two events, not
+       one arrival. There is now no delay phase for it to dwell in.
+     · fill-mode `forwards`/`both` also leaves every riser under animation control
+       for ever after it settles, which builds a stacking context and a containing
+       block on .dashmock, .stepc, .plan, .faq and .cta-panel that were not there
+       before, and traps any future position:fixed descendant. With no fill the
+       element returns to its own computed style the instant the run ends:
+       translate:none, no stacking context, document.getAnimations() back to 0.
+   THE CLOCK MOVES TO THE OBSERVER instead. The JS at the foot of the page stages
+   `.set` itself, `data-i` steps of --z-step, so a waiting element waits at the
+   position the markup authored rather than 16px under it. */
+@keyframes zRise{from{translate:0 var(--z-lift)} to{translate:0 0}}
+.rise.set{animation:zRise var(--d-slow) var(--ease)}
+
+/* The old block collapsed durations but left DELAYS alone. Both are zeroed now, in
+   both timelines: a guard that shortens a duration and keeps a 240ms delay is a
+   guard that still makes a reduced-motion reader wait. `.rise.set{animation:none}`
+   removes the entry outright rather than shrinking it, so document.getAnimations()
+   under reduce is EMPTY - 0 objects, not 0 running. */
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;
+    animation-delay:0s !important;
+    transition-duration:.001ms !important;transition-delay:0s !important}
+  .rise.set{animation:none}
+}
+
+
+/* ---------- the motion system's own tokens ----------
+   Three numbers and a colour. Every offset on this page is a multiple of the
+   clock, every distance is the one lift, and everything arrives from below. */
+:root{
+  --z-step:80ms;    /* THE CLOCK. Read once by the JS, so the two ladders cannot drift. */
+  --z-lift:16px;    /* THE DISTANCE. One, and it is always upward. */
+  --z-press:90ms;   /* a press going down; the release rides --d-fast, so fast in, slow out */
+  --z-focus:var(--accent);
+}
+/* The ring follows the ground it is drawn on. --accent #3B5BF5 measures ~3.7:1 on
+   the dark grounds - it scrapes the 3:1 floor and is not knowable at all over the
+   hero photograph - while this sheet already defines --accent-dark #8095F9 at a
+   documented 7.01:1 for exactly this substitution and had simply never been wired
+   to the focus ring. The hero's focusable controls sit inside the type column,
+   where the ::after scrim is opaque --ground, so the 7.01:1 holds there by the same
+   construction the nav's contrast already relies on. */
+.hero,.sec-ground,.cta-panel,.as-cal,.nav:not(.solid){--z-focus:var(--accent-dark)}
+/* ...except the drop menu, which is white in both bar states: #8095F9 on #FFFFFF is 2.8:1,
+   under the 3:1 a focus ring needs, so it takes --accent (5.25:1) whatever the bar is doing. */
+.nav-drop{--z-focus:var(--accent)}
+
+/* ---------- the interface layer: outside the motion budget ----------
+   It does not exist until someone asks for it. It closes three measured holes:
+   eight transform-carrying hover rules with ZERO gating (fixed above), zero
+   :active rules on the whole page, and zero tap-highlight suppression. The last
+   two ship together - killing the grey iOS flash without adding a press state
+   leaves touch users with no feedback at all, which is strictly worse than the
+   flash you removed.
+   user-select is NOT applied to .btn-ink: its four labels are sentences ("See how
+   much you'll save"), and a sentence must stay selectable, copyable and
+   translatable. The tap-highlight suppression applies to it all the same. */
+.btn,.btn-ink,.soc,.cta-form button,.nav-toggle{-webkit-tap-highlight-color:transparent}
+.btn,.soc,.cta-form button,.nav-toggle{-webkit-user-select:none;user-select:none}
+
+/* One transition list per control, restated IN FULL. Not a bare transition-property
+   override: the earlier shorthands set per-property duration and easing LISTS, and
+   adding a fifth property re-pairs those lists cyclically, which would silently
+   move --spring onto the wrong property. --spring survives on transform, where the
+   hover lift already uses it, and is kept off scale - a button that bounces past
+   its pressed depth reads as rubber.
+   THE NAV'S TWO CONTROLS TAKE TRANSFORM AND SCALE ONLY. Their ground and ink flip
+   in ONE frame by design, because no intermediate grey between #0B0D14 and #FFFFFF
+   holds 4.5:1 for either ink colour; adding background/border-color/color to their
+   transition lists would cross-fade exactly the thing this page refuses to
+   cross-fade. The press is orthogonal to the flip, so it composes. */
+.btn{transition:background var(--d-fast) var(--ease),border-color var(--d-fast) var(--ease),
+     transform var(--d-fast) var(--spring),scale var(--d-fast) var(--ease)}
+.nav .btn{transition:transform var(--d-fast) var(--spring),scale var(--d-fast) var(--ease)}
+.nav-toggle{transition:scale var(--d-fast) var(--ease)}
+.btn-ink{transition:background var(--d-fast) var(--ease),
+     transform var(--d-fast) var(--spring),scale var(--d-fast) var(--ease)}
+.soc{transition:color var(--d-fast) var(--ease),border-color var(--d-fast) var(--ease),
+     transform var(--d-fast) var(--spring),scale var(--d-fast) var(--ease)}
+.cta-form button{transition:background var(--d-fast) var(--ease),
+     transform var(--d-fast) var(--spring),scale var(--d-fast) var(--ease)}
+
+/* THE PRESS. One depth for every control on the page, so they read as one
+   instrument. transform:none cancels the hover lift so a press always goes DOWN
+   rather than staying lifted; `scale` is the individual property, so it composes
+   with the lift instead of competing for the transform slot. .985 not .97 - at
+   .btn-ink's 28px padding .97 is a ~6px width change and reads sloppy. The
+   duration override inside :active is the whole of the asymmetry: down in 90ms,
+   back over 200ms, which is how a real switch behaves. Not gated by (hover:hover):
+   a press is exactly what a touch user does. No will-change anywhere. */
+.btn:active,.btn-ink:active,.soc:active,.cta-form button:active,.nav-toggle:active{
+  transform:none;scale:.985;transition-duration:var(--z-press)}
+
+/* The keyboard gets the choreography the pointer gets. A hover-only arrow was
+   built for half the users. */
+.btn-ink:focus-visible svg,.cta-form button:focus-visible svg{transform:translateX(3px)}

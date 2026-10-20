@@ -1,0 +1,17 @@
+/* The 404 page: standalone (no header, footer, hero or mark), built from the
+   site's tokens only; no mock draws it.
+   🔴 NO RULE HERE TOUCHES .btn-ink. Its button is the site's one button, sized
+   by site-system.css (48px, padding 0 22px); a height or padding here would make
+   the 404 the one page whose button is a different size.
+   🔴 `.nf h1` SETS max-width:none. Site-system's bare `h1` carries the photo
+   hero's 20ch measure, and `.nf h1` outranks it only on what it names: without
+   the line the heading's box shrank to 20ch between about 600 and 940px
+   (498px at 768, against main's 544px), the one place the 404's own heading
+   would still have changed. */
+.nf{min-height:100vh;display:grid;place-items:center;padding:var(--s7) var(--s5);background:var(--bg)}
+.nf-in{width:100%;max-width:34rem}
+.nf-code{margin:0 0 var(--s4);font-size:.8125rem;font-weight:500;letter-spacing:.08em;color:var(--muted);font-variant-numeric:tabular-nums}
+.nf h1{max-width:none;font-size:clamp(2rem,1.4rem + 2vw,2.75rem);letter-spacing:-.03em;line-height:1.08}
+.nf-body{margin:var(--s4) 0 var(--s6);font-size:1.05rem;line-height:1.55;color:var(--muted)}
+.nf-links{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s5)}
+.nf-link{font-weight:500;color:var(--accent)}

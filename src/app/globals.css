@@ -1,0 +1,146 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Zoorik marketing site.
+
+   ─── WHY THE MOCK'S STYLESHEET IS PORTED RATHER THAN REWRITTEN ─────────────
+   The acceptance criterion for this site is that it matches the mock exactly.
+   The mock carries ~1800 lines of hand-authored CSS built on scroll-driven
+   animation, `@property`-registered custom properties, `clip-path` reveals and
+   a documented radius scale — and rewriting that as utility classes would be a
+   re-interpretation, judged by eye, of a design that was authored precisely.
+
+   So the mock's sheet is ported VERBATIM and split along its OWN section
+   markers into `src/styles/*.css`, one file per area of the page. Each file is
+   a contiguous slice of the original, which is what keeps it diffable against
+   the design it came from.
+
+   Tailwind is still here and still useful: the tokens below are mapped through
+   `@theme inline`, so a utility class resolves to the same value the ported
+   sheet uses. Layout scaffolding in a component can be utilities; the visual
+   identity comes from the sheet.
+
+   ─── WHY THESE ARE GLOBAL AND NOT CSS MODULES ──────────────────────────────
+   The mock's selectors cross section boundaries — the motion layer targets
+   elements inside every section, and the console styles reach into the hero.
+   CSS Modules hash their class names, so splitting these into modules would
+   silently break every selector that spans two files, and the failure would be
+   visual rather than a build error. Global, split by concern, is the honest
+   shape for a port.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── ONE ORDER FOR EVERY PAGE: THE MOCKS' CASCADE ──────────────────────────
+   The sheets load in the order the mocks load their <style> blocks:
+     1. the blocks the mocks carry in <head>: the products, the closing row,
+        the product pages;
+     2. the main sheet, split by concern, tokens.css to motion.css;
+     3. the site system, then the header's menus, then the product pages'
+        tour;
+     4. the pages' own blocks: the documents' then /privacy's, or the reading
+        pass then the home page's;
+     5. the 404 page, last.
+   Where two rules tie on specificity the later one wins, as it does in the
+   mocks, so a sheet that moves in this list resolves its ties the other way and
+   the page changes with nothing in the diff to say so. Measured: documents.css
+   ahead of the main sheet grows every utility hero 51px at 1440.
+   Every page's sheet already has its slot here, so a page's own work fills its
+   own file and leaves this list alone. Two sheets stay out of it on purpose:
+   assessment.css and login.css are imported by their own pages, and Next loads
+   a page's CSS after this file, which is where the mocks put them. */
+
+/* 🔴 THESE COME FIRST. The mocks carry these as <style> blocks in their <head>,
+   AHEAD of the main sheet in their <body>. So wherever one of their rules ties
+   with a main-sheet rule on specificity, the main sheet wins — and it has to
+   win here too, or the port resolves a tie the other way and nobody sees why.
+   Importing them after `tokens.css` would read more naturally and be wrong. */
+@import "../styles/products.css";
+@import "../styles/assess.css";
+/* The product pages' block sits in the same place in both product mocks:
+   in <head>, after the blocks above, ahead of the main sheet. */
+@import "../styles/product-page.css";
+
+/* The main sheet. */
+@import "../styles/tokens.css";
+@import "../styles/sections.css";
+@import "../styles/nav.css";
+@import "../styles/hero.css";
+@import "../styles/elastic.css";
+@import "../styles/how-it-works.css";
+@import "../styles/footer.css";
+@import "../styles/motion.css";
+
+/* The mocks' <style id="site-system"> and <style id="nav-kit">: after the main
+   sheet, whose ties they win, and ahead of every page's own block, which wins
+   theirs. */
+@import "../styles/site-system.css";
+@import "../styles/nav-menus.css";
+/* The product pages' tour (<style id="pp-film"> and <style id="pp-tour">): the mock
+   carries them last in its <head>, right after nav-kit, so here too they follow the header's menus,
+   whose ties they win, and come ahead of engines.css (the mock's <body> <style id="eng-css">). The
+   documents', /privacy's and the rows' blocks after it are other pages' and match none of its rules. */
+@import "../styles/product-tour.css";
+
+/* The pages' own blocks. First the documents' (<style id="doc-pages">: the docs
+   hub, the guides, the FAQs, /assessment, /privacy and /terms) and /privacy's
+   own (<style id="privacy-page">, which /terms shares); then the home and
+   product pages' reading pass (<style id="eng-css">) and the home page's own
+   pass (<style id="home-pass">). Swapping the two groups changes no page
+   (measured); the order follows the mocks all the same. */
+@import "../styles/documents.css";
+@import "../styles/privacy.css";
+/* The numbered rows in groups (<style id="guide-rows">, with the privacy-page and new-pages rules the rows
+   need): after privacy.css, where the guides, /terms, /security and /learn load those blocks. */
+@import "../styles/doc-rows.css";
+@import "../styles/engines.css";
+@import "../styles/home.css";
+/* The home page's motion pass: its `<style id="home-motion">`
+   comes after the home pass in the mock, split here by part. The entrance is last, as the mock writes it. */
+@import "../styles/home-films.css";
+@import "../styles/case-band.css";
+@import "../styles/home-offers.css";
+@import "../styles/home-motion.css";
+/* The 404 page's own rules, here and not imported by not-found.tsx: that tree is
+   the root layout's not-found boundary, so an import there made every page
+   preload a sheet it never used, and the browser warned about it on each one.
+   Last: it styles only `.nf`. */
+@import "../styles/not-found.css";
+
+/* Tailwind's theme, mapped from the tokens above so a utility and a ported rule
+   can never disagree about what "accent" means. One direction only: the tokens
+   are the source, this is the projection. */
+@theme inline {
+  --color-brand: var(--brand);
+  --color-brand-dark: var(--brand-dark);
+  --color-accent: var(--accent);
+  --color-accent-dark: var(--accent-dark);
+  --color-accent-wash: var(--accent-wash);
+  --color-ground: var(--ground);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-good: var(--good);
+  --color-warn: var(--warn);
+  --color-crit: var(--crit);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+
+  --font-sans: var(--sans);
+  --font-mono: var(--code);
+
+  --radius-hair: var(--r-hair);
+  --radius-ctl: var(--r-ctl);
+  --radius-card: var(--r-card);
+  --radius-shell: var(--r-shell);
+  --radius-pill: var(--r-pill);
+
+  --shadow-2: var(--shadow-2);
+  --shadow-3: var(--shadow-3);
+
+  --spacing-s3: var(--s3);
+  --spacing-s4: var(--s4);
+  --spacing-s5: var(--s5);
+  --spacing-s6: var(--s6);
+  --spacing-s7: var(--s7);
+}

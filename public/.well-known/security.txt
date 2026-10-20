@@ -1,0 +1,4 @@
+Contact: mailto:founders@zoorik.com
+Expires: 2027-10-12T00:00:00.000Z
+Policy: https://zoorik.com/security#report
+Canonical: https://zoorik.com/.well-known/security.txt

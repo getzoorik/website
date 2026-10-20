@@ -1,0 +1,27 @@
+/* Zoorik marketing — what the closing row keeps beyond the site system.
+ *
+ * The row's look is the site system's now (site-system.css, "the closing row"):
+ * the grid and its subgrid, the two cards, their type, the buttons and the fine
+ * line. This sheet keeps only the three things the site system does not carry:
+ *
+ *  - the outline a programmatically focused section or dark card does not
+ *    show: `InPageLinks` focuses the target of an in-page jump;
+ *  - the dark card's scroll margin, so a jump to `#contact` clears the fixed
+ *    bar (the rule that does that for sections does not reach a div). The mocks
+ *    lost both when their old closing-row block folded into the site system;
+ *  - the mock main sheet's three `.cta-fine` rules, which the mocks still carry.
+ *    The site system overrides what they set inside the dark card (size,
+ *    colour, the bottom border), so they paint nothing there.
+ *
+ * 🔴 ITS SLOT IN globals.css IS AHEAD OF THE MAIN SHEET, where the mocks keep
+ * their <head> blocks. Every rule left here is one the site system does not
+ * tie, so the slot decides nothing today; a rule added here would lose its ties
+ * to everything after it.
+ */
+section[tabindex="-1"]:focus,.as-cal[tabindex="-1"]:focus{outline:none}
+.as-cal{scroll-margin-top:calc(var(--nav-h) + 8px)}
+
+/* The mock main sheet's fine print, verbatim. */
+.cta-fine{margin-top:22px;font-size:.85rem;color:rgba(255,255,255,.62)}
+.cta-fine a{color:var(--accent-dark);text-decoration:none;border-bottom:1px solid color-mix(in srgb,var(--accent-dark) 45%,transparent)}
+.cta-fine a:hover{color:#fff;border-bottom-color:#fff}

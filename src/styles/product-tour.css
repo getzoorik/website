@@ -1,0 +1,103 @@
+/* Zoorik marketing — the product pages' tour, /coral and /amoeba.
+ *
+ * Ported VERBATIM from the tour mock's two blocks, pp-film then pp-tour, which
+ * both product mocks carry byte-identical. Values are copied, never
+ * reinterpreted. Classes are pf- and tour-.
+ *
+ *   pp-film: the film band (`section.pf-film#film`) and the hero's "Watch the
+ *            2-minute film" (`.pf-watch`), drawn only once the film is on YouTube;
+ *   pp-tour: the hero split (`.pf-split`, the range card on its right) and
+ *            What <product> does beside What is <product>? (`.pf-def`, `.pf-does`),
+ *            each row with its line (`.tour-line`) and progress line (`.tour-prog`).
+ *
+ * 🔴 IMPORTED IN globals.css AFTER nav-menus.css, NOT BY THE PAGES. The mock
+ * carries both blocks at the end of its <head>, after the header's block
+ * (nav-menus.css) and ahead of the reading pass in its <body> (engines.css), so
+ * they win their ties with the main sheet, the site system and the header's
+ * menus, and lose theirs with engines.css. A page-level import would load after
+ * every global sheet and resolve those ties the other way.
+ */
+
+/* the film band: the logo's navy, as the home page's case study band; one poster, one play */
+.pf-film{position:relative;overflow:hidden;color:#fff;padding:clamp(72px,8vw,120px) 0;background-color:var(--brand)}
+.pf-film::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(900px 520px at 50% 64%,rgba(128,149,249,.14),rgba(128,149,249,0) 70%)}
+.pf-film .wrap{position:relative}
+.pf-film-h{max-width:46rem;margin:0 auto clamp(32px,4vw,48px);text-align:center}
+.pf-film-h h2{margin:0;font-size:clamp(2rem,1.3rem + 2vw,3rem);font-weight:600;line-height:1.08;letter-spacing:-.035em;color:#fff}
+.pf-film-h p{margin:18px auto 0;max-width:38rem;font-size:1.0625rem;line-height:1.6;color:rgba(255,255,255,.68)}
+.pf-film-p{position:relative;display:block;max-width:1040px;margin:0 auto;border-radius:14px;overflow:hidden;color:#fff;text-decoration:none;
+  box-shadow:0 0 0 1px rgba(255,255,255,.12),0 50px 100px -40px rgba(0,0,0,.75)}
+.pf-film-p img{display:block;width:100%;height:auto;aspect-ratio:16/9;transition:transform .7s cubic-bezier(.22,.9,.3,1),filter .3s ease}
+.pf-play{position:absolute;left:50%;top:50%;display:grid;place-items:center;width:84px;height:84px;margin:-42px 0 0 -42px;border-radius:50%;
+  background:rgba(255,255,255,.96);box-shadow:0 14px 40px -10px rgba(0,0,0,.65);transition:transform .3s cubic-bezier(.22,.9,.3,1)}
+.pf-play svg{width:30px;height:30px;margin-left:4px;fill:var(--brand)}
+.pf-film-tag{position:absolute;left:16px;bottom:16px;display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border-radius:999px;
+  background:rgba(5,8,34,.8);box-shadow:0 0 0 1px rgba(255,255,255,.1);font-size:.875rem;font-weight:500;line-height:1}
+.pf-film-tag b{font-weight:600;font-variant-numeric:tabular-nums}
+.pf-film-tag svg{width:14px;height:14px;opacity:.8}
+@media (hover:hover){.pf-film-p:hover img{transform:scale(1.015);filter:brightness(.92)}.pf-film-p:hover .pf-play{transform:scale(1.06)}}
+.pf-film-p:focus-visible{outline:2px solid #fff;outline-offset:4px}
+.pf-ch{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 10px;max-width:1040px;margin:28px auto 0;padding:0;list-style:none}
+#film .pf-ch a{display:inline-flex;align-items:baseline;gap:8px;padding:8px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.18);
+  color:rgba(255,255,255,.84);font-size:.875rem;text-decoration:none;transition:background-color .2s ease,border-color .2s ease}
+#film .pf-ch a:visited{color:rgba(255,255,255,.84)}
+.pf-ch b{font-weight:600;font-variant-numeric:tabular-nums;color:#fff}
+@media (hover:hover){#film .pf-ch a:hover{color:#fff;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.34)}}
+.pf-ch a:focus-visible,.pf-film-more a:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.pf-film-more{margin:28px 0 0;text-align:center;font-size:.9375rem;color:rgba(255,255,255,.6)}
+#film .pf-film-more a{color:#fff;text-underline-offset:3px}
+.hero-cta .pf-watch svg{width:16px;height:16px;fill:currentColor}
+@media (max-width:640px){.pf-film-p{border-radius:10px}.pf-play{width:64px;height:64px;margin:-32px 0 0 -32px}.pf-play svg{width:24px;height:24px}
+  .pf-film-tag{left:10px;bottom:10px;padding:6px 10px;font-size:.8125rem}.pf-ch{justify-content:flex-start}}
+@media (prefers-reduced-motion:reduce){.pf-film-p img,.pf-play{transition:none}}
+
+/* the layout: the range card on the right of the hero; "What X does" on the right of "What is X?", one line under the
+   row being read; no video beside the list */
+@media (min-width:1100px){.pp-hero .hero-in.pf-split{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:clamp(40px,5vw,80px);align-items:center}}
+.pf-hero-r{min-width:0}
+@media (max-width:1099px){.pf-hero-r{margin-top:40px;max-width:420px}}
+.pp-figs.pf-hero-figs{margin-top:0;padding:24px;background:rgba(9,12,30,.55);border:1px solid rgba(255,255,255,.14);border-radius:12px;color:#fff;
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.pf-hero-figs .pp-fig-l,.pf-hero-figs .kf-c{color:rgba(255,255,255,.66)}
+.pf-hero-figs .kf-n{color:#fff}
+.pf-hero-figs .pp-fig + .pp-fig{border-top-color:rgba(255,255,255,.12)}
+.pf-hero-figs .pp-figs-q{border-top-color:rgba(255,255,255,.12);color:rgba(255,255,255,.55)}
+/* "What X does" is the twin of "What is X?": the same heading on the same line, and its rows spread over the text's
+   height so both columns end together; every row keeps its line, so nothing moves when the reading row changes */
+.pp-def .pf-does{min-width:0;margin-top:0}
+@media (min-width:1100px){
+  .pp-def.pf-def{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);align-items:stretch}
+  .pp-def .pf-does{display:flex;flex-direction:column}
+  .pf-does .flist{flex:1;display:flex;flex-direction:column}
+  .pf-does .flist li.has-i{flex:1;align-items:center}
+}
+@media (max-width:1099px){.pp-def .pf-does{margin-top:8px}}
+.pf-does .flist{margin-top:var(--pf-gap,24px)}
+.pf-does .flist + .chips{margin-top:24px}
+.pf-does .flist li.has-i{position:relative;cursor:pointer;margin:0;padding:14px 16px 16px;border-radius:var(--r-card);transition:background-color .3s ease}
+.pf-does .flist li.has-i + li.has-i{margin-top:4px}
+.pf-does .flist li.has-i[aria-selected="true"]{background:var(--accent-wash)}
+@media (hover:hover){.pf-does .flist li.has-i:not([aria-selected="true"]):hover{background:color-mix(in srgb,var(--accent) 4%,transparent)}}
+.pf-does .flist li.has-i:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.pf-does .flist h3{transition:color .3s ease}
+.tour-line{display:block;margin-top:4px;font-size:.9375rem;line-height:1.5;color:var(--muted);text-wrap:pretty}
+.tour-prog{position:absolute;left:16px;right:16px;bottom:6px;height:2px;border-radius:2px;background:transparent;overflow:hidden}
+li[aria-selected="true"] .tour-prog{background:color-mix(in srgb,var(--accent) 14%,transparent)}
+.tour-prog i{display:block;height:100%;transform:scaleX(0);transform-origin:left;background:var(--accent)}
+@media (max-width:640px){.pf-does .flist li.has-i{padding:12px 12px 14px}}
+@media (prefers-reduced-motion:reduce){.pf-does .flist li.has-i{transition:none}}
+/* The site's own, not the mock's (the film plays on the page): once YouTube's player takes the poster's place it fills
+   the same 16:9 box, on black while it loads. */
+.pf-film-p.pf-film-on{background:#000}
+.pf-film-on iframe{display:block;width:100%;height:auto;aspect-ratio:16/9;border:0}
+/* "Turn on sound" over a film that started muted (the film plays with its sound): the play button's
+   white on the band's navy ink, in the middle of the screen, until the sound is on. */
+.pf-sound{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:10px;
+  padding:14px 22px;border:0;border-radius:999px;background:rgba(255,255,255,.96);color:var(--brand);cursor:pointer;
+  font:600 1rem/1 var(--sans);box-shadow:0 14px 40px -10px rgba(0,0,0,.65);transition:transform .3s cubic-bezier(.22,.9,.3,1)}
+.pf-sound svg{width:22px;height:22px}
+@media (hover:hover){.pf-sound:hover{transform:translate(-50%,-50%) scale(1.04)}}
+.pf-sound:focus-visible{outline:2px solid #fff;outline-offset:4px}
+@media (max-width:640px){.pf-sound{padding:11px 18px;font-size:.9375rem}.pf-sound svg{width:18px;height:18px}}
+@media (prefers-reduced-motion:reduce){.pf-sound{transition:none}}

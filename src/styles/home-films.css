@@ -1,0 +1,29 @@
+/* Zoorik marketing: the home page's motion pass, the two product films (the mock's motion
+ * block), VERBATIM: the film in the console panel's place, its screen and caption, and the grid
+ * around it.
+ *
+ * The mock writes these rules in one block with the case study band's and What we offer's; this
+ * sheet holds the films' rules, in the mock's order, with the two `@media` blocks the mock writes
+ * after the entrance (900px: one column, the flipped film after its copy; 640px: the screen's
+ * smaller radius). None of them ties with a rule between them in the mock, so moving them ahead
+ * of the band's and the offers' sheets changes nothing. The film's start state (`.mo-film.mo-r`)
+ * is here; the entrance itself, and its reduced-motion rule, are home-motion.css's.
+ */
+/* the film takes the console panel's place and a little more of the row */
+.mo-grid{grid-template-columns:minmax(0,.9fr) minmax(0,1.22fr);align-items:center}
+.mo-grid.flip{grid-template-columns:minmax(0,1.22fr) minmax(0,.9fr)}
+.mo-film{margin:0;min-width:0}
+/* the site pads every flipped column that is not the old panel (.st-grid.flip > *:not(.eng-stage)); the film takes
+   the panel's place, so it keeps the page's left edge */
+.mo-grid.flip > .mo-film{padding-inline-start:0}
+.mo-screen{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#070A16;
+  box-shadow:0 0 0 1px rgba(7,15,82,.10),0 40px 80px -36px rgba(7,15,82,.55),0 18px 36px -24px rgba(15,18,34,.35)}
+.mo-vid{display:block;width:100%;height:100%;object-fit:cover}
+.mo-cap{margin:14px 2px 0;font-size:.8125rem;color:var(--muted)}
+.mo-film.mo-r{transform:translateY(18px) scale(.98)}
+.mo-film.mo-r.is-in{transform:none}
+@media (max-width:900px){
+  .mo-grid,.mo-grid.flip{grid-template-columns:minmax(0,1fr)}
+  .mo-grid.flip > .mo-film{order:2}
+}
+@media (max-width:640px){.mo-screen{border-radius:10px}}

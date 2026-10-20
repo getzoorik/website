@@ -1,0 +1,67 @@
+/* Zoorik marketing: `/design-partners`.
+ *
+ * Ported from the mock's block for this page, rule for rule, in its order, after the four rules of the mock's shared
+ * block that What we ask draws (`.bk-list`, `.bk-list li`, `.bk-ok`, `.bk-ok svg`). The mock's programs block, which
+ * this page draws too, is /referrals's and /partners's sheet (`programs.css`): the page imports it first and this after
+ * it, so Next loads them in the mock's order (shared block, programs block, this page's) and each `dp-` rule overrides
+ * the `pv-` rule it is meant to (`.dp-j4` over `.pv-journey`, `.dp-who` over `.pv-who`).
+ *
+ * ─── EVERY RULE IS THIS PAGE'S ALONE ──────────────────────────────────────────
+ * The App Router keeps a visited page's sheet in the document, so a rule here must not reach another page: every
+ * selector names a `dp-` class, which only this page draws, or opens on the page's <main> (`.dp-main`). The shared
+ * block's `.bk-list` and `.bk-ok` rules (/brand-assets's classes, which What we ask borrows, as the mock does) open on
+ * `:where(.dp-main)`, which keeps their specificity the mock's (`design-partners-css.test.ts`).
+ *
+ * The mock's `:root`, reset and base are not copied: they are the site's own (`tokens.css`, the site system), and
+ * `--sans` / `--code` stay next/font's.
+ *
+ * Changes from the mock, each marked where it stands:
+ *   - the diamonds' motion opens on `.dp-main` where the mock's opens on `.pv-js`, a class its script puts on <html>:
+ *     here the page's <main> carries `.dp-main` from the server, and the page's <noscript> style draws the diamonds at
+ *     rest when scripting is off (design-partners-page.tsx), as `programs.css` does for the journey;
+ *   - the four rules that override another sheet's rule of the same weight open on `.dp-main` (the "repo:" lines):
+ *     `.dp-get`, `.dp-who` and `.dp-j4` over `programs.css`'s `.pv-who` and `.pv-journey`, and `.dp-list li` over
+ *     /brand-assets's `.bk-list li`. In the mock one sheet holds both, in this order; here they are separate sheets,
+ *     and a reader who visits /referrals or /brand-assets after this page can bring theirs in after this one, where a
+ *     rule of the same weight would win. One class more wins in any order, and draws what the mock draws at every
+ *     width (the media rules carry it too).
+ */
+
+/* /brand-assets, /referrals, /partners: the shared block's rules What we ask draws */
+:where(.dp-main) .bk-list{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:12px}
+:where(.dp-main) .bk-list li{display:flex;gap:10px;font-size:.9375rem;line-height:1.5}
+:where(.dp-main) .bk-ok{flex:none;display:grid;place-items:center;width:22px;height:22px;border-radius:var(--r-pill);background:color-mix(in srgb,var(--good) 14%,#fff);color:var(--good)}
+:where(.dp-main) .bk-ok svg{width:12px;height:12px}
+
+/* /design-partners */
+.dp-slots{position:relative;z-index:1;display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:12px;max-width:760px}
+.dp-slots i{display:grid;place-items:center;aspect-ratio:1;border:1.5px solid rgba(250,247,243,.5);border-radius:6px;transform:rotate(45deg) scale(.72)}
+.dp-slots b{transform:rotate(-45deg);font:600 1.0625rem/1 var(--sans);color:#FAF7F3}
+.dp-slots i{border-color:#5FE3B5;background:rgba(95,227,181,.08)}
+/* repo: `.dp-main` before `.dp-get`, `.dp-who`, `.dp-j4` and `.dp-list li`, here and in the media rules (the header) */
+.dp-main .dp-get{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.dp-card{padding:26px;border:1px solid var(--line);border-radius:var(--r-card);background:#fff}
+.dp-ic{width:28px;height:28px;margin-bottom:16px;color:var(--accent)}
+/* repo: Tailwind's preflight sets every svg `display:block; vertical-align:middle`; the mock's card glyph is inline, on
+   the baseline of a line of its own, which makes each card 8px taller than a block glyph would */
+.dp-ic{display:inline;vertical-align:baseline}
+.dp-card h3{font-size:var(--fs-h3);line-height:1.35}
+.dp-card p{margin-top:8px;color:var(--muted);line-height:1.6}
+.dp-ask{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:24px 48px;align-items:start}
+.dp-ask .sec-head{margin-bottom:0}
+.dp-main .dp-list li{font-size:1.0625rem;align-items:flex-start}
+.dp-list .bk-ok{margin-top:2px}
+.dp-main .dp-j4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.dp-rev{position:relative;display:flex;align-items:flex-end;gap:14px;height:120px;padding:0 10px}
+.dp-rev span{display:block;width:46px;border-radius:4px 4px 0 0}
+.dp-b1{height:110px;background:rgba(250,247,243,.28)}
+.dp-b2{height:52px;background:linear-gradient(180deg,#5FE3B5,#8095F9)}
+.dp-tick{display:grid!important;place-items:center;width:34px!important;height:34px;margin-bottom:76px;border-radius:50%!important;background:#5FE3B5;color:#050B3D}
+.dp-tick svg{width:16px;height:16px}
+.dp-main .dp-who{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(prefers-reduced-motion:no-preference){
+  .dp-main .pv-anim .dp-slots i{opacity:0;transition:opacity .4s var(--ease),transform .5s var(--ease);transition-delay:calc(var(--i) * .08s + .2s);transform:rotate(45deg) scale(.4)}
+  .dp-main .pv-anim.is-on .dp-slots i{opacity:1;transform:rotate(45deg) scale(.72)}
+}
+@media(max-width:1000px){.dp-main .dp-get,.dp-main .dp-who,.dp-main .dp-j4{grid-template-columns:repeat(2,minmax(0,1fr))}.dp-ask{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:760px){.dp-main .dp-get,.dp-main .dp-who,.dp-main .dp-j4{grid-template-columns:minmax(0,1fr)}.dp-slots{grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}}

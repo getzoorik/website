@@ -1,0 +1,26 @@
+/* Zoorik marketing — the products by name: the marks beside them in the bar, and the
+ * four-disk bank in Amoeba's steps.
+ *
+ * Ported VERBATIM from the mock's inline stylesheet. It is a contiguous
+ * slice of the original, split only where the mock's own section markers
+ * fall, so this file stays diffable against the design it came from.
+ * Values are copied, never reinterpreted.
+ *
+ * The old home page's rules are gone from here with the markup they styled, as the
+ * later mocks drop them ("THE FINALIZED PASS" folds into the site system):
+ * the product tag (`.ptag`), the copy column's overrides (`.st-grid > .rise h2/p`,
+ * which outranked the site system's h2 and would also have hit `p.lockup`), the accent
+ * word, the "Runs on" and "Works with" rows (`.st-runs`, `.pchip`), the points list,
+ * the hero lockups' old sizes and How it works' product tabs. The home page's
+ * lockups, chips and copy column are the site system's now.
+ */
+
+
+/* ══ PRODUCTS BY NAME ═══════════════════════════════════════════════════════
+   Amoeba and Coral are named with their own marks wherever the page points at
+   them: the nav, the hero, both sections, How it works and the footer. */
+.nav-prod{display:inline-flex;align-items:center;gap:7px}
+.nav-prod svg{width:17px;height:17px;flex:none;display:block}
+.nav-drop .nav-prod{display:flex;gap:10px}
+.hw-bank.b4{grid-template-columns:repeat(4,1fr);max-width:96px}
+.hw-bank.b4 .hw-col > b{height:48.83%}

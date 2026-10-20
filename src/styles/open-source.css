@@ -1,0 +1,28 @@
+/* /open-source and the three guides under /docs: the mocks' open-source block */
+/* /open-source: the FAQ's frame. A project row is not one link (it has two or three), so its links sit on a line under it */
+/* "Published on": the footer's buttons, its lead-in on a line of its own so the buttons share one left edge when they
+   wrap, then the trust sentence */
+.op-pub .mkt-on{flex-basis:100%;margin:0 0 4px;font-size:.8125rem}
+/* on a phone the buttons give up 2px a side, as the footer's do: four lines at 390, with Scoop beside Homebrew */
+@media(max-width:480px){.op-pb .mkt-b{padding:0 10px}}
+.op-trust{max-width:64ch;margin:16px 0 0;font-size:.9375rem;line-height:1.6;color:var(--muted);text-wrap:pretty}
+.op-row{display:grid;grid-template-columns:32px minmax(0,1fr);align-items:start;padding:18px 0;border-bottom:1px solid var(--line)}
+.op-row h3{margin:0;font-size:1.0625rem;font-weight:500;line-height:1.5;letter-spacing:-.01em}
+.op-row p{margin:2px 0 0;font-size:.9375rem;line-height:1.55;color:var(--muted);text-wrap:pretty}
+.op-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;margin-top:10px;font-size:.875rem}
+.op-lic{color:var(--muted)}
+.op-meta a{display:inline-flex;align-items:center;gap:4px;font-weight:500;color:var(--accent);text-decoration:none}
+.op-meta a .ext{width:11px;height:11px}
+.op-meta a .op-go{width:13px;height:13px;flex:none}
+/* the Terraform modules: each module's name, muted, before its two links; the pair wraps as one */
+.op-grp{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px 14px}
+.op-k{margin-right:-6px;color:var(--muted)}
+@media (hover:hover){.op-meta a:hover{text-decoration:underline;text-underline-offset:3px}}
+.op-meta a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+.op-row .fq-n,.ln-row.op-x .fq-n{margin-top:2px}
+.ln-row.op-x .ext{width:14px;height:14px;margin-top:calc((1.0625rem * 1.5 - 14px) / 2);color:var(--muted)}
+.op-not{margin:0;font-size:.9375rem;line-height:1.6;color:var(--muted)}
+.res-head .op-mk{color:var(--accent)}
+/* the guides: a command keeps its lines; the prompt only on a command's first line */
+.doc-prose .as-well + p,.doc-prose .as-well + ul,.doc-prose .doc-tbl + p{margin-top:16px}
+.doc-prose h3 + .as-well{margin-top:12px}

@@ -1,0 +1,253 @@
+/* Zoorik marketing — the reading pass.
+ *
+ * Ported VERBATIM from the mock's inline stylesheet. It is a contiguous
+ * slice of the original, split only where the mock's own section markers
+ * fall, so this file stays diffable against the design it came from.
+ * Values are copied, never reinterpreted.
+ *
+ * The slice opened on the engine backdrops (`.eng-stage`), the frame the home
+ * page's console panel stood in. It went with the panel: the films took the
+ * panel's place on home, the tour took it on the product pages.
+ */
+/* ══════════════════════════════════════════════════════════════════════════
+   THE READING PASS — one clock, one act per kind, and no curtains.
+
+   Four things were asked for: a data bar that grows from zero, a swept conic
+   stop on the donut, a staggered fade, an author-chunked phrase reveal — and,
+   separately, a note that the three how-it-works marks were too fast. Three of
+   those four already ship here in a defect-free form and were simply going past
+   too quickly to be seen; the fourth cannot ship in the form it was asked for
+   and ships on a layer that carries no contrast instead. This block re-times
+   what exists, fixes two live bugs, and adds exactly one new gesture.
+
+   WHY THE MARKS READ AS TOO FAST, MEASURED. It was never the 500/560/620ms. It
+   was --ease, cubic-bezier(.22,.9,.3,1), an ARRIVAL curve put on a TRAVELLING
+   BOUNDARY. Solve it: y reaches 0.5 at x = 0.137 and 0.8 at x = 0.285, so on a
+   560ms wipe the head dumped four fifths of its distance in 160ms and then
+   crawled the last fifth for 400ms. The eye reads that as a flash followed by a
+   stall, and reports both as "too fast". --ease stays exactly where it belongs,
+   on .rise and on type, because an object landing SHOULD spend its distance
+   early and its settle late. A pass over content that has already arrived wants
+   the opposite. After this block the same head crosses the middle 60% of the
+   bar in 243ms instead of 132ms — 1.84x slower stroke — with a TAIL that is
+   slower than today's, not faster (0.083 px/ms against 0.109).
+
+   WHAT WAS TRIED AND CUT.
+   · A held from-frame in front of each mark (72ms / 240ms / 320ms were all
+     drafted). Every version buys articulation by putting a BLANK FIGURE on
+     screen, which is AP7's symptom relocated onto the exact three marks that
+     were to be made more alive. The marks now ink from the first frame the
+     card sets. The held-frame primitive is kept for exactly one job below,
+     where it fixes a bug rather than manufacturing a hole.
+   · easeInOutQuart, cubic-bezier(.77,0,.175,1), for the marks. Measured, it
+     moves the perceived stroke from 132ms to 130ms — it inserts dead air before
+     and after an unchanged dash, which is a latency change sold as a velocity
+     change. Rejected on arithmetic.
+   · An opacity floor on zRise. See the zSettle note for the numbers that killed
+     it; there is no floor on this palette that is both visible and legal.
+   · scaleX on .hw-bar, and a real conic-stop sweep on the donut. Both put a
+     boundary on screen at a position that means a different number. See below.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+:root{
+  /* ONE DURATION FOR ALL THREE MARKS, on the clock: 10 x --z-step. It replaces
+     500ms, 560ms and 620ms — three unrelated values, of which the file's own
+     inventory already flagged the 500/560 pair as the only unexplained duration
+     gap in #how. Three speeds on three sibling marks asserted a hierarchy the
+     section does not have; #how's hierarchy is its 0/80/160 card order, and law
+     (2) says that is where hierarchy lives.
+     A ring-specific duration was drafted (the donut's edge travels 202.9px of
+     mean circumference against the box's 176px, so 1.153x) and CUT: .hw-fig is
+     176px only at >=1342px and becomes 320px below that, so a "same edge speed"
+     claim would be false at most widths. One number, honestly one number. */
+  --z-mark:calc(var(--z-step) * 10);   /* 800ms */
+
+  /* THE HEADLINE SLOT. 9 x --z-step, replacing a hard-coded 700ms. Chunk 2 runs
+     one tick longer with that tick held inside its keyframe, so both chunks
+     travel exactly --z-line and land exactly one tick apart. */
+  --z-line:calc(var(--z-step) * 9);    /* 720ms */
+
+  /* THE CHUNK'S TRAVEL. em, not %, and that is the whole point: .45em is
+     12.2-16.9px across the h2 clamp, which brackets --z-lift's 16px, AND it is
+     immune to a chunk wrapping to two lines. A percentage resolves against the
+     element's own box, so a two-line chunk would travel twice as far — a
+     silent, width-dependent breach of the page's one-distance rule. */
+  --z-slot:.45em;
+
+  /* THE SCANNING CURVE. Solved: x=0.158 -> y=0.156 (linear at the head, so
+     AP-07's ban on a dead start is measurably not breached — it has no dead
+     start, it has a calm one), x=0.304 -> y=0.500, x=0.486 -> y=0.800,
+     x=0.605 -> y=0.900. Near-linear through the middle third, where the eye is
+     on the edge; soft at both ends; monotonic. This is what a scanning head
+     with mass looks like, and it is the entire answer to "make them more
+     alive". --ease keeps every arrival on the page; this curve is owned by a
+     KIND of motion — a boundary travelling over data — not by a section. */
+  --ease-scan:cubic-bezier(.35,.15,.2,1);
+}
+
+
+/* ── THE THREE MARKS ───────────────────────────────────────────────────────
+   THE BAR. .hw-bar is square-ended, un-rounded and has no track behind it —
+   "the rule IS the whole", as the rule above it says. A left-to-right uncover
+   of a track-less square-ended rule and a width-grow of the same rule paint
+   IDENTICAL PIXELS in every frame, because there is no channel, cap or ghost
+   outline for the shortfall to be measured against. They diverge only in what
+   is true underneath: a grow shows a scaled copy, where the work/requested
+   boundary sits at 5.6% of the drawn length when the run is 40% done; the
+   uncover shows a PREFIX, where every visible pixel is at its true x on the
+   22-CPU scale and the boundary is either at 14.05% or not yet drawn. Same
+   look, no lie. It simply had to be slow enough to be seen as growth, because
+   a bar you cannot watch grow is just a bar.
+   scaleX was drafted and cut: it holds the RATIO exactly and puts every
+   internal boundary at a false screen position, and .hw-leg's dd values
+   right-align directly beneath the bar's true right edge, so a scaled rule
+   misses its own legend by up to 148px.
+   THE COLUMNS. Still one wipe across both banks, not six staggered columns: at
+   fill-mode:none a per-column stagger renders every unreached column at full
+   height and then snaps it to zero, and a part-grown column is a column at a
+   height that is not its value. Nothing here is spent against AP-5's ceiling. */
+@media(prefers-reduced-motion:no-preference){
+  @keyframes hwUncover{from{clip-path:inset(0 100% 0 0)} to{clip-path:inset(0 0 0 0)}}
+  .rise.set .hw-cols,
+  .rise.set .hw-bar{animation:hwUncover var(--z-mark) var(--ease-scan)}
+}
+
+/* THE DONUT. AP2 sweeps the stop inside the DRAWING gradient, so the
+   accent/good boundary itself travels 0% -> 32.01% and asserts a different
+   ratio of $194.88 to $608.76 in every frame. The stop this page sweeps,
+   --hw-sweep, lives in a SECOND conic intersected with the ring mask: it is a
+   reveal head and carries no number, while the stop that carries the number is
+   painted at 32.01% in the background and never moves. The reader still watches
+   an arc grow around the ring, cross the authored gap and hand off to green —
+   which is the AP2 gesture — with the boundary already correct before the head
+   arrives.
+   TWO LATENT BUGS FIXED HERE, both worse than the one that was flagged.
+   (1) The mask longhands used to live in .rise.set, so the SETTLED donut
+   composited through a two-layer intersect mask only after the reveal and
+   through the base rule's single-layer ring before it — two rendering paths for
+   one authored state, and the settled one depended on @property's initial-value
+   surviving a future edit. They move to the base rule at --hw-sweep:100%, where
+   the added conic is fully opaque and the result is the authored ring. .set now
+   adds an animation and nothing else.
+   (2) Moving them there would have made a real degradation PERMANENT: on an
+   engine with multi-layer mask-image but no standard mask-composite the layers
+   composite with `add`, the conic unions with the ring, and the donut is a
+   SOLID PIE. So the whole thing — base longhands and animation together — sits
+   behind @supports. Failing the gate lands on the authored single-layer ring
+   with no sweep, which is the correct still frame and one of the reference
+   forms. The legacy -webkit- keyword is declared before the standard one for
+   engines that honour both. */
+@supports (mask-composite: intersect){
+  .hw-donut{
+    -webkit-mask-image:var(--hw-ring),conic-gradient(#000 var(--hw-sweep,100%),transparent 0);
+            mask-image:var(--hw-ring),conic-gradient(#000 var(--hw-sweep,100%),transparent 0);
+    -webkit-mask-composite:source-in;
+            mask-composite:intersect}
+
+  @media(prefers-reduced-motion:no-preference){
+    @keyframes hwArc{from{--hw-sweep:0%} to{--hw-sweep:100%}}
+    .rise.set .hw-donut{animation:hwArc var(--z-mark) var(--ease-scan)}
+  }
+}
+/* @property --hw-sweep stays exactly where it is. Without the
+   registration the custom property steps 0 -> 100 with no intermediate frames
+   and there is no sweep at all. */
+
+
+/* ── THE AUTHOR-CHUNKED PHRASE REVEAL ──────────────────────────────────────
+   The ask was the type study's card 01, which is REJECTED there for needing
+   opacity:0 on text and for colliding with text-wrap:balance. This page has
+   been shipping the honest version of that technique since day one — .lm is an
+   author-chunked phrase reveal with clip-path substituted for the one property
+   law (1) forbids — and firing it on 2 of 6 eligible h2s, which is itself
+   per-section novelty. So the answer is to USE MORE OF IT, not to build the
+   opacity version. All six h2s in risers now arrive the same way, in document
+   order, and only the chunk count differs.
+   NO OPACITY ANYWHERE. The from-state is a clip-path and a translate, both
+   inside keyframes, both hung off .rise.set, all inside no-preference. With
+   scripting off, a stalled observer, a background tab or a mid-scroll
+   screenshot, the headline is simply the headline.
+   text-wrap:balance IS NOT TOUCHED, NOT OVERRIDDEN AND NOT EXCEPTED. The
+   library's "hard conflict" assumes ONE MASK BOX = ONE RENDERED LINE, which
+   balance re-chooses at every width. Here one mask box = one AUTHORED CHUNK =
+   a display:block, and a block contains every line it renders by definition.
+   Precisely: balance acts on a block's INLINE formatting context, and an h2
+   whose children are all display:block has none, so balance is inert on the h2.
+   text-wrap is INHERITED, so it flows into each .lm and each .lm > span, where
+   it balances that chunk's own wrapping if it ever needs to — which is the
+   behaviour you want, not a conflict. The four single-chunk headings therefore
+   render BYTE-IDENTICALLY at rest.
+   THREE DEFECTS IN THE SHIPPED VERSION, FIXED HERE.
+   (1) cubic-bezier(.77,0,.175,1) has an initial slope of ZERO — the first third
+   of a 700ms reveal is dead, which is verbatim what the type study's own AP-07
+   card condemns. Type is an ARRIVAL and arrivals use --ease. Deleting the
+   one-off curve also leaves the page with the same curve count it has today.
+   (2) translateY(100%) means the clip window and the sliding glyphs do not
+   cross until half the travel is gone, so BOTH product headlines are completely
+   invisible for the first ~340ms of their reveal. At .45em the crossing moves
+   to p > 0.283, which --ease reaches at x = 0.072: measured first glyph pixel
+   at 52ms. A 6.5x reduction.
+   (3) inset(0 0 0 0) clips to the border box, and at h2's line-height 1.14
+   against Inter's ~1.21em glyph box the "g" in "Storage" loses its descender
+   for the whole run. Both vertical edges now open past the box, and the
+   generous top allowance is load-bearing for a second reason: .cyc-word.out
+   lifts translateY(-.16em) ABOVE the line box, and a slot clipped flush would
+   slice the outgoing verb of the word cycle.
+   AND A FOURTH, WHICH IS A LIVE SHIPPED BUG. animation-delay:90ms with
+   fill-mode:none renders line 2 COMPLETE AND UNCLIPPED for about five frames,
+   then snaps it hidden, then wipes it up. Both product headlines do this on
+   every reveal today. It is the same failure the file already records for the
+   abandoned per-column scaleY, re-created by a bare delay. The 90ms becomes an
+   80ms hold at 0%,10% of an 800ms run: travel is still exactly --z-line, so
+   both chunks cross at the same rate one clock tick apart, the offset is on the
+   clock instead of 90ms of nothing, and there is no delay phase for anything to
+   be stranded in. A duration DIFFERENCE was drafted instead and cut: it gives
+   32-40ms of separation during the only visible frames and reads as one block,
+   which deletes the order it was meant to create.
+   THE :nth-child(2) RULES USE THE SHORTHAND, WHICH RESETS animation-delay TO 0s
+   IN THE SAME DECLARATION, and they are (0,4,1)/(0,4,2) — the same specificity
+   as the rules they replace. Writing `animation-delay:0s` on the (0,3,1)
+   selector instead does NOT work: :nth-child() is a pseudo-CLASS and counts in
+   the class column, so the original wins and the flash survives its own fix.
+   THE CAP IS STRUCTURAL. There is a rule for chunk 1 and a rule for chunk 2 and
+   deliberately none for chunk 3, so a third .lm fires in lockstep with the
+   first — a visible tell rather than a silent bug, and a tail no markup edit
+   can grow. AP-09 caps chunks at four or five; this page's headings are one or
+   two. */
+@media(prefers-reduced-motion:no-preference){
+  @keyframes zSlot   {   from{clip-path:inset(-.3em 0 100% 0)}
+                         to  {clip-path:inset(-.3em 0 -.3em 0)} }
+  @keyframes zType   {   from{translate:0 var(--z-slot)} to{translate:0 0} }
+  @keyframes zSlotLag{ 0%,10%{clip-path:inset(-.3em 0 100% 0)}
+                       100%  {clip-path:inset(-.3em 0 -.3em 0)} }
+  @keyframes zTypeLag{ 0%,10%{translate:0 var(--z-slot)} 100%{translate:0 0} }
+
+  .rise.set h2 .lm       {animation:zSlot var(--z-line) var(--ease)}
+  .rise.set h2 .lm > span{animation:zType var(--z-line) var(--ease)}
+
+  .rise.set h2 .lm:nth-child(2)       {animation:zSlotLag calc(var(--z-line) + var(--z-step)) var(--ease)}
+  .rise.set h2 .lm:nth-child(2) > span{animation:zTypeLag calc(var(--z-line) + var(--z-step)) var(--ease)}
+}
+/* Fail-closed, in the house pattern. The existing guard covers .step-top,
+   .hw-lead and .hw-leg and all their descendants, so it already reaches all
+   three marks; it does not reach into an h2. PROBE THIS IN BOTH DIRECTIONS
+   before believing it — inject an infinite keyframe onto .lm in a scratch build
+   and confirm getAnimations() reports it with the media condition off and zero
+   with it on. A guard that has never been seen to bite is a comment. */
+@media(prefers-reduced-motion:reduce){
+  .rise h2 .lm, .rise h2 .lm > span{animation:none !important}
+}
+
+
+/* ── PRINT ─────────────────────────────────────────────────────────────────
+   There is no print stylesheet on this page, and a print taken inside the ~1s
+   reveal window snapshots whatever frame is current. Because fill-mode is none
+   everywhere, `animation:none` returns every element to its own authored
+   computed style — so these two lines make a print correct BY CONSTRUCTION
+   rather than correct by timing. transition is included for the same reason: a
+   print during a 340ms .cyc-word cross-fade would otherwise catch a word at
+   partial opacity. */
+@media print{
+  *,*::before,*::after{animation:none !important; transition:none !important}
+}
+/* ══════════════════ end THE READING PASS ══════════════════ */

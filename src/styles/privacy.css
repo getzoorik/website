@@ -1,0 +1,47 @@
+/* Zoorik marketing: /privacy, the privacy policy on the documents kit.
+ *
+ * Ported from the mock's `privacy-page` block: a legal page's date line, the short
+ * version, the bold lines that name a list or a table, the two callouts, and tables whose
+ * long cells are real lists. Everything else on the page is the documents kit
+ * (documents.css): the hero, the 720px column, the rail and folded contents, the type, the
+ * dots, the callout and the stacked tables.
+ *
+ * Verbatim, rule for rule, but for two edits:
+ *  - The mock's `.pp-tbl` and `.pp-call` classes sit on the table and the callout. The kit's
+ *    `DocTable` and `DocCallout` carry no page class, so those rules are written against
+ *    `.pp-prose .doc-tbl` and `.pp-prose .doc-call` (the policy's reading column). They
+ *    still beat the kit's rules, as the mock's do on order.
+ *  - The short version's list is given its marker, indent and bottom margin outright. In
+ *    the mock they are the browser's defaults, which Tailwind's preflight takes away.
+ *
+ * 🔴 WHAT LOOKS LIKE A SLIP IS THE MOCK, KEPT UNTIL THE MOCK CHANGES. The short version's
+ * box closes 39px under its last line against 22px over its title, and sits 8px above
+ * "1. Who we are"; a list in a table cell starts 8px below the cells beside it, because its
+ * first item keeps the prose list's 8px. Do not "fix" either here: each is an open design
+ * item.
+ *
+ * Two rules lose on purpose, as they do in the mock: `.pp-k`'s 22px loses to
+ * `.doc-prose p` (16px), and `.pp-prose section`'s 104px loses to
+ * `.doc-prose > section[id]` (the kit's --doc-top). So an h3 and the short version land
+ * 104px down and a section lands on the kit's --doc-top. */
+
+/* /privacy: the document shell, a legal page's date line, the short version, stacked tables with real lists */
+.pp-date{margin:0 0 18px;font-size:.875rem;color:var(--muted)}
+.pp-short{margin:28px 0 8px;padding:22px 24px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--surface-2);scroll-margin-top:calc(var(--nav-h) + 24px)}
+.pp-short-t{font-weight:600;color:var(--text)}
+.pp-short ul{margin:10px 0 16px;padding-left:40px;list-style:disc}
+.pp-prose section{scroll-margin-top:calc(var(--nav-h) + 24px)}
+.pp-prose h3{scroll-margin-top:calc(var(--nav-h) + 24px)}
+.pp-k{margin-top:22px;font-weight:600;color:var(--text)}
+.pp-k + ul{margin-top:8px}
+.pp-prose .doc-call{margin:22px 0}
+.pp-prose .doc-call .doc-call-t{font-weight:600;color:var(--text)}
+.pp-prose .doc-tbl ul{margin:0;padding-left:1.1em}
+.pp-prose .doc-tbl li + li{margin-top:4px}
+.pp-prose .doc-tbl code{white-space:normal}
+.pp-prose .doc-tbl td:first-child{font-weight:400}
+.pp-prose .doc-tbl td:first-child code{font-weight:500}
+/* a placeholder still to fill: never on /privacy (its test fails on "[OWNER"), drawn on /terms */
+.ph-chip{display:inline;padding:1px 6px;border:1px dashed var(--line);border-radius:var(--r-ctl);color:var(--muted);
+  font-size:.92em;white-space:normal;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+@media (max-width:640px){.pp-short{padding:18px}}

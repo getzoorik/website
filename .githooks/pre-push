@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Blocks direct pushes to master.
+# Bypass (not recommended): git push --no-verify
+PROTECTED="master"
+while read local_ref local_sha remote_ref remote_sha; do
+    if [ "$remote_ref" = "refs/heads/$PROTECTED" ]; then
+        echo ""
+        echo "ERROR: Direct push to '$PROTECTED' is blocked."
+        echo ""
+        echo "  master is for releases only. To get changes into master:"
+        echo "    1. Push your work to dev or a feature branch"
+        echo "    2. Open a Pull Request targeting dev"
+        echo "    3. After review, @backbencher00 will PR dev to master"
+        echo ""
+        exit 1
+    fi
+done
+exit 0

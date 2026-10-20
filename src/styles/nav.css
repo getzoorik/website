@@ -1,0 +1,143 @@
+/* Zoorik marketing — the top navigation.
+ *
+ * Ported VERBATIM from the mock's inline stylesheet. It is a contiguous
+ * slice of the original, split only where the mock's own section markers
+ * fall, so this file stays diffable against the design it came from.
+ * Values are copied, never reinterpreted.
+ */
+/* ---------- nav ---------- */
+/* The bar is fixed, so on its own it has NO GROUND: its contrast used to be whatever
+   happened to scroll underneath it. The hero's ::after scrim cannot do this job - it
+   paints inside the hero, UNDER the hero's own content, while the nav floats above
+   both, so the hero's white CTA passed straight behind the wordmark (1.12:1 at
+   scrollY 540) and dark panels bled through the 90%-white solid bar (3.96:1 links).
+   Each state now carries its own opaque ground, so nav contrast is a constant of the
+   design instead of a function of the page behind it. */
+.nav{position:fixed;top:0;left:0;right:0;z-index:80;background:transparent;
+  border-bottom:1px solid transparent}
+/* Ground for the transparent state. Opaque --ground through 66px covers every nav
+   glyph - the band measures y 28.6-50.0 at every width - so the wordmark sits on
+   exactly the ground the brand sheet derives #8E98EB against and holds its 7.25:1
+   by construction, not by luck. The falloff below the bar keeps the thing reading
+   as a scrim laid over the photograph rather than as a lid on it, and the whole
+   scrim is 84px - the same 84 the scroll handler flips on, which is the strip of
+   hero still under the bar at the flip - so it can never tint the white section
+   below. */
+.nav::before{content:"";position:absolute;left:0;right:0;top:0;height:84px;z-index:-1;
+  pointer-events:none;
+  background:linear-gradient(180deg,var(--ground) 0,var(--ground) 66px,
+    rgba(11,13,20,.55) 74px,rgba(11,13,20,0) 84px)}
+.nav.solid::before{display:none}
+/* Nothing in the bar cross-fades between the two states: every intermediate ground
+   between #0B0D14 and #FFFFFF is a mid-grey on which NEITHER #8E98EB nor #070F52
+   can hold 4.5:1, so ground and ink must change in the same frame. Hover colours
+   lose their ease as a consequence - a fair price for never painting white ink on
+   a white bar. The scroll handler carries hysteresis so the flip cannot strobe. */
+.nav .nav-links a:not(.btn),.nav .btn{transition:transform var(--d-fast) var(--spring)}
+/* over the rack image */
+/* The header wordmark is WHITE on the dark hero, not the sheet's #8E98EB dark-ground
+   variant. White measures ~17.4:1 on #0B0D14 vs the sheet's 7.25:1, so it is safer on
+   contrast, but it IS a deviation — the sheet's dark-mode table should be updated or a
+   future brand sweep will revert it. */
+.nav .brand{color:#FFFFFF}
+.nav .nav-links a:not(.btn){color:rgba(255,255,255,.80)}
+.nav .nav-links a:not(.btn):hover{color:#fff}
+.nav .btn{font-size:.92rem;padding:12px 21px}
+.nav .btn-solid{background:rgba(255,255,255,.95);color:var(--text)}
+.nav .btn-solid:hover{background:#fff}
+.nav .nav-toggle{border-color:rgba(255,255,255,.34);color:#fff}
+/* once past the hero. Opaque, not 90%: at 90% a dark panel scrolling under the bar
+   lifted var(--muted) to 3.96:1, and no translucency short of ~96% clears 4.5:1 -
+   which is to say translucency here buys a blur nobody can see at the price of a
+   ground that moves. */
+.nav.solid{background:var(--bg);border-bottom-color:var(--line-soft)}
+.nav.solid .brand{color:var(--brand)}
+.nav.solid .nav-links a:not(.btn){color:var(--muted)}
+.nav.solid .nav-links a:not(.btn):hover{color:var(--text)}
+.nav.solid .btn-solid{background:var(--accent);color:#fff}
+.nav.solid .btn-solid:hover{background:color-mix(in srgb,var(--accent) 86%,#000)}
+.nav.solid .nav-toggle{border-color:var(--line);color:var(--text)}
+/* The bar's height: 88px, 80px on phones. Everything tied to it follows --nav-h: the bar itself, every
+   hero's top, the sticky chips and every anchor's landing. */
+:root{--nav-h:88px}
+@media(max-width:760px){:root{--nav-h:80px}}
+/* anchored sections must clear the fixed bar */
+section[id],header[id],.alias{scroll-margin-top:calc(var(--nav-h) + 8px)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:var(--nav-h);gap:var(--s5)}
+/* repo: gap 0, as the mock sets it: the lockup is one drawing, mark and word together */
+.brand{display:inline-flex;align-items:center;gap:0;font-size:1.34rem;font-weight:600;letter-spacing:-.045em;color:var(--brand);line-height:1}
+/* ── the logo ──
+   The lockup (`BrandLogo`): the mark and "zoorik" in outlines, one colour, navy #050B3D on light grounds and
+   bone #FAF7F3 over the dark hero. Its box keeps the drawing's ratio, 4.0088; its size steps down where the
+   full menu sits beside it, so the bar never runs out of room. Phones: as wide as the room beside
+   "Book a demo" and the menu button, so both stay whole down to 320px. The footer's is `.site-foot`, where the
+   mock writes `footer`: /login has a footer of its own, and no marketing rule reaches a bare element there. */
+.brand-logo{display:block;flex:none;height:1.4em;width:calc(1.4em * 4.0088);color:#050B3D}
+.nav .brand-logo{height:47.3px;width:189.8px}
+.site-foot .brand-logo{height:47.3px;width:189.8px}
+@media(max-width:1180px) and (min-width:1101px){.nav .brand-logo{height:43.0px;width:172.5px}}
+@media(max-width:1100px) and (min-width:1051px){.nav .brand-logo{height:38.7px;width:155.3px}}
+@media(max-width:1050px) and (min-width:1001px){.nav .brand-logo{height:34.4px;width:138.0px}}
+@media(max-width:1000px) and (min-width:761px){.nav .brand-logo{height:45.2px;width:181.2px}}
+@media(max-width:760px){
+  .nav .brand-logo{width:min(172.5px,calc(100vw - 247px));height:auto;aspect-ratio:4.0088}
+  .site-foot .brand-logo{height:40.9px;width:163.9px}
+}
+@media(max-width:340px){.nav .brand-logo{width:min(172.5px,calc(100vw - 224px))}}
+.nav:not(.solid) .brand-logo{color:#FAF7F3}
+/* Rings, opposite ways, in the header's and the footer's logo: the outer ring turns one way and the inner ring the
+   other, each 72deg in 9.8s, one fifth of a turn, so every cycle ends where it began and a whole turn takes 49s. The
+   core and the word stay still, and so does `zl-t`, which the mock's drawing keeps. Both rings turn about the canvas
+   centre, 256 of the mark's 512 box, not their own boxes: the five lone squares make the outer ring's box uneven, and
+   any other origin drifts. The same rules move the mark alone on the free assessment's card (`.zl-mark`). Declared only
+   under no-preference, so reduced motion has nothing to stop.
+   repo: each ring names its keyframes in its own shorthand, where the mock writes one shorthand without a name and
+   sets `animation-name` after it: the build's minifier reads a nameless shorthand as `animation:none`, and the
+   rings stood still. */
+@keyframes zlO{to{transform:rotate(72deg)}}
+@keyframes zlI{to{transform:rotate(-72deg)}}
+@media (prefers-reduced-motion:no-preference){
+  .brand-logo .zl-o,.brand-logo .zl-i,.zl-mark .zl-o,.zl-mark .zl-i{transform-box:view-box;transform-origin:256px 256px}
+  .brand-logo .zl-o,.zl-mark .zl-o{animation:zlO 9.8s linear infinite}
+  .brand-logo .zl-i,.zl-mark .zl-i{animation:zlI 9.8s linear infinite}
+}
+.nav-links{display:flex;gap:clamp(15px,2.35vw,32px);align-items:center}
+.nav-links a:not(.btn){font-size:.97rem;font-weight:450;color:var(--muted);white-space:nowrap;
+  transition:color var(--d-fast) var(--ease)}
+.nav-links a:not(.btn):hover{color:var(--text)}
+/* Login is the one nav item that is also in the footer and the drop menu, so it is
+   the one that yields first when the bar runs out of room. */
+/* No longer before the rest: Login stays in the bar until the menu button takes over at
+   1000px. The mocks' build drops the 1140px rule from this sheet, and so does the port;
+   it left nothing in Login's place between 1140 and 1001. */
+@media(max-width:1000px){.nav-links a:not(.btn){display:none}}
+.nav-toggle{display:none;font:inherit;background:none;border:1px solid var(--line);border-radius:var(--r-ctl);
+  width:42px;height:42px;cursor:pointer;padding:0;place-items:center;color:var(--text)}
+.nav-toggle svg{width:20px;height:20px}
+.nav-drop{display:none;border-top:1px solid var(--line-soft);background:var(--bg);
+  box-shadow:0 18px 40px -22px rgba(15,18,34,.3)}
+.nav-drop a{display:block;padding:14px 0;font-size:.95rem;border-bottom:1px solid var(--line-soft);color:var(--text)}
+.nav-drop a:last-child{border-bottom:0}
+@media(max-width:1000px){
+  .nav-toggle{display:grid}
+  .nav-drop.open{display:block}
+}
+/* 320px: "Book a demo" and the menu button overran the bar. The button steps down a size
+   and the pair closes up, so the bar holds at the narrowest phone. */
+@media(max-width:340px){.nav .nav-links .btn{padding:10px 12px;font-size:.84rem}.nav .nav-links{gap:8px}}
+.btn{font-size:.875rem;font-weight:500;line-height:1;padding:11px 18px;border:1px solid transparent;border-radius:var(--r-ctl);
+  display:inline-flex;align-items:center;white-space:nowrap;cursor:pointer;
+  transition:background var(--d-fast) var(--ease),border-color var(--d-fast) var(--ease),transform var(--d-fast) var(--spring)}
+.btn-solid{background:var(--accent);color:#fff}
+.btn-light{background:rgba(255,255,255,.94);color:var(--text)}
+.btn-wire{border-color:rgba(255,255,255,.34);color:#fff}
+/* A LIFT IS A POINTER STATE AND IS NOW SAID SO. Ungated, every one of these
+   sticks to the last-tapped control on a touch device until something else is
+   tapped, so the page ships a button that is permanently 2px high. The press
+   state that replaces it for touch is at the foot of this sheet and is NOT
+   gated - pressing is exactly what a touch user does. */
+@media (hover:hover){
+  .btn-solid:hover{transform:translateY(-2px);background:color-mix(in srgb,var(--accent) 86%,#000)}
+  .btn-light:hover{background:#fff;transform:translateY(-2px)}
+  .btn-wire:hover{border-color:#fff;transform:translateY(-2px)}
+}

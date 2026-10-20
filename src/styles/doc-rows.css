@@ -1,0 +1,68 @@
+/* Zoorik marketing: the numbered rows in groups, the FAQ's layout the other documents took on: the guides,
+ * /terms, /security and the /learn hub. The FAQ's own rules (the group beside its rows, the row, the chips) stay
+ * in documents.css; this sheet adds what the other pages need on top of them.
+ *
+ * Ported, rule for rule and in the mocks' order, from the blocks these pages carry after `doc-pages`:
+ *  1. `privacy-page`: only the callout's two rules. A row's callout (`.pp-call`) sits in the row's body, outside
+ *     `.pp-prose`, where privacy.css's `.pp-prose .doc-call` cannot reach it.
+ *  2. `new-pages`: only what /security and /learn draw (a link row in a row's prose, the empty table cell, the
+ *     summary's title, the closing Medium line). The rest of that block is /about's and the articles'.
+ *  3. `guide-rows`, whole.
+ *  4. `article-frame`, whole: the same frame for a page read through, the Learn articles and the case study
+ *     (`.ar-frame`), each section's name beside its open text.
+ * Imported from globals.css after privacy.css, where the mocks put these blocks, so a rule here wins its ties. */
+
+/* privacy-page: a callout inside a row */
+.pp-call{margin:22px 0}
+.pp-call .doc-call-t{font-weight:600;color:var(--text)}
+
+/* new-pages: a control-like link keeps its own look inside the prose, which colours and underlines plain links */
+.doc-prose a.alink{color:var(--text);text-decoration:none}
+@media (hover:hover){.doc-prose a.alink:hover{color:var(--accent)}}
+.doc-prose a.alink:focus-visible{color:var(--accent)}
+.doc-prose p.nw-links{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:20px}
+/* a table cell left empty ("none") draws nothing, and no label when the table stacks */
+@media (max-width:640px){.nw-tbl td:empty{display:none}}
+/* /security: the summary's title is a paragraph, the list a summary dl */
+.sc-sum-t{margin-bottom:12px;font-size:1rem;font-weight:600;line-height:1.5;color:var(--text)}
+#summary{scroll-margin-top:var(--doc-top)}
+/* /learn: the closing line to the Medium publication */
+.ln-foot{display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;margin-top:clamp(40px,5vw,56px);padding-top:20px;
+  border-top:1px solid var(--line);font-size:.9375rem;color:var(--muted)}
+
+/* guide-rows: the Amoeba guide in the FAQ's layout: a section's lede over its rows; a row opens onto the guide's own
+   text, tables and steps */
+.gd-lede{margin:0 0 20px;font-size:1rem;line-height:1.6;color:var(--muted);text-wrap:pretty}
+.gd-row .fq-body > :first-child{margin-top:0}
+.gd-main .doc-related{margin-top:16px}
+.gd-row .fq-body h4.doc-sub:first-child{margin-top:0}
+.gd-foot{margin-top:40px}
+/* the open block over the rows (a summary, a short version) keeps the guides' gap above the first group */
+.gd-main .gd-top + .fq-sec{margin-top:56px}
+/* Learn's rows are links: the FAQ row's grid and type, an arrow where the chevron goes */
+.ln-row{display:grid;grid-template-columns:32px minmax(0,1fr) 16px;align-items:start;padding:18px 0;border-bottom:1px solid var(--line);
+  color:var(--text);text-decoration:none;-webkit-tap-highlight-color:transparent}
+.ln-row h3{margin:0;padding-right:16px;font-size:1.0625rem;font-weight:500;line-height:1.5;letter-spacing:-.01em;text-wrap:pretty;
+  transition:color var(--d-fast) var(--ease)}
+.ln-rt{min-width:0}
+.ln-rl{display:block;margin-top:2px;padding-right:16px;font-size:.9375rem;line-height:1.55;color:var(--muted);text-wrap:pretty}
+.ln-ru{display:block;margin-top:4px;font-size:.8125rem;color:var(--muted)}
+.ln-go{width:16px;height:16px;margin-top:calc((1.0625rem * 1.5 - 16px) / 2);color:var(--muted);transition:color var(--d-fast) var(--ease),transform var(--d-fast) var(--ease)}
+.ln-row:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+@media (hover:hover){.ln-row:hover h3,.ln-row:hover .ln-go{color:var(--accent)}.ln-row:hover .ln-go{transform:translateX(2px)}}
+.gd-foot .ln-foot{margin:0}
+
+/* Not in the mock: under reduced motion a link row changes colour at once and its arrow keeps still, as the FAQ's
+   rows and Back to top's arrow do in documents.css (the mock's guide-rows block has no reduced-motion rule). */
+@media (prefers-reduced-motion:reduce){
+  .ln-row h3,.ln-go{transition:none}
+  .ln-row:hover .ln-go{transform:none}
+}
+
+/* article-frame, for the Learn articles and the case study, as on /security: the FAQ's frame for a page that is read
+   through. Each section's name in the left column beside its text, the text open, no On this page rail; the top and
+   the foot over the right column; the section chips on a phone. */
+.ar-frame .fq-upd > :first-child,.ar-frame .fq-sec-b > :first-child{margin-top:0}
+.ar-frame .fq-upd + .fq-sec{margin-top:56px}
+.ar-frame .ar-foot{margin-top:56px}
+@media (min-width:981px){ .ar-frame .fq-sec + .fq-sec{margin-top:80px} }

@@ -1,0 +1,15 @@
+/* Zoorik marketing: the home page's motion pass, its one entrance (the mock's motion block),
+ * VERBATIM.
+ *
+ * Every element the pass brings in carries `.mo-r` and comes in once: fade up 14px, 700ms
+ * ease-out, a short stagger from its `--d`. `HomeMotion` gives it `.is-in`. Last of the
+ * pass's four sheets, as the mock writes these rules last. What we offer's side and rows
+ * carry `.mo-r` too, for the observer, but keep the mock's own entrance (`.ofx-in`, .7s and
+ * the rows' `--d0`), written at a weight this rule cannot outrank (home-offers.css).
+ *
+ * Without scripting, `HomeMotion`'s `<noscript>` style puts every one in its end state.
+ */
+/* one entrance for what the concept adds */
+.mo-r{opacity:0;transform:translateY(14px);transition:opacity .7s cubic-bezier(.22,.9,.3,1) var(--d,0ms),transform .9s cubic-bezier(.22,.9,.3,1) var(--d,0ms)}
+.mo-r.is-in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.mo-r,.mo-film.mo-r{opacity:1;transform:none;transition:none}}

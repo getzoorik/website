@@ -1,0 +1,20 @@
+/* Zoorik marketing: the home page's own pass.
+ *
+ * The home mock's home-pass block, VERBATIM: the press on the hero's product lockups, the
+ * running copy set without a one-word last line, and one padding shared by two white sections
+ * in a row. What we offer left this block for the motion pass (`home-offers.css`), as it left
+ * the mock's. It is the last page sheet the mock loads, after the engines' reading pass, so a
+ * rule here is the last word for `/`.
+ *
+ * 🔴 `#amoeba{padding-top:0}` IS THE ONLY THING THAT CLOSES THE GAP. sections.css drops the
+ * top padding of a white section that follows a white section, but its `+` never reaches
+ * `#amoeba`: the `#elastic` alias div stands between the two sections. Without this line
+ * the page grows by one section's padding between Coral and Amoeba.
+ */
+/* ══ THE HOME PAGE'S OWN PASS ══ this page's alone; the generator leaves it out. */
+.hp{-webkit-tap-highlight-color:transparent;transition:scale var(--d-fast) var(--ease)}
+.hp:active{scale:.98;transition-duration:var(--z-press)}
+.hero-sub,.sec-head p,.st-body,.pl p{text-wrap:pretty}
+/* two white sections in a row share one padding */
+#amoeba{padding-top:0}
+/* what we offer is drawn by the motion pass, with its own cards */

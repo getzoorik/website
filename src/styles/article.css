@@ -1,0 +1,129 @@
+/* Zoorik marketing: the Learn articles, `/learn/vpa-vs-hpa`, `/learn/coral-and-native-autoscalers`
+ * and `/learn/shrink-azure-managed-disk` (laid out like /security), and
+ * `/learn/poor-architecture-cloud-bill` (its own parts at the end of this sheet).
+ *
+ * Ported from the mocks' two blocks, rule for rule, in their order: the sheet for the new pages,
+ * the rules every new page shares and the article's own; then the still diagrams' sheet, the VPA
+ * article's. Imported by each article's page, so Next loads it after globals.css: where the mocks
+ * put both blocks, after the site system, the header's menus and the documents' sheet. Every rule
+ * is under `.doc-prose` or a page class, so it reaches nothing else.
+ *
+ * Everything else is shared. The frame is the numbered rows' (doc-rows.css, with the mocks'
+ * article frame block): each section's name beside its open text, the chips on a
+ * phone, no "On this page" list. The documents' kit (documents.css) has the utility hero, the
+ * type, the dots, the steps, the callout, the stacked tables, the Updated line and the help box;
+ * the Related tiles are the site system's `.dt*`. A few article rules below are written for the
+ * column the articles had before the frame (`.doc-prose > section + .doc-help`); they are the
+ * mock's, kept as it keeps them, and match nothing now.
+ *
+ * Not ported here: the new pages' /about rules (about.css); the rules every new page shares, the
+ * prose's `.alink` and the stacked table's empty cell, with the /security and /learn hub rules
+ * (doc-rows.css, loaded on every page); and `.doc-prose p.nw-links`, a row of links no article
+ * draws. */
+
+/* an article: the short answer first, the help box after the last section, then the sources */
+.doc-prose > .ar-short{margin-top:0}
+.doc-prose > .ar-short + section{margin-top:56px}
+.doc-prose > section + .doc-help{margin-top:56px}
+.doc-prose .ar-code code{display:block;margin-top:0;padding:12px 16px;border-radius:var(--r-card);font-size:.875rem;line-height:1.6}
+.ar-src{margin-top:24px;font-size:.875rem;line-height:1.6;color:var(--muted);overflow-wrap:anywhere}
+.doc-prose p.ar-src{margin-top:24px}
+.nw-nb{white-space:nowrap}
+.ar-rel h2{font-size:var(--fs-h2-doc);line-height:1.2;letter-spacing:-.022em}
+.ar-rel .dt-grid{margin-top:24px}
+
+/* ── the still diagrams ── */
+.ln-d,.ln-strip-w{--ln-a14:color-mix(in srgb,var(--accent) 14%,#fff);--ln-a45:color-mix(in srgb,var(--accent) 45%,transparent);
+  --ln-g:color-mix(in srgb,var(--text) 40%,transparent)}
+.lk-svg{display:block;width:100%;height:auto;overflow:visible}
+.lk-svg rect,.lk-svg path{vector-effect:non-scaling-stroke;stroke-width:1.5px;stroke-linecap:round;stroke-linejoin:round}
+.lk-svg .n{fill:#fff;stroke:var(--line)}
+.lk-svg .u{fill:var(--accent);stroke:none}
+.lk-svg .uk{fill:var(--text);stroke:none}
+.lk-svg .a{fill:var(--ln-a14);stroke:var(--ln-a45)}
+.lk-svg .ad{fill:none;stroke:var(--accent);stroke-dasharray:4 3}
+.lk-svg .k{fill:#fff;stroke:var(--text)}
+.lk-svg .g{fill:none;stroke:var(--ln-g);stroke-dasharray:4 3}
+.lk-svg .m{fill:none;stroke:var(--muted)}
+.lk-svg .mt{fill:none;stroke:var(--accent);stroke-dasharray:3 3}
+/* the step strip under the short answer: three steps across the column, stacked in a narrow one */
+.ln-strip-w{container-type:inline-size;margin-top:28px}
+.doc-prose > .ln-strip-w + section{margin-top:56px}
+.doc-prose ol.ln-strip.ln-strip{display:grid;gap:12px;margin:0;padding:0;list-style:none}
+.doc-prose .ln-strip.ln-strip > li{position:relative;display:flex;align-items:center;gap:14px;min-width:0;margin:0;padding:0}
+.ln-si{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:var(--r-ctl);background:var(--surface-2);color:var(--muted)}
+.ln-si svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.ln-si .ac{stroke:var(--accent)}
+.ln-st{font-size:.9375rem;font-weight:500;line-height:1.35;color:var(--text);text-wrap:balance}
+.ln-strip > li + li::before{content:"";position:absolute;left:21.25px;top:-12px;width:1.5px;height:12px;background:var(--line)}
+@container (min-width:630px){
+  .doc-prose ol.ln-strip.ln-strip{grid-template-columns:repeat(3,minmax(0,1fr));gap:0 40px}
+  .ln-strip > li + li::before{left:-28px;top:50%;width:16px;height:16px;margin-top:-8px;background:var(--muted);
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 5l7 7-7 7'/%3E%3C/svg%3E") center/16px no-repeat;
+    mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 5l7 7-7 7'/%3E%3C/svg%3E") center/16px no-repeat}
+}
+@media (forced-colors:active){.ln-strip > li + li::before{background:CanvasText}}
+/* a diagram: a white card with a hairline, the art in --surface-2 boxes, the labels under or beside them */
+.ln-d{container-type:inline-size;padding:16px;border:1px solid var(--line);border-radius:var(--r-card);background:#fff;
+  font-size:var(--fs-micro);line-height:1.4}
+.doc-prose figure.ln-d{margin:28px 0 0}
+.doc-prose h2 + figure.ln-d,.doc-prose h3 + figure.ln-d{margin-top:20px}
+.doc-prose .ln-d + p,.doc-prose .ln-d + ul,.doc-prose .ln-d + ol,.doc-prose .ln-d + h3{margin-top:28px}
+.doc-prose .ln-d p,.doc-prose .ln-d ol.lk-ol,.doc-prose .ln-d ol.lk-ol > li{margin:0;padding:0;list-style:none}
+.lk-art{position:relative;padding:14px 16px;border-radius:var(--r-card);background:var(--surface-2)}
+.lk-art > .lk-svg{max-width:var(--cap,240px);margin:0 auto}
+.lk-t{margin-top:10px !important;font-size:var(--fs-micro);font-weight:600;line-height:1.4;color:var(--text);text-wrap:balance}
+.lk-s{font-size:var(--fs-micro);font-weight:500;line-height:1.45;color:var(--muted);text-wrap:balance}
+.lk-t + .lk-s{margin-top:2px !important}
+.lk-mono{font-family:var(--code);font-size:.95em;font-weight:500;color:var(--text);white-space:nowrap}
+.lk-num{display:inline-block;min-width:1.1em;font-family:var(--code);font-weight:500;color:var(--accent);font-variant-numeric:tabular-nums}
+/* two panels side by side (a pair, or before and after with an arrow between) */
+.lk-vh{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.lk-vh .lk-art{--cap:200px}
+.lk-ba{display:grid;grid-template-columns:minmax(0,1fr) 20px minmax(0,1fr);align-items:start;gap:8px}
+.lk-ba .lk-art{--cap:220px}
+.lk-to{align-self:center;justify-self:center;width:8px;height:8px;margin-top:-28px;border-right:1.5px solid var(--muted);
+  border-bottom:1.5px solid var(--muted);transform:rotate(-45deg)}
+/* steps: down the box in a narrow one, across from 548px; a chevron between; the clash loops back to step 1 */
+.lk-loop{position:relative}
+.lk-vh + .lk-loop{margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.lk-cl{display:grid;gap:14px}
+.lk-loop.is-loop .lk-cl{padding-right:30px !important}
+.lk-cs{display:grid;grid-template-columns:104px minmax(0,1fr);align-items:center;gap:14px}
+.lk-cs .lk-art{--cap:132px;padding:8px 10px}
+.lk-cs .lk-s{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:.4em}
+.lk-cs:not(:last-child) .lk-art::after{content:"";position:absolute;left:50%;bottom:-11px;width:6px;height:6px;margin-left:-3px;
+  border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);transform:rotate(45deg)}
+.lk-ret{position:absolute;right:0;top:30.4px;bottom:30.4px;width:14px;border:1.5px solid var(--muted);border-left:0;
+  border-radius:0 var(--r-ctl) var(--r-ctl) 0}
+.lk-vh + .lk-loop .lk-ret{top:calc(16px + 30.4px)}
+.lk-ret::before{content:"";position:absolute;left:-1px;top:-4.5px;width:7px;height:7px;border-left:1.5px solid var(--muted);
+  border-bottom:1.5px solid var(--muted);transform:rotate(45deg)}
+@container (max-width:547.98px){.lk-cl{max-width:340px}.lk-ret{right:auto;left:calc(min(100%, 340px) - 14px)}}
+/* before and after stack in a narrow box, so eight pods still read; the arrow turns down */
+@container (max-width:419.98px){.lk-ba{grid-template-columns:minmax(0,1fr);gap:10px}.lk-to{margin:0;transform:rotate(45deg)}}
+@container (min-width:548px){
+  .lk-vh,.lk-ba{gap:16px}
+  .lk-cl{grid-template-columns:repeat(var(--n,4),minmax(0,1fr));column-gap:28px}
+  .lk-loop.is-loop .lk-cl{padding:0 0 30px !important}
+  .lk-cs{grid-template-columns:minmax(0,1fr);align-items:start;align-content:start;gap:10px}
+  .lk-cs:not(:last-child) .lk-art::after{left:auto;right:-17px;bottom:auto;top:50%;margin:-3px 0 0;transform:rotate(-45deg)}
+  .lk-ret{left:calc(50% / var(--n,4) - 10.5px);right:calc(50% / var(--n,4) - 10.5px);top:auto !important;bottom:0;width:auto;height:14px;
+    border:1.5px solid var(--muted);border-top:0;border-radius:0 0 var(--r-ctl) var(--r-ctl)}
+  .lk-ret::before{left:-4.75px;top:-1px;transform:rotate(135deg)}
+}
+@media (forced-colors:active){.lk-svg .u,.lk-svg .uk{fill:CanvasText}.lk-art{border:1px solid CanvasText}}
+
+/* ── the essay's parts (not in the mocks): the fourth article, the Medium post, carries a
+   picture with its caption, a quote and lines in italics. The picture sits where a diagram does
+   (`.ln-d`'s spacing) on the same white card with a hairline; the quote is the documents' callout
+   (`.doc-call`), its words a little larger; the italic lines are muted, as fine print. ── */
+.doc-prose figure.ar-img{margin:28px 0 0}
+.doc-prose h2 + figure.ar-img,.doc-prose h3 + figure.ar-img{margin-top:20px}
+.doc-prose .ar-img + p,.doc-prose .ar-img + ul,.doc-prose .ar-img + ol,.doc-prose .ar-img + h3{margin-top:28px}
+.ar-img img{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:var(--r-card);background:#fff}
+.ar-img figcaption{margin-top:10px;font-size:var(--fs-small);line-height:1.5;color:var(--muted);text-wrap:pretty}
+.doc-prose blockquote.ar-quote{margin:24px 0 0}
+.doc-prose blockquote.ar-quote + p{margin-top:24px}
+.doc-prose .ar-quote p{margin:0;font-size:1.0625rem;font-weight:500;line-height:1.55;color:var(--text);text-wrap:pretty}
+.doc-prose p.ar-note{font-size:var(--fs-small);line-height:1.6;color:var(--muted)}

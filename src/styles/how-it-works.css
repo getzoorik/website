@@ -1,0 +1,226 @@
+/* Zoorik marketing — three cards, three marks, and the figures inside them.
+ *
+ * Ported VERBATIM from the mock's inline stylesheet. It is a contiguous
+ * slice of the original, split only where the mock's own section markers
+ * fall, so this file stays diffable against the design it came from.
+ * Values are copied, never reinterpreted.
+ */
+/* --- how it works: three cards, three marks --- */
+/* ONE CARD SKELETON, THREE DIFFERENT MARKS. Every card is caption / one large light
+   figure / a small quiet mark beside it / a key at the foot. The skeleton is what
+   makes them one instrument; the mark is chosen per claim, because the three claims
+   are not the same shape:
+     01 is a COUNT      -> columns against a visible ceiling. Six tracks read in
+                           full, and the SAME six left empty. The empty half is the
+                           read-only promise drawn rather than asserted.
+     02 is a SPLIT      -> one flat segmented rule. 22 CPU is the whole rule; the
+                           real work is 14.05% of it and the missing length is the
+                           claim.
+     03 is a RATIO of   -> a donut. Two arcs of one ring: 32.01% of the bill kept,
+        money             the rest removed.
+   Nothing here is modelled. 6 nodes, 77 workloads, 22 CPU, 15.53 requested, 3.09 of
+   real work, $608.76, $194.88 and 67.99% are all published by the K8s console above;
+   the only arithmetic is a ratio of two of those figures.
+   THE PALETTE IS ZOORIK'S, NOT A CHART KIT'S. Series of the same kind separate by
+   VALUE - accent, a lighter step of accent, then --line - never by a second hue. The
+   one semantic colour is --good on 03's second arc, and it is there for the same
+   reason it is there in cloud economics: it marks the spend that leaves, which is
+   --good's own scenario. It is 3.01:1 on white, over the 3:1 non-text floor, and it
+   is never set as text in this section.
+   THE PROSE LEDE IS GONE. The sentence each card carried is kept verbatim in
+   .sr-only, so a screen reader loses nothing, and the foot key now names every
+   quantity the marks draw so the sighted card does not lean on the picture
+   alone. */
+/* minmax(0,1fr), not 1fr. A grid track defaults to minmax(auto,1fr) and will not
+   shrink below the item's min-content width - and with aspect-ratio:1 on the card,
+   its min-content HEIGHT feeds back through the ratio and becomes a ~400px
+   min-content WIDTH. Measured before this fix: three 400px tracks inside a 350px
+   .steps at a 390px viewport, i.e. 30px of horizontal overflow on the page. */
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s4)}
+@media(max-width:900px){.steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+  /* The last card spans the row again. It could not while the card was a square - a
+     full-width square would have been ~800px tall - but a content-height card just
+     becomes a wide short one, which is the shape wanted anyway. */
+  .stepc:last-child{grid-column:1 / -1}}
+@media(max-width:600px){.steps{grid-template-columns:minmax(0,1fr)}}
+/* The two tab panels hold no control, so each takes tabindex=0 (the tabs pattern) and the
+   keyboard can reach the cards. Its ring stands clear of the cards' own
+   shadows and follows their corners. */
+.steps[role="tabpanel"]:focus-visible{outline-offset:6px;border-radius:var(--r-card)}
+/* a column, so the key can take margin-top:auto: the headings run to one line at
+   1440 and to two in a narrow card, and the three keys have to sit on one baseline
+   regardless. The slack goes ABOVE the key, never below it, so no card ends in
+   reserved empty space. */
+/* PERFECT SQUARE. aspect-ratio rather than a height:
+   the card is a grid item whose width is set by the track, so a square has to be
+   derived from that width at every breakpoint and can never be a number. It is a
+   floor, not a cage - min-height stays auto, so if the copy ever outgrows the box
+   the card grows rather than clipping. */
+.stepc{display:flex;flex-direction:column;
+  padding:26px 24px;border-radius:var(--r-card);border:1px solid var(--line);
+  background:var(--surface);box-shadow:var(--shadow-2)}
+
+/* The step number was display-sized. It cannot stay that way: the card now leads
+   with a large DATA figure, and two competing numerals in one card is exactly the
+   failure this redesign has to avoid. So the sequence marker becomes what it
+   actually is - an index - and hands the size to the number that carries meaning.
+   The hairline that used to run beside it was removed; the index now sits alone,
+   and .step-top keeps display:flex because the gap and the baseline alignment still
+   apply to a single child. */
+.step-top{display:flex;align-items:baseline;gap:12px}
+/* The index now matches the heading beside it exactly - same size, same weight,
+   same tracking - so the two read as one line and only COLOUR separates them.
+   It was 13px at .06em, a label sitting under a 17px title; on one row that
+   difference read as a mistake rather than as hierarchy. */
+.stepn{flex:none;font-size:1.0625rem;font-weight:600;letter-spacing:-.02em;
+  color:var(--accent);font-variant-numeric:tabular-nums}
+.stepc h3{margin:0;font-size:1.0625rem;font-weight:600;letter-spacing:-.02em;line-height:inherit}
+/* THE SQUARE IS GONE. Kept for reference: It was written on the base .stepc with an
+   aspect-ratio:auto reset inside @media(max-width:900px) - and the reset lost,
+   because the base rule is authored 11 lines LATER at equal specificity, so a
+   full-width card at 900px measured 819x819. Declaring it inside the min-width
+   query instead means the one-column band never sets it in the first place and no
+   ordering can revive it. */
+/* aspect-ratio:1 was here. It was removed for what it cost: a square card is ~90px
+   taller than its content, and because the key is bottom-pinned all of that height
+   landed in ONE gap - 56px above the lead against 111px below it. A shorter, wider
+   card spends the width instead of banking height nobody asked for. */
+
+/* ---- the lead: caption, one figure, the mark beside it ---- */
+/* wraps rather than overflows. Above 1341px the mark sits to the right of the figure
+   and ends flush with the card's right padding, which is the reference arrangement;
+   below it the mark drops under the figure and both align left. Nothing is clipped
+   at any width and no card reflows into a different design. */
+.hw-lead{display:flex;align-items:center;justify-content:space-between;
+  gap:16px 18px;flex-wrap:wrap;margin-top:26px}
+.hw-key{flex:1 1 150px;min-width:0;display:flex;flex-direction:column;gap:7px}
+.hw-cap{font-size:.75rem;font-weight:500;line-height:1.25;color:var(--muted);letter-spacing:.005em}
+/* Inter's lightest loaded weight is 400 and this is the only 400 numeral on the page,
+   which is what makes it read as light against the 600 everywhere else. Tabular, so
+   the three cards' figures share a digit width even though they share no column. */
+.hw-num{font-size:clamp(28px,2.4vw,35px);font-weight:400;letter-spacing:-.04em;line-height:1;
+  color:var(--text);font-variant-numeric:tabular-nums;white-space:nowrap}
+.hw-num i{font-style:normal;font-size:.4em;font-weight:500;letter-spacing:0;
+  color:var(--muted);margin-left:.3em}
+.hw-sub{font-size:.75rem;font-weight:450;line-height:1.4;color:var(--muted)}
+/* one box, one height, three marks. The marks differ; the space they occupy does not. */
+.hw-fig{flex:0 0 auto;width:176px;max-width:100%;height:76px;
+  display:flex;align-items:center;justify-content:flex-end}
+@media(max-width:1341px){
+  .hw-fig{width:100%;max-width:320px;justify-content:flex-start}
+}
+/* the 601-900 band gives card 03 the whole row, and a 320px mark parked in the middle
+   of a 728px card reads as a mark that lost its place. The wide card gets the side-by
+   -side arrangement back, flush to its own right padding. */
+@media(min-width:601px) and (max-width:900px){
+  .stepc:last-child .hw-fig{width:176px;justify-content:flex-end;margin-left:auto}
+}
+
+/* ---- 01: columns against a visible ceiling ---- */
+/* Twelve tracks, two banks of six, one ceiling height. The left bank is the six
+   nodes read - every track filled to its own ceiling. The right bank is the same six
+   after the pass: ceiling intact, nothing in it. The read/write asymmetry IS the
+   claim, so it is the whole of the picture, and there is no mark anywhere in it that
+   points into the cluster. */
+.hw-cols{display:flex;align-items:flex-end;gap:14px;width:100%;height:76px}
+.hw-bank{flex:1 1 0;max-width:124px;display:grid;grid-template-columns:repeat(6,1fr);gap:4px;height:100%}
+.hw-col{display:block;position:relative;height:100%;overflow:hidden;
+  background:var(--line);border-radius:var(--r-ctl)}
+.hw-col > b{position:absolute;left:0;right:0;bottom:0;height:100%;
+  background:var(--accent);border-radius:var(--r-ctl)}
+
+/* ---- 02: one flat segmented rule ---- */
+/* fr, not flex-basis, so the 3px white gaps are taken out of the scale BEFORE it is
+   divided and every segment keeps its exact share of the drawn length: 14.05 : 56.54
+   : 29.41. Square ends, flat fills, no track behind it and no rounding - the rule IS
+   the whole, so a channel under it would be a second drawing of the same thing.
+   The three fills are one ramp, not three colours: accent for the work that is real,
+   a lighter step of the same accent for the rest of what is requested, --line for
+   the capacity nothing has asked for. */
+.hw-bar{display:grid;grid-template-columns:14.05fr 56.54fr 29.41fr;gap:3px;
+  width:100%;height:22px}
+.hw-bar > i{display:block;height:100%}
+.hw-work{background:var(--accent)}
+.hw-req{background:color-mix(in srgb,var(--accent) 34%,var(--surface))}
+.hw-head{background:var(--line)}
+
+/* ---- 03: the donut ---- */
+/* Two arcs on one ring: 32.01% of $608.76 is kept, and the boundary sits at exactly
+   32.01%. The white gaps are a SEPARATE layer centred on the two boundaries, 0.5%
+   either side, so the gap never moves the boundary - carving it out of one arc would
+   have made that arc a lie by half a degree. Radial cuts, so the ends are square.
+   The centre is open and empty: a figure in the middle would be a third statement of
+   the number that is already the card's lead. Ring width is 30% of the radius.
+   If the browser has no mask, this degrades to a full pie - still true, still one of
+   the reference forms. */
+.hw-donut{flex:none;width:76px;height:76px;border-radius:50%;
+  background:
+    conic-gradient(
+      var(--surface) 0 .5%, transparent .5% calc(var(--keep,32.01%) - .25%),
+      var(--surface) calc(var(--keep,32.01%) - .25%) calc(var(--keep,32.01%) + .25%), transparent calc(var(--keep,32.01%) + .25%) 99.5%,
+      var(--surface) 99.5% 100%),
+    conic-gradient(var(--accent) 0 var(--keep,32.01%), var(--good) var(--keep,32.01%) 100%);
+  --hw-ring:radial-gradient(closest-side,transparent 0 69.5%,#000 70%);
+  -webkit-mask:var(--hw-ring);
+  mask:var(--hw-ring)}
+
+/* ---- the key ---- */
+/* the fifth reference card's legend, and the thing that makes three different marks
+   read as one family: a dot in the mark's own colour, the label left, the figure
+   right. It is also the text equivalent for the graphic above it, which is why the
+   graphic can be aria-hidden without losing anything. */
+/* 13 above the rule and 13 below it, so the gap from the lead to the first key row
+   is 27px against the 26px above the lead - the three bands are separated by the
+   same air, and the divider sits in the middle of it rather than hard against one
+   side. margin:auto is gone with the square: there is no surplus left to absorb. */
+.hw-leg{margin:13px 0 0;padding-top:13px;border-top:1px solid var(--line-soft);
+  display:flex;flex-direction:column;gap:11px}
+.hw-leg-r{display:flex;align-items:baseline;justify-content:space-between;gap:2px 14px;flex-wrap:wrap}
+.hw-leg dt{display:flex;align-items:baseline;gap:9px;min-width:0;
+  font-size:.8125rem;font-weight:500;color:var(--muted);letter-spacing:.005em}
+/* tabular figures still align; they do not need a monospaced face to do it - and the
+   console's own money is set larger than this, so nothing here out-shouts the product. */
+.hw-leg dd{margin:0;font-size:.8125rem;font-weight:600;color:var(--text);
+  letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.hw-dot{flex:none;width:8px;height:8px;border-radius:50%;transform:translateY(-1px)}
+.d-accent{background:var(--accent)}
+.d-tint{background:color-mix(in srgb,var(--accent) 34%,var(--surface))}
+.d-line{background:var(--line)}
+.d-good{background:var(--good)}
+/* the whole, and the nothing: an outline is a mark that encloses no quantity. Value
+   and material do the separating here; no hue is invented to do it. */
+.d-ring{background:transparent;box-shadow:inset 0 0 0 1.5px var(--line)}
+
+/* NOTHING IN HERE MOVES, ON PURPOSE. Every length, angle and stop is authored in the
+   markup or the stylesheet, so all three marks are correct in their first painted
+   frame - with scripting off, in a background tab, and in a screenshot taken
+   mid-scroll. A rule that grows from zero is a rule that is briefly the wrong length,
+   and this section's whole claim is that its lengths are the console's own. The
+   page's ambient budget is one perpetual loop and the two engine marks in cloud
+   economics hold it; this section does not ask for a second. The only motion these
+   cards take is the existing one-shot .rise, which the page already observes and
+   disconnects.
+   The block below is a fail-closed guard, not a switch for motion that exists: if
+   anything is ever animated or transitioned onto these marks, reduce paints them at
+   their authored end state in the first frame instead. Verified to bite in BOTH
+   directions: with an infinite keyframe injected onto .hw-bar > i the marks report
+   three running animations and animation-name probePulse; with this block's media
+   condition flipped on, the same build reports zero running animations and
+   animation-name none. The clean build reports zero either way. */
+@media(prefers-reduced-motion:reduce){
+  .step-top,.step-top *,.hw-lead,.hw-lead *,.hw-leg,.hw-leg *{
+    animation:none !important;transition:none !important}
+}
+
+/* ---------- THE THREE MARKS COME ALIVE ----------
+   The motion plan cut this deliberately ("the three marks do not move at all"), on
+   system grounds: hierarchy comes from ORDER, not a different effect per section.
+   It is wanted anyway, so it ships in the ONE form the plan itself conceded is
+   honest - its own words: "a wipe is never the wrong length".
+   Nothing GROWS toward a value here. Card 02's bar and card 03's ring are revealed at
+   their authored proportions, so no frame ever shows 8% where the truth is 14.05%.
+   Card 01 is the exception and earns it: six columns filling one after another is a
+   COUNT of six nodes being read, so the filling IS the fact, not an approximation of it.
+   Everything hangs off .rise.set, which only JS applies, inside a no-preference
+   block - so with scripting off or reduced motion the marks are simply drawn. */
+@property --hw-sweep{syntax:"<percentage>";inherits:false;initial-value:100%}

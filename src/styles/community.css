@@ -1,0 +1,64 @@
+/* Zoorik marketing: `/community`, Zoorik Community.
+ *
+ * Ported from the mock's "/community" block of its Learn sheet, rule for rule and in its order. The page is drawn on
+ * Learn's frame and carries Learn's whole sheet, as the mock does: it imports `learn.css` first (the heads, the
+ * sections, `.fx-read`, and the Community rules the mock keeps in its first block: `.cm-k`, `.cm-date`, `.cm-list`,
+ * `.cm-c`), then this. One part of the block's media rules is not here: `.lv-more`, /learn's "More from Zoorik" row,
+ * which is Learn's to port.
+ *
+ * ─── EVERY SELECTOR IS THE PAGE'S OWN ──────────────────────────────────────────
+ * The App Router keeps a visited page's sheet in the document, so each selector names a `cm-` class, Community's
+ * (`community-css.test.ts`). Where one overrides a `learn.css` rule (`.cm-evs .cm-date` over `.cm-date`,
+ * `.cm-shape .fx-read` over `.fx-read`) it has one class more, so it wins in any order the two sheets load in.
+ *
+ * ─── THE MOCK'S `:root` AND BASE RULES ARE NOT COPIED ─────────────────────────
+ * Its tokens and base are the site's own (`tokens.css`, the site system), and `--sans` / `--code` stay next/font's.
+ * Where a site-wide rule changes the mock's computed result, a "repo:" rule says so: the new-tab arrows' margin.
+ *
+ * Loaded only by `/community` (`src/app/community/page.tsx`). */
+
+/* /community */
+.cm-rd{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:32px;align-items:center;padding:clamp(28px,4vw,52px);border-radius:var(--r-shell);background:#050B3D;color:#FAF7F3}
+.cm-rd::after{content:"";position:absolute;right:-160px;top:-200px;width:540px;height:540px;border-radius:50%;background:radial-gradient(closest-side,rgba(59,91,245,.34),transparent);pointer-events:none}
+.cm-rd > *{position:relative;z-index:1}
+.cm-rd h2{margin-top:10px;font-size:clamp(2rem,1.4rem + 2vw,3rem);font-weight:600;letter-spacing:-.035em;color:#FAF7F3}
+.cm-rd p:not(.cm-k){margin-top:12px;font-size:1.0625rem;line-height:1.6;color:rgba(250,247,243,.8);max-width:52ch}
+.cm-acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.cm-btn{display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border-radius:var(--r-ctl);background:#FAF7F3;color:#050B3D;font-weight:600;text-decoration:none}
+.cm-btn svg{width:14px;height:14px}
+.cm-btn2{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border:1px solid rgba(250,247,243,.34);border-radius:var(--r-ctl);color:#FAF7F3;font-weight:500;text-decoration:none}
+.cm-btn2 svg{width:16px;height:16px}
+.cm-btn2.dark{margin-top:18px;border-color:var(--line);color:var(--text)}
+.cm-feed{display:grid;gap:10px}
+.cm-th{display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:var(--r-card);background:rgba(250,247,243,.07);border:1px solid rgba(250,247,243,.14)}
+.cm-up{flex:none;width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:10px solid #5FE3B5}
+.cm-th > span{display:grid;gap:7px;flex:1}
+.cm-th b,.cm-th em{display:block;height:8px;border-radius:4px;background:rgba(250,247,243,.5)}
+.cm-th em{background:rgba(250,247,243,.22)}
+.cm-ch{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.cm-ch a{display:flex;flex-direction:column;gap:3px;padding:18px 20px;border:1px solid var(--line);border-radius:var(--r-card);background:#fff;color:var(--text);text-decoration:none}
+.cm-ch a:hover{border-color:var(--card-hover)}
+.cm-ch b{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.cm-ch b svg{width:12px;height:12px;color:var(--muted)}
+.cm-ch span{font-size:.875rem;color:var(--accent)}
+.cm-ch small{font-size:.8125rem;color:var(--muted)}
+.cm-evs{padding:24px;border:1px solid var(--line);border-radius:var(--r-card);background:#fff}
+.cm-evs ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.cm-evs li{display:flex;align-items:center;gap:12px}
+.cm-evs li > span:last-child{display:flex;flex-direction:column;gap:2px}
+.cm-evs li b{font-weight:600}
+.cm-evs li small{font-size:.8125rem;color:var(--muted)}
+.cm-evs .cm-date{background:var(--surface-2);border-color:var(--line)}
+.cm-evs .cm-date span{color:var(--muted)}
+.cm-shape{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:clamp(22px,3vw,32px);border:1px solid var(--line);border-radius:var(--r-card);background:#fff;color:var(--text);text-decoration:none}
+.cm-shape > span:first-child{display:flex;flex-direction:column;gap:4px}
+.cm-shape b{font-size:1.25rem;font-weight:600}
+.cm-shape small{color:var(--muted);font-size:.9375rem}
+.cm-shape .fx-read{margin-top:0;color:var(--accent)}
+@media(max-width:1000px){.cm-rd{grid-template-columns:minmax(0,1fr)}.cm-ch{grid-template-columns:repeat(2,minmax(0,1fr))}.cm-evs ol{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.cm-ch,.cm-evs ol{grid-template-columns:minmax(0,1fr)}}
+
+/* repo: the new-tab arrows are the site's `ExternalArrow`, whose page-wide `.ext` adds a 2px left margin and keeps it
+   from shrinking; the mock's arrow has no margin, so it sits its gap from the word, and shrinks as a flex item does
+   (at 320px "FinOps Foundation community" fills its line, and the arrow gives up a pixel) */
+.cm-btn .ext,.cm-ch .ext,.cm-c .ext{margin-left:0;flex:0 1 auto}

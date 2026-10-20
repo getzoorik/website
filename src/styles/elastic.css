@@ -1,0 +1,90 @@
+/* Zoorik marketing — the two product sections: the grid, the copy column's body, the button.
+ *
+ * Ported VERBATIM from the mock's inline stylesheet. It is a contiguous
+ * slice of the original, split only where the mock's own section markers
+ * fall, so this file stays diffable against the design it came from.
+ * Values are copied, never reinterpreted.
+ *
+ * The slice used to run on through the tilted console (`.dashmock` and every
+ * `.dm-*` rule) and the rotating headline verb (`.cyc`). Both are gone from the
+ * page: the home page shows a film beside the copy (home-films.css), and the
+ * lockup, headline and chips above the button are in site-system.css. The
+ * console panel's frame (`.eng-stage`, `.mock-tilt`) went with the panel, so
+ * `:not(.eng-stage)` below matches every column; it stays as the mock writes
+ * it, so the rule keeps its specificity.
+ */
+/* ============ Product 01 - block storage hero ============ */
+/* TOPS, not centres. align-items:center centres each column on its OWN height,
+   so the copy and the console only line up when they happen to be the same
+   height - which they never are. It left the elastic copy 21px above its
+   console and the K8s copy 28px below its own, the two sections leaning in
+   opposite directions. Aligning the tops makes the four blocks read as two
+   matched pairs; the bottoms are allowed to be ragged, which is what the
+   content actually is. */
+.st-grid{display:grid;grid-template-columns:1.02fr 1.12fr;gap:clamp(32px,4.5vw,72px);align-items:start}
+/* minmax(0,1fr), not 1fr: stacked, a 1fr track is minmax(auto,1fr) and grows to its widest
+   child's min-content, so one wide console pushed the page past the phone */
+@media(max-width:980px){.st-grid{grid-template-columns:minmax(0,1fr)}}
+.st-grid.flip{grid-template-columns:1.12fr 1.02fr}
+/* The K8s copy sits on the right, and comes further in from the console.
+   Indent the column rather than re-cutting the tracks: its RIGHT edge has to
+   stay on the wrap's edge, where the nav, both section heads and the elastic
+   console all line up, so the shift has to come out of the measure, not out
+   of the alignment. Two columns only - stacked, there is nothing to shift
+   away from. */
+@media(min-width:981px){
+  /* Full 36px only where there is width to spare, tapering to nothing by 1080px.
+     A flat 2.5vw still took 25px at 1000px, and that was enough to break
+     'K8s that / rebalances itself.' onto a third line through the whole
+     981-1024 band - paying for a nudge with a wrap. */
+  /* CENTRED, in BOTH product sections, by centring rather than by a magic offset.
+     The grid is align-items:start, so each copy block sat on its console's top edge
+     with the whole height difference dumped underneath it - 123px in Elastic, 232px
+     in K8s. A px offset would be correct exactly once: the console's height is
+     content, and it has already changed once, when four captions came out of the
+     K8s one and took 51px with them. align-self:center makes the layout compute
+     half the difference, at every width, for whatever the console happens to be.
+     This deliberately gives up the shared top edge the two sections had, but the
+     pair stays MATCHED: both are centred, neither leans. */
+  .st-grid > *:not(.eng-stage){align-self:center}
+  /* The inward nudge is K8s-only: its copy is on the right, against the console. */
+  .st-grid.flip > *:not(.eng-stage){padding-inline-start:clamp(0px,(100vw - 1080px)*.1,36px)}
+}
+@media(max-width:980px){
+  .st-grid.flip{grid-template-columns:minmax(0,1fr)}
+}
+
+.az-badge{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;
+  letter-spacing:-.005em;color:var(--muted);background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-pill);padding:6px 14px 6px 10px;margin-bottom:26px;line-height:1.35}
+.az-badge b{font-weight:500;color:var(--text)}
+.az-mark{width:17px;height:17px;flex:none}
+
+/* The two product headlines are on the ORDINARY h2 step. They used to be their
+   own display step - clamp(2.4rem,5.2vw,4rem), 64px against the 37.6px every
+   other h2 on the page runs at - and now match "See it resize a real volume."
+   exactly. So the override is deleted rather than retuned: one h2 step, defined
+   once at the top, and no second scale to keep in sync. Only the <br> line
+   break is product-specific now. */
+/* 1.09rem/1.62 is the HERO's lead step and the only other place on the page it
+   appears; these are section openings, not the hero, so the body inherits the same
+   16px/1.65 that .sec-head p runs everywhere else. The measure goes 46ch -> 32ch:
+   the narrowest that still holds BOTH sentences to two lines, which pulls the four
+   right edges from 296px of rag down to 96px. The column is narrowed until it
+   contains itself - no rule, plate or box does the containing. */
+.st-body{margin-top:var(--s5);color:var(--muted);max-width:32ch}
+.btns{margin-top:var(--s6);display:flex;align-items:center;flex-wrap:wrap;gap:14px 26px}
+.btn-ink{display:inline-flex;align-items:center;gap:12px;background:var(--text);color:#fff;
+  font-size:1rem;font-weight:500;line-height:1;padding:18px 28px;border-radius:var(--r-ctl);
+  transition:transform var(--d-fast) var(--spring),background var(--d-fast) var(--ease)}
+.btn-ink svg{width:18px;height:18px;transition:transform var(--d-fast) var(--ease)}
+/* 3px, not 4px: the closing form's arrow already travels 3px and two arrows that
+   mean the same thing may not move different distances. */
+@media (hover:hover){
+  .btn-ink:hover{transform:translateY(-2px);background:color-mix(in srgb,var(--text) 88%,var(--muted))}
+  .btn-ink:hover svg{transform:translateX(3px)}
+}
+/* Narrow phones: a long swap label ("See what your cluster is holding") is 330px at 16px with
+   28px padding, against a 280px column at 320, and it cannot wrap (it is a two-line swap
+   mask). The button steps down the way the nav's "Book a demo" does at 340px. */
+@media(max-width:360px){.btn-ink{font-size:.84rem;padding:16px 20px;gap:10px}}
