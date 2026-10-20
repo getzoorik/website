@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 
 import { pageCards, socialImage, xHandle } from "@/config/social";
+import { articleCard, learnArticles } from "@/content/learn/published";
 import { footerSocialLinks } from "@/content/footer";
 
 vi.mock("next/font/google", () => ({
@@ -61,7 +62,12 @@ describe("social cards", () => {
   });
 
   it("ships every card at the size platforms ask for", () => {
-    for (const image of [socialImage, ...Object.values(pageCards)]) {
+    /* The articles' own cards with the rest. */
+    for (const image of [
+      socialImage,
+      ...Object.values(pageCards),
+      ...learnArticles.map(articleCard),
+    ]) {
       const png = readFileSync(`public${image.url}`);
       expect(png.subarray(1, 4).toString("latin1"), image.url).toBe("PNG");
       expect(png.readUInt32BE(16), image.url).toBe(1200);

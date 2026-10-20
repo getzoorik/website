@@ -1,10 +1,18 @@
-import { routes } from "@/config/site";
+import { learnPath, routes } from "@/config/site";
 import { caseStudiesHub } from "@/content/case-studies";
 import { socialProfiles } from "@/content/footer";
-import { type ArticleId, articleByline, articles } from "@/content/learn-articles";
+import type { Article } from "@/content/learn/article";
+import {
+  articleAuthor,
+  articleRoute,
+  findArticle,
+  learnArticles,
+  titleLink,
+} from "@/content/learn/published";
 import { marketGroups } from "@/content/learn-market";
 import { newsPage, newsRadar } from "@/content/news";
 import type { ProductId } from "@/content/products";
+import { shortDay } from "@/lib/content-date";
 
 /**
  * `/learn`, the hub: every string it prints, verbatim from the approved mock. Ordered by how the reader thinks: Start
@@ -14,11 +22,11 @@ import type { ProductId } from "@/content/products";
  * Zoorik, so /learn names no tool of the market.
  *
  * ─── ONLY WHAT IS PUBLISHED ─────────────────────────────────────────────────
- * The mock also draws the planned articles as "Coming" cards: they are the plan, and the hub does not show them. A
- * card here is an article of `learn-articles.ts`, and reads that article's own h1, card line, date and author, so the
- * hub and the article never disagree. Start here's "Coming next" line, under each subject's card, is drawn as the mock
- * draws it while `learnComingNext` is true. Watch and read holds only what is out: the two product films and the one
- * live Medium post.
+ * A card here is an article of the Learn index (`@/content/learn/published`), and reads that article's own h1, card
+ * line, date and author, so the hub and the article never disagree, and a new article file is a new card with no
+ * change here. Start here holds each subject's pillar once it is published, and a published guide of the subject
+ * until then; Compare holds the comparisons, Guides the rest. Watch and read holds only what is out: the two product
+ * films and the one live Medium post.
  *
  * ─── WHERE THE REST COMES FROM ──────────────────────────────────────────────
  * The films are `product-films.ts`'s, the channels the footer's profiles (`socialProfiles`), the case study
@@ -45,12 +53,6 @@ export const learnProductSubject: Readonly<Record<ProductId, LearnSubject>> = {
   amoeba: "storage",
 };
 
-/**
- * Start here's "Coming next" line: true draws each subject's planned guide under its
- * card, as the mock does; false leaves each card on its article's date, as the other cards are.
- */
-export const learnComingNext = true;
-
 export const learnPage = {
   path: routes.learn,
   meta: {
@@ -64,8 +66,11 @@ export const learnPage = {
     title: "Learn cloud cost optimization",
     deck: "Guides, comparisons and what changed this week, for Kubernetes, block storage and the whole cloud bill on Azure and AWS.",
   },
-  /** The day the hub's own content last changed (the new hub), for the sitemap; it is not printed. */
-  updated: "Updated 19 October 2026",
+  /**
+   * The day the hub's own content last changed, for the sitemap; it is not printed. A new article moves the hub's
+   * sitemap day on its own (`sitemap.ts`), so this moves only when the hub itself changes.
+   */
+  updated: "Updated 20 October 2026",
   /** The search in the hero: its name for a screen reader, and what the empty field says. */
   search: {
     label: "Search Learn",
@@ -77,7 +82,6 @@ export const learnPage = {
     id: "start",
     title: "Start here",
     lede: "One guide per subject: where the money goes and what moves it most.",
-    next: "Coming next",
     /** When the search and the subject leave nothing: the line and its button, which shows everything again. */
     empty: "Nothing matches.",
     reset: "Show everything",
@@ -145,86 +149,110 @@ export interface LearnCard {
   readonly title: string;
   /** Its card line. */
   readonly line: string;
-  /** Its date as a card prints it, "9 Oct", with its author where it has one: "14 Oct · By Vineet". */
+  /** Its published day as a card prints it, "9 Oct", with its author where it has one: "14 Oct · By Vineet". */
   readonly date: string;
   /** A comparison's cover: the two sides it compares, drawn in place of the subject's motif. */
   readonly versus?: readonly [string, string];
 }
 
-/** "Updated 14 October 2026" → "14 Oct": the card's short date, read from the article's own Updated line. */
-const shortDate = (updated: string): string => {
-  const found = /(\d{1,2}) ([A-Z][a-z]{2})[a-z]* \d{4}$/.exec(updated);
-  if (!found) throw new Error(`An article's Updated line reads "${updated}", which has no date.`);
-  return `${found[1]} ${found[2]}`;
-};
+/** The subject an article is filed under, by its hub group's name. */
+const subjectOf = (article: Article): LearnSubject =>
+  learnSubjects.find((subject) => subject.label === article.hub)!.id;
 
 /** A published article as a hub card: its title, line, date and author are the article's own. */
-const card = (
-  id: ArticleId,
-  subject: LearnSubject,
-  extra: { readonly versus?: readonly [string, string] } = {},
-): LearnCard => {
-  const article = articles[id];
-  const by = article.author ? `${articleByline.author}${article.author.name}` : "";
+const cardOf = (article: Article): LearnCard => {
+  const author = articleAuthor(article);
   return {
-    href: article.route,
-    subject,
-    title: article.hero.title,
+    href: articleRoute(article),
+    subject: subjectOf(article),
+    title: article.h1,
     line: article.card,
-    date: `${shortDate(article.updated)}${by}`,
-    ...(extra.versus ? { versus: extra.versus } : {}),
+    date: `${shortDay(article.published)}${author ? ` · By ${author.name}` : ""}`,
+    ...(article.versus ? { versus: article.versus } : {}),
   };
 };
 
-/** Each published article once, by id, with its subject (and, for a comparison, its cover's two sides). */
-const cards: Readonly<Record<ArticleId, LearnCard>> = {
-  "poor-architecture-cloud-bill": card("poor-architecture-cloud-bill", "cloud"),
-  "shrink-azure-managed-disk": card("shrink-azure-managed-disk", "storage"),
-  "vpa-vs-hpa": card("vpa-vs-hpa", "k8s", { versus: ["VPA", "HPA"] }),
-  "coral-and-native-autoscalers": card("coral-and-native-autoscalers", "k8s", {
-    versus: ["Coral", "Native"],
-  }),
-};
-
-/** Start here: one guide per subject, the best published one, and the subject's planned guide as Coming next. */
-export const learnStart: readonly {
-  readonly card: LearnCard;
-  readonly next: { readonly title: string; readonly when: string };
+/**
+ * Each subject's pillar, the guide Start here leads with once it is published, and the published guide it shows
+ * until then. A pillar is shown in Start here only.
+ */
+export const learnPillars: readonly {
+  readonly subject: LearnSubject;
+  readonly pillar: string;
+  readonly until: string;
 }[] = [
+  { subject: "cloud", pillar: "how-to-reduce-cloud-costs", until: "poor-architecture-cloud-bill" },
+  { subject: "k8s", pillar: "reduce-kubernetes-cost", until: "vpa-vs-hpa" },
   {
-    card: cards["poor-architecture-cloud-bill"],
-    next: { title: "How to reduce cloud costs in 2026", when: "soon" },
-  },
-  {
-    card: cards["coral-and-native-autoscalers"],
-    next: {
-      title: "How to reduce Kubernetes cost: rebalance requests, then remove spare nodes",
-      when: "8 Dec",
-    },
-  },
-  {
-    card: cards["shrink-azure-managed-disk"],
-    next: {
-      title: "Azure disk cost optimization: stop paying for empty disk space",
-      when: "3 Nov",
-    },
+    subject: "storage",
+    pillar: "azure-disk-cost-optimization",
+    until: "shrink-azure-managed-disk",
   },
 ];
+
+const pillars = new Set(learnPillars.map((entry) => entry.pillar));
+
+/**
+ * The articles of Learn's first nine days, which lead Compare and Guides; the rest follow. Each part is A–Z by slug,
+ * as the index is.
+ */
+export const learnFirst: ReadonlySet<string> = new Set([
+  "azure-disk-cost-optimization",
+  "azure-vm-disk-usage",
+  "btrfs-multiple-disks",
+  "btrfs-unallocated-space",
+  "change-eks-node-group-instance-type",
+  "check-ebs-volume-usage",
+  "cluster-autoscaler-not-scaling-down",
+  "find-unattached-disks-azure",
+  "how-to-reduce-cloud-costs",
+  "hpa-vs-vpa-vs-cluster-autoscaler",
+  "keda-vs-karpenter",
+  "kubernetes-allocatable-vs-capacity",
+  "kubernetes-cost-estimation",
+  "kubernetes-pod-right-sizing",
+  "limitrange-vs-resourcequota",
+  "safe-to-evict-do-not-disrupt",
+  "shrink-azure-managed-disk",
+  "shrink-xfs-filesystem",
+]);
+
+/** The guide that closes Guides, after every other. */
+export const learnGuidesLast = "poor-architecture-cloud-bill";
+
+/** The hub's order: the first nine days' articles, then the rest, each A–Z by slug (the index's order). */
+const hubOrder = (articles: readonly Article[]): readonly Article[] => [
+  ...articles.filter((article) => learnFirst.has(article.slug)),
+  ...articles.filter((article) => !learnFirst.has(article.slug)),
+];
+
+/** Start here: one guide per subject, its pillar once published and its stand-in until then; none while neither is. */
+export const learnStart: readonly LearnCard[] = learnPillars.flatMap(({ pillar, until }) => {
+  const article = findArticle(pillar) ?? findArticle(until);
+  return article ? [cardOf(article)] : [];
+});
+
+const listed = hubOrder(learnArticles.filter((article) => !pillars.has(article.slug)));
 
 /** Compare: the published comparisons of the native tools (the market's are /compare's). */
-export const learnComparisons: readonly LearnCard[] = [
-  cards["vpa-vs-hpa"],
-  cards["coral-and-native-autoscalers"],
-];
+export const learnComparisons: readonly LearnCard[] = listed
+  .filter((article) => article.versus)
+  .map(cardOf);
 
-/** Guides and best practices: the published guides. */
+/** Guides and best practices: every other published article. */
 export const learnGuides: readonly LearnCard[] = [
-  cards["poor-architecture-cloud-bill"],
-  cards["shrink-azure-managed-disk"],
-];
+  ...listed.filter((article) => !article.versus && article.slug !== learnGuidesLast),
+  ...listed.filter((article) => !article.versus && article.slug === learnGuidesLast),
+].map(cardOf);
 
-/** Where a fix's "Read:" link goes: an article (its own h1), or the free assessment. */
-const read = (id: ArticleId) => ({ title: articles[id].hero.title, href: articles[id].route });
+/**
+ * Where a fix's "Read:" line goes: an article, named by its h1 once it is published and drawn as its own words with
+ * no link until then (`titleLink`), or the free assessment.
+ */
+const read = (slug: string, title: string) => {
+  const link = titleLink({ text: title, href: learnPath(slug) });
+  return { title: link.text, href: link.href };
+};
 
 /** Find the right fix: what hurts, what helps, the native tools, where Zoorik fits, and what to read. */
 export const learnFixes: readonly {
@@ -233,7 +261,8 @@ export const learnFixes: readonly {
   readonly helps: string;
   readonly tools: readonly string[];
   readonly fits: string;
-  readonly read: { readonly title: string; readonly href: string };
+  /** What to read: its words, and its address (null while the article is not published). */
+  readonly read: { readonly title: string; readonly href: string | null };
 }[] = [
   {
     subject: "k8s",
@@ -241,16 +270,18 @@ export const learnFixes: readonly {
     helps: "Pack the pods tighter and remove the machines the cluster no longer needs.",
     tools: ["Cluster Autoscaler", "Karpenter", "AKS node auto provisioning"],
     fits: "Coral rebalances workloads onto fewer, cheaper machines and removes the spare ones, within each app’s safety limits.",
-    read: read("coral-and-native-autoscalers"),
+    read: read("kubernetes-bin-packing", "Kubernetes bin packing: fewer nodes for the same pods"),
   },
   {
     subject: "k8s",
     question: "Pods reserve more than they use",
     helps: "Set each pod’s requests from what it really uses.",
     tools: ["Vertical Pod Autoscaler"],
-    /* The mock has Coral "right-size" apps: Coral rebalances, and rightsizing is Amoeba's verb. */
-    fits: "Coral rebalances apps to what they use, and raises them when an app needs more.",
-    read: read("vpa-vs-hpa"),
+    fits: "Coral rebalances requests to what apps use, and raises them when an app needs more.",
+    read: read(
+      "kubernetes-pod-right-sizing",
+      "Kubernetes pod right sizing: set requests from real use",
+    ),
   },
   {
     subject: "k8s",
@@ -258,7 +289,7 @@ export const learnFixes: readonly {
     helps: "Scale the number of pods with demand, from metrics or events.",
     tools: ["Horizontal Pod Autoscaler", "KEDA"],
     fits: "Coral works alongside them: it sizes each pod, they decide how many.",
-    read: read("coral-and-native-autoscalers"),
+    read: read("keda-vs-hpa-vs-vpa", "KEDA vs HPA vs VPA: where event-driven scaling fits"),
   },
   {
     subject: "storage",
@@ -266,7 +297,10 @@ export const learnFixes: readonly {
     helps: "Bring each disk back to the space its data needs.",
     tools: ["Azure: no in-place shrink", "Amazon EBS: volumes only grow"],
     fits: "Amoeba rightsizes block storage, Azure managed disks and Amazon EBS, autonomously, without any downtime.",
-    read: read("shrink-azure-managed-disk"),
+    read: read(
+      "azure-disk-cost-optimization",
+      "Azure disk cost optimization: stop paying for empty space",
+    ),
   },
   {
     subject: "cloud",
@@ -282,7 +316,10 @@ export const learnFixes: readonly {
     helps: "Fix the design decisions that make every environment expensive.",
     tools: ["Architecture review", "Right environment sizes"],
     fits: "Start with the article; Coral and Amoeba reduce what remains.",
-    read: read("poor-architecture-cloud-bill"),
+    read: read(
+      "poor-architecture-cloud-bill",
+      "How Poor Infrastructure Architecture Quietly Increases Your Cloud Bill",
+    ),
   },
 ];
 

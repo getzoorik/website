@@ -44,3 +44,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# the Learn index, written from src/content/learn/articles/ before dev, typecheck, test and build
+/src/content/learn/articles.generated.ts

@@ -8,9 +8,10 @@ import { amoebaDocs, amoebaOnePager, calendarUrl, routes } from "@/config/site";
 import { amoebaPageContent } from "@/content/amoeba-page";
 import { coralPageContent } from "@/content/coral-page";
 import { documents } from "@/content/documents";
+import { findArticle, learnSlugOf } from "@/content/learn/published";
 import { socialProfiles } from "@/content/footer";
 import { howItWorksSteps } from "@/content/how-it-works";
-import type { ProductPageContent } from "@/content/product-page";
+import type { ProductPageContent, ReadMoreTile } from "@/content/product-page";
 import { productFilms, youtubeChannel } from "@/content/product-films";
 import { documentFacts } from "@/features/documents/document-facts";
 
@@ -571,6 +572,14 @@ describe.each(pages)("the film on %s", (path, content) => {
   });
 });
 
+/** A product's Learn tile: its last, a page tile to a published article. */
+const learnTile = (content: ProductPageContent) => {
+  const tile = content.readMore.tiles.at(-1) as Extract<ReadMoreTile, { kind: "page" }>;
+  expect(tile.kind).toBe("page");
+  expect(findArticle(learnSlugOf(tile.href) ?? "")?.slug, tile.href).toBeDefined();
+  return tile;
+};
+
 describe("the Coral page", () => {
   it("puts the marketplace line, with its bag, between the button and the logos", () => {
     const hero = renderPage("/coral", coralPageContent).querySelector(".pp-hero")!;
@@ -621,6 +630,7 @@ describe("the Coral page", () => {
 
   it("ends on Read more: the guide, the FAQ, the one-pager and its article, two by two", () => {
     const page = renderPage("/coral", coralPageContent);
+    const article = learnTile(coralPageContent);
     const section = page.querySelector("section#read-coral")!;
     expect(section).toHaveAttribute("aria-labelledby", "read-coral-h");
     expect(text(section.querySelector("h2#read-coral-h"))).toBe("Read more");
@@ -636,19 +646,22 @@ describe("the Coral page", () => {
       routes.coralGuide,
       routes.coralFaq,
       documents["coral-one-pager"].pdf,
-      routes.learnCoralAutoscalers,
+      article.href,
     ]);
     expect(tiles.map((tile) => text(tile.querySelector(".dt-t")))).toEqual([
       "Product guide",
       "FAQ",
       "One-pager",
-      "Coral and the native autoscalers",
+      article.title,
     ]);
-    expect(tiles[3]!.querySelector(".dt-t [translate='no']")).toHaveTextContent("Coral");
+    /* A product's name in the article tile's title is kept out of translation. */
+    expect(
+      [...tiles[3]!.querySelectorAll(".dt-t [translate='no']")].map((name) => text(name)),
+    ).toEqual(article.title.match(/\b(Coral|Amoeba)\b/g) ?? []);
     expect([0, 1, 3].map((i) => text(tiles[i]!.querySelector(".dt-l")))).toEqual([
       "Connect, what changes, staying in control",
       "Sizing, safety, HPA, nodes and autoscalers",
-      "VPA, HPA, KEDA, NAP and Karpenter compared",
+      article.line,
     ]);
     for (const tile of [tiles[0]!, tiles[1]!, tiles[3]!]) {
       expect(tile).not.toHaveAttribute("download");
@@ -709,6 +722,7 @@ describe("the Amoeba page", () => {
     "reads more in its guide and FAQ, and the one-pager, once they are published",
     () => {
       const page = renderPage("/amoeba", amoebaPageContent);
+      const article = learnTile(amoebaPageContent);
       const section = page.querySelector("section#read-amoeba")!;
       expect(section.querySelector("a.alink")).toHaveAttribute("href", `${routes.docs}#amoeba`);
       expect(
@@ -720,11 +734,9 @@ describe("the Amoeba page", () => {
         ["Product guide", routes.amoebaGuide],
         ["FAQ", routes.amoebaFaq],
         ...(amoebaOnePager ? [["One-pager", "/docs/amoeba-one-pager.pdf"]] : []),
-        ["Shrinking an Azure managed disk", routes.learnShrinkAzureDisk],
+        [article.title, article.href],
       ]);
-      expect(text(section.querySelector(`a[href="${routes.learnShrinkAzureDisk}"] .dt-l`))).toBe(
-        "Why it can’t, and what works",
-      );
+      expect(text(section.querySelector(`a[href="${article.href}"] .dt-l`))).toBe(article.line);
     },
   );
 

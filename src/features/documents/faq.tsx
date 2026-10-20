@@ -2,6 +2,7 @@ import { Fragment } from "react";
 
 import { documents } from "@/content/documents";
 import type { FaqDownload, FaqSection, FaqText } from "@/content/faq";
+import { titleLink } from "@/content/learn/published";
 import { DocRow, DocRows, DocUpdated } from "@/features/doc-rows/doc-rows";
 import { DocPlaceholder } from "@/features/documents/doc-placeholder";
 import { documentFacts } from "@/features/documents/document-facts";
@@ -50,9 +51,12 @@ function FaqLine({ text }: { readonly text: FaqText }): React.JSX.Element {
           );
         }
         if ("ph" in part) return <DocPlaceholder key={index}>{part.ph}</DocPlaceholder>;
+        /* A Learn article is named by its h1, and stands as plain words until it is published. */
+        const link = titleLink(part);
+        if (!link.href) return <Fragment key={index}>{link.text}</Fragment>;
         return (
-          <a href={part.href} key={index}>
-            {part.text}
+          <a href={link.href} key={index}>
+            {link.text}
           </a>
         );
       })}

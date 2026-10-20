@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
-import { anchorAliases, hashKeepingRoutes } from "@/config/site";
+import { anchorAliases, keepsHash } from "@/config/site";
 
 /**
  * In-page links keep the address bar clean. One page, one URL.
@@ -52,7 +52,7 @@ import { anchorAliases, hashKeepingRoutes } from "@/config/site";
  * inbound case where this component performs the scroll itself.
  *
  * ─── AND THE LONG DOCUMENTS KEEP THEIR HASH ────────────────────────────────
- * On the four guides and FAQs and the two legal pages (`hashKeepingRoutes`, the
+ * On the four guides and FAQs and the two legal pages (`keepsHash`, the
  * mocks' `data-keep-hash`) a reader shares the section they are reading. There a click
  * scrolls the same way and then WRITES `#id` to the address, and an inbound
  * hash is left where it is: the browser's own fragment scroll has already
@@ -74,7 +74,7 @@ export function InPageLinks(): null {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     /* `/coral/guide/` and `/coral/guide` are one page. */
     const here = (pathname ?? window.location.pathname).replace(/(.)\/$/, "$1");
-    const keepHash = hashKeepingRoutes.includes(here);
+    const keepHash = keepsHash(here);
 
     /* Drop the hash without navigating. `replaceState` rather than `pushState`
        so the Back button still leaves the site instead of walking a reader back

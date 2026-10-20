@@ -2,6 +2,9 @@ import { render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { learnPath } from "@/config/site";
+import { learnArticles } from "@/content/learn/published";
+
 import { InPageLinks } from "./in-page-links";
 
 const pathname = vi.hoisted(() => ({ current: "/" }));
@@ -289,8 +292,10 @@ describe("in-page links on the long documents", () => {
     expect(scrollSpy).not.toHaveBeenCalled();
   });
 
-  it("apply to every guide and FAQ and both legal pages, and to no other page", async () => {
+  it("apply to every guide and FAQ, both legal pages and every Learn article, and to no other page", async () => {
     for (const [path, kept] of [
+      ...learnArticles.map((article) => [learnPath(article.slug), true] as const),
+      ["/learn", false],
       ["/coral/faq", true],
       ["/coral/faq/", true],
       ["/amoeba/guide", true],

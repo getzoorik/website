@@ -28,7 +28,7 @@ import {
 import { marketplacesLastUpdated } from "@/content/marketplaces";
 import { partnersLastUpdated } from "@/content/partners";
 import { openSourceGuides, openSourceLastUpdated, openSourceUpdated } from "@/content/open-source";
-import { articles } from "@/content/learn-articles";
+import { articleRoute, learnArticles } from "@/content/learn/published";
 import { privacy } from "@/content/privacy";
 import { referralsLastUpdated } from "@/content/referrals";
 import { securityPage } from "@/content/security";
@@ -37,14 +37,29 @@ import { isoDay } from "@/lib/content-date";
 
 /**
  * Each page's date. A page that prints one gives it: "Updated 9 October 2026"
- * on the guides, the FAQs, the articles, the /learn rows and /security; the
- * study's date; the policy's and the terms' "Effective" line. A page that
- * prints no day (the home page, the two products, /assessment, the /docs and
- * /case-studies hubs, /events, /about, /careers, /brand-assets, /partners and
- * /referrals) gives its content file's `lastUpdated`: the day its content last
- * changed, which whoever changes it moves in the same PR. So every page has a
- * date, and none is the build's.
+ * on the guides, the FAQs and /security; the study's date; the policy's and the
+ * terms' "Effective" line. A page that prints no day (the home page, the two
+ * products, /assessment, the /docs and /case-studies hubs, /events, /about,
+ * /careers, /brand-assets, /partners and /referrals) gives its content file's
+ * `lastUpdated`: the day its content last changed, which whoever changes it
+ * moves in the same PR. So every page has a date, and none is the build's.
+ *
+ * Learn's are ISO days already (`learnDates`): each article its `updated` day,
+ * and the hub the later of its own day and its newest article's, as a new
+ * article changes the hub too.
  */
+const learnDates: Readonly<Record<string, string>> = (() => {
+  const own = isoDay(learnPage.updated);
+  const newest = learnArticles.reduce(
+    (day, article) => (article.updated > day ? article.updated : day),
+    own,
+  );
+  return Object.fromEntries([
+    [routes.learn, newest],
+    ...learnArticles.map((article) => [articleRoute(article), article.updated] as const),
+  ]);
+})();
+
 const contentDates: Partial<Record<string, string>> = {
   "/": homeLastUpdated,
   [routes.coral]: coralPageLastUpdated,
@@ -55,12 +70,6 @@ const contentDates: Partial<Record<string, string>> = {
   [routes.coralFaq]: coralFaqPage.updated,
   [routes.amoebaGuide]: amoebaGuide.updated,
   [routes.amoebaFaq]: amoebaFaqPage.updated,
-  [routes.learn]: learnPage.updated,
-  /* Each article its own Updated line (`Article.updated`). */
-  [routes.learnPoorArchitecture]: articles["poor-architecture-cloud-bill"].updated,
-  [routes.learnVpaVsHpa]: articles["vpa-vs-hpa"].updated,
-  [routes.learnCoralAutoscalers]: articles["coral-and-native-autoscalers"].updated,
-  [routes.learnShrinkAzureDisk]: articles["shrink-azure-managed-disk"].updated,
   /* The comparison pages (at /compare) print "checked 19 October 2026": one content date. */
   ...Object.fromEntries(
     [
@@ -94,12 +103,13 @@ const contentDates: Partial<Record<string, string>> = {
 /**
  * Every indexed page: home first, then the two products (Coral first), the
  * assessment, the documents section (the hub, then Coral's guide and FAQ, then
- * Amoeba's once `amoebaDocs` publishes them), Learn and its articles, the case
- * studies, /events, /about, /careers, /brand-assets, /partners, /referrals, the
- * privacy policy, the terms, and security and data handling.
+ * Amoeba's once `amoebaDocs` publishes them), Learn and every article in the
+ * Learn index (A–Z by slug), the case studies, /events, /about, /careers,
+ * /brand-assets, /partners, /referrals, the privacy policy, the terms, and
+ * security and data handling.
  * A held page answers 404, so it is never listed.
  *
- * `lastModified` is the page's date from `contentDates`, never the build's.
+ * `lastModified` is the page's date from `learnDates` or `contentDates`, never the build's.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
@@ -117,10 +127,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     routes.docsContributing,
     routes.openSource,
     routes.learn,
-    routes.learnPoorArchitecture,
-    routes.learnVpaVsHpa,
-    routes.learnCoralAutoscalers,
-    routes.learnShrinkAzureDisk,
+    ...learnArticles.map(articleRoute),
     routes.compare,
     ...alternativesPages.map((page) => page.route),
     ...versusPages.map(versusRoute),
@@ -139,10 +146,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     routes.terms,
     routes.security,
   ].map((path) => {
-    const date = contentDates[path];
+    const printed = contentDates[path];
+    const date = learnDates[path] ?? (printed ? isoDay(printed) : undefined);
     return {
       url: `${site.url}${path}`,
-      ...(date ? { lastModified: isoDay(date) } : {}),
+      ...(date ? { lastModified: date } : {}),
     };
   });
 }

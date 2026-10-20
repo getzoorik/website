@@ -21,8 +21,9 @@
  * ─── THE MOCK'S `:root` AND BASE RULES ARE NOT COPIED ─────────────────────────
  * Its tokens and base are the site's own (`tokens.css`, the site system, `documents.css` for the utility hero), and
  * `--sans` / `--code` stay next/font's. Where a site-wide rule would change the mock's computed result, a "repo:"
- * rule says so: the search field's padding and placeholder colour (Tailwind's preflight). One "repo:" rule adds to the
- * mock: the films' hover zoom is stilled under reduced motion, as the mock stills the cards' lift.
+ * rule says so: the search field's padding and placeholder colour (Tailwind's preflight). Two "repo:" rules add to the
+ * mock: the films' hover zoom is stilled under reduced motion, as the mock stills the cards' lift, and a Find the right
+ * fix Read line whose article is not published yet is set as plain text.
  *
  * Loaded only by the pages that draw it (`src/app/learn/**`, `src/app/compare/**`, `src/app/community`). */
 /* ══ learn-v2 ══ */
@@ -110,6 +111,9 @@ a.lv-card:hover .lv-cb b{color:var(--accent)}
 .fx-read svg{width:16px;height:16px;transition:transform var(--d-fast) var(--ease)}
 .fx-read:hover svg,a:hover > .fx-read svg{transform:translateX(3px)}
 .fx-read.light{color:#5FE3B5}
+/* repo: a Read line whose article is not published yet is plain text, with no link or arrow, so it takes the panel's
+   own colour and weight; the mock draws every Read line as a link */
+p.fx-read{color:inherit;font-weight:inherit}
 /* proof */
 .lv-proof{position:relative;overflow:hidden;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px 36px;padding:clamp(24px,3vw,40px);border-radius:var(--r-shell);background:#050B3D;color:#FAF7F3;text-decoration:none}
 .lv-proof::after{content:"";position:absolute;left:-140px;top:-200px;width:460px;height:460px;border-radius:50%;background:radial-gradient(closest-side,rgba(59,91,245,.34),transparent)}

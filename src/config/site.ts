@@ -114,18 +114,13 @@ export const routes = {
      /privacy by section, so their section ids are addresses too. */
   privacy: "/privacy",
   terms: "/terms",
-  /* The company pages and Learn: about, security, the articles' hub and one
-     page per article under it. */
+  /* The company pages and Learn: about, security and the articles' hub. Each
+     article lives under it at /learn/<slug> (`learnPath`). */
   about: "/about",
   /* Careers, linked from the footer's Company column. */
   careers: "/careers",
   security: "/security",
   learn: "/learn",
-  learnVpaVsHpa: "/learn/vpa-vs-hpa",
-  learnCoralAutoscalers: "/learn/coral-and-native-autoscalers",
-  learnShrinkAzureDisk: "/learn/shrink-azure-managed-disk",
-  /* The fourth article (the Medium post, published here first). */
-  learnPoorArchitecture: "/learn/poor-architecture-cloud-bill",
   /* The comparison pages (moved from /learn): the market map at /compare, each product's alternatives, and the
      versus pages under /compare/<slug> (their slugs are data, `versusPages` in @/content/learn-compare; one per
      product is kept live). The old /learn addresses redirect. */
@@ -162,6 +157,16 @@ export const routes = {
   docsInstallTerraform: "/docs/install-coral-with-terraform",
   docsContributing: "/docs/contributing",
 } as const;
+
+/**
+ * A Learn article's address, by its slug. The articles themselves are listed by
+ * the Learn index (`@/content/learn/published`), which this file never reads:
+ * the header and the hash rule below know an article by its address alone.
+ */
+export const learnPath = (slug: string): `/learn/${string}` => `/learn/${slug}`;
+
+/** Whether a pathname is a Learn article's: one segment under /learn. */
+export const isLearnArticlePath = (pathname: string): boolean => /^\/learn\/[^/]+$/.test(pathname);
 
 /**
  * Whether the Amoeba guide and FAQ are published.
@@ -205,15 +210,10 @@ export const amoebaOnePager: boolean = true;
  * /privacy by section the same way.
  */
 export const hashKeepingRoutes: readonly string[] = [
-  /* /about and the Learn articles keep theirs too (the first three articles'
-     mocks carry `data-keep-hash`, and the fourth is built like them). */
+  /* /about keeps its hash too, and so does every Learn article (`keepsHash`). */
   routes.about,
   /* /careers is built on /about's frame and carries `data-keep-hash` too. */
   routes.careers,
-  routes.learnVpaVsHpa,
-  routes.learnCoralAutoscalers,
-  routes.learnShrinkAzureDisk,
-  routes.learnPoorArchitecture,
   /* The case study keeps its hash as the articles do; the hub, like /learn, does not. */
   routes.caseStudyCoralDevCluster,
   /* The three install and contributing guides are built in the article frame and keep theirs too. */
@@ -229,6 +229,11 @@ export const hashKeepingRoutes: readonly string[] = [
   /* /security's mock carries `data-keep-hash`: a link names a row there too. */
   routes.security,
 ];
+
+/** Whether a page keeps its hash: one of `hashKeepingRoutes`, or any Learn article. */
+export function keepsHash(pathname: string): boolean {
+  return hashKeepingRoutes.includes(pathname) || isLearnArticlePath(pathname);
+}
 
 /** Where every "Book a demo" goes: the bar, the closing row, the footer and /login. */
 export const calendarUrl = "https://cal.com/zoorik/talk";
@@ -434,7 +439,8 @@ export interface NavState {
  *
  * A table keyed by pathname, not a lookup the component works out: the
  * pathname is known at build, so every page prerenders with its own state, and
- * a page added later is one row here.
+ * a page added later is one row here. A Learn article needs no row: any
+ * /learn/<slug> marks Docs.
  */
 const NAV_STATES: ReadonlyMap<string, NavState> = new Map<string, NavState>([
   [routes.coral, { current: "coral" }],
@@ -446,22 +452,16 @@ const NAV_STATES: ReadonlyMap<string, NavState> = new Map<string, NavState>([
   [routes.amoebaFaq, { current: "faq", here: { menu: "faq", product: "amoeba" } }],
   [routes.docs, { current: "docs", here: { menu: "docs" } }],
   [routes.learn, { current: "docs", here: { menu: "docs", product: "learn" } }],
-  [routes.learnVpaVsHpa, { current: "docs" }],
-  [routes.learnCoralAutoscalers, { current: "docs" }],
-  [routes.learnShrinkAzureDisk, { current: "docs" }],
-  [routes.learnPoorArchitecture, { current: "docs" }],
   [routes.login, { current: "login" }],
   /* /open-source marks Docs and its own row in the menu; the three guides mark Docs only. */
   [routes.openSource, { current: "docs", here: { menu: "docs", product: "open" } }],
   [routes.docsInstallHelm, { current: "docs" }],
   [routes.docsInstallTerraform, { current: "docs" }],
   [routes.docsContributing, { current: "docs" }],
-  /* A Learn article marks the Docs menu, as its mock's header does; /about marks nothing. */
-  [routes.learnVpaVsHpa, { current: "docs" }],
-  [routes.learnCoralAutoscalers, { current: "docs" }],
-  [routes.learnShrinkAzureDisk, { current: "docs" }],
-  [routes.learnPoorArchitecture, { current: "docs" }],
 ]);
+
+/** A Learn article marks the Docs menu alone, whichever article it is; /about marks nothing. */
+const LEARN_ARTICLE_STATE: NavState = { current: "docs" };
 
 /**
  * A page's place in the header, from its pathname, and on /assessment from the
@@ -475,7 +475,7 @@ const NAV_STATES: ReadonlyMap<string, NavState> = new Map<string, NavState>([
 export function navState(pathname: string, assessing?: ProductId | null): NavState {
   /* `/coral/` and `/coral` are one page. */
   const path = pathname.replace(/(.)\/$/, "$1");
-  const state = NAV_STATES.get(path) ?? {};
+  const state = NAV_STATES.get(path) ?? (isLearnArticlePath(path) ? LEARN_ARTICLE_STATE : {});
   return state.current === "assessment" && assessing
     ? { ...state, here: { menu: "assessment", product: assessing } }
     : state;

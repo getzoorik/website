@@ -1,4 +1,4 @@
-import { amoebaDocs, amoebaOnePager, routes } from "@/config/site";
+import { amoebaDocs, amoebaOnePager, learnPath, routes } from "@/config/site";
 import { assessContent, assessmentHref } from "@/content/assess";
 import { elasticContent } from "@/content/elastic";
 import { howItWorksSteps } from "@/content/how-it-works";
@@ -118,7 +118,7 @@ export const amoebaPageContent: ProductPageContent = {
         kind: "page",
         title: "Shrinking an Azure managed disk",
         line: "Why it can’t, and what works",
-        href: routes.learnShrinkAzureDisk,
+        href: learnPath("shrink-azure-managed-disk"),
       },
     ],
   },

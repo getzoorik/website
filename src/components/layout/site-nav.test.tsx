@@ -5,7 +5,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 const pathname = vi.hoisted(() => ({ current: "/coral" }));
 vi.mock("next/navigation", () => ({ usePathname: () => pathname.current }));
 
-import { amoebaDocs, amoebaOnePager, menuLabelHref, navMenus } from "@/config/site";
+import { amoebaDocs, amoebaOnePager, learnPath, menuLabelHref, navMenus } from "@/config/site";
+import { learnArticles } from "@/content/learn/published";
 
 import { SiteNav } from "./site-nav";
 
@@ -205,7 +206,8 @@ describe("the menus' words", () => {
     "/assessment",
     "/docs",
     "/learn",
-    "/learn/vpa-vs-hpa",
+    /* An article, whichever the index lists first. */
+    learnPath(learnArticles[0]!.slug),
     "/about",
     "/privacy",
   ])("on %s, lead to Coral's pages", (path) => {
@@ -432,11 +434,17 @@ describe("the current page", () => {
     ["/coral/guide", "", "Product guide", "Product guide › Coral", "Product guide › Coral", "", ""],
     ["/coral/faq", "", "FAQ", "FAQ › Coral", "FAQ › Coral", "", "FAQ"],
     ["/docs", "", "Docs", "Docs › All docs", "Docs › All", "", "Docs"],
-    /* The Learn hub marks Docs and its own row; an article marks Docs alone. */
+    /* The Learn hub marks Docs and its own row; every article marks Docs alone. */
     ["/learn", "", "Docs", "Docs › Learn", "Docs › Learn", "", ""],
-    ["/learn/vpa-vs-hpa", "", "Docs", "", "", "", ""],
-    ["/learn/coral-and-native-autoscalers", "", "Docs", "", "", "", ""],
-    ["/learn/shrink-azure-managed-disk", "", "Docs", "", "", "", ""],
+    ...learnArticles.map((article): string[] => [
+      learnPath(article.slug),
+      "",
+      "Docs",
+      "",
+      "",
+      "",
+      "",
+    ]),
     ["/about", "", "", "", "", "", ""],
     ["/security", "", "", "", "", "", ""],
     ["/privacy", "", "", "", "", "", ""],

@@ -2,7 +2,8 @@ import { render, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { amoebaDocs } from "@/config/site";
-import { amoebaGuideRowIds, amoebaGuideSectionIds } from "@/content/amoeba-guide";
+import { amoebaGuide, amoebaGuideRowIds, amoebaGuideSectionIds } from "@/content/amoeba-guide";
+import { learnSlugOf, titleLink } from "@/content/learn/published";
 
 /* The nav and the footer read the pathname. */
 const pathname = vi.hoisted(() => ({ current: "/amoeba/guide" }));
@@ -188,18 +189,28 @@ describe("/amoeba/guide groups and rows", () => {
         text(line),
         [...line.querySelectorAll("a")].map((a) => a.getAttribute("href")),
       ]),
-    ).toEqual([
-      [
-        "how-amoeba-works",
-        "Related: Can you shrink an Azure managed disk?",
-        ["/learn/shrink-azure-managed-disk"],
-      ],
-      [
-        "savings-and-figures",
-        "Related: Free block storage cost assessment",
-        ["/assessment?p=amoeba"],
-      ],
+    ).toEqual(
+      amoebaGuide.sections.flatMap((section) => {
+        if (!section.related) return [];
+        /* A Learn article is named by its h1, and stands as plain words until it is published. */
+        const links = section.related.map(titleLink);
+        return [
+          [
+            section.id,
+            `Related: ${links.map((link) => link.text).join(" · ")}`,
+            links.flatMap((link) => (link.href ? [link.href] : [])),
+          ],
+        ];
+      }),
+    );
+    expect(related.map((line) => line.closest("section")!.id)).toEqual([
+      "how-amoeba-works",
+      "savings-and-figures",
     ]);
+    expect(text(related[1]!)).toBe("Related: Free block storage cost assessment");
+    /* How Amoeba works closes on a Learn article. */
+    const learn = amoebaGuide.sections.find((section) => section.id === "how-amoeba-works")!;
+    expect(learn.related!.every((link) => learnSlugOf(link.href) !== null)).toBe(true);
   });
 
   it("draws the console table's group as an h3 subhead over a continuation table", () => {

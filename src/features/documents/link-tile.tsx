@@ -15,7 +15,8 @@ import { ArrowGlyph, DocGlyph } from "@/features/documents/document-glyphs";
  * nodes (`named()`) rather than strings.
  */
 export interface LinkTileProps {
-  readonly href: string;
+  /** Where it leads; null draws the same tile as words alone, with no link and no arrow. */
+  readonly href: string | null;
   readonly title: ReactNode;
   readonly line: ReactNode;
   /** The tile's icon, classed `dt-ic`; the document glyph when none is given. */
@@ -23,16 +24,25 @@ export interface LinkTileProps {
 }
 
 export function LinkTile({ href, title, line, icon }: LinkTileProps): React.JSX.Element {
+  const inside = (
+    <>
+      {icon ?? <DocGlyph className="dt-ic" />}
+      <span>
+        <span className="dt-t">{title}</span>
+        <span className="dt-l">{line}</span>
+      </span>
+    </>
+  );
   return (
     <article className="dt">
-      <a className="dt-a" href={href}>
-        {icon ?? <DocGlyph className="dt-ic" />}
-        <span>
-          <span className="dt-t">{title}</span>
-          <span className="dt-l">{line}</span>
-        </span>
-        <ArrowGlyph className="dt-go" weight={2.2} />
-      </a>
+      {href === null ? (
+        <div className="dt-a">{inside}</div>
+      ) : (
+        <a className="dt-a" href={href}>
+          {inside}
+          <ArrowGlyph className="dt-go" weight={2.2} />
+        </a>
+      )}
     </article>
   );
 }
