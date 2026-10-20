@@ -102,7 +102,7 @@ describe("sitemap.xml", () => {
       "/docs/install-coral-with-helm": "2026-10-16",
       "/docs/install-coral-with-terraform": "2026-10-16",
       "/docs/contributing": "2026-10-16",
-      "/open-source": "2026-10-16",
+      "/open-source": "2026-10-20",
       /* The hub: its own day or its newest article's, whichever is later. Each article: the day it last changed. */
       "/learn": learnArticles.reduce(
         (day, article) => (article.updated > day ? article.updated : day),
