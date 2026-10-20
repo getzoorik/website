@@ -31,8 +31,7 @@ import { shortDay } from "@/lib/content-date";
  * ─── WHERE THE REST COMES FROM ──────────────────────────────────────────────
  * The films are `product-films.ts`'s, the channels the footer's profiles (`socialProfiles`), the case study
  * `case-studies.ts`'s, the week's headline `news.ts`'s and the tools' count and groups `learn-market.ts`'s, so a weekly
- * refresh of /news or a new check of the market moves the cards too. /community reads the events Learn follows
- * (`learnEvents`) and the wider community (`learnCommunities`) from here.
+ * refresh of /news or a new check of the market moves the cards too.
  */
 
 /** The three subjects, in the hub's order: the chips, the cards' tags and each card's `data-p`. */
@@ -63,9 +62,9 @@ export const learnPage = {
     description:
       "Guides and comparisons for Kubernetes, block storage and the whole cloud bill on Azure and AWS, from where the money goes to the right fix.",
   },
+  /** The h1 and the search, with no line between them. */
   hero: {
     title: "Zoorik Learn: cloud cost optimization guides",
-    deck: "Guides, comparisons and what changed this week, for Kubernetes, block storage and the whole cloud bill on Azure and AWS.",
   },
   /**
    * The day the hub's own content last changed, for the sitemap; it is not printed. A new article moves the hub's
@@ -414,56 +413,5 @@ export const learnMore: readonly {
     title: "Community",
     line: "r/zoorik on Reddit, the events worth going to, and where to ask.",
     extra: "Join r/zoorik",
-  },
-];
-
-/**
- * The events Learn follows, read by /community (its Events): the three big ones, by name (the event's name before its
- * year), read from `events.ts` with /events's rules: only events not yet ended, with their days known, by date, the
- * first `count`.
- */
-export const learnEvents: { readonly names: readonly string[]; readonly count: number } = {
-  names: ["KubeCon + CloudNativeCon North America", "Microsoft Ignite", "AWS re:Invent"],
-  count: 3,
-};
-
-/**
- * Where people who pay these bills meet, read by /community (its wider community): each community's own page, opened
- * in a new tab.
- */
-export const learnCommunities: readonly {
-  readonly name: string;
-  readonly line: string;
-  readonly url: `https://${string}`;
-}[] = [
-  {
-    name: "Kubernetes Slack",
-    line: "The project’s own chat, with a channel for each group, autoscaling included.",
-    url: "https://slack.k8s.io/",
-  },
-  {
-    name: "CNCF Slack",
-    line: "Chat for every CNCF project and community group.",
-    url: "https://slack.cncf.io/",
-  },
-  {
-    name: "FinOps Foundation community",
-    line: "Practitioner calls, chapters and meetups, India included.",
-    url: "https://www.finops.org/community/",
-  },
-  {
-    name: "Kubernetes Community Days",
-    line: "Local, community-run Kubernetes days around the world.",
-    url: "https://www.cncf.io/kcds/",
-  },
-  {
-    name: "r/kubernetes · r/FinOps",
-    line: "Where engineers ask what their bill is doing.",
-    url: "https://www.reddit.com/r/kubernetes/",
-  },
-  {
-    name: "r/AZURE · r/aws",
-    line: "Questions on disks, prices and quotas, answered by people who run them.",
-    url: "https://www.reddit.com/r/AZURE/",
   },
 ];

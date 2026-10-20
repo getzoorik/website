@@ -78,8 +78,9 @@ describe("the Learn sheet", () => {
   });
 
   it("keeps every rule of the hub's earlier sections while the pages built on the sheet are built", () => {
-    for (const rule of [".lv-news{", ".lv-h3{", ".mk-tabs{", ".cm-ev{", ".cm-list{"])
-      expect(css, rule).toContain(rule);
+    for (const rule of [".lv-news{", ".lv-h3{", ".mk-tabs{"]) expect(css, rule).toContain(rule);
+    /* The old Community and events rules went with the old /community. */
+    expect(selectors(css).some((s) => /\.cm(-|\b)/.test(s))).toBe(false);
     for (const gone of [".nw-list", ".nw-d", ".nw-b", ".nw-st", ".nw-src", ".nw-note"])
       expect(
         selectors(css).some((s) => s.includes(gone)),

@@ -28,26 +28,23 @@ function selectors(sheet: string): string[] {
 describe("the community sheet", () => {
   it("names one of Community's own `cm-` classes in every selector", () => {
     const found = selectors(css);
-    expect(found.length).toBeGreaterThan(40);
+    expect(found).toEqual([
+      ".cm-sub + .cm-sub",
+      ".cm-sl",
+      ".dt-ic.cm-logo",
+      "img.dt-ic.cm-logo",
+      ".cm-own",
+      ".cm-note",
+      ".cm-note a",
+    ]);
     const stray = found.filter((s) => !/\.cm-[\w-]+/.test(s));
     expect(stray, `selector(s) in community.css without a cm- class: ${stray.join(", ")}`).toEqual(
       [],
     );
-    /* The first rule inside a media query counts too. */
-    expect(found).toContain(".cm-rd");
-    expect(found).toContain(".cm-evs ol");
   });
 
-  it("overrides Learn's rules with one class more, so either sheet may load last", () => {
-    /* `.cm-date` and `.fx-read` are learn.css's, one class each; these are two. */
-    const found = selectors(css);
-    expect(found).toContain(".cm-evs .cm-date");
-    expect(found).toContain(".cm-shape .fx-read");
-    expect(found.filter((s) => s === ".cm-date" || s === ".fx-read")).toEqual([]);
-  });
-
-  it("takes the site's arrow's margin off where the mock's arrows have none, and lets it shrink as theirs do", () => {
-    expect(css).toContain(".cm-btn .ext,.cm-ch .ext,.cm-c .ext{margin-left:0;flex:0 1 auto}");
+  it("sizes a community's logo over the tile's icon rule with one class more, so either sheet may load last", () => {
+    expect(css).toContain(".dt-ic.cm-logo{width:28px;height:28px;object-fit:contain}");
   });
 
   it("moves nothing: no animation, and no transition of its own", () => {
