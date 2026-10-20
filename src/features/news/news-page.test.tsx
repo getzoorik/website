@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from "node:fs";
 
-import { render } from "@testing-library/react";
+import { fireEvent, render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { substackPublication } from "@/config/entity";
@@ -16,9 +16,9 @@ import NewsRoute, { metadata } from "@/app/news/page";
 import { newsDay } from "./news-facts";
 
 /**
- * `/news`, Zoorik News: the metadata, the hero and its links, From Zoorik,
- * Zoorik Radar's three streams with every item's date, summary and source, and the newsletter row. Its sitemap entry
- * is in `src/app/sitemap.test.ts`, its page graph in `src/config/structured-data.test.ts`, and /learn's card in
+ * `/news`, Zoorik News: the metadata, the hero, the latest announcement beside the newsletter, the rest of From
+ * Zoorik, and Zoorik Radar with its stream chips, every item's tile, logo, day and source. Its sitemap entry is in
+ * `src/app/sitemap.test.ts`, its page graph in `src/config/structured-data.test.ts`, and /learn's card in
  * `src/features/learn/learn-hub.test.tsx`.
  */
 
@@ -26,16 +26,24 @@ const text = (el: Element | null): string => (el?.textContent ?? "").replace(/[\
 
 const page = () => render(<NewsRoute />).container;
 
-/** An off-site link the site's way: a new tab, no opener, the hidden hint, and the arrow. */
+/** An off-site link the site's way: a new tab, no opener, and the hidden hint. */
 function expectOffSite(link: Element, href: string) {
   expect(link).toHaveAttribute("href", href);
   expect(link).toHaveAttribute("target", "_blank");
   expect(link).toHaveAttribute("rel", "noopener noreferrer");
   expect(text(link.querySelector(".sr-only"))).toBe("(opens in a new tab)");
-  expect(link.querySelector("svg.ext")).toHaveAttribute("aria-hidden", "true");
 }
 
 const profile = (platform: string) => socialProfiles.find((p) => p.platform === platform)!.href;
+
+/** What a tile's icon is: an image's file, a mark's `data-mark`, the Zoorik mark, or a monogram's letter. */
+function iconOf(tile: Element): string {
+  const icon = tile.querySelector(".dt-ic")!;
+  if (icon.tagName === "IMG") return `file ${icon.getAttribute("src")}`;
+  if (icon.classList.contains("nw-mono")) return `monogram ${text(icon)}`;
+  if (icon.getAttribute("data-mark")) return `mark ${icon.getAttribute("data-mark")}`;
+  return icon.getAttribute("viewBox") === "0 0 512 512" ? "zoorik" : "unknown";
+}
 
 describe("/news's metadata", () => {
   it("titles the page as is, with no ' · Zoorik' after it, and describes and canonicalises it", () => {
@@ -61,224 +69,241 @@ describe("/news's metadata", () => {
 });
 
 describe("/news", () => {
-  it("names the page Zoorik News, with the deck and a link to each part", () => {
+  it("names the page Zoorik News with its deck, then the latest, From Zoorik and Zoorik Radar", () => {
     const root = page();
     expect(root.querySelectorAll("h1")).toHaveLength(1);
     expect(text(root.querySelector("header.hero.doc-hero h1"))).toBe("Zoorik News");
+    expect(root.querySelector("header.hero h1 [translate='no']")).toHaveTextContent("Zoorik");
     expect(text(root.querySelector("header.hero .doc-deck"))).toBe(
       "What we ship, and what changed this week in cloud cost, Kubernetes and FinOps.",
     );
+    expect(root.querySelector("header.hero nav, header.hero a")).toBeNull();
     expect(root.querySelector("a.skip")).toHaveAttribute("href", "#main");
-    const jump = root.querySelector("header.hero .hero-in > nav.nw-jump")!;
-    expect(jump).toHaveAttribute("aria-label", "On this page");
-    const links = [...jump.querySelectorAll("a")].map((a) => [a.getAttribute("href"), text(a)]);
-    expect(links).toEqual([
-      ["#zoorik", "From Zoorik"],
-      ["#radar-cloud", "Cloud"],
-      ["#radar-oss", "Kubernetes and open source"],
-      ["#radar-finops", "FinOps"],
-    ]);
-    for (const [href] of links) expect(root.querySelector(href!)).not.toBeNull();
-  });
-
-  it("has From Zoorik, then Zoorik Radar on the band, then the newsletter, and no closing assessment row", () => {
-    const root = page();
     expect(
       [...root.querySelectorAll("main > section")].map((s) => [
         s.id,
         s.className,
-        s.getAttribute("aria-labelledby"),
+        s.getAttribute("aria-labelledby") ?? s.getAttribute("aria-label"),
       ]),
     ).toEqual([
+      ["latest", "sec sec-band", "The latest from Zoorik, and the newsletter"],
       ["zoorik", "sec nw-sec", "zoorik-h"],
-      ["radar", "sec sec-band nw-sec", "radar-h"],
-      ["", "sec nw-sec", null],
+      ["radar", "sec nw-sec", "radar-h"],
     ]);
-    expect(text(root.querySelector("#zoorik-h"))).toBe("From Zoorik");
-    expect(text(root.querySelector("#zoorik .nw-h p"))).toBe("What we shipped, newest first.");
     expect(root.querySelector("#assess")).toBeNull();
   });
 
-  it("shows our announcements, newest first on the navy panel, each linking to its page here", () => {
-    const root = page();
-    const cards = [...root.querySelectorAll("#zoorik article")];
-    expect(cards.map((card) => card.className)).toEqual(["nz-feat", "nz-card", "nz-card"]);
-    expect(root.querySelectorAll(".nz-side > article")).toHaveLength(2);
+  it("draws the latest announcement on the white card, flagged Latest, with its button to its page here", () => {
+    const [latest] = [...page().querySelectorAll("#latest .as-grid > div")];
+    const item = newsFromZoorik[0]!;
+    expect(latest).toHaveClass("as-card", "as-mini", "nw-fc", "rise");
+    expect(text(latest!.querySelector(":scope > .nw-flag"))).toBe("Latest");
+    const mark = latest!.querySelector(":scope > svg.nw-own.nw-own-l")!;
+    expect(mark).toHaveAttribute("aria-hidden", "true");
+    expect(mark).toHaveAttribute("viewBox", "0 0 512 512");
+    const meta = latest!.querySelector("p.nw-meta")!;
+    expect(text(meta)).toBe("17 October 2026 · Assessment");
+    expect(meta.querySelector("time")).toHaveAttribute("datetime", item.date);
+    expect(text(latest!.querySelector("h2.as-h"))).toBe(
+      "Zoorik assessment 1.3: one free PDF report for Coral and Amoeba",
+    );
+    expect(text(latest!.querySelector("p:not(.nw-meta)"))).toBe(
+      "One command, npx -y zoorik assess coral or amoeba, now writes a single PDF with your estimated saving at list price.",
+    );
+    const button = latest!.querySelector("a.btn-ink")!;
+    expect(button).toHaveAttribute("href", routes.assessment);
+    expect(button).not.toHaveAttribute("target");
+    expect(text(button)).toBe("Run the free assessment");
+    expect(button.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
+    /* The products' names are kept out of translation. */
+    expect([...latest!.querySelectorAll("h2 [translate='no']")].map(text)).toEqual([
+      "Zoorik",
+      "Coral",
+      "Amoeba",
+    ]);
+  });
+
+  it("draws the newsletter on the dark card: Medium's mark, subscribe on Medium, or on Substack", () => {
+    const newsletter = page().querySelectorAll("#latest .as-grid > div")[1]!;
+    expect(newsletter).toHaveClass("as-cal", "rise");
+    expect(newsletter).toHaveAttribute("data-i", "1");
+    expect(newsletter.querySelector(":scope > svg.nw-own")).toHaveAttribute("data-mark", "medium");
+    expect(text(newsletter.querySelector("h2.as-h"))).toBe("Get Zoorik News by email");
+    expect(newsletter.querySelector("h2 [translate='no']")).toHaveTextContent("Zoorik");
+    expect(text(newsletter.querySelector("p:not(.cta-fine)"))).toBe(
+      "Our newsletter on Medium: what we ship, and each week’s Zoorik Radar, in your inbox.",
+    );
+    const subscribe = newsletter.querySelector("a.cta-go")!;
+    expect(text(subscribe)).toBe("Subscribe on Medium (opens in a new tab)");
+    expectOffSite(subscribe, profile("medium"));
+    expect(subscribe.querySelector("svg.ext")).toHaveAttribute("aria-hidden", "true");
+    const fine = newsletter.querySelector("p.cta-fine")!;
+    expect(text(fine)).toBe("Or on Substack (opens in a new tab)");
+    expectOffSite(fine.querySelector("a")!, substackPublication);
+    /* Links only: no form, no embed, no third-party script. */
+    expect(newsletter.closest("main")!.querySelector("form, input, iframe, script")).toBeNull();
+  });
+
+  it("lists the rest of From Zoorik as tiles, each with its mark, its day and its tag, to its page here", () => {
+    const section = page().querySelector("#zoorik")!;
+    expect(text(section.querySelector(".sec-hrow h2#zoorik-h"))).toBe("From Zoorik");
+    const tiles = [...section.querySelectorAll(".dt-grid > article.dt.nw-t > a.dt-a")];
     expect(
-      cards.map((card) => [
-        text(card.querySelector(".nz-tag")),
-        card.querySelector("time")!.getAttribute("datetime"),
-        text(card.querySelector("time")),
-        text(card.querySelector("h3")),
-        text(card.querySelector(".nz-line")),
-        card.querySelector("a")!.className,
-        card.querySelector("a")!.getAttribute("href"),
-        text(card.querySelector("a")),
+      tiles.map((tile) => [
+        tile.getAttribute("href"),
+        iconOf(tile),
+        text(tile.querySelector(".dt-t")),
+        text(tile.querySelector(".dt-l")),
+        text(tile.querySelector(".nw-m")),
+        tile.querySelector(".nw-m time")!.getAttribute("datetime"),
       ]),
     ).toEqual([
       [
-        "Assessment",
-        "2026-10-17",
-        "17 October 2026",
-        "Zoorik assessment 1.3: one free PDF report for Coral and Amoeba",
-        "One command, npx -y zoorik assess coral or amoeba, now writes a single PDF with your estimated saving at list price.",
-        "nz-cta",
-        routes.assessment,
-        "Run the free assessment",
-      ],
-      [
-        "Coral",
-        "2026-10-16",
-        "16 October 2026",
+        routes.openSource,
+        "mark kubernetes",
         "Install Coral with Helm or Terraform",
         "Coral’s agent now installs from a public Helm chart, and AKS and EKS modules are on the Terraform Registry, beside zoorikctl.",
-        "nz-link",
-        routes.openSource,
-        "See the install options",
+        "16 Oct · Coral",
+        "2026-10-16",
       ],
       [
-        "Value Lab",
-        "2026-10-12",
-        "12 October 2026",
+        routes.caseStudyCoralDevCluster,
+        "zoorik",
         "How we reduced our own cluster’s machine bill by 58%",
         "Eight days after we connected Coral to our own AKS development cluster, it cost $154.76 a month instead of $368.65.",
-        "nz-link",
-        routes.caseStudyCoralDevCluster,
-        "Read the case study",
+        "12 Oct · Value Lab",
+        "2026-10-12",
       ],
     ]);
-    for (const card of cards) {
-      expect(card.querySelector("a")).not.toHaveAttribute("target");
-      expect(card.querySelector("a svg")).toHaveAttribute("aria-hidden", "true");
+    for (const tile of tiles) {
+      expect(tile).not.toHaveAttribute("target");
+      expect(tile.querySelector(".sr-only")).toBeNull();
+      expect(tile.querySelector("svg.dt-go")).toHaveAttribute("aria-hidden", "true");
     }
-    /* Newest first. */
+    /* Newest first, the latest on the band above. */
     const days = newsFromZoorik.map((item) => item.date);
     expect(days).toEqual([...days].sort().reverse());
-    /* The products' names are kept out of translation. */
-    expect([...cards[1]!.querySelectorAll("[translate=no]")].map(text)).toContain("Coral");
   });
 
-  it("heads Zoorik Radar with its week, its title and the window it read", () => {
-    const root = page();
-    const head = root.querySelector("#radar > .wrap > .nr-head")!;
-    expect(head.querySelector("svg.nr-art")).toHaveAttribute("aria-hidden", "true");
-    expect(head.querySelector("svg.nr-art .nr-sweep")).not.toBeNull();
-    expect(text(head.querySelector(".nr-eyebrow"))).toBe("Zoorik Radar · week of 19 October 2026");
-    expect(head.querySelector("h2")).toHaveAttribute("id", "radar-h");
-    expect(text(head.querySelector("h2"))).toBe(
-      "What changed in cloud cost, Kubernetes and FinOps",
-    );
-    expect(text(head.querySelector("p:not(.nr-eyebrow)"))).toBe(
-      "Read every week from AWS, Azure, the Kubernetes projects and the FinOps Foundation, and written in our words, each with its source. 5 to 19 October 2026.",
-    );
-  });
-
-  it("prints the three streams in order, each item with its date, its summary and its source link", () => {
-    const root = page();
-    const columns = [...root.querySelectorAll("#radar .nr-cols > section.nr-col")];
+  it("heads Zoorik Radar with its week, then one chip per stream after All, All pressed", () => {
+    const section = page().querySelector("#radar")!;
+    expect(text(section.querySelector(".sec-hrow h2#radar-h"))).toBe("Zoorik Radar");
+    expect(text(section.querySelector(".sec-hrow p"))).toBe("Week of 19 October 2026");
+    const chips = section.querySelector(".nw-chips")!;
+    expect(chips).toHaveAttribute("role", "group");
+    expect(chips).toHaveAttribute("aria-label", "Stream");
     expect(
-      columns.map((col) => [
-        col.id,
-        col.getAttribute("aria-labelledby"),
-        text(col.querySelector("header h3")),
-        text(col.querySelector("header p")),
-        col.querySelectorAll("ol > li").length,
+      [...chips.querySelectorAll("button")].map((b) => [
+        b.getAttribute("type"),
+        b.getAttribute("data-st"),
+        b.getAttribute("aria-pressed"),
+        text(b),
       ]),
     ).toEqual([
+      ["button", "", "true", "All"],
+      ["button", "cloud", "false", "Cloud"],
+      ["button", "oss", "false", "Kubernetes and open source"],
+      ["button", "finops", "false", "FinOps"],
+    ]);
+  });
+
+  it("prints every stream's items as tiles that open their source in a new tab, each with its logo, day and source", () => {
+    const root = page();
+    const groups = [...root.querySelectorAll("#radar .nw-g")];
+    expect(
+      groups.map((g) => [g.getAttribute("data-st"), text(g.querySelector("h3.nw-sl"))]),
+    ).toEqual([
+      ["cloud", "Cloud"],
+      ["oss", "Kubernetes and open source"],
+      ["finops", "FinOps"],
+    ]);
+    for (const group of groups) expect(group).not.toHaveAttribute("hidden");
+    const icons = groups.map((group) =>
+      [...group.querySelectorAll(".dt-grid > article.dt.nw-t > a.dt-a")].map(iconOf),
+    );
+    expect(icons).toEqual([
+      ["mark aws", "mark azure", "mark aws", "mark aws"],
       [
-        "radar-cloud",
-        "radar-cloud-h",
-        "Cloud",
-        "AWS and Azure prices and features: AKS, EKS, Azure disks and Amazon EBS.",
-        4,
+        "file /community-logos/karpenter.svg",
+        "file /community-logos/karpenter.svg",
+        "file /community-logos/karpenter.svg",
+        "mark azure",
+        "file /community-logos/karpenter.svg",
       ],
       [
-        "radar-oss",
-        "radar-oss-h",
-        "Kubernetes and open source",
-        "Releases from Kubernetes, Karpenter, the autoscalers and the disk drivers.",
-        5,
-      ],
-      [
-        "radar-finops",
-        "radar-finops-h",
-        "FinOps",
-        "The FinOps Foundation, the FOCUS billing format and how teams run cloud cost.",
-        5,
+        "file /community-logos/finops-foundation.svg",
+        "monogram N",
+        "file /community-logos/finops-foundation.svg",
+        "file /community-logos/finops-foundation.svg",
+        "file /community-logos/finops-foundation.svg",
       ],
     ]);
-
-    columns.forEach((col, s) => {
+    groups.forEach((group, s) => {
       const stream = newsRadar.streams[s]!;
-      const rows = [...col.querySelectorAll("ol > li")];
-      expect(rows).toHaveLength(stream.items.length);
-      rows.forEach((li, i) => {
+      const tiles = [...group.querySelectorAll(".dt-grid > article.dt.nw-t > a.dt-a")];
+      expect(tiles).toHaveLength(stream.items.length);
+      tiles.forEach((tile, i) => {
         const item = stream.items[i]!;
-        const time = li.querySelector(":scope > time")!;
-        expect(time).toHaveAttribute("datetime", item.date);
-        expect(text(time)).toBe(newsDay(item.date, false));
-        const title = li.querySelector(":scope > a.nr-t")!;
-        expect(text(title.firstChild as Element)).toBe(item.title);
-        expectOffSite(title, item.url);
-        expect(text(li.querySelector(":scope > p"))).toBe(item.summary);
-        expect(text(li.querySelector(":scope > small"))).toBe(item.source);
+        expectOffSite(tile, item.url);
+        expect(text(tile.querySelector(".dt-t"))).toBe(item.title);
+        expect(tile.querySelector(".dt-l")).toBeNull();
+        expect(tile.querySelector(".nw-m time")).toHaveAttribute("datetime", item.date);
+        expect(tile.querySelector("svg.dt-go")).toHaveAttribute("aria-hidden", "true");
+        const logo = tile.querySelector(".dt-ic")!;
+        if (logo.tagName === "IMG") expect(logo).toHaveAttribute("alt", "");
+        else expect(logo).toHaveAttribute("aria-hidden", "true");
       });
-      /* Newest first. */
-      const days = stream.items.map((item) => item.date);
-      expect(days).toEqual([...days].sort().reverse());
     });
-
+    /* The Azure marks' gradients are named apart. */
+    const gradients = [...root.querySelectorAll("#radar linearGradient")].map((g) => g.id);
+    expect(new Set(gradients).size).toBe(gradients.length);
     /* Spot checks against the radar run's own data. */
-    const first = root.querySelector("#radar-cloud li")!;
-    expect(text(first.querySelector("time"))).toBe("18 October");
-    expect(first.querySelector("a.nr-t")).toHaveAttribute(
-      "href",
-      "https://aws.amazon.com/eks/pricing/",
+    const first = groups[0]!.querySelector("a.dt-a")!;
+    expect(text(first.querySelector(".nw-m"))).toBe("18 Oct · AWS: Amazon EKS pricing");
+    expect(first).toHaveAttribute("href", "https://aws.amazon.com/eks/pricing/");
+    const last = [...groups[2]!.querySelectorAll("a.dt-a")].at(-1)!;
+    expect(text(last.querySelector(".dt-t"))).toBe(
+      "FinOps Foundation: AI budgets miss idle infrastructure, storage and hidden tooling",
     );
-    expect(text(first.querySelector("p"))).toBe(
-      "A cluster costs $0.10 per hour in standard support and $0.60 per hour once its Kubernetes version moves to extended support, which AWS turns on by default.",
-    );
-    expect(text(first.querySelector("small"))).toBe("AWS: Amazon EKS pricing");
-    const last = [...root.querySelectorAll("#radar-finops li")].at(-1)!;
-    expect(text(last.querySelector("time"))).toBe("6 October");
-    expect(text(last.querySelector("a.nr-t"))).toBe(
-      "FinOps Foundation: AI budgets miss idle infrastructure, storage and hidden tooling (opens in a new tab)",
-    );
-    expect(text(last.querySelector("p"))).toBe(
-      "The Foundation warns that AI budgets built on token prices miss much of the real spend. The missed items include supporting tools, idle and pre-production infrastructure, observability data growth and forced migrations.",
+    expect(text(last.querySelector(".nw-m"))).toBe("6 Oct · FinOps Foundation");
+  });
+
+  it("closes Zoorik Radar on what it reads and the window it covers", () => {
+    expect(text(page().querySelector("#radar .wrap > p.nw-note"))).toBe(
+      "Read every week from AWS, Azure, the Kubernetes projects and the FinOps Foundation, in our words, each linked to its source. 5 to 19 October 2026.",
     );
   });
 
-  it("keeps every summary to at most two sentences, as the mock cuts them", () => {
-    for (const item of newsRadar.streams.flatMap((stream) => stream.items)) {
-      const sentences = item.summary.split(/(?<=[.!?])\s+(?=[A-Z0-9$])/);
-      expect(sentences.length, item.title).toBeLessThanOrEqual(2);
-      expect(item.summary, item.title).toMatch(/[.!?]$/);
-      expect(item.url).toMatch(/^https:\/\//);
+  it("shows one stream when its chip is pressed, and every stream again on All", () => {
+    const root = page();
+    const chip = (st: string) => root.querySelector(`.nw-chips button[data-st='${st}']`)!;
+    const shown = () =>
+      [...root.querySelectorAll(".nw-g")]
+        .filter((g) => !g.hasAttribute("hidden"))
+        .map((g) => g.getAttribute("data-st"));
+    const pressed = () =>
+      [...root.querySelectorAll(".nw-chips button")]
+        .filter((b) => b.getAttribute("aria-pressed") === "true")
+        .map((b) => b.getAttribute("data-st"));
+
+    fireEvent.click(chip("oss"));
+    expect(shown()).toEqual(["oss"]);
+    expect(pressed()).toEqual(["oss"]);
+    fireEvent.click(chip("finops"));
+    expect(shown()).toEqual(["finops"]);
+    expect(pressed()).toEqual(["finops"]);
+    fireEvent.click(chip(""));
+    expect(shown()).toEqual(["cloud", "oss", "finops"]);
+    expect(pressed()).toEqual([""]);
+  });
+
+  it("keeps every Radar stream newest first, each item linked to its source's own page", () => {
+    for (const stream of newsRadar.streams) {
+      const days = stream.items.map((item) => item.date);
+      expect(days, stream.id).toEqual([...days].sort().reverse());
+      for (const item of stream.items) expect(item.url).toMatch(/^https:\/\//);
     }
     expect(newsRadar.streams.flatMap((stream) => stream.items)).toHaveLength(14);
-  });
-
-  it("closes on the newsletter: subscribe on Medium or Substack, or follow us; links only, no form", () => {
-    const root = page();
-    const row = root.querySelector("main > section:last-of-type .nw-sub")!;
-    expect(text(row.querySelector(".nw-subc .nr-eyebrow"))).toBe("Newsletter");
-    expect(text(row.querySelector(".nw-subc h2"))).toBe("Get Zoorik News by email");
-    expect(text(row.querySelector(".nw-subc > p:not(.nr-eyebrow)"))).toBe(
-      "Subscribe to our Medium publication: what we ship, and each week’s Zoorik Radar, in your inbox.",
-    );
-    const [subscribe, alt] = [...row.querySelectorAll(".nw-subacts > a")];
-    expect(subscribe).toHaveClass("nz-cta");
-    expect(text(subscribe!.firstChild as Element)).toBe("Subscribe on Medium");
-    expectOffSite(subscribe!, profile("medium"));
-    expect(alt).toHaveClass("nw-alt");
-    expect(text(alt!.firstChild as Element)).toBe("Or on Substack");
-    expectOffSite(alt!, substackPublication);
-    expect(text(row.querySelector(".nw-fl > p"))).toBe("Or follow us");
-    const follow = [...row.querySelectorAll(".nw-fl > a")];
-    expect(follow.map((a) => text(a.firstChild as Element))).toEqual(["LinkedIn", "X", "r/zoorik"]);
-    follow.forEach((a, i) => expectOffSite(a, profile(["linkedin", "x", "reddit"][i]!)));
-    expect(root.querySelector("main form, main input, main iframe, main script")).toBeNull();
   });
 
   it("follows the site's words: reduce, never cut, lower or waste", () => {
@@ -286,13 +311,15 @@ describe("/news", () => {
     expect(words).not.toMatch(/\b(cut|cuts|cutting|lower|lowers|waste|wasted)\b/i);
   });
 
-  it("is drawn on the server, with no island and no browser storage", () => {
+  it("is drawn on the server but for the stream chips, and stores nothing in the browser", () => {
+    const islands: string[] = [];
     for (const file of readdirSync("src/features/news").filter((f) => /\.tsx?$/.test(f))) {
-      const code = readFileSync(`src/features/news/${file}`, "utf8");
       if (file.includes(".test.")) continue;
-      expect(code, file).not.toMatch(/^["']use client["']/m);
+      const code = readFileSync(`src/features/news/${file}`, "utf8");
+      if (/^["']use client["']/m.test(code)) islands.push(file);
       expect(code, file).not.toMatch(/localStorage|sessionStorage|indexedDB|document\.cookie/);
     }
+    expect(islands).toEqual(["radar-streams.tsx"]);
     expect(newsPage.hero.title).toBe("Zoorik News");
   });
 });
