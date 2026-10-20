@@ -139,6 +139,12 @@ const nextConfig: NextConfig = {
         destination: "/compare/amoeba-alternatives",
         statusCode: 301,
       },
+      /* The autoscaler comparison moved to the address its new version is searched by. */
+      {
+        source: "/learn/coral-and-native-autoscalers",
+        destination: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+        statusCode: 301,
+      },
       ...MOVED_DOCUMENTS.map((file) => ({
         source: `/resources/${file}`,
         destination: `/docs/${file}`,

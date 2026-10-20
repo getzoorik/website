@@ -82,6 +82,16 @@ describe("the Docs hub's old address", () => {
   });
 });
 
+describe("an article that took over another's address", () => {
+  it("301s the old autoscaler comparison to the article that replaced it", async () => {
+    const response = await respond("https://zoorik.com/learn/coral-and-native-autoscalers");
+    expect(response.status).toBe(301);
+    expect(getRedirectUrl(response)).toBe(
+      "https://zoorik.com/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+    );
+  });
+});
+
 describe("the comparison pages' old addresses under /learn", () => {
   it("301 each live versus page and both alternatives pages to /compare", async () => {
     const moved = [
