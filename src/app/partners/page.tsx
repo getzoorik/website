@@ -7,12 +7,12 @@ import { partnersPage } from "@/content/partners";
 import { documentMetadata } from "@/features/documents/document-page";
 import { PartnersPage } from "@/features/programs/partners-page";
 
-import "@/styles/programs.css";
+import "@/styles/program-pages.css";
 
 /**
  * `/partners`: the partner program, coming soon. Indexed, listed in the sitemap, and prerendered at build like every
- * page here; linked from the footer's Company column, after Brand assets. The program has no terms yet, so the page
- * states none.
+ * page here; linked from the footer's Company column, after Referrals. The program has no terms yet, so the page
+ * states none. It shares its sheet with /referrals and /design-partners.
  */
 export const metadata: Metadata = documentMetadata(routes.partners, partnersPage.meta);
 

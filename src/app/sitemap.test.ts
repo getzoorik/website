@@ -130,9 +130,9 @@ describe("sitemap.xml", () => {
       "/careers": "2026-10-19",
       /* The company pages: the day they were published. */
       "/brand-assets": "2026-10-19",
-      "/referrals": "2026-10-19",
-      "/partners": "2026-10-19",
-      "/design-partners": "2026-10-19",
+      "/referrals": "2026-10-20",
+      "/partners": "2026-10-20",
+      "/design-partners": "2026-10-20",
       "/privacy": "2026-10-19",
       "/terms": "2026-10-06",
       "/security": updated,
