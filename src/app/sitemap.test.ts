@@ -101,7 +101,7 @@ describe("sitemap.xml", () => {
       "/docs/install-coral-with-helm": "2026-10-16",
       "/docs/install-coral-with-terraform": "2026-10-16",
       "/docs/contributing": "2026-10-16",
-      "/open-source": "2026-10-16",
+      "/open-source": "2026-10-20",
       /* The hub: the day it was redesigned. The newest article: the day it was published. */
       "/learn": "2026-10-19",
       "/learn/poor-architecture-cloud-bill": "2026-10-14",

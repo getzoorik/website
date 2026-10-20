@@ -15,7 +15,7 @@ import { routes } from "@/config/site";
 export const openSourceUpdated = "16 October 2026";
 
 /** /open-source prints no date: the day its content last changed, for the sitemap. Move it in the PR that changes it. */
-export const openSourceLastUpdated = "16 October 2026";
+export const openSourceLastUpdated = "20 October 2026";
 
 export type GuideBlock =
   | { readonly kind: "p"; readonly text: string }
@@ -643,6 +643,17 @@ export const openSourcePage = {
                 who: "EKS module on the ",
               },
             ],
+          },
+        ],
+      },
+      {
+        name: "website",
+        line: "The source of zoorik.com, this website.",
+        licence: "Apache-2.0",
+        links: [
+          {
+            label: "GitHub",
+            href: "https://github.com/getzoorik/website",
           },
         ],
       },
