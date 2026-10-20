@@ -23,16 +23,16 @@ function selectors(sheet: string): string[] {
 
 /**
  * The /events sheet shares one cascade with every page (the App Router keeps a visited route's sheet), so it may
- * reach only what /events draws: every selector names one of the page's own classes, `ev-` or `evc`.
+ * reach only what /events draws: every selector names one of the page's own classes, `ev-`, `evb-` or `evc`.
  */
 describe("the events sheet", () => {
   it("reaches only the page's own classes", () => {
     const found = selectors(css);
     expect(found.length).toBeGreaterThan(50);
-    const stray = found.filter((s) => !/\.evc?(-|\b)/.test(s));
+    const stray = found.filter((s) => !/\.ev(-|b-|c-|c\b)/.test(s));
     expect(
       stray,
-      `selector(s) in events.css without an ev-/evc class: ${stray.join(", ")}`,
+      `selector(s) in events.css without an ev-/evb-/evc class: ${stray.join(", ")}`,
     ).toEqual([]);
   });
 

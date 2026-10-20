@@ -118,7 +118,7 @@ describe("sitemap.xml", () => {
       ...Object.fromEntries(versusPages.map((page) => [versusRoute(page), "2026-10-19"])),
       "/value-lab": "2026-10-20",
       "/case-studies/coral-dev-cluster": "2026-10-12",
-      "/events": "2026-10-19",
+      "/events": "2026-10-20",
       /* Zoorik News: the week of its latest Radar. */
       "/news": "2026-10-19",
       /* Zoorik Community: the day it was published. */

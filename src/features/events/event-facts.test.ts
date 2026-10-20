@@ -1,23 +1,32 @@
 import { describe, expect, it } from "vitest";
 
-import { events, type EventEntry } from "@/content/events";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
+
+import { eventBanners, events, type EventEntry } from "@/content/events";
 
 import {
+  banner,
   byMonth,
+  cityTile,
   dayOf,
   details,
   ended,
   nextUp,
   place,
   places,
+  searchText,
+  slug,
   split,
   upcoming,
   when,
+  yearMonth,
+  years,
 } from "./event-facts";
 
 /**
  * What /events prints about an event, as the mock works it out: the dates in the tile and in words, when an event is
- * over, its place and its Where filter, the description's first sentence and the Details rows, and the page's order.
+ * over, its place and its Where filter, its banner, what the search and the date menus match, the description's
+ * first sentence and the Details rows, and the page's order.
  */
 
 const base: EventEntry = {
@@ -108,6 +117,91 @@ describe("an event's place", () => {
     expect(places(event({ country: "India" }))).toEqual(["india"]);
     expect(places(event({ format: "hybrid", country: "India" }))).toEqual(["india", "online"]);
     expect(places(event({ format: "virtual", country: "" }))).toEqual(["online"]);
+  });
+});
+
+describe("an event's banner", () => {
+  it("is named by the event's slug: lower case, each run of other characters one hyphen, none at the ends", () => {
+    expect(slug(event({ name: "KCD UK - Edinburgh 2026" }))).toBe("kcd-uk-edinburgh-2026");
+    expect(slug(event({ name: "PlatformCon Live Day São Paulo" }))).toBe(
+      "platformcon-live-day-s-o-paulo",
+    );
+    expect(slug(event({ name: "AWS re:Invent 2026" }))).toBe("aws-re-invent-2026");
+    expect(slug(event({ name: "(SCALE 24x)" }))).toBe("scale-24x");
+  });
+
+  it("is the event's own picture, a banner or a logo, or none", () => {
+    const pictured = (use: "banner" | "logo") =>
+      events.find((entry) => eventBanners[slug(entry)] === use)!;
+    const cover = pictured("banner");
+    expect(banner(cover)).toEqual({ src: `/event-banners/${slug(cover)}.webp`, logo: false });
+    const logo = pictured("logo");
+    expect(banner(logo)).toEqual({ src: `/event-banners/${slug(logo)}.webp`, logo: true });
+    expect(banner(event({ name: "No picture of its own 2026" }))).toBeUndefined();
+  });
+
+  it("without a picture, names the city over the country, or Online alone", () => {
+    expect(cityTile(event({}))).toEqual({ city: "Salt Lake City", country: "United States" });
+    expect(cityTile(event({ city: "", country: "India" }))).toEqual({
+      city: "To be announced",
+      country: "India",
+    });
+    expect(cityTile(event({ format: "hybrid", city: "Pune", country: "India" }))).toEqual({
+      city: "Pune",
+      country: "India",
+    });
+    expect(cityTile(event({ format: "virtual", city: "Pune", country: "India" }))).toEqual({
+      city: "Online",
+      country: "",
+    });
+  });
+
+  it("has a file for every picture named, and names every file there is", () => {
+    const names = new Set(events.map(slug));
+    for (const name of Object.keys(eventBanners)) {
+      expect(names.has(name), `${name}: no event in the list`).toBe(true);
+      expect(existsSync(`public/event-banners/${name}.webp`), name).toBe(true);
+    }
+    const files = readdirSync("public/event-banners");
+    expect(files.toSorted()).toEqual(
+      Object.keys(eventBanners)
+        .map((name) => `${name}.webp`)
+        .toSorted(),
+    );
+    for (const file of files) {
+      const head = readFileSync(`public/event-banners/${file}`).subarray(0, 12);
+      expect(head.toString("latin1", 0, 4) + head.toString("latin1", 8, 12), file).toBe("RIFFWEBP");
+    }
+  });
+});
+
+describe("what the search and the date menus match", () => {
+  it("searches the name, city, country, organizer, topic and format, in lower case", () => {
+    expect(
+      searchText(event({ topic: "kubernetes-cloud-native", format: "hybrid", city: "Pune" })),
+    ).toBe("example 2026 pune united states example organizers kubernetes hybrid");
+  });
+
+  it("matches the year and month of the event's month group, a month-only one included", () => {
+    expect(yearMonth(event({}))).toEqual({ year: "2026", month: "11" });
+    expect(yearMonth(event({ startDate: "2027-04", endDate: "" }))).toEqual({
+      year: "2027",
+      month: "4",
+    });
+    expect(yearMonth(event({ startDate: "2026-12-30", endDate: "2027-01-02" }))).toEqual({
+      year: "2026",
+      month: "12",
+    });
+  });
+
+  it("offers each year the list has an event in, once and in order", () => {
+    const list = [
+      event({ startDate: "2027-02-01" }),
+      event({ startDate: "2026-11-09" }),
+      event({ startDate: "2027-04", endDate: "" }),
+    ];
+    expect(years(list)).toEqual(["2026", "2027"]);
+    expect(years([])).toEqual([]);
   });
 });
 
