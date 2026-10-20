@@ -3,7 +3,7 @@ import { dirname, join } from "node:path";
 
 import { describe, expect, it, vi } from "vitest";
 
-import { amoebaDocs, learnPath, routes, site } from "@/config/site";
+import { amoebaDocs, comparePath, learnPath, routes, site } from "@/config/site";
 import { homeLastUpdated } from "@/content/hero";
 import { learnPage } from "@/content/learn";
 import { learnArticles } from "@/content/learn/published";
@@ -39,7 +39,7 @@ function importGraph(file: string, seen = new Set<string>()): Set<string> {
 }
 
 describe("sitemap.xml", () => {
-  it("lists the home page, the product pages, the assessment, the documents, the install and contributing guides, open source, Learn and every article in its index, Learn's comparison pages, the case studies, /events, /about, /careers, /brand-assets, /referrals, /partners, /design-partners, the privacy policy, the terms and security, absolute, and nothing else", () => {
+  it("lists the home page, the product pages, the assessment, the documents, the install and contributing guides, open source, Learn and every article in its index, Cloud cost optimization tools and the comparison pages, Value Lab and the case study, /events, /about, /careers, /brand-assets, /referrals, /partners, /design-partners, the privacy policy, the terms and security, absolute, and nothing else", () => {
     expect(sitemap().map((entry) => entry.url)).toEqual([
       `${site.url}/`,
       `${site.url}/coral`,
@@ -57,7 +57,7 @@ describe("sitemap.xml", () => {
       `${site.url}/learn`,
       /* Every article in the Learn index, A–Z by slug. */
       ...learnArticles.map((article) => `${site.url}${learnPath(article.slug)}`),
-      `${site.url}/compare`,
+      `${site.url}/cloud-cost-optimization-tools`,
       `${site.url}/compare/coral-alternatives`,
       `${site.url}/compare/amoeba-alternatives`,
       /* The live versus pages, read from their data: no test spells a competitor's name. */
@@ -111,8 +111,9 @@ describe("sitemap.xml", () => {
       ...Object.fromEntries(
         learnArticles.map((article) => [learnPath(article.slug), article.updated]),
       ),
+      /* Cloud cost optimization tools: the day its content last changed. */
+      "/cloud-cost-optimization-tools": "2026-10-20",
       /* The comparison pages: the day they were checked and published. */
-      "/compare": "2026-10-19",
       "/compare/coral-alternatives": "2026-10-19",
       "/compare/amoeba-alternatives": "2026-10-19",
       ...Object.fromEntries(versusPages.map((page) => [versusRoute(page), "2026-10-19"])),
@@ -183,7 +184,7 @@ describe("sitemap.xml", () => {
     /* A dynamic route stands for the pages it prerenders: /compare/[slug] for the live versus pages, /learn/[slug]
        for every article in the Learn index. */
     const pages = (route: string) =>
-      route === `${routes.compare}/[slug]`
+      route === `${comparePath}/[slug]`
         ? versusPages.map(versusRoute)
         : route === `${routes.learn}/[slug]`
           ? learnArticles.map((article) => learnPath(article.slug))

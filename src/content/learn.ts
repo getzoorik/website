@@ -9,7 +9,7 @@ import {
   learnArticles,
   titleLink,
 } from "@/content/learn/published";
-import { marketGroups } from "@/content/learn-market";
+import { shownGroups } from "@/content/learn-market";
 import { newsPage, newsRadar } from "@/content/news";
 import type { ProductId } from "@/content/products";
 import { shortDay } from "@/lib/content-date";
@@ -17,9 +17,9 @@ import { shortDay } from "@/lib/content-date";
 /**
  * `/learn`, the hub: every string it prints, verbatim from the approved mock. Ordered by how the reader thinks: Start
  * here, Find the right fix, Compare, Guides, Watch and read, More from Zoorik, then the case study. Always the three
- * subjects, Cloud cost, Kubernetes and Block storage. Learn teaches only: the market map and the comparisons against
- * the market are /compare's, the news /news's and the community /community's, and the hub links each from More from
- * Zoorik, so /learn names no tool of the market.
+ * subjects, Cloud cost, Kubernetes and Block storage. Learn teaches only: the tools in the market and the comparisons
+ * against them are Cloud cost optimization tools', the news /news's and the community /community's, and the hub links
+ * each from More from Zoorik, so /learn names no tool of the market.
  *
  * ─── ONLY WHAT IS PUBLISHED ─────────────────────────────────────────────────
  * A card here is an article of the Learn index (`@/content/learn/published`), and reads that article's own h1, card
@@ -30,7 +30,7 @@ import { shortDay } from "@/lib/content-date";
  *
  * ─── WHERE THE REST COMES FROM ──────────────────────────────────────────────
  * The films are `product-films.ts`'s, the channels the footer's profiles (`socialProfiles`), the case study
- * `case-studies.ts`'s, the week's headline `news.ts`'s and the tools' count and groups `learn-market.ts`'s, so a weekly
+ * `case-studies.ts`'s, the week's headline `news.ts`'s and the tools' count and kinds `learn-market.ts`'s, so a weekly
  * refresh of /news or a new check of the market moves the cards too.
  */
 
@@ -42,15 +42,6 @@ export const learnSubjects: readonly { readonly id: LearnSubject; readonly label
   { id: "k8s", label: "Kubernetes" },
   { id: "storage", label: "Block storage" },
 ];
-
-/**
- * Each product's subject: where its comparison cards on /compare file (Coral's under Kubernetes, Amoeba's under Block
- * storage).
- */
-export const learnProductSubject: Readonly<Record<ProductId, LearnSubject>> = {
-  coral: "k8s",
-  amoeba: "storage",
-};
 
 export const learnPage = {
   path: routes.learn,
@@ -234,7 +225,7 @@ export const learnStart: readonly LearnCard[] = learnPillars.flatMap(({ pillar, 
 
 const listed = hubOrder(learnArticles.filter((article) => !pillars.has(article.slug)));
 
-/** Compare: the published comparisons of the native tools (the market's are /compare's). */
+/** Compare: the published comparisons of the native tools (the market's are under /compare). */
 export const learnComparisons: readonly LearnCard[] = listed
   .filter((article) => article.versus)
   .map(cardOf);
@@ -372,23 +363,16 @@ export const learnMedium = {
 /* "four groups": a count of groups in words. */
 const inWords = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
 
-/**
- * The short name of each group of the market map, as the Cloud cost optimization tools card lists them, by the
- * group's id in `learn-market.ts`.
- */
-export const learnMarketGroupNames: Readonly<Record<string, string>> = {
-  k8s: "Kubernetes",
-  storage: "Block storage",
-  finops: "FinOps",
-  native: "Cloud providers",
-};
-
-const toolCount = marketGroups.reduce((sum, group) => sum + group.tools.length, 0);
+/* Every tile Cloud cost optimization tools shows, Coral and Amoeba among them. */
+const toolCount = shownGroups.reduce(
+  (sum, group) => sum + group.tools.length + (group.ours ? 1 : 0),
+  0,
+);
 
 /**
- * More from Zoorik: one card each for /news, /compare and /community, each its name, its line and one more line.
- * Zoorik News's is the week's first headline of the Radar's first stream (`newsRadar`), as the mock picks it; the
- * tools' is the market map's count and groups, in its order (`marketGroups`).
+ * More from Zoorik: one card each for /news, Cloud cost optimization tools and /community, each its name, its line and
+ * one more line. Zoorik News's is the week's first headline of the Radar's first stream (`newsRadar`), as the mock
+ * picks it; the tools' is that page's count of tiles and its kinds, in its order (`shownGroups`).
  */
 export const learnMore: readonly {
   readonly href: string;
@@ -403,10 +387,10 @@ export const learnMore: readonly {
     extra: `This week: ${newsRadar.streams[0].items[0]!.title}`,
   },
   {
-    href: routes.compare,
+    href: routes.cloudCostTools,
     title: "Cloud cost optimization tools",
-    line: `${toolCount} tools by name in ${inWords[marketGroups.length]} groups: what each does, how it acts and where it runs.`,
-    extra: marketGroups.map((group) => learnMarketGroupNames[group.id]).join(" · "),
+    line: `${toolCount} tools by name in ${inWords[shownGroups.length]} groups: what each does, how it acts and where it runs.`,
+    extra: shownGroups.map((group) => group.label).join(" · "),
   },
   {
     href: routes.community,

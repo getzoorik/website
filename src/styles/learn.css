@@ -1,14 +1,15 @@
-/* Zoorik marketing: Learn and the pages built on it: /learn, /compare with its two versus pages and two alternatives
- * pages, and /community. Ported from the mock's two blocks, whole, rule for rule and in their order: `learn-v2` (the
- * search, the heads, the chips, the subject cards, the covers, the article cards, Find the right fix, the proof panel,
- * option B's paths, the narrow widths and reduced motion), then `learn-v2b` (/learn's Watch and read and
- * More from Zoorik, the Zoorik News card, the Compare block's heads, the market map, then the versus and alternatives
- * pages). Two parts of the mock's sheet are not here: its What changed rules (`.nw-list`, `.nw` and the rest), whose
+/* Zoorik marketing: Learn and the pages built on it: /learn, Cloud cost optimization tools, the two versus pages and
+ * two alternatives pages under /compare, and /community. Ported from the mock's two blocks, whole, rule for rule and
+ * in their order: `learn-v2` (the search, the heads, the chips, the subject cards, the covers, the article cards,
+ * Find the right fix, the proof panel, option B's paths, the narrow widths and reduced motion), then `learn-v2b`
+ * (/learn's Watch and read and More from Zoorik, the Zoorik News card, the Compare block's heads, the market list,
+ * then the versus and alternatives pages). Two parts of the mock's sheet are not here: its What changed rules (`.nw-list`, `.nw` and the rest), whose
  * section the hub no longer draws (the news lives at /news, and its `nw-` classes are /news's own), and its /community
  * block, which is /community's own sheet (`community.css`, loaded after this one). No rule is deleted while the pages
  * built on this sheet are being built: a rule whose part the hub no longer draws (the Zoorik News card, the Compare
- * block's heads) stays for now; the old Community and events rules went when /community was redrawn. Imported by each page that draws them, so Next loads it after
- * globals.css, where the mock carries it after the site system.
+ * block's heads) stays for now; the old Community and events rules went when /community was redrawn, and the market
+ * map's tabs, line and sub-headings when Cloud cost optimization tools took the map's place. Imported by each page that
+ * draws them, so Next loads it after globals.css, where the mock carries it after the site system.
  *
  * ─── EVERY SELECTOR IS LEARN'S OWN ─────────────────────────────────────────────
  * The App Router keeps a visited page's sheet in the document, so each selector names one of Learn's own classes
@@ -25,7 +26,8 @@
  * mock: the films' hover zoom is stilled under reduced motion, as the mock stills the cards' lift, and a Find the right
  * fix Read line whose article is not published yet is set as plain text.
  *
- * Loaded only by the pages that draw it (`src/app/learn/**`, `src/app/compare/**`, `src/app/community`). */
+ * Loaded only by the pages that draw it (`src/app/learn/**`, `src/app/cloud-cost-optimization-tools`,
+ * `src/app/compare/**`, `src/app/community`). */
 /* ══ learn-v2 ══ */
 /* /learn (option A) */
 /* scoped: the mock writes `.doc-hero .hero-in`, page-wide; the Learn pages' hero carries `lv-hero` */
@@ -189,7 +191,7 @@ p.fx-read{color:inherit;font-weight:inherit}
 /* repo: the films' hover zoom, stilled under reduced motion as the cards' lift is; the mock leaves it moving */
 @media(prefers-reduced-motion:reduce){.wr-th img{transition:none}.wr-film:hover .wr-th img{transform:none}}
 /* Zoorik News's card, in What changed this week's place: /learn no longer draws it; kept, as no
-   rule of this sheet is deleted while /compare and /community are built on it */
+   rule of this sheet is deleted while the pages built on it are being built */
 .lv-news{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px 32px;align-items:end;padding:clamp(24px,3vw,36px);border-radius:var(--r-shell);background:#050B3D;color:#FAF7F3;text-decoration:none}
 .lv-news::after{content:"";position:absolute;right:-120px;top:-160px;width:420px;height:420px;border-radius:50%;background:radial-gradient(closest-side,rgba(59,91,245,.32),transparent)}
 .lv-news > *{position:relative;z-index:1}
@@ -203,20 +205,11 @@ p.fx-read{color:inherit;font-weight:inherit}
 .lv-h3{margin:8px 0 16px;font-size:1.0625rem;font-weight:600;color:var(--muted)}
 .lv-h3 + .lv-grid3{margin-bottom:36px}
 .lv-grid3 + .lv-h3{margin-top:40px}
-/* the market map */
-.mk-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:20px}
-.mk-tabs button{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border:1px solid var(--line);border-radius:var(--r-card);background:#fff;font:inherit;color:var(--text);text-align:left;cursor:pointer}
-.mk-tabs button b{font-weight:600}
-.mk-tabs button small{font:500 .75rem/1 var(--code);color:var(--muted)}
-.mk-tabs button[aria-selected="true"]{background:#050B3D;border-color:#050B3D;color:#FAF7F3}
-.mk-tabs button[aria-selected="true"] small{color:rgba(250,247,243,.66)}
-.mk-tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.mk-lede{margin-bottom:14px;color:var(--muted)}
+/* the market list (the alternatives pages) */
 .mk-headrow,.mk-row{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,2fr) 150px 120px;gap:16px;align-items:center}
 .mk-headrow{padding:0 16px 10px;font:500 .6875rem/1 var(--code);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .mk-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
 .mk-row{padding:14px 16px;border-bottom:1px solid var(--line);background:#fff}
-.mk-sub{padding:16px 16px 8px;font:500 .75rem/1 var(--code);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);border-bottom:1px solid var(--line);background:var(--surface-2)}
 .mk-n{display:flex;flex-direction:column;gap:2px;min-width:0}
 .mk-n a{display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--text);text-decoration:none}
 .mk-n a:hover{color:var(--accent)}
@@ -278,7 +271,7 @@ p.fx-read{color:inherit;font-weight:inherit}
 .ap-q p{margin-top:8px;font-size:.9375rem;line-height:1.55;color:var(--muted)}
 .ap-vs{display:inline-flex;align-items:center;gap:4px;margin-left:6px;font-size:.75rem;font-weight:600;color:var(--accent);text-decoration:none;white-space:nowrap}
 .ap-vs svg{width:12px;height:12px}
-@media(max-width:1000px){.mk-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.ap-q{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:1000px){.ap-q{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){
   .mk-headrow{display:none}
   .mk-row{grid-template-columns:minmax(0,1fr) auto;gap:8px 12px}

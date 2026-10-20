@@ -108,7 +108,7 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/partners": () => import("@/app/partners/page"),
   "/referrals": () => import("@/app/referrals/page"),
   "/design-partners": () => import("@/app/design-partners/page"),
-  "/compare": () => import("@/app/compare/page"),
+  "/cloud-cost-optimization-tools": () => import("@/app/cloud-cost-optimization-tools/page"),
   "/compare/coral-alternatives": () => import("@/app/compare/coral-alternatives/page"),
   "/compare/amoeba-alternatives": () => import("@/app/compare/amoeba-alternatives/page"),
   "/community": () => import("@/app/community/page"),
@@ -406,12 +406,12 @@ describe("every indexed page's structured data", () => {
     expect(names(routes.referrals)).toEqual(["Zoorik", "Referrals"]);
     expect(names(routes.designPartners)).toEqual(["Zoorik", "Design partners"]);
     expect(names(routes.news)).toEqual(["Zoorik", "News"]);
-    expect(names(routes.compare)).toEqual(["Zoorik", "Compare"]);
+    expect(names(routes.cloudCostTools)).toEqual(["Zoorik", "Cloud cost optimization tools"]);
     expect(names(routes.community)).toEqual(["Zoorik", "Community"]);
     expect(names(routes.marketplaces)).toEqual(["Zoorik", "Marketplaces"]);
     expect(names(routes.compareCoralAlternatives)).toEqual([
       "Zoorik",
-      "Compare",
+      "Cloud cost optimization tools",
       "Coral alternatives: Kubernetes cost tools compared",
     ]);
   });
@@ -419,7 +419,16 @@ describe("every indexed page's structured data", () => {
   it("types the hubs as collections and /about as the organisation's page", () => {
     for (const { path } of listed) {
       const kind = graphOf(path)[2]!["@type"];
-      if (["/docs", "/learn", "/value-lab", "/events", "/news", "/compare"].includes(path))
+      if (
+        [
+          "/docs",
+          "/learn",
+          "/value-lab",
+          "/events",
+          "/news",
+          "/cloud-cost-optimization-tools",
+        ].includes(path)
+      )
         expect(kind, path).toBe("CollectionPage");
       else if (path === "/about") expect(kind).toBe("AboutPage");
       else expect(kind, path).toBe("WebPage");

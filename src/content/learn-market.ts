@@ -3,16 +3,16 @@ import type { ProductId } from "@/content/products";
 
 /**
  * The market data: every fact the comparison pages print about the tools in the market, and about Coral and Amoeba
- * beside them: /compare's Tools in the market, the two versus pages and the two alternatives pages.
+ * beside them: the tiles of Cloud cost optimization tools, the two versus pages and the two alternatives pages.
  *
  * ─── WHERE IT COMES FROM ─────────────────────────────────────────────────────────────────────────────────────────
  * Generated from the mocks' data, checked on the day `marketChecked` names: each tool's name, owner, line, how it
  * acts and clouds from its company's own pages. The record of that check holds every claim's source and the reasoning
  * behind it; the pricing rows' sources are read from it (the mocks' data prints the pricing text without them). Carried
  * here is only what the pages print: the check's notes, each tool's status and reasons stay in the data and the
- * record, the clouds are the two a row names (Azure, then AWS), and the seven versus pages held back have no rows
- * here. A throwaway script rewrites the three arrays below from the data and the record, and Coral's own line keeps
- * the site's verb.
+ * record, the clouds are the two a row names (Azure, then AWS; a tile adds Google Cloud where the data names it, in
+ * `shownGroups`), and the seven versus pages held back have no rows here. A throwaway script rewrites the three arrays
+ * below from the data and the record, and Coral's own lines keep the site's verb.
  *
  * ─── THE ONLY PLACE COMPETITORS ARE NAMED ────────────────────────────────────────────────────────────────────────
  * Names only, no logos, as plain strings in arrays. The code that prints them never spells one, and
@@ -71,11 +71,10 @@ export interface MarketOurs {
   readonly href: string;
 }
 
-/** One tab of the market map: a kind of tool, its line, our product where we have one, and its tools in order. */
+/** A group of the market: a kind of tool, our product where we have one, and its tools in order. */
 export interface MarketGroup {
   readonly id: string;
   readonly label: string;
-  readonly lede: string;
   readonly ours?: MarketOurs;
   readonly tools: readonly MarketTool[];
 }
@@ -84,7 +83,6 @@ export const marketGroups: readonly MarketGroup[] = [
   {
     id: "k8s",
     label: "Kubernetes optimization",
-    lede: "Tools that reduce what Kubernetes costs, from those that act on the cluster on their own to the open-source building blocks.",
     ours: {
       product: "coral",
       name: "Coral by Zoorik",
@@ -401,7 +399,6 @@ export const marketGroups: readonly MarketGroup[] = [
   {
     id: "storage",
     label: "Block storage optimization",
-    lede: "Tools that change or right-size cloud disks, and what Azure and AWS offer themselves.",
     ours: {
       product: "amoeba",
       name: "Amoeba by Zoorik",
@@ -598,7 +595,6 @@ export const marketGroups: readonly MarketGroup[] = [
   {
     id: "finops",
     label: "FinOps platforms",
-    lede: "Platforms that show, allocate and budget cloud cost, and those that manage discounts and commitments.",
     tools: [
       {
         name: "IBM Kubecost",
@@ -897,7 +893,6 @@ export const marketGroups: readonly MarketGroup[] = [
   {
     id: "native",
     label: "Cloud providers’ own tools",
-    lede: "What Azure and AWS give you themselves, before any other tool.",
     tools: [
       {
         name: "Azure Advisor",
@@ -1027,6 +1022,193 @@ export const marketGroups: readonly MarketGroup[] = [
           "https://docs.aws.amazon.com/eks/latest/userguide/auto-cost-control.html",
           "https://aws.amazon.com/eks/pricing/",
         ],
+      },
+    ],
+  },
+];
+
+/** A kind of tool on Cloud cost optimization tools: its chip's and its tiles' `data-k`. */
+export type ToolKind = "k8s" | "storage" | "finops" | "cloud";
+
+/** A tool Cloud cost optimization tools shows, by its name in `marketGroups`. */
+export interface ShownTool {
+  readonly name: string;
+  /** Its tile's line: the same facts as its checked line, in fewer words. The full line is the tile's title. */
+  readonly short: string;
+  /** Its own pages name Google Cloud too, which the tile adds after the two clouds a row names. */
+  readonly googleCloud: boolean;
+}
+
+/** One kind of tool on Cloud cost optimization tools: its name, the market group its tools are in, and its tiles. */
+export interface ShownGroup {
+  readonly kind: ToolKind;
+  /** On its chip and over its tiles. */
+  readonly label: string;
+  /** The group of `marketGroups` its tools are read from. */
+  readonly group: string;
+  /** Coral or Amoeba, first, with its tile's line. */
+  readonly ours?: { readonly product: ProductId; readonly short: string };
+  readonly tools: readonly ShownTool[];
+}
+
+/**
+ * The tools Cloud cost optimization tools shows: only those whose job is to reduce the bill, by acting or by
+ * recommending. No dashboard that only reports, no general operations platform, no single feature or API, no tool
+ * twice. Each is read from `marketGroups` by its name, so its owner, line, how it acts, clouds and page are the ones
+ * checked on `marketChecked`.
+ */
+export const shownGroups: readonly ShownGroup[] = [
+  {
+    kind: "k8s",
+    label: "Kubernetes",
+    group: "k8s",
+    /* Coral rebalances: the verb leads, as in its full line. */
+    ours: { product: "coral", short: "Rebalances workloads onto fewer, cheaper machines." },
+    tools: [
+      {
+        name: "Cast AI",
+        short: "Automates rightsizing, node autoscaling, Spot use and bin-packing.",
+        googleCloud: true,
+      },
+      {
+        name: "ScaleOps",
+        short: "Self-hosted; rightsizes pods in real time and manages replicas and nodes.",
+        googleCloud: true,
+      },
+      {
+        name: "PerfectScale by DoiT",
+        short: "Applies pod sizing automatically and tunes Karpenter settings.",
+        googleCloud: true,
+      },
+      {
+        name: "Kubex",
+        short: "Sizes pods at admission, tunes HPAs and recommends node types.",
+        googleCloud: true,
+      },
+      {
+        name: "StormForge by CloudBolt",
+        short: "Machine-learning rightsizing of container requests and limits.",
+        googleCloud: true,
+      },
+      {
+        name: "Spot Ocean",
+        short: "Bin-packs pods and mixes Spot, reserved and on-demand capacity.",
+        googleCloud: true,
+      },
+      {
+        name: "Karpenter",
+        short: "Launches right-fit nodes and consolidates onto fewer or cheaper ones.",
+        googleCloud: true,
+      },
+      {
+        name: "Kubernetes Cluster Autoscaler",
+        short: "Adds nodes for pending pods and removes underused ones.",
+        googleCloud: true,
+      },
+      {
+        name: "Vertical Pod Autoscaler (VPA)",
+        short: "Recommends pod CPU and memory requests and can apply them.",
+        googleCloud: false,
+      },
+    ],
+  },
+  {
+    kind: "storage",
+    label: "Block storage",
+    group: "storage",
+    ours: {
+      product: "amoeba",
+      short: "Rightsizes Azure managed disks and Amazon EBS, without any downtime.",
+    },
+    tools: [
+      {
+        name: "Lucidity Disk AutoScaler (with Lumen)",
+        short: "Grows and shrinks live cloud disks with an agent.",
+        googleCloud: true,
+      },
+      {
+        name: "Datafy EBS AutoScaler (and EBS Sensor)",
+        short: "Grows and shrinks Amazon EBS volumes on EC2 and EKS.",
+        googleCloud: false,
+      },
+      {
+        name: "Zesty Disk",
+        short: "Grows or shrinks an EC2 filesystem by adding and removing EBS volumes.",
+        googleCloud: false,
+      },
+      {
+        name: "Sedai (Amazon EBS and Azure Managed Disks optimization)",
+        short: "Picks EBS types and Azure disk tiers from usage; flags unattached disks.",
+        googleCloud: false,
+      },
+    ],
+  },
+  {
+    kind: "finops",
+    label: "FinOps",
+    group: "finops",
+    tools: [
+      {
+        name: "IBM Kubecost",
+        short: "Kubernetes cost allocation with rightsizing advice and automation.",
+        googleCloud: true,
+      },
+      {
+        name: "Vantage",
+        short: "Allocates costs, recommends savings and can buy Savings Plans.",
+        googleCloud: true,
+      },
+      {
+        name: "ProsperOps",
+        short: "Manages commitment discounts autonomously on AWS, Azure and Google Cloud.",
+        googleCloud: true,
+      },
+      {
+        name: "nOps",
+        short: "Buys and manages RIs, Savings Plans and CUDs automatically.",
+        googleCloud: true,
+      },
+      {
+        name: "Xosphere IQ",
+        short: "Autonomous Spot orchestration on AWS and GCP.",
+        googleCloud: true,
+      },
+      {
+        name: "Cloud Custodian",
+        short: "Open-source rules that stop, retype, tag or delete cloud resources.",
+        googleCloud: true,
+      },
+    ],
+  },
+  {
+    kind: "cloud",
+    label: "Cloud providers",
+    group: "native",
+    tools: [
+      {
+        name: "Azure Advisor",
+        short: "Free Azure service that recommends cost and other improvements.",
+        googleCloud: false,
+      },
+      {
+        name: "AKS node auto-provisioning (NAP)",
+        short: "Provisions VM sizes for pending pods and removes underused nodes.",
+        googleCloud: false,
+      },
+      {
+        name: "AWS Compute Optimizer",
+        short: "Recommends rightsizing and flags idle resources.",
+        googleCloud: false,
+      },
+      {
+        name: "AWS Cost Optimization Hub",
+        short: "Gathers rightsizing, idle and commitment advice across accounts.",
+        googleCloud: false,
+      },
+      {
+        name: "Amazon EKS Auto Mode",
+        short: "AWS manages compute autoscaling for EKS, on Karpenter.",
+        googleCloud: false,
       },
     ],
   },

@@ -23,9 +23,10 @@ function selectors(sheet: string): string[] {
 
 /**
  * Learn's sheet shares one cascade with every page (the App Router keeps a visited route's sheet), so it may reach only
- * what the pages built on it draw (/learn, /compare and its pages, /community): every selector names one of their own
- * classes. `pp` and `pb` (option B's paths) count bare only, since `pp-` is the privacy policy's; and no `nw` class is
- * Learn's: `nw-` is /news's, and the articles' (`nw-nb`, `nw-links`, `nw-tbl`). `wr` (Watch and read) is not `.wrap`.
+ * what the pages built on it draw (/learn, Cloud cost optimization tools, the pages under /compare, /community): every
+ * selector names one of their own classes. `pp` and `pb` (option B's paths) count bare only, since `pp-` is the privacy
+ * policy's; and no `nw` class is Learn's: `nw-` is /news's, and the articles' (`nw-nb`, `nw-links`, `nw-tbl`). `wr`
+ * (Watch and read) is not `.wrap`.
  */
 const OWN = /\.(?:(?:lv|sj|fx|cm|pt|mk|vp|vx|ap|wr)(?:-[\w-]+)?|pb|pp)(?![\w-])/;
 
@@ -78,7 +79,14 @@ describe("the Learn sheet", () => {
   });
 
   it("keeps every rule of the hub's earlier sections while the pages built on the sheet are built", () => {
-    for (const rule of [".lv-news{", ".lv-h3{", ".mk-tabs{"]) expect(css, rule).toContain(rule);
+    for (const rule of [".lv-news{", ".lv-h3{"]) expect(css, rule).toContain(rule);
+    /* The market map's tabs, line and sub-headings went with the map; the alternatives pages' list stays. */
+    for (const gone of [".mk-tabs", ".mk-lede", ".mk-sub"])
+      expect(
+        selectors(css).some((s) => s.includes(gone)),
+        gone,
+      ).toBe(false);
+    expect(css).toContain(".mk-row{");
     /* The old Community and events rules went with the old /community. */
     expect(selectors(css).some((s) => /\.cm(-|\b)/.test(s))).toBe(false);
     for (const gone of [".nw-list", ".nw-d", ".nw-b", ".nw-st", ".nw-src", ".nw-note"])

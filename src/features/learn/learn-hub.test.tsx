@@ -4,7 +4,7 @@ import { fireEvent, render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { learnPath, routes } from "@/config/site";
+import { comparePath, learnPath, routes } from "@/config/site";
 import { pageCards } from "@/config/social";
 import { caseStudiesHub } from "@/content/case-studies";
 import { socialProfiles } from "@/content/footer";
@@ -15,7 +15,6 @@ import {
   learnFixes,
   learnGuides,
   learnGuidesLast,
-  learnMarketGroupNames,
   learnMedium,
   learnMore,
   learnPage,
@@ -33,7 +32,7 @@ import {
   titleLink,
 } from "@/content/learn/published";
 import { alternativesPages } from "@/content/learn-compare";
-import { marketGroups, versusFacts } from "@/content/learn-market";
+import { marketGroups, shownGroups, versusFacts } from "@/content/learn-market";
 import { newsPage, newsRadar } from "@/content/news";
 import { productFilms } from "@/content/product-films";
 import { isoDay, shortDay } from "@/lib/content-date";
@@ -49,7 +48,7 @@ import { CoverArt } from "./learn-cards";
 /**
  * `/learn`: the metadata, the hero and its search, then Start here, Find the right fix, Compare, Guides, Watch and
  * read, More from Zoorik and the case study, and the page's rules: only published articles, each card read from the
- * Learn index and placed by the hub's rules, only the native tools' comparisons (the market's are /compare's), no
+ * Learn index and placed by the hub's rules, only the native tools' comparisons (the market's are under /compare), no
  * tool of the market named anywhere on the page, and search, chips and the fix picker that work in the page and store
  * nothing. Every card, title and count is worked out from the index, so a new article is checked with no change here.
  * Its sitemap entry is in `src/app/sitemap.test.ts`, its page graph in `src/config/structured-data.test.ts`.
@@ -285,7 +284,7 @@ describe("/learn", () => {
     expect(root.querySelector("#guides .lv-vs")).toBeNull();
   });
 
-  it("names no tool of the market, and links the comparisons only through /compare", () => {
+  it("names no tool of the market, and links the comparisons only through Cloud cost optimization tools", () => {
     expect(competitors.length).toBeGreaterThan(40);
     /* The two the versus pages compare with are among them. */
     expect(competitors).toEqual(expect.arrayContaining(versusFacts.map((facts) => facts.name)));
@@ -297,21 +296,24 @@ describe("/learn", () => {
       ),
     ].join("\n");
     expect(words).toContain("Kubernetes");
-    expect(words).toContain(routes.compare);
+    expect(words).toContain(routes.cloudCostTools);
     const found = competitors.filter((name) =>
       new RegExp(`(?<![A-Za-z0-9])${literal(name)}(?![A-Za-z0-9])`).test(words),
     );
     expect(found).toEqual([]);
-    /* Nor any page that names one: the versus and alternatives pages are linked from /compare only. */
+    /* Nor any page that names one: the versus and alternatives pages are linked from Cloud cost optimization tools
+       only. */
     const hrefs = [...root.querySelectorAll("a")].map((a) => a.getAttribute("href") ?? "");
-    expect(hrefs.filter((href) => href.startsWith(`${routes.compare}/`))).toEqual([]);
+    expect(hrefs.filter((href) => href.startsWith(`${comparePath}/`))).toEqual([]);
     expect(hrefs.filter((href) => alternativesPages.some((entry) => entry.route === href))).toEqual(
       [],
     );
-    /* The page links /compare once, from More from Zoorik (the footer's Resources links it too). */
+    /* The page links the tools once, from More from Zoorik (the footer's Resources links them too). */
     expect(
-      [...root.querySelectorAll("main a")].filter((a) => a.getAttribute("href") === routes.compare),
-    ).toEqual([root.querySelector(`#more a.lv-mc[href="${routes.compare}"]`)]);
+      [...root.querySelectorAll("main a")].filter(
+        (a) => a.getAttribute("href") === routes.cloudCostTools,
+      ),
+    ).toEqual([root.querySelector(`#more a.lv-mc[href="${routes.cloudCostTools}"]`)]);
   });
 
   it("narrows the cards and their sections to the search, and says when nothing matches", async () => {
@@ -593,18 +595,22 @@ describe("/learn", () => {
     );
     expect(learnMore.map((entry) => entry.href)).toEqual([
       routes.news,
-      routes.compare,
+      routes.cloudCostTools,
       routes.community,
     ]);
     /* Zoorik News: the page's name, and this week's first Radar headline, as the mock picks it. */
     expect(learnMore[0]!.title).toBe(newsPage.hero.title);
     expect(learnMore[0]!.extra).toBe(`This week: ${newsRadar.streams[0].items[0]!.title}`);
-    /* The tools: the map's count and its groups, in its order, each by its short name. */
-    const count = marketGroups.reduce((sum, group) => sum + group.tools.length, 0);
+    /* The tools: that page's count of tiles, Coral and Amoeba among them, and its kinds, in its order. */
+    const count = shownGroups.reduce(
+      (sum, group) => sum + group.tools.length + (group.ours ? 1 : 0),
+      0,
+    );
+    expect(count).toBe(26);
     expect(learnMore[1]!.line).toBe(
       `${count} tools by name in four groups: what each does, how it acts and where it runs.`,
     );
-    expect(marketGroups.map((group) => learnMarketGroupNames[group.id])).toEqual([
+    expect(shownGroups.map((group) => group.label)).toEqual([
       "Kubernetes",
       "Block storage",
       "FinOps",

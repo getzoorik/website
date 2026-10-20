@@ -3,7 +3,7 @@ import { readdirSync } from "node:fs";
 import { render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { routes } from "@/config/site";
+import { comparePath } from "@/config/site";
 import { socialImage } from "@/config/social";
 import { pageStructuredData } from "@/config/structured-data";
 import {
@@ -55,7 +55,7 @@ const printed = (cell: { mark: keyof typeof marketMarks; note: string }) =>
   `${marketMarks[cell.mark].word}${cell.note ? ` · ${cell.note}` : ""}`;
 
 afterEach(() => {
-  pathname.current = routes.compare;
+  pathname.current = comparePath;
 });
 
 describe("the versus route", () => {
@@ -66,13 +66,12 @@ describe("the versus route", () => {
     );
     expect(versusPages.map((entry) => entry.product)).toEqual(["coral", "amoeba"]);
     for (const entry of versusPages) expect(versusRoute(entry)).toBe(`/compare/${entry.slug}`);
-    /* No file or folder under /compare is named after a company: the hub, the one dynamic segment for the versus
-       pages, and the two alternatives pages. */
+    /* No file or folder under /compare is named after a company: the one dynamic segment for the versus pages, and
+       the two alternatives pages. /compare itself is no page: it redirects to Cloud cost optimization tools. */
     expect(readdirSync("src/app/compare").sort()).toEqual(
       [
         "[slug]",
-        "page.tsx",
-        ...alternativesPages.map((entry) => entry.route.slice(`${routes.compare}/`.length)),
+        ...alternativesPages.map((entry) => entry.route.slice(`${comparePath}/`.length)),
       ].sort(),
     );
     expect(readdirSync("src/app/compare/[slug]")).toEqual(["page.tsx"]);
@@ -82,7 +81,7 @@ describe("the versus route", () => {
     const old = [
       ...versusPages.map((entry) => [`/learn/compare/${entry.slug}`, versusRoute(entry)] as const),
       ...alternativesPages.map(
-        (entry) => [entry.route.replace(routes.compare, "/learn"), entry.route] as const,
+        (entry) => [entry.route.replace(comparePath, "/learn"), entry.route] as const,
       ),
     ];
     expect(old).toHaveLength(4);
