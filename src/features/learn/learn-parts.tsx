@@ -36,7 +36,8 @@ export interface LearnHeroProps {
    *  checked. The hub has none. */
   readonly kicker?: string;
   readonly title: ReactNode;
-  readonly deck: ReactNode;
+  /** The line under the h1; the hub has none, so its search follows the h1. */
+  readonly deck?: ReactNode;
   /** What follows the deck: the hub's search. */
   readonly after?: ReactNode;
 }
@@ -53,7 +54,7 @@ export function LearnHero({ kicker, title, deck, after }: LearnHeroProps): React
       <div className="wrap hero-in">
         {kicker ? <p className="vp-kick">{kicker}</p> : null}
         <h1>{title}</h1>
-        <p className="doc-deck">{deck}</p>
+        {deck ? <p className="doc-deck">{deck}</p> : null}
         {after}
       </div>
     </header>
