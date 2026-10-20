@@ -128,6 +128,8 @@ const nextConfig: NextConfig = {
       { source: "/resources", destination: "/docs", permanent: true },
       /* The case studies' hub is Value Lab now; each study keeps its own address under /case-studies. */
       { source: "/case-studies", destination: "/value-lab", statusCode: 301 },
+      /* The comparison hub is Cloud cost optimization tools now; the pages under /compare keep their addresses. */
+      { source: "/compare", destination: "/cloud-cost-optimization-tools", statusCode: 301 },
       /* The comparison pages left /learn for /compare, with a 301. `:slug` is never
          empty, so OpenNext substitutes it (the root's empty match is the only case it does not). */
       { source: "/learn/compare/:slug", destination: "/compare/:slug", statusCode: 301 },

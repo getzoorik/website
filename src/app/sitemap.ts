@@ -21,6 +21,7 @@ import { homeLastUpdated } from "@/content/hero";
 import { learnPage } from "@/content/learn";
 import {
   alternativesPages,
+  cloudCostToolsLastUpdated,
   learnCompareLastUpdated,
   versusPages,
   versusRoute,
@@ -70,13 +71,12 @@ const contentDates: Partial<Record<string, string>> = {
   [routes.coralFaq]: coralFaqPage.updated,
   [routes.amoebaGuide]: amoebaGuide.updated,
   [routes.amoebaFaq]: amoebaFaqPage.updated,
-  /* The comparison pages (at /compare) print "checked 19 October 2026": one content date. */
+  [routes.cloudCostTools]: cloudCostToolsLastUpdated,
+  /* The comparison pages (under /compare) print "checked 19 October 2026": one content date. */
   ...Object.fromEntries(
-    [
-      routes.compare,
-      ...alternativesPages.map((page) => page.route),
-      ...versusPages.map(versusRoute),
-    ].map((route) => [route, learnCompareLastUpdated] as const),
+    [...alternativesPages.map((page) => page.route), ...versusPages.map(versusRoute)].map(
+      (route) => [route, learnCompareLastUpdated] as const,
+    ),
   ),
   [routes.valueLab]: caseStudiesHubLastUpdated,
   [routes.caseStudyCoralDevCluster]: caseStudy.band.date,
@@ -128,7 +128,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     routes.openSource,
     routes.learn,
     ...learnArticles.map(articleRoute),
-    routes.compare,
+    routes.cloudCostTools,
     ...alternativesPages.map((page) => page.route),
     ...versusPages.map(versusRoute),
     routes.valueLab,

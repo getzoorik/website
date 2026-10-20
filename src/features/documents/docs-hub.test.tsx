@@ -236,7 +236,7 @@ describe("/docs", () => {
     expect([...group.querySelectorAll("a")].map((a) => a.getAttribute("href"))).toEqual(
       menu.map((a) => a.getAttribute("href")),
     );
-    /* The footer's Resources column, after Learn, Case studies, Events, News, Compare and Community. */
+    /* The footer's Resources column, after Learn, Case studies, Events, News, Cloud cost optimization tools and Community. */
     const resources = [...container.querySelectorAll(".foot-col")][1]!;
     const docsLink = resources.querySelectorAll("a")[6]!;
     expect(docsLink).toHaveAttribute("href", "/docs");

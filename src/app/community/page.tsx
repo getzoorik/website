@@ -13,7 +13,7 @@ import "@/styles/community.css";
 /**
  * `/community`: Zoorik Community: r/zoorik, Zoorik News, and the FinOps and cloud cost communities that matter.
  * Indexed, listed in the sitemap, and prerendered at build like every page here; linked from the footer's Resources
- * column, after Compare. It is drawn on Learn's frame and carries Learn's sheet, as the mock does, then its own.
+ * column, after Cloud cost optimization tools. It is drawn on Learn's frame and carries Learn's sheet, as the mock does, then its own.
  */
 /* ITS TITLE IS ABSOLUTE, like /learn's and /news's: "Zoorik Community: …" names the company already. */
 export const metadata: Metadata = {

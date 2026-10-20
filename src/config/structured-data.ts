@@ -45,7 +45,7 @@ import { footerColumns, socialProfiles } from "@/content/footer";
 import { learnPage } from "@/content/learn";
 import {
   alternativesPages,
-  compareHubPage,
+  cloudCostToolsPage,
   versusPages,
   versusRoute,
 } from "@/content/learn-compare";
@@ -396,10 +396,14 @@ const pages: Readonly<Record<string, PageEntry>> = {
   ...Object.fromEntries(
     learnArticles.map((article) => [articleRoute(article), articleEntry(article)]),
   ),
-  /* The comparison pages: the hub at /compare, then each page under it by its title; about its product. */
-  [routes.compare]: documentEntry(routes.compare, compareHubPage.meta, [], {
+  /* Cloud cost optimization tools, whose "…" title is absolute as the page prints it, then each comparison page
+     under it by its title; about its product. */
+  [routes.cloudCostTools]: {
     kind: "CollectionPage",
-  }),
+    name: cloudCostToolsPage.meta.title,
+    description: cloudCostToolsPage.meta.description,
+    trail: [step(routes.cloudCostTools)],
+  },
   ...Object.fromEntries(
     [
       ...alternativesPages.map((page) => ({ ...page, path: page.route })),
@@ -410,7 +414,7 @@ const pages: Readonly<Record<string, PageEntry>> = {
         kind: "WebPage",
         name: titled(page.meta.title),
         description: page.meta.description,
-        trail: [step(routes.compare), { name: page.meta.title, path: page.path }],
+        trail: [step(routes.cloudCostTools), { name: page.meta.title, path: page.path }],
         about: page.product,
       } satisfies PageEntry,
     ]),

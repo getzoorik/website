@@ -121,10 +121,12 @@ export const routes = {
   careers: "/careers",
   security: "/security",
   learn: "/learn",
-  /* The comparison pages (moved from /learn): the market map at /compare, each product's alternatives, and the
-     versus pages under /compare/<slug> (their slugs are data, `versusPages` in @/content/learn-compare; one per
-     product is kept live). The old /learn addresses redirect. */
-  compare: "/compare",
+  /* Cloud cost optimization tools: the tools that reduce the bill, then Coral and Amoeba compared. Its old address,
+     /compare, redirects here. In the footer's Resources column, after News. */
+  cloudCostTools: "/cloud-cost-optimization-tools",
+  /* The comparison pages (moved from /learn), under /compare: each product's alternatives, and the versus pages
+     (`comparePath`; their slugs are data, `versusPages` in @/content/learn-compare; one per product is kept live).
+     The old /learn addresses redirect. */
   compareCoralAlternatives: "/compare/coral-alternatives",
   compareAmoebaAlternatives: "/compare/amoeba-alternatives",
   /* Value Lab by Zoorik: the case studies' hub, with what the studies saved so far and the featured study, and one
@@ -139,7 +141,7 @@ export const routes = {
      changes. In the footer's Resources column, after Events. */
   news: "/news",
   /* Zoorik Community: r/zoorik, where Zoorik posts, the next events and the wider community. In the
-     footer's Resources column, after Compare. */
+     footer's Resources column, after Cloud cost optimization tools. */
   community: "/community",
   /* Where to find Zoorik: the marketplaces, reviews, installs and profiles. In the footer's Products
      column, after Assessment. */
@@ -158,6 +160,9 @@ export const routes = {
   docsInstallTerraform: "/docs/install-coral-with-terraform",
   docsContributing: "/docs/contributing",
 } as const;
+
+/** Where the comparison pages live, a folder rather than a page: /compare itself redirects to `routes.cloudCostTools`. */
+export const comparePath = "/compare";
 
 /**
  * A Learn article's address, by its slug. The articles themselves are listed by

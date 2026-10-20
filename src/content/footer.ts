@@ -171,8 +171,8 @@ export const footerColumns: readonly FooterColumn[] = [
       { label: "Events", href: routes.events },
       /* Zoorik News, after Events. */
       { label: "News", href: routes.news },
-      /* The comparison pages and the community, after News. */
-      { label: "Compare", href: routes.compare },
+      /* The tools that reduce the bill, with the comparison pages, then the community, after News. */
+      { label: "Cloud cost optimization tools", href: routes.cloudCostTools },
       { label: "Community", href: routes.community },
       { label: "Docs", href: routes.docs },
       /* What is open source and how to contribute, right after Docs. */

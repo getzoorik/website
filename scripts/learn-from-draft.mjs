@@ -405,7 +405,12 @@ function where(href) {
     return name;
   }
   return (
-    { "/assessment": "Assessment", "/compare": "Compare", "/about": "About" }[path] ?? "Zoorik"
+    {
+      "/assessment": "Assessment",
+      "/compare": "Cloud cost optimization tools",
+      "/cloud-cost-optimization-tools": "Cloud cost optimization tools",
+      "/about": "About",
+    }[path] ?? "Zoorik"
   );
 }
 

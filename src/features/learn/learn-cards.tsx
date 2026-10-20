@@ -6,8 +6,8 @@ import { named } from "@/features/legal/named";
 /**
  * A Learn card's inside (the mock's `cover()`, `card()`, `vs_card()` and `alt_card()`): the navy cover, drawn with
  * its subject's motif and tagged with its subject, or a comparison's two sides; then the title, the line and the
- * card's foot (its date). /learn's cards and /compare's comparison cards draw it; the link
- * around it is the page's (`FindableCard` on /learn). Server components.
+ * card's foot (its date). /learn's cards draw it; the link around it is the page's (`FindableCard`). Server
+ * components.
  */
 
 /**

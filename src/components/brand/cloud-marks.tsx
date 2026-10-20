@@ -20,11 +20,19 @@ import type { CSSProperties, JSX } from "react";
  * carries a stable `data-mark` naming its platform, because an aria-hidden SVG
  * has no text: it is how a test tells a Windows mark from a Kubernetes one, and
  * so how it proves Coral is never drawn with Windows or Linux.
+ *
+ * The Azure and AWS marks may stand alone instead, with no word beside them (a
+ * tool's clouds on Cloud cost optimization tools): given a `label`, the mark is
+ * an image with that name for the ear.
  */
 
 export interface CloudMarkProps {
   readonly className?: string;
 }
+
+/** A mark with no word beside it names itself (`role="img"`); a mark beside its name is hidden from the ear. */
+const spoken = (label?: string) =>
+  label ? ({ role: "img", "aria-label": label } as const) : ({ "aria-hidden": true } as const);
 
 /**
  * The Microsoft Azure logo.
@@ -38,11 +46,12 @@ export interface CloudMarkProps {
 export function AzureMark({
   idSuffix,
   className,
-}: CloudMarkProps & { readonly idSuffix: string }): JSX.Element {
+  label,
+}: CloudMarkProps & { readonly idSuffix: string; readonly label?: string }): JSX.Element {
   const a = `azA-${idSuffix}`;
   const c = `azC-${idSuffix}`;
   return (
-    <svg className={className} data-mark="azure" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+    <svg className={className} data-mark="azure" viewBox="0 0 18 18" fill="none" {...spoken(label)}>
       <defs>
         <linearGradient id={a} x1="7.3" y1="1.06" x2="3.7" y2="11.7" gradientUnits="userSpaceOnUse">
           <stop stopColor="#114A8B" />
@@ -92,14 +101,18 @@ const AWS_VIEW_BOX = {
 export function AwsMark({
   className,
   crop = "chip",
-}: CloudMarkProps & { readonly crop?: keyof typeof AWS_VIEW_BOX }): JSX.Element {
+  label,
+}: CloudMarkProps & {
+  readonly crop?: keyof typeof AWS_VIEW_BOX;
+  readonly label?: string;
+}): JSX.Element {
   return (
     <svg
       className={className}
       data-mark="aws"
       viewBox={AWS_VIEW_BOX[crop]}
       fill="none"
-      aria-hidden="true"
+      {...spoken(label)}
     >
       <path
         d="M6 26.5c4.3 3 10.2 4.5 15.6 4.5 3.6 0 7.6-.75 11.3-2.3.55-.25 1 .35.47.75-3.3 2.45-8.1 3.75-12.2 3.75-5.8 0-11-2.15-15-5.7-.3-.3-.03-.7.33-.5z"
