@@ -17,12 +17,15 @@ import type { ProductId } from "@/content/products";
  * changes.
  */
 
-/** One piece of a run of text: plain, bold, inline code, or a link on words already in it. */
+/**
+ * One piece of a run of text: plain, bold, inline code, or a link on words already in it. A link's words may be one
+ * piece of inline code. A link to another site opens in a new tab.
+ */
 export type ArticleInline =
   | string
   | { readonly b: string }
   | { readonly code: string }
-  | { readonly a: string; readonly href: string };
+  | { readonly a: string | { readonly code: string }; readonly href: string };
 
 /** A run of text: one string, or pieces. */
 export type ArticleText = string | readonly ArticleInline[];
@@ -31,14 +34,35 @@ export type ArticleText = string | readonly ArticleInline[];
 export type ArticleFigureId = "vpa-hpa-pair" | "hpa-example" | "requests" | "clash" | "order";
 
 export interface ArticleColumn {
-  readonly label: string;
+  /** The header; each cell is labelled with its plain words on a phone. */
+  readonly label: ArticleText;
   /** The column's share of the table. */
   readonly width: string;
 }
 
+/**
+ * A diagram drawn for one article: `src/features/learn/figures/<slug>/<n>.ts`, written from its figure file. The page
+ * draws it as the file does: its style, scoped to its own class, then the figure.
+ */
+export interface LearnFigure {
+  /** `ln-d fg-<slug>-<n>`: the figure kit's card and the class its style is scoped to. */
+  readonly className: string;
+  /** What the picture shows, in one sentence after "Diagram.". */
+  readonly label: string;
+  readonly style: string;
+  /** The markup inside the `<figure>`. */
+  readonly html: string;
+}
+
+/** A list item: its words, and the paragraphs or code under them. */
+export type ArticleItem =
+  ArticleText | { readonly text: ArticleText; readonly blocks: readonly ArticleBlock[] };
+
 export type ArticleBlock =
   | { readonly kind: "p"; readonly text: ArticleText }
-  | { readonly kind: "ul"; readonly items: readonly ArticleText[] }
+  | { readonly kind: "ul"; readonly items: readonly ArticleItem[] }
+  /** A numbered list, counting from `start` where it carries on from an earlier one. */
+  | { readonly kind: "ol"; readonly start?: number; readonly items: readonly ArticleItem[] }
   /** Numbered steps, in the guide's accent numerals. */
   | { readonly kind: "steps"; readonly items: readonly ArticleText[] }
   | {
@@ -52,6 +76,15 @@ export type ArticleBlock =
   /** A part of a section, with an id of its own. */
   | { readonly kind: "h3"; readonly id: string; readonly title: string }
   | { readonly kind: "figure"; readonly figure: ArticleFigureId }
+  /** A diagram of the article's own (`LearnFigure`). */
+  | { readonly kind: "diagram"; readonly figure: LearnFigure }
+  /**
+   * A code well, in the language its fence names. A shell well prints "$ " where each command starts; a YAML or JSON
+   * well scrolls sideways rather than wrap; an output well ("text", or none) has no Copy button.
+   */
+  | { readonly kind: "code"; readonly lang: string; readonly code: string }
+  /** Every other published article, under the heading of its `topic`: the cloud cost pillar's last section. */
+  | { readonly kind: "every" }
   /** A picture carried as a file in `public/articles/`, with its caption. `srcset` offers smaller copies by width. */
   | {
       readonly kind: "image";
@@ -166,6 +199,11 @@ export interface Article {
   readonly sections: readonly ArticleSection[];
   /** "How Coral helps", or Amoeba. An essay has none. */
   readonly help?: ArticleHelp;
+  /**
+   * Its inline code breaks only after a dot or a slash, and never inside a short hyphenated name, as the guides set
+   * it. Without it, inline code is set as written and breaks wherever it must.
+   */
+  readonly breakCode?: true;
   /** An article that cites none has no Sources line. */
   readonly sources?: readonly ArticleSource[];
   readonly related: readonly ArticleRelated[];

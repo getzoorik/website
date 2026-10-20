@@ -15,6 +15,7 @@ export const article: Article = {
   published: "2026-10-09",
   updated: "2026-10-09",
   author: "zoorik",
+  breakCode: true,
   shareCard: {
     url: "/og/zoorik-learn-coral-and-native-autoscalers-1200x630.png",
     alt: "Zoorik. Coral and the native Kubernetes autoscalers.",

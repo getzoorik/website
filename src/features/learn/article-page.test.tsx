@@ -4,7 +4,13 @@ import { render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { learnPath } from "@/config/site";
-import type { Article, ArticleBlock, ArticleText } from "@/content/learn/article";
+import {
+  learnTopics,
+  type Article,
+  type ArticleBlock,
+  type ArticleItem,
+  type ArticleText,
+} from "@/content/learn/article";
 import {
   articleAt,
   articleAuthor,
@@ -13,7 +19,9 @@ import {
   learnArticles,
   titleLink,
 } from "@/content/learn/published";
+import { learnPillars } from "@/content/learn";
 import { products } from "@/content/products";
+import { promptedLines } from "@/features/learn/article-well";
 import { printedDay } from "@/lib/content-date";
 
 /* The nav and the footer read the pathname. */
@@ -43,6 +51,9 @@ afterEach(() => {
 
 const text = (el: Element | null): string => (el?.textContent ?? "").replace(/[\s ]+/g, " ").trim();
 
+/** Words as `text` reads them: a no-break space between a figure and its unit reads as a space. */
+const words = (value: string): string => value.replace(/\s+/g, " ").trim();
+
 const params = (slug: string) => ({ params: Promise.resolve({ slug }) });
 
 const main = async (slug: string): Promise<HTMLElement> => {
@@ -55,27 +66,98 @@ const blocksOf = (article: Article): readonly ArticleBlock[] => [
   ...article.sections.flatMap((section) => section.blocks),
 ];
 
-/** Every link piece of a run of text. */
+/** Every link piece of a run of text, with its words as the page prints them. */
 const linksOf = (run: ArticleText): readonly { readonly a: string; readonly href: string }[] =>
   typeof run === "string"
     ? []
-    : run.flatMap((piece) => (typeof piece !== "string" && "a" in piece ? [piece] : []));
+    : run.flatMap((piece) =>
+        typeof piece !== "string" && "a" in piece
+          ? [{ a: typeof piece.a === "string" ? piece.a : piece.a.code, href: piece.href }]
+          : [],
+      );
 
-const runsOf = (article: Article): readonly ArticleText[] =>
-  blocksOf(article).flatMap((block): readonly ArticleText[] => {
+/** Every run of text in some blocks, a list item's own blocks included, in the order the page prints them. */
+const runsIn = (blocks: readonly ArticleBlock[]): readonly ArticleText[] =>
+  blocks.flatMap((block): readonly ArticleText[] => {
     switch (block.kind) {
       case "p":
       case "quote":
       case "note":
         return [block.text];
-      case "ul":
       case "steps":
         return block.items;
+      case "ul":
+      case "ol":
+        return block.items.flatMap((item: ArticleItem) =>
+          typeof item === "string" || Array.isArray(item)
+            ? [item as ArticleText]
+            : [
+                (item as { text: ArticleText }).text,
+                ...runsIn((item as { blocks: readonly ArticleBlock[] }).blocks),
+              ],
+        );
       case "table":
-        return block.rows.flat();
+        return [...block.columns.map((column) => column.label), ...block.rows.flat()];
       default:
         return [];
     }
+  });
+
+const pillars = new Set(learnPillars.map((entry) => entry.pillar));
+
+/**
+ * The pillar's generated list: every other published article under its topic's heading, in the topics' order, a
+ * pillar first and the rest A–Z by h1, and no heading left empty.
+ */
+const everyGroups = (article: Article) =>
+  learnTopics
+    .map((topic) => ({
+      topic,
+      id: topic.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+      articles: learnArticles
+        .filter((other) => other.slug !== article.slug && other.topic === topic)
+        .sort(
+          (a, b) =>
+            Number(pillars.has(b.slug)) - Number(pillars.has(a.slug)) ||
+            a.h1.localeCompare(b.h1, "en"),
+        ),
+    }))
+    .filter((group) => group.articles.length > 0);
+
+/** The h3 ids an article's sections print, in order: its own parts', and the generated list's headings. */
+const h3IdsOf = (article: Article): readonly string[] =>
+  blocksOf(article).flatMap((block) =>
+    block.kind === "h3"
+      ? [block.id]
+      : block.kind === "every"
+        ? everyGroups(article).map((group) => group.id)
+        : [],
+  );
+
+/** The site links an article's short answer and sections print, in order, the generated list's included. */
+const bodyLinksOf = (
+  article: Article,
+): readonly { readonly a: string; readonly href: string }[] => [
+  ...(article.short ? linksOf(article.short) : []),
+  ...blocksOf(article).flatMap((block) =>
+    block.kind === "every"
+      ? everyGroups(article).flatMap((group) =>
+          group.articles.map((other) => ({ a: other.h1, href: learnPath(other.slug) })),
+        )
+      : runsIn([block]).flatMap(linksOf),
+  ),
+];
+
+/** Every code block of an article, a list item's included. */
+const codeOf = (blocks: readonly ArticleBlock[]): readonly { lang: string; code: string }[] =>
+  blocks.flatMap((block) => {
+    if (block.kind === "code") return [block];
+    if (block.kind !== "ul" && block.kind !== "ol") return [];
+    return block.items.flatMap((item: ArticleItem) =>
+      typeof item === "string" || Array.isArray(item)
+        ? []
+        : codeOf((item as { blocks: readonly ArticleBlock[] }).blocks),
+    );
   });
 
 /** The byline as read: the day, the author with the new-tab hint where they link, and the publisher. */
@@ -129,8 +211,8 @@ describe.each(learnArticles.map((article) => article.slug))("/learn/%s", (slug) 
 
   it("opens on the utility hero, with no date, photo or author", async () => {
     const hero = (await main(slug)).querySelector("header.hero.doc-hero#top")!;
-    expect(text(hero.querySelector("h1"))).toBe(article.h1);
-    expect(text(hero.querySelector(".doc-deck"))).toBe(article.deck);
+    expect(text(hero.querySelector("h1"))).toBe(words(article.h1));
+    expect(text(hero.querySelector(".doc-deck"))).toBe(words(article.deck));
     expect(hero.querySelector(".as-switch, .dl, img")).toBeNull();
   });
 
@@ -139,7 +221,7 @@ describe.each(learnArticles.map((article) => article.slug))("/learn/%s", (slug) 
     const sections = [...frame.querySelectorAll(":scope > section.fq-sec")];
     expect(sections.map((section) => section.id)).toEqual(article.sections.map((s) => s.id));
     expect(sections.map((section) => text(section.querySelector("h2")))).toEqual(
-      article.sections.map((s) => s.title),
+      article.sections.map((s) => words(s.title)),
     );
     for (const section of sections) {
       expect(section).toHaveAttribute("aria-labelledby", `${section.id}-h`);
@@ -147,9 +229,7 @@ describe.each(learnArticles.map((article) => article.slug))("/learn/%s", (slug) 
       expect(section.firstElementChild!.tagName).toBe("H2");
       expect(section.lastElementChild).toHaveClass("fq-sec-b", "doc-prose");
     }
-    expect([...frame.querySelectorAll("h3[id]")].map((h3) => h3.id)).toEqual(
-      blocksOf(article).flatMap((block) => (block.kind === "h3" ? [block.id] : [])),
-    );
+    expect([...frame.querySelectorAll("h3[id]")].map((h3) => h3.id)).toEqual(h3IdsOf(article));
     /* Nothing is folded, and nothing lists the sections but the chips. */
     expect(frame.querySelector("details")).toBeNull();
   });
@@ -205,8 +285,20 @@ describe.each(learnArticles.map((article) => article.slug))("/learn/%s", (slug) 
     const container = await main(slug);
     const figures = [...container.querySelectorAll("figure.ln-d")];
     expect(figures).toHaveLength(
-      blocksOf(article).filter((block) => block.kind === "figure").length,
+      blocksOf(article).filter((block) => block.kind === "figure" || block.kind === "diagram")
+        .length,
     );
+    /* A diagram of the article's own is drawn as its figure file draws it, its style scoped to its class. */
+    for (const block of blocksOf(article)) {
+      if (block.kind !== "diagram") continue;
+      const drawn = container.querySelector(
+        `figure.${block.figure.className.split(" ").join(".")}`,
+      );
+      expect(drawn, block.figure.className).not.toBeNull();
+      expect(drawn).toHaveAttribute("aria-label", block.figure.label);
+      expect(drawn!.previousElementSibling?.tagName).toBe("STYLE");
+      expect(drawn!.previousElementSibling!.textContent).toBe(block.figure.style);
+    }
     for (const figure of figures) {
       expect(figure).toHaveAttribute("role", "img");
       expect(figure.getAttribute("aria-label")).toMatch(/^Diagram\. /);
@@ -265,7 +357,7 @@ describe.each(learnArticles.map((article) => article.slug))("/learn/%s", (slug) 
     article.related.forEach((tile, index) => {
       const link = titleLink({ text: tile.title, href: tile.href });
       const drawn = tiles[index]!;
-      expect(text(drawn.querySelector(".dt-t")), tile.href).toBe(link.text);
+      expect(text(drawn.querySelector(".dt-t")), tile.href).toBe(words(link.text));
       expect(text(drawn.querySelector(".dt-l")), tile.href).toBe(tile.where);
       /* A tile to an article not yet published is its own words, with no link and no arrow. */
       expect(drawn.tagName, tile.href).toBe(link.href ? "A" : "DIV");
@@ -285,13 +377,99 @@ describe.each(learnArticles.map((article) => article.slug))("/learn/%s", (slug) 
       .filter((a) => !a.closest("p.doc-updated, .ar-foot"))
       .map((a) => a.getAttribute("href")!)
       .filter((href) => href.startsWith("/"));
-    const pieces = [...(article.short ? [article.short] : []), ...runsOf(article)]
-      .flatMap(linksOf)
-      .filter((piece) => piece.href.startsWith("/"));
+    const pieces = bodyLinksOf(article).filter((piece) => piece.href.startsWith("/"));
     expect(drawn).toEqual(pieces.filter((piece) => isLiveHref(piece.href)).map((p) => p.href));
     for (const piece of pieces.filter((p) => !isLiveHref(p.href))) {
-      expect(text(frame), piece.href).toContain(piece.a);
+      expect(text(frame), piece.href).toContain(words(piece.a));
     }
+  });
+
+  it("opens a link to another site in a new tab, with its arrow and its hint", async () => {
+    const frame = (await main(slug)).querySelector(".ar-frame")!;
+    const away = [...frame.querySelectorAll("a[href^='https://']")].filter(
+      (a) => !a.closest("p.doc-updated, .ar-foot"),
+    );
+    expect(away.map((a) => a.getAttribute("href"))).toEqual(
+      bodyLinksOf(article)
+        .filter((piece) => piece.href.startsWith("https://"))
+        .map((piece) => piece.href),
+    );
+    for (const a of away) {
+      expect(a).toHaveAttribute("target", "_blank");
+      expect(a).toHaveAttribute("rel", "noopener noreferrer");
+      expect(a.querySelector("svg.ext")).not.toBeNull();
+      expect(a.textContent).toMatch(/ \(opens in a new tab\)$/);
+    }
+  });
+
+  it("sets its code in wells, prompted only where a command starts, with Copy on all but output", async () => {
+    const wells = [...(await main(slug)).querySelectorAll(".ar-frame .doc-well")];
+    const code = codeOf(blocksOf(article));
+    expect(wells).toHaveLength(code.length);
+    code.forEach((block, index) => {
+      const well = wells[index]!;
+      const lines = block.code.split("\n");
+      const kind = block.lang.toLowerCase();
+      expect(well).toHaveClass("as-well");
+      expect(well.classList.contains("is-yaml"), block.code).toBe(
+        ["yaml", "yml", "json"].includes(kind),
+      );
+      expect(well.classList.contains("is-line"), block.code).toBe(lines.length === 1);
+      const prompts = [...well.querySelectorAll("pre > i")];
+      expect(prompts).toHaveLength(promptedLines(kind, lines).filter(Boolean).length);
+      for (const prompt of prompts) expect(prompt).toHaveAttribute("aria-hidden", "true");
+      /* The well's words are the code's own, with its prompts. */
+      expect(well.querySelector("pre")!.textContent!.replace(/\$ /g, "")).toBe(
+        block.code.replace(/\$ /g, ""),
+      );
+      const copy = well.querySelector("button.as-copy");
+      if (["text", "txt", "output", ""].includes(kind)) expect(copy).toBeNull();
+      else expect(copy).toHaveAttribute("aria-label", "Copy the command");
+    });
+  });
+
+  it("numbers each list from where it starts, and labels each table cell with its column", async () => {
+    const frame = (await main(slug)).querySelector(".ar-frame")!;
+    const lists = [...frame.querySelectorAll(".fq-sec-b > ol:not(.doc-steps)")];
+    const blocks = blocksOf(article).filter((block) => block.kind === "ol");
+    expect(lists).toHaveLength(blocks.length);
+    blocks.forEach((block, index) => {
+      if (block.start) expect(lists[index]).toHaveAttribute("start", String(block.start));
+      else expect(lists[index]).not.toHaveAttribute("start");
+    });
+    const tables = [...frame.querySelectorAll("table.doc-tbl.nw-tbl")];
+    const drawn = blocksOf(article).filter((block) => block.kind === "table");
+    expect(tables).toHaveLength(drawn.length);
+    drawn.forEach((block, index) => {
+      const table = tables[index]!;
+      expect([...table.querySelectorAll("col")].map((col) => col.style.width)).toEqual(
+        block.columns.map((column) => column.width),
+      );
+      const labels = [...table.querySelectorAll("th")].map(text);
+      for (const row of table.querySelectorAll("tbody tr")) {
+        [...row.querySelectorAll("td")].forEach((td, at) =>
+          expect(td.getAttribute("data-label")!.replace(/\s+/g, " ")).toBe(labels[at]),
+        );
+      }
+    });
+  });
+
+  it("lists every other article under its topic, where it carries that list", async () => {
+    const section = article.sections.find((entry) =>
+      entry.blocks.some((block) => block.kind === "every"),
+    );
+    if (!section) return;
+    const body = (await main(slug)).querySelector(`section#${section.id} > .fq-sec-b`)!;
+    const groups = everyGroups(article);
+    const listed = [...body.querySelectorAll(":scope > h3")].slice(-groups.length);
+    expect(listed.map(text)).toEqual(groups.map((group) => group.topic));
+    listed.forEach((heading, index) => {
+      const items = [...heading.nextElementSibling!.querySelectorAll(":scope > li > a")];
+      expect(items.map((a) => [text(a), a.getAttribute("href")])).toEqual(
+        groups[index]!.articles.map((other) => [words(other.h1), learnPath(other.slug)]),
+      );
+    });
+    expect(body.querySelector(`a[href="${route}"]`)).toBeNull();
   });
 
   it("ends on the closing row for its product", async () => {

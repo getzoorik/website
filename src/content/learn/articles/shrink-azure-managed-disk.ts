@@ -14,6 +14,7 @@ export const article: Article = {
   published: "2026-10-09",
   updated: "2026-10-09",
   author: "zoorik",
+  breakCode: true,
   shareCard: {
     url: "/og/zoorik-learn-shrink-azure-managed-disk-1200x630.png",
     alt: "Zoorik. Can you shrink an Azure managed disk?",

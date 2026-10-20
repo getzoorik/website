@@ -43,7 +43,8 @@ npm run preview
 | `src/app/` | One folder per page (its route, metadata and structured data), plus `sitemap.ts` and `robots.ts` |
 | `src/content/` | The words each page prints |
 | `src/content/learn/articles/` | One file per Learn article, named by its slug; a new file is a new page at `/learn/<slug>` |
-| `scripts/` | `gen-learn-index.mjs`, which lists the Learn articles before dev, typecheck, test and build, and `gen-authors.mjs`, which writes `src/content/authors.ts` |
+| `src/features/learn/figures/` | Each Learn article's own diagrams, one module per diagram, imported by its article |
+| `scripts/` | `gen-learn-index.mjs`, which lists the Learn articles before dev, typecheck, test and build; `learn-from-draft.mjs`, which writes an article and its diagrams from its draft; and `gen-authors.mjs`, which writes `src/content/authors.ts` |
 | `src/features/` | Each page's sections and their tests |
 | `src/components/` | Parts shared across pages: the header, marks and buttons |
 | `src/styles/` | The site's sheets |

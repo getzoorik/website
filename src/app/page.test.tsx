@@ -556,7 +556,8 @@ describe("the old names", () => {
       ["k8s", "pilot"],
       ["elastic", " engine"],
       ["k8s", " engine"],
-      ["disk", " storage"],
+      /* Microsoft's own service is "Azure Disk Storage", and a Learn article cites its pages by their titles. */
+      ["(?<!Azure )disk", " storage"],
     ]
       .map(([head, tail]) => head + tail)
       .join("|"),

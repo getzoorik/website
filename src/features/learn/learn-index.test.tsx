@@ -101,6 +101,23 @@ describe("the Learn index", () => {
       for (const block of blocksOf(article.slug)) {
         if (block.kind === "image") expect(existsSync(`public${block.src}`), block.src).toBe(true);
       }
+      /* An article's own diagrams are numbered in its order, each in its own module, its style scoped to it. */
+      const diagrams = blocksOf(article.slug).flatMap((block) =>
+        block.kind === "diagram" ? [block.figure] : [],
+      );
+      diagrams.forEach((figure, index) => {
+        const name = `fg-${article.slug}-${index + 1}`;
+        expect(figure.className, article.slug).toBe(`ln-d ${name}`);
+        expect(existsSync(`src/features/learn/figures/${article.slug}/${index + 1}.ts`), name).toBe(
+          true,
+        );
+        expect(figure.label, name).toMatch(/^Diagram\. \S/);
+        expect(figure.html.trim(), name).not.toBe("");
+        for (const rule of figure.style.replace(/\/\*[\s\S]*?\*\//g, "").match(/[^{}]+(?=\{)/g) ??
+          []) {
+          if (!rule.trim().startsWith("@")) expect(rule, name).toContain(`.${name}`);
+        }
+      });
       if (article.shareCard) expect(existsSync(`public${article.shareCard.url}`)).toBe(true);
     }
   });

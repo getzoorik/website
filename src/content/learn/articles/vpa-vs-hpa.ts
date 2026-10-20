@@ -15,6 +15,7 @@ export const article: Article = {
   published: "2026-10-09",
   updated: "2026-10-09",
   author: "zoorik",
+  breakCode: true,
   short:
     "The Vertical Pod Autoscaler (VPA) changes how much CPU and memory each pod requests. The Horizontal Pod Autoscaler (HPA) changes how many pods run. On the same CPU or memory metric they clash, because the HPA measures load against the request the VPA keeps moving. Size requests to real use first, then let the HPA scale out.",
   strip: [

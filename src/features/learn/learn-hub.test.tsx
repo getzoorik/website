@@ -97,8 +97,8 @@ const expected = (article: Article) => {
   return [
     articleRoute(article),
     tagOf(article),
-    article.h1,
-    article.card,
+    article.h1.replace(/\s+/g, " "),
+    article.card.replace(/\s+/g, " "),
     `${shortDay(article.published)}${author ? ` · By ${author.name}` : ""}`,
   ];
 };
