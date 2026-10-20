@@ -21,7 +21,7 @@ import {
   wikidataEntity,
 } from "@/config/entity";
 import { openSourceLinks } from "@/config/open-source";
-import { awsSellerProfile, liveListings } from "@/config/marketplaces";
+import { liveListings, storeProfiles } from "@/config/marketplaces";
 import { amoebaDocs, calendarUrl, contactEmail, homeUrl, routes, site } from "@/config/site";
 import { socialImage } from "@/config/social";
 import { about, cin, registeredOffice } from "@/content/about";
@@ -159,7 +159,7 @@ export const organization = {
   knowsAbout: ["Cloud cost optimization", ...productOrder.map((id) => products[id].category)],
   sameAs: [
     ...socialProfiles.map((link) => link.href),
-    awsSellerProfile,
+    ...storeProfiles,
     crunchbaseProfile,
     wikidataEntity,
     openSourceLinks.pypiUser,
@@ -196,7 +196,7 @@ const website = {
  * One product as an app: its page's app description, its offerings as the
  * feature list, its guide as its help, and `sameAs` only for the pages that
  * exist about it: its marketplace listings, then Coral's G2 page (Amoeba has
- * none yet, so it carries no `sameAs`).
+ * no G2 page yet).
  */
 export function softwareApplication(product: ProductId) {
   const content = pageContent[product];
@@ -420,9 +420,13 @@ const pages: Readonly<Record<string, PageEntry>> = {
   [routes.docsInstallHelm]: osGuideEntry("helm"),
   [routes.docsInstallTerraform]: osGuideEntry("terraform"),
   [routes.docsContributing]: osGuideEntry("contributing"),
-  [routes.caseStudies]: documentEntry(routes.caseStudies, caseStudiesHub.meta, [], {
+  /* "Validation Labs by Zoorik" is absolute too, as the page prints it. */
+  [routes.caseStudies]: {
     kind: "CollectionPage",
-  }),
+    name: caseStudiesHub.meta.title,
+    description: caseStudiesHub.meta.description,
+    trail: [step(routes.caseStudies)],
+  },
   /* The study prints one date, "12 October 2026 · Published by Zoorik": published, and not changed since. */
   [routes.caseStudyCoralDevCluster]: {
     kind: "WebPage",

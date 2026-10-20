@@ -14,7 +14,13 @@ import "@/styles/case-studies.css";
  * sitemap, and prerendered at build like every page here; linked from the
  * footer's Resources column, after Learn. The header has none.
  */
-export const metadata: Metadata = documentMetadata(routes.caseStudies, caseStudiesHub.meta);
+/* The hub's name already says "by Zoorik", so its title is used as is, with no " · Zoorik" after it. */
+const base = documentMetadata(routes.caseStudies, caseStudiesHub.meta);
+export const metadata: Metadata = {
+  ...base,
+  title: { absolute: caseStudiesHub.meta.title },
+  openGraph: { ...base.openGraph, title: caseStudiesHub.meta.title },
+};
 
 export default function CaseStudies(): React.JSX.Element {
   return (

@@ -58,7 +58,7 @@ describe("the footer's brand column", () => {
     }
   });
 
-  it("puts Available in and the two marketplaces as buttons under the badge, to Coral's listings", () => {
+  it("puts Available in and the two marketplaces as buttons under the badge, to Zoorik's page in each store", () => {
     const brand = footerOf().querySelector(".foot-brand")!;
     const market = brand.querySelector(":scope > div.mkt-btns.foot-mb")!;
     expect(market.previousElementSibling).toHaveClass("foot-badge");
@@ -72,11 +72,11 @@ describe("the footer's brand column", () => {
     expect(buttons.map((a) => [text(a), a.getAttribute("href")])).toEqual([
       [
         "AWS Marketplace (opens in a new tab)",
-        "https://aws.amazon.com/marketplace/pp/prodview-kx44lqme4vwys",
+        "https://aws.amazon.com/marketplace/seller-profile?id=seller-mtaavozrqchlk",
       ],
       [
         "Microsoft Marketplace (opens in a new tab)",
-        "https://marketplace.microsoft.com/en-us/product/zoorik.coral",
+        "https://marketplace.microsoft.com/en-us/partners/04f64eb0-8878-4f14-9578-bc5d104737e7/overview",
       ],
     ]);
     for (const a of buttons) {
@@ -203,8 +203,8 @@ describe("the footer's columns", () => {
       {
         heading: ["P", "Resources"],
         links: [
-          ["Learn", "/learn"],
-          ["Case studies", "/case-studies"],
+          ["Zoorik Learn", "/learn"],
+          ["Validation Labs by Zoorik", "/case-studies"],
           ["Events", "/events"],
           ["News", "/news"],
           ["Compare", "/compare"],

@@ -17,7 +17,9 @@
  * Loaded only by `/marketplaces` (`src/app/marketplaces/page.tsx`). */
 
 /* /marketplaces */
-.mp-buy{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+/* repo: three listings (Coral in both stores, Amoeba in Microsoft Marketplace), so three columns, two from 1100px */
+.mp-buy{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media(max-width:1100px){.mp-buy{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .mp-store{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:10px;padding:clamp(26px,3.2vw,40px);border-radius:var(--r-shell);background:#050B3D;color:#FAF7F3;text-decoration:none}
 .mp-store::after{content:"";position:absolute;right:-120px;top:-160px;width:420px;height:420px;border-radius:50%;background:radial-gradient(closest-side,rgba(59,91,245,.34),transparent)}
 .mp-store > *{position:relative;z-index:1}

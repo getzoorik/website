@@ -161,7 +161,7 @@ function FooterColumnLink({ link }: { link: FooterLink }): JSX.Element {
   }
   return (
     <a href={link.href} translate={link.product ? "no" : undefined}>
-      {link.label}
+      {link.product ? link.label : <NamedText text={link.label} name={site.name} />}
     </a>
   );
 }

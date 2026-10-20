@@ -89,7 +89,7 @@ const WORKER = "$147.46";
  * `lastmod` only: the page does not print it. Whoever changes the hub's content
  * moves this to that day in the same PR; never the build's date.
  */
-export const caseStudiesHubLastUpdated = "19 October 2026";
+export const caseStudiesHubLastUpdated = "20 October 2026";
 
 export const caseStudy = {
   route: routes.caseStudyCoralDevCluster,
@@ -443,16 +443,17 @@ const coralLabel = caseStudy.hero.kicker.split(" · ")[0]!;
  */
 export const caseStudiesHub = {
   route: routes.caseStudies,
+  /** "Validation Labs by Zoorik": the page's and the share card's title as is, never followed by " · Zoorik". */
   meta: {
-    title: "Case studies",
+    title: "Validation Labs by Zoorik",
     description: "What Coral does on real clusters, with the figures.",
   },
   hero: {
-    title: "Case studies",
+    title: "Validation Labs by Zoorik",
     deck: "What Coral does on real clusters, with the figures. We start with our own.",
   },
   /** The library's section, named for a screen reader only. */
-  label: "Case studies",
+  label: "Validation Labs by Zoorik",
   studies: [
     {
       product: "coral",

@@ -50,7 +50,7 @@ describe("/marketplaces's metadata", () => {
   it("has the mock's title through the template, its description and its canonical", () => {
     expect(metadata.title).toBe("Where to find Zoorik: marketplaces, reviews and installs");
     expect(metadata.description).toBe(
-      "Buy Coral on AWS Marketplace or Microsoft Marketplace, read reviews on G2, install from Homebrew, PyPI, npm and the Terraform Registry, and find Zoorik across the web.",
+      "Buy Coral on AWS or Microsoft Marketplace and Amoeba on Microsoft Marketplace, read reviews on G2, and install from Homebrew, PyPI, npm and the Terraform Registry.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/marketplaces" });
     expect(metadata).not.toHaveProperty("robots");
@@ -59,7 +59,7 @@ describe("/marketplaces's metadata", () => {
       title: "Where to find Zoorik: marketplaces, reviews and installs · Zoorik",
     });
     expect(routes.marketplaces).toBe("/marketplaces");
-    expect(marketplacesLastUpdated).toBe("19 October 2026");
+    expect(marketplacesLastUpdated).toBe("20 October 2026");
   });
 });
 
@@ -69,7 +69,7 @@ describe("/marketplaces", () => {
     expect(root.querySelectorAll("h1")).toHaveLength(1);
     expect(text(root.querySelector("header.hero.doc-hero h1"))).toBe("Where to find Zoorik");
     expect(text(root.querySelector("header.hero .doc-deck"))).toBe(
-      "Buy Coral through your cloud’s marketplace, read and write reviews, install from the registries you already use, and find us across the web.",
+      "Buy Coral and Amoeba through your cloud’s marketplace, read and write reviews, install from the registries you already use, and find us across the web.",
     );
     /* No label over the h1: the page is live, not coming soon. */
     expect(root.querySelector("header.hero .pg-soon")).toBeNull();
@@ -135,7 +135,7 @@ describe("/marketplaces", () => {
     expect(text(cta)).toBe("Write to us");
   });
 
-  it("links Coral's listing in each store, read from the stores' config, with the store's mark", () => {
+  it("links each listing, Coral's in both stores then Amoeba's, read from the stores' config, with the store's mark", () => {
     const root = page();
     const stores = [...root.querySelectorAll("#buy .mp-buy > a.mp-store")];
     expect(
@@ -161,15 +161,29 @@ describe("/marketplaces", () => {
         "Kubernetes cost optimization for Azure Kubernetes Service, through your Microsoft account.",
         "View the listing",
       ],
+      [
+        "azure",
+        "Microsoft Marketplace",
+        "Amoeba",
+        "Block storage cost optimization for Azure managed disks, through your Microsoft account.",
+        "View the listing",
+      ],
     ]);
-    stores.forEach((a, i) => expectOffSite(a, marketplaces[i]!.listings.coral));
+    const [aws, microsoft] = marketplaces;
+    expectOffSite(stores[0]!, aws!.listings.coral);
+    expectOffSite(stores[1]!, microsoft!.listings.coral);
+    expectOffSite(stores[2]!, microsoft!.listings.amoeba!);
     expect(stores[0]!.querySelector('b span[translate="no"]')).toHaveTextContent("Coral");
+    expect(stores[2]!.querySelector('b span[translate="no"]')).toHaveTextContent("Amoeba");
   });
 
-  it("says Amoeba is on no marketplace yet, with /amoeba and a ready email", () => {
-    expect(marketplaces.every((store) => store.listings.amoeba === null)).toBe(true);
+  it("says Amoeba is not on AWS Marketplace yet, with /amoeba and a ready email", () => {
+    expect(marketplaces.map((store) => [store.id, store.listings.amoeba !== null])).toEqual([
+      ["aws", false],
+      ["microsoft", true],
+    ]);
     const note = page().querySelector("#buy p.mp-note")!;
-    expect(text(note)).toBe("Amoeba is not on the marketplaces yet. See Amoeba or write to us.");
+    expect(text(note)).toBe("Amoeba is not on AWS Marketplace yet. See Amoeba or write to us.");
     expect([...note.querySelectorAll("a")].map((a) => [a.getAttribute("href"), text(a)])).toEqual([
       ["/amoeba", "See Amoeba"],
       ["mailto:founders@zoorik.com?subject=Amoeba", "write to us"],

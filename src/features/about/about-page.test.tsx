@@ -268,7 +268,7 @@ describe("/about", () => {
     const stores = main().querySelector("#find-us .ab-find > .pl:first-child")!;
     const buttons = [...stores.querySelectorAll(".mkt-btns.ab-mb > a.mkt-b")];
     expect(buttons.map((button) => button.getAttribute("href"))).toEqual(
-      marketplaces.map((marketplace) => marketplace.listings.coral),
+      marketplaces.map((marketplace) => marketplace.profile),
     );
     expect(buttons.map((button) => text(button))).toEqual([
       "AWS Marketplace (opens in a new tab)",

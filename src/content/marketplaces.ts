@@ -9,6 +9,7 @@ import {
 } from "@/config/entity";
 import type { MarketplaceId } from "@/config/marketplaces";
 import { channels } from "@/config/open-source";
+import type { ProductId } from "@/content/products";
 
 /**
  * `/marketplaces`, where to find Zoorik: every string the page prints, verbatim from the approved mock.
@@ -23,7 +24,7 @@ import { channels } from "@/config/open-source";
  * The day /marketplaces's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /marketplaces's content moves this to that day in the same PR; never the build's date.
  */
-export const marketplacesLastUpdated = "19 October 2026";
+export const marketplacesLastUpdated = "20 October 2026";
 
 /**
  * The assessment's package on npm, `zoorik` (unscoped; `npx zoorik assess coral`). The mock links npm's card to Zoorik's
@@ -46,32 +47,40 @@ export const marketplacesPage = {
   meta: {
     title: "Where to find Zoorik: marketplaces, reviews and installs",
     description:
-      "Buy Coral on AWS Marketplace or Microsoft Marketplace, read reviews on G2, install from Homebrew, PyPI, npm and the Terraform Registry, and find Zoorik across the web.",
+      "Buy Coral on AWS or Microsoft Marketplace and Amoeba on Microsoft Marketplace, read reviews on G2, and install from Homebrew, PyPI, npm and the Terraform Registry.",
   },
   /** The page's name (its h1), the deck under it, and the two buttons down the page. */
   hero: {
     title: "Where to find Zoorik",
-    deck: "Buy Coral through your cloud’s marketplace, read and write reviews, install from the registries you already use, and find us across the web.",
+    deck: "Buy Coral and Amoeba through your cloud’s marketplace, read and write reviews, install from the registries you already use, and find us across the web.",
     buy: "Cloud marketplaces",
     reviews: "Reviews",
   },
   /**
-   * The stores: one navy card for each store that lists Coral (the store's name, the product, what it is there, the
-   * listing), then the line for Amoeba, which no store lists yet (`storesListing("amoeba")`).
+   * The stores: one navy card for each listing (the store's name, the product, what it is there, the listing), Coral's
+   * first, then the line for the store that does not list Amoeba yet (`storesListing("amoeba")`).
    */
   buy: {
     id: "buy",
     title: "Cloud marketplaces",
     lede: "Buy through the account you already pay your cloud bill with.",
     stores: {
-      aws: "Kubernetes cost optimization for Amazon EKS, bought and billed through your AWS account.",
-      microsoft:
-        "Kubernetes cost optimization for Azure Kubernetes Service, through your Microsoft account.",
-    } satisfies Record<MarketplaceId, string>,
+      coral: {
+        aws: "Kubernetes cost optimization for Amazon EKS, bought and billed through your AWS account.",
+        microsoft:
+          "Kubernetes cost optimization for Azure Kubernetes Service, through your Microsoft account.",
+      },
+      amoeba: {
+        microsoft:
+          "Block storage cost optimization for Azure managed disks, through your Microsoft account.",
+      },
+    } satisfies Record<ProductId, Partial<Record<MarketplaceId, string>>> as Readonly<
+      Record<ProductId, Partial<Readonly<Record<MarketplaceId, string>>>>
+    >,
     go: "View the listing",
-    /** "Amoeba is not on the marketplaces yet. See Amoeba or write to us.", its two links in place. */
+    /** "Amoeba is not on AWS Marketplace yet. See Amoeba or write to us.", its two links in place. */
     notYet: {
-      lead: "Amoeba is not on the marketplaces yet. ",
+      lead: "Amoeba is not on AWS Marketplace yet. ",
       see: "See Amoeba",
       or: " or ",
       write: "write to us",

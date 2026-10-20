@@ -261,7 +261,7 @@ describe("the menus' rows", () => {
       a.getAttribute("href"),
     ]);
 
-  it("list the products with the site's exact lines; Docs adds All docs, then Learn", () => {
+  it("list the products with the site's exact lines; Docs adds All docs, then Zoorik Learn", () => {
     const { card } = renderNav("/");
     /* The assessment serves both products whatever the documents' switches say. */
     expect(rows(card("Assessment"))).toEqual([
@@ -288,7 +288,7 @@ describe("the menus' rows", () => {
         ? [["Amoeba", "Guide, FAQ and one-pager", "/docs#amoeba"]]
         : []),
       ["All docs", "", "/docs"],
-      ["Learn", "Articles on Kubernetes and block storage cost", "/learn"],
+      ["Zoorik Learn", "Articles on Kubernetes and block storage cost", "/learn"],
       ["Open source", "What you can read, run and contribute to", "/open-source"],
     ]);
   });
@@ -329,7 +329,7 @@ describe("the menus' rows", () => {
         ["Assessment", ["Coral", "Amoeba"]],
         ["Product guide", ["Coral"]],
         ["FAQ", ["Coral"]],
-        ["Docs", ["Coral", "All", "Learn"]],
+        ["Docs", ["Coral", "All", "Zoorik Learn"]],
       ]);
     },
   );
@@ -435,7 +435,7 @@ describe("the current page", () => {
     ["/coral/faq", "", "FAQ", "FAQ › Coral", "FAQ › Coral", "", "FAQ"],
     ["/docs", "", "Docs", "Docs › All docs", "Docs › All", "", "Docs"],
     /* The Learn hub marks Docs and its own row; every article marks Docs alone. */
-    ["/learn", "", "Docs", "Docs › Learn", "Docs › Learn", "", ""],
+    ["/learn", "", "Docs", "Docs › Zoorik Learn", "Docs › Zoorik Learn", "", ""],
     ...learnArticles.map((article): string[] => [
       learnPath(article.slug),
       "",
@@ -812,13 +812,14 @@ describe("the drawer", () => {
       amoebaDocs ? "Product guide: Coral, Amoeba" : "Product guide: Coral",
       amoebaDocs ? "FAQ: Coral, Amoeba" : "FAQ: Coral",
       amoebaDocs || amoebaOnePager
-        ? "Docs: Coral, Amoeba, All, Learn, Open source"
-        : "Docs: Coral, All, Learn, Open source",
+        ? "Docs: Coral, Amoeba, All, Zoorik Learn, Open source"
+        : "Docs: Coral, All, Zoorik Learn, Open source",
       "Login",
     ]);
     /* Group labels are labels, not headings. */
     expect(drawer.querySelector("h2, h3, h4")).toBeNull();
-    /* A product chip keeps its name out of translation; "All" and "Learn" are words. */
+    /* A product chip keeps its name out of translation on the chip; "All" is a word, and "Zoorik Learn" keeps
+       only its "Zoorik" out, in a span of its own. */
     for (const chip of drawer.querySelectorAll(".nd-row a")) {
       expect(chip.getAttribute("translate"), text(chip)).toBe(
         chip.querySelector("svg") ? "no" : null,

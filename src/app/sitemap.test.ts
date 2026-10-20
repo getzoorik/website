@@ -88,10 +88,10 @@ describe("sitemap.xml", () => {
       /* The page descriptions in the current product words. */
       "/": "2026-10-19",
       "/coral": "2026-10-17",
-      "/amoeba": "2026-10-17",
+      "/amoeba": "2026-10-20",
       "/assessment": "2026-10-18",
       /* Where to find Zoorik: the day it was published. */
-      "/marketplaces": "2026-10-19",
+      "/marketplaces": "2026-10-20",
       /* The install guides' tiles and the Open source group. */
       "/docs": "2026-10-16",
       "/coral/guide": updated,
@@ -116,7 +116,7 @@ describe("sitemap.xml", () => {
       "/compare/coral-alternatives": "2026-10-19",
       "/compare/amoeba-alternatives": "2026-10-19",
       ...Object.fromEntries(versusPages.map((page) => [versusRoute(page), "2026-10-19"])),
-      "/case-studies": "2026-10-19",
+      "/case-studies": "2026-10-20",
       "/case-studies/coral-dev-cluster": "2026-10-12",
       "/events": "2026-10-19",
       /* Zoorik News: the week of its latest Radar. */

@@ -111,7 +111,10 @@ export function CaseStudiesHub({
   const hub = caseStudiesHub;
   const covered = productOrder.filter((id) => studies.some((study) => study.product === id));
   return (
-    <DocumentPage hero={{ title: hub.hero.title, deck: named(hub.hero.deck) }} product="coral">
+    <DocumentPage
+      hero={{ title: named(hub.hero.title), deck: named(hub.hero.deck) }}
+      product="coral"
+    >
       <section className="sec cx-sec" aria-label={hub.label}>
         <div className="wrap">
           <CaseStudiesLibrary

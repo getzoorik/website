@@ -39,13 +39,14 @@ const SPOKEN = /^Download the case study, PDF, \d+ pages?, \d\.\d MB, A4$/;
 
 describe("the case studies' metadata", () => {
   it("titles, describes and canonicalises the hub in the mock's words", () => {
-    expect(hubMeta.title).toBe("Case studies");
+    /* "Validation Labs by Zoorik" already names the company, so no " · Zoorik" after it. */
+    expect(hubMeta.title).toEqual({ absolute: "Validation Labs by Zoorik" });
     expect(hubMeta.description).toBe("What Coral does on real clusters, with the figures.");
     expect(hubMeta.alternates).toEqual({ canonical: "/case-studies" });
     expect(hubMeta).not.toHaveProperty("robots");
     expect(hubMeta.openGraph).toMatchObject({
       url: "/case-studies",
-      title: "Case studies · Zoorik",
+      title: "Validation Labs by Zoorik",
     });
   });
 
@@ -83,11 +84,14 @@ describe("/case-studies", () => {
     return render(<CaseStudiesHub studies={[...caseStudiesHub.studies, amoebaStudy]} />).container;
   };
   const library = (container: HTMLElement) =>
-    container.querySelector("main > section.sec.cx-sec[aria-label='Case studies'] > .wrap")!;
+    container.querySelector(
+      "main > section.sec.cx-sec[aria-label='Validation Labs by Zoorik'] > .wrap",
+    )!;
 
   it("opens on the utility hero", () => {
     const hero = hub().querySelector("main header.hero.doc-hero#top")!;
-    expect(text(hero.querySelector("h1"))).toBe("Case studies");
+    expect(text(hero.querySelector("h1"))).toBe("Validation Labs by Zoorik");
+    expect(hero.querySelector("h1 [translate='no']")).toHaveTextContent("Zoorik");
     expect(text(hero.querySelector(".doc-deck"))).toBe(
       "What Coral does on real clusters, with the figures. We start with our own.",
     );
@@ -460,8 +464,8 @@ describe("both pages", () => {
       const link = outside[0]!;
       expect(link.closest("footer")).not.toBeNull();
       expect(link).toHaveAttribute("href", "/case-studies");
-      expect(text(link)).toBe("Case studies");
-      expect(text(link.previousElementSibling)).toBe("Learn");
+      expect(text(link)).toBe("Validation Labs by Zoorik");
+      expect(text(link.previousElementSibling)).toBe("Zoorik Learn");
       expect(container.querySelector(".nav [aria-current], .nav .is-cur")).toBeNull();
     },
   );

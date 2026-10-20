@@ -5,10 +5,10 @@ import { TurningMark } from "@/components/brand/turning-mark";
 import { SiteNav } from "@/components/layout/site-nav";
 import { ExternalArrow } from "@/components/primitives/external-arrow";
 import { NewTabHint } from "@/components/primitives/new-tab-hint";
-import { storesListing, type MarketplaceId } from "@/config/marketplaces";
+import { marketplaces, storesListing, type MarketplaceId } from "@/config/marketplaces";
 import { routes } from "@/config/site";
 import { marketplacesPage, type MarketplacesLink } from "@/content/marketplaces";
-import { products } from "@/content/products";
+import { productOrder, products } from "@/content/products";
 import { FooterSection } from "@/features/footer/footer-section";
 import { named } from "@/features/legal/named";
 import { ProgramClose, programMailto } from "@/features/programs/program-parts";
@@ -18,7 +18,7 @@ import { offSiteProps } from "@/lib/links";
  * `/marketplaces`, where to find Zoorik, on /about's frame with the programs' close:
  *
  *   hero                 the page's name, its deck, and two buttons down the page (the stores, the reviews)
- *   Cloud marketplaces   a navy card for each store that lists Coral, then the line for Amoeba, which none lists yet
+ *   Cloud marketplaces   a navy card for each listing, Coral's then Amoeba's, then the store that does not list Amoeba yet
  *   Reviews              G2's two links; Gartner Peer Insights, coming soon, with no link (band)
  *   Install from         the six registries Zoorik publishes on
  *   Find us on the web   the company's profiles (band)
@@ -98,8 +98,8 @@ function Head({
 }
 
 /**
- * Cloud marketplaces: a navy card for each store that lists Coral (`marketplaces.ts`), the whole card its listing in a
- * new tab, then, while no store lists Amoeba, the line that says so, with /amoeba and a ready email.
+ * Cloud marketplaces: a navy card for each listing (`marketplaces.ts`), Coral's then Amoeba's, the whole card its
+ * listing in a new tab, then, while a store does not list Amoeba, the line that says so, with /amoeba and a ready email.
  */
 function Buy(): React.JSX.Element {
   const { notYet } = buy;
@@ -108,23 +108,30 @@ function Buy(): React.JSX.Element {
       <div className="wrap">
         <Head id={buy.id} title={buy.title} lede={buy.lede} />
         <div className="mp-buy">
-          {storesListing("coral").map((store) => {
-            const href = store.listings.coral;
-            return (
-              <a className="mp-store" key={store.id} href={href} {...offSiteProps(href)}>
-                <span className="mp-logo">{STORE_MARKS[store.id]}</span>
-                <span className="mp-k">{store.name}</span>
-                <b>{named(products.coral.name)}</b>
-                <span>{buy.stores[store.id]}</span>
-                <span className="mp-go">
-                  {buy.go} <ExternalArrow />
-                </span>
-                <NewTabHint href={href} />
-              </a>
-            );
-          })}
+          {productOrder.flatMap((product) =>
+            storesListing(product).map((store) => {
+              const href = store.listings[product]!;
+              return (
+                <a
+                  className="mp-store"
+                  key={`${product}-${store.id}`}
+                  href={href}
+                  {...offSiteProps(href)}
+                >
+                  <span className="mp-logo">{STORE_MARKS[store.id]}</span>
+                  <span className="mp-k">{store.name}</span>
+                  <b>{named(products[product].name)}</b>
+                  <span>{buy.stores[product][store.id]}</span>
+                  <span className="mp-go">
+                    {buy.go} <ExternalArrow />
+                  </span>
+                  <NewTabHint href={href} />
+                </a>
+              );
+            }),
+          )}
         </div>
-        {storesListing("amoeba").length === 0 ? (
+        {storesListing("amoeba").length < marketplaces.length ? (
           <p className="mp-note">
             {named(notYet.lead)}
             <a href={routes.amoeba}>{named(notYet.see)}</a>
