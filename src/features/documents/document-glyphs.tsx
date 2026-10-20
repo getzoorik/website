@@ -68,6 +68,15 @@ export function ArrowGlyph({
   );
 }
 
+/** A link's arrow out of the site, up and to the right: the tiles' sign for a page that opens in a new tab. */
+export function ArrowOutGlyph({ className }: GlyphProps): JSX.Element {
+  return (
+    <svg className={className} viewBox="0 0 24 24" {...line} strokeWidth={2.2} aria-hidden="true">
+      <path d="M7 17 17 7M8 7h9v9" />
+    </svg>
+  );
+}
+
 /** Back to top's arrow, at the mocks' stroke (2.2). */
 export function UpGlyph({ className }: GlyphProps): JSX.Element {
   return (

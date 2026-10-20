@@ -122,7 +122,7 @@ describe("sitemap.xml", () => {
       /* Zoorik News: the week of its latest Radar. */
       "/news": "2026-10-19",
       /* Zoorik Community: the day it was published. */
-      "/community": "2026-10-19",
+      "/community": "2026-10-20",
       /* Milestones and Zoorik on the web. */
       "/about": "2026-10-19",
       /* The day its content last changed (the LinkedIn button), not the day it was published. */

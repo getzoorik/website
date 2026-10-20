@@ -37,6 +37,11 @@
 /programs/*
   Cache-Control: public, max-age=2592000
 
+# The communities' own logos on /community: a month, like the share cards. A redrawn logo gets a new file
+# name, so a cached one is never stale. Not under /community/: a /community/* rule would match pages there too.
+/community-logos/*
+  Cache-Control: public, max-age=2592000
+
 # The brand kit (/brand-assets): the logo and mark files and the kit's ZIP. A month in the browser, not
 # immutable: the names are stable and a redrawn file replaces its predecessor at the same address.
 /brand-kit/*

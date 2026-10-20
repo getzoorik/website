@@ -1,18 +1,18 @@
 /* Zoorik marketing: Learn and the pages built on it: /learn, /compare with its two versus pages and two alternatives
  * pages, and /community. Ported from the mock's two blocks, whole, rule for rule and in their order: `learn-v2` (the
  * search, the heads, the chips, the subject cards, the covers, the article cards, Find the right fix, the proof panel,
- * Community, option B's paths, the narrow widths and reduced motion), then `learn-v2b` (/learn's Watch and read and
+ * option B's paths, the narrow widths and reduced motion), then `learn-v2b` (/learn's Watch and read and
  * More from Zoorik, the Zoorik News card, the Compare block's heads, the market map, then the versus and alternatives
  * pages). Two parts of the mock's sheet are not here: its What changed rules (`.nw-list`, `.nw` and the rest), whose
  * section the hub no longer draws (the news lives at /news, and its `nw-` classes are /news's own), and its /community
  * block, which is /community's own sheet (`community.css`, loaded after this one). No rule is deleted while the pages
  * built on this sheet are being built: a rule whose part the hub no longer draws (the Zoorik News card, the Compare
- * block's heads, Community and events) stays for now. Imported by each page that draws them, so Next loads it after
+ * block's heads) stays for now; the old Community and events rules went when /community was redrawn. Imported by each page that draws them, so Next loads it after
  * globals.css, where the mock carries it after the site system.
  *
  * ─── EVERY SELECTOR IS LEARN'S OWN ─────────────────────────────────────────────
  * The App Router keeps a visited page's sheet in the document, so each selector names one of Learn's own classes
- * (`lv-`, `sj`, `fx`, `cm`, `pt`, `pb`, `pp`, `mk-`, `vp-`, `vx`, `ap-`, `wr`), which no other page draws
+ * (`lv-`, `sj`, `fx`, `pt`, `pb`, `pp`, `mk-`, `vp-`, `vx`, `ap-`, `wr`), which no other page draws
  * (`learn-css.test.ts`). Two mock rules change for that:
  *   - the mock's page-wide `.doc-hero .hero-in` is written on `.lv-hero`, the class the Learn pages' hero carries,
  *     at the same specificity;
@@ -124,24 +124,6 @@ p.fx-read{color:inherit;font-weight:inherit}
 .lv-pt b{font-size:1.25rem;font-weight:600;color:#FAF7F3}
 .lv-pt small{color:rgba(250,247,243,.72);font-size:.9375rem}
 .lv-proof .fx-read{margin-top:0}
-/* community */
-.cm{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:16px}
-.cm-ev{padding:24px;border-radius:var(--r-card);background:#050B3D;color:#FAF7F3}
-.cm-k{font:500 .6875rem/1 var(--code);letter-spacing:.08em;text-transform:uppercase;color:rgba(250,247,243,.6)}
-.cm-ev ol{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:14px}
-.cm-ev li{display:flex;align-items:center;gap:14px}
-.cm-ev li > span:last-child{display:flex;flex-direction:column;gap:2px}
-.cm-ev li b{font-weight:600}
-.cm-ev li small{font-size:.8125rem;color:rgba(250,247,243,.66)}
-.cm-date{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:58px;height:58px;border-radius:var(--r-card);background:rgba(250,247,243,.08);border:1px solid rgba(250,247,243,.18)}
-.cm-date b{font-size:1rem}
-.cm-date span{font:500 .625rem/1 var(--code);text-transform:uppercase;letter-spacing:.06em;color:rgba(250,247,243,.66);margin-top:3px}
-.cm-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.cm-c{display:flex;flex-direction:column;gap:4px;padding:18px 20px;border:1px solid var(--line);border-radius:var(--r-card);background:#fff;text-decoration:none;color:var(--text);transition:border-color var(--d-fast) var(--ease)}
-.cm-c:hover{border-color:var(--card-hover)}
-.cm-c b{display:inline-flex;align-items:center;gap:6px;font-weight:600}
-.cm-c b svg{width:13px;height:13px;color:var(--muted)}
-.cm-c small{font-size:.875rem;line-height:1.5;color:var(--muted)}
 /* option B: paths (the concept not picked; no page draws them, kept so the sheet is the mock's whole) */
 .pt-q{margin-top:28px;font-size:.875rem;font-weight:500;color:rgba(250,247,243,.7)}
 .pt-row{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:12px}
@@ -156,9 +138,9 @@ p.fx-read{color:inherit;font-weight:inherit}
 .pb .lv-chips{margin:0 0 24px}
 .pp{padding-bottom:clamp(36px,4.5vw,64px)}
 @media(max-width:1100px){.pt-row{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:1000px){.lv-grid3,.sj-row{grid-template-columns:repeat(2,minmax(0,1fr))}.fx,.cm{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:1000px){.lv-grid3,.sj-row{grid-template-columns:repeat(2,minmax(0,1fr))}.fx{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:760px){
-  .lv-grid3,.sj-row,.cm-list{grid-template-columns:minmax(0,1fr)}
+  .lv-grid3,.sj-row{grid-template-columns:minmax(0,1fr)}
   .pt-row{grid-template-columns:repeat(2,minmax(0,1fr))}
   .lv-proof{grid-template-columns:minmax(0,1fr)}
 }
