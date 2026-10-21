@@ -56,9 +56,10 @@ export const communityPage = {
     description:
       "The communities that matter for FinOps and cloud cost on Kubernetes, Azure and AWS, with r/zoorik and Zoorik News on Medium.",
   },
-  /** The page's name (its h1), with no deck under it. */
+  /** The page's name (its h1) and the deck under it. */
   hero: {
     title: "Zoorik Community",
+    deck: "Talk to the people who build Coral and Amoeba, and find the communities that matter for FinOps and cloud cost on Kubernetes, Azure and AWS.",
   },
   /** Our own two, on the band: r/zoorik on the white card, Zoorik News on Medium on the navy one. */
   ours: {

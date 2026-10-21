@@ -12,7 +12,7 @@ vi.mock("next/navigation", () => ({ usePathname: () => "/community" }));
 import CommunityRoute, { metadata } from "@/app/community/page";
 
 /**
- * `/community`, Zoorik Community: the metadata, the hero with no deck, our own two (r/zoorik and Zoorik News on
+ * `/community`, Zoorik Community: the metadata, the hero with its deck, our own two (r/zoorik and Zoorik News on
  * Medium), the communities in their four groups with their logos, More from Zoorik and the closing row. Its sitemap
  * entry is in `src/app/sitemap.test.ts`, its page graph in `src/config/structured-data.test.ts`, and that it names no
  * competitor in `src/features/learn/market-names.test.ts`.
@@ -48,12 +48,13 @@ describe("/community's metadata", () => {
 });
 
 describe("/community", () => {
-  it("opens on its name alone, then our two, the communities, More from Zoorik and the closing row", () => {
+  it("opens on its name and its deck, then our two, the communities, More from Zoorik and the closing row", () => {
     const root = page();
     expect(root.querySelectorAll("h1")).toHaveLength(1);
     expect(text(root.querySelector("header.hero h1"))).toBe("Zoorik Community");
     expect(root.querySelector("header.hero h1 [translate='no']")).toHaveTextContent("Zoorik");
-    expect(root.querySelector("header.hero .doc-deck")).toBeNull();
+    expect(text(root.querySelector("header.hero .doc-deck"))).toBe(communityPage.hero.deck);
+    expect(root.querySelectorAll("header.hero .doc-deck [translate='no']")).toHaveLength(2);
     expect([...root.querySelectorAll("main > section")].map((s) => s.id)).toEqual([
       "ours",
       "communities",

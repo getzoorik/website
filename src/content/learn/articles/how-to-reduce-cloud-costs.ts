@@ -345,7 +345,7 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "How Poor Infrastructure Architecture Quietly Increases Your Cloud Bill",
+      title: "How Poor Infra Architecture Quietly Increases Your Cloud Bill",
       where: "Learn",
       href: "/learn/poor-architecture-cloud-bill",
     },
