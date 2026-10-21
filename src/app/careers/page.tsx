@@ -12,7 +12,7 @@ import "@/styles/careers.css";
 /**
  * `/careers`: work at Zoorik. Indexed, listed in the sitemap, and prerendered
  * at build like every page here; linked from the footer's Company column, after
- * About. Its title goes through the layout's template: "Zoorik | Careers".
+ * About. Its title goes through the layout's template: "Careers | Zoorik".
  */
 export const metadata: Metadata = documentMetadata(routes.careers, careers.meta);
 

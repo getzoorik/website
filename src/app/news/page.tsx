@@ -15,7 +15,7 @@ import "@/styles/news.css";
  * page here; linked from the footer's Resources column, after Events, and from /learn's Zoorik News card. The radar
  * run refreshes it weekly (`src/content/news.ts`).
  */
-/* Its title goes through the layout's template: "Zoorik | News". */
+/* Its title goes through the layout's template: "News | Zoorik". */
 export const metadata: Metadata = documentMetadata(routes.news, newsPage.meta);
 
 export default function News(): React.JSX.Element {

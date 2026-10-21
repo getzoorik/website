@@ -36,7 +36,7 @@ export const learnSubjects: readonly { readonly id: LearnSubject; readonly label
 export const learnPage = {
   path: routes.learn,
   meta: {
-    /** The `<title>`'s own words, after "Zoorik | ". The h1 is "Zoorik Learn"; the header's Docs menu names the
+    /** The `<title>`'s own words, before " | Zoorik". The h1 is "Zoorik Learn"; the header's Docs menu names the
      *  hub "Zoorik Learn" and the footer "Learn". */
     title: "Cloud cost optimization guides",
     description:

@@ -141,7 +141,7 @@ const studyBefore = studySteps[0]!.label;
 const studyAfter = studySteps[studySteps.length - 1]!.label;
 
 export const about = {
-  /** The `<title>`'s own words, after "Zoorik | ", and the description. */
+  /** The `<title>`'s own words, before " | Zoorik", and the description. */
   meta: {
     title: "About",
     description:

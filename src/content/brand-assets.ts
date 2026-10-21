@@ -85,7 +85,7 @@ const smallMarks = (ink: "bone" | "navy"): readonly BrandFile[] =>
 const tagged = `The logo over “${brandTagline}”`;
 
 export const brandAssetsPage = {
-  /** The page's `<title>` (through the site's "Zoorik | %s" template) and description. */
+  /** The page's `<title>` (through the site's "%s | Zoorik" template) and description. */
   meta: {
     title: "Brand assets",
     description:

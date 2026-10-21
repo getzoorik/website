@@ -66,7 +66,7 @@ export function DocumentPage({
 }
 
 /**
- * A document page's metadata: the title through the layout's "Zoorik | %s"
+ * A document page's metadata: the title through the layout's "%s | Zoorik"
  * template, its description, its canonical, and the Open Graph card with the
  * full title (Open Graph does not apply the template): the page's own share
  * card when it has one (`pageCards`), else the brand card.

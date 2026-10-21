@@ -208,7 +208,7 @@ describe.each(learnArticles.map((article) => article.slug))("/learn/%s", (slug) 
     expect(meta).not.toHaveProperty("robots");
     expect(meta.openGraph).toMatchObject({
       url: route,
-      title: `Zoorik | ${article.title}`,
+      title: `${article.title} | Zoorik`,
       description: article.meta,
       images: [articleCard(article)],
     });

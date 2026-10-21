@@ -18,7 +18,7 @@ import "@/styles/cloud-cost-tools.css";
  * here (next.config.ts). It is drawn on Learn's frame and carries Learn's sheet and /community's, as the mock does,
  * then its own; it takes the site's default card.
  */
-/* Its title goes through the layout's template: "Zoorik | Cloud cost optimization tools". */
+/* Its title goes through the layout's template: "Cloud cost optimization tools | Zoorik". */
 export const metadata: Metadata = documentMetadata(routes.cloudCostTools, cloudCostToolsPage.meta);
 
 export default function CloudCostOptimizationTools(): React.JSX.Element {

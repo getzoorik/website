@@ -27,7 +27,7 @@ export const partnersLastUpdated = "21 October 2026";
 export type PartnerTileIcon = "zoorik" | "shield" | "eye" | "package" | "doc";
 
 export const partnersPage = {
-  /** The page's `<title>` (through the site's "Zoorik | %s" template) and description. */
+  /** The page's `<title>` (through the site's "%s | Zoorik" template) and description. */
   meta: {
     title: "Partner program",
     description:

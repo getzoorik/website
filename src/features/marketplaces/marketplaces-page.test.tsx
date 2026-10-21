@@ -65,7 +65,7 @@ describe("/marketplaces's metadata", () => {
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/marketplaces",
-      title: "Zoorik | Marketplaces",
+      title: "Marketplaces | Zoorik",
     });
     expect(routes.marketplaces).toBe("/marketplaces");
     expect(marketplacesLastUpdated).toBe("21 October 2026");

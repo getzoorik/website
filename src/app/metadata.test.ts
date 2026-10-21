@@ -28,7 +28,7 @@ describe("page metadata", () => {
   it("titles every page through one template, and the home page takes the default", () => {
     expect(layout.title).toEqual({
       default: "Zoorik | Kubernetes and block storage cost optimization",
-      template: "Zoorik | %s",
+      template: "%s | Zoorik",
     });
     expect(home).not.toHaveProperty("title");
     expect(assessment.title).toBe("Cloud cost assessment");
@@ -38,11 +38,11 @@ describe("page metadata", () => {
   });
 
   it("keeps each full title within the 60 characters a search result shows", () => {
-    /* "Zoorik | <title>", at most 60. */
+    /* "<title> | Zoorik", at most 60. */
     const { template } = layout.title as { template: string };
     const full = (title: unknown) => template.replace("%s", String(title));
-    expect(full(amoeba.title)).toBe("Zoorik | Block storage cost optimization");
-    expect(full(coral.title)).toBe("Zoorik | Kubernetes cost optimization");
+    expect(full(amoeba.title)).toBe("Block storage cost optimization | Zoorik");
+    expect(full(coral.title)).toBe("Kubernetes cost optimization | Zoorik");
     for (const title of [amoeba.title, coral.title, assessment.title])
       expect(full(title).length).toBeLessThanOrEqual(60);
     expect((layout.title as { default: string }).default).toHaveLength(55);
@@ -100,11 +100,11 @@ describe("the documents section's metadata", () => {
     expect(docs).not.toHaveProperty("robots");
     expect(docs.openGraph).toMatchObject({
       url: "/docs",
-      title: "Zoorik | Product docs",
+      title: "Product docs | Zoorik",
     });
   });
 
-  /* Each page's title is its own short name, and the layout's template puts "Zoorik | " before it. */
+  /* Each page's title is its own short name, and the layout's template puts " | Zoorik" after it. */
   it("titles, describes and canonicalises the Coral guide as its mock does", () => {
     expect(coralGuide.title).toBe("Coral product guide");
     expect(coralGuide.description).toBe(
@@ -114,7 +114,7 @@ describe("the documents section's metadata", () => {
     expect(coralGuide).not.toHaveProperty("robots");
     expect(coralGuide.openGraph).toMatchObject({
       url: "/coral/guide",
-      title: "Zoorik | Coral product guide",
+      title: "Coral product guide | Zoorik",
     });
   });
 
@@ -127,7 +127,7 @@ describe("the documents section's metadata", () => {
     expect(coralFaq).not.toHaveProperty("robots");
     expect(coralFaq.openGraph).toMatchObject({
       url: "/coral/faq",
-      title: "Zoorik | Coral FAQ",
+      title: "Coral FAQ | Zoorik",
     });
   });
 
@@ -139,7 +139,7 @@ describe("the documents section's metadata", () => {
     expect(amoebaFaq.alternates).toEqual({ canonical: "/amoeba/faq" });
     expect(amoebaFaq.openGraph).toMatchObject({
       url: "/amoeba/faq",
-      title: "Zoorik | Amoeba FAQ",
+      title: "Amoeba FAQ | Zoorik",
       description,
     });
   });
@@ -153,7 +153,7 @@ describe("the numbered-row pages' metadata", () => {
     );
     expect(terms.alternates).toEqual({ canonical: "/terms" });
     expect(terms).not.toHaveProperty("robots");
-    expect(terms.openGraph).toMatchObject({ url: "/terms", title: "Zoorik | Terms of use" });
+    expect(terms.openGraph).toMatchObject({ url: "/terms", title: "Terms of use | Zoorik" });
   });
 
   it("titles, describes and canonicalises /security as its mock does, and indexes it", () => {
@@ -165,7 +165,7 @@ describe("the numbered-row pages' metadata", () => {
     expect(security).not.toHaveProperty("robots");
     expect(security.openGraph).toMatchObject({
       url: "/security",
-      title: "Zoorik | Security",
+      title: "Security | Zoorik",
     });
   });
 
@@ -179,7 +179,7 @@ describe("the numbered-row pages' metadata", () => {
     expect(learn).not.toHaveProperty("robots");
     expect(learn.openGraph).toMatchObject({
       url: "/learn",
-      title: "Zoorik | Cloud cost optimization guides",
+      title: "Cloud cost optimization guides | Zoorik",
     });
   });
 });
@@ -194,7 +194,7 @@ describe("the privacy policy's metadata", () => {
     expect(privacy).not.toHaveProperty("robots");
     expect(privacy.openGraph).toMatchObject({
       url: "/privacy",
-      title: "Zoorik | Privacy policy",
+      title: "Privacy policy | Zoorik",
       description:
         "How Zoorik collects, uses and protects personal data across zoorik.com, Coral and Amoeba.",
     });

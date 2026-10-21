@@ -115,7 +115,7 @@ describe("/learn's metadata", () => {
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/learn",
-      title: "Zoorik | Cloud cost optimization guides",
+      title: "Cloud cost optimization guides | Zoorik",
       images: [pageCards.learn],
     });
     /* The sitemap's date for the hub: a printed day, not ahead of today. */

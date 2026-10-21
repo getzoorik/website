@@ -29,7 +29,7 @@ import type { ProductId } from "@/content/products";
  */
 
 /**
- * The day /careers's content last changed (its title, "Careers at Zoorik | …"), for the sitemap's `lastmod` only:
+ * The day /careers's content last changed (its title, "Careers | Zoorik"), for the sitemap's `lastmod` only:
  * the page does not print it. Whoever changes the page's content moves this to
  * that day in the same PR; never the build's date.
  */
@@ -173,7 +173,7 @@ const values = [
 ] as const satisfies readonly CareerValue[];
 
 export const careers = {
-  /** The `<title>`'s own words, after "Zoorik | ", and the description. */
+  /** The `<title>`'s own words, before " | Zoorik", and the description. */
   meta: {
     title: "Careers",
     description:

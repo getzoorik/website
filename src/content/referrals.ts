@@ -26,7 +26,7 @@ export const referralsLastUpdated = "21 October 2026";
 export type ReferralTeamIcon = "coral" | "amoeba" | "eye" | "shield";
 
 export const referralsPage = {
-  /** The page's `<title>` (through the site's "Zoorik | %s" template) and description. */
+  /** The page's `<title>` (through the site's "%s | Zoorik" template) and description. */
   meta: {
     title: "Referral program",
     description:

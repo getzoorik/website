@@ -19,11 +19,11 @@ export const site = {
   /** The canonical origin, no trailing slash. metadataBase, robots, the sitemap and JSON-LD all read it. It must equal `https://${CANONICAL_HOST}` in next.config.ts. */
   url: "https://zoorik.com",
   /** The home page's `<title>`; every other page goes through `titleTemplate`.
-      Every title leads with the name, then the page's own name after a pipe,
-      so each result reads as Zoorik's at a glance: "Zoorik | About", "Zoorik |
-      Kubernetes cost optimization". The home page's card title repeats it. */
+      The home page leads with the name; every other page leads with its own
+      name and ends with the brand after a pipe: "About | Zoorik", "Kubernetes
+      cost optimization | Zoorik". The home page's card title repeats it. */
   title: `Zoorik | ${homePhrase}`,
-  titleTemplate: "Zoorik | %s",
+  titleTemplate: "%s | Zoorik",
   /** The home page's description, which its card and its structured data repeat.
       It opens with the name, for the same reason as the title. */
   homeDescription:
@@ -36,7 +36,7 @@ export const site = {
   themeColor: "#070F52",
 } as const;
 
-/** A page's full title, as its `<title>`, its share card and its structured data print it: "Zoorik | <name>". */
+/** A page's full title, as its `<title>`, its share card and its structured data print it: "<name> | Zoorik". */
 export const pageTitle = (title: string): string => site.titleTemplate.replace("%s", title);
 
 /**

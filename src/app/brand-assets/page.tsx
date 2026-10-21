@@ -14,7 +14,7 @@ import "@/styles/brand-assets.css";
  * sitemap, and prerendered at build like every page here, which is when the kit ZIP's size is read; linked from the
  * footer's Company column, after Careers.
  *
- * Its title runs through the layout's template: "Zoorik | Brand assets".
+ * Its title runs through the layout's template: "Brand assets | Zoorik".
  */
 export const metadata: Metadata = documentMetadata(routes.brandAssets, brandAssetsPage.meta);
 

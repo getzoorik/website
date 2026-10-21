@@ -15,7 +15,7 @@ import "@/styles/value-lab.css";
  * footer's Resources column, after Learn. The header has none. Its old
  * address, /case-studies, redirects here (next.config.ts).
  */
-/* Its title goes through the layout's template: "Zoorik | Value Lab". */
+/* Its title goes through the layout's template: "Value Lab | Zoorik". */
 export const metadata: Metadata = documentMetadata(routes.valueLab, caseStudiesHub.meta);
 
 export default function ValueLab(): React.JSX.Element {

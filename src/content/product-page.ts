@@ -68,7 +68,7 @@ export type ReadMoreTile =
 export interface ProductPageContent {
   readonly product: ProductId;
   readonly meta: {
-    /** Goes through the layout's "Zoorik | %s" template; the card repeats it in full. */
+    /** Goes through the layout's "%s | Zoorik" template; the card repeats it in full. */
     readonly title: string;
     /** The meta description, and the card's. */
     readonly description: string;

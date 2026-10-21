@@ -70,7 +70,7 @@ describe.each(alternativesPages.map((entry) => [entry.route, entry] as const))(
       expect(routeModule.metadata.alternates).toEqual({ canonical: route });
       expect(routeModule.metadata.openGraph).toMatchObject({
         url: route,
-        title: `Zoorik | ${entry.meta.title}`,
+        title: `${entry.meta.title} | Zoorik`,
         images: [socialImage],
       });
     });

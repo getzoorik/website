@@ -35,7 +35,7 @@ export type DesignPartnerTeamIcon = "coral" | "amoeba";
 const subject = "Design partner program";
 
 export const designPartnersPage = {
-  /** The page's `<title>` (through the site's "Zoorik | %s" template) and description. */
+  /** The page's `<title>` (through the site's "%s | Zoorik" template) and description. */
   meta: {
     title: "Design partner program",
     description:

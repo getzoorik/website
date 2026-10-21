@@ -14,7 +14,7 @@ import "@/styles/learn.css";
  * share card. Learn teaches only: the market map, the news and the community have their own pages, which the hub
  * links.
  */
-/* Its title goes through the layout's template: "Zoorik | Cloud cost optimization guides"; the h1 stays "Zoorik Learn". */
+/* Its title goes through the layout's template: "Cloud cost optimization guides | Zoorik"; the h1 stays "Zoorik Learn". */
 export const metadata: Metadata = documentMetadata(learnPage.path, learnPage.meta, pageCards.learn);
 
 export default function Learn(): React.JSX.Element {
