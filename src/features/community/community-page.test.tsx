@@ -33,19 +33,17 @@ function expectOffSite(link: Element, href: string) {
 }
 
 describe("/community's metadata", () => {
-  it("has its absolute title, its description and its canonical", () => {
-    expect(metadata.title).toEqual({
-      absolute: "Zoorik Community: FinOps and cloud cost communities",
-    });
+  it("has its title through the template, its description and its canonical", () => {
+    expect(metadata.title).toBe("Community");
     expect(metadata.description).toBe(
       "The communities that matter for FinOps and cloud cost on Kubernetes, Azure and AWS, with r/zoorik and Zoorik News on Medium.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/community" });
     expect(metadata.openGraph).toMatchObject({
       url: "/community",
-      title: "Zoorik Community: FinOps and cloud cost communities",
+      title: "Zoorik | Community",
     });
-    expect(communityLastUpdated).toBe("20 October 2026");
+    expect(communityLastUpdated).toBe("21 October 2026");
   });
 });
 

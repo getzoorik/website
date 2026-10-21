@@ -15,16 +15,9 @@ import "@/styles/marketplaces.css";
  * profiles. Indexed, listed in the sitemap, and prerendered at build like every page here; linked from the footer's
  * Products column, after Assessment. It is drawn with the program pages' parts, so it loads their sheet first and its
  * own after it, as the mock carries them.
- *
- * Its title is used as is, like /about's and /value-lab's: "Where to find Zoorik | Marketplaces, reviews and installs"
- * names the company already, so no " · Zoorik" follows it.
+ * Its title goes through the layout's template: "Zoorik | Marketplaces".
  */
-const base = documentMetadata(routes.marketplaces, marketplacesPage.meta);
-export const metadata: Metadata = {
-  ...base,
-  title: { absolute: marketplacesPage.meta.title },
-  openGraph: { ...base.openGraph, title: marketplacesPage.meta.title },
-};
+export const metadata: Metadata = documentMetadata(routes.marketplaces, marketplacesPage.meta);
 
 export default function Marketplaces(): React.JSX.Element {
   return (

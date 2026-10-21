@@ -107,7 +107,7 @@ const literal = (name: string) => name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 describe("/learn's metadata", () => {
   it("titles and describes the hub as its mock does, with the /learn card", () => {
-    expect(metadata.title).toEqual({ absolute: "Zoorik Learn: cloud cost optimization guides" });
+    expect(metadata.title).toBe("Cloud cost optimization guides");
     expect(metadata.description).toBe(
       "Guides and comparisons for Kubernetes, block storage and the whole cloud bill on Azure and AWS, from where the money goes to the right fix.",
     );
@@ -115,7 +115,7 @@ describe("/learn's metadata", () => {
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/learn",
-      title: "Zoorik Learn: cloud cost optimization guides",
+      title: "Zoorik | Cloud cost optimization guides",
       images: [pageCards.learn],
     });
     /* The sitemap's date for the hub: a printed day, not ahead of today. */

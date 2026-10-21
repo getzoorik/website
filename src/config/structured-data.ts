@@ -22,7 +22,15 @@ import {
 } from "@/config/entity";
 import { openSourceLinks } from "@/config/open-source";
 import { liveListings, storeProfiles } from "@/config/marketplaces";
-import { amoebaDocs, calendarUrl, contactEmail, homeUrl, routes, site } from "@/config/site";
+import {
+  amoebaDocs,
+  calendarUrl,
+  contactEmail,
+  homeUrl,
+  pageTitle,
+  routes,
+  site,
+} from "@/config/site";
 import { pageCards } from "@/config/social";
 import { about, cin, registeredOffice } from "@/content/about";
 import { amoebaFaqPage } from "@/content/amoeba-faq";
@@ -267,7 +275,7 @@ interface PageEntry {
 }
 
 /** A page's printed `<title>`: through the layout's template. */
-const titled = (title: string): string => site.titleTemplate.replace("%s", title);
+const titled = pageTitle;
 
 /** A step named as the footer names its page ("Docs", "Coral guide", "Privacy"). */
 function step(path: string): Crumb {
@@ -385,10 +393,10 @@ const pages: Readonly<Record<string, PageEntry>> = {
         ),
       }
     : {}),
-  /* "Zoorik Learn: …" is absolute, as the page prints it (no " · Zoorik" after it). */
+  /* Zoorik Learn, the hub. */
   [routes.learn]: {
     kind: "CollectionPage",
-    name: learnPage.meta.title,
+    name: titled(learnPage.meta.title),
     description: learnPage.meta.description,
     trail: [step(routes.learn)],
   },
@@ -396,11 +404,10 @@ const pages: Readonly<Record<string, PageEntry>> = {
   ...Object.fromEntries(
     learnArticles.map((article) => [articleRoute(article), articleEntry(article)]),
   ),
-  /* Cloud cost optimization tools, whose "…" title is absolute as the page prints it, then each comparison page
-     under it by its title; about its product. */
+  /* Cloud cost optimization tools, then each comparison page under it by its title; about its product. */
   [routes.cloudCostTools]: {
     kind: "CollectionPage",
-    name: cloudCostToolsPage.meta.title,
+    name: titled(cloudCostToolsPage.meta.title),
     description: cloudCostToolsPage.meta.description,
     trail: [step(routes.cloudCostTools)],
   },
@@ -414,7 +421,10 @@ const pages: Readonly<Record<string, PageEntry>> = {
         kind: "WebPage",
         name: titled(page.meta.title),
         description: page.meta.description,
-        trail: [step(routes.cloudCostTools), { name: page.meta.title, path: page.path }],
+        trail: [
+          step(routes.cloudCostTools),
+          { name: "h1" in page ? page.h1 : page.meta.title, path: page.path },
+        ],
         about: page.product,
       } satisfies PageEntry,
     ]),
@@ -424,10 +434,10 @@ const pages: Readonly<Record<string, PageEntry>> = {
   [routes.docsInstallHelm]: osGuideEntry("helm"),
   [routes.docsInstallTerraform]: osGuideEntry("terraform"),
   [routes.docsContributing]: osGuideEntry("contributing"),
-  /* "Value Lab by Zoorik: …" is absolute too, as the page prints it. */
+  /* Value Lab, the case studies' hub. */
   [routes.valueLab]: {
     kind: "CollectionPage",
-    name: caseStudiesHub.meta.title,
+    name: titled(caseStudiesHub.meta.title),
     description: caseStudiesHub.meta.description,
     trail: [step(routes.valueLab)],
   },
@@ -445,10 +455,10 @@ const pages: Readonly<Record<string, PageEntry>> = {
       image: pageCards.caseStudyCoralDevCluster,
     },
   },
-  /* Two more absolute titles, /about's and /careers's: no " · Zoorik" after them (/learn's is above). */
+  /* About, the organisation's own page. */
   [routes.about]: {
     kind: "AboutPage",
-    name: about.meta.title,
+    name: titled(about.meta.title),
     description: about.meta.description,
     trail: [step(routes.about)],
     about: "organization",
@@ -456,33 +466,33 @@ const pages: Readonly<Record<string, PageEntry>> = {
   /* A page about working at the organisation; no JobPosting, as it lists no open role. */
   [routes.careers]: {
     kind: "WebPage",
-    name: careers.meta.title,
+    name: titled(careers.meta.title),
     description: careers.meta.description,
     trail: [step(routes.careers)],
     about: "organization",
   },
   /* The events list; its events are the page's own Event markup (`@/features/events`). */
   [routes.events]: documentEntry(routes.events, eventsPage.meta, [], { kind: "CollectionPage" }),
-  /* Zoorik Community: absolute too. */
+  /* Zoorik Community. */
   [routes.community]: {
     kind: "WebPage",
-    name: communityPage.meta.title,
+    name: titled(communityPage.meta.title),
     description: communityPage.meta.description,
     trail: [step(routes.community)],
     about: "organization",
   },
-  /* Where to find Zoorik: its title is absolute, as the page prints it (no " · Zoorik" after it). */
+  /* Where to find Zoorik. */
   [routes.marketplaces]: {
     kind: "WebPage",
-    name: marketplacesPage.meta.title,
+    name: titled(marketplacesPage.meta.title),
     description: marketplacesPage.meta.description,
     trail: [step(routes.marketplaces)],
     about: "organization",
   },
-  /* Zoorik News: its title is absolute, as the page prints it (no " · Zoorik" after it). */
+  /* Zoorik News. */
   [routes.news]: {
     kind: "CollectionPage",
-    name: newsPage.meta.title,
+    name: titled(newsPage.meta.title),
     description: newsPage.meta.description,
     trail: [step(routes.news)],
     about: "organization",

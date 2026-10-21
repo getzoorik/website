@@ -14,7 +14,7 @@ import { socialProfiles } from "@/content/footer";
  * The day /community's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /community's content moves this to that day in the same PR; never the build's date.
  */
-export const communityLastUpdated = "20 October 2026";
+export const communityLastUpdated = "21 October 2026";
 
 /** A profile of the footer's list, by its platform. */
 const profile = (platform: (typeof socialProfiles)[number]["platform"]): string =>
@@ -50,9 +50,9 @@ export interface CommunityMore {
 }
 
 export const communityPage = {
-  /** The page's `<title>` and share title as is: "Zoorik Community: …" names the company already, so no " · Zoorik". */
+  /** The `<title>`'s own words, after "Zoorik | ", and the description. */
   meta: {
-    title: "Zoorik Community: FinOps and cloud cost communities",
+    title: "Community",
     description:
       "The communities that matter for FinOps and cloud cost on Kubernetes, Azure and AWS, with r/zoorik and Zoorik News on Medium.",
   },

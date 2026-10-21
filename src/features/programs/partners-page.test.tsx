@@ -35,7 +35,7 @@ const tiles = (section: Element) =>
 
 describe("/partners's metadata", () => {
   it("has the mock's title through the site's template, its description and its canonical", () => {
-    expect(metadata.title).toBe("Partner program (coming soon)");
+    expect(metadata.title).toBe("Partner program");
     expect(metadata.description).toBe(
       "A partner program for consultancies, managed service providers and resellers who run Kubernetes and block storage on Azure and AWS. Coming soon.",
     );

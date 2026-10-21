@@ -3,7 +3,7 @@ import type { ProductId } from "@/content/products";
 
 /**
  * The comparison pages and their hub: Cloud cost optimization tools at /cloud-cost-optimization-tools, the versus
- * pages under /compare/<slug> and each product's alternatives pages. Competitors are named on these pages only
+ * pages under /cloud-cost-optimization-tools/<slug> and each product's alternatives pages. Competitors are named on these pages only
  * (/learn and every other page are name-free): names only, no logos, every claim with its source and the day it was
  * checked. Code identifiers stay name-free, so a versus page is a `slug`, never a key or a file named after a company.
  */
@@ -15,7 +15,7 @@ import type { ProductId } from "@/content/products";
 export const learnCompareLastUpdated = "19 October 2026";
 
 /** The day Cloud cost optimization tools' content last changed, for the sitemap's `lastmod` only, as above. */
-export const cloudCostToolsLastUpdated = "20 October 2026";
+export const cloudCostToolsLastUpdated = "21 October 2026";
 
 /**
  * Cloud cost optimization tools: every string it prints, verbatim. Its tiles are `shownGroups` in `learn-market.ts`,
@@ -25,7 +25,7 @@ export const cloudCostToolsLastUpdated = "20 October 2026";
 export const cloudCostToolsPage = {
   /** The page's `<title>`, as is, and its description. */
   meta: {
-    title: "Cloud cost optimization tools for Kubernetes, block storage and FinOps",
+    title: "Cloud cost optimization tools",
     description:
       "The tools that reduce the cloud bill on Azure and AWS: what each one does, how it works and which clouds it supports, checked on each company's own pages.",
   },
@@ -58,10 +58,10 @@ export const cloudCostToolsPage = {
 } as const;
 
 export interface VersusPage {
-  /** Its address under /compare/ (`comparePath`). */
+  /** Its address under Cloud cost optimization tools (`comparePath`). */
   readonly slug: string;
   readonly product: ProductId;
-  /** The page's `<title>` (through the site's " · Zoorik" template) and description; the title is its h1 and the
+  /** The page's `<title>` (through the site's "Zoorik | %s" template) and description; the title is its h1 and the
    *  description its deck. */
   readonly meta: { readonly title: string; readonly description: string };
   /** Its tile's line on Cloud cost optimization tools' Compare Coral and Amoeba. */
@@ -100,7 +100,9 @@ export const versusRoute = (page: VersusPage): `/${string}` => `${comparePath}/$
 export interface AlternativesPage {
   readonly route: string;
   readonly product: ProductId;
-  /** The `<title>` and description, as a versus page's: the title is its h1 and the description its deck. */
+  /** Its h1, and its tile's title on Cloud cost optimization tools. */
+  readonly h1: string;
+  /** The `<title>`'s own words (after "Zoorik | ") and the description, which is its deck. */
   readonly meta: { readonly title: string; readonly description: string };
   /** Its tile's line on Cloud cost optimization tools' Compare Coral and Amoeba. */
   readonly line: string;
@@ -111,8 +113,9 @@ export const alternativesPages: readonly AlternativesPage[] = [
   {
     route: routes.compareCoralAlternatives,
     product: "coral",
+    h1: "Coral alternatives: Kubernetes cost tools compared",
     meta: {
-      title: "Coral alternatives: Kubernetes cost tools compared",
+      title: "Kubernetes cost tools",
       description:
         "Weighing Coral against other ways to reduce Kubernetes cost on AKS and EKS? Here is each option, what it does and how it acts, from each company’s own pages.",
     },
@@ -121,8 +124,9 @@ export const alternativesPages: readonly AlternativesPage[] = [
   {
     route: routes.compareAmoebaAlternatives,
     product: "amoeba",
+    h1: "Amoeba alternatives: block storage tools compared",
     meta: {
-      title: "Amoeba alternatives: block storage tools compared",
+      title: "Block storage tools",
       description:
         "Weighing Amoeba against other ways to reduce what Azure managed disks and Amazon EBS cost? Here is each option, what it does and how it acts, from each company’s own pages.",
     },

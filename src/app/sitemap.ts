@@ -72,7 +72,7 @@ const contentDates: Partial<Record<string, string>> = {
   [routes.amoebaGuide]: amoebaGuide.updated,
   [routes.amoebaFaq]: amoebaFaqPage.updated,
   [routes.cloudCostTools]: cloudCostToolsLastUpdated,
-  /* The comparison pages (under /compare) print "checked 19 October 2026": one content date. */
+  /* The comparison pages (under Cloud cost optimization tools) print "checked 19 October 2026": one content date. */
   ...Object.fromEntries(
     [...alternativesPages.map((page) => page.route), ...versusPages.map(versusRoute)].map(
       (route) => [route, learnCompareLastUpdated] as const,

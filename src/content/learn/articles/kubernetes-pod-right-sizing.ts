@@ -5,7 +5,7 @@ import { figure as figure3 } from "@/features/learn/figures/kubernetes-pod-right
 
 export const article: Article = {
   slug: "kubernetes-pod-right-sizing",
-  title: "Kubernetes pod right sizing: requests from real use",
+  title: "Kubernetes pod rebalancing",
   meta: "Kubernetes pod right sizing, step by step: read real CPU and memory use, set requests from it, keep limits safe, find CPU throttling and roll back cleanly.",
   h1: "Kubernetes pod right sizing: set requests from real use",
   deck: "How to read what each container really uses, set its requests from that, and change them without OOM kills.",
@@ -331,7 +331,7 @@ export const article: Article = {
             "On our own AKS development cluster, Coral had rebalanced the requests of 14 apps by 12 October 2026. CPU reserved by the cluster’s own apps went from 0.78 to 0.43\u00a0cores, 45% less, and memory from 6.4 to 5.4\u00a0GiB, 16% less. ",
             {
               a: "How we reduced our own cluster’s machine bill by 58%",
-              href: "/case-studies/coral-dev-cluster",
+              href: "/value-lab/coral-dev-cluster",
             },
             " has the full run.",
           ],

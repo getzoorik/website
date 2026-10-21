@@ -11,7 +11,7 @@ import { documentMetadata } from "@/features/documents/document-page";
 import "@/styles/case-studies.css";
 
 /**
- * `/case-studies/coral-dev-cluster`: "Coral on our own development cluster".
+ * `/value-lab/coral-dev-cluster`: "Coral on our own development cluster".
  * Indexed, listed in the sitemap, and prerendered at build like every page
  * here. It keeps its address under /case-studies; its hub is Value Lab, /value-lab.
  */

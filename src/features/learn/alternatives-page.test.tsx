@@ -15,14 +15,16 @@ import { alternativesFacts, marketActs, marketGroups, versusFacts } from "@/cont
 import { products } from "@/content/products";
 
 /* The nav and the footer read the pathname. */
-const pathname = vi.hoisted(() => ({ current: "/compare/coral-alternatives" }));
+const pathname = vi.hoisted(() => ({
+  current: "/cloud-cost-optimization-tools/coral-alternatives",
+}));
 vi.mock("next/navigation", async (original) => ({
   ...(await original<typeof import("next/navigation")>()),
   usePathname: () => pathname.current,
 }));
 
-import * as coralRoute from "@/app/compare/coral-alternatives/page";
-import * as amoebaRoute from "@/app/compare/amoeba-alternatives/page";
+import * as coralRoute from "@/app/cloud-cost-optimization-tools/coral-alternatives/page";
+import * as amoebaRoute from "@/app/cloud-cost-optimization-tools/amoeba-alternatives/page";
 
 import { marketTool } from "./market-rows";
 
@@ -44,8 +46,8 @@ const modules: Readonly<
 describe("the alternatives pages", () => {
   it("are one per product, Coral first", () => {
     expect(alternativesPages.map((entry) => [entry.route, entry.product])).toEqual([
-      ["/compare/coral-alternatives", "coral"],
-      ["/compare/amoeba-alternatives", "amoeba"],
+      ["/cloud-cost-optimization-tools/coral-alternatives", "coral"],
+      ["/cloud-cost-optimization-tools/amoeba-alternatives", "amoeba"],
     ]);
     expect(alternativesFacts.map((facts) => facts.product)).toEqual(["coral", "amoeba"]);
   });
@@ -68,7 +70,7 @@ describe.each(alternativesPages.map((entry) => [entry.route, entry] as const))(
       expect(routeModule.metadata.alternates).toEqual({ canonical: route });
       expect(routeModule.metadata.openGraph).toMatchObject({
         url: route,
-        title: `${entry.meta.title} · Zoorik`,
+        title: `Zoorik | ${entry.meta.title}`,
         images: [socialImage],
       });
     });
@@ -76,7 +78,7 @@ describe.each(alternativesPages.map((entry) => [entry.route, entry] as const))(
     it("draws the hero, the structured data, then the two sections and the closing row", () => {
       const root = page();
       expect(text(root.querySelector(".vp-kick"))).toBe("Alternatives · checked 19 October 2026");
-      expect(text(root.querySelector("h1"))).toBe(entry.meta.title);
+      expect(text(root.querySelector("h1"))).toBe(entry.h1);
       expect(text(root.querySelector(".doc-deck"))).toBe(entry.meta.description);
       const blocks = root.querySelectorAll('script[type="application/ld+json"]');
       expect(blocks).toHaveLength(1);

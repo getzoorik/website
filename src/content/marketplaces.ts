@@ -47,9 +47,9 @@ export interface MarketplacesLink {
 }
 
 export const marketplacesPage = {
-  /** The page's `<title>` (through the site's " · Zoorik" template) and description. */
+  /** The page's `<title>` (through the site's "Zoorik | %s" template) and description. */
   meta: {
-    title: "Where to find Zoorik | Marketplaces, reviews and installs",
+    title: "Marketplaces",
     description:
       "Buy Coral and Amoeba on AWS or Microsoft Marketplace, read reviews on G2, and install from Homebrew, PyPI, npm and the Terraform Registry.",
   },

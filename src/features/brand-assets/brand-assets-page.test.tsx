@@ -57,7 +57,7 @@ afterEach(() => {
 
 describe("/brand-assets's metadata", () => {
   it("has the mock's title through the template, its description and its canonical", () => {
-    expect(metadata.title).toBe("Brand assets: the Zoorik logo, colours and words");
+    expect(metadata.title).toBe("Brand assets");
     expect(metadata.description).toBe(
       "Download the Zoorik logo, mark and brand kit, with the colours, the tagline and the rules for using them.",
     );
@@ -65,7 +65,7 @@ describe("/brand-assets's metadata", () => {
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/brand-assets",
-      title: "Brand assets: the Zoorik logo, colours and words · Zoorik",
+      title: "Zoorik | Brand assets",
     });
   });
 });
@@ -79,7 +79,7 @@ describe("/brand-assets's structured data", () => {
     expect(data).toEqual(JSON.parse(JSON.stringify(pageStructuredData("/brand-assets"))));
     expect(data["@graph"][2]).toMatchObject({
       url: "https://zoorik.com/brand-assets",
-      name: "Brand assets: the Zoorik logo, colours and words · Zoorik",
+      name: "Zoorik | Brand assets",
       description: metadata.description,
       about: { "@id": "https://zoorik.com/#organization" },
     });

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import { SiteNav } from "@/components/layout/site-nav";
-import { site } from "@/config/site";
+import { pageTitle } from "@/config/site";
 import { pageOpenGraph } from "@/config/social";
 import type { ProductId } from "@/content/products";
 import { AssessSection } from "@/features/assess/assess-section";
@@ -66,7 +66,7 @@ export function DocumentPage({
 }
 
 /**
- * A document page's metadata: the title through the layout's "%s · Zoorik"
+ * A document page's metadata: the title through the layout's "Zoorik | %s"
  * template, its description, its canonical, and the Open Graph card with the
  * full title (Open Graph does not apply the template): the page's own share
  * card when it has one (`pageCards`), else the brand card.
@@ -82,7 +82,7 @@ export function documentMetadata(
     alternates: { canonical: path },
     openGraph: pageOpenGraph(
       path,
-      { title: `${copy.title} · ${site.name}`, description: copy.description },
+      { title: pageTitle(copy.title), description: copy.description },
       card,
     ),
   };

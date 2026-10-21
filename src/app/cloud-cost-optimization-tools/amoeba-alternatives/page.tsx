@@ -9,7 +9,7 @@ import { AlternativesPage, alternativesPageAt } from "@/features/learn/alternati
 import "@/styles/learn.css";
 
 /**
- * `/compare/amoeba-alternatives`: Amoeba's alternatives; its old address, /learn/amoeba-alternatives, 301-redirects
+ * `/cloud-cost-optimization-tools/amoeba-alternatives`: Amoeba's alternatives; its old addresses, /compare/amoeba-alternatives and /learn/amoeba-alternatives, 301-redirects
  * here (next.config.ts). Indexed, listed in the sitemap, prerendered at build like every page here, and linked from
  * Cloud cost optimization tools' tiles; it takes the site's default card.
  */

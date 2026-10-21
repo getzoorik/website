@@ -3,7 +3,7 @@ import type { Article } from "@/content/learn/article";
 
 export const article: Article = {
   slug: "vpa-vs-hpa",
-  title: "VPA vs HPA: rebalance first, then scale out",
+  title: "VPA vs HPA",
   meta: "The VPA sets how much CPU and memory a pod requests; the HPA sets how many pods run. Why they clash on CPU, and why rebalancing comes first.",
   h1: "VPA vs HPA: rebalance first, then scale out",
   deck: "What each Kubernetes autoscaler changes, why they clash on CPU, and the order that works.",
@@ -13,7 +13,7 @@ export const article: Article = {
   topic: "Kubernetes autoscaling",
   versus: ["VPA", "HPA"],
   published: "2026-10-09",
-  updated: "2026-10-09",
+  updated: "2026-10-21",
   author: "zoorik",
   breakCode: true,
   short:

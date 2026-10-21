@@ -141,9 +141,9 @@ const studyBefore = studySteps[0]!.label;
 const studyAfter = studySteps[studySteps.length - 1]!.label;
 
 export const about = {
-  /** An absolute `<title>` (with /careers's): the mock's, with no " · Zoorik" after it. */
+  /** The `<title>`'s own words, after "Zoorik | ", and the description. */
   meta: {
-    title: "About Zoorik | Who builds Coral and Amoeba",
+    title: "About",
     description:
       "Zoorik Private Limited builds Coral, Kubernetes cost optimization on AKS and EKS, and Amoeba, block storage cost optimization on Azure and AWS.",
   },

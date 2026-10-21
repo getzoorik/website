@@ -34,8 +34,8 @@ const page = () => render(<AboutRoute />).container;
 const main = () => page().querySelector("main")!;
 
 describe("/about's metadata", () => {
-  it("has an absolute title, the mock's description and its canonical", () => {
-    expect(metadata.title).toEqual({ absolute: "About Zoorik | Who builds Coral and Amoeba" });
+  it("has its title through the template, the mock's description and its canonical", () => {
+    expect(metadata.title).toBe("About");
     expect(metadata.description).toBe(
       "Zoorik Private Limited builds Coral, Kubernetes cost optimization on AKS and EKS, and Amoeba, block storage cost optimization on Azure and AWS.",
     );
@@ -43,7 +43,7 @@ describe("/about's metadata", () => {
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/about",
-      title: "About Zoorik | Who builds Coral and Amoeba",
+      title: "Zoorik | About",
     });
   });
 });

@@ -19,7 +19,7 @@ vi.mock("next/navigation", async (original) => ({
 /**
  * Competitors are named in one place: the market data (`src/content/learn-market.ts`), plus the
  * versus pages' titles in `src/content/learn-compare.ts`, and the pages that print them, Cloud cost optimization tools
- * and the comparison pages under /compare, read them from there. Every other file in src/ (pages, components, code
+ * and the comparison pages under it, read them from there. Every other file in src/ (pages, components, code
  * identifiers, file and folder names, CSS, comments, other tests) stays name-free, and so does every other page. This
  * reads every competitor's name from the data and looks for it everywhere else.
  *
@@ -169,8 +169,8 @@ describe("competitors' names", () => {
     const run = parts(name!);
     const camel = run.map((part, i) => (i === 0 ? part : part[0]!.toUpperCase() + part.slice(1)));
     for (const spelling of [
-      `/compare/coral-vs-${run.join("-")}`,
-      `src/app/compare/coral-vs-${run.join("-")}/page.tsx`,
+      `/cloud-cost-optimization-tools/coral-vs-${run.join("-")}`,
+      `src/app/cloud-cost-optimization-tools/coral-vs-${run.join("-")}/page.tsx`,
       `const ${camel.join("")}Rows = [];`,
       `const ${run.join("")}Rows = [];`,
       `${run.join("_").toUpperCase()}_URL`,
@@ -198,14 +198,16 @@ describe("competitors' names", () => {
   };
 
   /* It renders every page of the site, so it has the time `structured-data.test.ts` allows its own pass over them. */
-  it("are printed by Cloud cost optimization tools and the pages under /compare only: every other page renders none", async () => {
+  it("are printed by Cloud cost optimization tools and the pages under it only: every other page renders none", async () => {
     /* Every page of the site, by its file; Cloud cost optimization tools and the comparison pages (the versus pages
-       and the alternatives pages, under /compare) are the ones allowed to name competitors. */
+       and the alternatives pages, under it) are the ones allowed to name competitors. */
     const hubPage = "src/app/cloud-cost-optimization-tools/page.tsx";
     const pages = files("src/app").filter((path) => path.endsWith("/page.tsx"));
     expect(pages.length).toBeGreaterThan(30);
     expect(pages).toContain(hubPage);
-    const others = pages.filter((path) => !path.startsWith("src/app/compare/") && path !== hubPage);
+    const others = pages.filter(
+      (path) => !path.startsWith("src/app/cloud-cost-optimization-tools/") && path !== hubPage,
+    );
     expect(pages.length - others.length).toBe(4);
     expect(others).toContain("src/app/learn/page.tsx");
     const load = async (path: string) =>

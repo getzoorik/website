@@ -5,7 +5,7 @@ import { figure as figure3 } from "@/features/learn/figures/azure-disk-cost-opti
 
 export const article: Article = {
   slug: "azure-disk-cost-optimization",
-  title: "Azure disk cost optimization: pay for your data",
+  title: "Azure disk cost optimization",
   meta: "Azure disk cost optimization: a managed disk bills by size tier every hour, however full it is. Delete unattached disks, reset performance, then size to data.",
   h1: "Azure disk cost optimization: stop paying for empty space",
   deck: "What a managed disk bills for, why the space you bought stays on the bill, and how to pay for your data instead.",

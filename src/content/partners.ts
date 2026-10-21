@@ -21,15 +21,15 @@ import type { ProductId } from "@/content/products";
  * The day /partners's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /partners's content moves this to that day in the same PR; never the build's date.
  */
-export const partnersLastUpdated = "20 October 2026";
+export const partnersLastUpdated = "21 October 2026";
 
 /** A tile's glyph: the Zoorik mark, a line glyph, or the document. */
 export type PartnerTileIcon = "zoorik" | "shield" | "eye" | "package" | "doc";
 
 export const partnersPage = {
-  /** The page's `<title>` (through the site's " · Zoorik" template) and description. */
+  /** The page's `<title>` (through the site's "Zoorik | %s" template) and description. */
   meta: {
-    title: "Partner program (coming soon)",
+    title: "Partner program",
     description:
       "A partner program for consultancies, managed service providers and resellers who run Kubernetes and block storage on Azure and AWS. Coming soon.",
   },

@@ -16,13 +16,13 @@ import { marketChecked, marketGroups, marketMarks, versusFacts } from "@/content
 import { products } from "@/content/products";
 
 /* The nav and the footer read the pathname; `notFound` stays Next's own. */
-const pathname = vi.hoisted(() => ({ current: "/compare" }));
+const pathname = vi.hoisted(() => ({ current: "/cloud-cost-optimization-tools" }));
 vi.mock("next/navigation", async (original) => ({
   ...(await original<typeof import("next/navigation")>()),
   usePathname: () => pathname.current,
 }));
 
-import * as route from "@/app/compare/[slug]/page";
+import * as route from "@/app/cloud-cost-optimization-tools/[slug]/page";
 import {
   getRedirectUrl,
   unstable_getResponseFromNextConfig,
@@ -32,7 +32,7 @@ import nextConfig from "../../../next.config";
 import { marketTool } from "./market-rows";
 
 /**
- * The versus pages, one dynamic route under /compare: only
+ * The versus pages, one dynamic route under /cloud-cost-optimization-tools: only
  * the two live pages exist, each prints its rows from the market data with every claim about the other tool linked to
  * its source, the day it was checked, and no SOC 2 row; any other slug, a held page among them, is a 404, and each
  * live page's old address under /learn redirects here. Competitors' names are read from the data, never typed here.
@@ -65,19 +65,21 @@ describe("the versus route", () => {
       versusPages.map((entry) => ({ slug: entry.slug })),
     );
     expect(versusPages.map((entry) => entry.product)).toEqual(["coral", "amoeba"]);
-    for (const entry of versusPages) expect(versusRoute(entry)).toBe(`/compare/${entry.slug}`);
-    /* No file or folder under /compare is named after a company: the one dynamic segment for the versus pages, and
-       the two alternatives pages. /compare itself is no page: it redirects to Cloud cost optimization tools. */
-    expect(readdirSync("src/app/compare").sort()).toEqual(
+    for (const entry of versusPages)
+      expect(versusRoute(entry)).toBe(`${comparePath}/${entry.slug}`);
+    /* No file or folder under the tools hub is named after a company: its own page, the one dynamic segment for the
+       versus pages, and the two alternatives pages. */
+    expect(readdirSync(`src/app${comparePath}`).sort()).toEqual(
       [
         "[slug]",
+        "page.tsx",
         ...alternativesPages.map((entry) => entry.route.slice(`${comparePath}/`.length)),
       ].sort(),
     );
-    expect(readdirSync("src/app/compare/[slug]")).toEqual(["page.tsx"]);
+    expect(readdirSync(`src/app${comparePath}/[slug]`)).toEqual(["page.tsx"]);
   });
 
-  it("takes each page's old address under /learn to its own address under /compare, with a 301", async () => {
+  it("takes each page's old address under /learn to its own address under the tools hub, with a 301", async () => {
     const old = [
       ...versusPages.map((entry) => [`/learn/compare/${entry.slug}`, versusRoute(entry)] as const),
       ...alternativesPages.map(
@@ -142,7 +144,7 @@ describe.each(versusPages.map((entry) => [entry.slug, entry] as const))("%s", (_
     expect(metadata.alternates).toEqual({ canonical: versusRoute(entry) });
     expect(metadata.openGraph).toMatchObject({
       url: versusRoute(entry),
-      title: `${entry.meta.title} · Zoorik`,
+      title: `Zoorik | ${entry.meta.title}`,
       images: [socialImage],
     });
     expect(entry.meta.title).toBe(`${ours} vs ${facts.name}`);

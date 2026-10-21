@@ -12,7 +12,7 @@ export const article: Article = {
   hub: "Cloud cost",
   topic: "Cloud cost",
   published: "2026-10-14",
-  updated: "2026-10-14",
+  updated: "2026-10-21",
   author: "vineet",
   shareCard: {
     url: "/og/zoorik-learn-poor-architecture-cloud-bill-1200x630.png",

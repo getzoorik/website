@@ -5,7 +5,7 @@ import { figure as figure3 } from "@/features/learn/figures/shrink-azure-managed
 
 export const article: Article = {
   slug: "shrink-azure-managed-disk",
-  title: "Reduce Azure disk size: can a managed disk shrink?",
+  title: "Can a managed disk shrink?",
   meta: "You can’t reduce Azure disk size in place: managed disks only grow. The copy route step by step, the OS disk case, and how Amoeba rightsizes data disks.",
   h1: "Can you shrink an Azure managed disk?",
   deck: "Not in place. How to reduce Azure disk size by copying, what it costs you, and how Amoeba rightsizes data disks.",

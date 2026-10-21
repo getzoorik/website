@@ -9,7 +9,7 @@ const pathname = vi.hoisted(() => ({ current: "/value-lab" }));
 vi.mock("next/navigation", () => ({ usePathname: () => pathname.current }));
 
 import ValueLabRoute, { metadata as hubMeta } from "@/app/value-lab/page";
-import CaseStudyRoute, { metadata as studyMeta } from "@/app/case-studies/coral-dev-cluster/page";
+import CaseStudyRoute, { metadata as studyMeta } from "@/app/value-lab/coral-dev-cluster/page";
 
 /**
  * Value Lab and its case study: the metadata, the hub (what the studies saved
@@ -29,7 +29,7 @@ const hub = () => {
   return render(<ValueLabRoute />).container;
 };
 const study = () => {
-  pathname.current = "/case-studies/coral-dev-cluster";
+  pathname.current = "/value-lab/coral-dev-cluster";
   return render(<CaseStudyRoute />).container;
 };
 
@@ -40,27 +40,25 @@ const SPOKEN = /^Download the case study, PDF, \d+ pages?, \d\.\d MB, A4$/;
 describe("the case studies' metadata", () => {
   it("titles, describes and canonicalises the hub in the mock's words", () => {
     /* "Value Lab by Zoorik: …" already names the company, so no " · Zoorik" after it. */
-    expect(hubMeta.title).toEqual({ absolute: "Value Lab by Zoorik | Cloud cost case studies" });
+    expect(hubMeta.title).toBe("Value Lab");
     expect(hubMeta.description).toBe("What Coral does on real clusters, with the figures.");
     expect(hubMeta.alternates).toEqual({ canonical: "/value-lab" });
     expect(hubMeta).not.toHaveProperty("robots");
     expect(hubMeta.openGraph).toMatchObject({
       url: "/value-lab",
-      title: "Value Lab by Zoorik | Cloud cost case studies",
+      title: "Zoorik | Value Lab",
     });
   });
 
   it("titles, describes and canonicalises the study in the mock's words", () => {
-    expect(studyMeta.title).toBe(
-      "Case study: how we reduced our own cluster’s machine bill by 58%",
-    );
+    expect(studyMeta.title).toBe("How we reduced our cluster’s machine bill by 58%");
     expect(studyMeta.description).toBe(
       "Before we ask anyone to trust Coral with their cluster, we run it on ours. Eight days after we connected it, our AKS development cluster cost $154.76 a month instead of $368.65.",
     );
-    expect(studyMeta.alternates).toEqual({ canonical: "/case-studies/coral-dev-cluster" });
+    expect(studyMeta.alternates).toEqual({ canonical: "/value-lab/coral-dev-cluster" });
     expect(studyMeta.openGraph).toMatchObject({
-      url: "/case-studies/coral-dev-cluster",
-      title: "Case study: how we reduced our own cluster’s machine bill by 58% · Zoorik",
+      url: "/value-lab/coral-dev-cluster",
+      title: "Zoorik | How we reduced our cluster’s machine bill by 58%",
       images: [
         {
           url: "/og/zoorik-case-coral-dev-cluster-1200x630.png",
@@ -142,7 +140,7 @@ describe("/value-lab", () => {
     ]);
     expect(text(bars.querySelector(".vl-per"))).toBe("a month");
     const read = featured!.querySelector("a.btn-ink")!;
-    expect(read).toHaveAttribute("href", "/case-studies/coral-dev-cluster");
+    expect(read).toHaveAttribute("href", "/value-lab/coral-dev-cluster");
     expect(text(read)).toBe("Read the case study");
     expect(text(next!.querySelector("h2.as-h"))).toBe("Want to be next?");
     expect(text(next!.querySelector("p"))).toBe(
@@ -167,7 +165,7 @@ describe("/value-lab", () => {
   });
 });
 
-describe("/case-studies/coral-dev-cluster", () => {
+describe("/value-lab/coral-dev-cluster", () => {
   it("opens on the PDF's kicker, headline and opening, with its download beside them", () => {
     const hero = study().querySelector("main > header.hero.doc-hero.cs-hero#top")!;
     expect(text(hero.querySelector(".cs-kick"))).toBe(
@@ -365,7 +363,7 @@ describe("both pages", () => {
       const link = outside[0]!;
       expect(link.closest("footer")).not.toBeNull();
       expect(text(link)).toBe("Value Lab");
-      expect(text(link.previousElementSibling)).toBe("Zoorik Learn");
+      expect(text(link.previousElementSibling)).toBe("Learn");
       expect(container.querySelector(".nav [aria-current], .nav .is-cur")).toBeNull();
     },
   );

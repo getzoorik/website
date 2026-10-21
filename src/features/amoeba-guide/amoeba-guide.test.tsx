@@ -445,14 +445,14 @@ describe("the [Coral | Amoeba] switch", () => {
 
 describe("the /amoeba/guide route", () => {
   it("titles, describes and canonicalises the page in the approved mock's words", () => {
-    expect(metadata.title).toBe("Amoeba product guide: Azure managed disks and EBS");
+    expect(metadata.title).toBe("Amoeba product guide");
     expect(metadata.description).toBe(
       "How to onboard a VM to Amoeba on Azure or AWS, how its data moves onto one pool, how the pool expands and shrinks online, and how you stay in control.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/amoeba/guide" });
     expect(metadata).not.toHaveProperty("robots");
     const og = metadata.openGraph as Record<string, unknown>;
-    expect(og.title).toBe("Amoeba product guide: Azure managed disks and EBS · Zoorik");
+    expect(og.title).toBe("Zoorik | Amoeba product guide");
     expect(og.url).toBe("/amoeba/guide");
   });
 

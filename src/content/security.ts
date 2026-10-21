@@ -59,7 +59,7 @@ export interface SecurityGroup {
 export const securityPage = {
   path: routes.security,
   meta: {
-    title: "Security and data handling",
+    title: "Security",
     description:
       "What Coral and Amoeba may change in your cloud, what leaves your cluster or VM, where data is kept, our sub-processors, and how to report an issue.",
   },

@@ -60,7 +60,7 @@ interface PageModule {
  */
 function versusModule(slug: string): () => Promise<PageModule> {
   return async () => {
-    const page = await import("@/app/compare/[slug]/page");
+    const page = await import("@/app/cloud-cost-optimization-tools/[slug]/page");
     const params = Promise.resolve({ slug });
     const [metadata, element] = await Promise.all([
       page.generateMetadata({ params }),
@@ -99,7 +99,7 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
     learnArticles.map((article) => [articleRoute(article), articleModule(article.slug)]),
   ),
   "/value-lab": () => import("@/app/value-lab/page"),
-  "/case-studies/coral-dev-cluster": () => import("@/app/case-studies/coral-dev-cluster/page"),
+  "/value-lab/coral-dev-cluster": () => import("@/app/value-lab/coral-dev-cluster/page"),
   "/about": () => import("@/app/about/page"),
   "/careers": () => import("@/app/careers/page"),
   "/events": () => import("@/app/events/page"),
@@ -109,8 +109,10 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/referrals": () => import("@/app/referrals/page"),
   "/design-partners": () => import("@/app/design-partners/page"),
   "/cloud-cost-optimization-tools": () => import("@/app/cloud-cost-optimization-tools/page"),
-  "/compare/coral-alternatives": () => import("@/app/compare/coral-alternatives/page"),
-  "/compare/amoeba-alternatives": () => import("@/app/compare/amoeba-alternatives/page"),
+  "/cloud-cost-optimization-tools/coral-alternatives": () =>
+    import("@/app/cloud-cost-optimization-tools/coral-alternatives/page"),
+  "/cloud-cost-optimization-tools/amoeba-alternatives": () =>
+    import("@/app/cloud-cost-optimization-tools/amoeba-alternatives/page"),
   "/community": () => import("@/app/community/page"),
   "/marketplaces": () => import("@/app/marketplaces/page"),
   ...Object.fromEntries(versusPages.map((page) => [versusRoute(page), versusModule(page.slug)])),
@@ -380,7 +382,7 @@ describe("every indexed page's structured data", () => {
     }
   });
 
-  it("trails a guide or FAQ through Docs, an article through Zoorik Learn, the study through Value Lab", () => {
+  it("trails a guide or FAQ through Docs, an article through Learn, the study through Value Lab", () => {
     const names = (path: string) =>
       (ofType(graphOf(path), "BreadcrumbList")[0]!.itemListElement as readonly Node[]).map(
         (step) => step.name,
@@ -388,11 +390,7 @@ describe("every indexed page's structured data", () => {
     expect(names(routes.coralGuide)).toEqual(["Zoorik", "Docs", "Coral guide"]);
     expect(names(routes.amoebaFaq)).toEqual(["Zoorik", "Docs", "Amoeba FAQ"]);
     for (const article of learnArticles) {
-      expect(names(articleRoute(article)), article.slug).toEqual([
-        "Zoorik",
-        "Zoorik Learn",
-        article.h1,
-      ]);
+      expect(names(articleRoute(article)), article.slug).toEqual(["Zoorik", "Learn", article.h1]);
     }
     expect(names(routes.caseStudyCoralDevCluster)).toEqual([
       "Zoorik",

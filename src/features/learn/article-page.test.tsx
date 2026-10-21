@@ -208,7 +208,7 @@ describe.each(learnArticles.map((article) => article.slug))("/learn/%s", (slug) 
     expect(meta).not.toHaveProperty("robots");
     expect(meta.openGraph).toMatchObject({
       url: route,
-      title: `${article.title} · Zoorik`,
+      title: `Zoorik | ${article.title}`,
       description: article.meta,
       images: [articleCard(article)],
     });
@@ -629,8 +629,8 @@ describe("/learn/poor-architecture-cloud-bill, against its source", () => {
       a.getAttribute("href"),
     ]);
     expect(links).toEqual([
-      ["On our own Kubernetes development cluster", "/case-studies/coral-dev-cluster"],
-      ["cut the cluster’s machine bill by 58% in eight days", "/case-studies/coral-dev-cluster"],
+      ["On our own Kubernetes development cluster", "/value-lab/coral-dev-cluster"],
+      ["cut the cluster’s machine bill by 58% in eight days", "/value-lab/coral-dev-cluster"],
       [
         "Azure managed disks and AWS EBS volumes can grow but cannot be shrunk in place",
         "/learn/shrink-azure-managed-disk",
