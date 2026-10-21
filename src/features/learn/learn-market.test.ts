@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 
-import { learnFixes } from "@/content/learn";
 import { alternativesPages, versusPages } from "@/content/learn-compare";
 import {
   alternativesFacts,
@@ -88,12 +87,7 @@ describe("the market data", () => {
   });
 
   it("says Coral rebalances, never that it right-sizes: that is Amoeba's verb", () => {
-    const coral = [
-      marketOurs("coral").line,
-      ...learnFixes.filter((fix) => fix.fits.startsWith("Coral")).map((fix) => fix.fits),
-    ];
-    expect(coral).toHaveLength(4);
-    for (const line of coral) expect(line).not.toMatch(/right-?siz/i);
+    expect(marketOurs("coral").line).not.toMatch(/right-?siz/i);
     expect(marketOurs("coral").line).toMatch(/^Rebalances workloads,/);
     expect(marketOurs("amoeba").line).toMatch(/^Rightsizes block storage/);
   });

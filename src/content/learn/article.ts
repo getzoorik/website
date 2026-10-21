@@ -17,15 +17,21 @@ import type { ProductId } from "@/content/products";
  * changes.
  */
 
+/** A link on words already in the text: its words may be one piece of inline code. */
+export interface ArticleLink {
+  readonly a: string | { readonly code: string };
+  readonly href: string;
+}
+
 /**
- * One piece of a run of text: plain, bold, inline code, or a link on words already in it. A link's words may be one
- * piece of inline code. A link to another site opens in a new tab.
+ * One piece of a run of text: plain, bold, inline code, or a link on words already in it. Bold may hold a link or
+ * code among its words. A link to another site opens in a new tab.
  */
 export type ArticleInline =
   | string
-  | { readonly b: string }
+  | { readonly b: string | readonly (string | { readonly code: string } | ArticleLink)[] }
   | { readonly code: string }
-  | { readonly a: string | { readonly code: string }; readonly href: string };
+  | ArticleLink;
 
 /** A run of text: one string, or pieces. */
 export type ArticleText = string | readonly ArticleInline[];
@@ -54,6 +60,20 @@ export interface LearnFigure {
   readonly html: string;
 }
 
+/**
+ * A drawn figure: `src/features/learn/figures/<slug>/<n>.ts`, written from its drawing. The SVG names
+ * itself for a screen reader (its own `role="img"`, title and description) and is drawn as written, under its caption.
+ */
+export interface LearnSvgFigure {
+  /** The `<svg>` element, whole. */
+  readonly markup: string;
+  readonly caption: ArticleText;
+}
+
+/** The labels a callout opens with, each its own kind of aside. */
+export type ArticleCalloutLabel =
+  "Worked example" | "Rule of thumb" | "Watch out" | "For engineers" | "Note";
+
 /** A list item: its words, and the paragraphs or code under them. */
 export type ArticleItem =
   ArticleText | { readonly text: ArticleText; readonly blocks: readonly ArticleBlock[] };
@@ -78,6 +98,10 @@ export type ArticleBlock =
   | { readonly kind: "figure"; readonly figure: ArticleFigureId }
   /** A diagram of the article's own (`LearnFigure`). */
   | { readonly kind: "diagram"; readonly figure: LearnFigure }
+  /** A drawn figure of the article's own (`LearnSvgFigure`). */
+  | { readonly kind: "svg"; readonly figure: LearnSvgFigure }
+  /** A paragraph set apart under its label: a worked example, a rule of thumb, a pitfall or a note for engineers. */
+  | { readonly kind: "callout"; readonly label: ArticleCalloutLabel; readonly text: ArticleText }
   /**
    * A code well, in the language its fence names. A shell well prints "$ " where each command starts; a YAML or JSON
    * well scrolls sideways rather than wrap; an output well ("text", or none) has no Copy button.
@@ -191,6 +215,8 @@ export interface Article {
   readonly author: AuthorKey | "zoorik";
   /** Its own share card; an article without one shows the /learn card. */
   readonly shareCard?: ArticleShareCard;
+  /** Its drawn cover (1200 × 630 WebP in `public/learn-covers/`), under the byline. */
+  readonly cover?: `/learn-covers/${string}.webp`;
   /** The answer after "Short answer.", first in the column. An essay has none. */
   readonly short?: ArticleText;
   readonly strip?: readonly ArticleStripStep[];

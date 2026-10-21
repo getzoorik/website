@@ -121,7 +121,17 @@ describe("the Learn index", () => {
           if (!rule.trim().startsWith("@")) expect(rule, name).toContain(`.${name}`);
         }
       });
+      /* Its diagrams and drawn figures share one numbering, each in its own module. */
+      blocksOf(article.slug)
+        .filter((block) => block.kind === "diagram" || block.kind === "svg")
+        .forEach((_, index) =>
+          expect(
+            existsSync(`src/features/learn/figures/${article.slug}/${index + 1}.ts`),
+            `${article.slug}-${index + 1}`,
+          ).toBe(true),
+        );
       if (article.shareCard) expect(existsSync(`public${article.shareCard.url}`)).toBe(true);
+      if (article.cover) expect(existsSync(`public${article.cover}`), article.cover).toBe(true);
     }
   });
 

@@ -280,3 +280,46 @@ p.fx-read{color:inherit;font-weight:inherit}
   .vp-glance,.ap-q{grid-template-columns:minmax(0,1fr)}
   .vp-t th,.vp-t td{padding:12px}
 }
+
+/* ══ learn-v3: the hub as it is now (the band, All articles, Watch and read, More from Zoorik) ══ */
+.lr-pair .as-grid > *{grid-row:auto;display:flex;flex-direction:column;align-items:flex-start}
+.lr-own{display:block;width:36px;height:36px;margin-bottom:18px;color:#fff}
+.lr-own-l{color:var(--accent)}
+.lr-c p{margin-bottom:18px}
+.lr-list{list-style:none;margin:0;padding:0;width:100%;border-top:1px solid var(--line)}
+.lr-dark{border-top-color:rgba(255,255,255,.14)}
+.lr-l{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);font-size:.9375rem;font-weight:500;color:var(--text);text-decoration:none}
+.lr-dark .lr-l{border-bottom-color:rgba(255,255,255,.14);color:#fff}
+.lr-l .dt-go{flex:none;width:16px;height:16px;color:var(--accent);transition:transform var(--d-fast) var(--ease)}
+.lr-dark .lr-l .dt-go{color:#8EA2FF}
+@media(hover:hover){.lr-l:hover span{color:var(--accent)}.lr-dark .lr-l:hover span{color:#C8D1FC}.lr-l:hover .dt-go{transform:translateX(2px)}}
+.lr-sec{padding-block:clamp(40px,5vw,64px)}
+.lr-sec + .lr-sec{padding-top:0}
+.lr-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:28px}
+.lr-chips button,.lr-more button{font:500 .8125rem/1 var(--sans);padding:9px 13px;border:1px solid var(--line);border-radius:var(--r-pill);background:#fff;color:var(--text);cursor:pointer}
+.lr-chips button[aria-pressed="true"]{background:var(--text);border-color:var(--text);color:#fff}
+.lr-more{display:flex;justify-content:center;margin-top:28px}
+.lr-more button{padding:12px 18px;font-size:.875rem}
+/* the case studies' tile size: 24 px padding, 151 px tall at 1440 */
+.lr-t .dt-a{grid-template-columns:164px minmax(0,1fr) 16px;align-items:center;gap:16px;padding:24px;min-height:149px;box-sizing:border-box}
+.lr-t .dt-go{align-self:start;color:var(--accent)}
+.lr-th{display:block;box-sizing:border-box;width:164px;aspect-ratio:1200/630;overflow:hidden;border:1px solid var(--line);border-radius:6px;background:#fff}
+.lr-th img{display:block;width:100%;height:100%;object-fit:cover}
+.lr-th.lr-film{width:164px;aspect-ratio:16/9}
+.lr-md{display:grid;place-items:center;background:var(--text);border-color:var(--text)}
+.lr-md svg{width:30px;height:18px;fill:#fff}
+.lr-t .dt-t{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.lr-m{display:block;margin-top:6px;font-size:var(--fs-micro);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lr-t[hidden],.lr-more[hidden]{display:none!important}
+/* the tile as the cover: flat white, the subject top left, the heading large, the byline, the cover's diagram on the right */
+.lr-cv .dt-a{display:grid;grid-template-columns:minmax(0,1fr) 126px 16px;gap:12px;align-items:stretch;padding:16px 18px 16px 24px;min-height:149px}
+.lr-cvt{display:flex;flex-direction:column;justify-content:space-between;min-width:0}
+.lr-eb{font-size:var(--fs-micro);font-weight:500;color:var(--muted)}
+.lr-cv .dt-t{display:-webkit-box;font-size:1.125rem;font-weight:600;line-height:1.2;letter-spacing:-.015em;-webkit-line-clamp:3}
+.lr-cv .lr-m{margin-top:8px}
+.lr-art{align-self:center;width:126px;height:117px;background-repeat:no-repeat;background-size:281px auto;background-position:-140px -16px}
+.lr-cv .dt-go{align-self:start;margin-top:2px;color:var(--accent)}
+@media(hover:hover){.lr-cv:hover .dt-t{color:var(--accent)}}
+@media(max-width:1400px){.lr-cv .dt-a{grid-template-columns:minmax(0,1fr) 96px 16px}
+  .lr-cv .lr-art{width:96px;height:89px;background-size:214px auto;background-position:-107px -12px}.lr-cv .dt-t{font-size:1.0625rem}}
+@media(max-width:640px){.lr-cv .dt-a{min-height:0}}
