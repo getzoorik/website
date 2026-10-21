@@ -27,7 +27,7 @@ describe("page metadata", () => {
 
   it("titles every page through one template, and the home page takes the default", () => {
     expect(layout.title).toEqual({
-      default: "Zoorik: Kubernetes and block storage cost optimization",
+      default: "Zoorik | Kubernetes and block storage cost optimization",
       template: "%s · Zoorik",
     });
     expect(home).not.toHaveProperty("title");
@@ -43,7 +43,7 @@ describe("page metadata", () => {
     const full = (title: unknown) => template.replace("%s", String(title));
     expect(full(amoeba.title)).toHaveLength(60);
     expect(full(coral.title)).toHaveLength(60);
-    expect((layout.title as { default: string }).default).toHaveLength(54);
+    expect((layout.title as { default: string }).default).toHaveLength(55);
   });
 
   it("describes the home page and each product page in its own words, and the right product's", () => {

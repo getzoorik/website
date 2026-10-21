@@ -29,11 +29,11 @@ import type { ProductId } from "@/content/products";
  */
 
 /**
- * The day /careers's content last changed ("Follow us on LinkedIn" in the close), for the sitemap's `lastmod` only:
+ * The day /careers's content last changed (its title, "Careers at Zoorik | …"), for the sitemap's `lastmod` only:
  * the page does not print it. Whoever changes the page's content moves this to
  * that day in the same PR; never the build's date.
  */
-export const careersLastUpdated = "19 October 2026";
+export const careersLastUpdated = "21 October 2026";
 
 /** One of the six CREDIT values: its letter, its meaning in one line, how we live it, and its interview question. */
 export interface CareerValue {
@@ -175,7 +175,7 @@ const values = [
 export const careers = {
   /** An absolute `<title>` like /about's: it names the company already, so no " · Zoorik" after it. */
   meta: {
-    title: "Careers at Zoorik: work with us, remotely",
+    title: "Careers at Zoorik | Work with us, remotely",
     description:
       "Work at Zoorik, remotely. What you will build, our six values, how we work and how we hire.",
   },

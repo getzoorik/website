@@ -85,11 +85,11 @@ const SYSTEM = "$73.73";
 const WORKER = "$147.46";
 
 /**
- * The day the /case-studies hub's content last changed (the library of study cards and the study's title saying "reduced"), for the sitemap's
+ * The day the /case-studies hub's content last changed (its title, "Value Lab by Zoorik | …"), for the sitemap's
  * `lastmod` only: the page does not print it. Whoever changes the hub's content
  * moves this to that day in the same PR; never the build's date.
  */
-export const caseStudiesHubLastUpdated = "20 October 2026";
+export const caseStudiesHubLastUpdated = "21 October 2026";
 
 export const caseStudy = {
   route: routes.caseStudyCoralDevCluster,
@@ -474,7 +474,7 @@ export const caseStudiesHub = {
   route: routes.valueLab,
   /** The page's and the share card's title as is: "Value Lab by Zoorik: …" names the company, so no " · Zoorik". */
   meta: {
-    title: "Value Lab by Zoorik: cloud cost case studies",
+    title: "Value Lab by Zoorik | Cloud cost case studies",
     description: "What Coral does on real clusters, with the figures.",
   },
   hero: {
