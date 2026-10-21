@@ -48,7 +48,7 @@ export const marketplacesPage = {
   meta: {
     title: "Where to find Zoorik: marketplaces, reviews and installs",
     description:
-      "Buy Coral on AWS or Microsoft Marketplace and Amoeba on Microsoft Marketplace, read reviews on G2, and install from Homebrew, PyPI, npm and the Terraform Registry.",
+      "Buy Coral and Amoeba on AWS or Microsoft Marketplace, read reviews on G2, and install from Homebrew, PyPI, npm and the Terraform Registry.",
   },
   /** The page's name (its h1) and the line under it. */
   hero: {

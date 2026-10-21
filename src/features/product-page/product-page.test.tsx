@@ -695,13 +695,16 @@ describe("the Amoeba page", () => {
     expect(page.querySelector(".hero-badge svg.tux")).toHaveAttribute("data-mark", "linux");
   });
 
-  it("draws its marketplace line under the buttons: Microsoft Marketplace alone, its own listing, never Coral's", () => {
+  it("draws its marketplace line under the buttons: both stores, its own listings, never Coral's", () => {
     const page = renderPage("/amoeba", amoebaPageContent);
     const line = page.querySelector(".pp-hero .hero-cta + p.hero-mkt")!;
     expect(line.querySelector(":scope > span")!.firstChild).toHaveTextContent("Available in");
     expect(
       [...page.querySelectorAll('main a[href*="marketplace"]')].map((a) => a.getAttribute("href")),
-    ).toEqual(["https://marketplace.microsoft.com/en-us/product/zoorik.amoeba"]);
+    ).toEqual([
+      "https://aws.amazon.com/marketplace/pp/prodview-u52eig5hqarzy",
+      "https://marketplace.microsoft.com/en-us/product/zoorik.amoeba",
+    ]);
   });
 
   it.runIf(!amoebaDocs && !amoebaOnePager)(

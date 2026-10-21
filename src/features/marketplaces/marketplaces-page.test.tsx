@@ -49,7 +49,7 @@ describe("/marketplaces's metadata", () => {
   it("has the mock's title through the template, its description and its canonical", () => {
     expect(metadata.title).toBe("Where to find Zoorik: marketplaces, reviews and installs");
     expect(metadata.description).toBe(
-      "Buy Coral on AWS or Microsoft Marketplace and Amoeba on Microsoft Marketplace, read reviews on G2, and install from Homebrew, PyPI, npm and the Terraform Registry.",
+      "Buy Coral and Amoeba on AWS or Microsoft Marketplace, read reviews on G2, and install from Homebrew, PyPI, npm and the Terraform Registry.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/marketplaces" });
     expect(metadata).not.toHaveProperty("robots");
@@ -79,7 +79,7 @@ describe("/marketplaces", () => {
     expect(root.querySelector("#assess")).toBeNull();
   });
 
-  it("lists every listing as a row on the white card, Coral's in both stores then Amoeba's, with the store's mark", () => {
+  it("lists every listing as a row on the white card, Coral's in both stores then Amoeba's in both, with the store's mark", () => {
     const card = page().querySelector(".cp-pair .as-card")!;
     expect(text(card.querySelector("h2"))).toBe("Cloud marketplaces");
     expect(text(card.querySelector(":scope > p"))).toBe(
@@ -91,12 +91,14 @@ describe("/marketplaces", () => {
     ).toEqual([
       ["aws", "Coral on AWS Marketplace"],
       ["azure", "Coral on Microsoft Marketplace"],
+      ["aws", "Amoeba on AWS Marketplace"],
       ["azure", "Amoeba on Microsoft Marketplace"],
     ]);
     const [aws, microsoft] = marketplaces;
     expectOffSite(rows[0]!, aws!.listings.coral);
     expectOffSite(rows[1]!, microsoft!.listings.coral);
-    expectOffSite(rows[2]!, microsoft!.listings.amoeba!);
+    expectOffSite(rows[2]!, aws!.listings.amoeba!);
+    expectOffSite(rows[3]!, microsoft!.listings.amoeba!);
     expect(rows[0]!.querySelector('b span[translate="no"]')).toHaveTextContent("Coral");
     expect(rows[2]!.querySelector('b span[translate="no"]')).toHaveTextContent("Amoeba");
   });

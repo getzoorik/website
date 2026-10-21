@@ -189,13 +189,14 @@ describe("the home page's structured data", () => {
     expect(amoeba.softwareHelp).toMatchObject({ url: "https://zoorik.com/amoeba/guide" });
   });
 
-  it("links only the pages that exist about each product: Coral's two listings and its G2 page, Amoeba's one listing", () => {
+  it("links only the pages that exist about each product: Coral's two listings and its G2 page, Amoeba's two listings", () => {
     expect(coral.sameAs).toEqual([
       "https://aws.amazon.com/marketplace/pp/prodview-kx44lqme4vwys",
       "https://marketplace.microsoft.com/en-us/product/zoorik.coral",
       "https://www.g2.com/products/zoorik-coral/reviews",
     ]);
     expect(amoeba.sameAs).toEqual([
+      "https://aws.amazon.com/marketplace/pp/prodview-u52eig5hqarzy",
       "https://marketplace.microsoft.com/en-us/product/zoorik.amoeba",
     ]);
   });
