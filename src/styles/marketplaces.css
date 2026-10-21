@@ -22,3 +22,7 @@
 .dt-grid.mp-2{grid-template-columns:repeat(2,minmax(0,1fr))}
 @media(max-width:640px){.dt-grid.mp-2{grid-template-columns:minmax(0,1fr)}}
 @media(prefers-reduced-motion:reduce){.mp-l .dt-go{transition:none}.mp-l:hover .dt-go{transform:none}}
+/* a platform's logo file in the tile's icon slot: the base img{max-width:100%} would shrink it in its 28px column */
+img.dt-ic.mp-logo{max-width:none;object-fit:contain}
+/* GitHub's mark, a logo among logos, in its own black */
+.dt-ic.mp-ink{color:var(--text)}

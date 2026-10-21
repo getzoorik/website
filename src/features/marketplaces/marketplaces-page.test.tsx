@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, statSync } from "node:fs";
 
 import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
@@ -43,6 +43,16 @@ function expectOffSite(link: Element, href: string) {
   expect(link).toHaveAttribute("rel", "noopener noreferrer");
   expect(text(link.querySelector(".sr-only"))).toBe("(opens in a new tab)");
   expect(link.querySelector("svg.dt-go")).toHaveAttribute("aria-hidden", "true");
+}
+
+/** A platform's logo on its tile: the file, read as decoration (the tile's title names the place), 28px, small. */
+function expectLogo(link: Element, src: string) {
+  const img = link.querySelector("img.dt-ic.cp-ic.mp-logo")!;
+  expect(img, src).toHaveAttribute("src", src);
+  expect(img).toHaveAttribute("alt", "");
+  expect(img).toHaveAttribute("width", "28");
+  expect(img).toHaveAttribute("height", "28");
+  expect(statSync(`public${src}`).size, src).toBeLessThan(8 * 1024);
 }
 
 describe("/marketplaces's metadata", () => {
@@ -125,6 +135,7 @@ describe("/marketplaces", () => {
     ]);
     expectOffSite(links[0]!, g2Coral);
     expectOffSite(links[1]!, g2Seller);
+    for (const a of links) expectLogo(a, "/marketplace-logos/g2.svg");
     expect(text(root.querySelector("main"))).not.toMatch(/Gartner|coming soon|★|\d(\.\d)? out of/i);
   });
 
@@ -178,6 +189,18 @@ describe("/marketplaces", () => {
       channels.github.href,
     ];
     links.forEach((a, i) => expectOffSite(a, hrefs[i]!));
+    [
+      "/marketplace-logos/crunchbase.svg",
+      "/marketplace-logos/wellfound.svg",
+      "/marketplace-logos/tracxn.png",
+      "/marketplace-logos/f6s.png",
+      "/marketplace-logos/saas-browser.png",
+    ].forEach((logo, i) => expectLogo(links[i]!, logo));
+    /* GitHub's is the footer's own mark, drawn in the page. */
+    expect(links[5]!.querySelector("svg.dt-ic.cp-ic.mp-ink")).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
   });
 
   it("opens every off-site link in a new tab, and no other", () => {
