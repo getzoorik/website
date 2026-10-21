@@ -7,7 +7,7 @@ import {
   tracxnCompany,
   wellfoundCompany,
 } from "@/config/entity";
-import { channels } from "@/config/open-source";
+import { channels, type ChannelId } from "@/config/open-source";
 
 /**
  * `/marketplaces`, where to find Zoorik: every string the page prints, verbatim from the approved mock.
@@ -31,9 +31,12 @@ export const marketplacesLastUpdated = "21 October 2026";
  */
 export const npmPackage = "https://www.npmjs.com/package/zoorik";
 
-/** The icon a tile carries: a registry's own line icon, or the document glyph. */
-export type MarketplacesIcon =
-  "homebrew" | "scoop" | "pypi" | "artifact-hub" | "terraform-registry" | "doc";
+/**
+ * The icon a tile carries: a channel's own icon (a registry's line icon, GitHub's mark), or the platform's logo file in
+ * `public/marketplace-logos/`. G2's, Crunchbase's and Wellfound's are Simple Icons' (CC0) in each brand's colour;
+ * Tracxn's, F6S's and SaaS Browser's are their own sites' icons.
+ */
+export type MarketplacesIcon = ChannelId | `/marketplace-logos/${string}`;
 
 /** One tile of Reviews, Install from or Find us on the web: its icon, the place's name, what is there, the address. */
 export interface MarketplacesLink {
@@ -75,12 +78,17 @@ export const marketplacesPage = {
     title: "Reviews",
     links: [
       {
-        icon: "doc",
+        icon: "/marketplace-logos/g2.svg",
         name: "Reviews of Coral",
         line: "Read what teams say about Coral, or leave a review of your own.",
         href: g2Coral,
       },
-      { icon: "doc", name: "Zoorik on G2", line: "Our seller page on G2.", href: g2Seller },
+      {
+        icon: "/marketplace-logos/g2.svg",
+        name: "Zoorik on G2",
+        line: "Our seller page on G2.",
+        href: g2Seller,
+      },
     ] as readonly MarketplacesLink[],
   },
   install: {
@@ -105,12 +113,37 @@ export const marketplacesPage = {
     id: "web",
     title: "Find us on the web",
     links: [
-      { icon: "doc", name: "Crunchbase", line: "Company profile", href: crunchbaseProfile },
-      { icon: "doc", name: "Wellfound", line: "Company and roles", href: wellfoundCompany },
-      { icon: "doc", name: "Tracxn", line: "Company profile", href: tracxnCompany },
-      { icon: "doc", name: "F6S", line: "Company profile", href: f6sCompany },
-      { icon: "doc", name: "SaaS Browser", line: "Product listing", href: saasBrowserProfile },
-      { icon: "doc", ...channels.github, line: "Code, charts and issues" },
+      {
+        icon: "/marketplace-logos/crunchbase.svg",
+        name: "Crunchbase",
+        line: "Company profile",
+        href: crunchbaseProfile,
+      },
+      {
+        icon: "/marketplace-logos/wellfound.svg",
+        name: "Wellfound",
+        line: "Company and roles",
+        href: wellfoundCompany,
+      },
+      {
+        icon: "/marketplace-logos/tracxn.png",
+        name: "Tracxn",
+        line: "Company profile",
+        href: tracxnCompany,
+      },
+      {
+        icon: "/marketplace-logos/f6s.png",
+        name: "F6S",
+        line: "Company profile",
+        href: f6sCompany,
+      },
+      {
+        icon: "/marketplace-logos/saas-browser.png",
+        name: "SaaS Browser",
+        line: "Product listing",
+        href: saasBrowserProfile,
+      },
+      { icon: "github", ...channels.github, line: "Code, charts and issues" },
     ] as readonly MarketplacesLink[],
   },
 } as const;

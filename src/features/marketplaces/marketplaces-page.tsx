@@ -5,13 +5,14 @@ import { ChannelIcon } from "@/components/primitives/install-buttons";
 import { NewTabHint } from "@/components/primitives/new-tab-hint";
 import { Reveal } from "@/components/primitives/reveal";
 import { storesListing, type MarketplaceId } from "@/config/marketplaces";
+import type { ChannelId } from "@/config/open-source";
 import {
   marketplacesPage,
   type MarketplacesIcon,
   type MarketplacesLink,
 } from "@/content/marketplaces";
 import { productOrder, products } from "@/content/products";
-import { ArrowOutGlyph, DocGlyph } from "@/features/documents/document-glyphs";
+import { ArrowOutGlyph } from "@/features/documents/document-glyphs";
 import { DocumentPage } from "@/features/documents/document-page";
 import { LinkTile } from "@/features/documents/link-tile";
 import { named } from "@/features/legal/named";
@@ -47,12 +48,29 @@ const STORE_MARKS: Readonly<Record<MarketplaceId, (key: string) => ReactNode>> =
   microsoft: (key) => <AzureMark className="mp-m" idSuffix={key} />,
 };
 
-/** A tile's icon: the registry's own line icon, or the document glyph, at the tile icon's size. */
+/**
+ * A tile's icon, at the tile icon's size: the channel's own icon, or the platform's logo file. The logo is a plain
+ * <img>, as /community's are: a small file in public/, its name said by the tile's title beside it.
+ */
 function TileIcon({ icon }: { readonly icon: MarketplacesIcon }): React.JSX.Element {
-  return icon === "doc" ? (
-    <DocGlyph className="dt-ic cp-ic" />
-  ) : (
-    <ChannelIcon channel={icon} className="dt-ic cp-ic" />
+  if (icon.startsWith("/"))
+    return (
+      // eslint-disable-next-line @next/next/no-img-element -- a 28px logo file, drawn as the mock draws it
+      <img
+        className="dt-ic cp-ic mp-logo"
+        src={icon}
+        alt=""
+        width={28}
+        height={28}
+        loading="lazy"
+      />
+    );
+  /* GitHub's mark is a logo too, so it takes its own black (ink), not the icons' accent. */
+  return (
+    <ChannelIcon
+      channel={icon as ChannelId}
+      className={icon === "github" ? "dt-ic cp-ic mp-ink" : "dt-ic cp-ic"}
+    />
   );
 }
 
