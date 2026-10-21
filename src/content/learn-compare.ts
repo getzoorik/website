@@ -61,7 +61,7 @@ export interface VersusPage {
   /** Its address under Cloud cost optimization tools (`comparePath`). */
   readonly slug: string;
   readonly product: ProductId;
-  /** The page's `<title>` (through the site's "Zoorik | %s" template) and description; the title is its h1 and the
+  /** The page's `<title>` (through the site's "%s | Zoorik" template) and description; the title is its h1 and the
    *  description its deck. */
   readonly meta: { readonly title: string; readonly description: string };
   /** Its tile's line on Cloud cost optimization tools' Compare Coral and Amoeba. */
@@ -102,7 +102,7 @@ export interface AlternativesPage {
   readonly product: ProductId;
   /** Its h1, and its tile's title on Cloud cost optimization tools. */
   readonly h1: string;
-  /** The `<title>`'s own words (after "Zoorik | ") and the description, which is its deck. */
+  /** The `<title>`'s own words (before " | Zoorik") and the description, which is its deck. */
   readonly meta: { readonly title: string; readonly description: string };
   /** Its tile's line on Cloud cost optimization tools' Compare Coral and Amoeba. */
   readonly line: string;

@@ -47,7 +47,7 @@ export interface MarketplacesLink {
 }
 
 export const marketplacesPage = {
-  /** The page's `<title>` (through the site's "Zoorik | %s" template) and description. */
+  /** The page's `<title>` (through the site's "%s | Zoorik" template) and description. */
   meta: {
     title: "Marketplaces",
     description:

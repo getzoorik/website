@@ -85,7 +85,7 @@ describe("sitemap.xml", () => {
     );
     const updated = "2026-10-09";
     expect(dates).toEqual({
-      /* A page that prints no day: the day its title last changed ("Zoorik | <name>"). */
+      /* A page that prints no day: the day its title last changed ("<name> | Zoorik"). */
       "/": "2026-10-21",
       "/coral": "2026-10-21",
       "/amoeba": "2026-10-21",

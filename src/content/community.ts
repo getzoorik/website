@@ -50,7 +50,7 @@ export interface CommunityMore {
 }
 
 export const communityPage = {
-  /** The `<title>`'s own words, after "Zoorik | ", and the description. */
+  /** The `<title>`'s own words, before " | Zoorik", and the description. */
   meta: {
     title: "Community",
     description:

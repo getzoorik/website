@@ -36,7 +36,7 @@ export type GuideBlock =
 
 export interface OpenSourceGuide {
   readonly route: string;
-  /** The `<title>` (through the site's "Zoorik | %s" template) and the description. */
+  /** The `<title>` (through the site's "%s | Zoorik" template) and the description. */
   readonly meta: { readonly title: string; readonly description: string };
   readonly hero: { readonly title: string; readonly deck: string };
   /** The short answer under the byline, where the guide has one. */

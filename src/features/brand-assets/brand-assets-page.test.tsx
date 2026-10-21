@@ -65,7 +65,7 @@ describe("/brand-assets's metadata", () => {
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/brand-assets",
-      title: "Zoorik | Brand assets",
+      title: "Brand assets | Zoorik",
     });
   });
 });
@@ -79,7 +79,7 @@ describe("/brand-assets's structured data", () => {
     expect(data).toEqual(JSON.parse(JSON.stringify(pageStructuredData("/brand-assets"))));
     expect(data["@graph"][2]).toMatchObject({
       url: "https://zoorik.com/brand-assets",
-      name: "Zoorik | Brand assets",
+      name: "Brand assets | Zoorik",
       description: metadata.description,
       about: { "@id": "https://zoorik.com/#organization" },
     });

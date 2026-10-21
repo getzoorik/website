@@ -43,7 +43,7 @@ describe("/about's metadata", () => {
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/about",
-      title: "Zoorik | About",
+      title: "About | Zoorik",
     });
   });
 });

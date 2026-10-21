@@ -71,7 +71,7 @@ describe("/cloud-cost-optimization-tools's metadata", () => {
     expect(metadata.alternates).toEqual({ canonical: "/cloud-cost-optimization-tools" });
     expect(metadata.openGraph).toMatchObject({
       url: "/cloud-cost-optimization-tools",
-      title: "Zoorik | Cloud cost optimization tools",
+      title: "Cloud cost optimization tools | Zoorik",
       images: [socialImage],
     });
     expect(routes.cloudCostTools).toBe("/cloud-cost-optimization-tools");

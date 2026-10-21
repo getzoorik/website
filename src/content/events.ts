@@ -77,7 +77,7 @@ const months = [
 ] as const;
 
 export const eventsPage = {
-  /** The page's `<title>` (through the site's "Zoorik | %s" template) and description. */
+  /** The page's `<title>` (through the site's "%s | Zoorik" template) and description. */
   meta: {
     title: "Events",
     description:

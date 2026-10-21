@@ -105,7 +105,7 @@ describe("/events's metadata", () => {
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/events",
-      title: "Zoorik | Events",
+      title: "Events | Zoorik",
     });
   });
 });

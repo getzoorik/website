@@ -144,7 +144,7 @@ describe.each(versusPages.map((entry) => [entry.slug, entry] as const))("%s", (_
     expect(metadata.alternates).toEqual({ canonical: versusRoute(entry) });
     expect(metadata.openGraph).toMatchObject({
       url: versusRoute(entry),
-      title: `Zoorik | ${entry.meta.title}`,
+      title: `${entry.meta.title} | Zoorik`,
       images: [socialImage],
     });
     expect(entry.meta.title).toBe(`${ours} vs ${facts.name}`);

@@ -13,7 +13,7 @@ import { routes } from "@/config/site";
  * four menus, the drawer and the footer a second time on every page, for a
  * page almost nobody sees.
  *
- * Its title, "Zoorik | Page not found", is this file's metadata through the
+ * Its title, "Page not found | Zoorik", is this file's metadata through the
  * layout's template; without it, the 404 printed the home title.
  * Next prints exactly one <title> and applies it only when this tree renders;
  * the status stays 404. Its robots is noindex: without its own, the layout's

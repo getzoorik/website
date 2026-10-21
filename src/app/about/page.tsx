@@ -12,7 +12,7 @@ import "@/styles/about.css";
 /**
  * `/about`: who builds Coral and Amoeba. Indexed, listed in the sitemap, and
  * prerendered at build like every page here. Its title goes through the
- * layout's template, as every page's does: "Zoorik | About".
+ * layout's template, as every page's does: "About | Zoorik".
  */
 export const metadata: Metadata = documentMetadata(routes.about, about.meta);
 

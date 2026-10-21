@@ -55,7 +55,7 @@ describe("/news's metadata", () => {
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/news",
-      title: "Zoorik | News",
+      title: "News | Zoorik",
     });
     expect(routes.news).toBe("/news");
   });

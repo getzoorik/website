@@ -41,7 +41,7 @@ describe("/community's metadata", () => {
     expect(metadata.alternates).toEqual({ canonical: "/community" });
     expect(metadata.openGraph).toMatchObject({
       url: "/community",
-      title: "Zoorik | Community",
+      title: "Community | Zoorik",
     });
     expect(communityLastUpdated).toBe("21 October 2026");
   });

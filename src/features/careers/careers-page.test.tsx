@@ -40,7 +40,7 @@ describe("/careers's metadata", () => {
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/careers",
-      title: "Zoorik | Careers",
+      title: "Careers | Zoorik",
     });
   });
 });

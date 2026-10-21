@@ -452,7 +452,7 @@ describe("the /amoeba/guide route", () => {
     expect(metadata.alternates).toEqual({ canonical: "/amoeba/guide" });
     expect(metadata).not.toHaveProperty("robots");
     const og = metadata.openGraph as Record<string, unknown>;
-    expect(og.title).toBe("Zoorik | Amoeba product guide");
+    expect(og.title).toBe("Amoeba product guide | Zoorik");
     expect(og.url).toBe("/amoeba/guide");
   });
 

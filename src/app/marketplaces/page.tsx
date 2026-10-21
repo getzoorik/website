@@ -15,7 +15,7 @@ import "@/styles/marketplaces.css";
  * profiles. Indexed, listed in the sitemap, and prerendered at build like every page here; linked from the footer's
  * Products column, after Assessment. It is drawn with the program pages' parts, so it loads their sheet first and its
  * own after it, as the mock carries them.
- * Its title goes through the layout's template: "Zoorik | Marketplaces".
+ * Its title goes through the layout's template: "Marketplaces | Zoorik".
  */
 export const metadata: Metadata = documentMetadata(routes.marketplaces, marketplacesPage.meta);
 

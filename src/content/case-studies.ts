@@ -85,7 +85,7 @@ const SYSTEM = "$73.73";
 const WORKER = "$147.46";
 
 /**
- * The day the /case-studies hub's content last changed (its title, "Value Lab by Zoorik | …"), for the sitemap's
+ * The day the /case-studies hub's content last changed (its title, "Value Lab | Zoorik"), for the sitemap's
  * `lastmod` only: the page does not print it. Whoever changes the hub's content
  * moves this to that day in the same PR; never the build's date.
  */
@@ -94,7 +94,7 @@ export const caseStudiesHubLastUpdated = "21 October 2026";
 export const caseStudy = {
   route: routes.caseStudyCoralDevCluster,
   meta: {
-    title: "How we reduced our cluster’s machine bill by 58%",
+    title: "How We Reduced AKS Cluster Costs by 58%",
     description:
       "Before we ask anyone to trust Coral with their cluster, we run it on ours. Eight days after we connected it, our AKS development cluster cost $154.76 a month instead of $368.65.",
   },
@@ -472,7 +472,7 @@ const savedMonthly = studies.reduce(
 
 export const caseStudiesHub = {
   route: routes.valueLab,
-  /** The `<title>`'s own words, after "Zoorik | ", and the description. */
+  /** The `<title>`'s own words, before " | Zoorik", and the description. */
   meta: {
     title: "Value Lab",
     description: "What Coral does on real clusters, with the figures.",

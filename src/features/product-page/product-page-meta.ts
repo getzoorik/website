@@ -17,7 +17,7 @@ export function productPagePath(content: ProductPageContent): "/amoeba" | "/cora
 }
 
 /**
- * The title goes through the layout's "Zoorik | %s" template; og:title is the
+ * The title goes through the layout's "%s | Zoorik" template; og:title is the
  * same full title, because Open Graph does not apply the template, and the card
  * repeats the description. The X card is the layout's: Next fills twitter:title
  * and twitter:description from openGraph, and the page's own card with it

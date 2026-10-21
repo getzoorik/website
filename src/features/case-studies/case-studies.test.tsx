@@ -46,19 +46,19 @@ describe("the case studies' metadata", () => {
     expect(hubMeta).not.toHaveProperty("robots");
     expect(hubMeta.openGraph).toMatchObject({
       url: "/value-lab",
-      title: "Zoorik | Value Lab",
+      title: "Value Lab | Zoorik",
     });
   });
 
   it("titles, describes and canonicalises the study in the mock's words", () => {
-    expect(studyMeta.title).toBe("How we reduced our cluster’s machine bill by 58%");
+    expect(studyMeta.title).toBe("How We Reduced AKS Cluster Costs by 58%");
     expect(studyMeta.description).toBe(
       "Before we ask anyone to trust Coral with their cluster, we run it on ours. Eight days after we connected it, our AKS development cluster cost $154.76 a month instead of $368.65.",
     );
     expect(studyMeta.alternates).toEqual({ canonical: "/value-lab/coral-dev-cluster" });
     expect(studyMeta.openGraph).toMatchObject({
       url: "/value-lab/coral-dev-cluster",
-      title: "Zoorik | How we reduced our cluster’s machine bill by 58%",
+      title: "How We Reduced AKS Cluster Costs by 58% | Zoorik",
       images: [
         {
           url: "/og/zoorik-case-coral-dev-cluster-1200x630.png",
