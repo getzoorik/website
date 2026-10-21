@@ -66,15 +66,17 @@ const blocksOf = (article: Article): readonly ArticleBlock[] => [
   ...article.sections.flatMap((section) => section.blocks),
 ];
 
-/** Every link piece of a run of text, with its words as the page prints them. */
+/** Every link piece of a run of text, bold's own included, with its words as the page prints them. */
 const linksOf = (run: ArticleText): readonly { readonly a: string; readonly href: string }[] =>
   typeof run === "string"
     ? []
-    : run.flatMap((piece) =>
-        typeof piece !== "string" && "a" in piece
-          ? [{ a: typeof piece.a === "string" ? piece.a : piece.a.code, href: piece.href }]
-          : [],
-      );
+    : run.flatMap((piece): readonly { readonly a: string; readonly href: string }[] => {
+        if (typeof piece === "string") return [];
+        if ("a" in piece)
+          return [{ a: typeof piece.a === "string" ? piece.a : piece.a.code, href: piece.href }];
+        if ("b" in piece) return linksOf(piece.b);
+        return [];
+      });
 
 /** Every run of text in some blocks, a list item's own blocks included, in the order the page prints them. */
 const runsIn = (blocks: readonly ArticleBlock[]): readonly ArticleText[] =>
@@ -83,7 +85,10 @@ const runsIn = (blocks: readonly ArticleBlock[]): readonly ArticleText[] =>
       case "p":
       case "quote":
       case "note":
+      case "callout":
         return [block.text];
+      case "svg":
+        return [block.figure.caption];
       case "steps":
         return block.items;
       case "ul":
@@ -313,6 +318,47 @@ describe.each(learnArticles.map((article) => article.slug))("/learn/%s", (slug) 
       }
     }
     expect(container.querySelectorAll(".ln-strip > li")).toHaveLength(article.strip?.length ?? 0);
+  });
+
+  it("draws each drawn figure as its SVG, named for the ear, under its caption, with no figure number", async () => {
+    const container = await main(slug);
+    const drawn = blocksOf(article).flatMap((block) =>
+      block.kind === "svg" ? [block.figure] : [],
+    );
+    const figures = [...container.querySelectorAll(".ar-frame figure.ar-fig")];
+    expect(figures).toHaveLength(drawn.length);
+    figures.forEach((figure, index) => {
+      const svg = figure.querySelector(":scope > .ar-fig-s > svg")!;
+      expect(svg).toHaveAttribute("role", "img");
+      for (const id of svg.getAttribute("aria-labelledby")!.split(" "))
+        expect(svg.querySelector(`#${id}`)?.textContent?.trim(), id).toBeTruthy();
+      expect(svg.textContent).not.toMatch(/FIG \d+ \/\//);
+      expect(text(figure.querySelector("figcaption"))).not.toBe("");
+      expect(drawn[index]!.markup.startsWith("<svg")).toBe(true);
+    });
+  });
+
+  it("sets each callout apart under its label", async () => {
+    const callouts = [...(await main(slug)).querySelectorAll(".ar-frame aside.ar-call")];
+    expect(callouts.map((aside) => text(aside.querySelector(".doc-call-t")))).toEqual(
+      blocksOf(article).flatMap((block) => (block.kind === "callout" ? [block.label] : [])),
+    );
+    for (const aside of callouts) {
+      expect(aside).toHaveClass("doc-call");
+      expect(text(aside.querySelector(".doc-call-t + p"))).not.toBe("");
+    }
+  });
+
+  it("shows its cover under the byline, as decoration, where it has one", async () => {
+    const top = (await main(slug)).querySelector(".ar-frame > .fq-upd.doc-prose:first-child")!;
+    const cover = top.querySelector(":scope > p.doc-updated + figure.ar-cover img");
+    if (!article.cover) {
+      expect(top.querySelector("figure.ar-cover")).toBeNull();
+      return;
+    }
+    expect(cover).toHaveAttribute("src", article.cover);
+    expect(cover).toHaveAttribute("alt", "");
+    expect(readFileSync(`public${article.cover}`).length).toBeGreaterThan(0);
   });
 
   it("closes the frame on the help box and the sources, each source a new tab", async () => {

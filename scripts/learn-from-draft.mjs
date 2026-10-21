@@ -5,11 +5,19 @@
 //   node scripts/learn-from-draft.mjs --drafts <dir> --figures <dir> --calendar <file> <slug>...
 //   node scripts/learn-from-draft.mjs --drafts <dir> --figures <dir> --calendar <file> --all
 //
-// Each flag may instead come from the environment: LEARN_DRAFTS, LEARN_FIGURES, LEARN_CALENDAR.
+// Each flag may instead come from the environment: LEARN_DRAFTS, LEARN_FIGURES, LEARN_CALENDAR, LEARN_VISUAL,
+// LEARN_DAY.
 //
 //   --drafts    the folder of drafts, <slug>.md each, with the cloud cost pillar among them
 //   --figures   the folder of figure files, <slug>-<n>.html each: one scoped <style>, then one <figure>
 //   --calendar  a JSON file with `schedule` (each article's day and author key) and `authors`
+//   --visual    (optional) the folder of drawn figures: <slug>/fig-<n>-*.svg and <slug>/captions.json. Where it has
+//               an article's n-th figure, that drawing is used in place of the figure file
+//   --day       (optional) the ISO day the articles go live, in place of the calendar's
+//
+// A paragraph that opens with a bold label ("**Worked example.**", "**Rule of thumb.**", "**Watch out.**", "**For
+// engineers.**", "**Note.**") is a callout. A drawn figure loses its "[ FIG n // … ]" line, and what is under it moves
+// up into its place. An article's cover is public/learn-covers/zoorik-learn-<slug>-1200x630.webp when there is one.
 //
 // A draft is front matter (title, meta, h1, deck, card, product, hub_group, type), then the short answer, the
 // sections ("## " headings, an id after a heading as {#id}), and the foot: the help box, the sources and the Related
@@ -65,6 +73,12 @@ const flag = (name, env) => {
 const draftsDir = flag("drafts", "LEARN_DRAFTS");
 const figuresDir = flag("figures", "LEARN_FIGURES");
 const calendarFile = flag("calendar", "LEARN_CALENDAR");
+const visualDir = flag("visual", "LEARN_VISUAL");
+const goLive = flag("day", "LEARN_DAY");
+if (goLive && !/^\d{4}-\d{2}-\d{2}$/.test(goLive)) {
+  console.error(`--day is an ISO day: "${goLive}"`);
+  process.exit(1);
+}
 const named = argv.filter((arg) => !arg.startsWith("--"));
 const all = argv.includes("--all");
 if (!draftsDir || !figuresDir || !calendarFile || (!all && named.length === 0)) {
@@ -137,8 +151,12 @@ function inline(source, links = true) {
   let last = 0;
   for (const match of s.matchAll(/\*\*(.+?)\*\*/g)) {
     pieces.push(s.slice(last, match.index));
-    if (/\u0003/.test(match[1])) throw new Error(`bold holds a link or code: ${source}`);
-    pieces.push({ b: match[1] });
+    /* Bold may hold a link or code: its words, then, are pieces, as any run's are. */
+    pieces.push({
+      b: compact(
+        match[1].split(/\u0003(\d+)\u0003/).map((part, i) => (i % 2 ? keep[Number(part)] : part)),
+      ),
+    });
     last = match.index + match[0].length;
   }
   pieces.push(s.slice(last));
@@ -341,11 +359,29 @@ function item(lines, ctx) {
   return { text, blocks: render(parse(dedent(more)), ctx) };
 }
 
+const CALLOUT =
+  /^\*\*(Worked example|Rule of thumb|Watch out|For engineers|Note)\.\*\*\s*([\s\S]*)$/;
+
+/** The drawing of an article's n-th figure, or null where there is none. */
+function drawing(slug, n) {
+  if (!visualDir) return null;
+  const dir = join(visualDir, slug);
+  if (!existsSync(dir)) return null;
+  const file = readdirSync(dir)
+    .sort()
+    .find((name) => new RegExp(`^fig-${n}-.*\\.svg$`).test(name));
+  return file ? join(dir, file) : null;
+}
+
 function render(blocks, ctx) {
   return blocks.map((b) => {
     switch (b.kind) {
-      case "p":
-        return { kind: "p", text: inline(b.text) };
+      case "p": {
+        const callout = CALLOUT.exec(b.text);
+        return callout
+          ? { kind: "callout", label: callout[1], text: inline(callout[2]) }
+          : { kind: "p", text: inline(b.text) };
+      }
       case "h3":
         return {
           kind: "h3",
@@ -358,6 +394,10 @@ function render(blocks, ctx) {
         return table(b.rows);
       case "diagram":
         ctx.figures += 1;
+        if (drawing(ctx.slug, ctx.figures)) {
+          ctx.drawn.add(ctx.figures);
+          return { kind: "svg", figure: `\u0007${ctx.figures}` };
+        }
         return { kind: "diagram", figure: `\u0007${ctx.figures}` };
       case "ol":
         return {
@@ -477,7 +517,7 @@ function convert(slug) {
     .replace("**Short answer.**", "")
     .trim();
 
-  const ctx = { figures: 0 };
+  const ctx = { slug, figures: 0, drawn: new Set() };
   const sections = [];
   let current = null;
   for (const line of mainLines.slice(first)) {
@@ -531,6 +571,7 @@ function convert(slug) {
   const product = { Coral: "coral", Amoeba: "amoeba", Both: "both" }[meta.product];
   if (!product) throw new Error(`${slug}: product "${meta.product}"`);
   const card = `/og/zoorik-learn-${slug}-1200x630.png`;
+  const cover = `/learn-covers/zoorik-learn-${slug}-1200x630.webp`;
   const h1 = typo(meta.h1);
 
   const article = {
@@ -546,20 +587,21 @@ function convert(slug) {
     hub: meta.hub_group,
     topic,
     ...(meta.type === "versus" ? { versus: versusOf(slug, meta.h1) } : {}),
-    published: day.date,
-    updated: day.date,
+    published: goLive ?? day.date,
+    updated: goLive ?? day.date,
     author: day.author,
     /* A share card's picture draws the h1, so its alt text reads the h1. */
     ...(existsSync(join(ROOT, "public", card))
       ? { shareCard: { url: card, alt: `Zoorik. ${h1}${/[.?!]$/.test(h1) ? "" : "."}` } }
       : {}),
+    ...(existsSync(join(ROOT, "public", cover)) ? { cover } : {}),
     short: inline(short),
     sections: drawn,
     help: { product: helpProduct.toLowerCase(), text: inline(helpText), links },
     sources,
     related,
   };
-  return { article, figures: ctx.figures };
+  return { article, figures: ctx.figures, drawn: ctx.drawn };
 }
 
 // ─── the files ───────────────────────────────────────────────────────────────────────────────────────────────────
@@ -624,6 +666,52 @@ export const figure: LearnFigure = {
 `;
 }
 
+/** A coordinate as the SVG writes it: at most two decimals, no trailing zeros. */
+const num = (v) => String(Number(v.toFixed(2)));
+
+/**
+ * A drawing without its "[ FIG n // … ]" line: the line goes from the picture and from its title, and everything under
+ * it moves up into its place, the canvas and its frame shortening by as much.
+ */
+function unkick(svg, name) {
+  const kicker = /<text[^>]*>\s*\[\s*FIG \d+ \/\/[^<]*\]\s*<\/text>/.exec(svg);
+  if (!kicker) return svg;
+  const next = /<text[^>]*\by="([\d.]+)"/.exec(svg.slice(kicker.index + kicker[0].length));
+  const up = Number(next[1]) - Number(/\by="([\d.]+)"/.exec(kicker[0])[1]);
+  let out = svg.slice(0, kicker.index) + svg.slice(kicker.index + kicker[0].length);
+  out = out.replace(/(<title[^>]*>)\s*\[\s*FIG \d+ \/\/[^\]]*\]\s*/, "$1");
+  out = out.replace(
+    /viewBox="0 0 ([\d.]+) ([\d.]+)"/,
+    (_, w, h) => `viewBox="0 0 ${w} ${num(h - up)}"`,
+  );
+  out = out.replace(/(<svg[^>]*\bheight=")([\d.]+)"/, (_, head, h) => `${head}${num(h - up)}"`);
+  const frame = /<\/desc>\s*(<rect[^>]*>)/.exec(out);
+  if (!frame) throw new Error(`${name}: a drawing's frame follows its description`);
+  const at = frame.index + frame[0].length - frame[1].length;
+  const rect = frame[1].replace(/\bheight="([\d.]+)"/, (_, h) => `height="${num(h - up)}"`);
+  out = `${out.slice(0, at)}${rect}<g transform="translate(0 -${num(up)})">${out.slice(at + frame[1].length)}`;
+  return `${out.slice(0, out.lastIndexOf("</svg>"))}</g></svg>`;
+}
+
+function drawingModule(slug, n) {
+  const name = `${slug}-${n}`;
+  const svg = readFileSync(drawing(slug, n), "utf8")
+    .replace(/<\?xml[^>]*>\s*/, "")
+    .trim();
+  const captions = join(visualDir, slug, "captions.json");
+  const caption = existsSync(captions)
+    ? JSON.parse(readFileSync(captions, "utf8"))[String(n)]
+    : null;
+  if (!caption) throw new Error(`${name}: a drawing has no caption`);
+  return `import type { LearnSvgFigure } from "@/content/learn/article";
+
+export const figure: LearnSvgFigure = {
+  markup: ${template(unkick(svg, name))},
+  caption: ${literal(inline(caption))},
+};
+`;
+}
+
 async function write(file, body) {
   const options = { ...(await prettier.resolveConfig(file)), filepath: file };
   mkdirSync(dirname(file), { recursive: true });
@@ -631,10 +719,14 @@ async function write(file, body) {
 }
 
 for (const slug of slugs) {
-  const { article, figures } = convert(slug);
+  const { article, figures, drawn } = convert(slug);
   const dir = join(FIGURES, slug);
   rmSync(dir, { recursive: true, force: true });
-  for (let n = 1; n <= figures; n++) await write(join(dir, `${n}.ts`), figureModule(slug, n));
+  for (let n = 1; n <= figures; n++)
+    await write(
+      join(dir, `${n}.ts`),
+      drawn.has(n) ? drawingModule(slug, n) : figureModule(slug, n),
+    );
   const imports = Array.from(
     { length: figures },
     (_, k) =>

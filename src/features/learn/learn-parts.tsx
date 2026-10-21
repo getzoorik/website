@@ -64,13 +64,15 @@ export function LearnHero({ kicker, title, deck, after }: LearnHeroProps): React
 /**
  * A Learn page: the skip link, the nav, one `<main>` holding the hero, the page's sections and
  * the site's closing assessment row, then the footer. The row names both products and opens the assessment for either,
- * as the mocks draw it, and nothing in it rises (`reveal={false}`).
+ * as the mocks draw it, and nothing in it rises (`reveal={false}`). The hub has no closing row (`closing={false}`).
  */
 export function LearnFrame({
   hero,
+  closing = true,
   children,
 }: {
   readonly hero: LearnHeroProps;
+  readonly closing?: boolean;
   readonly children: ReactNode;
 }): React.JSX.Element {
   return (
@@ -82,7 +84,7 @@ export function LearnFrame({
       <main id="main" tabIndex={-1}>
         <LearnHero {...hero} />
         {children}
-        <AssessSection reveal={false} />
+        {closing ? <AssessSection reveal={false} /> : null}
       </main>
       <FooterSection />
     </>

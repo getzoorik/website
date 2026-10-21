@@ -26,9 +26,9 @@ function selectors(sheet: string): string[] {
  * what the pages built on it draw (/learn, Cloud cost optimization tools, the pages under /compare, /community): every
  * selector names one of their own classes. `pp` and `pb` (option B's paths) count bare only, since `pp-` is the privacy
  * policy's; and no `nw` class is Learn's: `nw-` is /news's, and the articles' (`nw-nb`, `nw-links`, `nw-tbl`). `wr`
- * (Watch and read) is not `.wrap`.
+ * (Watch and read) is not `.wrap`; `lr` is the hub's own (the band, All articles, Watch and read, More from Zoorik).
  */
-const OWN = /\.(?:(?:lv|sj|fx|cm|pt|mk|vp|vx|ap|wr)(?:-[\w-]+)?|pb|pp)(?![\w-])/;
+const OWN = /\.(?:(?:lv|lr|sj|fx|cm|pt|mk|vp|vx|ap|wr)(?:-[\w-]+)?|pb|pp)(?![\w-])/;
 
 describe("the Learn sheet", () => {
   it("reaches only Learn's own classes", () => {
