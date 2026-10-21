@@ -5,7 +5,7 @@ export const article: Article = {
   slug: "poor-architecture-cloud-bill",
   title: "How poor architecture increases your cloud bill",
   meta: "Cloud waste is often an architecture problem, not a billing problem: VMs vs containers, where poor design adds cost, and how one client cut compute 44%.",
-  h1: "How Poor Infrastructure Architecture Quietly Increases Your Cloud Bill",
+  h1: "How Poor Infra Architecture Quietly Increases Your Cloud Bill",
   deck: "Why cloud waste is often an architecture problem, not a billing problem.",
   card: "Why cloud waste is often an architecture problem, not a billing problem.",
   product: "coral",

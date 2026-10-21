@@ -16,7 +16,7 @@ import { offSiteProps } from "@/lib/links";
 /**
  * `/community`, Zoorik Community, on Learn's frame:
  *
- *   hero          the page's name, with no deck
+ *   hero          the page's name and its deck
  *   ours          r/zoorik on the white card and Zoorik News on Medium on the navy one, the closing row's pair (band)
  *   communities   FinOps and cloud cost communities: four groups of three tiles, each with its own logo and its own page
  *                 in a new tab, then the day they were checked and an address to suggest one
@@ -181,7 +181,7 @@ function More(): React.JSX.Element {
 
 export function CommunityPage(): React.JSX.Element {
   return (
-    <LearnFrame hero={{ title: named(hero.title) }}>
+    <LearnFrame hero={{ title: named(hero.title), deck: named(hero.deck) }}>
       <Ours />
       <Communities />
       <More />
