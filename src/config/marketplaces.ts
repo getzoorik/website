@@ -8,9 +8,9 @@ import type { ProductId } from "@/content/products";
  * full, "in" for both, text only: no store logo, whose licence is the store's,
  * and no trademark line.
  *
- * 🔴 AMOEBA IS IN MICROSOFT MARKETPLACE ONLY. Its AWS entry is `null` until a
- * listing exists there, so each Amoeba line names the stores that list it and
- * no Coral fallback. Buttons that name no product (the footer, /about) open
+ * 🔴 A STORE THAT DOES NOT LIST A PRODUCT HOLDS `null` FOR IT. Each product's
+ * line names only the stores that list it, with no Coral fallback. Both stores
+ * list both products. Buttons that name no product (the footer, /about) open
  * Zoorik's own page in each store, where both products are listed; the
  * structured data claims only the listings that exist. Put each URL here when
  * it is live; nothing else changes.
@@ -21,7 +21,7 @@ export type MarketplaceId = "aws" | "microsoft";
 export interface Marketplace {
   readonly id: MarketplaceId;
   readonly name: string;
-  /** Coral's is always there; Amoeba's is `null` in a store that does not list it yet. */
+  /** Each product's listing, or `null` in a store that does not list it. */
   readonly listings: { readonly coral: string; readonly amoeba: string | null };
   /** Zoorik's own page in the store, which lists every product it sells there. */
   readonly profile: string;
@@ -34,7 +34,7 @@ export const marketplaces: readonly Marketplace[] = [
     name: "AWS Marketplace",
     listings: {
       coral: "https://aws.amazon.com/marketplace/pp/prodview-kx44lqme4vwys",
-      amoeba: null,
+      amoeba: "https://aws.amazon.com/marketplace/pp/prodview-u52eig5hqarzy",
     },
     profile: "https://aws.amazon.com/marketplace/seller-profile?id=seller-mtaavozrqchlk",
   },
@@ -63,7 +63,7 @@ export const marketplaceWords = {
   join: " and ",
 } as const;
 
-/** The stores that list a product, in the line's order: Microsoft Marketplace alone for Amoeba. */
+/** The stores that list a product, in the line's order. */
 export function storesListing(product: ProductId): readonly Marketplace[] {
   return marketplaces.filter((marketplace) => marketplace.listings[product] !== null);
 }

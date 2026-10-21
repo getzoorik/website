@@ -91,7 +91,7 @@ describe("sitemap.xml", () => {
       "/amoeba": "2026-10-20",
       "/assessment": "2026-10-18",
       /* Where to find Zoorik: the day it was published. */
-      "/marketplaces": "2026-10-20",
+      "/marketplaces": "2026-10-21",
       /* The install guides' tiles and the Open source group. */
       "/docs": "2026-10-16",
       "/coral/guide": updated,

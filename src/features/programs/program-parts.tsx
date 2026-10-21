@@ -6,8 +6,6 @@ import { NewTabHint } from "@/components/primitives/new-tab-hint";
 import { Reveal } from "@/components/primitives/reveal";
 import { contactEmail } from "@/config/site";
 import { LinkTile } from "@/features/documents/link-tile";
-import { named } from "@/features/legal/named";
-import { MailGlyph } from "@/features/programs/program-glyphs";
 import { offSiteProps } from "@/lib/links";
 
 /**
@@ -17,7 +15,7 @@ import { offSiteProps } from "@/lib/links";
  * or cards joined by arrows. Server components; the pair's cards rise as they arrive (`Reveal`), and /referrals's Copy
  * buttons are the one island of their own (`ShareCommand`).
  *
- * /marketplaces draws the navy close (`ProgramClose`) and its ready email from here too.
+ * /marketplaces draws its pair, sections and ready email from here too.
  */
 
 /** A ready email to the founders, its subject naming the program (`Referral%20program`, as the mock encodes it). */
@@ -165,35 +163,5 @@ export function ProgramTiles({
         ))}
       </div>
     </ProgramSection>
-  );
-}
-
-/**
- * /marketplaces's navy close: the question, its line (its product names kept from translation), and "Write to us",
- * a ready email to the founders. No id and no heading anchor, as the mock draws it.
- */
-export function ProgramClose({
-  title,
-  line,
-  write,
-}: {
-  readonly title: string;
-  readonly line: string;
-  readonly write: { readonly label: string; readonly subject: string };
-}): React.JSX.Element {
-  return (
-    <section className="sec">
-      <div className="wrap">
-        <div className="pv-close">
-          <div>
-            <h2>{title}</h2>
-            <p>{named(line)}</p>
-          </div>
-          <a className="pv-cta" href={programMailto(write.subject)}>
-            <MailGlyph /> {write.label}
-          </a>
-        </div>
-      </div>
-    </section>
   );
 }

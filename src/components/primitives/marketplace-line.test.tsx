@@ -67,13 +67,18 @@ describe("MarketplaceLine", () => {
     for (const a of links) expect(a.querySelector(".sr-only [translate='no']")).toBeNull();
   });
 
-  it("names only the stores that list a product: Amoeba's hero, in Microsoft Marketplace alone", () => {
-    /* No Coral fallback: Amoeba's line opens Amoeba's own listing and names no store that lacks one. */
+  it("opens Amoeba's own listings on Amoeba's hero, in both stores, and never Coral's", () => {
+    /* No Coral fallback: Amoeba's line opens Amoeba's own listings. */
     const { p, links, hrefs } = line(
       <MarketplaceLine className="hero-mkt" product="amoeba" icon />,
     );
-    expect(p.textContent).toBe("Available in Amoeba in Microsoft Marketplace (opens in a new tab)");
-    expect(hrefs).toEqual(["https://marketplace.microsoft.com/en-us/product/zoorik.amoeba"]);
+    expect(p.textContent).toBe(
+      "Available in Amoeba in AWS Marketplace (opens in a new tab) and Amoeba in Microsoft Marketplace (opens in a new tab)",
+    );
+    expect(hrefs).toEqual([
+      "https://aws.amazon.com/marketplace/pp/prodview-u52eig5hqarzy",
+      "https://marketplace.microsoft.com/en-us/product/zoorik.amoeba",
+    ]);
     expect(links[0]!.querySelector(".sr-only [translate='no']")).toHaveTextContent("Amoeba");
   });
 });
