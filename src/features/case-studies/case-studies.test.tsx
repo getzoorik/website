@@ -40,13 +40,13 @@ const SPOKEN = /^Download the case study, PDF, \d+ pages?, \d\.\d MB, A4$/;
 describe("the case studies' metadata", () => {
   it("titles, describes and canonicalises the hub in the mock's words", () => {
     /* "Value Lab by Zoorik: …" already names the company, so no " · Zoorik" after it. */
-    expect(hubMeta.title).toEqual({ absolute: "Value Lab by Zoorik: cloud cost case studies" });
+    expect(hubMeta.title).toEqual({ absolute: "Value Lab by Zoorik | Cloud cost case studies" });
     expect(hubMeta.description).toBe("What Coral does on real clusters, with the figures.");
     expect(hubMeta.alternates).toEqual({ canonical: "/value-lab" });
     expect(hubMeta).not.toHaveProperty("robots");
     expect(hubMeta.openGraph).toMatchObject({
       url: "/value-lab",
-      title: "Value Lab by Zoorik: cloud cost case studies",
+      title: "Value Lab by Zoorik | Cloud cost case studies",
     });
   });
 

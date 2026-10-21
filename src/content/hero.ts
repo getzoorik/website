@@ -27,11 +27,11 @@ import type { ProductId } from "@/content/products";
 export const heroPhotoAlt = "Server racks in a data centre, lit by blue status lights";
 
 /**
- * The day the home page's content last changed (the case band's title says "reduced"), for the sitemap's
+ * The day the home page's content last changed (its title, "Zoorik | …"), for the sitemap's
  * `lastmod` only: the page does not print it. Whoever changes the home page's content
  * moves this to that day in the same PR; never the build's date.
  */
-export const homeLastUpdated = "20 October 2026";
+export const homeLastUpdated = "21 October 2026";
 
 export const heroContent = {
   /**

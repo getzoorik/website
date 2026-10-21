@@ -23,7 +23,7 @@ export const site = {
       the page reads as the Zoorik for a search on the name (zoorik.com ranked
       for "zoorik.com" but not yet for "zoorik"); every other page keeps the
       name at the end. The home page's card title repeats it. */
-  title: `Zoorik: ${homePhrase}`,
+  title: `Zoorik | ${homePhrase}`,
   titleTemplate: "%s · Zoorik",
   /** The home page's description, which its card and its structured data repeat.
       It opens with the name, for the same reason as the title. */

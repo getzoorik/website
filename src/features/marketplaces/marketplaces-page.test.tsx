@@ -56,8 +56,10 @@ function expectLogo(link: Element, src: string) {
 }
 
 describe("/marketplaces's metadata", () => {
-  it("has the mock's title through the template, its description and its canonical", () => {
-    expect(metadata.title).toBe("Where to find Zoorik: marketplaces, reviews and installs");
+  it("has an absolute title, like /about's, its description and its canonical", () => {
+    expect(metadata.title).toEqual({
+      absolute: "Where to find Zoorik | Marketplaces, reviews and installs",
+    });
     expect(metadata.description).toBe(
       "Buy Coral and Amoeba on AWS or Microsoft Marketplace, read reviews on G2, and install from Homebrew, PyPI, npm and the Terraform Registry.",
     );
@@ -65,7 +67,7 @@ describe("/marketplaces's metadata", () => {
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/marketplaces",
-      title: "Where to find Zoorik: marketplaces, reviews and installs · Zoorik",
+      title: "Where to find Zoorik | Marketplaces, reviews and installs",
     });
     expect(routes.marketplaces).toBe("/marketplaces");
     expect(marketplacesLastUpdated).toBe("21 October 2026");

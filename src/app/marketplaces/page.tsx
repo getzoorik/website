@@ -16,10 +16,15 @@ import "@/styles/marketplaces.css";
  * Products column, after Assessment. It is drawn with the program pages' parts, so it loads their sheet first and its
  * own after it, as the mock carries them.
  *
- * Its title runs through the layout's template: "Where to find Zoorik: marketplaces, reviews and installs · Zoorik", as
- * the mock's `<title>` reads.
+ * Its title is used as is, like /about's and /value-lab's: "Where to find Zoorik | Marketplaces, reviews and installs"
+ * names the company already, so no " · Zoorik" follows it.
  */
-export const metadata: Metadata = documentMetadata(routes.marketplaces, marketplacesPage.meta);
+const base = documentMetadata(routes.marketplaces, marketplacesPage.meta);
+export const metadata: Metadata = {
+  ...base,
+  title: { absolute: marketplacesPage.meta.title },
+  openGraph: { ...base.openGraph, title: marketplacesPage.meta.title },
+};
 
 export default function Marketplaces(): React.JSX.Element {
   return (

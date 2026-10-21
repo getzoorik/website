@@ -41,7 +41,7 @@ describe("social cards", () => {
   it("cards the home page with its title and its description", () => {
     /* The card repeats the page's head. */
     const home = pages["/"].openGraph as Record<string, unknown>;
-    expect(home.title).toBe("Zoorik: Kubernetes and block storage cost optimization");
+    expect(home.title).toBe("Zoorik | Kubernetes and block storage cost optimization");
     expect(home.description).toBe(pages["/"].description);
   });
 

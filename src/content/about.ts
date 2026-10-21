@@ -91,7 +91,7 @@ export const cin = "U62011KA2026PTC228102";
  * page does not print it. Whoever changes /about's content moves this to that
  * day in the same PR; never the build's date.
  */
-export const aboutLastUpdated = "20 October 2026";
+export const aboutLastUpdated = "21 October 2026";
 
 /** The year Zoorik Private Limited was incorporated: the Company facts' and the first milestone's. */
 const incorporated = "2026";
@@ -143,7 +143,7 @@ const studyAfter = studySteps[studySteps.length - 1]!.label;
 export const about = {
   /** An absolute `<title>` (with /careers's): the mock's, with no " · Zoorik" after it. */
   meta: {
-    title: "About Zoorik: who builds Coral and Amoeba",
+    title: "About Zoorik | Who builds Coral and Amoeba",
     description:
       "Zoorik Private Limited builds Coral, Kubernetes cost optimization on AKS and EKS, and Amoeba, block storage cost optimization on Azure and AWS.",
   },

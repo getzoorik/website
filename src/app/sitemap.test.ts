@@ -86,7 +86,7 @@ describe("sitemap.xml", () => {
     const updated = "2026-10-09";
     expect(dates).toEqual({
       /* The page descriptions in the current product words. */
-      "/": "2026-10-20",
+      "/": "2026-10-21",
       "/coral": "2026-10-17",
       "/amoeba": "2026-10-20",
       "/assessment": "2026-10-18",
@@ -117,7 +117,7 @@ describe("sitemap.xml", () => {
       "/compare/coral-alternatives": "2026-10-19",
       "/compare/amoeba-alternatives": "2026-10-19",
       ...Object.fromEntries(versusPages.map((page) => [versusRoute(page), "2026-10-19"])),
-      "/value-lab": "2026-10-20",
+      "/value-lab": "2026-10-21",
       "/case-studies/coral-dev-cluster": "2026-10-12",
       "/events": "2026-10-20",
       /* Zoorik News: the week of its latest Radar. */
@@ -125,9 +125,9 @@ describe("sitemap.xml", () => {
       /* Zoorik Community: the day it was published. */
       "/community": "2026-10-20",
       /* Milestones and Zoorik on the web. */
-      "/about": "2026-10-20",
+      "/about": "2026-10-21",
       /* The day its content last changed (the LinkedIn button), not the day it was published. */
-      "/careers": "2026-10-19",
+      "/careers": "2026-10-21",
       /* The company pages: the day they were published. */
       "/brand-assets": "2026-10-19",
       "/referrals": "2026-10-20",
@@ -145,7 +145,7 @@ describe("sitemap.xml", () => {
   it("dates the home page by its content file, homeLastUpdated, and by nothing else", () => {
     const home = sitemap().find((entry) => new URL(entry.url).pathname === "/")!;
     expect(home.lastModified).toBe(isoDay(homeLastUpdated));
-    expect(homeLastUpdated).toBe("20 October 2026");
+    expect(homeLastUpdated).toBe("21 October 2026");
   });
 
   it("dates every page it lists, and none in the future", () => {

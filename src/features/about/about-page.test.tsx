@@ -35,7 +35,7 @@ const main = () => page().querySelector("main")!;
 
 describe("/about's metadata", () => {
   it("has an absolute title, the mock's description and its canonical", () => {
-    expect(metadata.title).toEqual({ absolute: "About Zoorik: who builds Coral and Amoeba" });
+    expect(metadata.title).toEqual({ absolute: "About Zoorik | Who builds Coral and Amoeba" });
     expect(metadata.description).toBe(
       "Zoorik Private Limited builds Coral, Kubernetes cost optimization on AKS and EKS, and Amoeba, block storage cost optimization on Azure and AWS.",
     );
@@ -43,7 +43,7 @@ describe("/about's metadata", () => {
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/about",
-      title: "About Zoorik: who builds Coral and Amoeba",
+      title: "About Zoorik | Who builds Coral and Amoeba",
     });
   });
 });
@@ -260,8 +260,8 @@ describe("/about", () => {
     expect(about.what.lede).toMatch(/^Zoorik reduces cloud cost, autonomously\. /);
   });
 
-  it("moves its sitemap date to the day its milestone was relabelled Value Lab", () => {
-    expect(aboutLastUpdated).toBe("20 October 2026");
+  it("moves its sitemap date to the day its title took the pipe", () => {
+    expect(aboutLastUpdated).toBe("21 October 2026");
   });
 
   it("puts the two stores as buttons under Available on, naming no product", () => {

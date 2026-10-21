@@ -471,10 +471,14 @@ const pages: Readonly<Record<string, PageEntry>> = {
     trail: [step(routes.community)],
     about: "organization",
   },
-  /* Where to find Zoorik. */
-  [routes.marketplaces]: documentEntry(routes.marketplaces, marketplacesPage.meta, [], {
+  /* Where to find Zoorik: its title is absolute, as the page prints it (no " · Zoorik" after it). */
+  [routes.marketplaces]: {
+    kind: "WebPage",
+    name: marketplacesPage.meta.title,
+    description: marketplacesPage.meta.description,
+    trail: [step(routes.marketplaces)],
     about: "organization",
-  }),
+  },
   /* Zoorik News: its title is absolute, as the page prints it (no " · Zoorik" after it). */
   [routes.news]: {
     kind: "CollectionPage",
