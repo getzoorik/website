@@ -1,10 +1,10 @@
 import type { JSX, ReactNode } from "react";
 
 /**
- * The glyphs the three program pages draw that no shared component draws with a class of their own: the tick of What
+ * The glyphs the three program pages (and /marketplaces) draw that no shared component draws with a class of their own: the tick of What
  * you get, the package, the envelope, and the arrow between How it will work's cards. Each is `aria-hidden` (a name
  * is always set in text beside it) and paints in `currentColor`; its size comes from the surface's rule (`.dt-ic`,
- * `.cp-own`, `.cp-ar svg`, `.pv-cta > svg`). The pages' other glyphs are the site's (`assessment-marks`,
+ * `.cp-own`, `.cp-ar svg`). The pages' other glyphs are the site's (`assessment-marks`,
  * `brand-assets-glyphs`, `document-glyphs`, `@/components/brand`, `Arrow`).
  */
 
