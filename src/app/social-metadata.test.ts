@@ -48,11 +48,11 @@ describe("social cards", () => {
   it("cards each product page with its full title and its description", () => {
     const amoeba = pages["/amoeba"].openGraph as Record<string, unknown>;
     const coral = pages["/coral"].openGraph as Record<string, unknown>;
-    expect(amoeba.title).toBe("Amoeba: Azure disk and Amazon EBS cost optimization · Zoorik");
+    expect(amoeba.title).toBe("Zoorik | Block storage cost optimization");
     expect(amoeba.description).toBe(
       "Amoeba rightsizes Azure managed disks and Amazon EBS volumes to the data you store, to reduce your cloud bill, autonomously, without any downtime.",
     );
-    expect(coral.title).toBe("Coral: Kubernetes cost optimization for AKS and EKS · Zoorik");
+    expect(coral.title).toBe("Zoorik | Kubernetes cost optimization");
     expect(coral.description).toBe(
       "Coral rebalances AKS and EKS clusters to reduce your cloud bill, autonomously, without any downtime. Works with HPA, Karpenter, NAP and Cluster Autoscaler.",
     );

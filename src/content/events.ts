@@ -10,7 +10,7 @@
  * The day /events's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /events's content moves this to that day in the same PR; never the build's date.
  */
-export const eventsLastUpdated = "20 October 2026";
+export const eventsLastUpdated = "21 October 2026";
 
 /** The topics, in the Topic filter's order: the list's `category`, and the name its tag and its chip print. */
 export const eventTopics = [
@@ -77,9 +77,9 @@ const months = [
 ] as const;
 
 export const eventsPage = {
-  /** The page's `<title>` (through the site's " · Zoorik" template) and description. */
+  /** The page's `<title>` (through the site's "Zoorik | %s" template) and description. */
   meta: {
-    title: "Cloud cost, FinOps and Kubernetes events",
+    title: "Events",
     description:
       "Conferences and community days on Kubernetes, FinOps, cloud cost and block storage, with dates, places and a link to each event's own page.",
   },

@@ -60,7 +60,7 @@ export type CoralFaqQuestionId = (typeof coralFaqQuestionIds)[number];
 export const coralFaqPage = {
   path: routes.coralFaq,
   meta: {
-    title: "Coral FAQ: AKS and EKS cost optimization",
+    title: "Coral FAQ",
     description:
       "Answers on how Coral sizes CPU and memory requests, keeps workloads safe, works with HPA, KEDA, Karpenter, NAP and Cluster Autoscaler on AKS and EKS.",
   },

@@ -126,21 +126,31 @@ const nextConfig: NextConfig = {
     ]);
     const moved = [
       { source: "/resources", destination: "/docs", permanent: true },
-      /* The case studies' hub is Value Lab now; each study keeps its own address under /case-studies. */
+      /* The case studies live under Value Lab: the hub, and each study under it. `:slug` is never empty, so OpenNext
+         substitutes it (the root's empty match is the only case it does not). */
       { source: "/case-studies", destination: "/value-lab", statusCode: 301 },
-      /* The comparison hub is Cloud cost optimization tools now; the pages under /compare keep their addresses. */
+      { source: "/case-studies/:slug", destination: "/value-lab/:slug", statusCode: 301 },
+      /* The comparison pages live under Cloud cost optimization tools: /compare and each page under it move there. */
       { source: "/compare", destination: "/cloud-cost-optimization-tools", statusCode: 301 },
-      /* The comparison pages left /learn for /compare, with a 301. `:slug` is never
-         empty, so OpenNext substitutes it (the root's empty match is the only case it does not). */
-      { source: "/learn/compare/:slug", destination: "/compare/:slug", statusCode: 301 },
+      {
+        source: "/compare/:slug",
+        destination: "/cloud-cost-optimization-tools/:slug",
+        statusCode: 301,
+      },
+      /* Their older addresses under /learn go straight to the new ones, never through a second redirect. */
+      {
+        source: "/learn/compare/:slug",
+        destination: "/cloud-cost-optimization-tools/:slug",
+        statusCode: 301,
+      },
       {
         source: "/learn/coral-alternatives",
-        destination: "/compare/coral-alternatives",
+        destination: "/cloud-cost-optimization-tools/coral-alternatives",
         statusCode: 301,
       },
       {
         source: "/learn/amoeba-alternatives",
-        destination: "/compare/amoeba-alternatives",
+        destination: "/cloud-cost-optimization-tools/amoeba-alternatives",
         statusCode: 301,
       },
       ...MOVED_DOCUMENTS.map((file) => ({

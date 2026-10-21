@@ -36,9 +36,9 @@ export const learnSubjects: readonly { readonly id: LearnSubject; readonly label
 export const learnPage = {
   path: routes.learn,
   meta: {
-    /** "Zoorik Learn": the page's and the share card's title as is, never followed by " · Zoorik",
-     *  which would name the company twice. The menus and the footer name the hub "Zoorik Learn". */
-    title: "Zoorik Learn: cloud cost optimization guides",
+    /** The `<title>`'s own words, after "Zoorik | ". The h1 is "Zoorik Learn"; the header's Docs menu names the
+     *  hub "Zoorik Learn" and the footer "Learn". */
+    title: "Cloud cost optimization guides",
     description:
       "Guides and comparisons for Kubernetes, block storage and the whole cloud bill on Azure and AWS, from where the money goes to the right fix.",
   },

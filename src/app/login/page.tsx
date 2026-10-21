@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import type { JSX } from "react";
 
-import { routes } from "@/config/site";
+import { pageTitle, routes } from "@/config/site";
 import { pageOpenGraph } from "@/config/social";
 import { LoginScreen } from "@/features/login/login-screen";
 
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   title,
   description,
   robots: { index: false, follow: true },
-  openGraph: pageOpenGraph(routes.login, { title: `${title} · Zoorik`, description }),
+  openGraph: pageOpenGraph(routes.login, { title: pageTitle(title), description }),
 };
 
 /* The panel's ground, `--ground`, as `login.html` sets it: the one page whose

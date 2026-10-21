@@ -226,7 +226,7 @@ function Ours(): React.JSX.Element {
             <LinkTile
               key={page.route}
               href={page.route}
-              title={named(page.meta.title)}
+              title={named(page.h1)}
               line={named(page.line)}
             />
           ))}

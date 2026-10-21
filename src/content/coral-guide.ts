@@ -74,7 +74,7 @@ export type CoralGuideAnchor =
 
 export const coralGuide: GuideContent<CoralGuideAnchor> = {
   meta: {
-    title: "Coral product guide: AKS and EKS cost optimization",
+    title: "Coral product guide",
     description:
       "How to connect an AKS or EKS cluster to Coral, what it installs and changes, how it sizes pods and removes nodes, and how you stay in control.",
   },

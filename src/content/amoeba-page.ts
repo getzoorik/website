@@ -42,16 +42,16 @@ const guideAndFaq: readonly ReadMoreTile[] = [
 ];
 
 /**
- * The day /amoeba's content last changed (the product tour and its film), for the sitemap's
+ * The day /amoeba's content last changed (its title), for the sitemap's
  * `lastmod` only: the page does not print it. Whoever changes /amoeba's content
  * moves this to that day in the same PR; never the build's date.
  */
-export const amoebaPageLastUpdated = "20 October 2026";
+export const amoebaPageLastUpdated = "21 October 2026";
 
 export const amoebaPageContent: ProductPageContent = {
   product: "amoeba",
   meta: {
-    title: "Amoeba: Azure disk and Amazon EBS cost optimization",
+    title: "Block storage cost optimization",
     description:
       "Amoeba rightsizes Azure managed disks and Amazon EBS volumes to the data you store, to reduce your cloud bill, autonomously, without any downtime.",
     /* What "What is Amoeba?" says: structured data must say what the page

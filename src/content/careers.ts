@@ -173,9 +173,9 @@ const values = [
 ] as const satisfies readonly CareerValue[];
 
 export const careers = {
-  /** An absolute `<title>` like /about's: it names the company already, so no " · Zoorik" after it. */
+  /** The `<title>`'s own words, after "Zoorik | ", and the description. */
   meta: {
-    title: "Careers at Zoorik | Work with us, remotely",
+    title: "Careers",
     description:
       "Work at Zoorik, remotely. What you will build, our six values, how we work and how we hire.",
   },

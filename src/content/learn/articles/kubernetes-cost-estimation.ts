@@ -377,7 +377,7 @@ export const article: Article = {
     {
       title: "How we reduced our own cluster’s machine bill by 58%",
       where: "Case study",
-      href: "/case-studies/coral-dev-cluster",
+      href: "/value-lab/coral-dev-cluster",
     },
   ],
 };

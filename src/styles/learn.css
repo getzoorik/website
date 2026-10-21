@@ -1,5 +1,5 @@
 /* Zoorik marketing: Learn and the pages built on it: /learn, Cloud cost optimization tools, the two versus pages and
- * two alternatives pages under /compare, and /community. Ported from the mock's two blocks, whole, rule for rule and
+ * two alternatives pages under it, and /community. Ported from the mock's two blocks, whole, rule for rule and
  * in their order: `learn-v2` (the search, the heads, the chips, the subject cards, the covers, the article cards,
  * Find the right fix, the proof panel, option B's paths, the narrow widths and reduced motion), then `learn-v2b`
  * (/learn's Watch and read and More from Zoorik, the Zoorik News card, the Compare block's heads, the market list,
@@ -27,7 +27,7 @@
  * fix Read line whose article is not published yet is set as plain text.
  *
  * Loaded only by the pages that draw it (`src/app/learn/**`, `src/app/cloud-cost-optimization-tools`,
- * `src/app/compare/**`, `src/app/community`). */
+ * `src/app/cloud-cost-optimization-tools/**`, `src/app/community`). */
 /* ══ learn-v2 ══ */
 /* /learn (option A) */
 /* scoped: the mock writes `.doc-hero .hero-in`, page-wide; the Learn pages' hero carries `lv-hero` */

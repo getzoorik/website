@@ -20,15 +20,15 @@ import { routes } from "@/config/site";
  * The day /referrals's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /referrals's content moves this to that day in the same PR; never the build's date.
  */
-export const referralsLastUpdated = "20 October 2026";
+export const referralsLastUpdated = "21 October 2026";
 
 /** A team's glyph in Who you could introduce: a product's mark, or a line glyph for the roles both serve. */
 export type ReferralTeamIcon = "coral" | "amoeba" | "eye" | "shield";
 
 export const referralsPage = {
-  /** The page's `<title>` (through the site's " · Zoorik" template) and description. */
+  /** The page's `<title>` (through the site's "Zoorik | %s" template) and description. */
   meta: {
-    title: "Referral program (coming soon)",
+    title: "Referral program",
     description:
       "Introduce a team that runs Kubernetes or block storage on Azure or AWS to Zoorik. The referral program is coming soon.",
   },

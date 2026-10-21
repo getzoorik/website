@@ -20,7 +20,7 @@ import { calendarUrl } from "@/config/site";
  * The day /design-partners's content last changed, for the sitemap's `lastmod` only: the page does not print it.
  * Whoever changes /design-partners's content moves this to that day in the same PR; never the build's date.
  */
-export const designPartnersLastUpdated = "20 October 2026";
+export const designPartnersLastUpdated = "21 October 2026";
 
 /** How many design partners get the offer: their non-production infrastructure is free. */
 export const designPartnerPlaces = 10;
@@ -35,7 +35,7 @@ export type DesignPartnerTeamIcon = "coral" | "amoeba";
 const subject = "Design partner program";
 
 export const designPartnersPage = {
-  /** The page's `<title>` (through the site's " · Zoorik" template) and description. */
+  /** The page's `<title>` (through the site's "Zoorik | %s" template) and description. */
   meta: {
     title: "Design partner program",
     description:

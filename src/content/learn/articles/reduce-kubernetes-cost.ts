@@ -360,7 +360,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "On our own AKS development cluster, the apps already fit on fewer machines. So on 6 October, after we gave Coral permission to remove machines, node optimization removed one 4-CPU worker on its own, in under 10\u00a0minutes, before sizing was automatic. The machine bill went from $368.65 to $221.19 a month, $147.46 less for that one worker, and apps that run a single copy restarted once on another machine. That is Zoorik’s own AKS cluster, not a customer result, at Azure pay-as-you-go list prices for a 730-hour month. ",
-            { a: "The case study", href: "/case-studies/coral-dev-cluster" },
+            { a: "The case study", href: "/value-lab/coral-dev-cluster" },
             " has the full timeline, and its 58% also counts a swap to a cheaper worker on 12 October.",
           ],
         },
@@ -443,7 +443,7 @@ export const article: Article = {
     {
       title: "How we reduced our own cluster’s machine bill by 58%",
       where: "Case study",
-      href: "/case-studies/coral-dev-cluster",
+      href: "/value-lab/coral-dev-cluster",
     },
   ],
 };

@@ -64,20 +64,18 @@ afterEach(() => {
 
 describe("/cloud-cost-optimization-tools's metadata", () => {
   it("is titled, described and canonicalised as its mock, with the site's default card", () => {
-    expect(metadata.title).toEqual({
-      absolute: "Cloud cost optimization tools for Kubernetes, block storage and FinOps",
-    });
+    expect(metadata.title).toBe("Cloud cost optimization tools");
     expect(metadata.description).toBe(
       "The tools that reduce the cloud bill on Azure and AWS: what each one does, how it works and which clouds it supports, checked on each company's own pages.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/cloud-cost-optimization-tools" });
     expect(metadata.openGraph).toMatchObject({
       url: "/cloud-cost-optimization-tools",
-      title: "Cloud cost optimization tools for Kubernetes, block storage and FinOps",
+      title: "Zoorik | Cloud cost optimization tools",
       images: [socialImage],
     });
     expect(routes.cloudCostTools).toBe("/cloud-cost-optimization-tools");
-    expect(cloudCostToolsLastUpdated).toBe("20 October 2026");
+    expect(cloudCostToolsLastUpdated).toBe("21 October 2026");
   });
 });
 
@@ -352,7 +350,7 @@ describe("/cloud-cost-optimization-tools", () => {
       ]),
     ).toEqual([
       ...versusPages.map((entry) => [versusRoute(entry), entry.meta.title, entry.line]),
-      ...alternativesPages.map((entry) => [entry.route, entry.meta.title, entry.line]),
+      ...alternativesPages.map((entry) => [entry.route, entry.h1, entry.line]),
     ]);
     for (const tile of tiles) {
       expect(tile).not.toHaveAttribute("target");
@@ -366,7 +364,7 @@ describe("/cloud-cost-optimization-tools", () => {
     );
   });
 
-  it("links only the live versus pages under /compare, never a held one, and draws no logo", () => {
+  it("links only the live versus pages under the tools hub, never a held one, and draws no logo", () => {
     const root = page();
     const hrefs = [...root.querySelectorAll("main a")].map((a) => a.getAttribute("href") ?? "");
     expect(hrefs.filter((href) => href.startsWith(`${comparePath}/`))).toEqual([

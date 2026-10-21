@@ -40,9 +40,9 @@ const profile = (platform: (typeof socialProfiles)[number]["platform"]): string 
   socialProfiles.find((entry) => entry.platform === platform)!.href;
 
 export const newsPage = {
-  /** The page's `<title>` and share title as is: "Zoorik News: …" names the company already, so no " · Zoorik". */
+  /** The `<title>`'s own words, after "Zoorik | ", and the share title's. */
   meta: {
-    title: "Zoorik News: cloud cost, Kubernetes and FinOps updates",
+    title: "News",
     description:
       "What Zoorik ships, and Zoorik Radar: what changed this week in cloud cost, Kubernetes and FinOps, each item with its source.",
   },

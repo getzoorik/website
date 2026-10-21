@@ -19,12 +19,11 @@ export const site = {
   /** The canonical origin, no trailing slash. metadataBase, robots, the sitemap and JSON-LD all read it. It must equal `https://${CANONICAL_HOST}` in next.config.ts. */
   url: "https://zoorik.com",
   /** The home page's `<title>`; every other page goes through `titleTemplate`.
-      On the home page alone the name leads and the search phrase follows, so
-      the page reads as the Zoorik for a search on the name (zoorik.com ranked
-      for "zoorik.com" but not yet for "zoorik"); every other page keeps the
-      name at the end. The home page's card title repeats it. */
+      Every title leads with the name, then the page's own name after a pipe,
+      so each result reads as Zoorik's at a glance: "Zoorik | About", "Zoorik |
+      Kubernetes cost optimization". The home page's card title repeats it. */
   title: `Zoorik | ${homePhrase}`,
-  titleTemplate: "%s · Zoorik",
+  titleTemplate: "Zoorik | %s",
   /** The home page's description, which its card and its structured data repeat.
       It opens with the name, for the same reason as the title. */
   homeDescription:
@@ -36,6 +35,9 @@ export const site = {
   /** Drives `<meta name="theme-color">`; the brand navy, matching the mock. */
   themeColor: "#070F52",
 } as const;
+
+/** A page's full title, as its `<title>`, its share card and its structured data print it: "Zoorik | <name>". */
+export const pageTitle = (title: string): string => site.titleTemplate.replace("%s", title);
 
 /**
  * Where each product's console lives.
@@ -124,16 +126,16 @@ export const routes = {
   /* Cloud cost optimization tools: the tools that reduce the bill, then Coral and Amoeba compared. Its old address,
      /compare, redirects here. In the footer's Resources column, after News. */
   cloudCostTools: "/cloud-cost-optimization-tools",
-  /* The comparison pages (moved from /learn), under /compare: each product's alternatives, and the versus pages
+  /* The comparison pages, under Cloud cost optimization tools: each product's alternatives, and the versus pages
      (`comparePath`; their slugs are data, `versusPages` in @/content/learn-compare; one per product is kept live).
-     The old /learn addresses redirect. */
-  compareCoralAlternatives: "/compare/coral-alternatives",
-  compareAmoebaAlternatives: "/compare/amoeba-alternatives",
+     Their old /compare and /learn addresses redirect. */
+  compareCoralAlternatives: "/cloud-cost-optimization-tools/coral-alternatives",
+  compareAmoebaAlternatives: "/cloud-cost-optimization-tools/amoeba-alternatives",
   /* Value Lab by Zoorik: the case studies' hub, with what the studies saved so far and the featured study, and one
-     page per study, which keeps its address under /case-studies. The hub's old address, /case-studies, redirects here.
+     page per study under it. The old /case-studies addresses, the hub's and each study's, redirect here.
      Linked from the footer's Resources column. */
   valueLab: "/value-lab",
-  caseStudyCoralDevCluster: "/case-studies/coral-dev-cluster",
+  caseStudyCoralDevCluster: "/value-lab/coral-dev-cluster",
   /* Events: real conferences and community days, from the radar's checked list.
      In the footer's Resources column, after Value Lab. */
   events: "/events",
@@ -161,8 +163,8 @@ export const routes = {
   docsContributing: "/docs/contributing",
 } as const;
 
-/** Where the comparison pages live, a folder rather than a page: /compare itself redirects to `routes.cloudCostTools`. */
-export const comparePath = "/compare";
+/** Where the comparison pages live: under Cloud cost optimization tools. /compare and its old pages redirect there. */
+export const comparePath = "/cloud-cost-optimization-tools";
 
 /**
  * A Learn article's address, by its slug. The articles themselves are listed by

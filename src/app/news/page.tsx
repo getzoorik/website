@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 
 import { JsonLd } from "@/components/seo/json-ld";
 import { routes } from "@/config/site";
-import { pageOpenGraph } from "@/config/social";
 import { pageStructuredData } from "@/config/structured-data";
 import { newsPage } from "@/content/news";
+import { documentMetadata } from "@/features/documents/document-page";
 import { NewsPage } from "@/features/news/news-page";
 
 import "@/styles/news.css";
@@ -15,13 +15,8 @@ import "@/styles/news.css";
  * page here; linked from the footer's Resources column, after Events, and from /learn's Zoorik News card. The radar
  * run refreshes it weekly (`src/content/news.ts`).
  */
-/* ITS TITLE IS ABSOLUTE, like /learn's: "Zoorik News: …" names the company already. */
-export const metadata: Metadata = {
-  title: { absolute: newsPage.meta.title },
-  description: newsPage.meta.description,
-  alternates: { canonical: routes.news },
-  openGraph: pageOpenGraph(routes.news, newsPage.meta),
-};
+/* Its title goes through the layout's template: "Zoorik | News". */
+export const metadata: Metadata = documentMetadata(routes.news, newsPage.meta);
 
 export default function News(): React.JSX.Element {
   return (

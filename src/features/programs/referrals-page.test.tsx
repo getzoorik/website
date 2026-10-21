@@ -42,7 +42,7 @@ afterEach(() => {
 
 describe("/referrals's metadata", () => {
   it("has the mock's title through the site's template, its description and its canonical", () => {
-    expect(metadata.title).toBe("Referral program (coming soon)");
+    expect(metadata.title).toBe("Referral program");
     expect(metadata.description).toBe(
       "Introduce a team that runs Kubernetes or block storage on Azure or AWS to Zoorik. The referral program is coming soon.",
     );

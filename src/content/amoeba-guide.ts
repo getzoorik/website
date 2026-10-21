@@ -78,7 +78,7 @@ export type AmoebaGuideAnchor =
 
 export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
   meta: {
-    title: "Amoeba product guide: Azure managed disks and EBS",
+    title: "Amoeba product guide",
     description:
       "How to onboard a VM to Amoeba on Azure or AWS, how its data moves onto one pool, how the pool expands and shrinks online, and how you stay in control.",
   },

@@ -46,10 +46,8 @@ function iconOf(tile: Element): string {
 }
 
 describe("/news's metadata", () => {
-  it("titles the page as is, with no ' · Zoorik' after it, and describes and canonicalises it", () => {
-    expect(metadata.title).toEqual({
-      absolute: "Zoorik News: cloud cost, Kubernetes and FinOps updates",
-    });
+  it("titles the page through the template, and describes and canonicalises it", () => {
+    expect(metadata.title).toBe("News");
     expect(metadata.description).toBe(
       "What Zoorik ships, and Zoorik Radar: what changed this week in cloud cost, Kubernetes and FinOps, each item with its source.",
     );
@@ -57,7 +55,7 @@ describe("/news's metadata", () => {
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/news",
-      title: "Zoorik News: cloud cost, Kubernetes and FinOps updates",
+      title: "Zoorik | News",
     });
     expect(routes.news).toBe("/news");
   });

@@ -21,16 +21,16 @@ import type { ProductPageContent } from "@/content/product-page";
  * running on Windows or Linux.
  */
 /**
- * The day /coral's content last changed (the product tour and its film), for the sitemap's
+ * The day /coral's content last changed (its title), for the sitemap's
  * `lastmod` only: the page does not print it. Whoever changes /coral's content
  * moves this to that day in the same PR; never the build's date.
  */
-export const coralPageLastUpdated = "17 October 2026";
+export const coralPageLastUpdated = "21 October 2026";
 
 export const coralPageContent: ProductPageContent = {
   product: "coral",
   meta: {
-    title: "Coral: Kubernetes cost optimization for AKS and EKS",
+    title: "Kubernetes cost optimization",
     description:
       "Coral rebalances AKS and EKS clusters to reduce your cloud bill, autonomously, without any downtime. Works with HPA, Karpenter, NAP and Cluster Autoscaler.",
     appDescription:

@@ -31,8 +31,8 @@ beforeAll(() => {
 });
 
 describe("/careers's metadata", () => {
-  it("has an absolute title like /about's, the mock's description and its canonical", () => {
-    expect(metadata.title).toEqual({ absolute: "Careers at Zoorik | Work with us, remotely" });
+  it("has its title through the template, the mock's description and its canonical", () => {
+    expect(metadata.title).toBe("Careers");
     expect(metadata.description).toBe(
       "Work at Zoorik, remotely. What you will build, our six values, how we work and how we hire.",
     );
@@ -40,7 +40,7 @@ describe("/careers's metadata", () => {
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/careers",
-      title: "Careers at Zoorik | Work with us, remotely",
+      title: "Zoorik | Careers",
     });
   });
 });

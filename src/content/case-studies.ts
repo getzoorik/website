@@ -3,8 +3,8 @@ import type { DocumentId } from "@/content/documents";
 import { platformLabel, products, type ProductId } from "@/content/products";
 
 /**
- * Case studies: the hub (`/case-studies`) and the first study
- * (`/case-studies/coral-dev-cluster`), every string and figure verbatim from
+ * Case studies: the hub (`/value-lab`) and the first study
+ * (`/value-lab/coral-dev-cluster`), every string and figure verbatim from
  * the mocks. The study is the published PDF on the web: its six numbered
  * sections, its copy and figures word for word, its drawings in the site's
  * figure style, and the PDF itself to download.
@@ -94,7 +94,7 @@ export const caseStudiesHubLastUpdated = "21 October 2026";
 export const caseStudy = {
   route: routes.caseStudyCoralDevCluster,
   meta: {
-    title: "Case study: how we reduced our own cluster’s machine bill by 58%",
+    title: "How we reduced our cluster’s machine bill by 58%",
     description:
       "Before we ask anyone to trust Coral with their cluster, we run it on ours. Eight days after we connected it, our AKS development cluster cost $154.76 a month instead of $368.65.",
   },
@@ -472,9 +472,9 @@ const savedMonthly = studies.reduce(
 
 export const caseStudiesHub = {
   route: routes.valueLab,
-  /** The page's and the share card's title as is: "Value Lab by Zoorik: …" names the company, so no " · Zoorik". */
+  /** The `<title>`'s own words, after "Zoorik | ", and the description. */
   meta: {
-    title: "Value Lab by Zoorik | Cloud cost case studies",
+    title: "Value Lab",
     description: "What Coral does on real clusters, with the figures.",
   },
   hero: {

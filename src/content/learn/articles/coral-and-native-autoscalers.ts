@@ -13,7 +13,7 @@ export const article: Article = {
   topic: "Kubernetes autoscaling",
   versus: ["Coral", "Native"],
   published: "2026-10-09",
-  updated: "2026-10-09",
+  updated: "2026-10-21",
   author: "zoorik",
   breakCode: true,
   shareCard: {

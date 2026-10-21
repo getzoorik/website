@@ -164,8 +164,8 @@ export const footerColumns: readonly FooterColumn[] = [
   {
     heading: "Resources",
     links: [
-      { label: "Zoorik Learn", href: routes.learn },
-      /* One line under Zoorik Learn: the case studies' hub, Value Lab, and its only place in the site's links. */
+      { label: "Learn", href: routes.learn },
+      /* One line under Learn: the case studies' hub, Value Lab, and its only place in the site's links. */
       { label: "Value Lab", href: routes.valueLab },
       /* Events, after the case studies as the mock draws it. */
       { label: "Events", href: routes.events },
