@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 
 import { JsonLd } from "@/components/seo/json-ld";
-import { pageCards } from "@/config/social";
 import { pageStructuredData } from "@/config/structured-data";
 import { learnPage } from "@/content/learn";
 import { documentMetadata } from "@/features/documents/document-page";
@@ -15,7 +14,7 @@ import "@/styles/learn.css";
  * links.
  */
 /* Its title goes through the layout's template: "Cloud cost optimization guides | Zoorik"; the h1 stays "Zoorik Learn". */
-export const metadata: Metadata = documentMetadata(learnPage.path, learnPage.meta, pageCards.learn);
+export const metadata: Metadata = documentMetadata(learnPage.path, learnPage.meta);
 
 export default function Learn(): React.JSX.Element {
   return (

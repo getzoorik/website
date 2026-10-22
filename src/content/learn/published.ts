@@ -1,5 +1,5 @@
 import { learnPath } from "@/config/site";
-import { pageCards, shareImage, type ShareImage } from "@/config/social";
+import { cardFor, type ShareImage } from "@/config/social";
 import { authors, type Author } from "@/content/authors";
 
 import type { Article } from "./article";
@@ -62,9 +62,7 @@ export function articleAuthor(article: Article): Author | null {
   return article.author === "zoorik" ? null : authors[article.author];
 }
 
-/** An article's share card: its own where it has one, else the /learn card. */
+/** An article's share card: its own where it has one, else the /learn card (`cardFor`). */
 export function articleCard(article: Article): ShareImage {
-  return article.shareCard
-    ? shareImage(article.shareCard.url, article.shareCard.alt)
-    : pageCards.learn;
+  return cardFor(articleRoute(article));
 }

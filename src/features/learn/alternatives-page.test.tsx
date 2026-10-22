@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { describe, expect, it, vi } from "vitest";
 
 import { routes } from "@/config/site";
-import { socialImage } from "@/config/social";
+import { pageCards } from "@/config/social";
 import { pageStructuredData } from "@/config/structured-data";
 import {
   alternativesPages,
@@ -64,14 +64,22 @@ describe.each(alternativesPages.map((entry) => [entry.route, entry] as const))(
       return render(<routeModule.default />).container;
     };
 
-    it("is titled, described and canonicalised as its mock, with the site's default card", () => {
+    it("is titled, described and canonicalised as its mock, with its own card", () => {
       expect(routeModule.metadata.title).toBe(entry.meta.title);
       expect(routeModule.metadata.description).toBe(entry.meta.description);
       expect(routeModule.metadata.alternates).toEqual({ canonical: route });
       expect(routeModule.metadata.openGraph).toMatchObject({
         url: route,
         title: `${entry.meta.title} | Zoorik`,
-        images: [socialImage],
+        /* the product's comparison card, the same as its versus page's */
+        images: [pageCards[route]],
+      });
+      expect(routeModule.metadata.openGraph).toMatchObject({
+        images: [
+          {
+            url: `/og/pages/${entry.product === "coral" ? "kubernetes-cost-tools" : "block-storage-tools"}.png`,
+          },
+        ],
       });
     });
 

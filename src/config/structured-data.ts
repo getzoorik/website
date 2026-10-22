@@ -31,7 +31,7 @@ import {
   routes,
   site,
 } from "@/config/site";
-import { pageCards } from "@/config/social";
+import { cardFor } from "@/config/social";
 import { about, cin, registeredOffice } from "@/content/about";
 import { amoebaFaqPage } from "@/content/amoeba-faq";
 import { amoebaGuide } from "@/content/amoeba-guide";
@@ -452,7 +452,7 @@ const pages: Readonly<Record<string, PageEntry>> = {
       headline: studyHeadline,
       published: studyDate,
       modified: studyDate,
-      image: pageCards.caseStudyCoralDevCluster,
+      image: cardFor(routes.caseStudyCoralDevCluster),
     },
   },
   /* About, the organisation's own page. */

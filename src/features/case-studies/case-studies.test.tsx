@@ -61,10 +61,10 @@ describe("the case studies' metadata", () => {
       title: "How We Reduced AKS Cluster Costs by 58% | Zoorik",
       images: [
         {
-          url: "/og/zoorik-case-coral-dev-cluster-1200x630.png",
+          url: "/og/pages/value-lab-coral-dev-cluster.png",
           width: 1200,
           height: 630,
-          alt: "Value Lab by Zoorik: how we reduced our own cluster’s machine bill by 58%",
+          alt: "Zoorik. How we reduced our own cluster’s machine bill by 58%.",
         },
       ],
     });

@@ -181,12 +181,6 @@ export const learnTopics = [
 
 export type LearnTopic = (typeof learnTopics)[number];
 
-/** A share card drawn for one article: its picture in `public/og/` (1200 × 630 PNG) and the words it shows. */
-export interface ArticleShareCard {
-  readonly url: `/og/${string}.png`;
-  readonly alt: string;
-}
-
 export interface Article {
   /** The file's name and the page's address: /learn/<slug>. */
   readonly slug: string;
@@ -213,8 +207,6 @@ export interface Article {
   readonly updated: string;
   /** Who wrote it: an author's key in `authors.ts`, or "zoorik" when it is published under the company alone. */
   readonly author: AuthorKey | "zoorik";
-  /** Its own share card; an article without one shows the /learn card. */
-  readonly shareCard?: ArticleShareCard;
   /** Its drawn cover (1200 × 630 WebP in `public/learn-covers/`), under the byline. */
   readonly cover?: `/learn-covers/${string}.webp`;
   /** The answer after "Short answer.", first in the column. An essay has none. */

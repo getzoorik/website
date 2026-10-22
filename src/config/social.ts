@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 
 import { site } from "@/config/site";
+import { alternativesPages, versusPages, versusRoute } from "@/content/learn-compare";
+import type { ProductId } from "@/content/products";
 
 /** The X account the footer links to (x.com/getzoorik), named as every page's card site and creator. */
 export const xHandle = "@getzoorik";
@@ -38,32 +40,157 @@ export const shareImage = (url: ShareImage["url"], alt: string): ShareImage => (
 });
 
 /**
- * The pages with a card of their own, drawn by the brand kit and copied byte
- * for byte under a new name each. Every other page uses the home card above.
- * Each `alt` reads the card: its mark, then its words. A Learn article's own
- * card is in its file (`Article.shareCard`); an article without one takes the
- * /learn card.
+ * Every page's own card, by its address: the brand card above with the page's own words where the tagline sits,
+ * drawn by the brand kit from these same words and stored as a palette PNG in `public/og/pages/`. Platforms cache a
+ * card by its URL, so a redrawn card gets a new file name. Each `alt` reads the card: its name, then its words. The
+ * home page has none of its own: it shows the brand card.
  */
-const card = (name: string, alt: string): ShareImage =>
-  shareImage(`/og/zoorik-${name}-1200x630.png`, alt);
+/** A product's comparison pages, its alternatives page then its versus page: they share one card. */
+const comparisonsOf = (product: ProductId): `/${string}`[] => [
+  ...alternativesPages
+    .filter((page) => page.product === product)
+    .map((page) => page.route as `/${string}`),
+  ...versusPages.filter((page) => page.product === product).map(versusRoute),
+];
 
-export const pageCards = {
-  coral: card(
-    "coral",
-    "Coral. Kubernetes cost optimization. Kubernetes cost optimization on AKS and EKS.",
+const CARDS: readonly {
+  readonly file: string;
+  readonly words: string;
+  readonly paths: readonly `/${string}`[];
+}[] = [
+  { file: "coral", words: "Kubernetes cost optimization on AKS and EKS", paths: ["/coral"] },
+  { file: "amoeba", words: "Block storage cost optimization on Azure and AWS", paths: ["/amoeba"] },
+  { file: "assessment", words: "Free cloud cost assessment", paths: ["/assessment"] },
+  { file: "docs", words: "Product guides, FAQs and one-pagers", paths: ["/docs"] },
+  { file: "coral-guide", words: "Coral product guide", paths: ["/coral/guide"] },
+  { file: "coral-faq", words: "Coral FAQ", paths: ["/coral/faq"] },
+  { file: "amoeba-guide", words: "Amoeba product guide", paths: ["/amoeba/guide"] },
+  { file: "amoeba-faq", words: "Amoeba FAQ", paths: ["/amoeba/faq"] },
+  {
+    file: "docs-install-coral-with-helm",
+    words: "Install Coral with Helm",
+    paths: ["/docs/install-coral-with-helm"],
+  },
+  {
+    file: "docs-install-coral-with-terraform",
+    words: "Install Coral with Terraform + Helm",
+    paths: ["/docs/install-coral-with-terraform"],
+  },
+  {
+    file: "docs-contributing",
+    words: "Contributing to our open source",
+    paths: ["/docs/contributing"],
+  },
+  { file: "open-source", words: "Open source", paths: ["/open-source"] },
+  { file: "learn", words: "Cloud cost optimization guides", paths: ["/learn"] },
+  {
+    file: "cloud-cost-optimization-tools",
+    words: "Cloud cost optimization tools",
+    paths: ["/cloud-cost-optimization-tools"],
+  },
+  {
+    file: "kubernetes-cost-tools",
+    words: "Kubernetes cost tools compared",
+    paths: comparisonsOf("coral"),
+  },
+  {
+    file: "block-storage-tools",
+    words: "Block storage tools compared",
+    paths: comparisonsOf("amoeba"),
+  },
+  {
+    file: "value-lab",
+    words: "What Coral and Amoeba reduced on real cloud bills",
+    paths: ["/value-lab"],
+  },
+  {
+    file: "value-lab-coral-dev-cluster",
+    words: "How we reduced our own cluster’s machine bill by 58%",
+    paths: ["/value-lab/coral-dev-cluster"],
+  },
+  { file: "events", words: "Cloud cost, FinOps and Kubernetes events", paths: ["/events"] },
+  { file: "news", words: "Cloud cost, Kubernetes and FinOps updates", paths: ["/news"] },
+  { file: "community", words: "FinOps and cloud cost communities", paths: ["/community"] },
+  { file: "about", words: "Who builds Coral and Amoeba", paths: ["/about"] },
+  { file: "careers", words: "Work with us, remotely", paths: ["/careers"] },
+  { file: "brand-assets", words: "The Zoorik logo, colours and words", paths: ["/brand-assets"] },
+  { file: "referrals", words: "Referral program", paths: ["/referrals"] },
+  { file: "partners", words: "Partner program", paths: ["/partners"] },
+  { file: "design-partners", words: "Design partner program", paths: ["/design-partners"] },
+  { file: "marketplaces", words: "Marketplaces, reviews and installs", paths: ["/marketplaces"] },
+  { file: "privacy", words: "Privacy policy", paths: ["/privacy"] },
+  { file: "terms", words: "Terms of use", paths: ["/terms"] },
+  { file: "security", words: "Security and data handling", paths: ["/security"] },
+  { file: "login", words: "Sign in", paths: ["/login"] },
+  {
+    file: "learn-azure-disk-cost-optimization",
+    words: "Azure disk cost optimization",
+    paths: ["/learn/azure-disk-cost-optimization"],
+  },
+  {
+    file: "learn-change-eks-node-group-instance-type",
+    words: "How to change an EKS node group instance type",
+    paths: ["/learn/change-eks-node-group-instance-type"],
+  },
+  {
+    file: "learn-cluster-autoscaler-not-scaling-down",
+    words: "Cluster Autoscaler not scaling down on AKS and EKS",
+    paths: ["/learn/cluster-autoscaler-not-scaling-down"],
+  },
+  {
+    file: "learn-find-unattached-disks-azure",
+    words: "How to find unattached disks in Azure and clean up",
+    paths: ["/learn/find-unattached-disks-azure"],
+  },
+  {
+    file: "learn-how-to-reduce-cloud-costs",
+    words: "How to reduce cloud costs: what moves the bill",
+    paths: ["/learn/how-to-reduce-cloud-costs"],
+  },
+  {
+    file: "learn-hpa-vs-vpa-vs-cluster-autoscaler",
+    words: "HPA vs VPA vs Cluster Autoscaler, plus Karpenter",
+    paths: ["/learn/hpa-vs-vpa-vs-cluster-autoscaler"],
+  },
+  {
+    file: "learn-kubernetes-cost-estimation",
+    words: "Kubernetes cost estimation for AKS and EKS",
+    paths: ["/learn/kubernetes-cost-estimation"],
+  },
+  {
+    file: "learn-kubernetes-pod-right-sizing",
+    words: "Kubernetes pod rebalancing",
+    paths: ["/learn/kubernetes-pod-right-sizing"],
+  },
+  {
+    file: "learn-poor-architecture-cloud-bill",
+    words: "How poor architecture increases your cloud bill",
+    paths: ["/learn/poor-architecture-cloud-bill"],
+  },
+  {
+    file: "learn-reduce-kubernetes-cost",
+    words: "How to reduce Kubernetes cost: requests, then nodes",
+    paths: ["/learn/reduce-kubernetes-cost"],
+  },
+  {
+    file: "learn-shrink-azure-managed-disk",
+    words: "Can a managed disk shrink?",
+    paths: ["/learn/shrink-azure-managed-disk"],
+  },
+  { file: "learn-vpa-vs-hpa", words: "VPA vs HPA", paths: ["/learn/vpa-vs-hpa"] },
+];
+
+const sentence = (words: string): string => (/[.?!]$/.test(words) ? words : `${words}.`);
+
+export const pageCards: Readonly<Record<string, ShareImage>> = Object.fromEntries(
+  CARDS.flatMap(({ file, words, paths }) =>
+    paths.map((path) => [path, shareImage(`/og/pages/${file}.png`, `Zoorik. ${sentence(words)}`)]),
   ),
-  amoeba: card(
-    "amoeba",
-    "Amoeba. Block storage cost optimization. Block storage cost optimization on Azure and AWS.",
-  ),
-  assessment: card("assessment", "Zoorik. Free cloud cost assessment."),
-  learn: card("learn", "Zoorik. Kubernetes and block storage cost, explained."),
-  /* The case study's own card: our own cluster, its bill before and with Coral. */
-  caseStudyCoralDevCluster: card(
-    "case-coral-dev-cluster",
-    "Value Lab by Zoorik: how we reduced our own cluster’s machine bill by 58%",
-  ),
-} as const;
+);
+
+/** A page's card: its own; else, for a Learn article, the /learn card; else the brand card. */
+export const cardFor = (path: string): ShareImage =>
+  pageCards[path] ?? (path.startsWith("/learn/") ? pageCards["/learn"] : undefined) ?? socialImage;
 
 type OpenGraph = NonNullable<Metadata["openGraph"]>;
 
@@ -90,7 +217,7 @@ export function pageOpenGraph(
 ): OpenGraph {
   return {
     ...baseOpenGraph,
-    ...(image === undefined ? {} : { images: [image] }),
+    images: [image ?? cardFor(path)],
     url: path,
     ...copy,
   };

@@ -4,7 +4,7 @@ import { render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { comparePath } from "@/config/site";
-import { socialImage } from "@/config/social";
+import { pageCards } from "@/config/social";
 import { pageStructuredData } from "@/config/structured-data";
 import {
   alternativesPages,
@@ -137,7 +137,7 @@ describe.each(versusPages.map((entry) => [entry.slug, entry] as const))("%s", (_
   const tool = marketTool(facts.tool);
   const ours = products[entry.product].name;
 
-  it("is titled, described and canonicalised as its mock, with the site's default card", async () => {
+  it("is titled, described and canonicalised as its mock, with its own card", async () => {
     const metadata = await route.generateMetadata({ params: params(entry.slug) });
     expect(metadata.title).toBe(entry.meta.title);
     expect(metadata.description).toBe(entry.meta.description);
@@ -145,7 +145,15 @@ describe.each(versusPages.map((entry) => [entry.slug, entry] as const))("%s", (_
     expect(metadata.openGraph).toMatchObject({
       url: versusRoute(entry),
       title: `${entry.meta.title} | Zoorik`,
-      images: [socialImage],
+      /* the product's comparison card, the same as its alternatives page's */
+      images: [pageCards[versusRoute(entry)]],
+    });
+    expect(metadata.openGraph).toMatchObject({
+      images: [
+        {
+          url: `/og/pages/${entry.product === "coral" ? "kubernetes-cost-tools" : "block-storage-tools"}.png`,
+        },
+      ],
     });
     expect(entry.meta.title).toBe(`${ours} vs ${facts.name}`);
   });
