@@ -475,22 +475,23 @@ describe("the navigation", () => {
       (a) => a.textContent === "Assessment",
     );
 
-    /* The bar's word, which opens Coral's at home, and the footer's plain
-       link. The drawer's Assessment is a group's label. */
+    /* The bar's link and the drawer's, which open Coral's, and the footer's
+       plain link. */
     expect(entries.map((a) => a.getAttribute("href"))).toEqual([
+      "/assessment?p=coral",
       "/assessment?p=coral",
       "/assessment",
     ]);
     /* 🔴 `/assess/<name>` IS REDIRECTED AT THE EDGE to a script in another
        repo. A page there can never be served, and the link would hand a reader
-       a Python file. Every way in, the menu's rows and the drawer's chips
-       included, is the page itself, preset to a product or not. */
+       a Python file. Every way in, the bar's and the drawer's links included,
+       is the page itself, preset to a product or not. */
     for (const a of page.querySelectorAll<HTMLAnchorElement>(
       '.nav a[href^="/assess"], footer a[href^="/assess"]',
     )) {
       expect(a.getAttribute("href")).toMatch(/^\/assessment(\?p=(coral|amoeba))?$/);
     }
-    expect(page.querySelectorAll('.nav a[href^="/assessment?p="]')).toHaveLength(5);
+    expect(page.querySelectorAll('.nav a[href^="/assessment?p="]')).toHaveLength(2);
   });
 
   it("sends Coral and Amoeba to their own pages, from the bar, the drawer and the footer", () => {

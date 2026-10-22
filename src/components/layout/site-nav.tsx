@@ -34,15 +34,16 @@ import { useNavSolid } from "@/hooks/use-nav-solid";
 import { offSiteProps } from "@/lib/links";
 
 /**
- * The top bar, its four menus and its mobile drawer.
+ * The top bar, its one menu and its mobile drawer.
  *
- * The bar: Coral · Amoeba · Assessment ▾ · Product guide ▾ · FAQ ▾ · Docs ▾ ·
- * Login · Book a demo. Each menu is a small white card under the bar with one
- * row per product; Docs adds a row to the whole hub, then the Learn row to the
- * articles. From 1000px down the links and menus give way to the toggle, and
- * the drawer lists the same things: the two product links, one group per menu
- * with the products as chips ("All" and "Learn" after them in Docs), then
- * Login.
+ * The bar: Coral · Amoeba · Assessment · Product guide · FAQ · Docs ▾ · Login ·
+ * Book a demo. Assessment, Product guide and FAQ are plain links to Coral's
+ * page of each; the page itself switches to Amoeba. Docs is a small white card
+ * under the bar with one row per product, a row to the whole hub, then the
+ * Learn row to the articles. From 1000px down the links and the menu give way
+ * to the toggle, and the drawer lists the same things: the two product links,
+ * the three plain links, the Docs group with the products as chips ("All" and
+ * "Learn" after them), then Login.
  *
  * ─── WHY THIS IS A CLIENT COMPONENT AND THE REST OF THE PAGE IS NOT ─────────
  * Only the menus and the drawer hold state. Everything else on this site renders
@@ -50,27 +51,26 @@ import { offSiteProps } from "@/lib/links";
  * component rather than markup inside the page.
  *
  * ─── EVERY PAGE KNOWS ITS PLACE AT BUILD ───────────────────────────────────
- * What is current — a bar link, a menu's `.is-cur`, a row inside a menu, a
+ * What is current — a bar link, the menu's `.is-cur`, a row inside the menu, a
  * drawer chip — comes from the pathname (`navState` in the site config). The
  * pathname is known when the page is prerendered, so the HTML already carries
  * the right marks and every route stays static. One mark waits for the browser:
- * /assessment serves both products from one file, so its own row in the
- * Assessment menu, and its drawer chip, follow `html[data-ap]`, the product the
- * page has read from its address and keeps in step with its switch. A menu
- * button never takes `aria-current`: it is not a page.
+ * /assessment serves both products from one file, so whether the Assessment
+ * link is this very page follows `html[data-ap]`, the product the page has read
+ * from its address and keeps in step with its switch. A menu button never takes
+ * `aria-current`: it is not a page.
  *
- * ─── THREE OF THE MENUS ARE A WORD AND A CHEVRON ───────────────────────────
- * Assessment, FAQ and Docs: the word is a link, and the chevron after it is a
- * button of its own that opens the menu ("Assessment menu" to a screen reader).
- * The word lands on Coral's page, the default, on every page, Amoeba's own
- * included — `/assessment?p=coral`, `/coral/faq`, `/docs#coral`
- * (`menuLabelHref`) — and the rows in the menu lead to each product's. One
- * control could not do both: a button that navigated would leave a keyboard no
- * way into the menu, and a link that opened a menu would leave a touch reader
- * no way to the page. Product guide stays one button that only opens its menu.
- * The word takes `aria-current` only when it leads to this very page (its path
- * whatever its hash, and on /assessment the product the page is on: `isPage`);
- * `.is-cur` marks the menu the page is in, on the word and the chevron alike.
+ * ─── PLAIN LINKS, AND ONE WORD AND CHEVRON ─────────────────────────────────
+ * Assessment, Product guide and FAQ are one link each, to Coral's page, the
+ * default, on every page, Amoeba's own included — `/assessment?p=coral`,
+ * `/coral/guide`, `/coral/faq` (`menuLabelHref`). Docs is a word and a chevron:
+ * the word a link to `/docs#coral`, the chevron a button of its own that opens
+ * the menu ("Docs menu" to a screen reader). One control could not do both: a
+ * button that navigated would leave a keyboard no way into the menu, and a link
+ * that opened a menu would leave a touch reader no way to the page. A word
+ * takes `aria-current` only when it leads to this very page (its path whatever
+ * its hash, and on /assessment the product the page is on: `isPage`); `.is-cur`
+ * marks the link or menu the page is in.
  *
  * ─── THE MENUS ARE DISCLOSURES, NOT `role="menu"` ──────────────────────────
  * A button and a list of links. A click, Enter or
@@ -523,13 +523,25 @@ export function SiteNav() {
             <NavEntry key={link.key} link={link} state={state} />
           ))}
           {navMenus.map((item) => {
-            const on = menu === item.key;
             const cur = state.current === item.key;
+            const href = menuLabelHref(item);
+            if (!item.dropdown) {
+              return (
+                <a
+                  className={cur ? "nv-lbl is-cur" : "nv-lbl"}
+                  key={item.key}
+                  href={href}
+                  aria-current={isPage(href, pathname, state) ? "page" : undefined}
+                >
+                  {item.label}
+                </a>
+              );
+            }
+            const on = menu === item.key;
             const h = menuHandlers(item.key);
-            const href = item.labelLink ? menuLabelHref(item) : undefined;
             return (
               <div
-                className={href ? "nv-dd nv-split" : "nv-dd"}
+                className="nv-dd nv-split"
                 key={item.key}
                 ref={(el) => {
                   if (el) dds.current.set(item.key, el);
@@ -539,40 +551,25 @@ export function SiteNav() {
                 onMouseLeave={h.onMouseLeave}
                 onBlur={h.onBlur}
               >
-                {href ? (
-                  <>
-                    {/* The word, a link; then the chevron, the menu's button. */}
-                    <a
-                      className={cur ? "nv-lbl is-cur" : "nv-lbl"}
-                      href={href}
-                      aria-current={isPage(href, pathname, state) ? "page" : undefined}
-                      onClick={h.onLabelClick}
-                    >
-                      {item.label}
-                    </a>
-                    <button
-                      className={cur ? "nv-btn nv-tog is-cur" : "nv-btn nv-tog"}
-                      type="button"
-                      aria-label={`${item.label} menu`}
-                      aria-expanded={on}
-                      aria-controls={ddId(item.key)}
-                      onClick={h.onButtonClick}
-                    >
-                      <Chevron />
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    className={cur ? "nv-btn is-cur" : "nv-btn"}
-                    type="button"
-                    aria-expanded={on}
-                    aria-controls={ddId(item.key)}
-                    onClick={h.onButtonClick}
-                  >
-                    <span>{item.label}</span>
-                    <Chevron />
-                  </button>
-                )}
+                {/* The word, a link; then the chevron, the menu's button. */}
+                <a
+                  className={cur ? "nv-lbl is-cur" : "nv-lbl"}
+                  href={href}
+                  aria-current={isPage(href, pathname, state) ? "page" : undefined}
+                  onClick={h.onLabelClick}
+                >
+                  {item.label}
+                </a>
+                <button
+                  className={cur ? "nv-btn nv-tog is-cur" : "nv-btn nv-tog"}
+                  type="button"
+                  aria-label={`${item.label} menu`}
+                  aria-expanded={on}
+                  aria-controls={ddId(item.key)}
+                  onClick={h.onButtonClick}
+                >
+                  <Chevron />
+                </button>
                 {/* Rendered closed, `hidden`, so the prerendered page carries
                     every row for crawlers and no open card. */}
                 <div className="nv-menu" id={ddId(item.key)} hidden={!on} onClick={h.onMenuClick}>
@@ -623,53 +620,64 @@ export function SiteNav() {
           {navLinks.map((link) => (
             <NavEntry key={link.key} link={link} state={state} onFollow={closeDrawer} />
           ))}
-          {navMenus.map((item) => (
-            <div className="nd-grp" key={item.key}>
-              {/* A label, not a heading: the drawer is one list of places. */}
-              <p className="nd-h">{item.label}</p>
-              <div className="nd-row">
-                {item.rows.map((row) => (
-                  <a
-                    key={row.product}
-                    href={row.href}
-                    aria-current={isHere(state, item.key, row.product) ? "page" : undefined}
-                    translate="no"
-                    onClick={closeDrawer}
-                  >
-                    <ProductMark product={row.product} />
-                    {products[row.product].name}
-                  </a>
-                ))}
-                {item.all ? (
-                  <a
-                    href={item.all.href}
-                    aria-current={isHere(state, item.key) ? "page" : undefined}
-                    onClick={closeDrawer}
-                  >
-                    {item.all.chip}
-                  </a>
-                ) : null}
-                {item.learn ? (
-                  <a
-                    href={item.learn.href}
-                    aria-current={isHere(state, item.key, "learn") ? "page" : undefined}
-                    onClick={closeDrawer}
-                  >
-                    <NamedText text={item.learn.label} name={site.name} />
-                  </a>
-                ) : null}
-                {item.open ? (
-                  <a
-                    href={item.open.href}
-                    aria-current={isHere(state, item.key, "open") ? "page" : undefined}
-                    onClick={closeDrawer}
-                  >
-                    {item.open.label}
-                  </a>
-                ) : null}
+          {navMenus.map((item) =>
+            !item.dropdown ? (
+              <a
+                key={item.key}
+                href={menuLabelHref(item)}
+                aria-current={isPage(menuLabelHref(item), pathname, state) ? "page" : undefined}
+                onClick={closeDrawer}
+              >
+                {item.label}
+              </a>
+            ) : (
+              <div className="nd-grp" key={item.key}>
+                {/* A label, not a heading: the drawer is one list of places. */}
+                <p className="nd-h">{item.label}</p>
+                <div className="nd-row">
+                  {item.rows.map((row) => (
+                    <a
+                      key={row.product}
+                      href={row.href}
+                      aria-current={isHere(state, item.key, row.product) ? "page" : undefined}
+                      translate="no"
+                      onClick={closeDrawer}
+                    >
+                      <ProductMark product={row.product} />
+                      {products[row.product].name}
+                    </a>
+                  ))}
+                  {item.all ? (
+                    <a
+                      href={item.all.href}
+                      aria-current={isHere(state, item.key) ? "page" : undefined}
+                      onClick={closeDrawer}
+                    >
+                      {item.all.chip}
+                    </a>
+                  ) : null}
+                  {item.learn ? (
+                    <a
+                      href={item.learn.href}
+                      aria-current={isHere(state, item.key, "learn") ? "page" : undefined}
+                      onClick={closeDrawer}
+                    >
+                      <NamedText text={item.learn.label} name={site.name} />
+                    </a>
+                  ) : null}
+                  {item.open ? (
+                    <a
+                      href={item.open.href}
+                      aria-current={isHere(state, item.key, "open") ? "page" : undefined}
+                      onClick={closeDrawer}
+                    >
+                      {item.open.label}
+                    </a>
+                  ) : null}
+                </div>
               </div>
-            </div>
-          ))}
+            ),
+          )}
           <a
             href={navLogin.href}
             aria-current={state.current === navLogin.key ? "page" : undefined}
