@@ -247,8 +247,8 @@ describe("the home page", () => {
     expect(market.previousElementSibling).toHaveClass("hero-cta");
     expect(market.nextElementSibling).toHaveClass("hero-prods");
     expect(market.querySelector(".mkt-ic")).toHaveAttribute("aria-hidden", "true");
-    /* It names the product the listings are. */
-    expect(market.textContent).toContain("Coral is available in AWS Marketplace");
+    /* It names both products the stores list. */
+    expect(market.textContent).toContain("Coral and Amoeba are available in AWS Marketplace");
   });
 
   it("names the two products exactly, wherever it names them", () => {

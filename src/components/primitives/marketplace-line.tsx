@@ -2,8 +2,13 @@ import { Fragment, type JSX } from "react";
 
 import { ExternalArrow } from "@/components/primitives/external-arrow";
 import { NewTabHint } from "@/components/primitives/new-tab-hint";
-import { marketplaceListing, marketplaceWords, storesListing } from "@/config/marketplaces";
-import { products, type ProductId } from "@/content/products";
+import {
+  marketplaceListing,
+  marketplaces,
+  marketplaceWords,
+  storesListing,
+} from "@/config/marketplaces";
+import { productOrder, products, type ProductId } from "@/content/products";
 import { offSiteProps } from "@/lib/links";
 
 /**
@@ -15,17 +20,16 @@ import { offSiteProps } from "@/lib/links";
  * twice, as the mock draws it: the hidden phrase after the name, then the arrow.
  * The footer draws the stores as buttons instead (`MarketplaceButtons`).
  *
- * The home hero passes `named`: the line names the product it is about, "Coral
- * is available in …", and opens Coral's listings.
+ * The home hero passes `named`: the line names both products, "Coral and
+ * Amoeba are available in …", and each store's link opens Zoorik's products
+ * there side by side (`catalogue`).
  * A product's own hero passes `product`: its links open that product's
  * listings, and each says whose they are to a screen reader ("Coral in AWS
  * Marketplace"), so the page never has two links of the same name going to
  * different listings.
  *
  * 🔴 A PRODUCT LISTED IN NO STORE DRAWS NO LINE. Only the stores that list the
- * product are named, and Amoeba is in neither yet, so /amoeba's hero has no
- * line at all, and no Coral fallback. It appears the day Amoeba's listings
- * go into `marketplaces.ts`.
+ * product are named, with no Coral fallback.
  *
  * One departure from the mock: the hidden "Coral" in
  * "Coral in AWS Marketplace" is kept out of translation, as everywhere the name
@@ -41,11 +45,11 @@ export function MarketplaceLine({
   readonly product?: ProductId;
   /** The bag in front. */
   readonly icon?: boolean;
-  /** "<product> is available in": the line names its product (Coral's when none is given). */
+  /** "Coral and Amoeba are available in": the home hero's line, naming both products. */
   readonly named?: boolean;
 }): JSX.Element | null {
   const listed = product ?? "coral";
-  const stores = storesListing(listed);
+  const stores = named ? marketplaces : storesListing(listed);
   if (stores.length === 0) return null;
   /* A product's own line names it inside each link, for a screen reader; a line
      that names its product in the lead does not repeat it. */
@@ -57,14 +61,19 @@ export function MarketplaceLine({
       <span>
         {named ? (
           <>
-            <span translate="no">{products[listed].name}</span>
+            {productOrder.map((id, index) => (
+              <Fragment key={id}>
+                {index > 0 ? marketplaceWords.join : null}
+                <span translate="no">{products[id].name}</span>
+              </Fragment>
+            ))}
             {marketplaceWords.namedLead}
           </>
         ) : (
           marketplaceWords.lead
         )}{" "}
         {stores.map((marketplace, index) => {
-          const href = marketplaceListing(marketplace, listed);
+          const href = named ? marketplace.catalogue : marketplaceListing(marketplace, listed);
           return (
             <Fragment key={marketplace.id}>
               {index > 0 ? marketplaceWords.join : null}

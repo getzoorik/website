@@ -25,6 +25,8 @@ export interface Marketplace {
   readonly listings: { readonly coral: string; readonly amoeba: string | null };
   /** Zoorik's own page in the store, which lists every product it sells there. */
   readonly profile: string;
+  /** Where the home hero's line sends a buyer: every Zoorik product in the store, side by side. */
+  readonly catalogue: string;
 }
 
 /** AWS first, as the mock's line reads. */
@@ -37,6 +39,7 @@ export const marketplaces: readonly Marketplace[] = [
       amoeba: "https://aws.amazon.com/marketplace/pp/prodview-u52eig5hqarzy",
     },
     profile: "https://aws.amazon.com/marketplace/seller-profile?id=seller-mtaavozrqchlk",
+    catalogue: "https://aws.amazon.com/marketplace/seller-profile?id=seller-mtaavozrqchlk",
   },
   {
     id: "microsoft",
@@ -47,6 +50,7 @@ export const marketplaces: readonly Marketplace[] = [
     },
     profile:
       "https://marketplace.microsoft.com/en-us/partners/04f64eb0-8878-4f14-9578-bc5d104737e7/overview",
+    catalogue: "https://marketplace.microsoft.com/en-us/search/products?page=1&search=zoorik",
   },
 ];
 
@@ -55,11 +59,11 @@ export const storeProfiles: readonly string[] = marketplaces.map(
   (marketplace) => marketplace.profile,
 );
 
-/** The line's own words: "Available in" one store "and" the other; a line that
- *  names its product reads "<name> is available in" (the home hero). */
+/** The line's own words: "Available in" one store "and" the other; the home
+ *  hero's line names both products, "Coral and Amoeba are available in". */
 export const marketplaceWords = {
   lead: "Available in",
-  namedLead: " is available in",
+  namedLead: " are available in",
   join: " and ",
 } as const;
 
