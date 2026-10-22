@@ -291,21 +291,18 @@ describe.each(pages)("the product page %s", (path, content) => {
     expect(page.querySelector("#assess [data-i]")).toBe(page.querySelector("#contact"));
   });
 
-  it("marks its own product in the bar, whose Assessment menu opens the assessment on it", () => {
+  it("marks its own product in the bar, whose Assessment link opens Coral's, the default", () => {
     const page = renderPage(path, content);
     const current = [...page.querySelectorAll('nav a[aria-current="page"]')];
     expect(current.length).toBeGreaterThan(0);
     for (const a of current) expect(a).toHaveAttribute("href", path);
-    /* The bar's word opens Coral's, the default, here too; the menu's row and
-       the drawer's chip for this product open its own. */
+    /* The bar's link opens Coral's, the default, here too; the assessment
+       switches to Amoeba on its own page. */
     const word = [...page.querySelectorAll("nav a.nv-lbl")].filter((a) => text(a) === "Assessment");
     expect(word.map((a) => a.getAttribute("href"))).toEqual(["/assessment?p=coral"]);
-    const own = [...page.querySelectorAll(`nav a[href="/assessment?p=${product}"]`)].map((a) =>
-      a.closest(".nv-menu") ? `row ${text(a.querySelector("b"))}` : text(a),
-    );
-    expect(own).toEqual(
-      product === "coral" ? ["Assessment", `row ${name}`, name] : [`row ${name}`, name],
-    );
+    /* The bar's link and the drawer's. */
+    const own = [...page.querySelectorAll(`nav a[href="/assessment?p=${product}"]`)].map(text);
+    expect(own).toEqual(product === "coral" ? ["Assessment", "Assessment"] : []);
   });
 
   it("lands every in-page anchor on something that is there", () => {

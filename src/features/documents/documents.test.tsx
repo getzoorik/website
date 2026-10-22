@@ -725,14 +725,14 @@ describe("the install's OS switch", () => {
 });
 
 describe("a document page's chrome", () => {
-  it("marks its menu current and opens the assessment on its product, in the nav and the closing row", () => {
+  it("marks its link current and opens the assessment on its product, in the nav and the closing row", () => {
     pathname.current = "/coral/guide";
     const { container } = render(
       <DocumentPage hero={{ title: "Product guide", deck: "Deck." }} product="coral">
         <p>Body</p>
       </DocumentPage>,
     );
-    expect(container.querySelector(".nv-btn.is-cur")).toHaveTextContent("Product guide");
+    expect(container.querySelector("a.nv-lbl.is-cur")).toHaveTextContent("Product guide");
     expect(container.querySelector("#assess .btn-ink")).toHaveAttribute(
       "href",
       "/assessment?p=coral",
