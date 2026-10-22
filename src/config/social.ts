@@ -178,6 +178,16 @@ const CARDS: readonly {
     paths: ["/learn/shrink-azure-managed-disk"],
   },
   { file: "learn-vpa-vs-hpa", words: "VPA vs HPA", paths: ["/learn/vpa-vs-hpa"] },
+  {
+    file: "learn-azure-vm-disk-usage",
+    words: "Azure VM disk usage: check used vs provisioned",
+    paths: ["/learn/azure-vm-disk-usage"],
+  },
+  {
+    file: "learn-check-ebs-volume-usage",
+    words: "How to check EBS volume usage: used vs paid space",
+    paths: ["/learn/check-ebs-volume-usage"],
+  },
 ];
 
 const sentence = (words: string): string => (/[.?!]$/.test(words) ? words : `${words}.`);
