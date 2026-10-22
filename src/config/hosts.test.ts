@@ -99,13 +99,13 @@ describe("the comparison pages' old addresses under /compare", () => {
   it("301s /compare to Cloud cost optimization tools, and each page under it to the same page under the hub", async () => {
     const hub = await respond("https://zoorik.com/compare");
     expect(hub.status).toBe(301);
-    expect(getRedirectUrl(hub)).toBe("https://zoorik.com/cloud-cost-optimization-tools");
+    expect(getRedirectUrl(hub)).toBe("https://zoorik.com/cloud-cost-optimization-library");
     const pages = [...versusPages.map(versusRoute), ...alternativesPages.map((page) => page.route)];
     expect(pages).toHaveLength(4);
     for (const path of pages) {
-      expect(path.startsWith("/cloud-cost-optimization-tools/"), path).toBe(true);
+      expect(path.startsWith("/cloud-cost-optimization-library/"), path).toBe(true);
       const old = await respond(
-        `https://zoorik.com${path.replace("/cloud-cost-optimization-tools/", "/compare/")}`,
+        `https://zoorik.com${path.replace("/cloud-cost-optimization-library/", "/compare/")}`,
       );
       expect(old.status, path).toBe(301);
       expect(getRedirectUrl(old), path).toBe(`https://zoorik.com${path}`);
@@ -121,7 +121,7 @@ describe("the comparison pages' older addresses under /learn", () => {
       ...versusPages.map((page) => [`/learn/compare/${page.slug}`, versusRoute(page)] as const),
       ...alternativesPages.map(
         (page) =>
-          [page.route.replace("/cloud-cost-optimization-tools/", "/learn/"), page.route] as const,
+          [page.route.replace("/cloud-cost-optimization-library/", "/learn/"), page.route] as const,
       ),
     ];
     expect(moved).toHaveLength(4);
@@ -136,7 +136,7 @@ describe("the comparison pages' older addresses under /learn", () => {
     const response = await respond("https://zoorik.com/learn/compare/no-such-page");
     expect(response.status).toBe(301);
     expect(getRedirectUrl(response)).toBe(
-      "https://zoorik.com/cloud-cost-optimization-tools/no-such-page",
+      "https://zoorik.com/cloud-cost-optimization-library/no-such-page",
     );
   });
 });
@@ -148,5 +148,25 @@ describe("the retired autoscalers article", () => {
     expect(getRedirectUrl(old)).toBe("https://zoorik.com/learn/hpa-vs-vpa-vs-cluster-autoscaler");
     const article = await respond("https://zoorik.com/learn/hpa-vs-vpa-vs-cluster-autoscaler");
     expect(article.status).not.toBe(301);
+  });
+});
+
+describe("Cloud cost optimization tools' old address", () => {
+  it("301s /cloud-cost-optimization-tools and each page under it to the same page under /cloud-cost-optimization-library", async () => {
+    const hub = await respond("https://zoorik.com/cloud-cost-optimization-tools");
+    expect(hub.status).toBe(301);
+    expect(getRedirectUrl(hub)).toBe("https://zoorik.com/cloud-cost-optimization-library");
+    for (const path of [
+      ...alternativesPages.map((page) => page.route),
+      ...versusPages.map(versusRoute),
+    ]) {
+      const old = await respond(
+        `https://zoorik.com${path.replace("/cloud-cost-optimization-library/", "/cloud-cost-optimization-tools/")}`,
+      );
+      expect(old.status, path).toBe(301);
+      expect(getRedirectUrl(old), path).toBe(`https://zoorik.com${path}`);
+    }
+    const library = await respond("https://zoorik.com/cloud-cost-optimization-library");
+    expect(library.status).not.toBe(301);
   });
 });

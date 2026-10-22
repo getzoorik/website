@@ -1,4 +1,4 @@
-/* Zoorik marketing: `/cloud-cost-optimization-tools`, Cloud cost optimization tools.
+/* Zoorik marketing: `/cloud-cost-optimization-library`, Cloud cost optimization tools.
  *
  * Ported from the mock's tools rules, rule for rule and in their order. The page is drawn on Learn's frame and carries
  * Learn's sheet (the section's padding, the chips, the reset button) and /community's (`.cm-sl`, each kind's plain grey
@@ -11,7 +11,7 @@
  * (the mock's `.mk-acts` and `.mk-note`, which the alternatives pages still draw their own way in learn.css), and the
  * two by two of Compare Coral and Amoeba (the mock's page-wide `.dt-2x2`).
  *
- * Loaded only by `/cloud-cost-optimization-tools` (`src/app/cloud-cost-optimization-tools/page.tsx`). */
+ * Loaded only by `/cloud-cost-optimization-library` (`src/app/cloud-cost-optimization-library/page.tsx`). */
 
 /* the tools: /community's tiles; an initial in place of a logo (names only), a short line, then how it works and the
    clouds it supports; a minimal filter of kind and cloud */

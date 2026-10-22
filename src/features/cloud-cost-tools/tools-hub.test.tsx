@@ -26,12 +26,12 @@ import { NoTool, ToolChips, ToolsFilter } from "@/features/cloud-cost-tools/tool
 import { marketOurs, marketTool } from "@/features/learn/market-rows";
 
 /* The nav and the footer read the pathname. */
-vi.mock("next/navigation", () => ({ usePathname: () => "/cloud-cost-optimization-tools" }));
+vi.mock("next/navigation", () => ({ usePathname: () => "/cloud-cost-optimization-library" }));
 
-import ToolsRoute, { metadata } from "@/app/cloud-cost-optimization-tools/page";
+import ToolsRoute, { metadata } from "@/app/cloud-cost-optimization-library/page";
 
 /**
- * `/cloud-cost-optimization-tools`, Cloud cost optimization tools: the metadata, the hero, the tools that reduce the
+ * `/cloud-cost-optimization-library`, Cloud cost optimization tools: the metadata, the hero, the tools that reduce the
  * bill (the chips, each kind's tiles, Coral and Amoeba first in theirs, the note), Compare Coral and Amoeba (the live
  * versus pages and the alternatives pages) and the closing row; the chips as the mock's script behaves, everything
  * shown with scripting off, no logo of another company, nothing stored. Competitors' names are read from the market
@@ -62,24 +62,24 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe("/cloud-cost-optimization-tools's metadata", () => {
+describe("/cloud-cost-optimization-library's metadata", () => {
   it("is titled, described and canonicalised as its mock, with the site's default card", () => {
     expect(metadata.title).toBe("Cloud cost optimization tools");
     expect(metadata.description).toBe(
       "The tools that reduce the cloud bill on Azure and AWS: what each one does, how it works and which clouds it supports, checked on each company's own pages.",
     );
-    expect(metadata.alternates).toEqual({ canonical: "/cloud-cost-optimization-tools" });
+    expect(metadata.alternates).toEqual({ canonical: "/cloud-cost-optimization-library" });
     expect(metadata.openGraph).toMatchObject({
-      url: "/cloud-cost-optimization-tools",
+      url: "/cloud-cost-optimization-library",
       title: "Cloud cost optimization tools | Zoorik",
       images: [socialImage],
     });
-    expect(routes.cloudCostTools).toBe("/cloud-cost-optimization-tools");
+    expect(routes.cloudCostTools).toBe("/cloud-cost-optimization-library");
     expect(cloudCostToolsLastUpdated).toBe("21 October 2026");
   });
 });
 
-describe("/cloud-cost-optimization-tools", () => {
+describe("/cloud-cost-optimization-library", () => {
   it("opens on its name and its line, with no kicker", () => {
     const root = page();
     expect(root.querySelectorAll("h1")).toHaveLength(1);
