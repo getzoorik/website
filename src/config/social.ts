@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { site } from "@/config/site";
+import { routes, site } from "@/config/site";
 import { alternativesPages, versusPages, versusRoute } from "@/content/learn-compare";
 import type { ProductId } from "@/content/products";
 
@@ -86,7 +86,7 @@ const CARDS: readonly {
   {
     file: "cloud-cost-optimization-tools",
     words: "Cloud cost optimization tools",
-    paths: ["/cloud-cost-optimization-tools"],
+    paths: [routes.cloudCostTools],
   },
   {
     file: "kubernetes-cost-tools",
