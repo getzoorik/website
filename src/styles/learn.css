@@ -26,8 +26,8 @@
  * mock: the films' hover zoom is stilled under reduced motion, as the mock stills the cards' lift, and a Find the right
  * fix Read line whose article is not published yet is set as plain text.
  *
- * Loaded only by the pages that draw it (`src/app/learn/**`, `src/app/cloud-cost-optimization-tools`,
- * `src/app/cloud-cost-optimization-tools/**`, `src/app/community`). */
+ * Loaded only by the pages that draw it (`src/app/learn/**`, `src/app/cloud-cost-optimization-library`,
+ * `src/app/cloud-cost-optimization-library/**`, `src/app/community`). */
 /* ══ learn-v2 ══ */
 /* /learn (option A) */
 /* scoped: the mock writes `.doc-hero .hero-in`, page-wide; the Learn pages' hero carries `lv-hero` */

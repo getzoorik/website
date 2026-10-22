@@ -9,7 +9,7 @@
  * The App Router keeps a visited page's sheet in the document, so each selector names a `cm-` class, Community's
  * (`community-css.test.ts`). The logo's rule names `.dt-ic` too, so it wins over the tile's icon size in any order.
  *
- * Loaded by `/community` (`src/app/community/page.tsx`), and by `/cloud-cost-optimization-tools`, whose kinds of tool
+ * Loaded by `/community` (`src/app/community/page.tsx`), and by `/cloud-cost-optimization-library`, whose kinds of tool
  * are named as the kinds of community are (`.cm-sl`). */
 
 /* /community: the closing row's pair and the Read more tiles; the kind of community as plain grey text */

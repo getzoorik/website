@@ -18,7 +18,7 @@ import { marketOurs, marketTool } from "@/features/learn/market-rows";
 import { offSiteProps } from "@/lib/links";
 
 /**
- * A versus page (`/cloud-cost-optimization-tools/<slug>`, one per product): the hero, then At a glance (each one in its maker's words, ours
+ * A versus page (`/cloud-cost-optimization-library/<slug>`, one per product): the hero, then At a glance (each one in its maker's words, ours
  * on navy, theirs with its own page), then Side by side (the rows, each claim about the other tool with its source
  * link, then the published pricing with its sources) and the fine print with the day it was checked, then the
  * closing row.

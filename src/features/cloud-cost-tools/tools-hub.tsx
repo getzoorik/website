@@ -32,7 +32,7 @@ import { named } from "@/features/legal/named";
 import { offSiteProps } from "@/lib/links";
 
 /**
- * `/cloud-cost-optimization-tools`, Cloud cost optimization tools, on Learn's frame:
+ * `/cloud-cost-optimization-library`, Cloud cost optimization tools, on Learn's frame:
  *
  *   hero    the page's name and its line
  *   tools   Tools that reduce cloud cost: the kind and cloud chips, then each kind's name over its tiles (Coral and

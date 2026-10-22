@@ -169,8 +169,8 @@ describe("competitors' names", () => {
     const run = parts(name!);
     const camel = run.map((part, i) => (i === 0 ? part : part[0]!.toUpperCase() + part.slice(1)));
     for (const spelling of [
-      `/cloud-cost-optimization-tools/coral-vs-${run.join("-")}`,
-      `src/app/cloud-cost-optimization-tools/coral-vs-${run.join("-")}/page.tsx`,
+      `/cloud-cost-optimization-library/coral-vs-${run.join("-")}`,
+      `src/app/cloud-cost-optimization-library/coral-vs-${run.join("-")}/page.tsx`,
       `const ${camel.join("")}Rows = [];`,
       `const ${run.join("")}Rows = [];`,
       `${run.join("_").toUpperCase()}_URL`,
@@ -201,12 +201,12 @@ describe("competitors' names", () => {
   it("are printed by Cloud cost optimization tools and the pages under it only: every other page renders none", async () => {
     /* Every page of the site, by its file; Cloud cost optimization tools and the comparison pages (the versus pages
        and the alternatives pages, under it) are the ones allowed to name competitors. */
-    const hubPage = "src/app/cloud-cost-optimization-tools/page.tsx";
+    const hubPage = "src/app/cloud-cost-optimization-library/page.tsx";
     const pages = files("src/app").filter((path) => path.endsWith("/page.tsx"));
     expect(pages.length).toBeGreaterThan(30);
     expect(pages).toContain(hubPage);
     const others = pages.filter(
-      (path) => !path.startsWith("src/app/cloud-cost-optimization-tools/") && path !== hubPage,
+      (path) => !path.startsWith("src/app/cloud-cost-optimization-library/") && path !== hubPage,
     );
     expect(pages.length - others.length).toBe(4);
     expect(others).toContain("src/app/learn/page.tsx");
@@ -248,7 +248,7 @@ describe("competitors' names", () => {
     }
     expect(offenders).toEqual([]);
     /* And the hub names them: the check would see a name on a page. */
-    pathname.current = "/cloud-cost-optimization-tools";
+    pathname.current = "/cloud-cost-optimization-library";
     const hub = printed(render(createElement(await load(hubPage))).container);
     expect(versusFacts.every((facts) => found(facts.name).test(hub))).toBe(true);
     cleanup();

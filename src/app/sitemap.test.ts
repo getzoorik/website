@@ -57,9 +57,9 @@ describe("sitemap.xml", () => {
       `${site.url}/learn`,
       /* Every article in the Learn index, A–Z by slug. */
       ...learnArticles.map((article) => `${site.url}${learnPath(article.slug)}`),
-      `${site.url}/cloud-cost-optimization-tools`,
-      `${site.url}/cloud-cost-optimization-tools/coral-alternatives`,
-      `${site.url}/cloud-cost-optimization-tools/amoeba-alternatives`,
+      `${site.url}/cloud-cost-optimization-library`,
+      `${site.url}/cloud-cost-optimization-library/coral-alternatives`,
+      `${site.url}/cloud-cost-optimization-library/amoeba-alternatives`,
       /* The live versus pages, read from their data: no test spells a competitor's name. */
       ...versusPages.map((page) => `${site.url}${versusRoute(page)}`),
       `${site.url}/value-lab`,
@@ -110,10 +110,10 @@ describe("sitemap.xml", () => {
         learnArticles.map((article) => [learnPath(article.slug), article.updated]),
       ),
       /* Cloud cost optimization tools: the day its content last changed. */
-      "/cloud-cost-optimization-tools": "2026-10-21",
+      "/cloud-cost-optimization-library": "2026-10-21",
       /* The comparison pages: the day they were checked and published. */
-      "/cloud-cost-optimization-tools/coral-alternatives": "2026-10-19",
-      "/cloud-cost-optimization-tools/amoeba-alternatives": "2026-10-19",
+      "/cloud-cost-optimization-library/coral-alternatives": "2026-10-19",
+      "/cloud-cost-optimization-library/amoeba-alternatives": "2026-10-19",
       ...Object.fromEntries(versusPages.map((page) => [versusRoute(page), "2026-10-19"])),
       "/value-lab": "2026-10-21",
       "/value-lab/coral-dev-cluster": "2026-10-12",
@@ -175,7 +175,7 @@ describe("sitemap.xml", () => {
     const listed = sitemap().map((entry) => new URL(entry.url).pathname);
     /* A held page answers 404 (`amoebaDocs`). */
     const held: string[] = amoebaDocs ? [] : [routes.amoebaGuide, routes.amoebaFaq];
-    /* A dynamic route stands for the pages it prerenders: /cloud-cost-optimization-tools/[slug] for the live versus pages, /learn/[slug]
+    /* A dynamic route stands for the pages it prerenders: /cloud-cost-optimization-library/[slug] for the live versus pages, /learn/[slug]
        for every article in the Learn index. */
     const pages = (route: string) =>
       route === `${comparePath}/[slug]`
