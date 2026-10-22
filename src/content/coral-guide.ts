@@ -803,10 +803,13 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
         },
       ],
       related: [
-        { text: "VPA vs HPA: rebalance first, then scale out", href: learnPath("vpa-vs-hpa") },
         {
-          text: "Coral and the native Kubernetes autoscalers",
-          href: learnPath("coral-and-native-autoscalers"),
+          text: "VPA vs HPA: when to use which, and why to rebalance first",
+          href: learnPath("vpa-vs-hpa"),
+        },
+        {
+          text: "HPA vs VPA vs Cluster Autoscaler: what each one scales",
+          href: learnPath("hpa-vs-vpa-vs-cluster-autoscaler"),
         },
       ],
     },
