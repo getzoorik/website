@@ -55,15 +55,20 @@ describe("MarketplaceLine", () => {
     }
   });
 
-  it("names the product in its lead when asked, and opens its listings", () => {
-    /* The home hero: "Coral is available in …". */
+  it("names both products in its lead when asked, and opens Zoorik's products in each store", () => {
+    /* The home hero: "Coral and Amoeba are available in …". */
     const { p, links, hrefs } = line(<MarketplaceLine className="hero-mkt" icon named />);
     expect(p.textContent).toBe(
-      "Coral is available in AWS Marketplace (opens in a new tab) and Microsoft Marketplace (opens in a new tab)",
+      "Coral and Amoeba are available in AWS Marketplace (opens in a new tab) and Microsoft Marketplace (opens in a new tab)",
     );
-    expect(p.querySelector(":scope > span > [translate='no']")).toHaveTextContent("Coral");
-    expect(hrefs).toEqual([CORAL_AWS, CORAL_MICROSOFT]);
-    /* The lead names it, so the links do not say it again. */
+    expect(
+      [...p.querySelectorAll(":scope > span > [translate='no']")].map((name) => name.textContent),
+    ).toEqual(["Coral", "Amoeba"]);
+    expect(hrefs).toEqual([
+      "https://aws.amazon.com/marketplace/seller-profile?id=seller-mtaavozrqchlk",
+      "https://marketplace.microsoft.com/en-us/search/products?page=1&search=zoorik",
+    ]);
+    /* The lead names them, so the links do not say it again. */
     for (const a of links) expect(a.querySelector(".sr-only [translate='no']")).toBeNull();
   });
 
