@@ -554,27 +554,35 @@ describe.each(learnArticles.map((article) => article.slug))("/learn/%s", (slug) 
 });
 
 /**
- * The architecture essay: first published here, every word as its source article writes it. Its headings are listed
- * here from that source, so a drift from the source fails.
+ * The architecture essay, in the Learn articles' own frame since its rework: a short answer, its sections and parts,
+ * two drawn figures and the help box. Its headings are listed here, so a drift from its draft fails.
  */
-describe("/learn/poor-architecture-cloud-bill, against its source", () => {
+describe("/learn/poor-architecture-cloud-bill, against its draft", () => {
   const slug = "poor-architecture-cloud-bill";
 
-  it("renders every h3 of the source as a section, in order, and every h4 as a part", async () => {
+  it("keeps its sections and parts, in order, under the ids its old page gave them", async () => {
     const frame = (await main(slug)).querySelector(".ar-frame")!;
     expect([...frame.querySelectorAll("section.fq-sec > h2")].map(text)).toEqual([
       "The hidden cost of architectural decisions",
-      "VMs versus containers: understanding the architectural trade-off",
-      "Where poor architecture translates into higher costs",
+      "VMs versus containers: the architectural trade-off",
+      "Five places poor architecture adds cost",
       "How we approach cloud cost optimization as engineers",
       "What we found in that engagement",
-      "The bigger lesson: cloud waste is often an architecture problem",
-      "Final thoughts",
+      "Cloud cost is an engineering discipline",
+      "Where Coral fits",
+    ]);
+    expect([...frame.querySelectorAll("section.fq-sec")].map((s) => s.id).slice(0, 6)).toEqual([
+      "the-hidden-cost-of-architectural-decisions",
+      "vms-versus-containers-understanding-the-architectural-trade-off",
+      "where-poor-architecture-translates-into-higher-costs",
+      "how-we-approach-cloud-cost-optimization-as",
+      "what-we-found-in-that-engagement",
+      "the-bigger-lesson-cloud-waste-is-often",
     ]);
     expect([...frame.querySelectorAll("h3[id]")].map(text)).toEqual([
       "1. Overprovisioning compute and storage",
       "2. Running workloads in isolation when they could share capacity",
-      "3. Scaling infrastructure instead of optimizing applications",
+      "3. Scaling infrastructure instead of fixing the application",
       "4. Ignoring non-production environments",
       "5. Designing for peak traffic without a scaling strategy",
       "1. Establish a baseline",
@@ -582,19 +590,8 @@ describe("/learn/poor-architecture-cloud-bill, against its source", () => {
       "3. Compare realistic architecture options",
       "4. Model the expected savings",
       "5. Validate through measurement",
-      "6. Prevent the same waste from returning",
+      "6. Prevent the same costs from returning",
     ]);
-  });
-
-  it("opens under the byline on its five paragraphs, its question and the infographic, in the source's order", async () => {
-    const top = (await main(slug)).querySelector(".ar-frame > .fq-upd.doc-prose:first-child")!;
-    const kinds = [...top.children].map((el) =>
-      el.matches("p.doc-updated") ? "byline" : el.tagName.toLowerCase(),
-    );
-    expect(kinds).toEqual(["byline", "p", "p", "p", "p", "blockquote", "p", "figure"]);
-    expect(text(top.querySelector("blockquote"))).toBe(
-      "Are we paying for the computing power our applications actually need, or are we paying for the way we chose to architect them?",
-    );
   });
 
   it("names its author once, in the byline", async () => {
@@ -603,50 +600,31 @@ describe("/learn/poor-architecture-cloud-bill, against its source", () => {
     expect(text(frame).split(`By ${author.name}`)).toHaveLength(2);
   });
 
-  it("gives both pictures the source's alt text, and the infographic its smaller copy", async () => {
-    const [infographic, diagram] = [...(await main(slug)).querySelectorAll("figure.ar-img img")];
-    expect(infographic).toHaveAttribute(
-      "alt",
-      "Infographic comparing the VM approach, where each app runs on its own VM with fixed resources even when idle, with the Kubernetes approach, where containers share a compute pool, plus when to use each.",
-    );
-    expect(infographic).toHaveAttribute(
-      "src",
-      "/articles/vm-vs-kubernetes-cloud-cost-infographic.webp",
-    );
-    expect(infographic!.getAttribute("srcset")).toContain(
-      "vm-vs-kubernetes-cloud-cost-infographic-700.webp 700w",
-    );
-    expect(diagram).toHaveAttribute(
-      "alt",
-      "Five apps, each on its own mostly idle VM, compared with the same five apps sharing one pool of capacity with headroom, so fewer machines are needed.",
-    );
-    expect(diagram).toHaveAttribute("src", "/articles/dedicated-vms-vs-shared-pool.svg");
+  it("draws its two figures, each named for a screen reader", async () => {
+    const figures = [...(await main(slug)).querySelectorAll(".ar-frame figure svg[role='img']")];
+    expect(figures.map((svg) => text(svg.querySelector("title")))).toEqual([
+      "Apps that share nodes need fewer machines for the same use",
+      "Sharing nodes reduced the client’s compute bill by 44%",
+    ]);
   });
 
-  it("links only words already in the text: the disk article, the case study twice, the assessment", async () => {
+  it("links only words already in the text", async () => {
     const links = [...(await main(slug)).querySelectorAll(".ar-frame .fq-sec-b a")].map((a) => [
       text(a),
       a.getAttribute("href"),
     ]);
     expect(links).toEqual([
-      ["On our own Kubernetes development cluster", "/value-lab/coral-dev-cluster"],
-      ["cut the cluster’s machine bill by 58% in eight days", "/value-lab/coral-dev-cluster"],
       [
-        "Azure managed disks and AWS EBS volumes can grow but cannot be shrunk in place",
+        "Azure managed disks and Amazon EBS volumes can grow but can’t shrink in place",
         "/learn/shrink-azure-managed-disk",
       ],
-      ["zoorik.com/assessment", "/assessment"],
+      ["Coral", "/coral"],
+      ["the machine bill", "/value-lab/coral-dev-cluster"],
     ]);
   });
 
-  it("ships its pictures, and none heavier than its size budget allows", () => {
-    for (const [file, kb] of [
-      ["public/articles/vm-vs-kubernetes-cloud-cost-infographic.webp", 150],
-      ["public/articles/vm-vs-kubernetes-cloud-cost-infographic-700.webp", 150],
-      ["public/articles/dedicated-vms-vs-shared-pool.svg", 20],
-      ["public/og/zoorik-learn-poor-architecture-cloud-bill-1200x630.png", 200],
-    ] as const) {
-      expect(readFileSync(file).length / 1024, file).toBeLessThan(kb);
-    }
+  it("ships its share card within its size budget", () => {
+    const file = "public/og/zoorik-learn-poor-architecture-cloud-bill-1200x630.png";
+    expect(readFileSync(file).length / 1024, file).toBeLessThan(200);
   });
 });

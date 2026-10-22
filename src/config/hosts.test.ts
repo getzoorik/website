@@ -140,3 +140,13 @@ describe("the comparison pages' older addresses under /learn", () => {
     );
   });
 });
+
+describe("the retired autoscalers article", () => {
+  it("301s /learn/coral-and-native-autoscalers to HPA vs VPA vs Cluster Autoscaler, which is no redirect itself", async () => {
+    const old = await respond("https://zoorik.com/learn/coral-and-native-autoscalers");
+    expect(old.status).toBe(301);
+    expect(getRedirectUrl(old)).toBe("https://zoorik.com/learn/hpa-vs-vpa-vs-cluster-autoscaler");
+    const article = await respond("https://zoorik.com/learn/hpa-vs-vpa-vs-cluster-autoscaler");
+    expect(article.status).not.toBe(301);
+  });
+});

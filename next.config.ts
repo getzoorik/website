@@ -153,6 +153,12 @@ const nextConfig: NextConfig = {
         destination: "/cloud-cost-optimization-tools/amoeba-alternatives",
         statusCode: 301,
       },
+      /* The comparison of Coral and the native autoscalers is replaced by HPA vs VPA vs Cluster Autoscaler. */
+      {
+        source: "/learn/coral-and-native-autoscalers",
+        destination: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+        statusCode: 301,
+      },
       ...MOVED_DOCUMENTS.map((file) => ({
         source: `/resources/${file}`,
         destination: `/docs/${file}`,
