@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 const css = readFileSync("src/styles/cloud-cost-tools.css", "utf8");
-const page = readFileSync("src/app/cloud-cost-optimization-tools/page.tsx", "utf8");
+const page = readFileSync("src/app/cloud-cost-optimization-library/page.tsx", "utf8");
 
 /**
  * Selectors from the sheet, comments removed: each rule's own, inside an at-rule too (a rule's selector is what

@@ -2,8 +2,8 @@ import { comparePath, routes } from "@/config/site";
 import type { ProductId } from "@/content/products";
 
 /**
- * The comparison pages and their hub: Cloud cost optimization tools at /cloud-cost-optimization-tools, the versus
- * pages under /cloud-cost-optimization-tools/<slug> and each product's alternatives pages. Competitors are named on these pages only
+ * The comparison pages and their hub: Cloud cost optimization tools at /cloud-cost-optimization-library, the versus
+ * pages under /cloud-cost-optimization-library/<slug> and each product's alternatives pages. Competitors are named on these pages only
  * (/learn and every other page are name-free): names only, no logos, every claim with its source and the day it was
  * checked. Code identifiers stay name-free, so a versus page is a `slug`, never a key or a file named after a company.
  */

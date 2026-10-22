@@ -16,13 +16,13 @@ import { marketChecked, marketGroups, marketMarks, versusFacts } from "@/content
 import { products } from "@/content/products";
 
 /* The nav and the footer read the pathname; `notFound` stays Next's own. */
-const pathname = vi.hoisted(() => ({ current: "/cloud-cost-optimization-tools" }));
+const pathname = vi.hoisted(() => ({ current: "/cloud-cost-optimization-library" }));
 vi.mock("next/navigation", async (original) => ({
   ...(await original<typeof import("next/navigation")>()),
   usePathname: () => pathname.current,
 }));
 
-import * as route from "@/app/cloud-cost-optimization-tools/[slug]/page";
+import * as route from "@/app/cloud-cost-optimization-library/[slug]/page";
 import {
   getRedirectUrl,
   unstable_getResponseFromNextConfig,
@@ -32,7 +32,7 @@ import nextConfig from "../../../next.config";
 import { marketTool } from "./market-rows";
 
 /**
- * The versus pages, one dynamic route under /cloud-cost-optimization-tools: only
+ * The versus pages, one dynamic route under /cloud-cost-optimization-library: only
  * the two live pages exist, each prints its rows from the market data with every claim about the other tool linked to
  * its source, the day it was checked, and no SOC 2 row; any other slug, a held page among them, is a 404, and each
  * live page's old address under /learn redirects here. Competitors' names are read from the data, never typed here.

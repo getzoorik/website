@@ -60,7 +60,7 @@ interface PageModule {
  */
 function versusModule(slug: string): () => Promise<PageModule> {
   return async () => {
-    const page = await import("@/app/cloud-cost-optimization-tools/[slug]/page");
+    const page = await import("@/app/cloud-cost-optimization-library/[slug]/page");
     const params = Promise.resolve({ slug });
     const [metadata, element] = await Promise.all([
       page.generateMetadata({ params }),
@@ -108,11 +108,11 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/partners": () => import("@/app/partners/page"),
   "/referrals": () => import("@/app/referrals/page"),
   "/design-partners": () => import("@/app/design-partners/page"),
-  "/cloud-cost-optimization-tools": () => import("@/app/cloud-cost-optimization-tools/page"),
-  "/cloud-cost-optimization-tools/coral-alternatives": () =>
-    import("@/app/cloud-cost-optimization-tools/coral-alternatives/page"),
-  "/cloud-cost-optimization-tools/amoeba-alternatives": () =>
-    import("@/app/cloud-cost-optimization-tools/amoeba-alternatives/page"),
+  "/cloud-cost-optimization-library": () => import("@/app/cloud-cost-optimization-library/page"),
+  "/cloud-cost-optimization-library/coral-alternatives": () =>
+    import("@/app/cloud-cost-optimization-library/coral-alternatives/page"),
+  "/cloud-cost-optimization-library/amoeba-alternatives": () =>
+    import("@/app/cloud-cost-optimization-library/amoeba-alternatives/page"),
   "/community": () => import("@/app/community/page"),
   "/marketplaces": () => import("@/app/marketplaces/page"),
   ...Object.fromEntries(versusPages.map((page) => [versusRoute(page), versusModule(page.slug)])),
@@ -425,7 +425,7 @@ describe("every indexed page's structured data", () => {
           "/value-lab",
           "/events",
           "/news",
-          "/cloud-cost-optimization-tools",
+          "/cloud-cost-optimization-library",
         ].includes(path)
       )
         expect(kind, path).toBe("CollectionPage");

@@ -16,15 +16,15 @@ import { products } from "@/content/products";
 
 /* The nav and the footer read the pathname. */
 const pathname = vi.hoisted(() => ({
-  current: "/cloud-cost-optimization-tools/coral-alternatives",
+  current: "/cloud-cost-optimization-library/coral-alternatives",
 }));
 vi.mock("next/navigation", async (original) => ({
   ...(await original<typeof import("next/navigation")>()),
   usePathname: () => pathname.current,
 }));
 
-import * as coralRoute from "@/app/cloud-cost-optimization-tools/coral-alternatives/page";
-import * as amoebaRoute from "@/app/cloud-cost-optimization-tools/amoeba-alternatives/page";
+import * as coralRoute from "@/app/cloud-cost-optimization-library/coral-alternatives/page";
+import * as amoebaRoute from "@/app/cloud-cost-optimization-library/amoeba-alternatives/page";
 
 import { marketTool } from "./market-rows";
 
@@ -46,8 +46,8 @@ const modules: Readonly<
 describe("the alternatives pages", () => {
   it("are one per product, Coral first", () => {
     expect(alternativesPages.map((entry) => [entry.route, entry.product])).toEqual([
-      ["/cloud-cost-optimization-tools/coral-alternatives", "coral"],
-      ["/cloud-cost-optimization-tools/amoeba-alternatives", "amoeba"],
+      ["/cloud-cost-optimization-library/coral-alternatives", "coral"],
+      ["/cloud-cost-optimization-library/amoeba-alternatives", "amoeba"],
     ]);
     expect(alternativesFacts.map((facts) => facts.product)).toEqual(["coral", "amoeba"]);
   });

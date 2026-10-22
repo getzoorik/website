@@ -15,7 +15,7 @@ import { MarketHead, marketOurs, marketTool, OursRow, ToolRow } from "@/features
 import { versusFactsOf } from "@/features/learn/versus-page";
 
 /**
- * An alternatives page (`/cloud-cost-optimization-tools/coral-alternatives` and `…/amoeba-alternatives`): the hero, then How to
+ * An alternatives page (`/cloud-cost-optimization-library/coral-alternatives` and `…/amoeba-alternatives`): the hero, then How to
  * choose (four questions), then The options: our product first on navy, then each tool in the page's order with its
  * owner, line, how it acts and clouds, a tool with a live versus page linking to it, and the note with the day it was
  * checked; then the closing row. Every fact is `learn-market.ts`'s. A server component with no script.

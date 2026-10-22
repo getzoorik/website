@@ -125,12 +125,12 @@ export const routes = {
   learn: "/learn",
   /* Cloud cost optimization tools: the tools that reduce the bill, then Coral and Amoeba compared. Its old address,
      /compare, redirects here. In the footer's Resources column, after News. */
-  cloudCostTools: "/cloud-cost-optimization-tools",
+  cloudCostTools: "/cloud-cost-optimization-library",
   /* The comparison pages, under Cloud cost optimization tools: each product's alternatives, and the versus pages
      (`comparePath`; their slugs are data, `versusPages` in @/content/learn-compare; one per product is kept live).
      Their old /compare and /learn addresses redirect. */
-  compareCoralAlternatives: "/cloud-cost-optimization-tools/coral-alternatives",
-  compareAmoebaAlternatives: "/cloud-cost-optimization-tools/amoeba-alternatives",
+  compareCoralAlternatives: "/cloud-cost-optimization-library/coral-alternatives",
+  compareAmoebaAlternatives: "/cloud-cost-optimization-library/amoeba-alternatives",
   /* Value Lab by Zoorik: the case studies' hub, with what the studies saved so far and the featured study, and one
      page per study under it. The old /case-studies addresses, the hub's and each study's, redirect here.
      Linked from the footer's Resources column. */
@@ -164,7 +164,7 @@ export const routes = {
 } as const;
 
 /** Where the comparison pages live: under Cloud cost optimization tools. /compare and its old pages redirect there. */
-export const comparePath = "/cloud-cost-optimization-tools";
+export const comparePath = "/cloud-cost-optimization-library";
 
 /**
  * A Learn article's address, by its slug. The articles themselves are listed by

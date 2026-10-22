@@ -130,27 +130,39 @@ const nextConfig: NextConfig = {
          substitutes it (the root's empty match is the only case it does not). */
       { source: "/case-studies", destination: "/value-lab", statusCode: 301 },
       { source: "/case-studies/:slug", destination: "/value-lab/:slug", statusCode: 301 },
-      /* The comparison pages live under Cloud cost optimization tools: /compare and each page under it move there. */
-      { source: "/compare", destination: "/cloud-cost-optimization-tools", statusCode: 301 },
+      /* Cloud cost optimization tools and the comparison pages under it live at /cloud-cost-optimization-library: its
+         old address and each page under it move there. */
+      {
+        source: "/cloud-cost-optimization-tools",
+        destination: "/cloud-cost-optimization-library",
+        statusCode: 301,
+      },
+      {
+        source: "/cloud-cost-optimization-tools/:slug",
+        destination: "/cloud-cost-optimization-library/:slug",
+        statusCode: 301,
+      },
+      /* The comparison pages' first addresses, under /compare, go straight to the new ones too. */
+      { source: "/compare", destination: "/cloud-cost-optimization-library", statusCode: 301 },
       {
         source: "/compare/:slug",
-        destination: "/cloud-cost-optimization-tools/:slug",
+        destination: "/cloud-cost-optimization-library/:slug",
         statusCode: 301,
       },
       /* Their older addresses under /learn go straight to the new ones, never through a second redirect. */
       {
         source: "/learn/compare/:slug",
-        destination: "/cloud-cost-optimization-tools/:slug",
+        destination: "/cloud-cost-optimization-library/:slug",
         statusCode: 301,
       },
       {
         source: "/learn/coral-alternatives",
-        destination: "/cloud-cost-optimization-tools/coral-alternatives",
+        destination: "/cloud-cost-optimization-library/coral-alternatives",
         statusCode: 301,
       },
       {
         source: "/learn/amoeba-alternatives",
-        destination: "/cloud-cost-optimization-tools/amoeba-alternatives",
+        destination: "/cloud-cost-optimization-library/amoeba-alternatives",
         statusCode: 301,
       },
       /* The comparison of Coral and the native autoscalers is replaced by HPA vs VPA vs Cluster Autoscaler. */

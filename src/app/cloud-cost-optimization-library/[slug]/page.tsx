@@ -10,7 +10,7 @@ import { VersusPage } from "@/features/learn/versus-page";
 import "@/styles/learn.css";
 
 /**
- * `/cloud-cost-optimization-tools/<slug>`: a versus page; its old addresses, /compare/<slug> and /learn/compare/<slug>, 301-redirect here (next.config.ts). One
+ * `/cloud-cost-optimization-library/<slug>`: a versus page; its old addresses, /compare/<slug> and /learn/compare/<slug>, 301-redirect here (next.config.ts). One
  * dynamic route, so no file or folder is named after a company: its slugs are data (`versusPages`), and one per
  * product is kept live. Each is prerendered at build, indexed, listed in the sitemap, and linked from Cloud cost
  * optimization tools' tiles and its product's alternatives page; it takes the site's default card. Any other slug, a held page among them, is a

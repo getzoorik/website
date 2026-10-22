@@ -448,7 +448,7 @@ function where(href) {
     {
       "/assessment": "Assessment",
       "/compare": "Cloud cost optimization tools",
-      "/cloud-cost-optimization-tools": "Cloud cost optimization tools",
+      "/cloud-cost-optimization-library": "Cloud cost optimization tools",
       "/about": "About",
     }[path] ?? "Zoorik"
   );

@@ -9,7 +9,7 @@ import { AlternativesPage, alternativesPageAt } from "@/features/learn/alternati
 import "@/styles/learn.css";
 
 /**
- * `/cloud-cost-optimization-tools/coral-alternatives`: Coral's alternatives; its old addresses, /compare/coral-alternatives and /learn/coral-alternatives, 301-redirect here
+ * `/cloud-cost-optimization-library/coral-alternatives`: Coral's alternatives; its old addresses, /compare/coral-alternatives and /learn/coral-alternatives, 301-redirect here
  * (next.config.ts). Indexed, listed in the sitemap, prerendered at build like every page here, and linked from
  * Cloud cost optimization tools' tiles; it takes the site's default card.
  */
