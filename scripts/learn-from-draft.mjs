@@ -26,10 +26,10 @@
 // Text may carry **bold**, `code`, [links](/path) and links to other sites; the article gets curly quotes and a
 // no-break space between a figure and its unit, as the page prints them.
 //
-// The article's day and author come from the calendar, its topic from the pillar's list of every article, a
-// comparison's two sides from its h1, and its share card from public/og/zoorik-learn-<slug>-1200x630.png when there
-// is one. The pillar's list itself is not copied: the page draws it from the index. The output is formatted with the
-// repo's Prettier settings, and a second run writes the same files.
+// The article's day and author come from the calendar, its topic from the pillar's list of every article, and a
+// comparison's two sides from its h1; its share card is found by its address (`pageCards` in src/config/social.ts).
+// The pillar's list itself is not copied: the page draws it from the index. The output is formatted with the repo's
+// Prettier settings, and a second run writes the same files.
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -570,7 +570,6 @@ function convert(slug) {
   if (!topic) throw new Error(`${slug}: not in the pillar's list of every article`);
   const product = { Coral: "coral", Amoeba: "amoeba", Both: "both" }[meta.product];
   if (!product) throw new Error(`${slug}: product "${meta.product}"`);
-  const card = `/og/zoorik-learn-${slug}-1200x630.png`;
   const cover = `/learn-covers/zoorik-learn-${slug}-1200x630.webp`;
   const h1 = typo(meta.h1);
 
@@ -590,10 +589,6 @@ function convert(slug) {
     published: goLive ?? day.date,
     updated: goLive ?? day.date,
     author: day.author,
-    /* A share card's picture draws the h1, so its alt text reads the h1. */
-    ...(existsSync(join(ROOT, "public", card))
-      ? { shareCard: { url: card, alt: `Zoorik. ${h1}${/[.?!]$/.test(h1) ? "" : "."}` } }
-      : {}),
     ...(existsSync(join(ROOT, "public", cover)) ? { cover } : {}),
     short: inline(short),
     sections: drawn,

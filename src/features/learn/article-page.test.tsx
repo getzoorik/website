@@ -624,7 +624,7 @@ describe("/learn/poor-architecture-cloud-bill, against its draft", () => {
   });
 
   it("ships its share card within its size budget", () => {
-    const file = "public/og/zoorik-learn-poor-architecture-cloud-bill-1200x630.png";
+    const file = "public/og/pages/learn-poor-architecture-cloud-bill.png";
     expect(readFileSync(file).length / 1024, file).toBeLessThan(200);
   });
 });

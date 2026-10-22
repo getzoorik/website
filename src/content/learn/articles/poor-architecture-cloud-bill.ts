@@ -15,10 +15,6 @@ export const article: Article = {
   published: "2026-10-14",
   updated: "2026-10-22",
   author: "vineet",
-  shareCard: {
-    url: "/og/zoorik-learn-poor-architecture-cloud-bill-1200x630.png",
-    alt: "Zoorik. How poor architecture increases your cloud bill.",
-  },
   cover: "/learn-covers/zoorik-learn-poor-architecture-cloud-bill-1200x630.webp",
   short:
     "A high cloud bill often comes from how a system is built, not from what each resource costs. When every app runs on its own VM sized for its peak, you pay for capacity that sits idle most of the day. Measure real use first. Then let compatible workloads share capacity, scale with demand and switch off idle environments: in the engagement below, that took a client’s monthly compute bill from about $2,800 to about $1,560.",

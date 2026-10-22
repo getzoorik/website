@@ -69,21 +69,16 @@ export function DocumentPage({
  * A document page's metadata: the title through the layout's "%s | Zoorik"
  * template, its description, its canonical, and the Open Graph card with the
  * full title (Open Graph does not apply the template): the page's own share
- * card when it has one (`pageCards`), else the brand card.
+ * card (`pageCards`, found by its address), else the brand card.
  */
 export function documentMetadata(
   path: `/${string}`,
   copy: { readonly title: string; readonly description: string },
-  card?: Parameters<typeof pageOpenGraph>[2],
 ): Metadata {
   return {
     title: copy.title,
     description: copy.description,
     alternates: { canonical: path },
-    openGraph: pageOpenGraph(
-      path,
-      { title: pageTitle(copy.title), description: copy.description },
-      card,
-    ),
+    openGraph: pageOpenGraph(path, { title: pageTitle(copy.title), description: copy.description }),
   };
 }

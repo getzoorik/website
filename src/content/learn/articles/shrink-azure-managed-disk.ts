@@ -16,10 +16,6 @@ export const article: Article = {
   published: "2026-10-21",
   updated: "2026-10-21",
   author: "vineet",
-  shareCard: {
-    url: "/og/zoorik-learn-shrink-azure-managed-disk-1200x630.png",
-    alt: "Zoorik. Can you shrink an Azure managed disk?",
-  },
   cover: "/learn-covers/zoorik-learn-shrink-azure-managed-disk-1200x630.webp",
   short:
     "No, you can’t shrink an Azure managed disk in place. A managed disk can grow but never get smaller: Microsoft Learn says shrinking an existing disk “isn’t supported and might result in data loss.” To reduce Azure disk size, you copy the data to a new, smaller disk, move the mount and delete the old disk. That works for data disks, but an OS disk needs a new VM. Amazon Elastic Block Store (EBS) volumes can’t shrink either.",

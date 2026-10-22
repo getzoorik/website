@@ -116,7 +116,7 @@ describe("/learn's metadata", () => {
     expect(metadata.openGraph).toMatchObject({
       url: "/learn",
       title: "Cloud cost optimization guides | Zoorik",
-      images: [pageCards.learn],
+      images: [pageCards["/learn"]],
     });
     /* The sitemap's date for the hub: a printed day, not ahead of today. */
     expect(isoDay(learnPage.updated) <= learnToday()).toBe(true);

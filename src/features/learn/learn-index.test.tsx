@@ -130,7 +130,6 @@ describe("the Learn index", () => {
             `${article.slug}-${index + 1}`,
           ).toBe(true),
         );
-      if (article.shareCard) expect(existsSync(`public${article.shareCard.url}`)).toBe(true);
       if (article.cover) expect(existsSync(`public${article.cover}`), article.cover).toBe(true);
     }
   });

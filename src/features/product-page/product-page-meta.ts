@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { pageTitle, routes } from "@/config/site";
-import { pageCards, pageOpenGraph } from "@/config/social";
+import { pageOpenGraph } from "@/config/social";
 import { productStructuredData } from "@/config/structured-data";
 import type { ProductPageContent } from "@/content/product-page";
 
@@ -21,7 +21,7 @@ export function productPagePath(content: ProductPageContent): "/amoeba" | "/cora
  * same full title, because Open Graph does not apply the template, and the card
  * repeats the description. The X card is the layout's: Next fills twitter:title
  * and twitter:description from openGraph, and the page's own card with it
- * (`pageCards`).
+ * (`pageCards`, found by its address).
  */
 export function productPageMetadata(content: ProductPageContent): Metadata {
   const path = productPagePath(content);
@@ -29,14 +29,10 @@ export function productPageMetadata(content: ProductPageContent): Metadata {
     title: content.meta.title,
     description: content.meta.description,
     alternates: { canonical: path },
-    openGraph: pageOpenGraph(
-      path,
-      {
-        title: pageTitle(content.meta.title),
-        description: content.meta.description,
-      },
-      pageCards[content.product],
-    ),
+    openGraph: pageOpenGraph(path, {
+      title: pageTitle(content.meta.title),
+      description: content.meta.description,
+    }),
   };
 }
 

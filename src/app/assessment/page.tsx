@@ -3,7 +3,7 @@ import type { JSX } from "react";
 
 import { JsonLd } from "@/components/seo/json-ld";
 import { pageTitle, routes } from "@/config/site";
-import { pageCards, pageOpenGraph } from "@/config/social";
+import { pageOpenGraph } from "@/config/social";
 import { pageStructuredData } from "@/config/structured-data";
 import { assessmentCopy } from "@/content/assessment";
 import { AssessmentPage } from "@/features/assessment/assessment-page";
@@ -37,11 +37,7 @@ export const metadata: Metadata = {
   title,
   description,
   alternates: { canonical: routes.assessment },
-  openGraph: pageOpenGraph(
-    routes.assessment,
-    { title: pageTitle(title), description },
-    pageCards.assessment,
-  ),
+  openGraph: pageOpenGraph(routes.assessment, { title: pageTitle(title), description }),
 };
 
 export default function Assessment(): JSX.Element {

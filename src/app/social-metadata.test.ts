@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 
 import { describe, expect, it, vi } from "vitest";
 
-import { pageCards, socialImage, xHandle } from "@/config/social";
+import { cardFor, pageCards, socialImage, xHandle } from "@/config/social";
 import { articleCard, learnArticles } from "@/content/learn/published";
 import { footerSocialLinks } from "@/content/footer";
 
@@ -78,16 +78,29 @@ describe("social cards", () => {
     }
   });
 
-  it("puts a page's own card on it, and the brand card everywhere else", () => {
+  it("gives every page in the sitemap its own card but the home page, which shows the brand card", async () => {
+    const { default: sitemap } = await import("./sitemap");
+    const paths = sitemap().map((entry) => new URL(entry.url).pathname);
+    expect(paths.filter((path) => path !== "/" && !pageCards[path])).toEqual([]);
+    expect(cardFor("/")).toBe(socialImage);
+    /* An article drawn no card of its own yet shows the /learn card. */
+    expect(cardFor("/learn/no-card-yet")).toBe(pageCards["/learn"]);
+    for (const [path, card] of Object.entries(pageCards)) {
+      expect(card.url, path).toMatch(/^\/og\/pages\/[a-z0-9-]+\.png$/);
+      expect(card.alt, path).toMatch(/^Zoorik\. .+[.?!]$/);
+    }
+  });
+
+  it("puts a page's own card on it, and the brand card on the home page", () => {
     /* A new card, a new name: platforms cache cards by URL. */
     expect(socialImage.url).toBe("/og/zoorik-reduce-cloud-cost-autonomously-1200x630.png");
     expect(socialImage.alt).toBe("Zoorik. Reduce cloud cost, autonomously.");
     const cardOf: Record<keyof typeof pages, unknown> = {
       "/": socialImage,
-      "/assessment": pageCards.assessment,
-      "/login": socialImage,
-      "/amoeba": pageCards.amoeba,
-      "/coral": pageCards.coral,
+      "/assessment": pageCards["/assessment"],
+      "/login": pageCards["/login"],
+      "/amoeba": pageCards["/amoeba"],
+      "/coral": pageCards["/coral"],
     };
     expect((layout.openGraph as Record<string, unknown>).images).toEqual([socialImage]);
     for (const [path, page] of Object.entries(pages)) {

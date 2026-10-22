@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 
 import { JsonLd } from "@/components/seo/json-ld";
 import { routes } from "@/config/site";
-import { pageCards } from "@/config/social";
 import { pageStructuredData } from "@/config/structured-data";
 import { caseStudy } from "@/content/case-studies";
 import { CaseStudyPage } from "@/features/case-studies/case-study-page";
@@ -15,11 +14,7 @@ import "@/styles/case-studies.css";
  * Indexed, listed in the sitemap, and prerendered at build like every page
  * here. It keeps its address under /case-studies; its hub is Value Lab, /value-lab.
  */
-export const metadata: Metadata = documentMetadata(
-  routes.caseStudyCoralDevCluster,
-  caseStudy.meta,
-  pageCards.caseStudyCoralDevCluster,
-);
+export const metadata: Metadata = documentMetadata(routes.caseStudyCoralDevCluster, caseStudy.meta);
 
 export default function CaseStudyCoralDevCluster(): React.JSX.Element {
   return (

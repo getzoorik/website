@@ -6,7 +6,7 @@ import { renderToString } from "react-dom/server";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { comparePath, contactEmail, routes } from "@/config/site";
-import { socialImage } from "@/config/social";
+import { pageCards } from "@/config/social";
 import { pageStructuredData } from "@/config/structured-data";
 import {
   alternativesPages,
@@ -63,7 +63,7 @@ afterEach(() => {
 });
 
 describe("/cloud-cost-optimization-library's metadata", () => {
-  it("is titled, described and canonicalised as its mock, with the site's default card", () => {
+  it("is titled, described and canonicalised as its mock, with its own card", () => {
     expect(metadata.title).toBe("Cloud cost optimization tools");
     expect(metadata.description).toBe(
       "The tools that reduce the cloud bill on Azure and AWS: what each one does, how it works and which clouds it supports, checked on each company's own pages.",
@@ -72,7 +72,7 @@ describe("/cloud-cost-optimization-library's metadata", () => {
     expect(metadata.openGraph).toMatchObject({
       url: "/cloud-cost-optimization-library",
       title: "Cloud cost optimization tools | Zoorik",
-      images: [socialImage],
+      images: [pageCards["/cloud-cost-optimization-library"]],
     });
     expect(routes.cloudCostTools).toBe("/cloud-cost-optimization-library");
     expect(cloudCostToolsLastUpdated).toBe("21 October 2026");
