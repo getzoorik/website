@@ -1,4 +1,4 @@
-import { amoebaDocs, calendarUrl, contactEmail, routes } from "@/config/site";
+import { amoebaDocs, calendarUrl, contactEmail, routes, site } from "@/config/site";
 import type { ProductId } from "@/content/products";
 
 /**
@@ -127,8 +127,8 @@ export const footerSocialLinks: readonly FooterSocialLink[] = ROW.map((platform)
   socialProfiles.find((profile) => profile.platform === platform)!,
 );
 
-/** The line under the social row: the legal name and the city, muted (the
- *  bottom bar stays © and the wordmark). */
+/** The legal name and the city, muted, at the left end of the bar under the columns (owner, 23 Oct 2026); © and the
+ *  wordmark sit at its right end. */
 export const footerCompany = { rest: " Private Limited · Bangalore, India" } as const;
 
 /** The lead-in to the two marketplace buttons under the badge. */
@@ -136,6 +136,46 @@ export const footerMarketplaces = "Available in";
 
 /** The lead-in to the two registry buttons under the stores. */
 export const footerInstall = "Install from";
+
+/**
+ * "Ask about Zoorik on" (owner, 23 Oct 2026): under Install from, one button per AI assistant. Each opens the assistant
+ * with a question about the page the reader is on already typed in; the reader sends it. Links only: no script of
+ * ours runs there and nothing is stored. Gemini is not here: it has no address that types a question in.
+ */
+export const footerAsk = { lead: "Ask about ", tail: " on" } as const;
+
+export type AskAssistant = "chatgpt" | "claude" | "perplexity" | "grok";
+
+export const askAssistants: readonly {
+  readonly id: AskAssistant;
+  readonly name: string;
+  /** The address the question is appended to, URI-encoded. */
+  readonly base: string;
+}[] = [
+  { id: "chatgpt", name: "ChatGPT", base: "https://chatgpt.com/?q=" },
+  { id: "claude", name: "Claude", base: "https://claude.ai/new?q=" },
+  { id: "perplexity", name: "Perplexity", base: "https://www.perplexity.ai/search?q=" },
+  { id: "grok", name: "Grok", base: "https://grok.com/?q=" },
+];
+
+/** Home's question, and the one any page without a printed title asks. */
+export const askHome =
+  "What is Zoorik (zoorik.com), and how do its products Coral and Amoeba reduce Kubernetes and block storage cost on Azure and AWS?";
+
+/**
+ * The question a page asks (page-aware, the owner's pick): home and the two product pages by name; every other page by
+ * its printed title and its address, so an assistant that reads the web reads that page.
+ */
+export function askQuestion(path: string, title: string | undefined): string {
+  const url = `${site.url}${path}`;
+  if (path === "/" || !title) return askHome;
+  if (path === routes.coral)
+    return `What is Coral by Zoorik (${url}), and how does it reduce Kubernetes cost on AKS and EKS?`;
+  if (path === routes.amoeba)
+    return `What is Amoeba by Zoorik (${url}), and how does it reduce block storage cost on Azure and AWS?`;
+  const name = title.replace(/\s*\|\s*Zoorik$/, "").trim();
+  return `Summarize "${name}" from Zoorik (${url}), and how Zoorik helps reduce cloud cost.`;
+}
 
 /**
  * 🔴 THREE KINDS OF HREF IN THESE COLUMNS, AND THE MARKUP TREATS THEM APART.
@@ -209,5 +249,5 @@ export const footerColumns: readonly FooterColumn[] = [
   },
 ];
 
-/** The bar under the columns: the copyright line alone, the wordmark after it. */
+/** The bar under the columns, right end: the copyright line, the wordmark after it. */
 export const footerCopyright = "© 2026";
