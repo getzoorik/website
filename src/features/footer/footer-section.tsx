@@ -9,6 +9,7 @@ import { NamedText } from "@/components/primitives/named-text";
 import { NewTabHint } from "@/components/primitives/new-tab-hint";
 
 import { site } from "@/config/site";
+import { pageTitles } from "@/config/structured-data";
 import {
   builtFor,
   footerBrand,
@@ -21,15 +22,17 @@ import {
   type FooterLink,
 } from "@/content/footer";
 import { products } from "@/content/products";
+import { AskButtons } from "@/features/footer/ask-buttons";
 import { SocialMark } from "@/features/footer/footer-marks";
 import { NEW_TAB_HINT, isOffSite, offSiteProps } from "@/lib/links";
 
 /**
  * The site footer: the brand column (the wordmark, what Zoorik does and one
  * line per product, the "Built for Azure and AWS" badge, "Available in" and the
- * two marketplaces as buttons, four social tiles, then the legal name and city
- * in one muted line); then Products, Resources and Company; then the copyright
- * line on its own.
+ * two marketplaces as buttons, Install from, "Ask about Zoorik on" (page-aware,
+ * `AskButtons`), then the social tiles); then Products, Resources and Company;
+ * then the bar: the legal name and city at its left end, the copyright line at
+ * its right.
  *
  * The column titles are paragraphs (`p.foot-h`), not headings, as the mock
  * draws them: the page's outline is its own sections.
@@ -87,6 +90,7 @@ export function FooterSection(): JSX.Element {
 
             <MarketplaceButtons className="foot-mb" idSuffix="footer" label={footerMarketplaces} />
             <InstallButtons className="foot-ib" label={footerInstall} />
+            <AskButtons titles={pageTitles} />
 
             <div className="foot-social">
               {footerSocialLinks.map((social) => (
@@ -104,11 +108,6 @@ export function FooterSection(): JSX.Element {
                 </a>
               ))}
             </div>
-
-            <p className="foot-co">
-              <span translate="no">{site.name}</span>
-              {footerCompany.rest}
-            </p>
           </div>
 
           {footerColumns.map((column) => (
@@ -122,6 +121,10 @@ export function FooterSection(): JSX.Element {
         </div>
 
         <div className="foot-bar">
+          <p className="foot-co">
+            <span translate="no">{site.name}</span>
+            {footerCompany.rest}
+          </p>
           <small>
             {footerCopyright} <span translate="no">{site.name}</span>
           </small>

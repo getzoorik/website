@@ -515,6 +515,11 @@ const pages: Readonly<Record<string, PageEntry>> = {
   [routes.security]: documentEntry(routes.security, securityPage.meta, []),
 };
 
+/** Each indexed page's printed title, by path: what the footer's "Ask about Zoorik on" questions name a page by. */
+export const pageTitles: Readonly<Record<string, string>> = Object.fromEntries(
+  Object.entries(pages).map(([path, page]) => [path, page.name]),
+);
+
 /** One page's JSON-LD: the organisation, the site, the page, its trail, then its article or apps. */
 export function pageStructuredData(path: string) {
   const page = pages[path];
