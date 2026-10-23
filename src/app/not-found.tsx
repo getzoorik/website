@@ -10,7 +10,7 @@ import { routes } from "@/config/site";
  * 🔴 NO HEADER, NO FOOTER, NO HERO, NO TURNING MARK. This tree is the root
  * layout's not-found boundary, so it ships in EVERY page's payload: the home
  * page's HTML carries "Page not found" today. Chrome here would be the bar, its
- * four menus, the drawer and the footer a second time on every page, for a
+ * menu, the drawer and the footer a second time on every page, for a
  * page almost nobody sees.
  *
  * Its title, "Page not found | Zoorik", is this file's metadata through the

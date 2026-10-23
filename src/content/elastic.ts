@@ -23,6 +23,7 @@ export const elasticContent: ProductSectionContent = {
     href: `${routes.assessment}?p=amoeba`,
     label: "Estimate your saving",
   },
-  more: "Block storage cost optimization with Amoeba",
+  /* The category alone (owner, 23 Oct 2026), as Coral's. */
+  more: "Block storage cost optimization",
   caption: workedExample.amoeba,
 };

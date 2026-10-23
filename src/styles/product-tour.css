@@ -1,14 +1,24 @@
 /* Zoorik marketing — the product pages' tour, /coral and /amoeba.
  *
  * Ported VERBATIM from the tour mock's two blocks, pp-film then pp-tour, which
- * both product mocks carry byte-identical. Values are copied, never
- * reinterpreted. Classes are pf- and tour-.
+ * both product mocks carry byte-identical, then the 23 Oct 2026 block the
+ * proposal mocks add after them (`product-option-coral.html`,
+ * `product-option-amoeba.html`). Values are copied, never reinterpreted.
+ * Classes are pf-, tour-, pp- and mv-.
  *
- *   pp-film: the film band (`section.pf-film#film`) and the hero's "Watch the
- *            2-minute film" (`.pf-watch`), drawn only once the film is on YouTube;
- *   pp-tour: the hero split (`.pf-split`, the range card on its right) and
- *            What <product> does beside What is <product>? (`.pf-def`, `.pf-does`),
- *            each row with its line (`.tour-line`) and progress line (`.tour-prog`).
+ *   pp-film: the film band (`section.pf-film#film`), drawn only once the film is
+ *            on YouTube;
+ *   pp-tour: What <product> does beside What is <product>? (`.pf-def`,
+ *            `.pf-does`), each row with its line (`.tour-line`);
+ *   23 Oct:  the one-screen hero over its film (`.pp-min`), the rows' drawings
+ *            (`.mv-*`), the folded paragraphs (`.pp-more`), the quiet film line
+ *            and chapters, the outlines, and Install your way's terminals.
+ *
+ * Where the 23 Oct block only overrode a rule above it on the same element (the
+ * film panel's and the play button's corners), the value is set in that rule;
+ * where its element is gone (the length pill, the progress line, the tinted
+ * row, the range card, the hero split, the "Watch the 2-minute film" button, the
+ * band's glow), so is the rule.
  *
  * 🔴 IMPORTED IN globals.css AFTER nav-menus.css, NOT BY THE PAGES. The mock
  * carries both blocks at the end of its <head>, after the header's block
@@ -20,22 +30,16 @@
 
 /* the film band: the logo's navy, as the home page's case study band; one poster, one play */
 .pf-film{position:relative;overflow:hidden;color:#fff;padding:clamp(72px,8vw,120px) 0;background-color:var(--brand)}
-.pf-film::before{content:"";position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(900px 520px at 50% 64%,rgba(128,149,249,.14),rgba(128,149,249,0) 70%)}
 .pf-film .wrap{position:relative}
 .pf-film-h{max-width:46rem;margin:0 auto clamp(32px,4vw,48px);text-align:center}
 .pf-film-h h2{margin:0;font-size:clamp(2rem,1.3rem + 2vw,3rem);font-weight:600;line-height:1.08;letter-spacing:-.035em;color:#fff}
 .pf-film-h p{margin:18px auto 0;max-width:38rem;font-size:1.0625rem;line-height:1.6;color:rgba(255,255,255,.68)}
-.pf-film-p{position:relative;display:block;max-width:1040px;margin:0 auto;border-radius:14px;overflow:hidden;color:#fff;text-decoration:none;
+.pf-film-p{position:relative;display:block;max-width:1040px;margin:0 auto;border-radius:var(--r-card);overflow:hidden;color:#fff;text-decoration:none;
   box-shadow:0 0 0 1px rgba(255,255,255,.12),0 50px 100px -40px rgba(0,0,0,.75)}
 .pf-film-p img{display:block;width:100%;height:auto;aspect-ratio:16/9;transition:transform .7s cubic-bezier(.22,.9,.3,1),filter .3s ease}
-.pf-play{position:absolute;left:50%;top:50%;display:grid;place-items:center;width:84px;height:84px;margin:-42px 0 0 -42px;border-radius:50%;
+.pf-play{position:absolute;left:50%;top:50%;display:grid;place-items:center;width:84px;height:84px;margin:-42px 0 0 -42px;border-radius:var(--r-ctl);
   background:rgba(255,255,255,.96);box-shadow:0 14px 40px -10px rgba(0,0,0,.65);transition:transform .3s cubic-bezier(.22,.9,.3,1)}
 .pf-play svg{width:30px;height:30px;margin-left:4px;fill:var(--brand)}
-.pf-film-tag{position:absolute;left:16px;bottom:16px;display:inline-flex;align-items:center;gap:8px;padding:8px 13px;border-radius:999px;
-  background:rgba(5,8,34,.8);box-shadow:0 0 0 1px rgba(255,255,255,.1);font-size:.875rem;font-weight:500;line-height:1}
-.pf-film-tag b{font-weight:600;font-variant-numeric:tabular-nums}
-.pf-film-tag svg{width:14px;height:14px;opacity:.8}
 @media (hover:hover){.pf-film-p:hover img{transform:scale(1.015);filter:brightness(.92)}.pf-film-p:hover .pf-play{transform:scale(1.06)}}
 .pf-film-p:focus-visible{outline:2px solid #fff;outline-offset:4px}
 .pf-ch{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 10px;max-width:1040px;margin:28px auto 0;padding:0;list-style:none}
@@ -47,22 +51,11 @@
 .pf-ch a:focus-visible,.pf-film-more a:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .pf-film-more{margin:28px 0 0;text-align:center;font-size:.9375rem;color:rgba(255,255,255,.6)}
 #film .pf-film-more a{color:#fff;text-underline-offset:3px}
-.hero-cta .pf-watch svg{width:16px;height:16px;fill:currentColor}
-@media (max-width:640px){.pf-film-p{border-radius:10px}.pf-play{width:64px;height:64px;margin:-32px 0 0 -32px}.pf-play svg{width:24px;height:24px}
-  .pf-film-tag{left:10px;bottom:10px;padding:6px 10px;font-size:.8125rem}.pf-ch{justify-content:flex-start}}
+@media (max-width:640px){.pf-play{width:64px;height:64px;margin:-32px 0 0 -32px}.pf-play svg{width:24px;height:24px}
+  .pf-ch{justify-content:flex-start}}
 @media (prefers-reduced-motion:reduce){.pf-film-p img,.pf-play{transition:none}}
 
-/* the layout: the range card on the right of the hero; "What X does" on the right of "What is X?", one line under the
-   row being read; no video beside the list */
-@media (min-width:1100px){.pp-hero .hero-in.pf-split{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:clamp(40px,5vw,80px);align-items:center}}
-.pf-hero-r{min-width:0}
-@media (max-width:1099px){.pf-hero-r{margin-top:40px;max-width:420px}}
-.pp-figs.pf-hero-figs{margin-top:0;padding:24px;background:rgba(9,12,30,.55);border:1px solid rgba(255,255,255,.14);border-radius:12px;color:#fff;
-  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
-.pf-hero-figs .pp-fig-l,.pf-hero-figs .kf-c{color:rgba(255,255,255,.66)}
-.pf-hero-figs .kf-n{color:#fff}
-.pf-hero-figs .pp-fig + .pp-fig{border-top-color:rgba(255,255,255,.12)}
-.pf-hero-figs .pp-figs-q{border-top-color:rgba(255,255,255,.12);color:rgba(255,255,255,.55)}
+/* the layout: "What X does" on the right of "What is X?"; no video beside the list */
 /* "What X does" is the twin of "What is X?": the same heading on the same line, and its rows spread over the text's
    height so both columns end together; every row keeps its line, so nothing moves when the reading row changes */
 .pp-def .pf-does{min-width:0;margin-top:0}
@@ -75,29 +68,151 @@
 @media (max-width:1099px){.pp-def .pf-does{margin-top:8px}}
 .pf-does .flist{margin-top:var(--pf-gap,24px)}
 .pf-does .flist + .chips{margin-top:24px}
-.pf-does .flist li.has-i{position:relative;cursor:pointer;margin:0;padding:14px 16px 16px;border-radius:var(--r-card);transition:background-color .3s ease}
+.pf-does .flist li.has-i{position:relative;cursor:pointer;margin:0;padding:14px 16px 16px;border-radius:var(--r-card)}
 .pf-does .flist li.has-i + li.has-i{margin-top:4px}
-.pf-does .flist li.has-i[aria-selected="true"]{background:var(--accent-wash)}
-@media (hover:hover){.pf-does .flist li.has-i:not([aria-selected="true"]):hover{background:color-mix(in srgb,var(--accent) 4%,transparent)}}
 .pf-does .flist li.has-i:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .pf-does .flist h3{transition:color .3s ease}
 .tour-line{display:block;margin-top:4px;font-size:.9375rem;line-height:1.5;color:var(--muted);text-wrap:pretty}
-.tour-prog{position:absolute;left:16px;right:16px;bottom:6px;height:2px;border-radius:2px;background:transparent;overflow:hidden}
-li[aria-selected="true"] .tour-prog{background:color-mix(in srgb,var(--accent) 14%,transparent)}
-.tour-prog i{display:block;height:100%;transform:scaleX(0);transform-origin:left;background:var(--accent)}
 @media (max-width:640px){.pf-does .flist li.has-i{padding:12px 12px 14px}}
-@media (prefers-reduced-motion:reduce){.pf-does .flist li.has-i{transition:none}}
 /* The site's own, not the mock's (the film plays on the page): once YouTube's player takes the poster's place it fills
    the same 16:9 box, on black while it loads. */
 .pf-film-p.pf-film-on{background:#000}
 .pf-film-on iframe{display:block;width:100%;height:auto;aspect-ratio:16/9;border:0}
 /* "Turn on sound" over a film that started muted (the film plays with its sound): the play button's
-   white on the band's navy ink, in the middle of the screen, until the sound is on. */
+   white on the band's navy ink, in the middle of the screen, until the sound is on. A button, so the 23 Oct
+   corners take it to --r-ctl, as they take the play button it stands in for. */
 .pf-sound{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:10px;
-  padding:14px 22px;border:0;border-radius:999px;background:rgba(255,255,255,.96);color:var(--brand);cursor:pointer;
+  padding:14px 22px;border:0;border-radius:var(--r-ctl);background:rgba(255,255,255,.96);color:var(--brand);cursor:pointer;
   font:600 1rem/1 var(--sans);box-shadow:0 14px 40px -10px rgba(0,0,0,.65);transition:transform .3s cubic-bezier(.22,.9,.3,1)}
 .pf-sound svg{width:22px;height:22px}
 @media (hover:hover){.pf-sound:hover{transform:translate(-50%,-50%) scale(1.04)}}
 .pf-sound:focus-visible{outline:2px solid #fff;outline-offset:4px}
 @media (max-width:640px){.pf-sound{padding:11px 18px;font-size:.9375rem}.pf-sound svg{width:18px;height:18px}}
 @media (prefers-reduced-motion:reduce){.pf-sound{transition:none}}
+
+/* ══ 23 OCT 2026: THE HOME PAGE'S DECISIONS ON THE PRODUCT PAGES ══════════════════════════════════════════════════
+   The proposal mocks' own block (make_product_pages.py, then product_sections.py), after pp-tour as they carry it.
+   repo: the mocks are one page each, so a few of their selectors are bare; every page loads this sheet, so those that
+   would reach another page are scoped to the product hero (`.pp-min`, or a section after it, `.pp-min ~ …`): the bar's
+   strip, the marketplace line, the How it works cards, the doc tiles and the closing row's card. */
+
+/* the hero, as on the home page: one screen, the film whole under a scrim in the clip's own ground (the film is
+   `HeroFilm`, whose box travels with it; only where its frame sits is set here) */
+.hero.pp-min{display:grid;align-content:center;min-height:100vh;min-height:100svh;background:#000817}
+.pp-min > .hero-in{width:100%}
+.hero.pp-min::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:
+  radial-gradient(70% 60% at 14% 60%,rgba(0,8,23,.72) 0%,rgba(0,8,23,.5) 45%,rgba(0,8,23,0) 100%),
+  linear-gradient(90deg,rgba(0,8,23,.86) 0%,rgba(0,8,23,.8) 36%,rgba(0,8,23,.4) 54%,rgba(0,8,23,.12) 70%),
+  linear-gradient(180deg,rgba(0,8,23,0) 0%,rgba(0,8,23,0) 80%,rgba(0,8,23,.45) 100%)}
+/* the bar's 84px strip in the film's ground: only on a page with the product hero */
+body:has(.pp-min) .nav:not(.solid)::before{background:linear-gradient(180deg,#000817 0,#000817 66px,rgba(0,8,23,.55) 74px,rgba(0,8,23,0) 84px)}
+.pp-eye{display:flex;align-items:center;gap:8px;margin:0 0 14px;font-size:.875rem;font-weight:500;letter-spacing:.01em;line-height:1.4;
+  color:rgba(250,247,243,.72)}
+.pp-eye svg{width:16px;height:16px;flex:none}
+.pp-min h1{max-width:18ch;font-size:clamp(2.5rem,1.6rem + 3vw,4rem);color:#FAF7F3}
+.pp-min .hero-sub{margin-top:24px;max-width:46ch;color:rgba(250,247,243,.76)}
+/* repo: sections.css sets `.hero-sub{text-wrap:pretty}` on every page; the mock's sheet has no such rule, so the line
+   wraps greedily (at 1440 "No code" ends its second line, not "No") */
+.pp-min .hero-sub{text-wrap:wrap}
+.pp-min .hero-cta{margin-top:40px}
+.pp-min .btn-light{background:#FAF7F3;color:#050B3D}
+.pp-min .btn-light:hover{background:#fff}
+/* "Coral is available in …": the store links' colour and underline are the site system's `.hero p a:not([class])` */
+.pp-min .hx-mkt{margin-top:28px;font-size:.875rem;line-height:1.6;color:rgba(250,247,243,.6)}
+.pp-min .hx-mkt a{color:#FAF7F3;white-space:nowrap;text-underline-offset:4px;text-decoration-color:rgba(250,247,243,.4)}
+.pp-min .hx-mkt a svg{display:inline-block;width:14px;height:14px;margin-right:6px;vertical-align:-2px}
+.pp-min .hx-mkt a svg.aws{width:20px;height:10px;vertical-align:-1px}
+@media (hover:hover){.pp-min .hx-mkt a:hover{text-decoration-color:currentColor}}
+@media(max-width:1080px){
+  .pp-min .hero-film{object-position:60% 50%}
+  .hero.pp-min::after{background:linear-gradient(180deg,#000817 0,#000817 84px,rgba(0,8,23,.3) 14%,rgba(0,8,23,.8) 25%,
+    rgba(0,8,23,.8) 82%,rgba(0,8,23,.3) 93%,rgba(0,8,23,.15) 100%)}}
+
+/* What ... does: one drawing per capability, played by the page's own tour; no tinted rows, no progress line */
+.pf-does .flist li.has-i{grid-template-columns:88px minmax(0,1fr);gap:20px}
+.flist-i.mv{width:88px;height:52px;background:none;border-radius:0}
+.flist-i.mv svg{width:88px;height:52px;overflow:visible}
+.pf-does .flist li.has-i:not([aria-selected="true"]) h3{color:var(--muted)}
+.mv-base{stroke:var(--line);stroke-width:1}
+.mv-line{fill:none;stroke:var(--accent);stroke-width:1.5;stroke-linejoin:round;stroke-dasharray:120;stroke-dashoffset:0}
+.mv-dot,.mv-use,.mv-pod{fill:var(--accent)}
+.mv-req{fill:color-mix(in srgb,var(--accent) 16%,#fff)}
+.mv-dash{stroke:var(--muted);stroke-width:1;stroke-dasharray:3 2}
+.mv-pod-o{fill:none;stroke:var(--accent);stroke-width:1;transform-box:fill-box;transform-origin:center bottom}
+.mv-node{fill:#fff;stroke:#CDD3E4;stroke-width:1}
+.mv-disk{fill:none;stroke:#CDD3E4;stroke-width:1}
+.mv-fill{fill:color-mix(in srgb,var(--accent) 30%,#fff);transform-box:fill-box;transform-origin:left center}
+.mv-ok{fill:var(--good)}
+.mv-save{opacity:0}
+li[aria-selected="true"] .mv-line{animation:mvDraw 4.8s var(--ease) both}
+@keyframes mvDraw{0%{stroke-dashoffset:120}55%,100%{stroke-dashoffset:0}}
+li[aria-selected="true"] .mv-dot{animation:mvIn 4.8s var(--ease) both}
+@keyframes mvIn{0%,50%{opacity:0}62%,100%{opacity:1}}
+li[aria-selected="true"] .mv-rec{animation:mvRec 4.8s var(--ease) both}
+@keyframes mvRec{0%,18%{transform:translateY(0)}55%,100%{transform:translateY(14px)}}
+li[aria-selected="true"] .mv-pod-o{animation:mvFit 4.8s var(--ease) both}
+@keyframes mvFit{0%,18%{transform:none}55%,100%{transform:scale(.68,.6)}}
+li[aria-selected="true"] .mv-mover{animation:mvMove 4.8s var(--ease) both}
+@keyframes mvMove{0%,16%{transform:translate(0,0)}42%,100%{transform:translate(-19px,8px)}}
+li[aria-selected="true"] .mv-gone{animation:mvGone 4.8s var(--ease) both}
+@keyframes mvGone{0%,46%{opacity:1}62%,100%{opacity:0}}
+li[aria-selected="true"] .mv-fill{animation:mvGrow 4.8s var(--ease) both}
+li[aria-selected="true"] .mv-fill.f2{animation-delay:.25s}li[aria-selected="true"] .mv-fill.f3{animation-delay:.5s}
+@keyframes mvGrow{0%{transform:scaleX(0)}45%,100%{transform:scaleX(1)}}
+li[aria-selected="true"] .mv-save{animation:mvIn 4.8s var(--ease) both}
+@media (prefers-reduced-motion:reduce){
+  li[aria-selected] .mv-svg *{animation:none!important}
+  .mv-rec{transform:translateY(14px)}.mv-pod-o{transform:scale(.68,.6)}.mv-mover{transform:translate(-19px,8px)}.mv-gone{opacity:.25}.mv-save{opacity:1}}
+/* What is ...: the lead, then the rest behind a quiet opener */
+.pp-more{margin-top:16px}
+.pp-more > summary{display:inline-flex;align-items:center;gap:8px;cursor:pointer;list-style:none;font-size:.9375rem;font-weight:500;color:var(--text)}
+.pp-more > summary::-webkit-details-marker{display:none}
+.pp-more > summary::after{content:"";width:7px;height:7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .2s var(--ease)}
+/* repo: Tailwind's preflight makes every ::after border-box; the mock's reset leaves pseudo-elements content-box, so
+   its 7px chevron draws 8px with its stroke */
+.pp-more > summary::after{box-sizing:content-box}
+.pp-more[open] > summary::after{transform:translateY(1px) rotate(-135deg)}
+.pp-more > summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.pp-more > p{margin-top:16px}
+/* See ... at work: chapters as a quiet list */
+#film .pf-ch{justify-content:center;gap:6px 28px}
+#film .pf-ch a{padding:6px 0;border:0;border-radius:0;background:none}
+#film .pf-ch a:hover{background:none;text-decoration:underline;text-underline-offset:4px;text-decoration-color:rgba(255,255,255,.4)}
+#film .pf-ch b{font-weight:500;color:rgba(255,255,255,.56)}
+@media(max-width:640px){#film .pf-ch{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));justify-items:start;gap:2px 16px}}
+#film .pf-film-more a + a,#film .pf-film-more .pf-yt{margin-right:2px}
+/* the cards: no outline on the soft band, lighter outlines on white (the install cards' is set on `.iw-card`) */
+.pp-min ~ #how .stepc{border-color:transparent}
+.pp-min ~ section .dt{border-color:var(--line-soft)}
+/* the close: the brand's flat navy, not black */
+.pp-min ~ #assess .as-cal{background:var(--brand);border-color:var(--brand)}
+
+/* Install your way: each card its channel's mark and the assessment's terminal (a dark panel, a bar with the system
+   switch or the file's name, the command with its prompt, the white copy button); corners 4px and the bar's dots
+   square. The page's switch and copy keep working: the same .iw-os, pre, .iw-copy and .iw-alt. */
+#install .iw-h{gap:6px 10px}
+.iw-logo{width:22px;height:22px;flex:none;fill:currentColor}
+.iw-logo.zk{color:var(--brand)}.iw-logo.helm{color:#0F1689}.iw-logo.tf{color:#844FBA}
+.iw-term{display:flex;flex-direction:column;min-width:0;margin-top:16px;border:1px solid rgba(255,255,255,.08);border-radius:var(--r-card);
+  background:#121629;box-shadow:0 30px 60px -32px rgba(15,18,34,.45);overflow:hidden}
+.iw-bar{display:flex;align-items:center;gap:8px;min-height:38px;padding:0 6px 0 14px;border-bottom:1px solid rgba(255,255,255,.07)}
+.iw-dots{display:flex;gap:6px}.iw-dots i{width:8px;height:8px;border-radius:1px;background:rgba(255,255,255,.16)}
+.iw-file{margin-left:6px;font-size:.75rem;font-weight:500;color:rgba(255,255,255,.55)}
+#install .iw-term .iw-os{margin:0 0 0 auto;padding:2px;gap:2px;border:0;border-radius:var(--r-ctl);background:rgba(255,255,255,.06)}
+#install .iw-term .iw-os button{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 9px;border-radius:var(--r-ctl);color:rgba(255,255,255,.6);font-size:.75rem}
+#install .iw-term .iw-os button[aria-checked="true"]{background:rgba(255,255,255,.14);color:#fff;box-shadow:none}
+#install .iw-term .iw-os button[aria-checked="false"]:hover{color:#fff}
+#install .iw-term .iw-os button:focus-visible{outline:2px solid var(--accent-dark);outline-offset:1px}
+.iw-os-m{width:12px;height:12px;flex:none;fill:currentColor}
+#install .iw-term .iw-well{position:relative;flex:1;margin:0;border-radius:0;background:transparent}
+#install .iw-term .iw-well pre{padding:16px 62px 18px 16px;font-size:.8125rem;line-height:1.8}
+#install .iw-term .iw-well:not(:has(.iw-copy)) pre{padding-right:16px;white-space:pre;overflow-wrap:normal;overflow-x:auto}
+#install .iw-term .iw-copy{position:absolute;top:10px;right:10px;width:36px;height:34px;border:0;border-radius:var(--r-ctl);background:#fff;color:var(--text)}
+#install .iw-term .iw-copy:hover{background:#E9ECFB}
+#install .iw-term .iw-copy:active{background:#DCE1EE}
+#install .iw-term .iw-copy[data-done]{background:#83DDB7;color:var(--ground)}
+#install .iw-term .iw-copy:focus-visible{outline:2px solid var(--accent-dark);outline-offset:2px}
+#install .iw-alt{margin-top:12px}
+#install .iw-alt code{padding:2px 6px;border-radius:var(--r-ctl);background:var(--surface-2,#F6F7FB);overflow-wrap:anywhere}
+@media(min-width:641px){#install .iw-alt code{white-space:nowrap}}
+@media(max-width:420px){#install .iw-term .iw-os button{padding:0 7px}}

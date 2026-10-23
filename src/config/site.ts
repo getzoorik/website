@@ -182,9 +182,9 @@ export const isLearnArticlePath = (pathname: string): boolean => /^\/learn\/[^/]
  * ON: published, with their "To come" placeholders showing where a fact is
  * still owed. When this is false nothing on the site may lead to them, and
  * every surface that could reads this one value: their rows are left out of
- * the Product guide and FAQ menus and the drawer (here), the [Coral | Amoeba]
- * switch on the Coral guide and FAQ shows Coral alone (it draws the same menu
- * rows), the hub's Amoeba group shows only what is released, and the two
+ * the guide and FAQ rows (here), so the [Coral | Amoeba] switch on the Coral
+ * guide and FAQ shows Coral alone (it draws those rows), the hub's Amoeba
+ * group shows only what is released, and the two
  * routes answer 404 and stay out of the sitemap.
  * Publishing them is this one line.
  *
@@ -273,26 +273,28 @@ export const primaryCta = { label: "Book a demo", href: calendarUrl } as const;
 /* ═══════════════════════════════════════════════════════════════════════════
    THE HEADER
 
-   The bar, left to right: Coral · Amoeba · Assessment · Product guide · FAQ ·
-   Docs ▾ · Login · Book a demo. Assessment, Product guide and FAQ are plain
-   links to Coral's page of that kind (`menuLabelHref`), on every page,
-   Amoeba's own included; each of those pages switches to Amoeba itself. Docs
-   is the one menu: a word and a chevron, the word a link to the hub's Coral
-   group and the chevron opening the two product rows, a foot row to the whole
-   hub, then the Learn row to the articles. The drawer (1000px and down) is the
-   same list: the two product links, the three plain links, the Docs group
-   with its products as small chips ("All" and "Learn" after them), then
-   Login. Book a demo stays in the bar.
+   The bar, left to right: Coral · Amoeba · Assessment · Docs ▾ · Login · Book
+   a demo (owner, 23 Oct 2026: "Docs is the only menu"). Assessment is a plain
+   link to the assessment, whose page has its own [Coral | Amoeba] switch.
+   Docs is the one menu: a word and a chevron, the word a link to the hub's
+   Coral group and the chevron opening the two product rows, a foot row to the
+   whole hub, then the Learn and Open source rows. Product guide and FAQ left
+   the header: the Docs menu leads to each product's guide and FAQ through the
+   hub. The drawer (1000px and down) is the same list: the two product links,
+   Assessment, the Docs group with its products as small chips ("All", "Zoorik
+   Learn" and "Open source" after them), then Login. Book a demo stays in the
+   bar.
 
    There is no "How it works" and no "Contact" any more, in the bar, the drawer
    or the footer.
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/** What a page can be in the header: one of the links, one of the menus, or Login. */
-export type NavCurrent = "coral" | "amoeba" | "assessment" | "guide" | "faq" | "docs" | "login";
+/** What a page can be in the header: one of the links, the Docs menu, or Login. */
+export type NavCurrent = "coral" | "amoeba" | "assessment" | "docs" | "login";
 
-/** The four entries after the product links, by the key their ids are made of (`nvm-docs`); Docs alone opens a menu. */
-export type NavMenuKey = "assessment" | "guide" | "faq" | "docs";
+/** The rows by kind, by the key their ids are made of (`nvm-docs`): Docs, the
+ *  header's one menu, and the guide and FAQ rows the documents' switch reads. */
+export type NavMenuKey = "guide" | "faq" | "docs";
 
 export interface NavLink {
   readonly key: NavCurrent;
@@ -316,11 +318,10 @@ export interface NavMenu {
   readonly key: NavMenuKey;
   readonly label: string;
   /**
-   * Whether the header opens a menu of the rows. True for Docs alone: its word
-   * goes to the first row, Coral's (`menuLabelHref`), and the chevron beside it
-   * opens the menu. Absent for Assessment, Product guide and FAQ, which the
-   * bar and the drawer draw as one plain link to that first row; their rows
-   * still feed the [Coral | Amoeba] switch on each guide and FAQ.
+   * Whether the header draws it, as a menu. True for Docs alone: its word goes
+   * to the first row, Coral's (`menuLabelHref`), and the chevron beside it
+   * opens the menu. Absent for the guide and the FAQ, which are not in the
+   * header; their rows feed the [Coral | Amoeba] switch on each guide and FAQ.
    */
   readonly dropdown?: boolean;
   readonly rows: readonly NavMenuRow[];
@@ -342,32 +343,26 @@ export const navLinks: readonly NavProductLink[] = [
   { key: "amoeba", label: "Amoeba", href: routes.amoeba, product: "amoeba" },
 ];
 
-/** The link after the menus: last in the drawer, and in the bar down to 1001px. */
+/** The plain link after the product links, in the bar and the drawer: the
+ *  assessment itself, with no product in its address. Its page opens on Coral
+ *  and switches to Amoeba on its own (`productFromQuery` in `@/lib/product-choice`). */
+export const navAssessment: NavLink = {
+  key: "assessment",
+  label: "Assessment",
+  href: routes.assessment,
+};
+
+/** The link after the menu: last in the drawer, and in the bar down to 1001px. */
 export const navLogin: NavLink = { key: "login", label: "Login", href: routes.login };
 
-/* The product lines under the names in the Assessment, Product guide and FAQ
-   menus: the same two as the home hero's tiles and the Docs hub's groups, from
-   `products.ts`. The Docs rows have a line of their own. */
+/* The Docs rows' line. The guide and FAQ rows carry each product's own line,
+   the same two as the home hero's tiles and the Docs hub's groups, from
+   `products.ts`. */
 const DOCS_LINE = "Guide, FAQ and one-pager";
 
-/* Coral first in every menu, as everywhere on the site: a menu's word lands on
-   its first row (`menuLabelHref`). */
+/* Coral first in every row set, as everywhere on the site: the menu's word
+   lands on its first row (`menuLabelHref`). */
 export const navMenus: readonly NavMenu[] = [
-  {
-    /* The assessment, preset to each product: a link carrying `?p=` lands on
-       that product's page (`productFromQuery` in `@/lib/product-choice`). Never held:
-       the one page serves both products whatever the documents' switches say. */
-    key: "assessment",
-    label: "Assessment",
-    rows: [
-      { product: "coral", href: `${routes.assessment}?p=coral`, line: products.coral.descriptor },
-      {
-        product: "amoeba",
-        href: `${routes.assessment}?p=amoeba`,
-        line: products.amoeba.descriptor,
-      },
-    ],
-  },
   {
     key: "guide",
     label: "Product guide",
@@ -435,11 +430,11 @@ export interface NavState {
 
 /**
  * Every page's place in the header. Anything not listed — the home page,
- * /about, /security, /privacy, /terms — marks nothing. The Learn hub and its
- * articles mark Docs, and the hub marks its own Learn row too. /assessment
- * marks the Assessment menu here, and its own row only in the browser: which
- * product it is on is in the address, which a prerendered page never reads
- * (`navState`).
+ * /about, /security, /privacy, /terms — marks nothing. /assessment marks its
+ * link, whichever product it is on: the link names none. The documents mark
+ * Docs: the hub, the Learn hub and /open-source mark their own row in its menu
+ * too; the guides and FAQs, the install guides and the Learn articles, which no
+ * row of the menu is, mark Docs alone.
  *
  * A table keyed by pathname, not a lookup the component works out: the
  * pathname is known at build, so every page prerenders with its own state, and
@@ -450,10 +445,11 @@ const NAV_STATES: ReadonlyMap<string, NavState> = new Map<string, NavState>([
   [routes.coral, { current: "coral" }],
   [routes.amoeba, { current: "amoeba" }],
   [routes.assessment, { current: "assessment" }],
-  [routes.coralGuide, { current: "guide", here: { menu: "guide", product: "coral" } }],
-  [routes.amoebaGuide, { current: "guide", here: { menu: "guide", product: "amoeba" } }],
-  [routes.coralFaq, { current: "faq", here: { menu: "faq", product: "coral" } }],
-  [routes.amoebaFaq, { current: "faq", here: { menu: "faq", product: "amoeba" } }],
+  /* Product guide and FAQ left the header: the Docs menu leads to them, through the hub. */
+  [routes.coralGuide, { current: "docs" }],
+  [routes.amoebaGuide, { current: "docs" }],
+  [routes.coralFaq, { current: "docs" }],
+  [routes.amoebaFaq, { current: "docs" }],
   [routes.docs, { current: "docs", here: { menu: "docs" } }],
   [routes.learn, { current: "docs", here: { menu: "docs", product: "learn" } }],
   [routes.login, { current: "login" }],
@@ -467,33 +463,20 @@ const NAV_STATES: ReadonlyMap<string, NavState> = new Map<string, NavState>([
 /** A Learn article marks the Docs menu alone, whichever article it is; /about marks nothing. */
 const LEARN_ARTICLE_STATE: NavState = { current: "docs" };
 
-/**
- * A page's place in the header, from its pathname, and on /assessment from the
- * product its reader is on (`assessing`).
- *
- * The assessment is one prerendered page for both products, and `?p=` is read
- * in the browser (`first-paint.ts`), so whether the Assessment link, which
- * opens Coral's, is this very page can only be known once the page has loaded.
- * Until then, and with scripting off, it marks the link as the section alone.
- */
-export function navState(pathname: string, assessing?: ProductId | null): NavState {
+/** A page's place in the header, from its pathname alone, so it is known when the page is prerendered. */
+export function navState(pathname: string): NavState {
   /* `/coral/` and `/coral` are one page. */
   const path = pathname.replace(/(.)\/$/, "$1");
-  const state = NAV_STATES.get(path) ?? (isLearnArticlePath(path) ? LEARN_ARTICLE_STATE : {});
-  return state.current === "assessment" && assessing
-    ? { ...state, here: { menu: "assessment", product: assessing } }
-    : state;
+  return NAV_STATES.get(path) ?? (isLearnArticlePath(path) ? LEARN_ARTICLE_STATE : {});
 }
 
 /**
- * Where an entry's word goes: Assessment to `/assessment?p=coral`, Product guide
- * to `/coral/guide`, FAQ to `/coral/faq`, Docs to `/docs#coral`. Coral's is the
- * default page of each, on every page of the site, Amoeba's own included; each
- * page switches to Amoeba itself, and Docs lists it in its menu.
+ * Where the menu's word goes: Docs to `/docs#coral`, the hub's Coral group, on
+ * every page of the site, Amoeba's own included; the menu lists Amoeba's.
  *
  * The word is the menu's first row, never a route of its own, so it can never
- * lead somewhere the menu does not: Coral is first in every menu and no switch
- * holds a Coral row back.
+ * lead somewhere the menu does not: Coral is first in every row set and no
+ * switch holds a Coral row back.
  */
 export function menuLabelHref(menu: NavMenu): string {
   return menu.rows[0].href;

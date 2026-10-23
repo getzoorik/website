@@ -391,7 +391,7 @@ describe("/amoeba/guide page", () => {
 });
 
 describe("the [Coral | Amoeba] switch", () => {
-  it("draws the header menu's rows: Coral alone while the Amoeba guide is held", () => {
+  it("draws the guide rows from navMenus: Coral alone while the Amoeba guide is held", () => {
     const links = within(
       within(page()).getByRole("navigation", { name: "Choose a product" }),
     ).getAllByRole("link");

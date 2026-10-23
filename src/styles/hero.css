@@ -8,20 +8,16 @@
 /* ---------- hero ---------- */
 .hero{position:relative;isolation:isolate;background:var(--ground);color:#fff;overflow:hidden}
 
-/* The photograph. Measured on the source frame: the lit racks occupy x 0.35-0.70
-   and the right 30% is empty black (band mean 6-8/255 against --ground's 13/255).
-   scaleX(-1) mirrors that empty third under the headline, so the type sits on the
-   photo's own negative space and the scrim can stay light over the racks. The box
-   is inset from the left as well, so the rack edge lands clear of the text column. */
-.hero-photo{position:absolute;top:0;right:0;height:100%;width:min(70%,1160px);
-  object-fit:cover;object-position:50% 50%;transform:scaleX(-1);
-  z-index:-2;pointer-events:none;user-select:none}
+/* The rack photograph that stood here (`.hero-photo`) left with the last hero that drew it: the
+   home hero and the product heroes draw their films (`HeroFilm`, 23 Oct 2026), and /login's panel
+   draws the frame by its own rules (`img.photo`, login.css). */
 
-/* Two scrims. Horizontal: opaque ground across the type column, releasing over the
-   racks and closing part-way at the right edge so the frame holds. Vertical: darkens
-   the strip under the fixed nav so the wordmark holds 7.25:1 there. It does NOT fade
-   to solid at the bottom - the photograph runs to the edge and the hero ends on a
-   clean cut against the white section below, not on a soft grey shelf. */
+/* Two scrims, the base every hero takes (the home and product heroes draw their own
+   over their films). Horizontal: opaque ground across the type column, releasing to
+   the right and closing part-way at the right edge so the frame holds. Vertical:
+   darkens the strip under the fixed nav so the wordmark holds 7.25:1 there. It does
+   NOT fade to solid at the bottom - the hero ends on a clean cut against the white
+   section below, not on a soft grey shelf. */
 .hero::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
   background:
     linear-gradient(90deg,var(--ground) 0%,var(--ground) 34%,rgba(11,13,20,.90) 47%,
@@ -32,13 +28,12 @@
 .hero h1{max-width:21ch;color:#fff;text-wrap:balance}
 .hero-sub{margin-top:24px;max-width:56ch;color:rgba(255,255,255,.80);font-size:1.09rem;line-height:1.7}
 .hero-cta{display:flex;gap:var(--s3);margin-top:var(--s6);flex-wrap:wrap}
-/* The stat row that stood here is gone with its three figures. The product
-   lockups that replaced it are `.hero-prods` in site-system.css. */
+/* The stat row that stood here is gone with its three figures, and on the home
+   hero the product lockups that replaced it are gone too (its own block, below). */
 
-/* Narrower viewports: the text column takes the full width, so the photo widens and
-   drops behind a flatter, heavier scrim - it becomes texture rather than subject. */
+/* Narrower viewports: the text column takes the full width, so the scrim is flatter and
+   heavier. */
 @media(max-width:1080px){
-  .hero-photo{width:82%}
   .hero::after{background:
     linear-gradient(90deg,var(--ground) 0%,var(--ground) 26%,rgba(11,13,20,.93) 42%,
       rgba(11,13,20,.72) 60%,rgba(11,13,20,.50) 80%,rgba(11,13,20,.58) 100%),
@@ -46,7 +41,6 @@
       rgba(11,13,20,0) 74%,rgba(11,13,20,.34) 100%)}
 }
 @media(max-width:760px){
-  .hero-photo{width:100%}
   /* Full-bleed here, so the vertical scrim pins the nav strip to flat ground for the
      nav's own 80px - in px, not %, so it cannot drift with hero height. The wordmark
      must hold the sheet's #8E98EB-on-#0B0D14 figure of 7.25:1, not merely clear 4.5. */
@@ -55,3 +49,40 @@
     linear-gradient(180deg,var(--ground) 0,var(--ground) 84px,rgba(11,13,20,.24) 26%,
       rgba(11,13,20,.30) 74%,rgba(11,13,20,.52) 100%)}
 }
+
+/* ---------- the home hero: the Gargantua film, one screen tall (owner, 23 Oct 2026) ----------
+   The mock's own rules (home-hero-option-M1f-gargantua.html: the site system's one-screen hero, then
+   the option's MIN_CSS and GA_CSS), each scoped to `.hero-home`, as every sheet here loads on every
+   page. The film is `HeroFilm`'s <video class="hero-film">: its box (the whole hero, cover, under the
+   scrim at z-index -2) travels with the element, so only where its frame sits is set here. */
+/* the home hero fills the first screen on every device: at least one screen tall, its content
+   centred; svh so a phone's address bar never makes it jump; content taller than the screen just
+   grows it */
+.hero-home{display:grid;align-content:center;min-height:100vh;min-height:100svh}
+.hero-home > .hero-in{width:100%}
+.hero-home .hero-cta{margin-top:40px}
+/* the one quiet line, the stores' marks in front of their names. The links' colour and underline are
+   the site system's `.hero p a:not([class])`, as in the mock; this rule's colour loses to it. */
+.hero-home .hx-mkt{margin-top:28px;font-size:.875rem;line-height:1.6;color:rgba(250,247,243,.6)}
+.hero-home .hx-mkt a{color:#FAF7F3;white-space:nowrap;text-underline-offset:4px;text-decoration-color:rgba(250,247,243,.4)}
+.hero-home .hx-mkt a svg{display:inline-block;width:14px;height:14px;margin-right:6px;vertical-align:-2px}
+.hero-home .hx-mkt a svg.aws{width:20px;height:10px;vertical-align:-1px}
+@media (hover:hover){.hero-home .hx-mkt a:hover{text-decoration-color:currentColor}}
+/* the ground, the bar and the scrim take the clip's sky, #080014 */
+.hero.hero-home{background:#080014}
+/* the disk runs white-hot under the lower words, so the lower left takes a deeper, soft-edged shade;
+   the arc and the ring on the right keep their full light */
+.hero.hero-home::after{background:
+  radial-gradient(70% 60% at 14% 74%,rgba(8,0,20,.78) 0%,rgba(8,0,20,.55) 45%,rgba(8,0,20,0) 100%),
+  linear-gradient(90deg,rgba(8,0,20,.88) 0%,rgba(8,0,20,.84) 36%,rgba(8,0,20,.42) 52%,rgba(8,0,20,0) 64%),
+  linear-gradient(180deg,rgba(8,0,20,0) 0%,rgba(8,0,20,0) 80%,rgba(8,0,20,.45) 100%)}
+/* repo: the bar's 84px strip in the same sky, on the home page alone. The bar is the hero's sibling,
+   not its child, so the page is found by its hero (`:has`); the mock, one page, writes it bare. An
+   engine without `:has()` keeps the site's own strip, a grey #0B0D14 band over the sky. */
+:root:has(.hero-home) .nav:not(.solid)::before{background:linear-gradient(180deg,#080014 0,#080014 66px,rgba(8,0,20,.55) 74px,rgba(8,0,20,0) 84px)}
+/* below 1080 the words run the full width: one shaped scrim, dark behind the words, lighter above and
+   below them, so the black hole still shows; the arc and the ring kept in view */
+@media(max-width:1080px){
+  .hero-home .hero-film{object-position:76% 50%}
+  .hero.hero-home::after{background:linear-gradient(180deg,#080014 0,#080014 84px,rgba(8,0,20,.30) 14%,rgba(8,0,20,.80) 25%,
+    rgba(8,0,20,.80) 82%,rgba(8,0,20,.30) 93%,rgba(8,0,20,.15) 100%)}}

@@ -3,13 +3,12 @@ import type { JSX } from "react";
 import type { ProductFilm } from "@/content/product-films";
 
 /**
- * What the film band, its player and the hero's "Watch the 2-minute film" share:
- * the band's id, the film's minutes, a chapter's address and clock, YouTube's
- * player address, and the two glyphs. No directive: the server band and
- * the client player both use them.
+ * What the film band and its player share: the band's id, the film's minutes, a
+ * chapter's address and clock, YouTube's player address, and the two glyphs. No
+ * directive: the server band and the client player both use them.
  */
 
-/** The band's id: the hero's second button is `#film`. */
+/** The band's id. */
 export const FILM_ID = "film";
 
 /** "2:05" → "2": the film's whole minutes, which name it ("the 2-minute film"). */
@@ -63,8 +62,7 @@ export function youtubeEmbed(url: string, start: number, muted: boolean, origin?
   return `https://www.youtube-nocookie.com/embed/${youtubeId(url)}?${query}`;
 }
 
-/** The play glyph: the poster's play button and the hero's second button.
- *  Its ink is the surface's (`.pf-play svg`, `.hero-cta .pf-watch svg`). */
+/** The play glyph: the poster's play button. Its ink is the surface's (`.pf-play svg`). */
 export function PlayGlyph(): JSX.Element {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -87,23 +85,6 @@ export function SoundGlyph(): JSX.Element {
     >
       <path d="M11 5 6 9H3v6h3l5 4V5z" />
       <path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" />
-    </svg>
-  );
-}
-
-/** The outward arrow, at its stroke of 2: the tag's arrow, not the site's `.ext`. */
-export function OutGlyph(): JSX.Element {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M7 17 17 7M8 7h9v9" />
     </svg>
   );
 }

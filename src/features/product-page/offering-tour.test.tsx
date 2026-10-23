@@ -7,7 +7,7 @@ import { OfferingTour } from "./offering-tour";
 /**
  * The rows taking turns. jsdom has no layout, so the reader's view is the
  * observer's to say (`scroll`), and the clock is faked down to the animation
- * frame, which the progress line runs on.
+ * frame, which the turn runs on.
  */
 
 const observers: Array<(isIntersecting: boolean) => void> = [];
@@ -61,9 +61,6 @@ function renderTour() {
                 <h3>{id}</h3>
                 <span className="tour-line">The line.</span>
               </div>
-              <span className="tour-prog" aria-hidden="true">
-                <i />
-              </span>
             </li>
           ))}
         </OfferingTour>
@@ -76,11 +73,6 @@ function renderTour() {
 
 const selected = (rows: HTMLLIElement[]): string[] =>
   rows.filter((row) => row.getAttribute("aria-selected") === "true").map((row) => row.id);
-
-const fill = (row: HTMLLIElement): number =>
-  Number(
-    /scaleX\(([\d.]+)\)/.exec(row.querySelector<HTMLElement>(".tour-prog i")!.style.transform)![1],
-  );
 
 describe("OfferingTour", () => {
   beforeEach(() => {
@@ -127,15 +119,13 @@ describe("OfferingTour", () => {
     expect(rows.map((row) => row.tabIndex)).toEqual([0, -1, -1, -1]);
   });
 
-  it("reads each row for 4.8s while in view, filling its line, then the next, and wraps", () => {
+  it("reads each row for 4.8s while in view, then the next, and wraps", () => {
     const { rows } = renderTour();
     scroll(true);
-    wait(2400);
+    wait(4700);
     expect(selected(rows)).toEqual(["monitoring"]);
-    expect(fill(rows[0]!)).toBeCloseTo(0.5, 1);
-    wait(2500);
+    wait(200);
     expect(selected(rows)).toEqual(["recommendations"]);
-    expect(fill(rows[0]!)).toBe(0);
     wait(4800 * 3);
     expect(selected(rows)).toEqual(["monitoring"]);
   });
@@ -147,9 +137,11 @@ describe("OfferingTour", () => {
     scroll(false);
     wait(10_000);
     expect(selected(rows)).toEqual(["monitoring"]);
-    expect(fill(rows[0]!)).toBeCloseTo(0.5, 1);
+    /* Half its time was read; the other half is left. */
     scroll(true);
-    wait(2500);
+    wait(2300);
+    expect(selected(rows)).toEqual(["monitoring"]);
+    wait(200);
     expect(selected(rows)).toEqual(["recommendations"]);
   });
 
@@ -163,7 +155,6 @@ describe("OfferingTour", () => {
     expect(selected(rows)).toEqual(["workload-optimization"]);
     wait(10_000);
     expect(selected(rows)).toEqual(["workload-optimization"]);
-    expect(fill(rows[2]!)).toBe(0);
     fireEvent.mouseLeave(rows[2]!);
     wait(4900);
     expect(selected(rows)).toEqual(["node-optimization"]);
@@ -233,7 +224,6 @@ describe("OfferingTour", () => {
     expect(observers).toHaveLength(0);
     wait(20_000);
     expect(selected(rows)).toEqual(["monitoring"]);
-    expect(fill(rows[0]!)).toBe(0);
     fireEvent.click(rows[3]!);
     expect(selected(rows)).toEqual(["node-optimization"]);
   });

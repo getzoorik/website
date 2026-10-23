@@ -4,10 +4,8 @@ import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react
 
 import type { FilmChapter } from "@/content/product-films";
 import {
-  FILM_ID,
   filmAt,
   filmClock,
-  OutGlyph,
   PlayGlyph,
   SoundGlyph,
   youtubeEmbed,
@@ -27,8 +25,7 @@ import {
  *   (`navigator.userActivation`), otherwise muted, with "Turn on sound" over it.
  * - **The reader's first press anywhere** on the page, or that button, turns
  *   the sound on in place, without restarting the film (YouTube's `unMute`).
- * - **The poster, a chapter or the hero's "Watch the 2-minute film"** starts it
- *   with sound, a chapter at its second.
+ * - **The poster or a chapter** starts it with sound, a chapter at its second.
  * - **Under reduced motion** nothing starts by itself: the player loads only on
  *   a press.
  * - **Leaving it pauses it**: once less than half of the player is in view, or
@@ -52,7 +49,7 @@ interface Playing {
 }
 
 /** A click that asks for a new tab or window keeps the link's own behaviour. */
-const modified = (event: MouseEvent | globalThis.MouseEvent) =>
+const modified = (event: MouseEvent) =>
   event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0;
 
 /** Whether the reader has pressed something on the page yet, which lets a film play its sound. */
@@ -80,12 +77,10 @@ const CAPTIONS_OFF = [
 export interface FilmPlayerProps {
   readonly url: string;
   readonly poster: string;
-  readonly length: string;
   /** The poster link's name ("Watch the 2-minute Coral film on YouTube (opens in a new tab)"). */
   readonly posterLabel: string;
   /** The player's title, for a screen reader ("Coral: the 2-minute film, on YouTube"). */
   readonly playerTitle: string;
-  readonly tag: string;
   /** The button over a muted film ("Turn on sound"). */
   readonly soundLabel: string;
   readonly chaptersLabel: string;
@@ -95,10 +90,8 @@ export interface FilmPlayerProps {
 export function FilmPlayer({
   url,
   poster,
-  length,
   posterLabel,
   playerTitle,
-  tag,
   soundLabel,
   chaptersLabel,
   chapters,
@@ -170,17 +163,6 @@ export function FilmPlayer({
     };
   }, [playing, muted, soundOn]);
 
-  /* The hero's "Watch the 2-minute film" is a press: the film starts with sound. */
-  useEffect(() => {
-    const watch = (event: globalThis.MouseEvent) => {
-      if (modified(event)) return;
-      const link = (event.target as Element | null)?.closest?.(`a[href="#${FILM_ID}"]`);
-      if (link) start(0, true, false);
-    };
-    document.addEventListener("click", watch);
-    return () => document.removeEventListener("click", watch);
-  }, [start]);
-
   /* Leaving the film pauses it: less than half of the player in view, once it has been in view (a chapter pressed
      below it scrolls it there first), or the page hidden behind another tab. */
   useEffect(() => {
@@ -242,11 +224,6 @@ export function FilmPlayer({
           <img src={poster} alt="" width={1920} height={1080} loading="lazy" decoding="async" />
           <span className="pf-play" aria-hidden="true">
             <PlayGlyph />
-          </span>
-          <span className="pf-film-tag" aria-hidden="true">
-            <b>{length}</b>
-            <span>{tag}</span>
-            <OutGlyph />
           </span>
         </a>
       ) : (

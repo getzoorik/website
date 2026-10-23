@@ -64,7 +64,7 @@ beforeEach(() => {
 
 afterEach(() => {
   document.removeEventListener("click", stayOnPage);
-  /* What /assessment's first-paint script and switch set (`first-paint.ts`). */
+  /* What /assessment's first-paint script and switch set (`first-paint.ts`), which the bar no longer reads. */
   document.documentElement.removeAttribute("data-ap");
   vi.useRealTimers();
   vi.restoreAllMocks();
@@ -86,16 +86,16 @@ function renderNav(path = "/coral") {
   const button = (label: string) => dd(label).querySelector<HTMLButtonElement>("button.nv-btn")!;
   const word = (label: string) => dd(label).querySelector<HTMLAnchorElement>("a.nv-lbl")!;
   const card = (label: string) => dd(label).querySelector<HTMLElement>(".nv-menu")!;
-  /** One of the plain links in the bar: Assessment, Product guide or FAQ. */
+  /** One of the plain links in the bar, drawn alike: Assessment or Login. */
   const link = (label: string) =>
-    [...view.container.querySelectorAll<HTMLAnchorElement>(".nav-links > a.nv-lbl")].find(
+    [...view.container.querySelectorAll<HTMLAnchorElement>(".nav-links > a.nav-opt")].find(
       (a) => text(a) === label,
     )!;
   return { ...view, dd, button, word, card, link };
 }
 
 describe("the bar", () => {
-  it("runs Coral, Amoeba, Assessment, Product guide, FAQ, the Docs menu, Login, Book a demo, then the toggle", () => {
+  it("runs Coral, Amoeba, Assessment, the Docs menu, Login, Book a demo, then the toggle", () => {
     const { container } = renderNav("/");
     const items = [...container.querySelector(".nav-links")!.children].map((el) =>
       el.matches(".nv-dd") ? `${labelOf(el)} ▾` : text(el) || el.className,
@@ -104,13 +104,32 @@ describe("the bar", () => {
       "Coral",
       "Amoeba",
       "Assessment",
-      "Product guide",
-      "FAQ",
       "Docs ▾",
       "Login",
       "Book a demo (opens in a new tab)",
       "nav-toggle",
     ]);
+  });
+
+  it("leaves Product guide and FAQ out, in the bar and the drawer: the Docs menu leads to them", () => {
+    /* Owner, 23 Oct 2026: "Docs is the only menu". */
+    for (const path of ["/", "/coral/guide", "/amoeba/faq"]) {
+      const { container, unmount } = renderNav(path);
+      const nav = container.querySelector("nav")!;
+      /* No link, button or drawer label of their name: Docs' rows say "Guide, FAQ and one-pager". */
+      const names = [...nav.querySelectorAll("a, button, .nd-h")].map(
+        (el) => el.getAttribute("aria-label") ?? text(el),
+      );
+      expect(names, path).not.toContain("Product guide");
+      expect(names, path).not.toContain("Product guide menu");
+      expect(names, path).not.toContain("FAQ");
+      expect(names, path).not.toContain("FAQ menu");
+      const hrefs = [...nav.querySelectorAll("a")].map((a) => a.getAttribute("href"));
+      for (const page of ["/coral/guide", "/coral/faq", "/amoeba/guide", "/amoeba/faq"]) {
+        expect(hrefs, path).not.toContain(page);
+      }
+      unmount();
+    }
   });
 
   it("draws each product with its mark and keeps the names out of translation", () => {
@@ -124,7 +143,7 @@ describe("the bar", () => {
   });
 
   it("keeps Login in the bar as the link the CSS shows down to 1001px", () => {
-    const login = renderNav("/").container.querySelector(".nav-links > a.nav-opt")!;
+    const login = renderNav("/").link("Login");
     expect(login).toHaveAttribute("href", "/login");
     expect(login).toHaveTextContent("Login");
   });
@@ -166,20 +185,27 @@ describe("the bar", () => {
 });
 
 /**
- * Assessment, Product guide and FAQ are plain links to Coral's page of each,
- * the default, on every page; the page switches to Amoeba itself. Docs is a
- * word, a link to the hub's Coral group, and a chevron that opens its menu.
+ * Assessment is a plain link to the assessment, on every page, drawn as Login
+ * is; its page switches product itself. Docs is a word, a link to the hub's
+ * Coral group, and a chevron that opens its menu.
  */
 describe("the links and the menu's word", () => {
-  it("draws Assessment, Product guide and FAQ as plain links, and Docs as a link and a chevron", () => {
+  it("draws Assessment as a plain link, as Login is, and Docs as a link and a chevron", () => {
     const { container } = renderNav("/");
-    const plain = [...container.querySelectorAll(".nav-links > a.nv-lbl")];
-    expect(plain.map((a) => text(a))).toEqual(["Assessment", "Product guide", "FAQ"]);
+    const plain = [...container.querySelectorAll(".nav-links > a.nav-opt")];
+    expect(plain.map((a) => [text(a), a.getAttribute("href")])).toEqual([
+      ["Assessment", "/assessment"],
+      ["Login", "/login"],
+    ]);
     for (const a of plain) {
       /* No chevron, no menu: one link each. */
       expect(a.querySelector("svg")).toBeNull();
       expect(a.closest(".nv-dd")).toBeNull();
     }
+    /* Docs' word is the one `.nv-lbl`. */
+    expect([...container.querySelectorAll(".nav-links a.nv-lbl")].map((a) => text(a))).toEqual([
+      "Docs",
+    ]);
     const shapes = [...container.querySelectorAll(".nv-dd")].map((dd) => [
       labelOf(dd),
       [...dd.children].map((el) => `${el.tagName.toLowerCase()}.${[...el.classList].join(".")}`),
@@ -209,19 +235,28 @@ describe("the links and the menu's word", () => {
     learnPath(learnArticles[0]!.slug),
     "/about",
     "/privacy",
-  ])("on %s, lead to Coral's pages", (path) => {
-    const { container } = renderNav(path);
-    expect(
-      [...container.querySelectorAll("a.nv-lbl")].map((a) => [text(a), a.getAttribute("href")]),
-    ).toEqual([
-      ["Assessment", "/assessment?p=coral"],
-      ["Product guide", "/coral/guide"],
-      ["FAQ", "/coral/faq"],
-      ["Docs", "/docs#coral"],
-    ]);
-  });
+  ])(
+    "on %s, lead to the assessment and the hub's Coral group, in the bar and the drawer",
+    (path) => {
+      const { container } = renderNav(path);
+      expect(
+        [...container.querySelectorAll(".nav-links > a.nav-opt, .nav-links a.nv-lbl")].map((a) => [
+          text(a),
+          a.getAttribute("href"),
+        ]),
+      ).toEqual([
+        ["Assessment", "/assessment"],
+        ["Docs", "/docs#coral"],
+        ["Login", "/login"],
+      ]);
+      const drawer = [...container.querySelectorAll(".nav-drop .wrap > a")].find(
+        (a) => text(a) === "Assessment",
+      );
+      expect(drawer).toHaveAttribute("href", "/assessment");
+    },
+  );
 
-  it("lead to each entry's first row, Coral's, which no switch holds back", () => {
+  it("lead to each row set's first row, Coral's, which no switch holds back", () => {
     for (const menu of navMenus) {
       expect(menu.rows[0].product, menu.key).toBe("coral");
       expect(menuLabelHref(menu), menu.key).toBe(menu.rows[0].href);
@@ -240,16 +275,16 @@ describe("the links and the menu's word", () => {
     expect(docs.word("Docs")).toHaveAttribute("aria-current", "page");
     expect(docs.button("Docs")).not.toHaveAttribute("aria-current");
     docs.unmount();
-    /* On Coral's FAQ the FAQ link is this very page. */
-    const coral = renderNav("/coral/faq");
-    expect(coral.link("FAQ")).toHaveClass("is-cur");
-    expect(coral.link("FAQ")).toHaveAttribute("aria-current", "page");
-    coral.unmount();
-    /* On Amoeba's FAQ the link marks the section and leads away, to Coral's. */
-    const amoeba = renderNav("/amoeba/faq");
-    expect(amoeba.link("FAQ")).toHaveAttribute("href", "/coral/faq");
-    expect(amoeba.link("FAQ")).toHaveClass("is-cur");
-    expect(amoeba.link("FAQ")).not.toHaveAttribute("aria-current");
+    /* A guide or an FAQ is in Docs, and no row of the menu is it. */
+    const faq = renderNav("/amoeba/faq");
+    expect(faq.word("Docs")).toHaveClass("is-cur");
+    expect(faq.button("Docs")).toHaveClass("is-cur");
+    expect(faq.word("Docs")).not.toHaveAttribute("aria-current");
+    faq.unmount();
+    /* On the assessment its link is this very page: it names no product. */
+    const assessment = renderNav("/assessment");
+    expect(assessment.link("Assessment")).toHaveAttribute("aria-current", "page");
+    expect(assessment.link("Assessment")).not.toHaveClass("is-cur");
   });
 
   it("follow Docs' word on a click without opening its menu", async () => {
@@ -269,7 +304,7 @@ describe("the menus' rows", () => {
 
   it("list Docs' products, then All docs, Zoorik Learn and Open source, in the one card", () => {
     const { card, container } = renderNav("/");
-    /* Assessment, Product guide and FAQ draw no card: their pages switch product themselves. */
+    /* Docs is the only menu: Assessment's page switches product itself. */
     expect(container.querySelectorAll(".nv-menu")).toHaveLength(1);
     /* No Amoeba row while all of Amoeba's documents are held: the hub has no
        `#amoeba` group for it to land on. */
@@ -378,10 +413,9 @@ describe("the menus' rows", () => {
 });
 
 /**
- * What each page marks as current: the product link or Login in the bar, the
- * section's `.is-cur` (a plain link or Docs' word), the row inside the menu
- * and its drawer chip, the drawer row, and the word or link that is this very
- * page.
+ * What each page marks as current: the product link, Assessment or Login in
+ * the bar, Docs' `.is-cur`, the row inside the menu and its drawer chip, the
+ * drawer row, and the word that is this very page.
  */
 describe("the current page", () => {
   function stateOf(path: string) {
@@ -422,11 +456,13 @@ describe("the current page", () => {
     ["/", "", "", "", "", "", ""],
     ["/coral", "Coral", "", "", "", "Coral", ""],
     ["/amoeba", "Amoeba", "", "", "", "Amoeba", ""],
-    /* As prerendered, before the page has read its product from the address:
-       the section is current, but not as this very page, which names one product. */
-    ["/assessment", "", "Assessment", "", "", "", ""],
-    ["/coral/guide", "", "Product guide", "", "", "Product guide", "Product guide"],
-    ["/coral/faq", "", "FAQ", "", "", "FAQ", "FAQ"],
+    /* The link names no product, so it is this very page as prerendered. */
+    ["/assessment", "Assessment", "", "", "", "Assessment", ""],
+    /* The guides and FAQs are in Docs, and no row of its menu is any of them. */
+    ["/coral/guide", "", "Docs", "", "", "", ""],
+    ["/coral/faq", "", "Docs", "", "", "", ""],
+    ["/amoeba/guide", "", "Docs", "", "", "", ""],
+    ["/amoeba/faq", "", "Docs", "", "", "", ""],
     ["/docs", "", "Docs", "Docs › All docs", "Docs › All", "", "Docs"],
     /* The Learn hub marks Docs and its own row; every article marks Docs alone. */
     ["/learn", "", "Docs", "Docs › Zoorik Learn", "Docs › Zoorik Learn", "", ""],
@@ -439,6 +475,8 @@ describe("the current page", () => {
       "",
       "",
     ]),
+    ["/open-source", "", "Docs", "Docs › Open source", "Docs › Open source", "", ""],
+    ["/login", "Login", "", "", "", "Login", ""],
     ["/about", "", "", "", "", "", ""],
     ["/security", "", "", "", "", "", ""],
     ["/privacy", "", "", "", "", "", ""],
@@ -448,44 +486,23 @@ describe("the current page", () => {
     expect(stateOf(path)).toEqual([bar, button, row, chip, drawerRow, word]);
   });
 
-  it.each([
-    ["/amoeba/guide", "Product guide"],
-    ["/amoeba/faq", "FAQ"],
-  ])("on %s: its link marks the section, and leads to Coral's", (path, section) => {
-    /* The link is Coral's page, so it is never this very page here. */
-    expect(stateOf(path)).toEqual(["", section, "", "", "", ""]);
-  });
-
-  it.each([
-    ["coral", "Assessment"],
-    ["amoeba", ""],
-  ])(
-    "on /assessment on %s: the section, and the link as this very page only on Coral",
-    (product, own) => {
-      /* Set by the page's first-paint script before the bar hydrates. */
+  it.each(["coral", "amoeba"])(
+    "marks Assessment as this very page on /assessment on %s, and holds it as the switch moves",
+    async (product) => {
+      /* Set by the page's first-paint script and its switch; the bar does not read it. */
       document.documentElement.setAttribute("data-ap", product);
-      expect(stateOf("/assessment")).toEqual(["", "Assessment", "", "", own, own]);
+      const { container } = renderNav("/assessment");
+      const marked = () =>
+        [...container.querySelectorAll('[aria-current="page"]')].map(
+          (a) => `${a.className || "drawer"} ${a.getAttribute("href")}`,
+        );
+      expect(marked()).toEqual(["nav-opt /assessment", "drawer /assessment"]);
+      await act(async () => {
+        document.documentElement.setAttribute("data-ap", product === "coral" ? "amoeba" : "coral");
+      });
+      expect(marked()).toEqual(["nav-opt /assessment", "drawer /assessment"]);
     },
   );
-
-  it("follows /assessment's switch to the other product", async () => {
-    document.documentElement.setAttribute("data-ap", "coral");
-    const { container } = renderNav("/assessment");
-    const marked = () =>
-      [...container.querySelectorAll('[aria-current="page"]')].map(
-        (a) => `${a.className || "drawer"} ${a.getAttribute("href")}`,
-      );
-    expect(marked()).toEqual(["nv-lbl is-cur /assessment?p=coral", "drawer /assessment?p=coral"]);
-    await act(async () => {
-      document.documentElement.setAttribute("data-ap", "amoeba");
-    });
-    expect(marked()).toEqual([]);
-  });
-
-  it("marks no product on another page whatever the attribute says", () => {
-    document.documentElement.setAttribute("data-ap", "amoeba");
-    expect(stateOf("/coral")).toEqual(["Coral", "", "", "", "Coral", ""]);
-  });
 
   it("never marks a menu button with aria-current: it is not a page", () => {
     for (const path of ["/assessment", "/coral/guide", "/coral/faq", "/docs"]) {
@@ -528,9 +545,9 @@ describe("a menu", () => {
     expect(button("Docs")).toHaveFocus();
   });
 
-  it("puts the plain links, then its word, its chevron and its rows in the Tab order, and Escape back on the chevron", async () => {
+  it("puts Assessment, then its word, its chevron and its rows in the Tab order, and Escape back on the chevron", async () => {
     const { link, word, button, card } = renderNav("/");
-    link("FAQ").focus();
+    link("Assessment").focus();
 
     await userEvent.tab();
     expect(word("Docs")).toHaveFocus();
@@ -551,12 +568,12 @@ describe("a menu", () => {
   });
 
   it("passes from a closed menu's chevron to Login, past its rows", async () => {
-    const { word, button, container } = renderNav("/");
+    const { word, button, link } = renderNav("/");
     word("Docs").focus();
     await userEvent.tab();
     expect(button("Docs")).toHaveFocus();
     await userEvent.tab();
-    expect(container.querySelector(".nav-links > a.nav-opt")).toHaveFocus();
+    expect(link("Login")).toHaveFocus();
   });
 
   it("stays open as Shift+Tab goes from its chevron back to its word", async () => {
@@ -582,7 +599,7 @@ describe("a menu", () => {
   });
 
   it("lets Tab walk its rows, and closes as focus moves past the last one", async () => {
-    const { button, card, container } = renderNav();
+    const { button, card, link } = renderNav();
     button("Docs").focus();
     await userEvent.keyboard("{Enter}");
 
@@ -593,7 +610,7 @@ describe("a menu", () => {
     }
     await userEvent.tab();
     expect(button("Docs")).toHaveAttribute("aria-expanded", "false");
-    expect(container.querySelector(".nav-links > a.nav-opt")).toHaveFocus();
+    expect(link("Login")).toHaveFocus();
   });
 
   it("stays open as Shift+Tab goes back from its first row to its button", async () => {
@@ -740,8 +757,8 @@ describe("a menu under a mouse", () => {
   it("closes a hover-opened menu on Escape wherever focus is, and leaves focus there", () => {
     /* WCAG 1.4.13: content a hover shows can be put away without moving the
        pointer. The mock's script heard Escape only inside the menu. */
-    const { dd, button, container } = renderNav();
-    const login = container.querySelector<HTMLAnchorElement>(".nav-links > a.nav-opt")!;
+    const { dd, button, link } = renderNav();
+    const login = link("Login");
     login.focus();
     fireEvent.mouseEnter(dd("Docs"));
     expect(button("Docs")).toHaveAttribute("aria-expanded", "true");
@@ -781,7 +798,7 @@ async function openDrawer(path = "/coral") {
 }
 
 describe("the drawer", () => {
-  it("lists the two product links, the three plain links, the Docs group, then Login: seven in all", () => {
+  it("lists the two product links, Assessment, the Docs group, then Login: five in all", () => {
     const { container } = renderNav("/");
     const drawer = container.querySelector(".nav-drop > .wrap")!;
     const items = [...drawer.children].map((el) =>
@@ -795,8 +812,6 @@ describe("the drawer", () => {
       "Coral",
       "Amoeba",
       "Assessment",
-      "Product guide",
-      "FAQ",
       /* A group like the menu's. */
       amoebaDocs || amoebaOnePager
         ? "Docs: Coral, Amoeba, All, Zoorik Learn, Open source"

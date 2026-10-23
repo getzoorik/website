@@ -9,41 +9,48 @@ import type { Platform, ProductId } from "@/content/products";
  * One template, two contents. The page reads the same way for both products, so
  * its words are data and each product's live in its own file (`coral-page.ts`,
  * `amoeba-page.ts`), verbatim from the mocks. What another page already says
- * about a product (what it runs on, its How it works cards and the line under
- * them, its one-pager's file) is not copied here: each page file points at that
- * content, so the two surfaces cannot drift apart.
+ * about a product (what it runs on, the home page's line for it, its How it
+ * works cards and the line under them, its one-pager's file) is not copied
+ * here: each page file points at that content, so the two surfaces cannot drift
+ * apart.
  *
  * ─── THE ORDER ─────────────────────────────────────────────────────────────
- * Hero (the product's badges, its name for search, its offerings as tags, its
- * button, and the savings figures on its right) → What is <product>?, beside
- * What <product> does → the film band, once the film is on YouTube → How it
- * works (the page's one band) → Read more → the closing row (the noise cut, the
- * details left to each product's guide and FAQ).
+ * Hero (one screen over the data grid film: the product's mark and name, its
+ * name for search, the home page's line for it, one button and the stores that
+ * list it) → What is <product>?, beside What <product> does → the film band,
+ * once the film is on YouTube → How it works (the page's one band) → Read more
+ * → the closing row (the noise cut, the details left to each product's guide
+ * and FAQ).
  */
 
-/** The offering icons, verbatim from the mock; the hero tag and its row draw the same one. */
-export type OfferingIcon = "monitor" | "reco" | "workload" | "node" | "savings" | "storage";
+/** The words the template itself prints around a product's name. */
+export const productPageWords = {
+  /** "Coral is available in AWS Marketplace and Microsoft Marketplace": after the name. */
+  available: " is available in",
+} as const;
 
 /**
- * One offering: a tag in the hero and a row under "What <product> does".
- *
- * 🔴 ONE RECORD FOR BOTH, ON PURPOSE. The tag is a link to `#id` and the row is
- * the element with that id, so built from one record a tag can never point at a
- * row that is not there, or name it differently. The row is its title and one
- * line under it (the same lines as the GitHub org page).
+ * Each offering's 88×52 drawing under What <product> does, verbatim from the
+ * mock (`product_sections.py`): Coral's cost line, requests against use, a pod
+ * fitted to its use and a node emptied and removed; Amoeba's used space per
+ * disk, the cost with its saved part, and a pool losing a disk.
+ */
+export type OfferingDrawing = "cost" | "requests" | "fit" | "drain" | "disks" | "saving" | "pool";
+
+/**
+ * One offering: a row under "What <product> does", its drawing, its title and
+ * one line under it (the same lines as the GitHub org page). The row's id is
+ * an address: a link to `/coral#node-optimization` lands on it and holds it.
  */
 export interface Offering {
-  /** The row's id, and the tag's `#id`. */
+  /** The row's id. */
   readonly id: string;
-  /** The tag's label and the row's h3. */
+  /** The row's h3, and the app's feature in the structured data. */
   readonly label: string;
-  readonly icon: OfferingIcon;
+  readonly drawing: OfferingDrawing;
   /** The row's line, under its title. */
   readonly line: string;
 }
-
-/** A partner autoscaler's logo, drawn beside its name in /coral's hero row. */
-export type AutoscalerLogo = "karpenter" | "keda";
 
 /**
  * A tile in the Read more row: a page (the guide, the FAQ) with an arrow, or a
@@ -79,36 +86,32 @@ export interface ProductPageContent {
   readonly hero: {
     /** The h1: the product's search term, and nothing else. */
     readonly title: string;
-    /** The second badge, after the common "Built for Azure and AWS": "Supported on" + the product's platforms. */
-    readonly supportedOn: { readonly label: string; readonly platforms: string };
-    /** "Compatible with your native" + the autoscalers, two with their logos:
-     *  Coral's row. Amoeba has none. */
-    readonly compatibleWith?: {
-      readonly label: string;
-      readonly items: readonly { readonly name: string; readonly logo?: AutoscalerLogo }[];
-    };
+    /** The line under it: the home page's own line for the product, read from
+     *  its section (`kubernetes.ts`, `elastic.ts`), never copied. */
+    readonly line: string;
     /** One button, same tab, to this product's assessment. */
     readonly cta: { readonly label: string; readonly href: string };
   };
-  /** What is <product>? (`#about-<product>`): three paragraphs, and beside them
-   *  What <product> does. The savings figures are on the hero's right. */
+  /** What is <product>? (`#about-<product>`): the lead paragraph, then the
+   *  others behind "More about <product>"; beside them What <product> does. */
   readonly about: {
     readonly title: string;
-    readonly paragraphs: readonly string[];
+    /** The first is the lead; the rest stay in the page, folded. */
+    readonly paragraphs: readonly [string, ...string[]];
+    /** The opener's words: "More about Coral". */
+    readonly more: string;
   };
-  /** In the hero's order: the tags run left to right as the rows run down. */
+  /** The rows under What <product> does, top to bottom. */
   readonly offerings: readonly Offering[];
   readonly what: {
-    /** "What <product> does": the hero tags' list name. */
-    readonly title: string;
     /** The h2 over the rows, as the tour mock prints it: the title and a "?"
      *  (the mock appends it; not a typo to fix here). */
     readonly heading: string;
     /** The "Runs on" chips under the rows, as on the home page's blocks. */
     readonly runsOn: { readonly label: string; readonly platforms: readonly Platform[] };
   };
-  /** The product's 2-minute film: the band after What is <product>?, and the
-   *  hero's second button, both drawn only once the film is on YouTube. */
+  /** The product's 2-minute film: the band after What is <product>?, drawn
+   *  only once the film is on YouTube. */
   readonly film: ProductFilm;
   readonly how: {
     readonly title: string;

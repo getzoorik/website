@@ -1,15 +1,15 @@
 import { routes } from "@/config/site";
-import type { ProductId } from "@/content/products";
 
 /**
- * Hero copy — the headline, the pitch, the one call to action and the two
- * product lockups under them.
+ * Hero copy — the name, the headline, the pitch and the one call to action.
+ * The line under the button, where to buy, takes its words from the stores'
+ * config (`marketplaceWords`) and the products' names.
  *
  * 🔴 THE THREE FIGURES ARE GONE, ON PURPOSE. The row here used to count up to
  * "60% / 50% / 0s". None of the three had a source, so they were removed rather
- * than reworded, and the two products are named in their place. The lockups
- * read their name and line from `@/content/products`, so the hero cannot
- * describe a product in other words than the rest of the site does.
+ * than reworded. The product lockups that took their place went too (owner,
+ * 23 Oct 2026: the hero holds five things only); the sections below name the
+ * products.
  *
  * 🔴 ONE BUTTON, AND IT STAYS ON THE SITE. "Estimate your saving" to the plain
  * assessment, in place of the Book a demo the hero used to carry: that one
@@ -20,7 +20,8 @@ import type { ProductId } from "@/content/products";
  * panel and the share card say it too.
  */
 /**
- * The rack photograph's alt text, wherever it is drawn (both heroes and /login).
+ * The rack photograph's alt text, wherever it is drawn (/login's panel; the home hero
+ * draws the Gargantua film in its place).
  * For search engines, which count an empty alt as missing (Bing Webmaster);
  * the photo stays `aria-hidden`, so a screen reader still skips it.
  */
@@ -46,8 +47,4 @@ export const heroContent = {
   headline: "Reduce cloud cost, autonomously.",
   sub: "Software that optimizes Kubernetes and block storage on its own, while your systems keep serving.",
   cta: { label: "Estimate your saving", href: routes.assessment },
-  /**
-   * Coral, then Amoeba, as the mock lists them; each goes to its own page.
-   */
-  lockups: ["coral", "amoeba"] as const satisfies readonly ProductId[],
 } as const;

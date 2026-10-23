@@ -86,3 +86,11 @@ describe("the films' files", () => {
     }
   });
 });
+
+describe("the film's screen", () => {
+  it("is a panel with the blocks' corner, 4px at every width: no curve (23 Oct 2026)", () => {
+    const sheet = readFileSync(join(process.cwd(), "src/styles/home-films.css"), "utf8");
+    expect(sheet).toMatch(/\.mo-screen\{[^}]*border-radius:var\(--r-card\);/);
+    expect(sheet).not.toMatch(/\.mo-screen\{[^}]*border-radius:\d/);
+  });
+});

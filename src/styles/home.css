@@ -1,10 +1,15 @@
 /* Zoorik marketing: the home page's own pass.
  *
- * The home mock's home-pass block, VERBATIM: the press on the hero's product lockups, the
- * running copy set without a one-word last line, and one padding shared by two white sections
- * in a row. What we offer left this block for the motion pass (`home-offers.css`), as it left
- * the mock's. It is the last page sheet the mock loads, after the engines' reading pass, so a
- * rule here is the last word for `/`.
+ * The home mock's home-pass block, VERBATIM: the running copy set without a one-word last line,
+ * and one padding shared by two white sections in a row. The press on the hero's product lockups
+ * left with the lockups (23 Oct 2026). What we offer left this block for the motion pass
+ * (`home-offers.css`), as it left the mock's. It is the last page sheet the mock loads, after the
+ * engines' reading pass, so a rule here is the last word for `/`.
+ *
+ * Then the 23 Oct 2026 pass (home-hero-option-M1f-gargantua.html), VERBATIM from its builders: the
+ * product sections' quiet labels (`make_options.py`, PRODUCT_CSS) and "without the risk" as four
+ * drawings with motion (`why_visuals.py`, CSS). Every selector names `#coral`, `#amoeba`, `#why` or
+ * a `wv-` class, which only this page draws.
  *
  * 🔴 `#amoeba{padding-top:0}` IS THE ONLY THING THAT CLOSES THE GAP. sections.css drops the
  * top padding of a white section that follows a white section, but its `+` never reaches
@@ -12,9 +17,74 @@
  * the page grows by one section's padding between Coral and Amoeba.
  */
 /* ══ THE HOME PAGE'S OWN PASS ══ this page's alone; the generator leaves it out. */
-.hp{-webkit-tap-highlight-color:transparent;transition:scale var(--d-fast) var(--ease)}
-.hp:active{scale:.98;transition-duration:var(--z-press)}
 .hero-sub,.sec-head p,.st-body,.pl p{text-wrap:pretty}
 /* two white sections in a row share one padding */
 #amoeba{padding-top:0}
 /* what we offer is drawn by the motion pass, with its own cards */
+
+/* ══ THE PRODUCT SECTIONS' LABELS (23 Oct 2026) ══ the bold product label above each title takes the
+   hero's quiet label (owner: "make it more minimal"), as "Zoorik" sits above the hero's title */
+#coral .lockup,#amoeba .lockup{gap:8px;margin-bottom:14px;font-size:.875rem;font-weight:500;letter-spacing:.01em;line-height:1.4;color:var(--muted)}
+#coral .lockup svg,#amoeba .lockup svg{width:16px;height:16px}
+
+/* ══ WITHOUT THE RISK (23 Oct 2026) ══ one drawing per card, its title the caption (owner: "It should
+   not heavy on texts + it should use proper visuals + motions"). Thin strokes, square shapes, no
+   figures. Every loop is 8s (the traffic 2.4s), paused while the band is off screen (`WhyMotion`
+   gives `#why` `.wv-run` while it is on); under reduced motion each drawing holds its after state. */
+#why .wv .pl{display:flex;flex-direction:column}
+.wv-fig{height:150px;margin:0 0 18px}
+.wv-svg{display:block;width:100%;height:100%;overflow:visible}
+.wv-t{font-size:10px;font-weight:500;letter-spacing:.01em;fill:var(--muted)}
+.wv-t-a{fill:var(--accent)}
+.wv-t-d{font-size:11px;fill:var(--text)}
+.wv-base{stroke:var(--line);stroke-width:1}
+.wv-hatch{fill:#DDE2EF}
+.wv-dash{stroke:var(--muted);stroke-width:1;stroke-dasharray:4 3}
+.wv-use{fill:color-mix(in srgb,var(--accent) 12%,#fff)}
+.wv-use-l{fill:none;stroke:var(--accent);stroke-width:1.5}
+.wv-node{fill:#fff;stroke:#CDD3E4;stroke-width:1}
+.wv-cord{fill:none;stroke:var(--accent);stroke-width:1.2;stroke-dasharray:3 3}
+.wv-pod{fill:var(--accent)}
+.wv-live,.wv-tick{fill:var(--good)}
+.wv-data{fill:color-mix(in srgb,var(--accent) 24%,#fff)}
+.wv-cap{fill:none;stroke:var(--accent);stroke-width:1}
+.wv-track{fill:#DDE2EF}.wv-track.on{fill:var(--accent)}
+.wv-knob{fill:#fff}
+.wv-ok{fill:var(--good)}
+.wv-tickmark{fill:none;stroke:#fff;stroke-width:1.6;stroke-linecap:square}
+.wv-row{fill:#E4E7F2}
+/* the motion */
+.wv-prov{animation:wvProv 8s var(--ease) infinite}
+@keyframes wvProv{0%,26%{transform:translateY(0)}48%,86%{transform:translateY(24px)}100%{transform:translateY(0)}}
+.wv-nodeC{animation:wvNode 8s var(--ease) infinite}
+@keyframes wvNode{0%,56%{opacity:1}66%,90%{opacity:0}97%,100%{opacity:1}}
+.wv-cord{animation:wvCord 8s var(--ease) infinite}
+@keyframes wvCord{0%,12%{opacity:0}17%,62%{opacity:1}64%,100%{opacity:0}}
+.wv-c1{animation:wvC1 8s var(--ease) infinite}
+@keyframes wvC1{0%,20%{transform:translate(0,0);opacity:1}33%,89%{transform:translate(-68px,20px);opacity:1}92%{transform:translate(-68px,20px);opacity:0}93%{transform:translate(0,0);opacity:0}99%,100%{transform:translate(0,0);opacity:1}}
+.wv-c2{animation:wvC2 8s var(--ease) infinite}
+@keyframes wvC2{0%,36%{transform:translate(0,0);opacity:1}49%,89%{transform:translate(-68px,20px);opacity:1}92%{transform:translate(-68px,20px);opacity:0}93%{transform:translate(0,0);opacity:0}99%,100%{transform:translate(0,0);opacity:1}}
+.wv-flow{animation:wvFlow 2.4s linear infinite}
+@keyframes wvFlow{to{transform:translateX(-48px)}}
+.wv-cap{transform-box:fill-box;transform-origin:left center;animation:wvCap 8s var(--ease) infinite}
+@keyframes wvCap{0%,22%{transform:scaleX(1)}44%,72%{transform:scaleX(.66)}92%,100%{transform:scaleX(1)}}
+.wv-sw{animation:wvSw 8s var(--ease) infinite}
+@keyframes wvSw{0%,12%{fill:#DDE2EF}18%,90%{fill:var(--accent)}96%,100%{fill:#DDE2EF}}
+.wv-swk{animation:wvSwk 8s var(--ease) infinite}
+@keyframes wvSwk{0%,12%{transform:translateX(0)}18%,90%{transform:translateX(16px)}96%,100%{transform:translateX(0)}}
+.wv-log{animation:8s var(--ease) infinite}
+.wv-l1{animation-name:wvL1}.wv-l2{animation-name:wvL2}.wv-l3{animation-name:wvL3}
+@keyframes wvL1{0%,24%{opacity:0;transform:translateY(4px)}30%,88%{opacity:1;transform:none}94%,100%{opacity:0;transform:none}}
+@keyframes wvL2{0%,38%{opacity:0;transform:translateY(4px)}44%,88%{opacity:1;transform:none}94%,100%{opacity:0;transform:none}}
+@keyframes wvL3{0%,52%{opacity:0;transform:translateY(4px)}58%,88%{opacity:1;transform:none}94%,100%{opacity:0;transform:none}}
+/* run only while the section is on screen */
+#why .wv-svg *{animation-play-state:paused}
+#why.wv-run .wv-svg *{animation-play-state:running}
+/* reduced motion: each drawing holds its after state */
+@media (prefers-reduced-motion:reduce){
+  #why .wv-svg *{animation:none!important}
+  .wv-prov{transform:translateY(24px)}
+  .wv-nodeC{opacity:.28}
+  .wv-c1,.wv-c2{transform:translate(-68px,20px)}
+  .wv-cap{transform:scaleX(.66)}
+  .wv-sw{fill:var(--accent)}.wv-swk{transform:translateX(16px)}}
