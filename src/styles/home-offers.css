@@ -79,7 +79,9 @@
 .ofx-row.is-in .od-d::before{transform:translateY(calc(var(--v) * -1em))}
 .od-x{display:inline-block}
 /* the free assessment: a navy card, its own button */
-.ofx-free{position:relative;display:flex;flex-direction:column;height:100%;box-sizing:border-box;padding:28px 26px 26px;border-radius:12px;
+/* smaller (owner, 23 Oct 2026: "this section is looking too big ... make it small a little bit"): the free card, the
+   range figures, the rows and the scale's padding step down; the h2 and the section's padding match the other sections */
+.ofx-free{position:relative;display:flex;flex-direction:column;height:100%;box-sizing:border-box;padding:22px 22px 22px;border-radius:12px;
   background:var(--brand);color:#fff;overflow:hidden}
 .ofx-free::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(420px 260px at 80% 0%,rgba(128,149,249,.28),rgba(128,149,249,0) 70%)}
 .ofx-free > *{position:relative}
@@ -91,10 +93,10 @@
    mark. */
 .ofx-free-i{background:none;border-radius:0}
 .ofx-free-i .zl-mark{width:28px;height:28px;color:#FFFFFF;overflow:visible}
-.ofx-free-n{margin:18px 0 0;font-size:clamp(2.5rem,1.8rem + 1.4vw,3.25rem);font-weight:600;line-height:1;letter-spacing:-.045em;color:#43D9A8}
-.ofx-free-c{margin:12px 0 0;max-width:24rem;font-size:.9375rem;line-height:1.5;color:rgba(255,255,255,.7)}
+.ofx-free-n{margin:12px 0 0;font-size:clamp(2rem,1.5rem + 1vw,2.5rem);font-weight:600;line-height:1;letter-spacing:-.045em;color:#43D9A8}
+.ofx-free-c{margin:8px 0 0;max-width:24rem;font-size:.9375rem;line-height:1.5;color:rgba(255,255,255,.7)}
 .ofx-free-go{align-self:flex-start;margin-top:auto}
-.ofx-free-c + .ofx-free-go{margin-top:24px}
+.ofx-free-c + .ofx-free-go{margin-top:18px}
 .ofx-free-go svg{width:16px;height:16px}
 /* repo: the focus ring on the navy takes the dark grounds' --accent-dark, as motion.css gives every dark ground (`.hero`,
    `.cta-panel`, `.as-cal`): the mock's --accent ring measures 3.3:1 on #070F52, at the 3:1 floor; --accent-dark 6.3:1. */
@@ -105,9 +107,9 @@
 
 /* ── B: one scale ── */
 .ofx-split{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.6fr);gap:clamp(32px,5vw,72px);align-items:stretch}
-.ofx-side{display:flex;flex-direction:column;gap:14px}
-.ofx-side .ofx-free{flex:1;margin-top:18px}
-.ofx-scale{display:flex;flex-direction:column;padding:28px 30px 18px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.ofx-side{display:flex;flex-direction:column;gap:12px}
+.ofx-side .ofx-free{flex:1;margin-top:8px}
+.ofx-scale{display:flex;flex-direction:column;padding:22px 26px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
 .ofx-axis{display:grid;grid-template-columns:minmax(0,15rem) minmax(0,1fr) 7.5rem;gap:24px;align-items:end;padding-bottom:12px;border-bottom:1px solid var(--line)}
 .ofx-axis-l{font-size:.8125rem;font-weight:500;color:var(--muted)}
 .ofx-ticks{position:relative;height:18px;grid-column:2}
@@ -115,7 +117,7 @@
 .ofx-ticks span:first-child{transform:none}.ofx-ticks span:last-child{transform:translateX(-100%)}
 .ofx-rows{flex:1;display:flex;flex-direction:column;margin:0;padding:0;list-style:none}
 .ofx-row{--d0:calc(var(--i) * 260ms);flex:1;display:grid;grid-template-columns:minmax(0,15rem) minmax(0,1fr) 7.5rem;gap:24px;align-items:center;
-  min-height:96px;margin:0;border-bottom:1px solid var(--line-soft)}
+  min-height:72px;margin:0;border-bottom:1px solid var(--line-soft)}
 /* repo: the stagger keeps the mock's one start. The mock marks every row at once from its one observer, and `--i * 260ms`
    spaces them from that moment; here each row is marked as it comes in (`HomeMotion`), and the rows' list keeps a clock
    (`data-mo-clock`) that gives each row `--late`, how long after the first row in it came. Taken off its turn, rows that
@@ -132,13 +134,13 @@
 .ofx-row[data-k="both"] .hi{background:var(--good);box-shadow:0 6px 16px -6px color-mix(in srgb,var(--good) 70%,transparent)}
 .ofx-row[data-k="both"] .lo{background:color-mix(in srgb,var(--good) 16%,#fff)}
 .ofx-row.is-in .ofx-track i{transform:none}
-.ofx-rn .od{font-size:clamp(1.75rem,1.3rem + .9vw,2.25rem);font-weight:600;letter-spacing:-.04em;color:var(--text)}
+.ofx-rn .od{font-size:clamp(1.5rem,1.15rem + .7vw,1.875rem);font-weight:600;letter-spacing:-.04em;color:var(--text)}
 .ofx-rn{text-align:right}
 @media (max-width:1100px){.ofx-split{grid-template-columns:minmax(0,1fr)}.ofx-side .ofx-free{margin-top:8px}}
 @media (max-width:760px){
   .ofx-scale{padding:22px 18px 10px}
   .ofx-axis{grid-template-columns:minmax(0,1fr)}.ofx-axis-l{display:none}.ofx-ticks{grid-column:1}
-  .ofx-row{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"l n" "t t";gap:12px 16px;padding:18px 0}
+  .ofx-row{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"l n" "t t";gap:10px 16px;padding:14px 0}
   .ofx-rl{grid-area:l}.ofx-rn{grid-area:n;align-self:start}.ofx-track{grid-area:t}}
 @media (prefers-reduced-motion:reduce){.ofx *{transition:none!important}}
 /* repo: under reduced motion, everything in its end state from the sheet alone. The mock's script adds `.is-on` before
