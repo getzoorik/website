@@ -725,14 +725,16 @@ describe("the install's OS switch", () => {
 });
 
 describe("a document page's chrome", () => {
-  it("marks its link current and opens the assessment on its product, in the nav and the closing row", () => {
+  it("marks Docs current and opens the assessment on its product, in the nav and the closing row", () => {
     pathname.current = "/coral/guide";
     const { container } = render(
       <DocumentPage hero={{ title: "Product guide", deck: "Deck." }} product="coral">
         <p>Body</p>
       </DocumentPage>,
     );
-    expect(container.querySelector("a.nv-lbl.is-cur")).toHaveTextContent("Product guide");
+    /* Product guide and FAQ left the header: a guide is in Docs, which is no page of it. */
+    expect(container.querySelector("a.nv-lbl.is-cur")).toHaveTextContent("Docs");
+    expect(container.querySelector("a.nv-lbl.is-cur")).not.toHaveAttribute("aria-current");
     expect(container.querySelector("#assess .btn-ink")).toHaveAttribute(
       "href",
       "/assessment?p=coral",

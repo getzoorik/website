@@ -18,18 +18,20 @@ import { ReadMore } from "@/features/product-page/read-more";
  * A product page: `/coral` and `/amoeba` are this template with two contents.
  *
  * ─── THE ORDER ─────────────────────────────────────────────────────────────
- * Hero (dark, so the bar reads white over it, as on home; the savings figures
- * on its right) → What is <product>?, beside What <product> does → the film
- * band, once the film is on YouTube → How it works, the page's one band → Read
- * more → the closing row. Two white sections in a row share one gap: the site
- * system's `.sec + .sec` rule takes the top padding off the second, so they sit
- * one rhythm apart, not two.
+ * Hero (one screen over the data grid film, so the bar reads bone over it, as
+ * on home) → What is <product>?, beside What <product> does → the film band,
+ * once the film is on YouTube → How it works, the page's one band → Install
+ * your way (Coral) → Read more → the closing row. Two white sections in a row
+ * share one gap: the site system's `.sec + .sec` rule takes the top padding off
+ * the second, so they sit one rhythm apart, not two.
  *
  * ─── REUSED, NOT COPIED ────────────────────────────────────────────────────
- * The bar, the turning mark, the step cards, the doc tile's glyphs, the closing
+ * The bar, the hero's film, the step cards, the doc tile's glyphs, the closing
  * row and the footer are the site's own components. Only the layout around
- * them, the hero's badges and tags, the offering rows and the film band are
- * this page's.
+ * them, the hero's words, the offering rows and their drawings, the film band
+ * and the install cards are this page's. Where the 23 Oct pass restyles a
+ * shared part on these pages alone (the cards without outlines, the closing
+ * row's navy card), product-tour.css scopes it to the page's hero.
  *
  * ─── STATIC ────────────────────────────────────────────────────────────────
  * A server component with no request data, so each page is prerendered at

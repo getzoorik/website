@@ -11,11 +11,10 @@ import type { ProductPageContent, ReadMoreTile } from "@/content/product-page";
  * The product tour adds each row's line, the "?" on What Amoeba does and the
  * film (`product-films.ts`).
  *
- * The Runs on chips and the line under the How it works cards are read from
- * `elastic.ts`, and the cards from `how-it-works.ts`, rather than copied: a
- * second copy would be a second claim free to drift. The savings figures on the
- * hero's right are the three ranges read from `savings.ts`; nothing here is a
- * new figure.
+ * The hero's line (the home page's own line for Amoeba), the Runs on chips and
+ * the line under the How it works cards are read from `elastic.ts`, and the
+ * cards from `how-it-works.ts`, rather than copied: a second copy would be a
+ * second claim free to drift. Nothing here is a new figure.
  *
  * Amoeba is "Block storage cost optimization" for Windows and Linux VMs on Azure
  * and AWS: the site's one name for what it does.
@@ -46,7 +45,7 @@ const guideAndFaq: readonly ReadMoreTile[] = [
  * `lastmod` only: the page does not print it. Whoever changes /amoeba's content
  * moves this to that day in the same PR; never the build's date.
  */
-export const amoebaPageLastUpdated = "21 October 2026";
+export const amoebaPageLastUpdated = "23 October 2026";
 
 export const amoebaPageContent: ProductPageContent = {
   product: "amoeba",
@@ -63,7 +62,7 @@ export const amoebaPageContent: ProductPageContent = {
     /* "Block storage" is tied with a no-break space, as the mock writes the h1:
        the longer line never leaves "Block" alone at a line end. */
     title: "Block\u00a0storage cost optimization",
-    supportedOn: { label: "Supported on", platforms: "Windows and Linux" },
+    line: elasticContent.body,
     cta: { label: assessContent.assessment.cta.label, href: assessmentHref("amoeba") },
   },
   about: {
@@ -73,29 +72,29 @@ export const amoebaPageContent: ProductPageContent = {
       "Amoeba installs an agent on each VM you onboard, through Azure Run Command or AWS Systems Manager, with no application code changes. The systemd services that use the data mounts restart at the switch onto the pool. After that, every resize runs online, without unmounting.",
       "With Amoeba, you see used and provisioned space on every disk, what each VM’s disks cost at list price, and what the pool saves. You choose, per VM, whether shrinks run on their own or wait for you.",
     ],
+    more: "More about Amoeba",
   },
   offerings: [
     {
       id: "monitoring",
       label: "Monitoring",
-      icon: "monitor",
+      drawing: "disks",
       line: "Used and provisioned space on every disk.",
     },
     {
       id: "savings-insights",
       label: "Savings insights",
-      icon: "savings",
+      drawing: "saving",
       line: "What each VM costs, and what you save.",
     },
     {
       id: "block-storage-optimization",
       label: "Block storage optimization",
-      icon: "storage",
+      drawing: "pool",
       line: "Expands and shrinks online, one disk at a time.",
     },
   ],
   what: {
-    title: "What Amoeba does",
     heading: "What Amoeba does?",
     runsOn: elasticContent.runsOn,
   },

@@ -30,7 +30,7 @@ export interface HeroDownload {
 
 /** The [Coral | Amoeba] switch: the same page for each product, and which one this is. */
 export interface HeroSwitch {
-  /** The header menu whose rows are these pages: "guide" or "faq". */
+  /** The row set in `navMenus` (site config) whose rows are these pages: "guide" or "faq"; the header no longer draws it. */
   readonly menu: "guide" | "faq";
   readonly current: ProductId;
 }
@@ -53,7 +53,7 @@ export interface DocumentHeroProps {
 /**
  * The product switch: "Choose a product", then plain page
  * links, Coral first, the current one white, each with what it works on. The line names the switch for screen readers.
- * Its links are the header menu's rows for the same page, so a page the header holds back (`amoebaDocs`) is held back
+ * Its links are the guide or FAQ rows in `navMenus`, so a page the site holds back (`amoebaDocs`) is held back
  * here too, by the same one flag: while the Amoeba guide and FAQ are held, the switch shows Coral alone.
  */
 function ProductSwitch({ menu, current }: HeroSwitch): React.JSX.Element {

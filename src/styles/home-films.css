@@ -3,11 +3,17 @@
  * around it.
  *
  * The mock writes these rules in one block with the case study band's and What we offer's; this
- * sheet holds the films' rules, in the mock's order, with the two `@media` blocks the mock writes
- * after the entrance (900px: one column, the flipped film after its copy; 640px: the screen's
- * smaller radius). None of them ties with a rule between them in the mock, so moving them ahead
- * of the band's and the offers' sheets changes nothing. The film's start state (`.mo-film.mo-r`)
- * is here; the entrance itself, and its reduced-motion rule, are home-motion.css's.
+ * sheet holds the films' rules, in the mock's order, with the `@media` block the mock writes after
+ * the entrance (900px: one column, the flipped film after its copy); its 640px block, the screen's
+ * smaller radius, went with the radius (below). None of them ties with a rule between them in the
+ * mock, so moving them ahead of the band's and the offers' sheets changes nothing. The film's
+ * start state (`.mo-film.mo-r`) is here; the entrance itself, and its reduced-motion rule, are
+ * home-motion.css's.
+ *
+ * One departure from the 23 Oct home mock, which keeps the screen's 14px (10px on phones): blocks
+ * are pointy on the home, Coral and Amoeba pages (the handoff's "Every page", owner, 23 Oct 2026:
+ * "We don't use circular curves in our website"), so the screen is a panel at `--r-card`, 4px at
+ * every width, as the product pages' film panel is. Its shadow is a shadow, not a glow, and stays.
  */
 /* the film takes the console panel's place and a little more of the row */
 .mo-grid{grid-template-columns:minmax(0,.9fr) minmax(0,1.22fr);align-items:center}
@@ -16,7 +22,7 @@
 /* the site pads every flipped column that is not the old panel (.st-grid.flip > *:not(.eng-stage)); the film takes
    the panel's place, so it keeps the page's left edge */
 .mo-grid.flip > .mo-film{padding-inline-start:0}
-.mo-screen{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#070A16;
+.mo-screen{position:relative;aspect-ratio:16/9;border-radius:var(--r-card);overflow:hidden;background:#070A16;
   box-shadow:0 0 0 1px rgba(7,15,82,.10),0 40px 80px -36px rgba(7,15,82,.55),0 18px 36px -24px rgba(15,18,34,.35)}
 .mo-vid{display:block;width:100%;height:100%;object-fit:cover}
 .mo-cap{margin:14px 2px 0;font-size:.8125rem;color:var(--muted)}
@@ -26,4 +32,3 @@
   .mo-grid,.mo-grid.flip{grid-template-columns:minmax(0,1fr)}
   .mo-grid.flip > .mo-film{order:2}
 }
-@media (max-width:640px){.mo-screen{border-radius:10px}}

@@ -5,12 +5,12 @@
  * The mock writes the band's rules in one run and its media rules after the whole pass: the 900px
  * rule, the 640px block and the reduced-motion rule after it are the band's alone, word for word.
  *
- * One rule at the foot is the repo's, not the mock's; it says why.
+ * Three things are the repo's, not the mock's: the band has no lift and the chart panel takes
+ * `--r-card` (the 23 Oct handoff's "Every page": blocks are pointy, no glows; the mock keeps both
+ * because they were not named), and one rule at the foot, which says why.
  */
-/* the case study: the logo's navy (--brand), with only a faint lift behind the chart so the band is
-   not flat; the headline beside the PDF's cost chart */
-.mo-case{position:relative;overflow:hidden;color:#fff;padding:clamp(72px,8vw,120px) 0;background-color:var(--brand);
-  background-image:radial-gradient(820px 520px at 76% 46%,rgba(128,149,249,.10),rgba(128,149,249,0) 70%)}
+/* the case study: the logo's navy (--brand), flat; the headline beside the PDF's cost chart */
+.mo-case{position:relative;overflow:hidden;color:#fff;padding:clamp(72px,8vw,120px) 0;background-color:var(--brand)}
 .mo-case-in{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:clamp(40px,6vw,96px);align-items:center}
 .mo-eyebrow{display:inline-flex;align-items:center;gap:10px;margin:0 0 20px;font-size:.875rem;font-weight:500;color:rgba(255,255,255,.72)}
 .mo-eyebrow svg{width:22px;height:22px}
@@ -18,7 +18,7 @@
 .mo-case-t h2 span{display:block;color:#43D9A8}
 .mo-case-l{margin:20px 0 32px;max-width:30rem;font-size:1.0625rem;line-height:1.6;color:rgba(255,255,255,.66)}
 /* the chart: four steps on one scale, the bars rise in turn once the band is in view */
-.mo-wf{margin:0;padding:24px 24px 18px;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(255,255,255,.035);
+.mo-wf{margin:0;padding:24px 24px 18px;border:1px solid rgba(255,255,255,.12);border-radius:var(--r-card);background:rgba(255,255,255,.035);
   box-shadow:0 40px 90px -40px rgba(0,0,0,.7)}
 .mo-wf figcaption{display:flex;justify-content:space-between;gap:12px;margin:0 0 6px;font-size:.875rem;font-weight:500;color:rgba(255,255,255,.86)}
 .mo-wf figcaption small{font-size:.8125rem;font-weight:400;color:rgba(255,255,255,.5);white-space:nowrap}

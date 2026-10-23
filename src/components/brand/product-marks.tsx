@@ -4,12 +4,12 @@ import { KubernetesMark } from "@/components/brand/cloud-marks";
 import type { ProductId } from "@/content/products";
 
 /**
- * The two product marks, drawn wherever the page names a product: the nav, the
- * hero lockups, each home block's lockup, the login cards and the assessment's
- * first step.
+ * The two product marks, drawn wherever the page names a product: the nav,
+ * each home block's lockup, the product heroes, the login cards and the
+ * assessment's first step.
  *
  * Like the cloud marks, each takes the class its surface gives it, because the
- * mock sizes one drawing many ways (`.nav-prod svg`, `.hp-mk`, `.lockup svg`,
+ * mock sizes one drawing many ways (`.nav-prod svg`, `.lockup svg`,
  * `.as-mk`). Both are `aria-hidden`: the name is always set in text beside
  * them.
  */

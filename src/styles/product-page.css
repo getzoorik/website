@@ -1,16 +1,16 @@
 /* Zoorik marketing — the product pages, /coral and /amoeba.
  *
  * Ported VERBATIM from the mocks' "PRODUCT PAGES" block (both product mocks carry
- * it byte-identical), then /coral's hero logo row (only the Coral mock carries it;
- * its classes are drawn on /coral alone, so here it changes no other page).
- * Values are copied, never reinterpreted. Page classes are pp-.
+ * it byte-identical), then /coral's Install your way. Values are copied, never
+ * reinterpreted. Page classes are pp-.
  *
  * Everything else these pages draw is the site system's (site-system.css): the
- * hero's padding, badges, tags and chips, the h1 and h2 sizes, the feature list
- * and its icon tiles, the steps, the doc tiles and the closing row. The old
- * What section's grid (`.pp-what`) and the console panel's sticky column in it
- * (`.pp-panel`) went with the panel when the tour replaced that section
- * (product-tour.css).
+ * hero's padding, the h1 and h2 sizes, the chips, the feature list, the steps,
+ * the doc tiles and the closing row. The 23 Oct 2026 pass (the one-screen hero
+ * over its film, the drawings, the terminals) is product-tour.css's, where the
+ * mocks carry it. The hero's range card (`.pp-figs`), its logo row (`.vk-logos`),
+ * the old What section's grid (`.pp-what`) and the console panel's sticky column
+ * (`.pp-panel`) went with what they styled.
  *
  * 🔴 IMPORTED IN globals.css BESIDE THE OTHER HEAD BLOCKS, NOT BY THE PAGES. The
  * mocks carry this block in <head>, ahead of the main sheet, so where one of its
@@ -24,51 +24,30 @@
    page's one band), Read more, and the close. Page classes pp-. */
 .nw,.hw-leg dd{white-space:nowrap}
 
-/* What <product> is with its figure aside, the cards, the autoscaler table, the two clouds, the answer blocks and the
-   How it works caption. Every block is the site's card or list; nothing here is new type. */
-/* What <product> is: the three paragraphs at the left, the figure aside at the right from 981px (its top on the first
-   paragraph), under them below that */
+/* What <product> is and the How it works caption. Every block is the site's card or list; nothing here is new type. */
+/* What <product> is: the text at the left, What <product> does at the right from 981px (product-tour.css sets the
+   columns from 1100px), under it below that */
 .pp-def{display:grid;grid-template-columns:minmax(0,1fr);gap:32px}
 @media(min-width:981px){
   .pp-def{grid-template-columns:minmax(0,1fr) minmax(280px,340px);gap:clamp(48px,6vw,96px);align-items:start}
-  .pp-def .pp-figs{margin-top:calc(var(--fs-h2) * 1.14 + 24px)}
 }
 /* scoped to the product pages' definition block: /privacy and /terms use `pp-prose` for their own
    prose (pp: privacy policy), and the mocks, one file per page, never meet */
 .pp-def .pp-prose{margin-top:24px}
 .pp-def .pp-prose p{max-width:68ch;font-size:var(--fs-prose);line-height:1.7;color:var(--text);text-wrap:pretty}
 .pp-def .pp-prose p + p{margin-top:16px}
-/* /amoeba's sources line: muted micro text, each source a new tab */
-/* the figure aside: the product's figure, both products together, then the qualifier; each figure's label above it */
-.pp-figs{min-width:0;padding:24px;background:#fff;border:1px solid var(--line);border-radius:var(--r-card)}
-.pp-fig + .pp-fig{margin-top:20px;padding-top:20px;border-top:1px solid var(--line-soft)}
-.pp-fig-l{margin-bottom:10px;font-size:var(--fs-micro);font-weight:500;line-height:1.4;color:var(--muted)}
-.pp-figs-q{margin-top:20px;padding-top:16px;border-top:1px solid var(--line-soft);font-size:var(--fs-small);line-height:1.55;
-  color:var(--muted);text-wrap:pretty}
-@media(max-width:600px){.pp-figs{padding:20px}}
 /* the worked example under the How it works cards */
 .how-ex{margin-top:20px;max-width:none;font-size:var(--fs-small);line-height:1.5;color:var(--muted);text-wrap:pretty}
 /* Read more: four tiles, two by two from 981px */
 @media(min-width:981px){.dt-grid.dt-2x2{grid-template-columns:repeat(2,minmax(0,1fr))}}
-/* /coral's hero logo row, exactly as the design draws it */
-.hero-logos{margin-top:40px}
-/* the logo row: the marks are decorative, each name carries its item; NAP and the
-   Cluster Autoscaler are names with no mark and no empty slot */
-.vk-logos{display:flex;flex-wrap:wrap;align-items:flex-start;gap:6px 16px;margin-top:24px}
-.vk-logos-l,.vk-logos li{font-size:var(--fs-micro);font-weight:500;line-height:24px}
-.vk-logos-l{flex:none;color:var(--muted)}
-.vk-logos ul{display:flex;flex-wrap:wrap;align-items:center;gap:6px 20px;min-width:0;margin:0;padding:0;list-style:none}
-.vk-logos li{display:inline-flex;align-items:center;gap:7px;color:var(--text);white-space:nowrap}
-.hero .vk-logos-l{color:rgba(255,255,255,.6)}
-.hero .vk-logos li{color:rgba(255,255,255,.86)}
-.vk-mk{display:inline-block;flex:none;width:17px;height:17px;vertical-align:middle;overflow:visible}
 
 /* Install your way: three equal cards, each its name, one line, its command and its links at the foot; the command
    wells are the site's (--ground, the code face), wrapping as the guides' do, apart from the Helm well, which wraps
-   with a hanging indent */
+   with a hanging indent. Since 23 Oct each well sits in a terminal, whose rules (product-tour.css, `#install .iw-term`)
+   restyle the well, the switch and the copy button; the card's outline is the lighter --line-soft. */
 .iw-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
 @media(min-width:981px){.iw-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-.iw-card{display:flex;flex-direction:column;min-width:0;padding:24px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--surface)}
+.iw-card{display:flex;flex-direction:column;min-width:0;padding:24px;border:1px solid var(--line-soft);border-radius:var(--r-card);background:var(--surface)}
 .iw-h{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;min-height:28px}
 .iw-h h3{margin:0;font-size:1.125rem;font-weight:600;letter-spacing:-.012em}
 .iw-tag{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:999px;font-size:.75rem;font-weight:500;

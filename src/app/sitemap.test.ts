@@ -87,8 +87,8 @@ describe("sitemap.xml", () => {
     expect(dates).toEqual({
       /* A page that prints no day: the day its content last changed (the heading pass, 23 Oct 2026). */
       "/": "2026-10-23",
-      "/coral": "2026-10-21",
-      "/amoeba": "2026-10-21",
+      "/coral": "2026-10-23",
+      "/amoeba": "2026-10-23",
       "/assessment": "2026-10-21",
       "/marketplaces": "2026-10-21",
       "/docs": "2026-10-21",
