@@ -88,8 +88,8 @@ describe("the home page", () => {
       "h3 No code changes, no downtime",
       "h3 Full control and visibility",
       "h2 How we reduced our own cluster’s machine bill by 58%",
-      "h2 Estimated savings on Kubernetes and block storage",
-      "h3 Free cloud cost assessment",
+      "h2 Cloud cost assessment",
+      "h3 Free assessment",
       "h3 Coral",
       "h3 Amoeba",
       "h3 Coral and Amoeba together",
@@ -381,9 +381,7 @@ describe("the home page", () => {
     expect(offers).toHaveAttribute("aria-labelledby", "offers-h");
     /* The qualifier stands under the title, so no figure stands without it. */
     const side = offers.querySelector(".ofx-side")!;
-    expect(side.querySelector("h2#offers-h")).toHaveTextContent(
-      "Estimated savings on Kubernetes and block storage",
-    );
+    expect(side.querySelector("h2#offers-h")).toHaveTextContent("Cloud cost assessment");
     expect(side.querySelector(".ofx-note")).toHaveTextContent("Estimated ranges, not a promise.");
     expect(side.querySelector(".ofx-free .ofx-free-n")).toHaveTextContent("Free");
     /* Each row's name is an h3, as the free card's label is (the outline above). */
