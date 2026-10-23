@@ -50,22 +50,46 @@ describe("the home page", () => {
     expect(page.querySelector("#how")).toBeNull();
   });
 
+  it("links each product section's h2 to its page, its line keeping the product's name out of translation", () => {
+    for (const [id, href, line, name] of [
+      [
+        "coral",
+        "/coral",
+        "Stop paying for idle Kubernetes capacity. Coral rebalances workloads and removes the nodes you don’t need. No code changes.",
+        "Coral",
+      ],
+      [
+        "amoeba",
+        "/amoeba",
+        "Stop paying for empty disk space. Amoeba rightsizes Azure managed disks and Amazon EBS on Windows and Linux VMs, autonomously, without any downtime.",
+        "Amoeba",
+      ],
+    ] as const) {
+      const section = page.querySelector(`section#${id}`)!;
+      expect(section.querySelector("h2.st-h > a"), id).toHaveAttribute("href", href);
+      const body = section.querySelector(".st-body")!;
+      expect(body.textContent, id).toBe(line);
+      expect(body.querySelector('[translate="no"]'), id).toHaveTextContent(name);
+    }
+  });
+
   it("reads as one outline: the h1, a heading per section, the cards under the band and the offers", () => {
     const headings = [...page.querySelectorAll("main h1, main h2, main h3")].map(
       (h) => `${h.tagName.toLowerCase()} ${h.textContent}`,
     );
     expect(headings).toEqual([
       "h1 Zoorik Reduce cloud cost, autonomously.",
-      "h2 Stop paying for idle Kubernetes capacity",
-      "h2 Stop paying for empty disk space",
+      /* The SEO heading pass (23 Oct 2026): each product section's h2 is its category. */
+      "h2 Kubernetes cost optimization",
+      "h2 Block storage cost optimization",
       "h2 Cloud cost optimization, without the risk",
-      "h3 Cut cost",
-      "h3 Safe by design",
-      "h3 Reliable",
-      "h3 Full visibility",
+      "h3 Reduce cloud cost",
+      "h3 Drains nodes safely, one at a time",
+      "h3 No code changes, no downtime",
+      "h3 Full control and visibility",
       "h2 How we reduced our own cluster’s machine bill by 58%",
-      "h2 What we offer",
-      "h3 Free assessment",
+      "h2 Estimated savings on Kubernetes and block storage",
+      "h3 Free cloud cost assessment",
       "h3 Coral",
       "h3 Amoeba",
       "h3 Coral and Amoeba together",
@@ -357,7 +381,9 @@ describe("the home page", () => {
     expect(offers).toHaveAttribute("aria-labelledby", "offers-h");
     /* The qualifier stands under the title, so no figure stands without it. */
     const side = offers.querySelector(".ofx-side")!;
-    expect(side.querySelector("h2#offers-h")).toHaveTextContent("What we offer");
+    expect(side.querySelector("h2#offers-h")).toHaveTextContent(
+      "Estimated savings on Kubernetes and block storage",
+    );
     expect(side.querySelector(".ofx-note")).toHaveTextContent("Estimated ranges, not a promise.");
     expect(side.querySelector(".ofx-free .ofx-free-n")).toHaveTextContent("Free");
     /* Each row's name is an h3, as the free card's label is (the outline above). */

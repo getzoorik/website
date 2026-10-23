@@ -11,8 +11,10 @@ import { workedExample } from "@/content/savings";
  */
 export const kubernetesContent: ProductSectionContent = {
   product: "coral",
-  headline: "Stop paying for idle Kubernetes capacity",
-  body: "Removes what you don’t use and keeps what you do. No code changes.",
+  /* The SEO heading pass (owner, 23 Oct 2026): the h2 names the category and links to /coral; the line leads with
+     the old headline. */
+  headline: "Kubernetes cost optimization",
+  body: "Stop paying for idle Kubernetes capacity. Coral rebalances workloads and removes the nodes you don’t need. No code changes.",
   runsOn: { label: "Runs on", platforms: ["aks", "eks"] },
   cta: {
     href: `${routes.assessment}?p=coral`,

@@ -71,8 +71,14 @@ describe("KubernetesSection", () => {
     /* The copy column is the page's voice, and the page never says Coral
        "right-sizes": that is Amoeba's verb. */
     expect(copy).not.toMatch(/right-?siz/i);
-    expect(container.querySelector("h2")!.textContent).toBe(
-      "Stop paying for idle Kubernetes capacity",
+    /* The h2 names the category and links to /coral; the line leads with what Coral stops (23 Oct 2026). */
+    const h2 = container.querySelector("h2")!;
+    expect(h2.textContent).toBe("Kubernetes cost optimization");
+    expect(h2.querySelector("a")).toHaveAttribute("href", "/coral");
+    const line = container.querySelector(".st-body")!;
+    expect(line.textContent).toBe(
+      "Stop paying for idle Kubernetes capacity. Coral rebalances workloads and removes the nodes you don’t need. No code changes.",
     );
+    expect(line.querySelector('[translate="no"]')).toHaveTextContent("Coral");
   });
 });

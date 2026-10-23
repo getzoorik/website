@@ -8,9 +8,9 @@ import type { ProductSectionContent } from "@/content/product-section";
 import { products } from "@/content/products";
 
 /**
- * The copy column of a home product block: the product's lockup, the headline,
- * one short deck, what it runs on, then the button and the link to the
- * product's page.
+ * The copy column of a home product block: the product's lockup, the headline
+ * (the product's category, a link to its page), one short deck, what it runs
+ * on, then the button and the link to the product's page.
  *
  * Both blocks read this way, so it is one component and each product hands it
  * its own words. A server component: nothing here moves except the reveal, and
@@ -37,8 +37,13 @@ export function ProductCopy({ content }: { content: ProductSectionContent }): Re
         <ProductMark product={product.id} />
         {product.name}
       </p>
-      <h2 className="st-h">{content.headline}</h2>
-      <p className="st-body">{content.body}</p>
+      {/* The category, linked to the product's page (the SEO heading pass, 23 Oct 2026). */}
+      <h2 className="st-h">
+        <a href={routes[product.id]}>{content.headline}</a>
+      </h2>
+      <p className="st-body">
+        <NamedText text={content.body} name={product.name} />
+      </p>
       <Chips
         id={`${product.id}-runs`}
         label={content.runsOn.label}
