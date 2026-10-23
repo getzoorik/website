@@ -38,10 +38,10 @@ export const offersContent: {
   readonly axis: { readonly label: string; readonly ticks: readonly number[] };
   readonly rows: readonly OfferRow[];
 } = {
-  title: "What we offer",
+  title: "Estimated savings on Kubernetes and block storage",
   note: savingsQualifier,
   free: {
-    label: "Free assessment",
+    label: "Free cloud cost assessment",
     word: "Free",
     line: "Your estimated saving at list price, from one line in your cloud console.",
     cta: { label: "Estimate your saving", href: routes.assessment },

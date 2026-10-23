@@ -390,6 +390,10 @@ footer.site-foot{padding:56px 0 32px;background:var(--surface-2);border-top:1px 
 /* the bottom bar (owner, 23 Oct 2026): the legal name and city at the left end, © and the wordmark at the right */
 .foot-bar{justify-content:space-between}
 .foot-bar .foot-co{margin:0;font-size:.8125rem;line-height:1.5;color:var(--muted)}
+/* the product sections' h2 names the product's category and links to its page (the SEO heading pass, 23 Oct 2026):
+   the heading's own ink, the accent on hover */
+.st-h a{color:inherit;text-decoration:none;transition:color var(--d-fast) var(--ease)}
+@media (hover:hover){.st-h a:hover{color:var(--accent)}}
 /* the longer product h1s step down once on the narrowest phones */
 @media(max-width:360px){.pp-hero h1{font-size:2.25rem}}
 

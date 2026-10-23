@@ -85,8 +85,8 @@ describe("sitemap.xml", () => {
     );
     const updated = "2026-10-09";
     expect(dates).toEqual({
-      /* A page that prints no day: the day its title last changed ("<name> | Zoorik"). */
-      "/": "2026-10-22",
+      /* A page that prints no day: the day its content last changed (the heading pass, 23 Oct 2026). */
+      "/": "2026-10-23",
       "/coral": "2026-10-21",
       "/amoeba": "2026-10-21",
       "/assessment": "2026-10-21",
@@ -139,7 +139,7 @@ describe("sitemap.xml", () => {
   it("dates the home page by its content file, homeLastUpdated, and by nothing else", () => {
     const home = sitemap().find((entry) => new URL(entry.url).pathname === "/")!;
     expect(home.lastModified).toBe(isoDay(homeLastUpdated));
-    expect(homeLastUpdated).toBe("22 October 2026");
+    expect(homeLastUpdated).toBe("23 October 2026");
   });
 
   it("dates every page it lists, and none in the future", () => {

@@ -35,25 +35,25 @@ export const byDesignHeader = {
 export const byDesignCards: readonly ByDesignCard[] = [
   {
     id: "cost",
-    title: "Cut cost",
+    title: "Reduce cloud cost",
     drawing: "bars",
     caption: "Pay for what your workloads use, not what was provisioned for the peak.",
   },
   {
     id: "safe",
-    title: "Safe by design",
+    title: "Drains nodes safely, one at a time",
     drawing: "nodes",
     caption: "Nodes drain one at a time. A disk leaves the pool only when it is empty.",
   },
   {
     id: "reliable",
-    title: "Reliable",
+    title: "No code changes, no downtime",
     drawing: "serving",
     caption: "No code changes. Resizes happen while you keep serving.",
   },
   {
     id: "visibility",
-    title: "Full visibility",
+    title: "Full control and visibility",
     drawing: "control",
     caption: "You decide what each product manages, and see every change it makes.",
   },
