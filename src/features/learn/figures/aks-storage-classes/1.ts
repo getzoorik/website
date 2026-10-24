@@ -1,0 +1,15 @@
+import type { LearnFigure } from "@/content/learn/article";
+
+export const figure: LearnFigure = {
+  className: "ln-d fg-aks-storage-classes-1",
+  label:
+    "Diagram. A PVC asking managed-csi for 200Gi goes to the managed-csi StorageClass (provisioner disk.csi.azure.com, Standard SSD, LRS or ZRS), then to the Azure Disk CSI driver, which creates a Standard SSD managed disk of 200 GiB that is billed as an E15, 256 GiB, so 56 GiB is billed but never requested.",
+  style: `.fg-aks-storage-classes-1 .lk-cs .lk-t{margin-top:0 !important}
+.fg-aks-storage-classes-1 p.x-d{margin-top:2px !important;font-weight:500;line-height:1.45;color:var(--muted)}
+.fg-aks-storage-classes-1 p.x-k{display:grid;grid-template-columns:10px minmax(0,1fr);column-gap:8px}
+.fg-aks-storage-classes-1 .x-sw{box-sizing:border-box;width:10px;height:10px;margin-top:4.5px;border-radius:2px}
+.fg-aks-storage-classes-1 .sw-uk{background:var(--text)}
+.fg-aks-storage-classes-1 .sw-u{background:var(--accent)}
+.fg-aks-storage-classes-1 .x-f{color:var(--text)}`,
+  html: `<div class="lk-loop" style="--n:4"><ol class="lk-ol lk-cl" role="list"><li class="lk-cs"><div class="lk-art"><svg class="lk-svg" viewBox="0 0 120 64" style="aspect-ratio:120/64" aria-hidden="true" focusable="false"><rect class="a" x="10" y="22" width="78.13" height="20" rx="3"/></svg></div><div><p class="lk-t">PVC</p><p class="x-d"><span class="lk-mono">storageClassName:</span> <span class="lk-mono">managed-csi</span></p><p class="x-d"><span class="lk-mono">storage: 200Gi</span></p></div></li><li class="lk-cs"><div class="lk-art"><svg class="lk-svg" viewBox="0 0 120 64" style="aspect-ratio:120/64" aria-hidden="true" focusable="false"><rect class="k" x="38" y="8" width="44" height="48" rx="3"/><path class="m" d="M46 19h28M46 28h22M46 37h28M46 46h16"/></svg></div><div><p class="lk-t">StorageClass</p><p class="x-d"><span class="lk-mono">managed-csi</span></p><p class="x-d">provisioner <span class="lk-mono">disk.csi.azure.com</span></p><p class="x-d">Standard&nbsp;SSD, LRS&nbsp;or&nbsp;ZRS</p></div></li><li class="lk-cs"><div class="lk-art"><svg class="lk-svg" viewBox="0 0 120 64" style="aspect-ratio:120/64" aria-hidden="true" focusable="false"><rect class="k" x="44" y="16" width="32" height="32" rx="3"/><rect class="uk" x="53" y="25" width="14" height="14" rx="1.5"/><path class="m" d="M36 24h8M36 32h8M36 40h8M76 24h8M76 32h8M76 40h8"/></svg></div><div><p class="lk-t">Azure Disk CSI driver</p></div></li><li class="lk-cs"><div class="lk-art"><svg class="lk-svg" viewBox="0 0 120 64" style="aspect-ratio:120/64" aria-hidden="true" focusable="false"><rect class="uk" x="10" y="22" width="76.63" height="20" rx="3"/><rect class="u" x="89.63" y="22" width="20.37" height="20" rx="3"/></svg></div><div><p class="lk-t">Managed disk</p><p class="x-d">Standard SSD</p><p class="x-d">Billed as E15 (256&nbsp;GiB)</p><p class="x-d x-k"><i class="x-sw sw-uk"></i><span>200&nbsp;GiB provisioned</span></p><p class="x-d x-k x-f"><i class="x-sw sw-u"></i><span>56&nbsp;GiB billed, never requested</span></p></div></li></ol></div>`,
+};
