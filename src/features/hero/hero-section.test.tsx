@@ -102,9 +102,15 @@ describe("the home hero", () => {
       ":root:has(.hero-home) .nav:not(.solid)::before{background:linear-gradient(180deg,#080014 0,#080014 66px,rgba(8,0,20,.55) 74px,rgba(8,0,20,0) 84px)}",
     );
     expect(sheet).not.toMatch(/(^|\})\s*\.nav:not\(\.solid\)::before/);
-    /* At 1080 and below: the frame moves to keep the ring, and one shaped scrim. */
+    /* Above 1080: the film drawn at 90% on the hero's right and bottom, its frame moved left. */
+    expect(sheet).toContain(
+      ".hero-home .hero-film{object-position:calc(100% - 6vw) 50%;transform:scale(.9);transform-origin:100% 100%;",
+    );
+    /* At 1080 and below: a box 90% tall on the hero's bottom, the frame moved to keep the ring, and one shaped scrim. */
     const narrow = sheet.slice(sheet.lastIndexOf("@media(max-width:1080px){"));
-    expect(narrow).toContain(".hero-home .hero-film{object-position:76% 50%}");
+    expect(narrow).toContain(
+      ".hero-home .hero-film{top:auto!important;height:90%!important;transform:none;object-position:84% 50%;",
+    );
     expect(narrow).toContain(
       ".hero.hero-home::after{background:linear-gradient(180deg,#080014 0,#080014 84px,",
     );

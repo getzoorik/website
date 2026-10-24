@@ -80,9 +80,24 @@
    not its child, so the page is found by its hero (`:has`); the mock, one page, writes it bare. An
    engine without `:has()` keeps the site's own strip, a grey #0B0D14 band over the sky. */
 :root:has(.hero-home) .nav:not(.solid)::before{background:linear-gradient(180deg,#080014 0,#080014 66px,rgba(8,0,20,.55) 74px,rgba(8,0,20,0) 84px)}
+/* the film a little smaller and a little left (owner, 24 Oct 2026). The master already shows its full
+   frame, so there is no more picture to zoom out to: the film is drawn at 90%, pinned to the hero's
+   right and bottom edges (the disk runs off both, so they stay full), and the new gap at the top and
+   on the left fades into the sky under the bar and the scrim. The frame then moves 6vw left inside its
+   box, and the right side fades into the sky before the film's own edge. The box's edges stay on the
+   hero's right and bottom, where the hero clips them: a scaled box's edge left in view draws a 1px line. */
+.hero-home .hero-film{object-position:calc(100% - 6vw) 50%;transform:scale(.9);transform-origin:100% 100%;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 12%,#000 calc(100% - 26vw),transparent calc(100% - 7vw)),
+    linear-gradient(180deg,transparent 0,#000 14%);-webkit-mask-composite:source-in;
+  mask-image:linear-gradient(90deg,transparent 0,#000 12%,#000 calc(100% - 26vw),transparent calc(100% - 7vw)),
+    linear-gradient(180deg,transparent 0,#000 14%);mask-composite:intersect}
 /* below 1080 the words run the full width: one shaped scrim, dark behind the words, lighter above and
    below them, so the black hole still shows; the arc and the ring kept in view */
 @media(max-width:1080px){
-  .hero-home .hero-film{object-position:76% 50%}
+  /* here the film is far wider than the hero, so it zooms out on its own picture: its box is 90% tall,
+     on the hero's bottom, its top fading into the bar's flat strip, and the frame sits further right.
+     The box is `HeroFilm`'s inline style, so only `!important` moves it. */
+  .hero-home .hero-film{top:auto!important;height:90%!important;transform:none;object-position:84% 50%;
+    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 12%);mask-image:linear-gradient(180deg,transparent 0,#000 12%)}
   .hero.hero-home::after{background:linear-gradient(180deg,#080014 0,#080014 84px,rgba(8,0,20,.30) 14%,rgba(8,0,20,.80) 25%,
     rgba(8,0,20,.80) 82%,rgba(8,0,20,.30) 93%,rgba(8,0,20,.15) 100%)}}
