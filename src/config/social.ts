@@ -188,6 +188,16 @@ const CARDS: readonly {
     words: "How to check EBS volume usage: used vs paid space",
     paths: ["/learn/check-ebs-volume-usage"],
   },
+  {
+    file: "learn-keda-vs-karpenter",
+    words: "KEDA vs Karpenter: pods, nodes and pod requests",
+    paths: ["/learn/keda-vs-karpenter"],
+  },
+  {
+    file: "learn-kubernetes-allocatable-vs-capacity",
+    words: "Kubernetes allocatable vs capacity on AKS and EKS",
+    paths: ["/learn/kubernetes-allocatable-vs-capacity"],
+  },
 ];
 
 const sentence = (words: string): string => (/[.?!]$/.test(words) ? words : `${words}.`);
