@@ -9,6 +9,7 @@ import { CareersPage } from "@/features/careers/careers-page";
 
 import "@/styles/careers.css";
 import "@/styles/careers-values.css";
+import "@/styles/careers-scenes.css";
 import "@/styles/careers-work.css";
 
 /**

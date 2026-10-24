@@ -1,6 +1,6 @@
-/* Zoorik marketing: `/careers`, the page's frame (option A, 24 Oct 2026): the hero and its rings, What you will
- * build, the bands and the close. Our values are in careers-values.css, How we work and How we hire in
- * careers-work.css.
+/* Zoorik marketing: `/careers`, the page's frame (option A, 24 Oct 2026, as its third pass of 25 Oct leaves it): the
+ * hero and its rings, What you will build, the bands, the close, and LinkedIn's lockup in both. Our values are in
+ * careers-values.css and their scenes in careers-scenes.css, How we work and How we hire in careers-work.css.
  *
  * Ported from the proposal's sheets (`careers-23oct`, then `careers-motion`: ux-design/_proposals/2026-10-24-careers),
  * rule for rule, in their order, keeping their `cq-` names. Imported by the page itself, so Next loads it after
@@ -39,6 +39,13 @@
 .cq-hero .btn-light{background:#FAF7F3;color:#070F52}
 .cq-hero .btn-light:hover{background:#fff}
 .cq-quiet{margin-top:24px;font-size:.875rem;line-height:1.6;color:rgba(250,247,243,.6)}
+/* the logo is set in the sentence's own size: "Linked" in the line's type, the "in" box one cap-height tall on its baseline */
+.cq-lockup{display:inline;white-space:nowrap}
+.cq-join .btn-wire{gap:.3em}
+.cq-lkw{font-size:1em;font-weight:700;letter-spacing:-.01em;color:#FAF7F3}
+.cq-quiet svg.cq-li,.cq-join .btn svg.cq-li{display:inline-block;width:.95em;height:.95em;margin-left:.06em;vertical-align:-.12em}
+/* the hero's LinkedIn link carries the mock's `cq-lk`, which names no rule but keeps it out of the site system's
+   `.hero p a:not([class])` and `main p a:not([class])`: this rule's bone holds, and it is not underlined */
 .cq-quiet a{color:#FAF7F3;text-underline-offset:4px;text-decoration-color:rgba(250,247,243,.4)}
 @media (hover:hover){.cq-quiet a:hover{text-decoration-color:currentColor}}
 /* repo: the bar's 84px strip in the band's outer shade, on this page alone. The bar is the hero's sibling, not its
@@ -74,21 +81,22 @@
 @media (max-width:900px){.cq-hin,.cq-join,.cq-prods{grid-template-columns:minmax(0,1fr);gap:32px}.cq-join{padding:36px 28px}}
 @media (prefers-reduced-motion:reduce){.cq-jg a{transition:none}}
 
-/* ── the hero's figure: the mark, two rings, the marks upright as the rings turn ── */
-.cq-orbit{--s:420px;position:relative;width:var(--s);height:var(--s);margin-left:auto}
+/* ── the hero's figure: the mark, three rings, the marks upright as the rings turn ── */
+.cq-orbit{--s:460px;position:relative;width:var(--s);height:var(--s);margin-left:auto}
 .cq-ring{position:absolute;left:50%;top:50%;border:1px solid rgba(250,247,243,.14);border-radius:50%;
   animation:cqSpin var(--t) linear infinite paused}
-.cq-r1{--t:70s;--r:calc(var(--s) * .27);width:calc(var(--r) * 2);height:calc(var(--r) * 2);margin:calc(var(--r) * -1)}
-.cq-r2{--t:110s;--r:calc(var(--s) * .45);width:calc(var(--r) * 2);height:calc(var(--r) * 2);margin:calc(var(--r) * -1);animation-direction:reverse}
-.cq-o{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px;transform:rotate(var(--a)) translateY(calc(var(--r) * -1)) rotate(calc(var(--a) * -1))}
+.cq-r1{--t:70s;--r:calc(var(--s) * .2);width:calc(var(--r) * 2);height:calc(var(--r) * 2);margin:calc(var(--r) * -1)}
+.cq-r2{--t:100s;--r:calc(var(--s) * .335);width:calc(var(--r) * 2);height:calc(var(--r) * 2);margin:calc(var(--r) * -1);animation-direction:reverse}
+.cq-r3{--t:140s;--r:calc(var(--s) * .465);width:calc(var(--r) * 2);height:calc(var(--r) * 2);margin:calc(var(--r) * -1)}
+.cq-o{position:absolute;left:50%;top:50%;width:42px;height:42px;margin:-21px;transform:rotate(var(--a)) translateY(calc(var(--r) * -1)) rotate(calc(var(--a) * -1))}
 .cq-ol{display:grid;place-items:center;width:100%;height:100%;border-radius:var(--r-card);background:#FAF7F3;color:#0F1222;
   animation:cqSpin var(--t) linear infinite reverse paused}
 .cq-r2 .cq-ol{animation-direction:normal}
-.cq-ol svg{width:24px;height:24px}
+.cq-ol svg{width:22px;height:22px}
 /* Install your way's Helm and Terraform paint in the sheet's colour; here their own, as the mock's fill */
 .cq-ol .cq-helm{fill:#0F1689}
 .cq-ol .cq-tf{fill:#844FBA}
-.cq-core{position:absolute;left:50%;top:50%;width:92px;height:92px;margin:-46px}
+.cq-core{position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px}
 .cq-core svg{width:100%;height:100%;fill:#FAF7F3}
 @keyframes cqSpin{to{rotate:360deg}}
 /* on screen they turn; under the pointer they rest */
@@ -97,8 +105,8 @@
 /* ── the stack, as marks ── */
 .cq-stack li{display:inline-flex;align-items:center;gap:6px}
 .cq-stack li svg{width:14px;height:14px;flex:none}
-@media (max-width:1100px){.cq-orbit{--s:360px}}
-@media (max-width:900px){.cq-orbit{--s:320px;margin:8px auto 0}}
-@media (max-width:640px){.cq-orbit{--s:290px}.cq-o{width:40px;height:40px;margin:-20px}.cq-ol svg{width:20px;height:20px}
-  .cq-core{width:76px;height:76px;margin:-38px}}
+@media (max-width:1100px){.cq-orbit{--s:400px}}
+@media (max-width:900px){.cq-orbit{--s:350px;margin:8px auto 0}}
+@media (max-width:640px){.cq-orbit{--s:320px}.cq-o{width:32px;height:32px;margin:-16px}.cq-ol svg{width:17px;height:17px}
+  .cq-core{width:56px;height:56px;margin:-28px}}
 @media (prefers-reduced-motion:reduce){.cq-ring,.cq-ol{animation:none!important}}

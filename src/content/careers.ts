@@ -4,21 +4,22 @@ import type { ProductId } from "@/content/products";
 
 /**
  * `/careers`: every string the page prints, verbatim from option A
- * (`ux-design/_proposals/2026-10-24-careers/careers-option-A.html`, 24 Oct 2026).
+ * (`ux-design/_proposals/2026-10-24-careers/careers-option-A.html`, 24 Oct 2026, as
+ * its third pass of 25 Oct leaves it).
  *
  * The rules the copy carries: our values are the six CREDIT values in our own
- * words; no open roles are shown for now, only the teams we hire for; the
- * interview questions are in Zoorik's terms and work for tech and non-tech
- * roles alike.
+ * words; no open roles are shown for now, only the teams we hire for.
  *
  * The copy is kept minimal: no caps labels, one line where a longer draft had
- * two, each behaviour its name alone, and no values-interview card.
+ * two, each behaviour its name alone, and no values-interview card. Since the
+ * third pass (owner, 25 Oct 2026) a value has no interview question ("Can
+ * you remove we ask in CREDIT sections") and a hiring step no line under its
+ * name ("remove these as well").
  *
  * 🔴 THE SITE'S PRODUCT WORDS ("reduce", never "cut" or "lower"): the hero
  * deck says "reduces" and Results for customers "We reduce", as option A
  * prints them (the older `ux-design/website/careers.html` still has "cuts" and
- * "We lower"). The Efficiency question's "a time you cut something" is
- * about a candidate's own work, not the products, and stays as drawn.
+ * "We lower").
  *
  * Product names are written plainly here; the page keeps each one out of a
  * translator's hands (`named()`), as the mock marks them.
@@ -39,10 +40,25 @@ export const careersLastUpdated = "25 October 2026";
 /**
  * A tool's mark (`careers-marks.tsx`): the site's own for Kubernetes, Azure,
  * AWS and Linux, Install your way's for Helm and Terraform, Simple Icons' for
- * Go, PostgreSQL and GitHub.
+ * the rest.
  */
 export type CareersToolMark =
-  "kubernetes" | "azure" | "aws" | "linux" | "go" | "postgresql" | "github" | "helm" | "terraform";
+  | "kubernetes"
+  | "azure"
+  | "aws"
+  | "linux"
+  | "go"
+  | "python"
+  | "typescript"
+  | "postgresql"
+  | "docker"
+  | "react"
+  | "nextjs"
+  | "helm"
+  | "terraform"
+  | "argocd"
+  | "github"
+  | "cloudflare";
 
 /** A tool we build with: its name, and its mark where it has one (Java, btrfs and systemd show as their names). */
 export interface CareersTool {
@@ -50,11 +66,11 @@ export interface CareersTool {
   readonly mark?: CareersToolMark;
 }
 
-/** The six CREDIT values, in their order; each has its drawing (`careers-value-drawings.tsx`). */
+/** The six CREDIT values, in their order; each has its scene (`careers-scenes.tsx`). */
 export type CareerValueId =
   "collaboration" | "results" | "efficiency" | "diversity" | "iteration" | "transparency";
 
-/** One of the six CREDIT values: its letter, its meaning in one line, how we live it, and its interview question. */
+/** One of the six CREDIT values: its letter, its meaning in one line, and how we live it. */
 export interface CareerValue {
   /** The panel's address (`#val-<id>`, which opens it) and its tab's (`#tab-<id>`). */
   readonly id: CareerValueId;
@@ -63,8 +79,6 @@ export interface CareerValue {
   readonly meaning: string;
   /** How we live it: each behaviour by its name alone, after a small square bullet. */
   readonly behaviours: readonly string[];
-  /** The question the values interview asks about it, printed in quotes. */
-  readonly question: string;
 }
 
 /**
@@ -83,18 +97,17 @@ export interface CareerHabit {
   readonly body: string;
 }
 
-/** A step of How we hire: its icon, how it happens (a video call unless it says so), its name and what it is, in one line. */
+/** A step of How we hire: its icon, how it happens (a video call unless it says so) and its name. */
 export interface HiringStep {
   /** The glyph over its number (careers-hire-icons.tsx): a document, a video call, code, a checklist, two people, a signed offer. */
   readonly icon: "document" | "video" | "code" | "checklist" | "people" | "offer";
   readonly mode: "In writing" | "Video call";
   readonly title: string;
-  readonly body: string;
 }
 
 const intro = `mailto:${contactEmail}?subject=Introducing%20myself`;
 
-/** The hero's inner ring: what the products run on. */
+/** The hero's inner ring: where the products run. */
 const innerRing = [
   { name: "Kubernetes", mark: "kubernetes" },
   { name: "Azure", mark: "azure" },
@@ -102,14 +115,39 @@ const innerRing = [
   { name: "Linux", mark: "linux" },
 ] as const satisfies readonly Required<CareersTool>[];
 
-/** The hero's outer ring: what we build them with. */
-const outerRing = [
+/** The hero's middle ring: what they are written in and on. */
+const middleRing = [
   { name: "Go", mark: "go" },
+  { name: "Python", mark: "python" },
+  { name: "TypeScript", mark: "typescript" },
   { name: "PostgreSQL", mark: "postgresql" },
-  { name: "GitHub", mark: "github" },
+  { name: "Docker", mark: "docker" },
+] as const satisfies readonly Required<CareersTool>[];
+
+/** The hero's outer ring: how they are built, shipped and served. */
+const outerRing = [
+  { name: "React", mark: "react" },
+  { name: "Next.js", mark: "nextjs" },
   { name: "Helm", mark: "helm" },
   { name: "Terraform", mark: "terraform" },
+  { name: "Argo CD", mark: "argocd" },
+  { name: "GitHub", mark: "github" },
+  { name: "Cloudflare", mark: "cloudflare" },
 ] as const satisfies readonly Required<CareersTool>[];
+
+/**
+ * Follow us on LinkedIn, in the hero's quiet line and on the close's wire button: "Follow us on", then LinkedIn's
+ * lockup ("Linked" and its blue "in" box, `CareersLinkedIn`), which a screen reader hears as the name. The link is
+ * the footer's profile (`socialProfiles`), in a new tab.
+ */
+const follow = {
+  label: "Follow us on",
+  platform: "linkedin" satisfies FooterSocialPlatform,
+  /** The lockup's word, before the "in" box. */
+  word: "Linked",
+  /** The name the lockup stands for, for the ear. */
+  name: "LinkedIn",
+} as const;
 
 const values = [
   {
@@ -127,8 +165,6 @@ const values = [
       "Fix the system, not the person",
       "Input is not consensus",
     ],
-    question:
-      "Tell us about a launch, an incident or a deal where you helped another team, or asked one for help. What did each of you do?",
   },
   {
     id: "results",
@@ -144,8 +180,6 @@ const values = [
       "Disagree, then commit",
       "Ask for help early",
     ],
-    question:
-      "Tell us about something you built, ran or sold that saved a customer money or time. How did you measure it?",
   },
   {
     id: "efficiency",
@@ -161,8 +195,6 @@ const values = [
       "Be a manager of one",
       "Accept mistakes",
     ],
-    question:
-      "Tell us about a time you cut something that cost more than it gave: a process, a tool, a meeting or a piece of a system.",
   },
   {
     id: "diversity",
@@ -178,8 +210,6 @@ const values = [
       "Family and friends first",
       "Speak up",
     ],
-    question:
-      "Tell us about a time someone who saw it differently changed what you built or how you did it.",
   },
   {
     id: "iteration",
@@ -195,8 +225,6 @@ const values = [
       "Small steps, safe steps",
       "Keep changes reviewable",
     ],
-    question:
-      "Tell us about a change you made in small, safe steps. What did the first step teach you?",
   },
   {
     id: "transparency",
@@ -212,8 +240,6 @@ const values = [
       "Be direct, and kind",
       "Some things stay private",
     ],
-    question:
-      "Tell us about a mistake that reached a customer or a live system. How did you tell people, and what changed afterwards?",
   },
 ] as const satisfies readonly CareerValue[];
 
@@ -230,13 +256,14 @@ export const careers = {
     title: "Work at Zoorik",
     deck: "Help build Coral and Amoeba, the software that reduces cloud cost on Azure and AWS.",
     introduce: { label: "Introduce yourself", href: intro },
-    /** The quiet line under the button, then the footer's LinkedIn profile (`socialProfiles`), in a new tab. */
+    /** The quiet line under the button, then Follow us on LinkedIn. */
     quiet: "No open roles right now.",
-    follow: { label: "Follow us on LinkedIn", platform: "linkedin" satisfies FooterSocialPlatform },
-    /** The figure: the Zoorik mark, the tools we build with turning round it on two rings. */
-    rings: { inner: innerRing, outer: outerRing },
+    follow,
+    /** The figure: the Zoorik mark, the tools we build with turning round it on three rings. */
+    rings: { inner: innerRing, middle: middleRing, outer: outerRing },
     orbitLabel: `The Zoorik mark, with the tools we build with turning round it: ${[
       ...innerRing,
+      ...middleRing,
       ...outerRing,
     ]
       .map((tool) => tool.name)
@@ -299,8 +326,6 @@ export const careers = {
     title: "Our values",
     /* No lede: the mock heads it with the heading alone, as How we work. */
     tabsLabel: "Our six values",
-    /** Over each value's interview question, plain: no blue caps label. */
-    questionLabel: "We ask",
     list: values,
   },
   work: {
@@ -324,42 +349,12 @@ export const careers = {
     lede: "Six steps, all remote.",
     /* The steps alone, under one hairline: no accent step and no values-interview card under them. */
     steps: [
-      {
-        icon: "document",
-        mode: "In writing",
-        title: "Apply",
-        body: "Your CV and something you are proud of.",
-      },
-      {
-        icon: "video",
-        mode: "Video call",
-        title: "Intro call",
-        body: "The role, and how we work.",
-      },
-      {
-        icon: "code",
-        mode: "Video call",
-        title: "Skills interview",
-        body: "Real systems, or your own work.",
-      },
-      {
-        icon: "checklist",
-        mode: "Video call",
-        title: "Values interview",
-        body: "One question per value.",
-      },
-      {
-        icon: "people",
-        mode: "Video call",
-        title: "Meet the founders",
-        body: "Questions both ways.",
-      },
-      {
-        icon: "offer",
-        mode: "In writing",
-        title: "Offer",
-        body: "References, then the offer in writing.",
-      },
+      { icon: "document", mode: "In writing", title: "Apply" },
+      { icon: "video", mode: "Video call", title: "Intro call" },
+      { icon: "code", mode: "Video call", title: "Skills interview" },
+      { icon: "checklist", mode: "Video call", title: "Values interview" },
+      { icon: "people", mode: "Video call", title: "Meet the founders" },
+      { icon: "offer", mode: "In writing", title: "Offer" },
     ] as const satisfies readonly HiringStep[],
   },
   /**
@@ -372,8 +367,8 @@ export const careers = {
     title: "Want to build with us?",
     body: "No open roles right now. Introduce yourself anyway.",
     introduce: { label: "Introduce yourself", href: intro },
-    /** The wire button after it: the footer's LinkedIn profile (`socialProfiles`), in a new tab. */
-    follow: { label: "Follow us on LinkedIn", platform: "linkedin" satisfies FooterSocialPlatform },
+    /** The wire button after it. */
+    follow,
     /** The line under the buttons, before the address. */
     writeTo: "Or write to ",
     teams: [

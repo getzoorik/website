@@ -8,8 +8,8 @@ import { careers } from "@/content/careers";
 import { CareersValues } from "@/features/careers/careers-values";
 
 /**
- * Our values (option A): the picker's markup, its tabs, the autoplay, the
- * drawings' trigger and the values' addresses. jsdom has no
+ * Our values (option A): the picker's markup, its tabs, each value's scene,
+ * the autoplay, the scenes' trigger and the values' addresses. jsdom has no
  * IntersectionObserver, so the test moves one by hand, with fake timers.
  */
 
@@ -24,7 +24,7 @@ class TestIntersectionObserver {
     TestIntersectionObserver.all.push(this);
   }
 
-  /** .4 the autoplay, .25 the drawings. */
+  /** .4 the autoplay, .25 the scenes. */
   static at(threshold: number): TestIntersectionObserver {
     const found = TestIntersectionObserver.all.find((io) => io.options.threshold === threshold);
     if (!found) throw new Error(`no observer at threshold ${threshold}`);
@@ -66,7 +66,18 @@ const reduceMotion = (reduce: boolean) =>
 
 const wait = (ms: number) => act(() => vi.advanceTimersByTime(ms));
 const text = (el: Element | null) => el?.textContent?.replace(/\s+/g, " ").trim() ?? "";
+const sheet = (name: string) => readFileSync(join(process.cwd(), "src/styles", name), "utf8");
 const { list } = careers.values;
+
+/** What each scene shows, for the ear: the proposal's labels (`scenes/build_<key>.py`), word for word. */
+const SCENE_LABELS = [
+  "Four people stand round a table, each holding a block, and in the middle of their shared plan four blocks like theirs hold up one warm block.",
+  "A teammate shows a cheering customer their bill, a stack now half its old height, while another teammate checks the servers behind them, still running with their green lights on.",
+  "Two people push heavy boxes up their lanes while a third, between them, rolls a sphere and is well ahead.",
+  "Six different people stand in an arc round a glowing tile, and one by one each raises a hand to add to it.",
+  "A stair of small blocks rises to the right: one teammate walks up it, another at the top holds the next block over its dashed place, and a third points to it from the floor.",
+  "A large magnifying glass lies on the floor with a page clearly visible through its lens, and four people stand round it looking in while one points at a marked line.",
+];
 
 let scrolled: Element[];
 
@@ -135,7 +146,7 @@ describe("Our values", () => {
     expect(tabs().map((tab) => tab.tabIndex)).toEqual([0, -1, -1, -1, -1, -1]);
   });
 
-  it("gives each value one panel: its drawing, name, meaning, question and behaviours, and no way on", () => {
+  it("gives each value one panel: its scene, then its name, meaning and behaviours, and no question and no way on", () => {
     const { pick } = values();
     const panels = [...pick.querySelectorAll<HTMLElement>('[role="tabpanel"]')];
     expect(panels.map((panel) => panel.hidden)).toEqual([false, true, true, true, true, true]);
@@ -147,20 +158,18 @@ describe("Our values", () => {
         "aria-controls",
         `val-${value.id}`,
       );
-      expect([...panel.querySelector(".cq-pl")!.children].map((el) => el.className)).toEqual([
-        "cq-il",
-        "",
-        "cq-mean",
-        "cq-ask",
+      /* The scene first, so a phone's one column puts it on top. */
+      expect([...panel.children].map((el) => el.className)).toEqual(["cq-scene", "cq-pr"]);
+      expect([...panel.querySelector(".cq-pr")!.children].map((el) => el.tagName)).toEqual([
+        "H3",
+        "P",
+        "UL",
       ]);
-      const drawing = panel.querySelector(".cq-il > svg")!;
-      expect(drawing).toHaveClass("il", `il-${value.id}`);
-      expect(drawing).toHaveAttribute("viewBox", "0 0 200 110");
-      expect(drawing).toHaveAttribute("aria-hidden", "true");
-      expect(text(panel.querySelector(".cq-pl > h3"))).toBe(value.name);
-      expect(text(panel.querySelector(".cq-mean"))).toBe(value.meaning);
-      expect(text(panel.querySelector(".cq-ask > span"))).toBe("We ask");
-      expect(text(panel.querySelector(".cq-ask"))).toBe(`We ask“${value.question}”`);
+      expect(text(panel.querySelector(".cq-pr > h3"))).toBe(value.name);
+      expect(text(panel.querySelector(".cq-pr > p.cq-mean"))).toBe(value.meaning);
+      /* No question: the "We ask" line is gone (owner, 25 Oct 2026). */
+      expect(panel.querySelector(".cq-ask")).toBeNull();
+      expect(panel.textContent).not.toMatch(/We ask/);
       /* Each behaviour is its name alone: the bullet is the sheet's. */
       const behaviours = [...panel.querySelectorAll(".cq-beh > li")];
       expect(behaviours.map((li) => text(li))).toEqual(value.behaviours);
@@ -176,6 +185,29 @@ describe("Our values", () => {
       "Small steps add up faster than big plans.",
       "We share by default. It builds trust.",
     ]);
+  });
+
+  it("draws each value's own scene, which names itself for the ear", () => {
+    const { pick } = values();
+    const scenes = [...pick.querySelectorAll('[role="tabpanel"] > .cq-scene')].map(
+      (box) => box.firstElementChild!,
+    );
+    expect(scenes).toHaveLength(6);
+    scenes.forEach((scene, i) => {
+      const value = list[i]!;
+      expect(scene.tagName.toLowerCase()).toBe("svg");
+      expect(scene.parentElement!.children).toHaveLength(1);
+      expect(scene.getAttribute("class")).toBe(`sc sc-${value.id}`);
+      expect(scene).toHaveAttribute("viewBox", "0 0 480 270");
+      expect(scene).toHaveAttribute("preserveAspectRatio", "xMidYMid slice");
+      expect(scene).toHaveAttribute("role", "img");
+    });
+    expect(scenes.map((scene) => scene.getAttribute("aria-label"))).toEqual(SCENE_LABELS);
+    /* Each scene is drawn once, so the ids inside it (its gradients) are unique within the picker; across the whole
+       page, `careers-page.test.tsx` holds every id unique. */
+    const ids = [...pick.querySelectorAll(".cq-scene [id]")].map((el) => el.id);
+    expect(ids.length).toBeGreaterThan(0);
+    expect(new Set(ids).size).toBe(ids.length);
   });
 
   it("moves between values by click, by the arrow keys, Home and End, and replays the panel it opens", () => {
@@ -271,7 +303,7 @@ describe("the values' autoplay", () => {
   });
 });
 
-describe("the values' drawings", () => {
+describe("the values' scenes", () => {
   it("play only while a quarter of the picker is in view", () => {
     const { pick } = values();
     expect(pick).not.toHaveClass("is-on");
@@ -282,25 +314,37 @@ describe("the values' drawings", () => {
     expect(pick).not.toHaveClass("is-on");
   });
 
-  it("hold their end state under reduced motion", () => {
+  it("hold their still frame under reduced motion: the sheet stops them, wherever the picker is", () => {
     const { pick } = values(true);
     expect(pick).toHaveClass("is-on");
+    expect(sheet("careers-scenes.css")).toContain(
+      "@media (prefers-reduced-motion:reduce){.sc *{animation:none!important;transition:none!important}}",
+    );
   });
 
-  it("hold the same end state without scripting as under reduced motion", () => {
+  it("hold the same still frame without scripting as under reduced motion", () => {
     const { section } = values();
-    const sheet = readFileSync(join(process.cwd(), "src/styles/careers-values.css"), "utf8");
-    const reduced = sheet
-      .slice(sheet.indexOf("@media (prefers-reduced-motion:reduce){"))
-      .replace(/\s*\n\s*/g, "");
+    const reduced = sheet("careers-scenes.css").match(
+      /@media \(prefers-reduced-motion:reduce\)\{(.*)\}\n/,
+    )![1]!;
     const style = section.querySelector("noscript")!.innerHTML.replace(/<\/?style>/g, "");
-    const layout = [
-      ".cq-pick .cq-tabs{display:none",
-      "@layer base{.cq-pick .cq-panel[hidden]{display:grid!important",
-    ];
-    const rules = style.split("}").filter((rule) => rule && !layout.includes(rule));
-    expect(rules.length).toBeGreaterThan(5);
-    for (const rule of rules) expect(reduced).toContain(`${rule}}`);
+    const layout =
+      ".cq-pick .cq-tabs{display:none}@layer base{.cq-pick .cq-panel[hidden]{display:grid!important}}";
+    expect(style.startsWith(layout)).toBe(true);
+    expect(style.slice(layout.length)).toBe(reduced);
+  });
+
+  it("wait, paused, while the picker is off screen: the last rule outranks each scene's own loop", () => {
+    const scenes = sheet("careers-scenes.css");
+    expect(
+      scenes.trimEnd().endsWith(".cq-pick:not(.is-on) .sc *{animation-play-state:paused}"),
+    ).toBe(true);
+    /* The kit's shared rules once, then each scene's own, under its class. */
+    expect(scenes.match(/^\.sc\{/gm)).toHaveLength(1);
+    for (const value of list) expect(scenes).toContain(`.sc-${value.id} `);
+    expect(scenes).not.toMatch(
+      /^\.sc-(?!collaboration|results|efficiency|diversity|iteration|transparency)/m,
+    );
   });
 
   it("show every value without scripting, and not the tabs, which would do nothing", () => {

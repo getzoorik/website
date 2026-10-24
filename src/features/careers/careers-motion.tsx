@@ -7,7 +7,7 @@ import { useEffect } from "react";
  * mock's script for those parts). The values, How we work's drawings and the
  * hiring steps move by their own islands.
  *
- *   the rings   the hero's two rings turn while any of the figure is on
+ *   the rings   the hero's three rings turn while any of the figure is on
  *               screen (`.cq-orbit.is-on`), so the loop never runs unseen;
  *               the sheet holds them still under the pointer
  *   the films   each product's film plays while 35% of it is in view, and
