@@ -1,0 +1,103 @@
+/* Zoorik marketing: `/careers`, Our values' six scenes (owner, 25 Oct 2026: "our own images with little bit motions or
+ * anything"), drawn by `careers-scenes.tsx`.
+ *
+ * The proposal's `<style id="careers-scenes">`, verbatim (ux-design/_proposals/2026-10-24-careers, `make_careers.py`
+ * `scene_css()`): the scene kit's shared rules once (`scenes/kit.py`, `BASE_CSS`), then each scene's own, scoped to its
+ * `.sc-<key>`, as `scenes/<key>.html` writes them. Each loop is calm, small and seamless, by transform and opacity.
+ *
+ * Reduced motion stops every scene on its still frame (the kit's last shared rule); so does the `<noscript>` style,
+ * with the same rule (`CareersValues`).
+ *
+ * One rule differs from the mock, and why: the kit pauses every scene until it is on screen (`.sc *` paused,
+ * `.is-on .sc *` running), but each scene's `animation` shorthand outranks the pause and resets it, so the mock's
+ * scenes run off screen too. Here a last rule pauses them from the picker, which `CareersValues` gives its `.is-on`
+ * while a quarter of it is in view, as it did for the line drawings these scenes replace. */
+.sc{display:block;width:100%;height:auto;aspect-ratio:16/9;border-radius:var(--r-card,4px);background:#070F52}
+.sc *{animation-play-state:paused}
+.is-on .sc *{animation-play-state:running}
+@keyframes scFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes scPulse{0%,100%{opacity:.55}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.sc *{animation:none!important;transition:none!important}}
+
+
+.sc-collaboration .lift{animation:collabLift 8s ease-in-out infinite}
+@keyframes collabLift{0%,34%,100%{transform:translateY(0)}13%,20%{transform:translateY(-2.30px)}}
+.sc-collaboration .rise{animation:collabRise 8s ease-in-out infinite}
+@keyframes collabRise{0%,34%,100%{transform:translateY(0)}13%,20%{transform:translateY(-1.59px)}}
+.sc-collaboration .pulse{stroke-dashoffset:-41;opacity:.9;animation:collabFlow 8s linear infinite}
+@keyframes collabFlow{from{stroke-dashoffset:30}to{stroke-dashoffset:-370}}
+.sc-collaboration .glow{opacity:.85;animation:collabGlow 2s ease-out infinite;animation-delay:-1.52s}
+@keyframes collabGlow{0%,100%{opacity:.45}18%{opacity:1}}
+.sc-collaboration .lift.t0{animation-delay:-0.00s}
+.sc-collaboration .lift.t1{animation-delay:-6.00s}
+.sc-collaboration .lift.t2{animation-delay:-4.00s}
+.sc-collaboration .lift.t3{animation-delay:-2.00s}
+.sc-collaboration .rise.t0{animation-delay:-0.00s}
+.sc-collaboration .rise.t1{animation-delay:-6.00s}
+.sc-collaboration .rise.t2{animation-delay:-4.00s}
+.sc-collaboration .rise.t3{animation-delay:-2.00s}
+.sc-collaboration .pulse.t0{animation-delay:-7.40s}
+.sc-collaboration .pulse.t1{animation-delay:-5.40s}
+.sc-collaboration .pulse.t2{animation-delay:-3.40s}
+.sc-collaboration .pulse.t3{animation-delay:-1.40s}
+
+.sc-results .glow{animation:resultsGlow 2.6s ease-in-out infinite}
+.sc-results .glow.b{animation-delay:-1.3s}
+@keyframes resultsGlow{0%,100%{opacity:.2}50%{opacity:.65}}
+.sc-results .joy{animation:resultsJoy 2s ease-in-out infinite}
+@keyframes resultsJoy{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.6px)}}
+.sc-results .fall{animation:resultsFall 6s linear infinite}
+@keyframes resultsFall{to{stroke-dashoffset:-12}}
+
+.sc-efficiency .flow{animation:effFlow linear infinite}
+.sc-efficiency .flow.slow{animation-duration:9s}
+.sc-efficiency .flow.fast{animation-duration:2.6s}
+@keyframes effFlow{to{stroke-dashoffset:-200}}
+.sc-efficiency .strain{animation:effStrain 1.4s ease-in-out infinite}
+.sc-efficiency .strain.right{animation-delay:-.7s}
+@keyframes effStrain{0%,100%{transform:translate(0,0)}50%{transform:translate(.8px,-.6px)}}
+.sc-efficiency .walker{animation:effWalk .9s ease-in-out infinite}
+@keyframes effWalk{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.6px)}}
+
+.sc-diversity .line{opacity:.22;animation:divFlow 4s linear infinite,divLine 12s ease-in-out infinite}
+@keyframes divFlow{to{stroke-dashoffset:-48}}
+@keyframes divLine{0%,27%,100%{opacity:.22}10%,17%{opacity:.7}}
+.sc-diversity .arm{transform-origin:0 0;animation:divRaise 12s ease-in-out infinite}
+@keyframes divRaise{0%,27%,100%{transform:rotate(0)}10%,17%{transform:rotate(-150deg)}}
+.sc-diversity .l3{opacity:.7}
+.sc-diversity .a3{transform:rotate(-150deg)}
+.sc-diversity .glow{opacity:.75;animation:divGlow 2s ease-in-out infinite}
+@keyframes divGlow{0%,100%{opacity:.65}60%{opacity:1}}
+.sc-diversity .a0,.sc-diversity .l0{animation-delay:-0.0s}
+.sc-diversity .a1,.sc-diversity .l1{animation-delay:-10.0s}
+.sc-diversity .a2,.sc-diversity .l2{animation-delay:-8.0s}
+.sc-diversity .a3,.sc-diversity .l3{animation-delay:-6.0s}
+.sc-diversity .a4,.sc-diversity .l4{animation-delay:-4.0s}
+.sc-diversity .a5,.sc-diversity .l5{animation-delay:-2.0s}
+
+.sc-iteration .nose{animation:iterNose 6s ease-in-out infinite}
+.sc-iteration .n0{animation-delay:-8.10s}
+.sc-iteration .n1{animation-delay:-7.43s}
+.sc-iteration .n2{animation-delay:-6.77s}
+.sc-iteration .n3{animation-delay:-6.10s}
+.sc-iteration .n4{animation-delay:-5.43s}
+.sc-iteration .n5{animation-delay:-4.77s}
+.sc-iteration .n6{animation-delay:-4.10s}
+@keyframes iterNose{0%,100%{opacity:0}18%{opacity:.85}40%{opacity:0}}
+.sc-iteration .walker{animation:iterWalk 1.2s ease-in-out infinite}
+@keyframes iterWalk{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.6px)}}
+.sc-iteration .newest{animation:iterSettle 6s ease-in-out infinite}
+@keyframes iterSettle{0%,100%{transform:translateY(0)}50%{transform:translateY(2.5px)}}
+.sc-iteration .draft{animation:iterDraft 6s linear infinite}
+@keyframes iterDraft{to{stroke-dashoffset:-12}}
+
+.sc-transparency .glint{stroke-dashoffset:-12;animation:transparencyGlint 10s linear infinite}
+@keyframes transparencyGlint{from{stroke-dashoffset:-12}to{stroke-dashoffset:-112}}
+.sc-transparency .reach{transform-origin:0 0;animation:transparencyReach 8s ease-in-out infinite}
+@keyframes transparencyReach{0%,30%,100%{transform:rotate(0)}50%,80%{transform:rotate(18deg)}}
+.sc-transparency .mark{animation:transparencyMark 8s ease-in-out infinite}
+@keyframes transparencyMark{0%,30%,100%{opacity:.72}50%,80%{opacity:1}}
+
+/* repo: outranks each scene's `animation` shorthand (see the head of this sheet): the loops wait, paused, until the
+   picker is on screen */
+.cq-pick:not(.is-on) .sc *{animation-play-state:paused}

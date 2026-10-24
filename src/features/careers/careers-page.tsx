@@ -7,6 +7,7 @@ import { careers, teamMailto } from "@/content/careers";
 import { socialProfiles } from "@/content/footer";
 import { products } from "@/content/products";
 import { CareersHire } from "@/features/careers/careers-hire";
+import { CareersLinkedIn } from "@/features/careers/careers-linkedin";
 import { ToolMark } from "@/features/careers/careers-marks";
 import { CareersMotion } from "@/features/careers/careers-motion";
 import { CareersOrbit } from "@/features/careers/careers-orbit";
@@ -18,21 +19,26 @@ import { offSiteProps } from "@/lib/links";
 
 /**
  * `/careers`, option A of the 24 Oct proposal (owner, 25 Oct 2026: "built
- * exactly this"), in the language the home, Coral and Amoeba pages carry:
+ * exactly this"), as its third pass of 25 Oct leaves it, in the language the
+ * home, Coral and Amoeba pages carry:
  *
  *   hero              a quiet navy band: "Careers", Work at Zoorik, the line,
  *                     Introduce yourself and the quiet "No open roles right
  *                     now", the Zoorik mark with our tools turning round it
- *                     (`CareersOrbit`)
+ *                     on three rings (`CareersOrbit`)
  *   What you will build   each product's 5-second film in its 4px frame, no card
  *                     outline; the product's mark and name, the home page's
  *                     title for it, its stack as marks with names, its page
- *   Our values        the picker (`CareersValues`), on the band
+ *   Our values        the picker (`CareersValues`), each value's scene beside
+ *                     its words, on the band
  *   How we work       four drawings (`CareersWork`)
  *   How we hire       six steps under one hairline, on the band (`CareersHire`)
  *   Want to build with us?   the close: a flat navy card, no art; Introduce
  *                     yourself and Follow us on LinkedIn, the address, and
  *                     the teams we hire for as white pills, each a ready email
+ *
+ * Both "Follow us on LinkedIn" links end on LinkedIn's lockup, "Linked" and its
+ * blue "in" box, in place of the word (`CareersLinkedIn`).
  *
  * No open roles, no caps labels, no assessment row: the mock ends on the
  * close. The bands are flat --surface-2 (`.cq-band`), and the sheet's blocks
@@ -41,8 +47,8 @@ import { offSiteProps } from "@/lib/links";
  *
  * Each section after What you will build is its own component and returns its
  * whole `<section>`. One island moves this file's parts (`CareersMotion`: the
- * films, the rings); the values, the drawings and the hiring steps move by
- * their own.
+ * films, the rings); the values' scenes, How we work's drawings and the
+ * hiring steps move by their own.
  */
 
 /** The footer's own profile: one address for LinkedIn on the whole site. */
@@ -68,7 +74,8 @@ function Hero(): React.JSX.Element {
             {/* One text node with its space, as the mock's: the line and the link sit as one line of type. */}
             {`${hero.quiet} `}
             <a href={linkedIn} {...offSiteProps(linkedIn)}>
-              {hero.follow.label}
+              {`${hero.follow.label} `}
+              <CareersLinkedIn />
               <NewTabHint href={linkedIn} />
             </a>
           </p>
@@ -147,7 +154,8 @@ function Join(): React.JSX.Element {
                 {join.introduce.label}
               </a>
               <a className="btn btn-wire" href={linkedIn} {...offSiteProps(linkedIn)}>
-                {join.follow.label}
+                {`${join.follow.label} `}
+                <CareersLinkedIn />
                 <NewTabHint href={linkedIn} />
               </a>
             </div>

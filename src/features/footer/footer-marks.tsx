@@ -21,10 +21,15 @@ import type { AskAssistant, FooterSocialPlatform } from "@/content/footer";
  * `FooterSocialPlatform` is a compile error here instead of a tile that
  * silently renders empty.
  */
+
+/** LinkedIn's "in": the footer's tile, and the white "in" of /careers's LinkedIn lockup. */
+export const LINKEDIN_PATH =
+  "M4.98 3.5a2.5 2.5 0 1 1-.02 5.001A2.5 2.5 0 0 1 4.98 3.5zM3.06 9.75h3.84V21H3.06V9.75zm6.24 0h3.68v1.54h.05c.51-.94 1.77-1.93 3.64-1.93 3.89 0 4.61 2.5 4.61 5.74V21h-3.84v-5.13c0-1.22-.02-2.8-1.74-2.8-1.75 0-2.01 1.33-2.01 2.71V21H9.3V9.75z";
+
 const socialMarks: Record<FooterSocialPlatform, JSX.Element> = {
   linkedin: (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M4.98 3.5a2.5 2.5 0 1 1-.02 5.001A2.5 2.5 0 0 1 4.98 3.5zM3.06 9.75h3.84V21H3.06V9.75zm6.24 0h3.68v1.54h.05c.51-.94 1.77-1.93 3.64-1.93 3.89 0 4.61 2.5 4.61 5.74V21h-3.84v-5.13c0-1.22-.02-2.8-1.74-2.8-1.75 0-2.01 1.33-2.01 2.71V21H9.3V9.75z" />
+      <path d={LINKEDIN_PATH} />
     </svg>
   ),
   youtube: (

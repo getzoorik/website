@@ -22,8 +22,45 @@ import CareersRoute, { metadata } from "@/app/careers/page";
  */
 
 const text = (el: Element | null): string => (el?.textContent ?? "").replace(/[\s ]+/g, " ").trim();
+/** What a screen reader hears: the words, without what is hidden from it. */
+const heard = (el: Element): string => {
+  const copy = el.cloneNode(true) as Element;
+  for (const hidden of copy.querySelectorAll('[aria-hidden="true"]')) hidden.remove();
+  return text(copy);
+};
 const page = () => render(<CareersRoute />).container;
 const linkedIn = socialProfiles.find((profile) => profile.platform === "linkedin")!.href;
+
+/**
+ * "Follow us on" and LinkedIn's lockup in place of the word (owner, 25 Oct 2026: "it will be like Linked {logo}"):
+ * "Linked", then the blue "in" box drawn with the footer's own "in", both hidden from the ear, which hears
+ * "LinkedIn", then the new-tab hint.
+ */
+function expectLockup(link: Element, container: Element): void {
+  expect(link.firstChild?.nodeType).toBe(Node.TEXT_NODE);
+  expect(link.firstChild?.textContent).toBe("Follow us on ");
+  expect([...link.children].map((el) => el.getAttribute("class"))).toEqual([
+    "cq-lockup",
+    "sr-only",
+    "sr-only",
+  ]);
+  const lockup = link.querySelector(":scope > .cq-lockup")!;
+  expect(lockup).toHaveAttribute("aria-hidden", "true");
+  expect(text(lockup.querySelector(":scope > .cq-lkw"))).toBe("Linked");
+  const box = lockup.querySelector(":scope > svg.cq-li")!;
+  expect(box).toHaveAttribute("viewBox", "0 0 24 24");
+  expect(box.querySelector(":scope > rect")).toHaveAttribute("fill", "#0A66C2");
+  const inMark = box.querySelector(":scope > path")!;
+  expect(inMark).toHaveAttribute("fill", "#FFFFFF");
+  expect(inMark).toHaveAttribute("transform", "translate(3.3 3.2) scale(.73)");
+  const footerIn = container.querySelector(`footer a[href="${linkedIn}"] svg path`)!;
+  expect(inMark.getAttribute("d")).toBe(footerIn.getAttribute("d"));
+  expect([...link.querySelectorAll(":scope > .sr-only")].map(text)).toEqual([
+    "LinkedIn",
+    "(opens in a new tab)",
+  ]);
+  expect(heard(link)).toBe("Follow us on LinkedIn (opens in a new tab)");
+}
 
 describe("/careers's metadata", () => {
   it("has its title through the template, its description and its canonical", () => {
@@ -68,28 +105,32 @@ describe("/careers's hero", () => {
     expect(buttons[0]!.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
   });
 
-  it("says there are no open roles, and follows us on LinkedIn in a new tab", () => {
-    const quiet = page().querySelector(".cq-hero .cq-quiet")!;
-    expect(text(quiet)).toBe("No open roles right now. Follow us on LinkedIn (opens in a new tab)");
+  it("says there are no open roles, and follows us on LinkedIn's lockup in a new tab", () => {
+    const container = page();
+    const quiet = container.querySelector(".cq-hero .cq-quiet")!;
+    expect(heard(quiet)).toBe(
+      "No open roles right now. Follow us on LinkedIn (opens in a new tab)",
+    );
     const follow = quiet.querySelector("a")!;
     expect(follow).toHaveAttribute("href", linkedIn);
     expect(follow).toHaveAttribute("target", "_blank");
     expect(follow).toHaveAttribute("rel", "noopener noreferrer");
-    expect(follow.querySelector(".sr-only")).toHaveTextContent("(opens in a new tab)");
-    /* A plain link in the line, as the mock draws it: no class, no arrow. */
+    expectLockup(follow, container);
+    /* A plain link in the line, as the mock draws it: no class, no arrow; the only drawing is LinkedIn's "in". */
     expect(follow).not.toHaveAttribute("class");
-    expect(follow.querySelector("svg")).toBeNull();
+    expect(follow.querySelectorAll("svg")).toHaveLength(1);
   });
 
-  it("draws the Zoorik mark with the tools turning round it on two rings, one image for the ear", () => {
+  it("draws the Zoorik mark with sixteen tools turning round it on three rings, one image for the ear", () => {
     const orbit = page().querySelector(".cq-hin > .cq-orbit")!;
     expect(orbit).toHaveAttribute("role", "img");
     expect(orbit).toHaveAttribute(
       "aria-label",
-      "The Zoorik mark, with the tools we build with turning round it: Kubernetes, Azure, AWS, Linux, Go, PostgreSQL, GitHub, Helm, Terraform.",
+      "The Zoorik mark, with the tools we build with turning round it: Kubernetes, Azure, AWS, Linux, Go, Python, TypeScript, PostgreSQL, Docker, React, Next.js, Helm, Terraform, Argo CD, GitHub, Cloudflare.",
     );
-    /* The outer ring first, then the inner, then the mark, as the mock stacks them. */
+    /* The outer ring first, then the middle, then the inner, then the mark, as the mock stacks them. */
     expect([...orbit.children].map((el) => el.className)).toEqual([
+      "cq-ring cq-r3",
       "cq-ring cq-r2",
       "cq-ring cq-r1",
       "cq-core",
@@ -97,35 +138,61 @@ describe("/careers's hero", () => {
     const ring = (cls: string) =>
       [...orbit.querySelectorAll(`.${cls} > .cq-o`)].map((tile) => [
         tile.getAttribute("title"),
-        (tile as HTMLElement).style.getPropertyValue("--a"),
+        parseFloat((tile as HTMLElement).style.getPropertyValue("--a")).toFixed(3),
       ]);
+    /* Where it runs; what it is written in and on; how it is built, shipped and served. */
+    expect(ring("cq-r3")).toEqual([
+      ["React", "8.000"],
+      ["Next.js", "59.429"],
+      ["Helm", "110.857"],
+      ["Terraform", "162.286"],
+      ["Argo CD", "213.714"],
+      ["GitHub", "265.143"],
+      ["Cloudflare", "316.571"],
+    ]);
     expect(ring("cq-r2")).toEqual([
-      ["Go", "15deg"],
-      ["PostgreSQL", "87deg"],
-      ["GitHub", "159deg"],
-      ["Helm", "231deg"],
-      ["Terraform", "303deg"],
+      ["Go", "20.000"],
+      ["Python", "92.000"],
+      ["TypeScript", "164.000"],
+      ["PostgreSQL", "236.000"],
+      ["Docker", "308.000"],
     ]);
     expect(ring("cq-r1")).toEqual([
-      ["Kubernetes", "45deg"],
-      ["Azure", "135deg"],
-      ["AWS", "225deg"],
-      ["Linux", "315deg"],
+      ["Kubernetes", "45.000"],
+      ["Azure", "135.000"],
+      ["AWS", "225.000"],
+      ["Linux", "315.000"],
     ]);
+    for (const tile of orbit.querySelectorAll<HTMLElement>(".cq-o"))
+      expect(tile.style.getPropertyValue("--a")).toMatch(/deg$/);
     /* Each tile holds its tool's own mark, hidden from the ear. */
     const marks = [...orbit.querySelectorAll(".cq-o > .cq-ol > svg")];
+    expect(marks).toHaveLength(16);
     expect(marks.map((svg) => svg.getAttribute("data-mark") ?? svg.getAttribute("class"))).toEqual([
-      "go",
-      "postgresql",
-      "github",
+      "react",
+      "nextjs",
       "cq-helm",
       "cq-tf",
+      "argocd",
+      "github",
+      "cloudflare",
+      "go",
+      "python",
+      "typescript",
+      "postgresql",
+      "docker",
       "kubernetes",
       "azure",
       "aws",
       "linux",
     ]);
     for (const svg of marks) expect(svg).toHaveAttribute("aria-hidden", "true");
+    /* Simple Icons' marks, each in its project's own colour, as the mock paints them. */
+    const fill = (mark: string) =>
+      orbit.querySelector(`svg[data-mark="${mark}"] > path`)!.getAttribute("fill");
+    expect(
+      ["python", "typescript", "react", "nextjs", "docker", "argocd", "cloudflare"].map(fill),
+    ).toEqual(["#3776AB", "#3178C6", "#149ECA", "#000000", "#2496ED", "#EF7B4D", "#F38020"]);
   });
 
   it("keeps the mark still in the middle: the brand kit's fifteen squares and its core, on the 512 canvas", () => {
@@ -271,9 +338,12 @@ describe("/careers's sections", () => {
   });
 
   it("closes on a flat navy card: no open roles, two buttons, the address and the teams, each a ready email", () => {
-    const join = page().querySelector("section#join.sec.cq-join-s .cq-join")!;
-    /* No art: nothing drawn in the card. */
-    expect(join.querySelector("svg")).toBeNull();
+    const container = page();
+    const join = container.querySelector("section#join.sec.cq-join-s .cq-join")!;
+    /* No art: the only thing drawn in the card is LinkedIn's "in". */
+    expect([...join.querySelectorAll("svg")].map((svg) => svg.getAttribute("class"))).toEqual([
+      "cq-li",
+    ]);
     const copy = join.querySelector(".cq-jc")!;
     expect([...copy.children].map((el) => `${el.tagName} ${el.className}`)).toEqual([
       "H2 ",
@@ -296,8 +366,7 @@ describe("/careers's sections", () => {
     expect(follow).toHaveAttribute("href", linkedIn);
     expect(follow).toHaveAttribute("target", "_blank");
     expect(follow).toHaveAttribute("rel", "noopener noreferrer");
-    expect(text(follow!)).toBe("Follow us on LinkedIn (opens in a new tab)");
-    expect(follow!.querySelector("svg")).toBeNull();
+    expectLockup(follow!, container);
 
     const mail = copy.querySelector(".cq-mail")!;
     expect(text(mail)).toBe(`Or write to ${contactEmail}`);
@@ -321,10 +390,16 @@ describe("/careers's sections", () => {
 describe("/careers's words", () => {
   it("speaks of the products in the site's words: reduce, never cut or lower", () => {
     const main = page().querySelector("main")!;
-    /* The Efficiency question's "cut" is about the candidate's own work, as the mock asks it. */
-    const efficiency = careers.values.list.find((value) => value.id === "efficiency")!.question;
-    expect(efficiency).toMatch(/^Tell us about a time you cut something /);
-    expect(main.textContent!.replace(efficiency, "")).not.toMatch(/\bcuts?\b|\blower\b|\bwaste/i);
+    expect(main.textContent).toContain("We reduce our customers’ cloud bills");
+    expect(main.textContent).not.toMatch(/\bcuts?\b|\blower\b|\bwaste/i);
+  });
+
+  it("asks no question under a value and puts no line under a hiring step (owner, 25 Oct 2026)", () => {
+    const main = page().querySelector("main")!;
+    expect(main.textContent).not.toMatch(/We ask|Tell us about|One question per value/);
+    expect(careers.values).not.toHaveProperty("questionLabel");
+    for (const value of careers.values.list) expect(value).not.toHaveProperty("question");
+    for (const step of careers.hire.steps) expect(step).not.toHaveProperty("body");
   });
 
   it("posts no role, names no Operations team and no GitLab, and carries no equal-opportunity line", () => {

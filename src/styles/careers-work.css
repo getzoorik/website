@@ -1,9 +1,9 @@
-/* Zoorik marketing: `/careers`, How we work and How we hire (option A, 24 Oct 2026).
+/* Zoorik marketing: `/careers`, How we work and How we hire (option A, 24 Oct 2026, as its third pass of 25 Oct leaves it).
  *
  * Ported from the proposal's sheets (ux-design/_proposals/2026-10-24-careers: `careers-23oct` in make_careers.py,
  * then `careers-motion` in motion_parts.py), rule for rule, in their order, for these two sections only, keeping
  * their `cq-` and `il-w-` names. Every selector names a class only this page draws; the drawings' rules sit under
- * `.cq-wk`, since Our values draws its own `.il` drawings (careers-values.css, under `.cq-pick`).
+ * `.cq-wk`, where the mock writes them for the whole page (`.il`).
  *
  * Shared, not here: How we hire's flat band (`.sec-band.cq-band`) and the ledes' greedy wrap, both careers.css.
  *
@@ -16,6 +16,7 @@
  *    name is page-wide;
  *  - the mock's rules that end where they started are left out: `.cq-steps li`'s hairline and padding, set and then
  *    taken off again, and the stroke it gives the day's and the main line's paths, which they already have;
+ *  - so is `.cq-steps p`: it sets the line under each step's name, which the steps lost on 25 Oct;
  *  - `.cq-n` reads the site's mono (`--code`), where the mock names IBM Plex Mono itself. */
 
 /* ══ HOW WE WORK ══ one outlined card each: the drawing and its title */
@@ -84,7 +85,6 @@
   font-size:.75rem;font-weight:500;color:var(--muted)}
 .cq-mode svg{width:13px;height:13px}
 .cq-steps h3{margin-top:14px;font-size:var(--fs-h3);font-weight:600;line-height:1.35}
-.cq-steps p{margin-top:6px;color:var(--muted);font-size:.9375rem;text-wrap:pretty}
 
 /* narrower screens */
 @media (max-width:1100px){.cq-work{grid-template-columns:repeat(2,minmax(0,1fr))}

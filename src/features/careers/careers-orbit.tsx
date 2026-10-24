@@ -6,12 +6,17 @@ import { ToolMark } from "@/features/careers/careers-marks";
 
 /**
  * The hero's figure: the Zoorik mark, still, with the tools we build with
- * turning round it on two rings (owner, 24 Oct 2026: "proper motions and
- * graphics and logos").
+ * turning round it on three rings (owner, 24 Oct 2026: "proper motions and
+ * graphics and logos"; 25 Oct: "shows other tech stacks we are using like
+ * python, FE techstacks etc"), sixteen marks in all:
  *
- *   inner ring   Kubernetes, Azure, AWS and Linux: one turn in 70s
- *   outer ring   Go, PostgreSQL, GitHub, Helm and Terraform: one turn in
- *                110s, the other way
+ *   inner ring    where it runs: Kubernetes, Azure, AWS and Linux; one turn
+ *                 in 70s
+ *   middle ring   what it is written in and on: Go, Python, TypeScript,
+ *                 PostgreSQL and Docker; one turn in 100s, the other way
+ *   outer ring    how it is built, shipped and served: React, Next.js, Helm,
+ *                 Terraform, Argo CD, GitHub and Cloudflare; one turn in 140s,
+ *                 the inner ring's way
  *
  * Each mark sits on a bone tile that turns against its ring, so every mark
  * stays upright. The sheet turns the rings (careers.css), only while the hero
@@ -28,7 +33,8 @@ import { ToolMark } from "@/features/careers/careers-marks";
  */
 
 /** Where each ring's first tile stands, in degrees clockwise from the top; the rest follow evenly. */
-const OUTER_FROM = 15;
+const OUTER_FROM = 8;
+const MIDDLE_FROM = 20;
 const INNER_FROM = 45;
 
 function Ring({
@@ -82,7 +88,8 @@ export function CareersOrbit(): React.JSX.Element {
   const { rings, orbitLabel } = careers.hero;
   return (
     <div className="cq-orbit" role="img" aria-label={orbitLabel}>
-      <Ring className="cq-r2" tools={rings.outer} from={OUTER_FROM} />
+      <Ring className="cq-r3" tools={rings.outer} from={OUTER_FROM} />
+      <Ring className="cq-r2" tools={rings.middle} from={MIDDLE_FROM} />
       <Ring className="cq-r1" tools={rings.inner} from={INNER_FROM} />
       <div className="cq-core">
         <StillMark />

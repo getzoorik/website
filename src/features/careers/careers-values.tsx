@@ -3,15 +3,16 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { careers } from "@/content/careers";
-import { ValueDrawing } from "@/features/careers/careers-value-drawings";
+import { ValueScene } from "@/features/careers/careers-scenes";
 import { named } from "@/features/legal/named";
 
 /**
- * Our values (option A, 24 Oct 2026): six tabs, the chosen one in ink, and one
- * panel at a time: the value's drawing, its name, its meaning in one line and
- * the question its values interview asks under a plain "We ask"; beside them
- * every behaviour by its name, after a small square bullet. No tint, no
- * progress line and no Previous/Next bar.
+ * Our values (option A, 24 Oct 2026, as its third pass of 25 Oct leaves it):
+ * six tabs, the chosen one in ink, and one panel at a time: the value's scene
+ * (`ValueScene`), and beside it the value's name, its meaning in one line and
+ * every behaviour by its name, after a small square bullet. On a phone the
+ * scene sits on top. No question, no tint, no progress line and no
+ * Previous/Next bar.
  *
  * ─── WAI-ARIA TABS ─────────────────────────────────────────────────────────
  * The arrow keys, Home and End move between the tabs and wrap; only the chosen
@@ -23,10 +24,10 @@ import { named } from "@/features/legal/named";
  * it, stops it for good, so a keyboard or screen-reader user's tab never
  * changes under them. Under reduced motion it never plays.
  *
- * ─── EACH DRAWING PLAYS WHILE ITS VALUE IS OPEN ────────────────────────────
- * The open panel's drawing loops (6s) while a quarter of the picker is in view
+ * ─── EACH SCENE PLAYS WHILE ITS VALUE IS OPEN ──────────────────────────────
+ * The open panel's scene loops while a quarter of the picker is in view
  * (`.is-on`); a hidden panel draws nothing. Under reduced motion, or without
- * scripting (the `<noscript>` style), each drawing holds its end state.
+ * scripting (the `<noscript>` style), each scene holds its still frame.
  *
  * ─── A VALUE HAS AN ADDRESS ────────────────────────────────────────────────
  * `#val-<id>` (or `#tab-<id>`) opens that value, on arrival or when the hash
@@ -38,26 +39,19 @@ import { named } from "@/features/legal/named";
 
 /** How long a value stays open before the next one plays. */
 const AUTO_MS = 7000;
-/** The mock's thresholds: the autoplay runs while 40% of the picker is in view, the drawing while 25% is. */
+/** The mock's thresholds: the autoplay runs while 40% of the picker is in view, the scene while 25% is. */
 const AUTO_IN_VIEW = 0.4;
-const DRAW_IN_VIEW = 0.25;
+const SCENE_IN_VIEW = 0.25;
 const ON = "is-on";
 
 /**
- * Without scripting: every value, no tabs, and each drawing at its end state, as reduced motion draws it
- * (careers-values.css). repo: Tailwind's preflight hides `[hidden]` with `!important` in `@layer base`, which no
+ * Without scripting: every value, no tabs, and each scene at its still frame, as reduced motion draws it
+ * (careers-scenes.css). repo: Tailwind's preflight hides `[hidden]` with `!important` in `@layer base`, which no
  * unlayered rule can outrank, so the panels are shown from the same layer, by a more specific selector.
  */
 const NO_SCRIPT =
   "<style>.cq-pick .cq-tabs{display:none}@layer base{.cq-pick .cq-panel[hidden]{display:grid!important}}" +
-  ".cq-pick .il *{animation:none!important}" +
-  ".cq-pick .il-efficiency .e1,.cq-pick .il-efficiency .e3{opacity:0}" +
-  ".cq-pick .il-efficiency .e2{stroke:var(--accent);fill:var(--accent-wash)}" +
-  ".cq-pick .il .ok,.cq-pick .il-iteration .i-top{opacity:1}" +
-  ".cq-pick .il-results .r-bar{transform:scaleY(.46)}" +
-  ".cq-pick .il-iteration .i-dot{transform:translate(124px,-64px)}" +
-  ".cq-pick .il-diversity .d-team,.cq-pick .il-efficiency .e-ok{stroke-dashoffset:0}" +
-  ".cq-pick .il-transparency .t-ln{opacity:.9}.cq-pick .il-transparency .t-scan{display:none}</style>";
+  ".sc *{animation:none!important;transition:none!important}</style>";
 
 /** The value a hash names: `#val-<id>` (its panel) or `#tab-<id>` (its tab). */
 const HASH = /^#(?:val|tab)-(.+)$/;
@@ -70,7 +64,7 @@ interface Pick {
 }
 
 export function CareersValues(): React.JSX.Element {
-  const { id, title, tabsLabel, questionLabel, list } = careers.values;
+  const { id, title, tabsLabel, list } = careers.values;
   const [pick, setPick] = useState<Pick>({ index: 0, count: 0, focus: false });
   const root = useRef<HTMLDivElement | null>(null);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -94,7 +88,7 @@ export function CareersValues(): React.JSX.Element {
     if (pick.focus) tabs.current[pick.index]?.focus();
   }, [pick]);
 
-  /* The autoplay, the drawings' trigger and the values' addresses. */
+  /* The autoplay, the scenes' trigger and the values' addresses. */
   useEffect(() => {
     const el = root.current;
     if (el === null) return;
@@ -152,12 +146,12 @@ export function CareersValues(): React.JSX.Element {
     if (still || !observes) {
       el.classList.add(ON);
     } else {
-      const draw = new IntersectionObserver(
+      const play = new IntersectionObserver(
         (entries) => {
           const latest = entries[entries.length - 1];
           if (latest) el.classList.toggle(ON, latest.isIntersecting);
         },
-        { threshold: DRAW_IN_VIEW },
+        { threshold: SCENE_IN_VIEW },
       );
       const auto = new IntersectionObserver(
         (entries) => {
@@ -167,9 +161,9 @@ export function CareersValues(): React.JSX.Element {
         },
         { threshold: AUTO_IN_VIEW },
       );
-      draw.observe(el);
+      play.observe(el);
       auto.observe(el);
-      watches.push(draw, auto);
+      watches.push(play, auto);
     }
 
     return () => {
@@ -240,22 +234,16 @@ export function CareersValues(): React.JSX.Element {
               }}
               key={value.id}
             >
-              <div className="cq-pl">
-                <div className="cq-il">
-                  <ValueDrawing id={value.id} />
-                </div>
+              <ValueScene id={value.id} />
+              <div className="cq-pr">
                 <h3>{value.name}</h3>
                 <p className="cq-mean">{named(value.meaning)}</p>
-                <p className="cq-ask">
-                  <span>{questionLabel}</span>
-                  {named(`“${value.question}”`)}
-                </p>
+                <ul className="cq-beh">
+                  {value.behaviours.map((behaviour) => (
+                    <li key={behaviour}>{behaviour}</li>
+                  ))}
+                </ul>
               </div>
-              <ul className="cq-beh">
-                {value.behaviours.map((behaviour) => (
-                  <li key={behaviour}>{behaviour}</li>
-                ))}
-              </ul>
             </div>
           ))}
         </div>

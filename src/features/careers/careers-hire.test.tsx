@@ -5,9 +5,9 @@ import { CareersHire } from "@/features/careers/careers-hire";
 
 /**
  * How we hire: six steps under one hairline, each its icon, its number, how it
- * happens as a pill, its name and one line, with no step in the accent; and the
- * marker that walks the steps every 1.6s while they are on screen, driven by an
- * observer the test moves by hand and by fake timers.
+ * happens as a pill and its name, with no line under it and no step in the
+ * accent; and the marker that walks the steps every 1.6s while they are on
+ * screen, driven by an observer the test moves by hand and by fake timers.
  */
 
 const text = (el: Element | null): string => (el?.textContent ?? "").replace(/\s+/g, " ").trim();
@@ -86,7 +86,7 @@ describe("How we hire", () => {
     expect(text(section.querySelector(".sec-head > p"))).toBe("Six steps, all remote.");
   });
 
-  it("lists the six steps under one hairline: number, mode, name and one line each", () => {
+  it("lists the six steps under one hairline: icon, number, mode and name each, and no line under it", () => {
     const { section, steps } = hire();
     const box = section.querySelector(".wrap > .cq-hire")!;
     expect(box.firstElementChild).toHaveClass("cq-track");
@@ -97,16 +97,25 @@ describe("How we hire", () => {
         text(step.querySelector(".cq-n")),
         text(step.querySelector(".cq-mode")),
         text(step.querySelector("h3")),
-        text(step.querySelector("h3 + p")),
       ]),
     ).toEqual([
-      ["01", "In writing", "Apply", "Your CV and something you are proud of."],
-      ["02", "Video call", "Intro call", "The role, and how we work."],
-      ["03", "Video call", "Skills interview", "Real systems, or your own work."],
-      ["04", "Video call", "Values interview", "One question per value."],
-      ["05", "Video call", "Meet the founders", "Questions both ways."],
-      ["06", "In writing", "Offer", "References, then the offer in writing."],
+      ["01", "In writing", "Apply"],
+      ["02", "Video call", "Intro call"],
+      ["03", "Video call", "Skills interview"],
+      ["04", "Video call", "Values interview"],
+      ["05", "Video call", "Meet the founders"],
+      ["06", "In writing", "Offer"],
     ]);
+    /* The name ends the step: its one-line description is gone (owner, 25 Oct 2026: "remove these as well"). */
+    for (const step of steps) {
+      expect([...step.children].map((el) => `${el.tagName} ${el.className}`)).toEqual([
+        "SPAN cq-hi",
+        "SPAN cq-n",
+        "SPAN cq-mode",
+        "H3 ",
+      ]);
+      expect(step.querySelector("p")).toBeNull();
+    }
     /* Nothing follows the steps. */
     expect(box.lastElementChild).toBe(section.querySelector("ol.cq-steps"));
   });

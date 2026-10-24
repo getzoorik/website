@@ -1,21 +1,14 @@
-/* Zoorik marketing: `/careers`, Our values (option A, 24 Oct 2026).
+/* Zoorik marketing: `/careers`, Our values (option A, 24 Oct 2026, as its third pass of 25 Oct leaves it).
  *
- * Ported from the proposal's builders, rule for rule, in their order: the picker from
- * `make_careers.py` (CSS, "our values"), the six drawings from `motion_parts.py` (CSS, the `il-`
- * rules for the values). Every selector names a `cq-` class, which only this page draws; the
- * drawings' rules sit under `.cq-pick`, since How we work draws its own `.il` drawings with rules
- * of the same names.
+ * Ported from the proposal's builder, rule for rule, in its order: the picker from `make_careers.py` (CSS, "our
+ * values"). Every selector names a `cq-` class, which only this page draws. Each panel is the value's scene beside
+ * its name, its line and its behaviours; the scenes and their motion are careers-scenes.css's.
  *
- * The section is the page's flat band (`.sec.sec-band.cq-band`, as How we hire), whose rule is not
- * this sheet's.
+ * The section is the page's flat band (`.sec.sec-band.cq-band`, as How we hire), whose rule is not this sheet's.
  *
- * Two changes, both for the motion:
- *   - the mock pauses every drawing until the picker is on screen (`.il *` paused, `.is-on .il *`
- *     running), but each drawing's `animation` shorthand outranks the pause and resets it, so the
- *     mock's loops run off screen too. Here the pause comes last, and the open value's drawing
- *     plays only while the picker is in view (`CareersValues` gives it `.is-on`);
- *   - the two loops How we work shares with the values (`cqOk`, `cqTick`) are `cqvOk` and
- *     `cqvTick` here, so neither sheet's keyframes can redraw the other's. */
+ * What differs from the mock, and why: its rules for what no panel draws any more are left out, `.cq-ask` (the
+ * "We ask" question, gone on 25 Oct) and `.cq-scene .il` (the line drawing a value showed until its scene was
+ * drawn), and so is the phone's `.cq-panel{padding:24px}`, which the panel already has. */
 
 /* ══ THE PICKER ══ six letters, the chosen one in ink; no tint, no progress line */
 .cq-tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
@@ -27,98 +20,24 @@
 .cq-tab[aria-selected="true"]{border-color:var(--text);color:var(--text)}
 .cq-tl{font-size:2rem;font-weight:500;line-height:1;letter-spacing:-.03em}
 .cq-tn{font-size:.875rem;font-weight:500;line-height:1.3}
-.cq-panel{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:56px;margin-top:10px;padding:32px;
+/* the panel: the scene, then the value's name, its line and its behaviours */
+.cq-panel{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:40px;align-items:center;margin-top:10px;padding:24px;
   border:1px solid var(--line);border-radius:var(--r-card);background:var(--surface)}
 .cq-panel[hidden]{display:none}
 .cq-panel:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .cq-panel.is-in{animation:cqIn .32s var(--ease) both}
 @keyframes cqIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.cq-pl h3{font-size:1.5rem;font-weight:600;line-height:1.15;letter-spacing:-.02em}
+.cq-pr h3{font-size:1.5rem;font-weight:600;line-height:1.15;letter-spacing:-.02em}
 .cq-mean{margin-top:12px;font-size:1.0625rem;color:var(--muted);max-width:42ch;text-wrap:pretty}
-.cq-ask{margin-top:28px;font-size:.9375rem;line-height:1.5;max-width:46ch;text-wrap:pretty}
-.cq-ask span{display:block;margin-bottom:6px;font-size:.875rem;font-weight:500;color:var(--muted)}
-.cq-beh{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 28px;align-content:start}
+.cq-beh{list-style:none;margin:20px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 24px;align-content:start}
 .cq-beh li{display:flex;align-items:baseline;gap:12px;font-size:1rem;font-weight:500;line-height:1.35}
 .cq-beh li::before{content:"";flex:none;width:6px;height:6px;border-radius:var(--r-hair);background:var(--muted);transform:translateY(-2px)}
 
-/* ══ THE DRAWINGS ══ one line weight, the site's tokens; the drawing above the value's name */
-.cq-il{margin-bottom:20px}
-.cq-pick .il{display:block;width:100%;max-width:220px;height:auto;aspect-ratio:200/110;overflow:visible}
-.cq-pick .il *{vector-effect:non-scaling-stroke}
-.cq-pick .il rect,.cq-pick .il circle,.cq-pick .il path{fill:none;stroke:var(--line-ctl,#868DAB);stroke-width:1.5;stroke-linecap:round;
-  stroke-linejoin:round}
-.cq-pick .il .ok circle{fill:var(--accent);stroke:none}
-.cq-pick .il .ok path{stroke:#fff;stroke-width:2}
-/* Collaboration: two halves of a page join */
-.cq-pick .il-collaboration rect{fill:#fff}
-.cq-pick .il-collaboration .c-l path{stroke:var(--accent);stroke-width:2.5;opacity:.75}
-.cq-pick .il-collaboration .c-r path{stroke:var(--muted);stroke-width:2.5;opacity:.55}
-.cq-pick .il-collaboration .c-l{animation:cqInL 6s var(--ease) infinite}
-.cq-pick .il-collaboration .c-r{animation:cqInR 6s var(--ease) infinite}
-.cq-pick .il-collaboration .ok{transform-box:fill-box;transform-origin:center;animation:cqvOk 6s var(--ease) infinite}
-@keyframes cqInL{0%{transform:translateX(-28px);opacity:0}15%{opacity:1}35%,86%{transform:none;opacity:1}100%{transform:none;opacity:0}}
-@keyframes cqInR{0%,8%{transform:translateX(28px);opacity:0}24%{opacity:1}42%,86%{transform:none;opacity:1}100%{transform:none;opacity:0}}
-@keyframes cqvOk{0%,46%{opacity:0;transform:scale(.5)}56%,86%{opacity:1;transform:none}100%{opacity:0}}
-/* Results for customers: the bill comes down while the server stays live */
-.cq-pick .il-results .r-bar{fill:var(--accent-wash);stroke:var(--accent);transform-box:fill-box;transform-origin:bottom;
-  animation:cqDown 6s var(--ease) infinite}
-.cq-pick .il-results .r-arr{stroke:var(--muted);stroke-width:2;animation:cqArr 6s var(--ease) infinite}
-.cq-pick .il-results .srv rect{fill:#fff}
-.cq-pick .il-results .srv path{stroke:var(--muted);opacity:.6}
-.cq-pick .il-results .live{fill:var(--good);stroke:none;animation:cqLive 1.6s ease-in-out infinite}
-@keyframes cqDown{0%,14%{transform:none}44%,86%{transform:scaleY(.46)}100%{transform:none}}
-@keyframes cqArr{0%,12%{opacity:0;transform:translateY(-6px)}28%,80%{opacity:1;transform:none}92%,100%{opacity:0}}
-@keyframes cqLive{50%{opacity:.35}}
-/* Efficiency: three steps become one */
-.cq-pick .il-efficiency .e-b{fill:#fff}
-.cq-pick .il-efficiency .e1{animation:cqE1 6s var(--ease) infinite}
-.cq-pick .il-efficiency .e3{animation:cqE3 6s var(--ease) infinite}
-.cq-pick .il-efficiency .e2{animation:cqE2 6s var(--ease) infinite}
-.cq-pick .il-efficiency .e-ok{stroke:var(--accent);stroke-width:2.5;stroke-dasharray:1;stroke-dashoffset:1;animation:cqvTick 6s var(--ease) infinite}
-@keyframes cqE1{0%,14%{transform:none;opacity:1}42%{transform:translateX(52px);opacity:0}88%{transform:translateX(52px);opacity:0}100%{transform:none;opacity:1}}
-@keyframes cqE3{0%,14%{transform:none;opacity:1}42%{transform:translateX(-52px);opacity:0}88%{transform:translateX(-52px);opacity:0}100%{transform:none;opacity:1}}
-@keyframes cqE2{0%,38%{stroke:var(--line-ctl,#868DAB);fill:#fff}48%,86%{stroke:var(--accent);fill:var(--accent-wash)}100%{stroke:var(--line-ctl,#868DAB);fill:#fff}}
-@keyframes cqvTick{0%,46%{stroke-dashoffset:1}58%,86%{stroke-dashoffset:0}100%{stroke-dashoffset:1}}
-/* Diversity, inclusion and belonging: four different shapes find their place in one team */
-.cq-pick .il-diversity .d-team{stroke:var(--text);stroke-dasharray:1;stroke-dashoffset:1;animation:cqTeam 6s var(--ease) infinite}
-.cq-pick .il-diversity .d1{stroke:var(--accent);fill:var(--accent-wash);--x:-18px;--y:-20px}
-.cq-pick .il-diversity .d2{stroke:var(--good);fill:color-mix(in srgb,var(--good) 12%,transparent);--x:8px;--y:26px}
-.cq-pick .il-diversity .d3{stroke:var(--warn);fill:color-mix(in srgb,var(--warn) 12%,transparent);--x:-10px;--y:-26px}
-.cq-pick .il-diversity .d4{stroke:var(--muted);fill:color-mix(in srgb,var(--muted) 12%,transparent);--x:16px;--y:22px}
-.cq-pick .il-diversity .d-s{animation:cqJoin 6s var(--ease) infinite}
-.cq-pick .il-diversity .d2{animation-delay:.15s}.cq-pick .il-diversity .d3{animation-delay:.3s}.cq-pick .il-diversity .d4{animation-delay:.45s}
-@keyframes cqJoin{0%{transform:translate(var(--x),var(--y));opacity:0}12%{opacity:1}38%,86%{transform:none;opacity:1}100%{transform:none;opacity:0}}
-@keyframes cqTeam{0%,40%{stroke-dashoffset:1}62%,86%{stroke-dashoffset:0}100%{stroke-dashoffset:1}}
-/* Iteration: a dot climbs small steps */
-.cq-pick .il-iteration .i-top{stroke:var(--accent);stroke-width:2.5;opacity:0;animation:cqStep 6s var(--ease) infinite}
-.cq-pick .il-iteration .t2{animation-delay:.9s}.cq-pick .il-iteration .t3{animation-delay:1.8s}
-.cq-pick .il-iteration .t4{animation-delay:2.7s}.cq-pick .il-iteration .t5{animation-delay:3.6s}
-.cq-pick .il-iteration .i-dot{fill:var(--accent);stroke:none;animation:cqHop 6s var(--ease) infinite}
-@keyframes cqStep{0%,4%{opacity:0}10%,70%{opacity:1}84%,100%{opacity:0}}
-@keyframes cqHop{0%,8%{transform:none}15%,23%{transform:translate(32px,-16px)}30%,38%{transform:translate(64px,-32px)}
-  45%,53%{transform:translate(96px,-48px)}60%,82%{transform:translate(124px,-64px);opacity:1}92%{opacity:0}100%{transform:none;opacity:0}}
-/* Transparency: a page opens up line by line */
-.cq-pick .il-transparency .t-doc{fill:#fff}
-.cq-pick .il-transparency .t-ln{stroke:var(--text);stroke-width:2.5;opacity:.12;animation:cqLine 6s var(--ease) infinite;
-  animation-delay:calc(var(--k) * .55s)}
-.cq-pick .il-transparency .t-scan{fill:var(--accent);stroke:none;opacity:.10;animation:cqScan 6s linear infinite}
-@keyframes cqLine{0%,10%{opacity:.12}20%,70%{opacity:.9}86%,100%{opacity:.12}}
-@keyframes cqScan{0%{transform:translateY(0);opacity:0}6%{opacity:.12}52%{transform:translateY(82px);opacity:.12}60%,100%{transform:translateY(82px);opacity:0}}
-/* repo: last, so it outranks each drawing's `animation` shorthand (see the head of this sheet): the loops wait,
-   paused, until the picker is on screen */
-.cq-pick:not(.is-on) .il *{animation-play-state:paused}
-
-/* ══ NARROWER SCREENS ══ */
+/* ══ NARROWER SCREENS ══ on a phone the scene sits on top */
 @media (max-width:1100px){.cq-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media (max-width:900px){.cq-panel{grid-template-columns:minmax(0,1fr);gap:32px;padding:24px}}
+@media (max-width:900px){.cq-panel{grid-template-columns:minmax(0,1fr);gap:32px}}
 @media (max-width:640px){.cq-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.cq-tab{min-height:0}.cq-tl{font-size:1.625rem}
   .cq-beh{grid-template-columns:minmax(0,1fr)}}
 
-/* ══ REDUCED MOTION ══ every drawing at its end state, nothing moving by itself (also the `<noscript>` style) */
-@media (prefers-reduced-motion:reduce){.cq-panel.is-in{animation:none}.cq-tab{transition:none}
-  .cq-pick .il *{animation:none!important}
-  .cq-pick .il-efficiency .e1,.cq-pick .il-efficiency .e3{opacity:0}.cq-pick .il-efficiency .e2{stroke:var(--accent);fill:var(--accent-wash)}
-  .cq-pick .il .ok,.cq-pick .il-iteration .i-top{opacity:1}
-  .cq-pick .il-results .r-bar{transform:scaleY(.46)}.cq-pick .il-iteration .i-dot{transform:translate(124px,-64px)}
-  .cq-pick .il-diversity .d-team,.cq-pick .il-efficiency .e-ok{stroke-dashoffset:0}
-  .cq-pick .il-transparency .t-ln{opacity:.9}.cq-pick .il-transparency .t-scan{display:none}}
+/* ══ REDUCED MOTION ══ nothing moves by itself; the scenes hold their still frame (careers-scenes.css) */
+@media (prefers-reduced-motion:reduce){.cq-panel.is-in{animation:none}.cq-tab{transition:none}}
