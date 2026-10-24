@@ -198,6 +198,16 @@ const CARDS: readonly {
     words: "Kubernetes allocatable vs capacity on AKS and EKS",
     paths: ["/learn/kubernetes-allocatable-vs-capacity"],
   },
+  {
+    file: "learn-limitrange-vs-resourcequota",
+    words: "LimitRange vs ResourceQuota: what caps requests",
+    paths: ["/learn/limitrange-vs-resourcequota"],
+  },
+  {
+    file: "learn-safe-to-evict-do-not-disrupt",
+    words: "Safe-to-evict and do-not-disrupt annotations",
+    paths: ["/learn/safe-to-evict-do-not-disrupt"],
+  },
 ];
 
 const sentence = (words: string): string => (/[.?!]$/.test(words) ? words : `${words}.`);
