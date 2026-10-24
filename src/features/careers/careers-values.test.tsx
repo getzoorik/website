@@ -203,7 +203,8 @@ describe("Our values", () => {
       expect(scene).toHaveAttribute("role", "img");
     });
     expect(scenes.map((scene) => scene.getAttribute("aria-label"))).toEqual(SCENE_LABELS);
-    /* Each scene is drawn once, so the ids inside it (its gradients) are the page's alone. */
+    /* Each scene is drawn once, so the ids inside it (its gradients) are unique within the picker; across the whole
+       page, `careers-page.test.tsx` holds every id unique. */
     const ids = [...pick.querySelectorAll(".cq-scene [id]")].map((el) => el.id);
     expect(ids.length).toBeGreaterThan(0);
     expect(new Set(ids).size).toBe(ids.length);

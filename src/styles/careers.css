@@ -18,8 +18,7 @@
  *  - the rings turn only while the figure is on screen: their animation is written paused, and `CareersMotion` gives
  *    `.cq-orbit` its `.is-on` while any of it is in view. The mock's run always.
  *  - the mark in the middle paints its bone through `fill` (`.cq-core svg`), where the mock's symbol reads it from
- *    `--zm-sq`;
- *  - the hero's LinkedIn link has no class: the mock's `cq-lk` names no rule. */
+ *    `--zm-sq`. */
 
 /* repo: sections.css sets `.hero-sub,.sec-head p{text-wrap:pretty}` on every page; the mock's sheet has no such rule,
    so its hero line and section ledes wrap greedily */
@@ -45,6 +44,8 @@
 .cq-join .btn-wire{gap:.3em}
 .cq-lkw{font-size:1em;font-weight:700;letter-spacing:-.01em;color:#FAF7F3}
 .cq-quiet svg.cq-li,.cq-join .btn svg.cq-li{display:inline-block;width:.95em;height:.95em;margin-left:.06em;vertical-align:-.12em}
+/* the hero's LinkedIn link carries the mock's `cq-lk`, which names no rule but keeps it out of the site system's
+   `.hero p a:not([class])` and `main p a:not([class])`: this rule's bone holds, and it is not underlined */
 .cq-quiet a{color:#FAF7F3;text-underline-offset:4px;text-decoration-color:rgba(250,247,243,.4)}
 @media (hover:hover){.cq-quiet a:hover{text-decoration-color:currentColor}}
 /* repo: the bar's 84px strip in the band's outer shade, on this page alone. The bar is the hero's sibling, not its

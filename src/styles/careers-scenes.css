@@ -4,6 +4,7 @@
  * The proposal's `<style id="careers-scenes">`, verbatim (ux-design/_proposals/2026-10-24-careers, `make_careers.py`
  * `scene_css()`): the scene kit's shared rules once (`scenes/kit.py`, `BASE_CSS`), then each scene's own, scoped to its
  * `.sc-<key>`, as `scenes/<key>.html` writes them. Each loop is calm, small and seamless, by transform and opacity.
+ * The kit's `scFloat` and `scPulse` stay with its shared rules, verbatim, though no scene runs them.
  *
  * Reduced motion stops every scene on its still frame (the kit's last shared rule); so does the `<noscript>` style,
  * with the same rule (`CareersValues`).

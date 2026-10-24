@@ -116,8 +116,9 @@ describe("/careers's hero", () => {
     expect(follow).toHaveAttribute("target", "_blank");
     expect(follow).toHaveAttribute("rel", "noopener noreferrer");
     expectLockup(follow, container);
-    /* A plain link in the line, as the mock draws it: no class, no arrow; the only drawing is LinkedIn's "in". */
-    expect(follow).not.toHaveAttribute("class");
+    /* The mock's `cq-lk`, which keeps it out of the site's plain-link rules (accent or white, underlined): bone, no
+       underline. No arrow; the only drawing is LinkedIn's "in". */
+    expect(follow).toHaveAttribute("class", "cq-lk");
     expect(follow.querySelectorAll("svg")).toHaveLength(1);
   });
 

@@ -73,7 +73,7 @@ function Hero(): React.JSX.Element {
           <p className="cq-quiet">
             {/* One text node with its space, as the mock's: the line and the link sit as one line of type. */}
             {`${hero.quiet} `}
-            <a href={linkedIn} {...offSiteProps(linkedIn)}>
+            <a className="cq-lk" href={linkedIn} {...offSiteProps(linkedIn)}>
               {`${hero.follow.label} `}
               <CareersLinkedIn />
               <NewTabHint href={linkedIn} />
