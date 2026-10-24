@@ -1,4 +1,4 @@
-import { act, fireEvent, render } from "@testing-library/react";
+import { act, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 /* The nav and the footer read the pathname. */
@@ -7,16 +7,17 @@ vi.mock("next/navigation", () => ({ usePathname: () => "/careers" }));
 import CareersRoute from "@/app/careers/page";
 
 /**
- * /careers's motion, which jsdom cannot run on its own (it has no
- * IntersectionObserver): the values' autoplay (`CareersValues`) and the page's
- * island (`CareersMotion`), driven by an observer the test moves by hand and
- * by fake timers. The markup and the picker's clicks and keys are in
- * `careers-page.test.tsx`.
+ * The island of /careers's frame (`CareersMotion`), which jsdom cannot run on
+ * its own (it has no IntersectionObserver): the hero's rings turn only while
+ * on screen, and each product's film plays while 35% of it is in view. The
+ * page's other islands (the values, the drawings, the hiring steps) are tested
+ * beside them; the observer here finds the one that watches a given element.
  */
 
-/** An observer the test moves by hand, found by the options it was made with. */
+/** An observer the test moves by hand, found by what it watches. */
 class TestIntersectionObserver {
   static all: TestIntersectionObserver[] = [];
+  readonly watched = new Set<Element>();
 
   constructor(
     private readonly callback: IntersectionObserverCallback,
@@ -25,32 +26,38 @@ class TestIntersectionObserver {
     TestIntersectionObserver.all.push(this);
   }
 
-  /** The one made with this threshold: .4 the picker, .35 the films, .6 the line, .18 the reveal. */
-  static at(threshold: number): TestIntersectionObserver {
-    const found = TestIntersectionObserver.all.find((io) => io.options.threshold === threshold);
-    if (!found) throw new Error(`no observer at threshold ${threshold}`);
-    return found;
+  /** The one observer watching `target`; it is an error for none, or two, to watch it. */
+  static watching(target: Element): TestIntersectionObserver {
+    const found = TestIntersectionObserver.all.filter((io) => io.watched.has(target));
+    if (found.length !== 1) throw new Error(`${found.length} observers watch this element`);
+    return found[0]!;
   }
 
-  observe(): void {}
-  unobserve(): void {}
-  disconnect(): void {}
+  observe(target: Element): void {
+    this.watched.add(target);
+  }
+  unobserve(target: Element): void {
+    this.watched.delete(target);
+  }
+  disconnect(): void {
+    this.watched.clear();
+  }
 
-  private report(isIntersecting: boolean, targets: Element[]): void {
+  private report(isIntersecting: boolean, target: Element): void {
     act(() => {
       this.callback(
-        targets.map((target) => ({ target, isIntersecting }) as IntersectionObserverEntry),
+        [{ target, isIntersecting } as IntersectionObserverEntry],
         this as unknown as IntersectionObserver,
       );
     });
   }
 
-  enter(...targets: Element[]): void {
-    this.report(true, targets);
+  enter(target: Element): void {
+    this.report(true, target);
   }
 
-  leave(...targets: Element[]): void {
-    this.report(false, targets);
+  leave(target: Element): void {
+    this.report(false, target);
   }
 }
 
@@ -65,178 +72,99 @@ const reduceMotion = (reduce: boolean) =>
       }) as unknown as MediaQueryList,
   );
 
-const wait = (ms: number) => act(() => vi.advanceTimersByTime(ms));
-
 let play: ReturnType<typeof vi.spyOn>;
 let pause: ReturnType<typeof vi.spyOn>;
 
 beforeEach(() => {
-  vi.useFakeTimers();
   vi.stubGlobal("IntersectionObserver", TestIntersectionObserver);
   play = vi.spyOn(HTMLMediaElement.prototype, "play").mockResolvedValue(undefined);
   pause = vi.spyOn(HTMLMediaElement.prototype, "pause").mockImplementation(() => {});
 });
 
 afterEach(() => {
-  vi.useRealTimers();
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
   TestIntersectionObserver.all = [];
 });
 
-function careersPage() {
-  reduceMotion(false);
+function careersPage(reduce = false) {
+  reduceMotion(reduce);
   const { container } = render(<CareersRoute />);
-  const pick = container.querySelector<HTMLElement>(".cr-pick")!;
-  const open = () =>
-    [...pick.querySelectorAll('[role="tab"]')].findIndex(
-      (tab) => tab.getAttribute("aria-selected") === "true",
-    );
-  return { container, pick, open };
+  return {
+    container,
+    orbit: container.querySelector(".cq-orbit")!,
+    films: [...container.querySelectorAll<HTMLVideoElement>(".cq-vid video")],
+  };
 }
 
-describe("the values' autoplay", () => {
-  it("opens the next value every seven seconds while the picker is in view, its underline filling", () => {
-    const { pick, open } = careersPage();
-    expect(pick.style.getPropertyValue("--auto")).toBe("7000ms");
-    wait(14000);
-    expect(open()).toBe(0);
-
-    TestIntersectionObserver.at(0.4).enter(pick);
-    expect(pick).toHaveClass("is-auto");
-    wait(6999);
-    expect(open()).toBe(0);
-    wait(1);
-    expect(open()).toBe(1);
-    expect(pick.querySelector("#val-results")).toHaveClass("is-in");
-    wait(7000);
-    expect(open()).toBe(2);
-    /* The autoplay never takes focus. */
-    expect(pick.contains(document.activeElement)).toBe(false);
+describe("the hero's rings", () => {
+  it("turn only while the figure is on screen", () => {
+    const { orbit } = careersPage();
+    expect(orbit).not.toHaveClass("is-on");
+    const watch = TestIntersectionObserver.watching(orbit);
+    watch.enter(orbit);
+    expect(orbit).toHaveClass("is-on");
+    watch.leave(orbit);
+    expect(orbit).not.toHaveClass("is-on");
   });
 
-  it("rests out of view, holds under the pointer and plays on when it leaves", () => {
-    const { pick, open } = careersPage();
-    const io = TestIntersectionObserver.at(0.4);
-    io.enter(pick);
-    io.leave(pick);
-    expect(pick).not.toHaveClass("is-auto");
-    wait(14000);
-    expect(open()).toBe(0);
-
-    io.enter(pick);
-    fireEvent.mouseEnter(pick);
-    expect(pick).not.toHaveClass("is-auto");
-    wait(14000);
-    expect(open()).toBe(0);
-    fireEvent.mouseLeave(pick);
-    expect(pick).toHaveClass("is-auto");
-    wait(7000);
-    expect(open()).toBe(1);
-  });
-
-  it.each([
-    [
-      "a click inside it",
-      (pick: HTMLElement) => fireEvent.click(pick.querySelector("#tab-efficiency")!),
-    ],
-    [
-      "a key inside it",
-      (pick: HTMLElement) =>
-        fireEvent.keyDown(pick.querySelector("#tab-collaboration")!, { key: "Shift" }),
-    ],
-    [
-      "focus moving into it",
-      (pick: HTMLElement) => fireEvent.focusIn(pick.querySelector("#tab-collaboration")!),
-    ],
-    [
-      "a click on a hero letter",
-      (pick: HTMLElement) =>
-        fireEvent.click(pick.ownerDocument.querySelector('.cr-ht[data-go="diversity"]')!),
-    ],
-  ])("stops for good after %s", (_, touch) => {
-    const { pick, open } = careersPage();
-    const io = TestIntersectionObserver.at(0.4);
-    io.enter(pick);
-    touch(pick);
-    const chosen = open();
-    expect(pick).not.toHaveClass("is-auto");
-    wait(21000);
-    io.leave(pick);
-    io.enter(pick);
-    fireEvent.mouseEnter(pick);
-    fireEvent.mouseLeave(pick);
-    wait(21000);
-    expect(open()).toBe(chosen);
-    expect(pick).not.toHaveClass("is-auto");
-  });
-
-  it("never plays under reduced motion", () => {
-    reduceMotion(true);
-    const { container } = render(<CareersRoute />);
-    expect(TestIntersectionObserver.all.some((io) => io.options.threshold === 0.4)).toBe(false);
-    wait(21000);
-    expect(container.querySelector("#tab-collaboration")).toHaveAttribute("aria-selected", "true");
-    expect(container.querySelector(".cr-pick")).not.toHaveClass("is-auto");
+  it("simply turn where there is no observer", () => {
+    vi.stubGlobal("IntersectionObserver", undefined);
+    const { orbit } = careersPage();
+    expect(orbit).toHaveClass("is-on");
   });
 });
 
-describe("the page's motion", () => {
-  it("brings each section in the first time it is in view", () => {
-    const { container } = careersPage();
-    const reveal = TestIntersectionObserver.all.find((io) => io.options.threshold === 0.18)!;
-    expect(reveal.options.rootMargin).toBe("0px 0px -6% 0px");
-    const habit = container.querySelector(".cr-wk.rv")!;
-    expect(habit).not.toHaveClass("is-in");
-    reveal.enter(habit);
-    expect(habit).toHaveClass("is-in");
-  });
-
-  it("walks a light across the hero's letters until one is hovered", () => {
-    const { container } = careersPage();
-    const letters = [...container.querySelectorAll(".cr-ht")];
-    const lit = () => letters.findIndex((letter) => letter.classList.contains("is-lit"));
-    expect(lit()).toBe(-1);
-    wait(1600);
-    expect(lit()).toBe(0);
-    wait(1600);
-    expect(lit()).toBe(1);
-    fireEvent.mouseEnter(letters[4]!);
-    expect(lit()).toBe(-1);
-    wait(4800);
-    expect(lit()).toBe(-1);
-    fireEvent.mouseLeave(letters[4]!);
-    wait(1600);
-    expect(lit()).toBe(2);
-  });
-
-  it("plays each film while it is in view and pauses it when it leaves", () => {
-    const { container } = careersPage();
-    const [coral] = [...container.querySelectorAll("video")];
-    const films = TestIntersectionObserver.at(0.35);
-    films.enter(coral!);
-    expect(play).toHaveBeenCalledTimes(1);
-    films.leave(coral!);
-    expect(pause).toHaveBeenCalledTimes(1);
-  });
-
-  it("draws the hiring line once it is in view", () => {
-    const { container } = careersPage();
-    const line = container.querySelector(".cr-line")!;
-    expect(line).not.toHaveClass("is-on");
-    TestIntersectionObserver.at(0.6).enter(line);
-    expect(line).toHaveClass("is-on");
-  });
-
-  it("places everything at rest under reduced motion: no reveal to wait for, no light, no film", () => {
-    reduceMotion(true);
-    const { container } = render(<CareersRoute />);
-    const entering = [...container.querySelectorAll(".cr-main .rv")];
-    expect(entering.length).toBeGreaterThan(10);
-    for (const el of entering) expect(el).toHaveClass("is-in");
-    expect(TestIntersectionObserver.all.some((io) => io.options.threshold === 0.35)).toBe(false);
-    wait(4800);
-    expect(container.querySelector(".cr-ht.is-lit")).toBeNull();
+describe("the products' films", () => {
+  it("play while 35% of each is in view, and pause when it leaves", () => {
+    const { films } = careersPage();
+    expect(films).toHaveLength(2);
+    const [coral, amoeba] = films as [HTMLVideoElement, HTMLVideoElement];
+    const watch = TestIntersectionObserver.watching(coral);
+    expect(watch.options.threshold).toBe(0.35);
+    expect(TestIntersectionObserver.watching(amoeba)).toBe(watch);
     expect(play).not.toHaveBeenCalled();
+
+    watch.enter(coral);
+    expect(play).toHaveBeenCalledTimes(1);
+    expect(play.mock.contexts[0]).toBe(coral);
+    watch.leave(coral);
+    expect(pause).toHaveBeenCalledTimes(1);
+    expect(pause.mock.contexts[0]).toBe(coral);
+  });
+
+  it("stay on their posters under reduced motion, while the rings' watch goes on (the sheet holds them)", () => {
+    const { films, orbit } = careersPage(true);
+    for (const film of films) {
+      expect(TestIntersectionObserver.all.some((io) => io.watched.has(film))).toBe(false);
+    }
+    expect(play).not.toHaveBeenCalled();
+    TestIntersectionObserver.watching(orbit).enter(orbit);
+    expect(orbit).toHaveClass("is-on");
+  });
+
+  it("stay on their posters where there is no observer", () => {
+    vi.stubGlobal("IntersectionObserver", undefined);
+    careersPage();
+    expect(play).not.toHaveBeenCalled();
+  });
+});
+
+describe("the island", () => {
+  it("draws nothing of its own: nothing is hidden before it runs, so it needs no <noscript> style", () => {
+    const { container } = careersPage();
+    expect(container.querySelector("main > noscript")).toBeNull();
+  });
+
+  it("lets go of its observers when the page goes", () => {
+    reduceMotion(false);
+    const { container, unmount } = render(<CareersRoute />);
+    const orbit = container.querySelector(".cq-orbit")!;
+    const [coral] = [...container.querySelectorAll(".cq-vid video")];
+    const turn = TestIntersectionObserver.watching(orbit);
+    const films = TestIntersectionObserver.watching(coral!);
+    unmount();
+    expect(turn.watched.size).toBe(0);
+    expect(films.watched.size).toBe(0);
   });
 });

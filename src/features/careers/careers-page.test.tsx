@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 
-import { fireEvent, render } from "@testing-library/react";
-import { beforeAll, describe, expect, it, vi } from "vitest";
+import { render } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 
 import { contactEmail } from "@/config/site";
 import { careers } from "@/content/careers";
@@ -13,83 +13,143 @@ vi.mock("next/navigation", () => ({ usePathname: () => "/careers" }));
 import CareersRoute, { metadata } from "@/app/careers/page";
 
 /**
- * `/careers`: the metadata, the hero and its six letters, the outline, its
- * addresses and its ledes, the two films, the values picker as WAI-ARIA tabs,
- * the six hiring steps, the close with no open roles, and the footer's Careers
- * link; and none of what was cut (the caps labels, each
- * behaviour's sentence, the values-interview card). Its sitemap entry is in
- * `src/app/sitemap.test.ts`, its structured data in
- * `src/config/structured-data.test.ts`.
+ * `/careers`'s frame: the metadata, the quiet navy hero and its rings, What you
+ * will build, the order of the sections and their bands, the navy close, the
+ * site's words, and none of the old layer. Our values, How we work and How we
+ * hire are tested beside their components; the island's motion in
+ * `careers-motion.test.tsx`. Its sitemap entry is in `src/app/sitemap.test.ts`,
+ * its structured data in `src/config/structured-data.test.ts`.
  */
 
 const text = (el: Element | null): string => (el?.textContent ?? "").replace(/[\s ]+/g, " ").trim();
 const page = () => render(<CareersRoute />).container;
-
-beforeAll(() => {
-  /* jsdom draws nothing, so it has no scrollIntoView; the panels' buttons call it. */
-  Element.prototype.scrollIntoView = vi.fn();
-});
+const linkedIn = socialProfiles.find((profile) => profile.platform === "linkedin")!.href;
 
 describe("/careers's metadata", () => {
-  it("has its title through the template, the mock's description and its canonical", () => {
+  it("has its title through the template, its description and its canonical", () => {
     expect(metadata.title).toBe("Careers");
     expect(metadata.description).toBe(
       "Work at Zoorik, remotely. What you will build, our six values, how we work and how we hire.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/careers" });
     expect(metadata).not.toHaveProperty("robots");
-    expect(metadata.openGraph).toMatchObject({
-      url: "/careers",
-      title: "Careers | Zoorik",
-    });
+    expect(metadata.openGraph).toMatchObject({ url: "/careers", title: "Careers | Zoorik" });
   });
 });
 
-describe("/careers", () => {
-  it("opens on the utility hero: the glow without the turning mark, the copy and the six letters", () => {
-    const hero = page().querySelector("main > header.hero.doc-hero#top")!;
-    expect(hero.querySelector(":scope > .zk-glow")).not.toBeNull();
-    expect(hero.querySelector(".zk-art")).toBeNull();
-    /* No caps label over the heading: the h1 opens the copy. */
-    expect([...hero.querySelector(".cr-hcopy")!.children].map((el) => el.tagName)).toEqual([
-      "H1",
-      "P",
-      "DIV",
-    ]);
+describe("/careers's hero", () => {
+  it("is a quiet band: Careers, the heading, the line, one button and the quiet line", () => {
+    const hero = page().querySelector("main > header.hero.cq-hero#top")!;
+    /* No glow and no turning mark: the rings are its figure. */
+    expect(hero.querySelector(".zk-glow, .zk-art")).toBeNull();
+    expect(
+      [...hero.querySelector(".cq-hin > .cq-hcopy")!.children].map(
+        (el) => `${el.tagName} ${el.className}`,
+      ),
+    ).toEqual(["P cq-eye", "H1 ", "P hero-sub", "DIV hero-cta", "P cq-quiet"]);
+    expect(text(hero.querySelector(".cq-eye"))).toBe("Careers");
     const h1 = hero.querySelector("h1")!;
     expect(text(h1)).toBe("Work at Zoorik");
     expect(h1.querySelector('span[translate="no"]')).toHaveTextContent("Zoorik");
-    expect(text(hero.querySelector(".doc-deck"))).toBe(
+    const deck = hero.querySelector(".hero-sub")!;
+    expect(text(deck)).toBe(
       "Help build Coral and Amoeba, the software that reduces cloud cost on Azure and AWS.",
     );
-    const [introduce, values] = hero.querySelectorAll(".hero-cta > a");
-    expect(introduce).toHaveClass("btn", "btn-light");
-    expect(introduce).toHaveAttribute(
+    expect([...deck.querySelectorAll('[translate="no"]')].map(text)).toEqual(["Coral", "Amoeba"]);
+
+    const buttons = hero.querySelectorAll(".hero-cta > a");
+    expect(buttons).toHaveLength(1);
+    expect(buttons[0]).toHaveClass("btn", "btn-light");
+    expect(buttons[0]).toHaveAttribute(
       "href",
       `mailto:${contactEmail}?subject=Introducing%20myself`,
     );
-    expect(values).toHaveAttribute("href", "#values");
-    expect(text(values!)).toBe("Our values");
-
-    const letters = hero.querySelectorAll("nav.cr-hgrid[aria-label='Our six values'] > a.cr-ht");
-    expect(
-      [...letters].map((a) => [text(a.querySelector("b")), text(a.querySelector("small"))]),
-    ).toEqual([
-      ["C", "Collaboration"],
-      ["R", "Results"],
-      ["E", "Efficiency"],
-      ["D", "Diversity"],
-      ["I", "Iteration"],
-      ["T", "Transparency"],
-    ]);
-    for (const letter of letters) {
-      expect(letter).toHaveAttribute("href", "#values");
-      expect(letter.querySelector("b")).toHaveAttribute("aria-hidden", "true");
-    }
+    expect(text(buttons[0]!)).toBe("Introduce yourself");
+    expect(buttons[0]!.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
   });
 
-  it("reads in the mock's order, each section an address named by its heading, two on the band", () => {
-    const main = page().querySelector("main")!;
+  it("says there are no open roles, and follows us on LinkedIn in a new tab", () => {
+    const quiet = page().querySelector(".cq-hero .cq-quiet")!;
+    expect(text(quiet)).toBe("No open roles right now. Follow us on LinkedIn (opens in a new tab)");
+    const follow = quiet.querySelector("a")!;
+    expect(follow).toHaveAttribute("href", linkedIn);
+    expect(follow).toHaveAttribute("target", "_blank");
+    expect(follow).toHaveAttribute("rel", "noopener noreferrer");
+    expect(follow.querySelector(".sr-only")).toHaveTextContent("(opens in a new tab)");
+    /* A plain link in the line, as the mock draws it: no class, no arrow. */
+    expect(follow).not.toHaveAttribute("class");
+    expect(follow.querySelector("svg")).toBeNull();
+  });
+
+  it("draws the Zoorik mark with the tools turning round it on two rings, one image for the ear", () => {
+    const orbit = page().querySelector(".cq-hin > .cq-orbit")!;
+    expect(orbit).toHaveAttribute("role", "img");
+    expect(orbit).toHaveAttribute(
+      "aria-label",
+      "The Zoorik mark, with the tools we build with turning round it: Kubernetes, Azure, AWS, Linux, Go, PostgreSQL, GitHub, Helm, Terraform.",
+    );
+    /* The outer ring first, then the inner, then the mark, as the mock stacks them. */
+    expect([...orbit.children].map((el) => el.className)).toEqual([
+      "cq-ring cq-r2",
+      "cq-ring cq-r1",
+      "cq-core",
+    ]);
+    const ring = (cls: string) =>
+      [...orbit.querySelectorAll(`.${cls} > .cq-o`)].map((tile) => [
+        tile.getAttribute("title"),
+        (tile as HTMLElement).style.getPropertyValue("--a"),
+      ]);
+    expect(ring("cq-r2")).toEqual([
+      ["Go", "15deg"],
+      ["PostgreSQL", "87deg"],
+      ["GitHub", "159deg"],
+      ["Helm", "231deg"],
+      ["Terraform", "303deg"],
+    ]);
+    expect(ring("cq-r1")).toEqual([
+      ["Kubernetes", "45deg"],
+      ["Azure", "135deg"],
+      ["AWS", "225deg"],
+      ["Linux", "315deg"],
+    ]);
+    /* Each tile holds its tool's own mark, hidden from the ear. */
+    const marks = [...orbit.querySelectorAll(".cq-o > .cq-ol > svg")];
+    expect(marks.map((svg) => svg.getAttribute("data-mark") ?? svg.getAttribute("class"))).toEqual([
+      "go",
+      "postgresql",
+      "github",
+      "cq-helm",
+      "cq-tf",
+      "kubernetes",
+      "azure",
+      "aws",
+      "linux",
+    ]);
+    for (const svg of marks) expect(svg).toHaveAttribute("aria-hidden", "true");
+  });
+
+  it("keeps the mark still in the middle: the brand kit's fifteen squares and its core, on the 512 canvas", () => {
+    const mark = page().querySelector(".cq-orbit > .cq-core > svg")!;
+    expect(mark).toHaveAttribute("viewBox", "0 0 512 512");
+    expect(mark).toHaveAttribute("aria-hidden", "true");
+    expect(mark.querySelectorAll(":scope > rect")).toHaveLength(15);
+    expect(mark.querySelector(":scope > circle")).toHaveAttribute("r", "104");
+    /* Not `BrandMark`, whose rings turn. */
+    expect(mark.querySelector(".zl-o, .zl-i")).toBeNull();
+  });
+
+  it("gives every gradient on the page its own id (the Azure mark is drawn three times)", () => {
+    const container = page();
+    const ids = [...container.querySelectorAll("[id]")].map((el) => el.id);
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(container.querySelectorAll("main svg[data-mark='azure']")).toHaveLength(3);
+  });
+});
+
+describe("/careers's sections", () => {
+  it("reads in the mock's order, each section an address named by its heading, two on the flat band", () => {
+    const main = page().querySelector("main#main")!;
+    expect(main.firstElementChild).toBe(main.querySelector("header.cq-hero"));
     const sections = [...main.querySelectorAll(":scope > section")];
     expect(sections.map((section) => section.id)).toEqual([
       "build",
@@ -102,7 +162,7 @@ describe("/careers", () => {
       expect(section).toHaveAttribute("aria-labelledby", `${section.id}-h`);
       expect(section.querySelector(`h2#${section.id}-h`)).not.toBeNull();
     }
-    expect(sections.map((section) => section.classList.contains("sec-band"))).toEqual([
+    expect(sections.map((section) => section.matches(".sec-band.cq-band"))).toEqual([
       false,
       true,
       false,
@@ -116,28 +176,38 @@ describe("/careers", () => {
       "How we hire",
       "Want to build with us?",
     ]);
-    /* One short lede, or none: Our values and How we work have the heading alone. */
-    expect(
-      sections.slice(0, 4).map((section) => text(section.querySelector(".sec-head > p"))),
-    ).toEqual(["Two products that change live systems, safely.", "", "", "Six steps, all remote."]);
-    for (const id of ["values", "how-we-work"]) {
-      expect(main.querySelector(`#${id} .sec-head`)!.children).toHaveLength(1);
-    }
     /* No assessment row: the mock ends on the close. */
     expect(main.querySelector("#assess, #contact")).toBeNull();
   });
 
-  it("shows each product's film, muted and inline, its line, its stack and its page", () => {
-    const products = [...page().querySelectorAll("#build .cr-prods > article.cr-prod")];
+  it("shows What you will build with its lede, and each product's film, label, title, stack and page", () => {
+    const build = page().querySelector("section#build")!;
+    expect(text(build.querySelector(".sec-head > p"))).toBe(
+      "Two products that change live systems, safely.",
+    );
+    const products = [...build.querySelectorAll(".cq-prods > article.cq-prod")];
     expect(products).toHaveLength(2);
-    const films = products.map((product) => product.querySelector("video")!);
+    /* No card: the film, then the words, straight on the page. */
+    for (const product of products) {
+      expect([...product.children].map((el) => `${el.tagName} ${el.className}`)).toEqual([
+        "DIV cq-vid",
+        "P cq-plabel",
+        "H3 ",
+        "UL cq-stack",
+        "A alink",
+      ]);
+    }
+
+    const films = products.map((product) =>
+      product.querySelector<HTMLVideoElement>(".cq-vid > video")!,
+    );
     expect(films.map((film) => film.getAttribute("src"))).toEqual([
       "/motion/coral-overview-5s.mp4",
       "/motion/amoeba-overview-5s.mp4",
     ]);
-    expect(films.map((film) => film.getAttribute("poster"))).toEqual([
-      "/motion/coral-poster.jpg",
-      "/motion/amoeba-poster.jpg",
+    expect(films.map((film) => film.getAttribute("aria-label"))).toEqual([
+      "Coral’s Overview with example figures",
+      "Amoeba’s Overview with example figures",
     ]);
     for (const film of films) {
       expect(film.muted).toBe(true);
@@ -147,264 +217,130 @@ describe("/careers", () => {
       expect(existsSync(`public${film.getAttribute("src")}`)).toBe(true);
       expect(existsSync(`public${film.getAttribute("poster")}`)).toBe(true);
     }
-    expect(products.map((product) => text(product.querySelector("h3")))).toEqual([
-      "Coral",
-      "Amoeba",
-    ]);
-    expect(products.map((product) => text(product.querySelector(".cr-stack")))).toEqual([
-      "KubernetesAKSEKSJavaGoPostgreSQL",
-      "Linux VMsbtrfssystemdAzureAWSJava",
-    ]);
-    expect(
-      products.map((product) => product.querySelector("a.alink")!.getAttribute("href")),
-    ).toEqual(["/coral", "/amoeba"]);
-    expect(text(products[0]!.querySelector("a.alink"))).toBe("See Coral");
-  });
 
-  it("draws the values as tabs: the first open, each panel with its meaning, behaviours and question", () => {
-    const values = page().querySelector("#values")!;
-    const tabs = [...values.querySelectorAll('[role="tablist"] > [role="tab"]')];
-    expect(tabs.map(text)).toEqual([
-      "CCollaboration",
-      "RResults for customers",
-      "EEfficiency",
-      "DDiversity, inclusion and belonging",
-      "IIteration",
-      "TTransparency",
-    ]);
-    expect(tabs.map((tab) => tab.getAttribute("aria-selected"))).toEqual([
-      "true",
-      "false",
-      "false",
-      "false",
-      "false",
-      "false",
-    ]);
-    const panels = [...values.querySelectorAll('[role="tabpanel"]')];
-    expect(panels.map((panel) => panel.hasAttribute("hidden"))).toEqual([
-      false,
-      true,
-      true,
-      true,
-      true,
-      true,
-    ]);
-    panels.forEach((panel, i) => {
-      const value = careers.values.list[i]!;
-      expect(panel).toHaveAttribute("id", `val-${value.id}`);
-      expect(panel).toHaveAttribute("aria-labelledby", `tab-${value.id}`);
-      expect(tabs[i]).toHaveAttribute("aria-controls", `val-${value.id}`);
-      /* No "C · 1 of 6" over the name. */
-      expect([...panel.querySelector(".cr-pl")!.children].map((el) => el.className)).toEqual([
-        "",
-        "cr-mean",
-        "cr-q",
-      ]);
-      expect(text(panel.querySelector(".cr-pl > h3"))).toBe(value.name);
-      expect(text(panel.querySelector(".cr-q > span"))).toBe("We ask");
-      expect(text(panel.querySelector(".cr-q"))).toBe(`We ask“${value.question}”`);
-      /* Each behaviour is its tick and its name, nothing more. */
-      const behaviours = [...panel.querySelectorAll(".cr-live > li")];
-      expect(behaviours.map((li) => text(li))).toEqual(value.behaviours);
-      for (const li of behaviours) {
-        expect([...li.children].map((el) => el.tagName)).toEqual(["SPAN", "H4"]);
-        expect(li.firstElementChild).toHaveClass("cr-tick");
-      }
-    });
-    expect(panels.map((panel) => text(panel.querySelector(".cr-mean")))).toEqual([
-      "We get further together than alone.",
-      "We reduce our customers’ cloud bills without breaking anything.",
-      "We spend time and money on what matters, and we do it once.",
-      "Good ideas come from everywhere.",
-      "Small steps add up faster than big plans.",
-      "We share by default. It builds trust.",
-    ]);
-    expect(text(panels[0]!.querySelector(".cr-live"))).toBe(
-      "Be kindShare what you learnSay thanks, and say what forGive feedback earlyAssume positive intentNo egoFix the system, not the personInput is not consensus",
-    );
-    /* The last panel leads on to How we work. */
-    expect(panels[5]!.querySelector(".cr-pnav a.cr-pb.is-next")).toHaveAttribute(
-      "href",
-      "#how-we-work",
-    );
-  });
-
-  it("moves between values by click, by the arrow keys, Home and End, and by a panel's buttons", () => {
-    const values = page().querySelector("#values")!;
-    const tabs = () => [...values.querySelectorAll<HTMLElement>('[role="tab"]')];
-    const open = () => tabs().findIndex((tab) => tab.getAttribute("aria-selected") === "true");
-    const shown = () =>
-      [...values.querySelectorAll('[role="tabpanel"]')].findIndex((p) => !p.hasAttribute("hidden"));
-
-    fireEvent.click(tabs()[2]!);
-    expect([open(), shown()]).toEqual([2, 2]);
-    expect(tabs().map((tab) => tab.tabIndex)).toEqual([-1, -1, 0, -1, -1, -1]);
-
-    fireEvent.keyDown(tabs()[2]!, { key: "ArrowRight" });
-    expect([open(), shown()]).toEqual([3, 3]);
-    expect(document.activeElement).toBe(tabs()[3]);
-    fireEvent.keyDown(tabs()[3]!, { key: "End" });
-    expect(open()).toBe(5);
-    fireEvent.keyDown(tabs()[5]!, { key: "ArrowRight" });
-    expect(open()).toBe(0);
-    fireEvent.keyDown(tabs()[0]!, { key: "ArrowLeft" });
-    expect(open()).toBe(5);
-    fireEvent.keyDown(tabs()[5]!, { key: "Home" });
-    expect(open()).toBe(0);
-
-    const next = values.querySelector<HTMLElement>("#val-collaboration .cr-pb.is-next")!;
-    expect(text(next)).toBe("Next: Results for customers");
-    fireEvent.click(next);
-    expect([open(), shown()]).toEqual([1, 1]);
-    const back = values.querySelector<HTMLElement>(
-      "#val-results .cr-pnav > button.cr-pb:not(.is-next)",
-    )!;
-    expect(text(back)).toBe("Collaboration");
-    fireEvent.click(back);
-    expect(open()).toBe(0);
-    expect(values.querySelector("#val-collaboration")).toHaveClass("is-in");
-  });
-
-  it("opens a value from its letter in the hero", () => {
-    const container = page();
-    fireEvent.click(container.querySelector('.cr-ht[data-go="iteration"]')!);
-    expect(container.querySelector("#tab-iteration")).toHaveAttribute("aria-selected", "true");
-    expect(container.querySelector("#val-iteration")).not.toHaveAttribute("hidden");
-  });
-
-  it("says how we work in four habits, one line each, each with its picture", () => {
-    const habits = [...page().querySelectorAll("#how-we-work .cr-work > article.cr-wk")];
-    expect(
-      habits.map((habit) => [text(habit.querySelector("h3")), text(habit.querySelector("p"))]),
-    ).toEqual([
-      ["Remote first", "Work from where you work best."],
-      ["Written down", "Plans and decisions live in writing."],
-      ["Asynchronous by default", "Most work needs no meeting."],
-      ["Results, not hours", "What shipped, not when you were online."],
-    ]);
-    expect(habits.map((habit) => habit.querySelector("svg.cr-vis")!.classList[1])).toEqual([
-      "v-team",
-      "v-doc",
-      "v-async",
-      "v-res",
-    ]);
-    for (const habit of habits) {
-      expect(habit.querySelector("svg.cr-vis")).toHaveAttribute("aria-hidden", "true");
+    /* The quiet label: the product's mark, then its name, out of a translator's hands. */
+    const labels = products.map((product) => product.querySelector(".cq-plabel")!);
+    expect(labels.map(text)).toEqual(["Coral", "Amoeba"]);
+    for (const label of labels) {
+      expect(label.querySelector(":scope > svg")).toHaveAttribute("aria-hidden", "true");
+      expect(label.querySelector('span > span[translate="no"]')).not.toBeNull();
     }
+    expect(labels[0]!.querySelector("svg")).toHaveAttribute("data-mark", "kubernetes");
+    /* The home page's titles. */
+    expect(products.map((product) => text(product.querySelector("h3")))).toEqual([
+      "Kubernetes cost optimization",
+      "Block storage cost optimization",
+    ]);
+
+    const see = products.map((product) => product.querySelector("a.alink")!);
+    expect(see.map((a) => [text(a), a.getAttribute("href")])).toEqual([
+      ["See Coral", "/coral"],
+      ["See Amoeba", "/amoeba"],
+    ]);
+    for (const a of see) expect(a.querySelector('[translate="no"] + svg')).not.toBeNull();
   });
 
-  it("lists the six hiring steps, one line each, the values interview marked, and no card under them", () => {
-    const container = page();
-    const hire = container.querySelector("#how-we-hire")!;
-    const steps = [...hire.querySelectorAll("ol.cr-steps > li")];
-    expect(
-      steps.map((step) => [text(step.querySelector("h3")), text(step.querySelector("h3 + p"))]),
-    ).toEqual([
-      ["Apply", "Your CV and something you are proud of."],
-      ["Intro call", "The role, and how we work."],
-      ["Skills interview", "Real systems, or your own work."],
-      ["Values interview", "One question per value."],
-      ["Meet the founders", "Questions both ways."],
-      ["Offer", "References, then the offer in writing."],
-    ]);
-    expect(steps.map((step) => text(step.querySelector(".cr-mode")))).toEqual([
-      "In writing",
-      "Video call",
-      "Video call",
-      "Video call",
-      "Video call",
-      "In writing",
-    ]);
-    expect(steps.map((step) => step.classList.contains("is-v"))).toEqual([
-      false,
-      false,
-      false,
-      true,
-      false,
-      false,
-    ]);
-    expect(steps.map((step) => text(step.querySelector(".cr-n")))).toEqual([
-      "1",
-      "2",
-      "3",
-      "4",
-      "5",
-      "6",
-    ]);
-    /* No values-interview card: the steps close the section. */
-    expect(hire.querySelector(".wrap")!.lastElementChild).toBe(hire.querySelector("ol.cr-steps"));
-    expect(container.querySelector("#values-interview")).toBeNull();
-    expect(container.querySelector("main")!.textContent).not.toMatch(
-      /Every candidate|What we look for|How we decide|How to prepare/,
+  it("lists each stack as marks with names; Java, btrfs and systemd as their names alone", () => {
+    const stacks = [...page().querySelectorAll("#build ul.cq-stack")];
+    for (const stack of stacks)
+      expect(stack).toHaveAttribute("aria-label", "What it is built with");
+    const items = stacks.map((stack) =>
+      [...stack.querySelectorAll(":scope > li")].map((li) => [
+        text(li),
+        li.querySelector(":scope > svg")?.getAttribute("data-mark") ?? null,
+      ]),
     );
+    expect(items).toEqual([
+      [
+        ["Kubernetes", "kubernetes"],
+        ["AKS", "azure"],
+        ["EKS", "aws"],
+        ["Java", null],
+        ["Go", "go"],
+        ["PostgreSQL", "postgresql"],
+      ],
+      [
+        ["Linux VMs", "linux"],
+        ["btrfs", null],
+        ["systemd", null],
+        ["Azure", "azure"],
+        ["AWS", "aws"],
+        ["Java", null],
+      ],
+    ]);
   });
 
-  it("closes on no open roles, the teams we hire for, each a ready email", () => {
-    const join = page().querySelector("#join .cr-join")!;
-    /* No caps label over the heading. */
-    expect(join.querySelector(".cr-jc")!.firstElementChild).toBe(join.querySelector("h2"));
-    expect(text(join.querySelector(".cr-jc > p"))).toBe(
+  it("closes on a flat navy card: no open roles, two buttons, the address and the teams, each a ready email", () => {
+    const join = page().querySelector("section#join.sec.cq-join-s .cq-join")!;
+    /* No art: nothing drawn in the card. */
+    expect(join.querySelector("svg")).toBeNull();
+    const copy = join.querySelector(".cq-jc")!;
+    expect([...copy.children].map((el) => `${el.tagName} ${el.className}`)).toEqual([
+      "H2 ",
+      "P ",
+      "DIV cq-jb",
+      "P cq-mail",
+    ]);
+    expect(text(copy.querySelector(":scope > p"))).toBe(
       "No open roles right now. Introduce yourself anyway.",
     );
-    expect(join.querySelectorAll(".cr-jc > p")).toHaveLength(1);
-    expect([...join.querySelectorAll(".cr-jg > p")].map(text)).toEqual(["Tech", "Non-tech"]);
-    const teams = [...join.querySelectorAll(".cr-jg a")];
-    expect(teams.map((a) => [text(a), a.getAttribute("href")])).toEqual(
+
+    const [introduce, follow] = [...copy.querySelectorAll(".cq-jb > a")];
+    expect(introduce).toHaveClass("btn", "btn-light");
+    expect(introduce).toHaveAttribute(
+      "href",
+      `mailto:${contactEmail}?subject=Introducing%20myself`,
+    );
+    expect(text(introduce!)).toBe("Introduce yourself");
+    expect(follow).toHaveClass("btn", "btn-wire");
+    expect(follow).toHaveAttribute("href", linkedIn);
+    expect(follow).toHaveAttribute("target", "_blank");
+    expect(follow).toHaveAttribute("rel", "noopener noreferrer");
+    expect(text(follow!)).toBe("Follow us on LinkedIn (opens in a new tab)");
+    expect(follow!.querySelector("svg")).toBeNull();
+
+    const mail = copy.querySelector(".cq-mail")!;
+    expect(text(mail)).toBe(`Or write to ${contactEmail}`);
+    expect(mail.querySelector("a")).toHaveAttribute("href", `mailto:${contactEmail}`);
+
+    expect([...join.querySelectorAll(".cq-jt > .cq-jg > p")].map(text)).toEqual([
+      "Tech",
+      "Non-tech",
+    ]);
+    expect(
+      [...join.querySelectorAll(".cq-jg a")].map((a) => [text(a), a.getAttribute("href")]),
+    ).toEqual(
       ["Backend", "Infra", "Frontend", "Design", "Sales", "Marketing"].map((role) => [
         role,
         `mailto:${contactEmail}?subject=Introducing%20myself%3A%20${role}`,
       ]),
     );
-    expect(join.querySelector(".cr-jb a[href^='mailto:']:not(.btn)")).toHaveAttribute(
-      "href",
-      `mailto:${contactEmail}`,
-    );
-    expect(join.querySelector("svg.cr-jart")).toHaveAttribute("aria-hidden", "true");
   });
+});
 
-  it("follows us on LinkedIn between the ready email and the address, at the footer's own profile", () => {
-    const row = page().querySelector("#join .cr-jb")!;
-    expect([...row.children].map((child) => child.className || child.tagName)).toEqual([
-      "btn btn-light",
-      "btn btn-wire",
-      "SPAN",
-    ]);
-    const follow = row.querySelector("a.btn-wire")!;
-    const linkedin = socialProfiles.find((profile) => profile.platform === "linkedin")!.href;
-    expect(follow).toHaveAttribute("href", linkedin);
-    expect(follow).toHaveAttribute("target", "_blank");
-    expect(follow).toHaveAttribute("rel", "noopener noreferrer");
-    expect(follow.querySelector(".sr-only")).toHaveTextContent("(opens in a new tab)");
-    /* The mock draws no arrow on it. */
-    expect(follow.querySelector("svg")).toBeNull();
-    expect(text(follow)).toBe("Follow us on LinkedIn (opens in a new tab)");
-    expect(text(row.querySelector(":scope > span"))).toBe(`or write to ${contactEmail}`);
-  });
-
+describe("/careers's words", () => {
   it("speaks of the products in the site's words: reduce, never cut or lower", () => {
     const main = page().querySelector("main")!;
-    expect(text(main.querySelector(".doc-deck"))).toContain("the software that reduces cloud cost");
     /* The Efficiency question's "cut" is about the candidate's own work, as the mock asks it. */
     const efficiency = careers.values.list.find((value) => value.id === "efficiency")!.question;
     expect(efficiency).toMatch(/^Tell us about a time you cut something /);
     expect(main.textContent!.replace(efficiency, "")).not.toMatch(/\bcuts?\b|\blower\b|\bwaste/i);
   });
 
-  it("posts no role and carries no equal-opportunity line", () => {
+  it("posts no role, names no Operations team and no GitLab, and carries no equal-opportunity line", () => {
     const main = page().querySelector("main")!;
-    expect(main.textContent).not.toMatch(/equal opportunity|apply now|salary/i);
+    expect(main.textContent).toContain("No open roles right now.");
+    expect(main.textContent).not.toMatch(/equal opportunity|apply now|salary|Operations|GitLab/i);
     expect(main.innerHTML).not.toMatch(/JobPosting/);
   });
 
-  it("prints none of the caps labels that were cut", () => {
+  it("keeps none of the old layer: no `cr-` class, no letters, no glow", () => {
     const main = page().querySelector("main")!;
-    expect(main.querySelector(".cr-eye, .cr-k, .cr-vic, .cr-vb")).toBeNull();
-    expect(main.textContent).not.toMatch(/Teams we hire for|In your values interview|· \d of 6/);
-  });
-
-  it("draws the page at rest when scripting is off", () => {
-    const noscript = page().querySelector("main noscript")!;
-    expect(noscript.innerHTML).toContain(".cr-main .rv{opacity:1;transform:none;transition:none}");
+    const classes = [...main.querySelectorAll("[class]")].flatMap((el) =>
+      String(el.getAttribute("class")).split(/\s+/),
+    );
+    expect(classes.filter((name) => name.startsWith("cr-"))).toEqual([]);
+    expect(main.querySelector(".doc-hero, .doc-deck, .zk-glow, .rv")).toBeNull();
   });
 
   it("is linked from the footer's Company column, after About", () => {
