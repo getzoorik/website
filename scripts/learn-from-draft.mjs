@@ -385,7 +385,7 @@ function render(blocks, ctx) {
       case "h3":
         return {
           kind: "h3",
-          id: slugOf(b.text),
+          id: /\{#([^}]+)\}\s*$/.exec(b.text)?.[1] ?? slugOf(b.text),
           title: words(b.text.replace(/\s*\{#[^}]*\}/g, "")),
         };
       case "code":
@@ -435,7 +435,7 @@ function front(text) {
 function where(href) {
   const path = href.split("#")[0].split("?")[0];
   if (path.startsWith("/learn/")) return "Learn";
-  if (path.startsWith("/case-studies")) return "Case study";
+  if (path.startsWith("/case-studies") || path.startsWith("/value-lab/")) return "Case study";
   if (path.startsWith("/docs/")) return "Docs";
   const m = /^\/(coral|amoeba)(\/(guide|faq))?$/.exec(path);
   if (m) {
