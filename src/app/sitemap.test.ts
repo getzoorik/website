@@ -122,7 +122,7 @@ describe("sitemap.xml", () => {
       "/news": "2026-10-19",
       "/community": "2026-10-21",
       "/about": "2026-10-21",
-      "/careers": "2026-10-21",
+      "/careers": "2026-10-25",
       "/brand-assets": "2026-10-21",
       "/referrals": "2026-10-21",
       "/partners": "2026-10-21",

@@ -1,45 +1,66 @@
 "use client";
 
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-} from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
-import { Arrow } from "@/components/primitives/arrow";
 import { careers } from "@/content/careers";
-import { BackGlyph, TickGlyph } from "@/features/careers/careers-glyphs";
+import { ValueDrawing } from "@/features/careers/careers-value-drawings";
 import { named } from "@/features/legal/named";
 
 /**
- * Our values (the mock's picker): six tabs, one panel at a time with the
- * value's meaning in one line, every behaviour by its name, and the question
- * its values interview asks, under a plain "We ask", with no "C · 1 of 6" and
- * no blue caps label over a panel.
+ * Our values (option A, 24 Oct 2026): six tabs, the chosen one in ink, and one
+ * panel at a time: the value's drawing, its name, its meaning in one line and
+ * the question its values interview asks under a plain "We ask"; beside them
+ * every behaviour by its name, after a small square bullet. No tint, no
+ * progress line and no Previous/Next bar.
  *
  * ─── WAI-ARIA TABS ─────────────────────────────────────────────────────────
  * The arrow keys, Home and End move between the tabs and wrap; only the chosen
- * tab is in the tab order, and its panel follows it. Each panel ends on the way
- * to the previous and the next value, the last one on How we work.
+ * tab is in the tab order, and its panel follows it.
  *
  * ─── IT PLAYS BY ITSELF UNTIL TOUCHED ──────────────────────────────────────
- * While at least 40% of it is in view, the chosen tab's underline fills over
- * seven seconds and the next value opens. Hovering holds it; any click or key
- * inside it, focus moving into it, or a click on a hero letter, stops it for
- * good, so a keyboard or screen-reader user's tab never changes under them.
- * Under reduced motion it never plays.
+ * While at least 40% of it is in view, the next value opens every seven
+ * seconds. Hovering holds it; any click or key inside it, or focus moving into
+ * it, stops it for good, so a keyboard or screen-reader user's tab never
+ * changes under them. Under reduced motion it never plays.
  *
- * The hero's six letters (`a[data-go]`, server-rendered in the hero) open
- * their value here: their href takes the reader to `#values`, and this picks
- * the value. Every panel is in the markup, so the page reads whole without
- * scripting, the first value open.
+ * ─── EACH DRAWING PLAYS WHILE ITS VALUE IS OPEN ────────────────────────────
+ * The open panel's drawing loops (6s) while a quarter of the picker is in view
+ * (`.is-on`); a hidden panel draws nothing. Under reduced motion, or without
+ * scripting (the `<noscript>` style), each drawing holds its end state.
+ *
+ * ─── A VALUE HAS AN ADDRESS ────────────────────────────────────────────────
+ * `#val-<id>` (or `#tab-<id>`) opens that value, on arrival or when the hash
+ * changes, and brings the section into view: the browser cannot scroll to a
+ * hidden panel. It stops the autoplay, as a click does. Every panel is in the
+ * markup; without scripting the tabs, which would do nothing, step aside and
+ * every value shows, one under the other.
  */
 
-/** How long a value stays open before the next one plays (the sheet's `--auto`). */
+/** How long a value stays open before the next one plays. */
 const AUTO_MS = 7000;
+/** The mock's thresholds: the autoplay runs while 40% of the picker is in view, the drawing while 25% is. */
+const AUTO_IN_VIEW = 0.4;
+const DRAW_IN_VIEW = 0.25;
+const ON = "is-on";
+
+/**
+ * Without scripting: every value, no tabs, and each drawing at its end state, as reduced motion draws it
+ * (careers-values.css). repo: Tailwind's preflight hides `[hidden]` with `!important` in `@layer base`, which no
+ * unlayered rule can outrank, so the panels are shown from the same layer, by a more specific selector.
+ */
+const NO_SCRIPT =
+  "<style>.cq-pick .cq-tabs{display:none}@layer base{.cq-pick .cq-panel[hidden]{display:grid!important}}" +
+  ".cq-pick .il *{animation:none!important}" +
+  ".cq-pick .il-efficiency .e1,.cq-pick .il-efficiency .e3{opacity:0}" +
+  ".cq-pick .il-efficiency .e2{stroke:var(--accent);fill:var(--accent-wash)}" +
+  ".cq-pick .il .ok,.cq-pick .il-iteration .i-top{opacity:1}" +
+  ".cq-pick .il-results .r-bar{transform:scaleY(.46)}" +
+  ".cq-pick .il-iteration .i-dot{transform:translate(124px,-64px)}" +
+  ".cq-pick .il-diversity .d-team,.cq-pick .il-efficiency .e-ok{stroke-dashoffset:0}" +
+  ".cq-pick .il-transparency .t-ln{opacity:.9}.cq-pick .il-transparency .t-scan{display:none}</style>";
+
+/** The value a hash names: `#val-<id>` (its panel) or `#tab-<id>` (its tab). */
+const HASH = /^#(?:val|tab)-(.+)$/;
 
 interface Pick {
   readonly index: number;
@@ -49,21 +70,19 @@ interface Pick {
 }
 
 export function CareersValues(): React.JSX.Element {
-  const { list, tabsLabel, questionLabel, after } = careers.values;
+  const { id, title, tabsLabel, questionLabel, list } = careers.values;
   const [pick, setPick] = useState<Pick>({ index: 0, count: 0, focus: false });
   const root = useRef<HTMLDivElement | null>(null);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const panels = useRef<(HTMLDivElement | null)[]>([]);
-  /** Stops the autoplay for good: set while it can play. */
-  const stopAuto = useRef<() => void>(() => {});
 
   const choose = useCallback((index: number, focus = false) => {
     setPick((prev) => ({ index, count: prev.count + 1, focus }));
   }, []);
 
-  /* The open panel arrives (`.is-in`, its behaviours one after another); the first paint has
-     none, as the mock's does. A layout effect, so a panel the autoplay opens never paints once
-     at rest before its fade starts: the mock un-hides it and replays it in one task. */
+  /* The open panel arrives (`.is-in`); the first paint has none, as the mock's does. A layout
+     effect, so a panel the autoplay opens never paints once at rest before its fade starts: the
+     mock un-hides it and replays it in one task. */
   useLayoutEffect(() => {
     if (pick.count === 0) return;
     const panel = panels.current[pick.index];
@@ -75,40 +94,21 @@ export function CareersValues(): React.JSX.Element {
     if (pick.focus) tabs.current[pick.index]?.focus();
   }, [pick]);
 
-  /* The hero's letters, and the autoplay. */
+  /* The autoplay, the drawings' trigger and the values' addresses. */
   useEffect(() => {
     const el = root.current;
     if (el === null) return;
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const observes = typeof IntersectionObserver !== "undefined";
 
-    const onLetter = (event: MouseEvent) => {
-      if (!(event.target instanceof Element)) return;
-      const letter = event.target.closest<HTMLAnchorElement>("a[data-go]");
-      if (!letter) return;
-      const index = list.findIndex((value) => value.id === letter.dataset.go);
-      if (index < 0) return;
-      stopAuto.current();
-      choose(index);
-    };
-    document.addEventListener("click", onLetter);
-
-    if (still || typeof IntersectionObserver === "undefined") {
-      return () => document.removeEventListener("click", onLetter);
-    }
-
-    el.style.setProperty("--auto", `${AUTO_MS}ms`);
     let timer: ReturnType<typeof setTimeout> | undefined;
     let seen = false;
+    let held = false;
     let stopped = false;
-    const rest = () => {
-      clearTimeout(timer);
-      el.classList.remove("is-auto");
-    };
+    const rest = () => clearTimeout(timer);
     const run = () => {
       rest();
-      if (stopped || !seen) return;
-      void el.offsetWidth;
-      el.classList.add("is-auto");
+      if (still || stopped || held || !seen) return;
       timer = setTimeout(() => {
         setPick((prev) => ({
           index: (prev.index + 1) % list.length,
@@ -122,39 +122,65 @@ export function CareersValues(): React.JSX.Element {
       stopped = true;
       rest();
     };
-    stopAuto.current = stop;
     const hold = () => {
-      if (!stopped) rest();
+      held = true;
+      rest();
     };
     const resume = () => {
-      if (!stopped) run();
+      held = false;
+      run();
     };
+
+    const fromHash = () => {
+      const wanted = HASH.exec(window.location.hash)?.[1];
+      const index = list.findIndex((value) => value.id === wanted);
+      if (index < 0) return;
+      stop();
+      choose(index);
+      el.closest("section")?.scrollIntoView({ block: "start" });
+    };
+    fromHash();
+    window.addEventListener("hashchange", fromHash);
 
     el.addEventListener("click", stop, true);
     el.addEventListener("keydown", stop, true);
     el.addEventListener("focusin", stop);
     el.addEventListener("mouseenter", hold);
     el.addEventListener("mouseleave", resume);
-    const inView = new IntersectionObserver(
-      (entries) => {
-        seen = entries[0]?.isIntersecting ?? false;
-        if (seen) run();
-        else rest();
-      },
-      { threshold: 0.4 },
-    );
-    inView.observe(el);
+
+    const watches: IntersectionObserver[] = [];
+    if (still || !observes) {
+      el.classList.add(ON);
+    } else {
+      const draw = new IntersectionObserver(
+        (entries) => {
+          const latest = entries[entries.length - 1];
+          if (latest) el.classList.toggle(ON, latest.isIntersecting);
+        },
+        { threshold: DRAW_IN_VIEW },
+      );
+      const auto = new IntersectionObserver(
+        (entries) => {
+          seen = entries[entries.length - 1]?.isIntersecting ?? false;
+          if (seen) run();
+          else rest();
+        },
+        { threshold: AUTO_IN_VIEW },
+      );
+      draw.observe(el);
+      auto.observe(el);
+      watches.push(draw, auto);
+    }
 
     return () => {
-      document.removeEventListener("click", onLetter);
+      window.removeEventListener("hashchange", fromHash);
       el.removeEventListener("click", stop, true);
       el.removeEventListener("keydown", stop, true);
       el.removeEventListener("focusin", stop);
       el.removeEventListener("mouseenter", hold);
       el.removeEventListener("mouseleave", resume);
-      inView.disconnect();
+      for (const watch of watches) watch.disconnect();
       rest();
-      stopAuto.current = () => {};
     };
   }, [choose, list]);
 
@@ -167,106 +193,74 @@ export function CareersValues(): React.JSX.Element {
     choose((to + list.length) % list.length, true);
   };
 
-  /** A panel's previous and next buttons: open that value, focus its tab, and bring the tabs into
-   *  view. Focus first, as the mock does: the browser then scrolls the tab clear of the fixed bar,
-   *  and the nearest scroll after it has nothing left to do. */
-  const go = (index: number) => () => {
-    const tab = tabs.current[index];
-    choose(index, true);
-    tab?.focus();
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    tab?.scrollIntoView({
-      block: "nearest",
-      behavior: reduced ? "auto" : "smooth",
-    });
-  };
-
   return (
-    <div className="cr-pick rv" ref={root}>
-      <div className="cr-tabs" role="tablist" aria-label={tabsLabel}>
-        {list.map((value, i) => {
-          const on = i === pick.index;
-          return (
-            <button
-              className="cr-tab"
-              role="tab"
-              type="button"
-              id={`tab-${value.id}`}
-              aria-controls={`val-${value.id}`}
-              aria-selected={on}
-              tabIndex={on ? 0 : -1}
-              onClick={() => choose(i)}
-              onKeyDown={onKey(i)}
+    <section className="sec sec-band cq-band" id={id} aria-labelledby={`${id}-h`}>
+      <div className="wrap">
+        <div className="sec-head">
+          <h2 id={`${id}-h`}>{title}</h2>
+        </div>
+        <div className="cq-pick" ref={root}>
+          <div className="cq-tabs" role="tablist" aria-label={tabsLabel}>
+            {list.map((value, i) => {
+              const on = i === pick.index;
+              return (
+                <button
+                  className="cq-tab"
+                  role="tab"
+                  type="button"
+                  id={`tab-${value.id}`}
+                  aria-controls={`val-${value.id}`}
+                  aria-selected={on}
+                  tabIndex={on ? 0 : -1}
+                  onClick={() => choose(i)}
+                  onKeyDown={onKey(i)}
+                  ref={(node) => {
+                    tabs.current[i] = node;
+                  }}
+                  key={value.id}
+                >
+                  <span className="cq-tl" aria-hidden="true">
+                    {value.letter}
+                  </span>
+                  <span className="cq-tn">{value.name}</span>
+                </button>
+              );
+            })}
+          </div>
+          {list.map((value, i) => (
+            <div
+              className="cq-panel"
+              role="tabpanel"
+              id={`val-${value.id}`}
+              aria-labelledby={`tab-${value.id}`}
+              tabIndex={0}
+              hidden={i !== pick.index}
               ref={(node) => {
-                tabs.current[i] = node;
+                panels.current[i] = node;
               }}
               key={value.id}
             >
-              <span className="cr-tl" aria-hidden="true">
-                {value.letter}
-              </span>
-              <span className="cr-tn">{value.name}</span>
-            </button>
-          );
-        })}
+              <div className="cq-pl">
+                <div className="cq-il">
+                  <ValueDrawing id={value.id} />
+                </div>
+                <h3>{value.name}</h3>
+                <p className="cq-mean">{named(value.meaning)}</p>
+                <p className="cq-ask">
+                  <span>{questionLabel}</span>
+                  {named(`“${value.question}”`)}
+                </p>
+              </div>
+              <ul className="cq-beh">
+                {value.behaviours.map((behaviour) => (
+                  <li key={behaviour}>{behaviour}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <noscript dangerouslySetInnerHTML={{ __html: NO_SCRIPT }} />
       </div>
-      {list.map((value, i) => {
-        const prev = list[i - 1];
-        const next = list[i + 1];
-        return (
-          <div
-            className="cr-panel"
-            role="tabpanel"
-            id={`val-${value.id}`}
-            aria-labelledby={`tab-${value.id}`}
-            tabIndex={0}
-            hidden={i !== pick.index}
-            ref={(node) => {
-              panels.current[i] = node;
-            }}
-            key={value.id}
-          >
-            <div className="cr-pl">
-              <h3>{value.name}</h3>
-              <p className="cr-mean">{named(value.meaning)}</p>
-              <p className="cr-q">
-                <span>{questionLabel}</span>“{named(value.question)}”
-              </p>
-            </div>
-            <ul className="cr-live">
-              {value.behaviours.map((behaviour, n) => (
-                <li style={{ "--k": n } as CSSProperties} key={behaviour}>
-                  <span className="cr-tick">
-                    <TickGlyph />
-                  </span>
-                  <h4>{behaviour}</h4>
-                </li>
-              ))}
-            </ul>
-            <div className="cr-pnav">
-              {prev ? (
-                <button type="button" className="cr-pb" onClick={go(i - 1)}>
-                  <BackGlyph />
-                  <span>{prev.name}</span>
-                </button>
-              ) : (
-                <span />
-              )}
-              {next ? (
-                <button type="button" className="cr-pb is-next" onClick={go(i + 1)}>
-                  <span>Next: {next.name}</span>
-                  <Arrow />
-                </button>
-              ) : (
-                <a className="cr-pb is-next" href={after.href}>
-                  <span>{after.label}</span>
-                  <Arrow />
-                </a>
-              )}
-            </div>
-          </div>
-        );
-      })}
-    </div>
+    </section>
   );
 }

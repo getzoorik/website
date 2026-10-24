@@ -8,6 +8,8 @@ import { documentMetadata } from "@/features/documents/document-page";
 import { CareersPage } from "@/features/careers/careers-page";
 
 import "@/styles/careers.css";
+import "@/styles/careers-values.css";
+import "@/styles/careers-work.css";
 
 /**
  * `/careers`: work at Zoorik. Indexed, listed in the sitemap, and prerendered
