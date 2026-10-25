@@ -2,6 +2,7 @@ import { routes } from "@/config/site";
 import { caseStudiesHub, caseStudy } from "@/content/case-studies";
 import { communityPage } from "@/content/community";
 import type { Article } from "@/content/learn/article";
+import { glossaryPage } from "@/content/learn/glossary";
 import { articleAuthor, articleRoute, findArticle, learnArticles } from "@/content/learn/published";
 import { newsPage } from "@/content/news";
 import { productFilms } from "@/content/product-films";
@@ -50,7 +51,7 @@ export const learnPage = {
    * The day the hub's own content last changed, for the sitemap; it is not printed. A new article moves the hub's
    * sitemap day on its own (`sitemap.ts`), so this moves only when the hub itself changes.
    */
-  updated: "Updated 21 October 2026",
+  updated: "Updated 25 October 2026",
   /** The band's name for a screen reader: the two cards have no section heading of their own. */
   band: "Start here, and find the right fix",
   start: { title: "Start here", line: "Three guides that cover the whole bill." },
@@ -322,8 +323,8 @@ export const learnMedium = {
 } as const;
 
 /**
- * More from Zoorik: Value Lab, Cloud cost optimization tools, Community and News, each its name and one line. Value
- * Lab's figure is the study's own (`caseStudy.band`), and the pages' names are their own h1s.
+ * More from Zoorik: Value Lab, Cloud cost optimization tools, Community, News and the glossary, each its name and one
+ * line. Value Lab's figure is the study's own (`caseStudy.band`), and the pages' names are their own h1s.
  */
 export const learnMore: readonly {
   readonly href: string;
@@ -349,5 +350,10 @@ export const learnMore: readonly {
     href: routes.news,
     title: newsPage.hero.title,
     line: "What we ship, and what changed this week.",
+  },
+  {
+    href: routes.learnGlossary,
+    title: glossaryPage.hero.title,
+    line: glossaryPage.line,
   },
 ];

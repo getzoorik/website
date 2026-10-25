@@ -5,7 +5,8 @@ import { cleanup, render } from "@testing-library/react";
 import { createElement, type ComponentType } from "react";
 import { describe, expect, it, vi } from "vitest";
 
-import { learnPath } from "@/config/site";
+import { glossaryPath, learnPath } from "@/config/site";
+import { glossaryTerms } from "@/content/learn/glossary";
 import { learnArticles } from "@/content/learn/published";
 import { marketGroups, versusFacts } from "@/content/learn-market";
 
@@ -215,12 +216,15 @@ describe("competitors' names", () => {
         .default;
     const matchers = names.map((name) => [name, found(name)] as const);
     const offenders: string[] = [];
-    /* Each page, at its address; the one dynamic route among them, /learn/[slug], once per article. */
+    /* Each page, at its address; the two dynamic routes among them, /learn/[slug] once per article and
+       /learn/glossary/[slug] once per term. */
     const article = "src/app/learn/[slug]/page.tsx";
+    const term = "src/app/learn/glossary/[slug]/page.tsx";
     expect(others).toContain(article);
+    expect(others).toContain(term);
     const drawn: [string, () => Promise<React.ReactElement>][] = [
       ...others
-        .filter((path) => path !== article)
+        .filter((path) => path !== article && path !== term)
         .map(
           (path) =>
             [
@@ -234,6 +238,16 @@ describe("competitors' names", () => {
             learnPath(entry.slug),
             async () => {
               const page = (await import("@/app/learn/[slug]/page")).default;
+              return page({ params: Promise.resolve({ slug: entry.slug }) });
+            },
+          ] as [string, () => Promise<React.ReactElement>],
+      ),
+      ...glossaryTerms.map(
+        (entry) =>
+          [
+            glossaryPath(entry.slug),
+            async () => {
+              const page = (await import("@/app/learn/glossary/[slug]/page")).default;
               return page({ params: Promise.resolve({ slug: entry.slug }) });
             },
           ] as [string, () => Promise<React.ReactElement>],
@@ -252,7 +266,7 @@ describe("competitors' names", () => {
     const hub = printed(render(createElement(await load(hubPage))).container);
     expect(versusFacts.every((facts) => found(facts.name).test(hub))).toBe(true);
     cleanup();
-  }, 20_000);
+  }, 40_000);
 
   it("look for a short owner through its products, with and without it", () => {
     const owned = competitors

@@ -33,8 +33,8 @@ export function OutGlyph(): React.JSX.Element {
 
 export interface LearnHeroProps {
   /** The small line over the h1 (`.vp-kick`) on a comparison page: what the page is and the day its facts were
-   *  checked. The hub has none. */
-  readonly kicker?: string;
+   *  checked; on the glossary's hub, its link back to /learn. The hub has none. */
+  readonly kicker?: ReactNode;
   readonly title: ReactNode;
   /** The line under the h1; the hub has none, so its search follows the h1. */
   readonly deck?: ReactNode;

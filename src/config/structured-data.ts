@@ -61,6 +61,8 @@ import { marketplacesPage } from "@/content/marketplaces";
 import { openSourceGuides, openSourcePage, type OpenSourceGuideId } from "@/content/open-source";
 import { partnersPage } from "@/content/partners";
 import type { Article } from "@/content/learn/article";
+import { glossaryPage, glossaryTerms, termName, termRoute } from "@/content/learn/glossary";
+import type { GlossaryTerm } from "@/content/learn/glossary-term";
 import { articleAuthor, articleCard, articleRoute, learnArticles } from "@/content/learn/published";
 import { privacy } from "@/content/privacy";
 import { referralsPage } from "@/content/referrals";
@@ -74,7 +76,8 @@ import { isoDay } from "@/lib/content-date";
  * The structured data search engines read: one JSON-LD graph per indexed page.
  * Every graph has the organisation, the site, the page itself and, below the
  * home page, its breadcrumb trail; the home and product pages add the apps, and
- * the articles and the study a TechArticle.
+ * the articles and the study a TechArticle; a glossary term its DefinedTerm, and
+ * the glossary's hub its DefinedTermSet.
  * Built only from constants the pages already print.
  *
  * 🔴 NO offers, price, aggregateRating OR review: pricing was removed on purpose
@@ -272,6 +275,10 @@ interface PageEntry {
     /** The page's share card. */
     readonly image: { readonly url: string };
   };
+  /** A glossary term's page: the term, by its name, and its definition's first sentence. */
+  readonly term?: { readonly name: string; readonly description: string };
+  /** The glossary's hub: the set every term is in. */
+  readonly termSet?: true;
 }
 
 /** A page's printed `<title>`: through the layout's template. */
@@ -354,6 +361,33 @@ function articleEntry(article: Article): PageEntry {
   };
 }
 
+/** The glossary's step in a term's trail: the hub, by the name its terms' trail gives it. */
+const glossaryStep: Crumb = { name: glossaryPage.crumb, path: routes.learnGlossary };
+
+/**
+ * A glossary term: Learn, the glossary, then the term by its h1; the product it names (none for a term about both);
+ * and the term itself, by its name and its definition's first sentence.
+ */
+function termEntry(term: GlossaryTerm): PageEntry {
+  return {
+    kind: "WebPage",
+    name: titled(term.title),
+    description: term.meta,
+    trail: [step(routes.learn), glossaryStep, { name: term.h1, path: termRoute(term) }],
+    ...(term.product === "both" ? {} : { about: term.product }),
+    term: { name: termName(term), description: term.card },
+  };
+}
+
+/** The glossary's set: its address and its name, as each term's page points at it and the hub draws it whole. */
+const termSetId = `${pageUrl(routes.learnGlossary)}#terms`;
+const termSetRef = {
+  "@type": "DefinedTermSet",
+  "@id": termSetId,
+  name: glossaryPage.hero.title,
+  url: pageUrl(routes.learnGlossary),
+} as const;
+
 const studyHeadline = `${caseStudy.hero.title} ${caseStudy.hero.titleGreen}`;
 const studyDate = isoDay(caseStudy.band.date);
 
@@ -404,6 +438,15 @@ const pages: Readonly<Record<string, PageEntry>> = {
   ...Object.fromEntries(
     learnArticles.map((article) => [articleRoute(article), articleEntry(article)]),
   ),
+  /* The glossary's hub, under Learn, then every published term, from the glossary index. */
+  [routes.learnGlossary]: {
+    kind: "CollectionPage",
+    name: titled(glossaryPage.meta.title),
+    description: glossaryPage.meta.description,
+    trail: [step(routes.learn), glossaryStep],
+    termSet: true,
+  },
+  ...Object.fromEntries(glossaryTerms.map((term) => [termRoute(term), termEntry(term)])),
   /* Cloud cost optimization tools, then each comparison page under it by its title; about its product. */
   [routes.cloudCostTools]: {
     kind: "CollectionPage",
@@ -520,7 +563,7 @@ export const pageTitles: Readonly<Record<string, string>> = Object.fromEntries(
   Object.entries(pages).map(([path, page]) => [path, page.name]),
 );
 
-/** One page's JSON-LD: the organisation, the site, the page, its trail, then its article or apps. */
+/** One page's JSON-LD: the organisation, the site, the page, its trail, then its article, term or set, or apps. */
 export function pageStructuredData(path: string) {
   const page = pages[path];
   if (!page) throw new Error(`structured data: no entry for ${path}`);
@@ -589,6 +632,31 @@ export function pageStructuredData(path: string) {
               publisher: ref(organizationId),
               ...(about ? { about } : {}),
               image: `${site.url}${page.article.image.url}`,
+            },
+          ]
+        : []),
+      /* A glossary term: its name and definition, in the glossary's set. */
+      ...(page.term
+        ? [
+            {
+              "@type": "DefinedTerm",
+              "@id": `${url}#term`,
+              name: page.term.name,
+              description: page.term.description,
+              url,
+              inDefinedTermSet: termSetRef,
+              mainEntityOfPage: ref(pageId),
+            },
+          ]
+        : []),
+      /* The glossary's hub: the set, and every published term in it by its address. */
+      ...(page.termSet
+        ? [
+            {
+              ...termSetRef,
+              description: page.description,
+              hasDefinedTerm: glossaryTerms.map((term) => ref(`${pageUrl(termRoute(term))}#term`)),
+              mainEntityOfPage: ref(pageId),
             },
           ]
         : []),

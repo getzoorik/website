@@ -67,8 +67,11 @@ import { isOffSite, offSiteProps } from "@/lib/links";
  * chips' (which section is being read, on a phone).
  */
 
-/** How an article's text is set: its slug (for what it lists), and whether its inline code takes the guides' breaks. */
-interface Setting {
+/**
+ * How an article's text is set: its slug (for what it lists), and whether its inline code takes the guides' breaks.
+ * A glossary term's page sets its text the same way (`GlossaryPage`), with the blocks, text and sources drawn here.
+ */
+export interface Setting {
   readonly slug: string;
   readonly breaks: boolean;
 }
@@ -94,7 +97,7 @@ function LinkWords({
 
 /** A run of text: its product names kept out of translation, its links in the prose's own link style, a link to
  *  another site a new tab with its arrow. */
-function Text({
+export function Text({
   text,
   breaks,
 }: {
@@ -295,7 +298,7 @@ function EveryArticle({ slug }: { readonly slug: string }): React.JSX.Element {
   );
 }
 
-function Block({
+export function Block({
   block,
   set,
 }: {
@@ -410,7 +413,7 @@ function Block({
  * One source, a new tab. Its title's last word holds the arrow beside it at a
  * line end (`.nw-nb`); an address with no title may part anywhere.
  */
-function Source({ source }: { readonly source: ArticleSource }): React.JSX.Element {
+export function Source({ source }: { readonly source: ArticleSource }): React.JSX.Element {
   const text = source.title ?? source.url.replace(/^https:\/\//, "").replace(/\/$/, "");
   const space = text.lastIndexOf(" ");
   return (

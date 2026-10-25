@@ -3,9 +3,10 @@ import { dirname, join } from "node:path";
 
 import { describe, expect, it, vi } from "vitest";
 
-import { amoebaDocs, comparePath, learnPath, routes, site } from "@/config/site";
+import { amoebaDocs, comparePath, glossaryPath, learnPath, routes, site } from "@/config/site";
 import { homeLastUpdated } from "@/content/hero";
 import { learnPage } from "@/content/learn";
+import { glossaryPage, glossaryTerms } from "@/content/learn/glossary";
 import { learnArticles } from "@/content/learn/published";
 import { versusPages, versusRoute } from "@/content/learn-compare";
 import { isoDay } from "@/lib/content-date";
@@ -39,7 +40,7 @@ function importGraph(file: string, seen = new Set<string>()): Set<string> {
 }
 
 describe("sitemap.xml", () => {
-  it("lists the home page, the product pages, the assessment, the documents, the install and contributing guides, open source, Learn and every article in its index, Cloud cost optimization tools and the comparison pages, Value Lab and the case study, /events, /about, /careers, /brand-assets, /referrals, /partners, /design-partners, the privacy policy, the terms and security, absolute, and nothing else", () => {
+  it("lists the home page, the product pages, the assessment, the documents, the install and contributing guides, open source, Learn and every article in its index, the glossary and every term in its index, Cloud cost optimization tools and the comparison pages, Value Lab and the case study, /events, /about, /careers, /brand-assets, /referrals, /partners, /design-partners, the privacy policy, the terms and security, absolute, and nothing else", () => {
     expect(sitemap().map((entry) => entry.url)).toEqual([
       `${site.url}/`,
       `${site.url}/coral`,
@@ -57,6 +58,9 @@ describe("sitemap.xml", () => {
       `${site.url}/learn`,
       /* Every article in the Learn index, A–Z by slug. */
       ...learnArticles.map((article) => `${site.url}${learnPath(article.slug)}`),
+      `${site.url}/learn/glossary`,
+      /* Every term in the glossary index, A–Z by slug. */
+      ...glossaryTerms.map((term) => `${site.url}${glossaryPath(term.slug)}`),
       `${site.url}/cloud-cost-optimization-library`,
       `${site.url}/cloud-cost-optimization-library/coral-alternatives`,
       `${site.url}/cloud-cost-optimization-library/amoeba-alternatives`,
@@ -110,6 +114,13 @@ describe("sitemap.xml", () => {
       ...Object.fromEntries(
         learnArticles.map((article) => [learnPath(article.slug), article.updated]),
       ),
+      /* The glossary's hub: its own day or its newest term's, whichever is later. Each term: the day it last
+         changed. */
+      "/learn/glossary": glossaryTerms.reduce(
+        (day, term) => (term.updated > day ? term.updated : day),
+        isoDay(glossaryPage.updated),
+      ),
+      ...Object.fromEntries(glossaryTerms.map((term) => [glossaryPath(term.slug), term.updated])),
       /* Cloud cost optimization tools: the day its content last changed. */
       "/cloud-cost-optimization-library": "2026-10-21",
       /* The comparison pages: the day they were checked and published. */
@@ -147,7 +158,9 @@ describe("sitemap.xml", () => {
     /* The page's own printed date, or its content file's `lastUpdated`: a page
        without one is never told to recrawl. */
     const entries = sitemap();
-    expect(entries).toHaveLength((amoebaDocs ? 34 : 32) + learnArticles.length);
+    expect(entries).toHaveLength(
+      (amoebaDocs ? 35 : 33) + learnArticles.length + glossaryTerms.length,
+    );
     /* Today is `LEARN_TODAY` when set (articles dated ahead, checked as of the day they go live), else the latest
        calendar day anywhere on Earth (UTC+14), so a date set to today in any time zone is not "the future". */
     const latestToday = learnToday();
@@ -177,13 +190,15 @@ describe("sitemap.xml", () => {
     /* A held page answers 404 (`amoebaDocs`). */
     const held: string[] = amoebaDocs ? [] : [routes.amoebaGuide, routes.amoebaFaq];
     /* A dynamic route stands for the pages it prerenders: /cloud-cost-optimization-library/[slug] for the live versus pages, /learn/[slug]
-       for every article in the Learn index. */
+       for every article in the Learn index, /learn/glossary/[slug] for every term in the glossary index. */
     const pages = (route: string) =>
       route === `${comparePath}/[slug]`
         ? versusPages.map(versusRoute)
         : route === `${routes.learn}/[slug]`
           ? learnArticles.map((article) => learnPath(article.slug))
-          : [route];
+          : route === `${routes.learnGlossary}/[slug]`
+            ? glossaryTerms.map((term) => glossaryPath(term.slug))
+            : [route];
     for (const folder of pageRoutes()) {
       const source = readFileSync(`src/app${folder === "/" ? "" : folder}/page.tsx`, "utf8");
       const noindex = /robots:\s*\{\s*index:\s*false/.test(source);

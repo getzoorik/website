@@ -208,6 +208,162 @@ const CARDS: readonly {
     words: "Safe-to-evict and do-not-disrupt annotations",
     paths: ["/learn/safe-to-evict-do-not-disrupt"],
   },
+  /* The glossary's hub, then each term by its h1. */
+  {
+    file: "glossary",
+    words: "Cloud cost glossary",
+    paths: ["/learn/glossary"],
+  },
+  {
+    file: "glossary-azure-managed-disk",
+    words: "What is an Azure managed disk?",
+    paths: ["/learn/glossary/azure-managed-disk"],
+  },
+  {
+    file: "glossary-azure-temporary-disk",
+    words: "What is the Azure temporary disk?",
+    paths: ["/learn/glossary/azure-temporary-disk"],
+  },
+  {
+    file: "glossary-block-storage",
+    words: "What is block storage?",
+    paths: ["/learn/glossary/block-storage"],
+  },
+  {
+    file: "glossary-cloud-chargeback",
+    words: "What is chargeback in cloud computing?",
+    paths: ["/learn/glossary/cloud-chargeback"],
+  },
+  {
+    file: "glossary-cloud-unit-economics",
+    words: "What is cloud unit economics?",
+    paths: ["/learn/glossary/cloud-unit-economics"],
+  },
+  {
+    file: "glossary-daemonset",
+    words: "What is a DaemonSet in Kubernetes?",
+    paths: ["/learn/glossary/daemonset"],
+  },
+  {
+    file: "glossary-df-vs-du",
+    words: "df vs du: meaning and cost impact",
+    paths: ["/learn/glossary/df-vs-du"],
+  },
+  {
+    file: "glossary-disk-throughput",
+    words: "What is disk throughput?",
+    paths: ["/learn/glossary/disk-throughput"],
+  },
+  {
+    file: "glossary-ebs-volume",
+    words: "What is an EBS volume?",
+    paths: ["/learn/glossary/ebs-volume"],
+  },
+  {
+    file: "glossary-eks-auto-mode",
+    words: "What is EKS Auto Mode?",
+    paths: ["/learn/glossary/eks-auto-mode"],
+  },
+  {
+    file: "glossary-ephemeral-os-disk",
+    words: "What is an ephemeral OS disk?",
+    paths: ["/learn/glossary/ephemeral-os-disk"],
+  },
+  {
+    file: "glossary-finops",
+    words: "What is FinOps?",
+    paths: ["/learn/glossary/finops"],
+  },
+  {
+    file: "glossary-iops",
+    words: "What is IOPS?",
+    paths: ["/learn/glossary/iops"],
+  },
+  {
+    file: "glossary-kubernetes-cluster-utilization",
+    words: "What is Kubernetes cluster utilization?",
+    paths: ["/learn/glossary/kubernetes-cluster-utilization"],
+  },
+  {
+    file: "glossary-kubernetes-cost-allocation",
+    words: "What is Kubernetes cost allocation?",
+    paths: ["/learn/glossary/kubernetes-cost-allocation"],
+  },
+  {
+    file: "glossary-kubernetes-cpu-throttling",
+    words: "What is CPU throttling in Kubernetes?",
+    paths: ["/learn/glossary/kubernetes-cpu-throttling"],
+  },
+  {
+    file: "glossary-kubernetes-headroom",
+    words: "What is headroom in Kubernetes?",
+    paths: ["/learn/glossary/kubernetes-headroom"],
+  },
+  {
+    file: "glossary-kubernetes-resource-limits",
+    words: "What are resource limits in Kubernetes?",
+    paths: ["/learn/glossary/kubernetes-resource-limits"],
+  },
+  {
+    file: "glossary-kubernetes-resource-requests",
+    words: "What are resource requests in Kubernetes?",
+    paths: ["/learn/glossary/kubernetes-resource-requests"],
+  },
+  {
+    file: "glossary-max-pods-per-node",
+    words: "Max pods per node: meaning and cost impact",
+    paths: ["/learn/glossary/max-pods-per-node"],
+  },
+  {
+    file: "glossary-node-pool",
+    words: "What is a node pool in Kubernetes?",
+    paths: ["/learn/glossary/node-pool"],
+  },
+  {
+    file: "glossary-on-demand-instance",
+    words: "What is an on-demand instance?",
+    paths: ["/learn/glossary/on-demand-instance"],
+  },
+  {
+    file: "glossary-provisioned-iops",
+    words: "What is provisioned IOPS?",
+    paths: ["/learn/glossary/provisioned-iops"],
+  },
+  {
+    file: "glossary-reserved-instance",
+    words: "What is a reserved instance?",
+    paths: ["/learn/glossary/reserved-instance"],
+  },
+  {
+    file: "glossary-rightsizing",
+    words: "What is rightsizing in cloud?",
+    paths: ["/learn/glossary/rightsizing"],
+  },
+  {
+    file: "glossary-savings-plan",
+    words: "What is a savings plan (AWS and Azure)?",
+    paths: ["/learn/glossary/savings-plan"],
+  },
+  {
+    file: "glossary-showback",
+    words: "What is showback in FinOps?",
+    paths: ["/learn/glossary/showback"],
+  },
+  {
+    file: "glossary-spot-instance",
+    words: "What is a spot instance?",
+    paths: ["/learn/glossary/spot-instance"],
+  },
+  {
+    file: "glossary-thin-provisioning",
+    words: "What is thin provisioning?",
+    paths: ["/learn/glossary/thin-provisioning"],
+  },
+  {
+    file: "glossary-vertical-pod-autoscaler",
+    words: "What is VPA (Vertical Pod Autoscaler)?",
+    paths: ["/learn/glossary/vertical-pod-autoscaler"],
+  },
 ];
 
 const sentence = (words: string): string => (/[.?!]$/.test(words) ? words : `${words}.`);
@@ -218,9 +374,13 @@ export const pageCards: Readonly<Record<string, ShareImage>> = Object.fromEntrie
   ),
 );
 
-/** A page's card: its own; else, for a Learn article, the /learn card; else the brand card. */
+/** A page's card: its own; else, for a glossary term, the glossary's; for a Learn article, the /learn card; else the
+ *  brand card. */
 export const cardFor = (path: string): ShareImage =>
-  pageCards[path] ?? (path.startsWith("/learn/") ? pageCards["/learn"] : undefined) ?? socialImage;
+  pageCards[path] ??
+  (path.startsWith("/learn/glossary/") ? pageCards["/learn/glossary"] : undefined) ??
+  (path.startsWith("/learn/") ? pageCards["/learn"] : undefined) ??
+  socialImage;
 
 type OpenGraph = NonNullable<Metadata["openGraph"]>;
 

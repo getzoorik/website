@@ -4,6 +4,7 @@ import { authors, type Author } from "@/content/authors";
 
 import type { Article } from "./article";
 import { articleFiles } from "./articles.generated";
+import { findTerm, glossarySlugOf } from "./glossary";
 
 /**
  * The Learn index: every published article, read from the generated list of article files. Everything per article
@@ -31,16 +32,21 @@ export function articleAt(slug: string): Article {
 /** An article's address. */
 export const articleRoute = (article: Article): `/learn/${string}` => learnPath(article.slug);
 
-/** The slug a link names when it leads to a Learn article (`/learn/<slug>`, with or without a hash or query). */
+/**
+ * The slug a link names when it leads to a Learn article (`/learn/<slug>`, with or without a hash or query). The
+ * glossary's hub, /learn/glossary, is not an article.
+ */
 export function learnSlugOf(href: string): string | null {
   const match = /^\/learn\/([^/?#]+)(?:[?#].*)?$/.exec(href);
-  return match ? match[1]! : null;
+  return match && match[1] !== "glossary" ? match[1]! : null;
 }
 
-/** Whether a link may be drawn: anything but a link to a Learn article that is not published. */
+/** Whether a link may be drawn: anything but a link to a Learn article or a glossary term that is not published. */
 export function isLiveHref(href: string): boolean {
   const slug = learnSlugOf(href);
-  return slug === null || bySlug.has(slug);
+  if (slug !== null) return bySlug.has(slug);
+  const term = glossarySlugOf(href);
+  return term === null || findTerm(term) !== undefined;
 }
 
 /**

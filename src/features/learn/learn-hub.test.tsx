@@ -239,7 +239,7 @@ describe("/learn", () => {
     );
   });
 
-  it("links Value Lab, the tools, the community and the news, Value Lab's figure read from the study", () => {
+  it("links Value Lab, the tools, the community, the news and the glossary, Value Lab's figure read from the study", () => {
     const root = page();
     const drawn = [...root.querySelectorAll("#more .dt a")].map((a) => [
       a.getAttribute("href"),
@@ -252,8 +252,13 @@ describe("/learn", () => {
       routes.cloudCostTools,
       routes.community,
       routes.news,
+      routes.learnGlossary,
     ]);
     expect(learnMore[0]!.line.startsWith(caseStudy.band.stats[0].value)).toBe(true);
+    /* The glossary is linked once on the hub, by its h1. */
+    expect([...root.querySelectorAll(`a[href="${routes.learnGlossary}"]`)].map(text)).toEqual([
+      expect.stringContaining("Cloud cost glossary"),
+    ]);
   });
 
   it("names no tool of the market, and links no page that compares with one", () => {
