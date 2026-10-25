@@ -45,6 +45,7 @@ const QUESTION_IDS = [
   "where-can-i-buy-coral",
   /* the client FAQ */
   "is-the-recommendation-based-on-average",
+  "what-does-each-coral-policy-do",
   "how-much-history-is-needed-before",
   "cpu-is-100m-at-night-and",
   "a-workload-is-idle-for-6",
@@ -52,15 +53,18 @@ const QUESTION_IDS = [
   "how-does-coral-learn-black-friday",
   "a-workload-needs-4-cpus-during",
   "how-does-coral-decide-a-change",
+  "how-does-a-change-reach-the",
   "is-there-a-warm-up-period",
   "memory-spikes-can-cause-oom-kills",
   "what-happens-if-an-optimized-pod",
   "if-optimization-causes-performance-degradation-how",
+  "does-coral-change-my-git-or",
   "how-are-databases-kafka-elasticsearch-redis",
   "can-optimization-happen-without-downtime-for",
   "if-the-hpa-wants-to-scale",
   "could-reducing-cpu-requests-make-the",
   "does-optimization-ever-modify-hpa-minreplicas",
+  "what-happens-when-demand-goes-past",
   "if-workload-optimization-reduces-requests-how",
   "how-do-you-make-sure-node",
   "how-much-spare-capacity-is-kept",
@@ -83,7 +87,7 @@ afterEach(() => {
 const text = (el: Element | null): string => (el?.textContent ?? "").replace(/[\s ]+/g, " ").trim();
 
 describe("the FAQ's ids", () => {
-  it("has all 8 group ids and all 32 question ids, each exactly once", () => {
+  it("has all 8 group ids and all 36 question ids, each exactly once", () => {
     for (const id of [...SECTION_IDS, ...QUESTION_IDS]) {
       expect(page.querySelectorAll(`[id="${id}"]`), id).toHaveLength(1);
     }
@@ -140,7 +144,7 @@ describe("the page", () => {
     const top = page.querySelector("article.fq-main > .fq-upd")!;
     expect(top).toBe(page.querySelector("article.fq-main")!.firstElementChild);
     expect([...top.children].map((child) => child.className)).toEqual(["doc-updated"]);
-    expect(text(top)).toBe("Updated 9 October 2026");
+    expect(text(top)).toBe("Updated 25 October 2026");
   });
 
   it("has no contents rail and no summary, and names its groups in the phone's chip row", () => {
@@ -197,7 +201,7 @@ describe("the page", () => {
 describe("each question", () => {
   it("is a summary of its numeral, its h3 and a chevron, and a body of short bullets", () => {
     const questions = [...page.querySelectorAll("details.fq")];
-    expect(questions).toHaveLength(32);
+    expect(questions).toHaveLength(36);
     questions.forEach((question, index) => {
       const summary = question.querySelector(":scope > summary")!;
       expect([...summary.children].map((child) => child.tagName.toLowerCase())).toEqual([
