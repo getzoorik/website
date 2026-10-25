@@ -67,8 +67,12 @@ import { isOffSite, offSiteProps } from "@/lib/links";
  * chips' (which section is being read, on a phone).
  */
 
-/** How an article's text is set: its slug (for what it lists), and whether its inline code takes the guides' breaks. */
-interface Setting {
+/**
+ * How an article's text is set: its slug (for what it lists), and whether its inline code takes the guides' breaks.
+ * A glossary term's page sets its text the same way (`GlossaryPage`), with the blocks, text, sources and Related row
+ * drawn here.
+ */
+export interface Setting {
   readonly slug: string;
   readonly breaks: boolean;
 }
@@ -94,7 +98,7 @@ function LinkWords({
 
 /** A run of text: its product names kept out of translation, its links in the prose's own link style, a link to
  *  another site a new tab with its arrow. */
-function Text({
+export function Text({
   text,
   breaks,
 }: {
@@ -295,7 +299,7 @@ function EveryArticle({ slug }: { readonly slug: string }): React.JSX.Element {
   );
 }
 
-function Block({
+export function Block({
   block,
   set,
 }: {
@@ -410,7 +414,7 @@ function Block({
  * One source, a new tab. Its title's last word holds the arrow beside it at a
  * line end (`.nw-nb`); an address with no title may part anywhere.
  */
-function Source({ source }: { readonly source: ArticleSource }): React.JSX.Element {
+export function Source({ source }: { readonly source: ArticleSource }): React.JSX.Element {
   const text = source.title ?? source.url.replace(/^https:\/\//, "").replace(/\/$/, "");
   const space = text.lastIndexOf(" ");
   return (
@@ -435,6 +439,44 @@ function Source({ source }: { readonly source: ArticleSource }): React.JSX.Eleme
       </a>
       {source.note ? named(source.note) : null}
     </>
+  );
+}
+
+/** "Sources: " and each source, a new tab, set apart by semicolons and closed by a full stop. */
+export function Sources({
+  sources,
+}: {
+  readonly sources: readonly ArticleSource[];
+}): React.JSX.Element {
+  return (
+    <p className="ar-src">
+      {articleWords.sources}
+      {sources.map((source, index) => (
+        <Fragment key={source.url}>
+          {index > 0 ? "; " : null}
+          <Source source={source} />
+        </Fragment>
+      ))}
+      .
+    </p>
+  );
+}
+
+/** The row under the frame that leads on to other pages: its heading, then its tiles three up (`LinkTile`). */
+export function RelatedRow({
+  title,
+  children,
+}: {
+  readonly title: string;
+  readonly children: ReactNode;
+}): React.JSX.Element {
+  return (
+    <section className="sec ar-rel" id="related" aria-labelledby="related-h">
+      <div className="wrap">
+        <h2 id="related-h">{title}</h2>
+        <div className="dt-grid">{children}</div>
+      </div>
+    </section>
   );
 }
 
@@ -531,41 +573,25 @@ export function ArticlePage({ article }: { readonly article: Article }): React.J
                   </p>
                 </aside>
               ) : null}
-              {sources.length > 0 ? (
-                <p className="ar-src">
-                  {articleWords.sources}
-                  {sources.map((source, index) => (
-                    <Fragment key={source.url}>
-                      {index > 0 ? "; " : null}
-                      <Source source={source} />
-                    </Fragment>
-                  ))}
-                  .
-                </p>
-              ) : null}
+              {sources.length > 0 ? <Sources sources={sources} /> : null}
             </>
           ) : undefined
         }
       />
 
-      <section className="sec ar-rel" id="related" aria-labelledby="related-h">
-        <div className="wrap">
-          <h2 id="related-h">{articleWords.related}</h2>
-          <div className="dt-grid">
-            {article.related.map((tile) => {
-              const link = titleLink({ text: tile.title, href: tile.href });
-              return (
-                <LinkTile
-                  key={tile.href}
-                  href={link.href}
-                  title={named(link.text)}
-                  line={named(tile.where)}
-                />
-              );
-            })}
-          </div>
-        </div>
-      </section>
+      <RelatedRow title={articleWords.related}>
+        {article.related.map((tile) => {
+          const link = titleLink({ text: tile.title, href: tile.href });
+          return (
+            <LinkTile
+              key={tile.href}
+              href={link.href}
+              title={named(link.text)}
+              line={named(tile.where)}
+            />
+          );
+        })}
+      </RelatedRow>
     </DocumentPage>
   );
 }

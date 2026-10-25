@@ -123,6 +123,9 @@ export const routes = {
   careers: "/careers",
   security: "/security",
   learn: "/learn",
+  /* The cloud cost glossary, under Learn: one page per term at /learn/glossary/<slug> (`glossaryPath`). Linked from
+     /learn's More from Zoorik and from every term's trail. */
+  learnGlossary: "/learn/glossary",
   /* Cloud cost optimization tools: the tools that reduce the bill, then Coral and Amoeba compared. Its old address,
      /compare, redirects here. In the footer's Resources column, after News. */
   cloudCostTools: "/cloud-cost-optimization-library",
@@ -173,8 +176,17 @@ export const comparePath = "/cloud-cost-optimization-library";
  */
 export const learnPath = (slug: string): `/learn/${string}` => `/learn/${slug}`;
 
-/** Whether a pathname is a Learn article's: one segment under /learn. */
-export const isLearnArticlePath = (pathname: string): boolean => /^\/learn\/[^/]+$/.test(pathname);
+/** Whether a pathname is a Learn article's: one segment under /learn, the glossary's hub aside. */
+export const isLearnArticlePath = (pathname: string): boolean =>
+  /^\/learn\/[^/]+$/.test(pathname) && pathname !== routes.learnGlossary;
+
+/** A glossary term's address, by its slug. The terms are listed by the glossary index (`@/content/learn/glossary`). */
+export const glossaryPath = (slug: string): `/learn/glossary/${string}` =>
+  `/learn/glossary/${slug}`;
+
+/** Whether a pathname is a glossary term's: one segment under /learn/glossary. */
+export const isGlossaryTermPath = (pathname: string): boolean =>
+  /^\/learn\/glossary\/[^/]+$/.test(pathname);
 
 /**
  * Whether the Amoeba guide and FAQ are published.
@@ -238,9 +250,13 @@ export const hashKeepingRoutes: readonly string[] = [
   routes.security,
 ];
 
-/** Whether a page keeps its hash: one of `hashKeepingRoutes`, or any Learn article. */
+/** Whether a page keeps its hash: one of `hashKeepingRoutes`, or any Learn article or glossary term. */
 export function keepsHash(pathname: string): boolean {
-  return hashKeepingRoutes.includes(pathname) || isLearnArticlePath(pathname);
+  return (
+    hashKeepingRoutes.includes(pathname) ||
+    isLearnArticlePath(pathname) ||
+    isGlossaryTermPath(pathname)
+  );
 }
 
 /** Where every "Book a demo" goes: the bar, the closing row, the footer and /login. */
@@ -452,6 +468,8 @@ const NAV_STATES: ReadonlyMap<string, NavState> = new Map<string, NavState>([
   [routes.amoebaFaq, { current: "docs" }],
   [routes.docs, { current: "docs", here: { menu: "docs" } }],
   [routes.learn, { current: "docs", here: { menu: "docs", product: "learn" } }],
+  /* The glossary's hub marks Docs alone, as an article does: the menu has no row of its own for it. */
+  [routes.learnGlossary, { current: "docs" }],
   [routes.login, { current: "login" }],
   /* /open-source marks Docs and its own row in the menu; the three guides mark Docs only. */
   [routes.openSource, { current: "docs", here: { menu: "docs", product: "open" } }],
@@ -460,14 +478,17 @@ const NAV_STATES: ReadonlyMap<string, NavState> = new Map<string, NavState>([
   [routes.docsContributing, { current: "docs" }],
 ]);
 
-/** A Learn article marks the Docs menu alone, whichever article it is; /about marks nothing. */
+/** A Learn article or glossary term marks the Docs menu alone, whichever it is; /about marks nothing. */
 const LEARN_ARTICLE_STATE: NavState = { current: "docs" };
 
 /** A page's place in the header, from its pathname alone, so it is known when the page is prerendered. */
 export function navState(pathname: string): NavState {
   /* `/coral/` and `/coral` are one page. */
   const path = pathname.replace(/(.)\/$/, "$1");
-  return NAV_STATES.get(path) ?? (isLearnArticlePath(path) ? LEARN_ARTICLE_STATE : {});
+  return (
+    NAV_STATES.get(path) ??
+    (isLearnArticlePath(path) || isGlossaryTermPath(path) ? LEARN_ARTICLE_STATE : {})
+  );
 }
 
 /**

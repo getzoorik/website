@@ -16,6 +16,7 @@ import { versusPages, versusRoute } from "@/content/learn-compare";
 import { coralPageContent } from "@/content/coral-page";
 import { authors } from "@/content/authors";
 import { socialProfiles } from "@/content/footer";
+import { glossaryPage, glossaryTerms, termName, termRoute } from "@/content/learn/glossary";
 import { articleAuthor, articleCard, articleRoute, learnArticles } from "@/content/learn/published";
 import { products } from "@/content/products";
 
@@ -83,6 +84,19 @@ function articleModule(slug: string): () => Promise<PageModule> {
   };
 }
 
+/** A glossary term is one dynamic route (`/learn/glossary/[slug]`) too: its module, resolved for one slug. */
+function termModule(slug: string): () => Promise<PageModule> {
+  return async () => {
+    const page = await import("@/app/learn/glossary/[slug]/page");
+    const params = Promise.resolve({ slug });
+    const [metadata, element] = await Promise.all([
+      page.generateMetadata({ params }),
+      page.default({ params }),
+    ]);
+    return { metadata, default: () => element };
+  };
+}
+
 /** Each indexed page's module, by path. */
 const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/": () => import("@/app/page"),
@@ -98,6 +112,8 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   ...Object.fromEntries(
     learnArticles.map((article) => [articleRoute(article), articleModule(article.slug)]),
   ),
+  "/learn/glossary": () => import("@/app/learn/glossary/page"),
+  ...Object.fromEntries(glossaryTerms.map((term) => [termRoute(term), termModule(term.slug)])),
   "/value-lab": () => import("@/app/value-lab/page"),
   "/value-lab/coral-dev-cluster": () => import("@/app/value-lab/coral-dev-cluster/page"),
   "/about": () => import("@/app/about/page"),
@@ -313,7 +329,7 @@ describe("the home page's structured data", () => {
 
 describe("every indexed page's structured data", () => {
   it("renders on every page in the sitemap as one block that parses to the page's graph", async () => {
-    expect(listed).toHaveLength(34 + learnArticles.length);
+    expect(listed).toHaveLength(35 + learnArticles.length + glossaryTerms.length);
     for (const { path } of listed) {
       pathname.current = path;
       const { default: Page } = await pageModule(path);
@@ -339,9 +355,9 @@ describe("every indexed page's structured data", () => {
       }
       cleanup();
     }
-    /* It renders every listed page, /events's 76 cards and /learn's hub among them: past vitest's 5s once the suite runs in
-       parallel. */
-  }, 20_000);
+    /* It renders every listed page, /events's 76 cards, /learn's hub and the glossary's 31 pages among them: past
+       vitest's 5s once the suite runs in parallel. */
+  }, 40_000);
 
   it("names each page by its printed title, description and address, and trails it from the home page", async () => {
     for (const { path, url } of listed) {
@@ -392,6 +408,11 @@ describe("every indexed page's structured data", () => {
     for (const article of learnArticles) {
       expect(names(articleRoute(article)), article.slug).toEqual(["Zoorik", "Learn", article.h1]);
     }
+    /* The glossary's hub under Learn, and each term under the hub, by the name its trail over the h1 gives it. */
+    expect(names(routes.learnGlossary)).toEqual(["Zoorik", "Learn", "Glossary"]);
+    for (const term of glossaryTerms) {
+      expect(names(termRoute(term)), term.slug).toEqual(["Zoorik", "Learn", "Glossary", term.h1]);
+    }
     expect(names(routes.caseStudyCoralDevCluster)).toEqual([
       "Zoorik",
       "Value Lab",
@@ -422,6 +443,7 @@ describe("every indexed page's structured data", () => {
         [
           "/docs",
           "/learn",
+          "/learn/glossary",
           "/value-lab",
           "/events",
           "/news",
@@ -467,7 +489,22 @@ describe("every indexed page's structured data", () => {
           : { "@id": `https://zoorik.com/${article.product}#software` },
       );
     }
-    for (const path of ["/", routes.assessment, routes.docs, routes.learn, routes.privacy]) {
+    /* A glossary term too, by the product its page names. */
+    for (const term of glossaryTerms) {
+      expect(about(termRoute(term)), term.slug).toEqual(
+        term.product === "both"
+          ? undefined
+          : { "@id": `https://zoorik.com/${term.product}#software` },
+      );
+    }
+    for (const path of [
+      "/",
+      routes.assessment,
+      routes.docs,
+      routes.learn,
+      routes.learnGlossary,
+      routes.privacy,
+    ]) {
       expect(about(path), path).toBeUndefined();
     }
   });
@@ -554,6 +591,61 @@ describe("every indexed page's structured data", () => {
     } finally {
       vi.doUnmock("@/content/learn/articles.generated");
       vi.resetModules();
+    }
+  });
+
+  it("makes each glossary term a DefinedTerm in the glossary's set, and the glossary's hub that set", () => {
+    const hubUrl = "https://zoorik.com/learn/glossary";
+    const set = {
+      "@type": "DefinedTermSet",
+      "@id": `${hubUrl}#terms`,
+      name: "Cloud cost glossary",
+      url: hubUrl,
+    };
+    expect(glossaryPage.hero.title).toBe(set.name);
+    for (const term of glossaryTerms) {
+      const url = `https://zoorik.com${termRoute(term)}`;
+      const nodes = graphOf(termRoute(term));
+      expect(ofType(nodes, "DefinedTermSet"), term.slug).toHaveLength(0);
+      const [node, ...more] = ofType(nodes, "DefinedTerm");
+      expect(more, term.slug).toHaveLength(0);
+      expect(node, term.slug).toEqual({
+        "@type": "DefinedTerm",
+        "@id": `${url}#term`,
+        name: termName(term),
+        description: term.card,
+        url,
+        inDefinedTermSet: set,
+        mainEntityOfPage: { "@id": `${url}#webpage` },
+      });
+      /* Its name is the term's words before any bracket, and its description the definition's opening. */
+      expect(node!.name, term.slug).not.toMatch(/[()]/);
+      expect(node!.description, term.slug).toMatch(/[.?!]$/);
+    }
+    const hub = graphOf(routes.learnGlossary);
+    expect(hub.map((node) => node["@type"])).toEqual([
+      "Organization",
+      "WebSite",
+      "CollectionPage",
+      "BreadcrumbList",
+      "DefinedTermSet",
+    ]);
+    expect(ofType(hub, "DefinedTermSet")[0]).toEqual({
+      ...set,
+      description: glossaryPage.meta.description,
+      hasDefinedTerm: glossaryTerms.map((term) => ({
+        "@type": "DefinedTerm",
+        "@id": `https://zoorik.com${termRoute(term)}#term`,
+        name: termName(term),
+        url: `https://zoorik.com${termRoute(term)}`,
+      })),
+      mainEntityOfPage: { "@id": `${hubUrl}#webpage` },
+    });
+    /* No other page carries a term or a set. */
+    for (const { path } of listed) {
+      if (path === routes.learnGlossary || path.startsWith(`${routes.learnGlossary}/`)) continue;
+      expect(ofType(graphOf(path), "DefinedTerm"), path).toHaveLength(0);
+      expect(ofType(graphOf(path), "DefinedTermSet"), path).toHaveLength(0);
     }
   });
 

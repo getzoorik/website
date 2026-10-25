@@ -19,7 +19,9 @@ import { DownloadGlyph } from "@/features/documents/document-glyphs";
  * the bottom of the text, stacked under it below 981px. `/docs` and `/privacy`
  * draw the h1 and the deck only. No eyebrow, breadcrumb, date line or second
  * line in the h1, except on the case study, which the mock gives a kicker over
- * its h1 and a second, green line inside it (`.cs-hero`).
+ * its h1 and a second, green line inside it (`.cs-hero`), and on a glossary
+ * term, whose kicker is its trail back to Learn and the glossary, with no deck
+ * under its h1 (`.gl-hero`).
  */
 
 /** One file in the download block: its label ("PDF") and the registry entry it reads. */
@@ -38,8 +40,9 @@ export interface HeroSwitch {
 export interface DocumentHeroProps {
   /** Plain text, or text whose product names are kept out of translation (`named()`). */
   readonly title: ReactNode;
-  readonly deck: ReactNode;
-  /** A small line over the h1: the case study's kind, product and date (`.cs-kick`). */
+  /** The line under the h1; a glossary term's page has none, its definition leads the column. */
+  readonly deck?: ReactNode;
+  /** A small line over the h1: the case study's kind, product and date, a glossary term's trail (`.cs-kick`). */
   readonly kicker?: ReactNode;
   /** A page's own class on the hero, beside `hero doc-hero` (the case study's `cs-hero`). */
   readonly className?: string;
@@ -124,7 +127,7 @@ export function DocumentHero({
       {kicker ? <p className="cs-kick">{kicker}</p> : null}
       <h1>{title}</h1>
       {productSwitch ? <ProductSwitch {...productSwitch} /> : null}
-      <p className="doc-deck">{deck}</p>
+      {deck ? <p className="doc-deck">{deck}</p> : null}
     </>
   );
 

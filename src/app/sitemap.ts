@@ -29,6 +29,7 @@ import {
 import { marketplacesLastUpdated } from "@/content/marketplaces";
 import { partnersLastUpdated } from "@/content/partners";
 import { openSourceGuides, openSourceLastUpdated, openSourceUpdated } from "@/content/open-source";
+import { glossaryPage, glossaryTerms, termRoute } from "@/content/learn/glossary";
 import { articleRoute, learnArticles } from "@/content/learn/published";
 import { privacy } from "@/content/privacy";
 import { referralsLastUpdated } from "@/content/referrals";
@@ -47,17 +48,29 @@ import { isoDay } from "@/lib/content-date";
  *
  * Learn's are ISO days already (`learnDates`): each article its `updated` day,
  * and the hub the later of its own day and its newest article's, as a new
- * article changes the hub too.
+ * article changes the hub too. The glossary's the same way: each term its
+ * `updated` day, and its hub the later of its own day and its newest term's.
  */
 const learnDates: Readonly<Record<string, string>> = (() => {
-  const own = isoDay(learnPage.updated);
-  const newest = learnArticles.reduce(
-    (day, article) => (article.updated > day ? article.updated : day),
-    own,
-  );
+  const latest = (own: string, days: readonly string[]): string =>
+    days.reduce((day, other) => (other > day ? other : day), own);
   return Object.fromEntries([
-    [routes.learn, newest],
+    [
+      routes.learn,
+      latest(
+        isoDay(learnPage.updated),
+        learnArticles.map((article) => article.updated),
+      ),
+    ],
     ...learnArticles.map((article) => [articleRoute(article), article.updated] as const),
+    [
+      routes.learnGlossary,
+      latest(
+        isoDay(glossaryPage.updated),
+        glossaryTerms.map((term) => term.updated),
+      ),
+    ],
+    ...glossaryTerms.map((term) => [termRoute(term), term.updated] as const),
   ]);
 })();
 
@@ -104,7 +117,8 @@ const contentDates: Partial<Record<string, string>> = {
  * Every indexed page: home first, then the two products (Coral first), the
  * assessment, the documents section (the hub, then Coral's guide and FAQ, then
  * Amoeba's once `amoebaDocs` publishes them), Learn and every article in the
- * Learn index (A–Z by slug), the case studies, /events, /about, /careers,
+ * Learn index (A–Z by slug), the glossary and every term in its index (A–Z by
+ * slug), the case studies, /events, /about, /careers,
  * /brand-assets, /partners, /referrals, the privacy policy, the terms, and
  * security and data handling.
  * A held page answers 404, so it is never listed.
@@ -128,6 +142,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     routes.openSource,
     routes.learn,
     ...learnArticles.map(articleRoute),
+    routes.learnGlossary,
+    ...glossaryTerms.map(termRoute),
     routes.cloudCostTools,
     ...alternativesPages.map((page) => page.route),
     ...versusPages.map(versusRoute),
