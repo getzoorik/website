@@ -93,7 +93,8 @@ describe("sitemap.xml", () => {
       "/marketplaces": "2026-10-21",
       "/docs": "2026-10-21",
       "/coral/guide": updated,
-      "/coral/faq": updated,
+      /* The four questions of 25 Oct 2026. */
+      "/coral/faq": "2026-10-25",
       /* The Amoeba FAQ's assessment answer names the PDF report. */
       ...(amoebaDocs ? { "/amoeba/guide": updated, "/amoeba/faq": "2026-10-19" } : {}),
       /* The three guides print "Updated 16 October 2026"; /open-source gives its content file's date. */
