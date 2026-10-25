@@ -649,13 +649,19 @@ export function pageStructuredData(path: string) {
             },
           ]
         : []),
-      /* The glossary's hub: the set, and every published term in it by its address. */
+      /* The glossary's hub: the set, and every published term in it by its name and address, so the set reads whole
+         on its own page. */
       ...(page.termSet
         ? [
             {
               ...termSetRef,
               description: page.description,
-              hasDefinedTerm: glossaryTerms.map((term) => ref(`${pageUrl(termRoute(term))}#term`)),
+              hasDefinedTerm: glossaryTerms.map((term) => ({
+                "@type": "DefinedTerm",
+                "@id": `${pageUrl(termRoute(term))}#term`,
+                name: termName(term),
+                url: pageUrl(termRoute(term)),
+              })),
               mainEntityOfPage: ref(pageId),
             },
           ]

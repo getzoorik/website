@@ -4,7 +4,7 @@
 // term is published when its file is there, so adding or removing a file is all it takes; the output is not committed.
 // Runs before dev, typecheck, test and build (the "pre" scripts in package.json).
 
-import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -12,13 +12,10 @@ const learn = join(dirname(fileURLToPath(import.meta.url)), "..", "src", "conten
 
 /** The slugs of a folder's files, A–Z; a name that is not a slug fails the run. */
 function slugsIn(folder, what) {
-  const dir = join(learn, folder);
-  const slugs = existsSync(dir)
-    ? readdirSync(dir)
-        .filter((name) => name.endsWith(".ts"))
-        .map((name) => name.slice(0, -".ts".length))
-        .sort()
-    : [];
+  const slugs = readdirSync(join(learn, folder))
+    .filter((name) => name.endsWith(".ts"))
+    .map((name) => name.slice(0, -".ts".length))
+    .sort();
   for (const slug of slugs) {
     if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
       throw new Error(
@@ -65,13 +62,9 @@ import type { GlossaryTerm } from "./glossary-term";
 ${terms.map((slug, i) => `import { term as t${i} } from "./glossary/${slug}";`).join("\n")}
 
 /** Every glossary file, A–Z by its name, with the term it holds. */
-export const glossaryFiles: readonly { readonly file: string; readonly term: GlossaryTerm }[] = ${
-    terms.length === 0
-      ? "[];"
-      : `[
+export const glossaryFiles: readonly { readonly file: string; readonly term: GlossaryTerm }[] = [
 ${terms.map((slug, i) => `  { file: "${slug}", term: t${i} },`).join("\n")}
-];`
-  }
+];
 `,
 );
 console.log(`learn index: ${slugs.length} articles, ${terms.length} glossary terms`);

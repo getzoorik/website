@@ -39,8 +39,10 @@
 // stands beside it before the first "## " heading, two to four sections in an article's blocks with one [DIAGRAM: …]
 // among them, "## Related terms" (each line "- [Term](/learn/glossary/<slug>): its line"), "**Read next:**" and the
 // sources. The title loses its " | Zoorik" (the site's template adds it); the hub's line under the term is the
-// definition's first sentence. Every link to another term must lead to one of the drafts, and a link to the old
-// /case-studies/<study> address is written to /value-lab/<study>, where the study lives now.
+// definition's first sentence. Every link to another term must lead to one of the drafts.
+//
+// In both modes a link to the old /case-studies/<study> address, which the article drafts still write, is written to
+// /value-lab/<study>, where the study lives now.
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";

@@ -63,6 +63,9 @@ describe("/learn/glossary", () => {
     expect([...kicker.querySelectorAll("a")].map((a) => [text(a), a.getAttribute("href")])).toEqual(
       [["Learn", "/learn"]],
     );
+    /* `gl-kl` names no rule but keeps the link out of the site's plain-link rules (white, underlined): it rests at the
+       kicker's colour. */
+    expect(kicker.querySelector("a")).toHaveAttribute("class", "gl-kl");
     expect(text(hero.querySelector(".doc-deck"))).toBe(glossaryPage.hero.deck);
   });
 

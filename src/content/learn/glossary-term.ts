@@ -65,11 +65,9 @@ export interface GlossaryTerm {
   readonly sources: readonly ArticleSource[];
 }
 
-/** The fixed words of a term's page. */
+/** The fixed words of a term's page; " · Published by " and "Sources: " are the articles' (`articleWords`). */
 export const glossaryWords = {
   updated: "Updated ",
-  by: " · Published by ",
   next: "Read next:",
-  sources: "Sources: ",
   related: "Related terms",
 } as const;

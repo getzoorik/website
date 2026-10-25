@@ -634,7 +634,10 @@ describe("every indexed page's structured data", () => {
       ...set,
       description: glossaryPage.meta.description,
       hasDefinedTerm: glossaryTerms.map((term) => ({
+        "@type": "DefinedTerm",
         "@id": `https://zoorik.com${termRoute(term)}#term`,
+        name: termName(term),
+        url: `https://zoorik.com${termRoute(term)}`,
       })),
       mainEntityOfPage: { "@id": `${hubUrl}#webpage` },
     });

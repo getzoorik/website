@@ -69,7 +69,8 @@ import { isOffSite, offSiteProps } from "@/lib/links";
 
 /**
  * How an article's text is set: its slug (for what it lists), and whether its inline code takes the guides' breaks.
- * A glossary term's page sets its text the same way (`GlossaryPage`), with the blocks, text and sources drawn here.
+ * A glossary term's page sets its text the same way (`GlossaryPage`), with the blocks, text, sources and Related row
+ * drawn here.
  */
 export interface Setting {
   readonly slug: string;
@@ -441,6 +442,44 @@ export function Source({ source }: { readonly source: ArticleSource }): React.JS
   );
 }
 
+/** "Sources: " and each source, a new tab, set apart by semicolons and closed by a full stop. */
+export function Sources({
+  sources,
+}: {
+  readonly sources: readonly ArticleSource[];
+}): React.JSX.Element {
+  return (
+    <p className="ar-src">
+      {articleWords.sources}
+      {sources.map((source, index) => (
+        <Fragment key={source.url}>
+          {index > 0 ? "; " : null}
+          <Source source={source} />
+        </Fragment>
+      ))}
+      .
+    </p>
+  );
+}
+
+/** The row under the frame that leads on to other pages: its heading, then its tiles three up (`LinkTile`). */
+export function RelatedRow({
+  title,
+  children,
+}: {
+  readonly title: string;
+  readonly children: ReactNode;
+}): React.JSX.Element {
+  return (
+    <section className="sec ar-rel" id="related" aria-labelledby="related-h">
+      <div className="wrap">
+        <h2 id="related-h">{title}</h2>
+        <div className="dt-grid">{children}</div>
+      </div>
+    </section>
+  );
+}
+
 /**
  * " · By <name>, <role>": the name a new tab to their LinkedIn profile where they have one, its last word holding the
  * arrow beside it at a line end (`.nw-nb`), as a source's title does.
@@ -534,41 +573,25 @@ export function ArticlePage({ article }: { readonly article: Article }): React.J
                   </p>
                 </aside>
               ) : null}
-              {sources.length > 0 ? (
-                <p className="ar-src">
-                  {articleWords.sources}
-                  {sources.map((source, index) => (
-                    <Fragment key={source.url}>
-                      {index > 0 ? "; " : null}
-                      <Source source={source} />
-                    </Fragment>
-                  ))}
-                  .
-                </p>
-              ) : null}
+              {sources.length > 0 ? <Sources sources={sources} /> : null}
             </>
           ) : undefined
         }
       />
 
-      <section className="sec ar-rel" id="related" aria-labelledby="related-h">
-        <div className="wrap">
-          <h2 id="related-h">{articleWords.related}</h2>
-          <div className="dt-grid">
-            {article.related.map((tile) => {
-              const link = titleLink({ text: tile.title, href: tile.href });
-              return (
-                <LinkTile
-                  key={tile.href}
-                  href={link.href}
-                  title={named(link.text)}
-                  line={named(tile.where)}
-                />
-              );
-            })}
-          </div>
-        </div>
-      </section>
+      <RelatedRow title={articleWords.related}>
+        {article.related.map((tile) => {
+          const link = titleLink({ text: tile.title, href: tile.href });
+          return (
+            <LinkTile
+              key={tile.href}
+              href={link.href}
+              title={named(link.text)}
+              line={named(tile.where)}
+            />
+          );
+        })}
+      </RelatedRow>
     </DocumentPage>
   );
 }

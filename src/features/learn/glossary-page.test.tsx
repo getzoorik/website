@@ -4,12 +4,12 @@ import { render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { glossaryPath, routes } from "@/config/site";
-import { pageCards } from "@/config/social";
+import { cardFor, pageCards } from "@/config/social";
 import type { ArticleBlock, ArticleItem, ArticleText } from "@/content/learn/article";
 import { findTerm, glossaryTerms, termCard } from "@/content/learn/glossary";
 import { glossaryFiles } from "@/content/learn/glossary.generated";
 import { glossaryGroups, type GlossaryTerm } from "@/content/learn/glossary-term";
-import { isLiveHref, titleLink } from "@/content/learn/published";
+import { isLiveHref, learnSlugOf } from "@/content/learn/published";
 import { products } from "@/content/products";
 import { isoDay, printedDay } from "@/lib/content-date";
 import { learnToday } from "@/lib/learn-today";
@@ -32,9 +32,10 @@ import GlossaryTermPage, {
  * hero with its trail back to Learn and the glossary, the frame (each section's name beside its text, the names as
  * chips), the Updated line, the definition first, the one drawn figure under its caption, the lists, the article to
  * read next, the sources, the Related terms tiles and the closing row for the term's product; no help box, author or
- * cover, and no link to a page that is not published. Every expectation is read from the term's own file, so a new
- * term is checked with no change here. The sitemap is in `src/app/sitemap.test.ts`, the structured data in
- * `src/config/structured-data.test.ts`, the hub in `glossary-hub.test.tsx`.
+ * cover, and no link to a page that is not published. Every page's expectations are read from the term's own file;
+ * the index's counts pin the 25 October plan (thirty terms, ten in each group). The sitemap is in
+ * `src/app/sitemap.test.ts`, the structured data in `src/config/structured-data.test.ts`, the hub in
+ * `glossary-hub.test.tsx`.
  */
 
 afterEach(() => {
@@ -132,6 +133,18 @@ describe("the glossary index", () => {
     }
   });
 
+  it("draws a link to a term only once it is published, and takes the hub for neither an article nor a term", () => {
+    const [first] = glossaryTerms;
+    expect(isLiveHref(glossaryPath(first!.slug))).toBe(true);
+    expect(isLiveHref(`${glossaryPath(first!.slug)}#why-it-matters-for-your-bill`)).toBe(true);
+    expect(isLiveHref("/learn/glossary/no-such-term")).toBe(false);
+    expect(isLiveHref(routes.learnGlossary)).toBe(true);
+    expect(learnSlugOf(routes.learnGlossary)).toBeNull();
+    expect(learnSlugOf(glossaryPath(first!.slug))).toBeNull();
+    /* A term with no card of its own would share the glossary's. */
+    expect(cardFor("/learn/glossary/no-such-term")).toBe(pageCards[routes.learnGlossary]);
+  });
+
   it("files every term under one of the three groups, ten in each", () => {
     for (const group of glossaryGroups) {
       expect(
@@ -218,6 +231,9 @@ describe.each(glossaryTerms.map((term) => term.slug))("/learn/glossary/%s", (slu
       ["Learn", "/learn"],
       ["Glossary", "/learn/glossary"],
     ]);
+    /* `gl-kl` names no rule but keeps each step out of the site's plain-link rules (white, underlined): they rest at
+       the kicker's colour, as the "/" between them does. */
+    for (const a of trail.querySelectorAll("a")) expect(a).toHaveAttribute("class", "gl-kl");
     expect(hero.querySelector(".doc-deck, .as-switch, .dl, img")).toBeNull();
   });
 
@@ -304,15 +320,13 @@ describe.each(glossaryTerms.map((term) => term.slug))("/learn/glossary/%s", (slu
     expect(container.querySelector(".doc-help, aside.doc-call:not(.ar-call)")).toBeNull();
     expect(text(container)).not.toMatch(/How (Coral|Amoeba) helps/);
     const next = foot.querySelector(":scope > p.gl-next:first-child")!;
-    const link = titleLink({ text: term.next.title, href: term.next.href });
-    expect(text(next)).toBe(`Read next: ${words(link.text)}`);
-    /* An article not published yet is named by the draft's words, as plain text. */
+    /* The draft's words, linked once the article is published and plain text until then. */
+    expect(text(next)).toBe(`Read next: ${words(term.next.title)}`);
     const a = next.querySelector("a");
-    if (link.href) expect(a).toHaveAttribute("href", term.next.href);
-    else {
-      expect(a).toBeNull();
-      expect(link.text).toBe(term.next.title);
-    }
+    if (isLiveHref(term.next.href)) {
+      expect(a).toHaveAttribute("href", term.next.href);
+      expect(text(a)).toBe(words(term.next.title));
+    } else expect(a).toBeNull();
     const sources = foot.querySelector(":scope > p.ar-src:last-child")!;
     expect(text(sources)).toMatch(/^Sources: .*\.$/);
     const links = [...sources.querySelectorAll("a")];
