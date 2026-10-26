@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "kubernetes-cpu-throttling",
   term: "CPU throttling (Kubernetes)",
   title: "What is CPU throttling in Kubernetes?",
-  meta: "CPU throttling in Kubernetes slows a container that reaches its CPU limit. See what causes it, a real example, and how quick fixes can add nodes to your bill.",
+  meta: "CPU throttling in Kubernetes slows a container that reaches its CPU limit. See what causes it, a real example, and how quick fixes can add nodes you pay for.",
   h1: "What is CPU throttling in Kubernetes?",
   card: "CPU throttling in Kubernetes is when the Linux kernel holds back a container that hits its CPU limit.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
@@ -60,8 +60,8 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "p",
@@ -89,7 +89,7 @@ export const term: GlossaryTerm = {
             { a: "Coral", href: "/coral" },
             " rebalances CPU and memory requests on AKS and EKS to ",
             { a: "match real use", href: "/learn/kubernetes-pod-right-sizing" },
-            ", so the same pods fit on fewer nodes. On regular pods, it never reduces a container’s CPU or memory limit.",
+            ", so the same pods fit on fewer nodes. On regular pods, it never reduces a CPU or memory limit.",
           ],
         },
         {

@@ -355,7 +355,7 @@ describe("every indexed page's structured data", () => {
       }
       cleanup();
     }
-    /* It renders every listed page, /events's 76 cards, /learn's hub and the glossary's 31 pages among them: past
+    /* It renders every listed page, /events's 76 cards, /learn's hub and the glossary's 61 pages among them: past
        vitest's 5s once the suite runs in parallel. */
   }, 40_000);
 
@@ -618,8 +618,9 @@ describe("every indexed page's structured data", () => {
         inDefinedTermSet: set,
         mainEntityOfPage: { "@id": `${url}#webpage` },
       });
-      /* Its name is the term's words before any bracket, and its description the definition's opening. */
-      expect(node!.name, term.slug).not.toMatch(/[()]/);
+      /* Its name is the term's words without the other names in brackets at its end ("Data transfer (egress) cost"
+         keeps the bracket inside its name), and its description the definition's opening. */
+      expect(node!.name, term.slug).not.toMatch(/\)\s*$/);
       expect(node!.description, term.slug).toMatch(/[.?!]$/);
     }
     const hub = graphOf(routes.learnGlossary);

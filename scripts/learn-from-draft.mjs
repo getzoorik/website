@@ -17,7 +17,8 @@
 //   --day       (optional) the ISO day the articles go live, in place of the calendar's
 //   --glossary  glossary terms in place of articles: src/content/learn/glossary/<slug>.ts, and the term's one drawn
 //               figure under src/features/learn/figures/glossary/<slug>/1.ts. It reads the drafts, their drawings
-//               (--visual) and the day they go live (--day), and needs no figure files or calendar
+//               (--visual) and the day they go live or change (--day; a term already on the site keeps the day it
+//               was published), and needs no figure files or calendar
 //
 // A paragraph that opens with a bold label ("**Worked example.**", "**Rule of thumb.**", "**Watch out.**", "**For
 // engineers.**", "**Note.**") is a callout. A drawn figure loses its "[ FIG n // … ]" line, and what is under it moves
@@ -684,6 +685,14 @@ const plain = (run) =>
         )
         .join("");
 
+/** The day a term already on the site was published: a later run moves its `updated` day to --day, never this one. */
+function publishedDay(slug) {
+  const file = join(TERMS, `${slug}.ts`);
+  return existsSync(file)
+    ? /\bpublished: "(\d{4}-\d{2}-\d{2})"/.exec(readFileSync(file, "utf8"))?.[1]
+    : undefined;
+}
+
 function convertTerm(slug) {
   const { meta, body } = front(readFileSync(join(draftsDir, `${slug}.md`), "utf8"));
   if (meta.slug !== slug) throw new Error(`${slug}: its front matter names ${meta.slug}`);
@@ -782,7 +791,7 @@ function convertTerm(slug) {
     card,
     group: meta.group,
     product,
-    published: goLive,
+    published: publishedDay(slug) ?? goLive,
     updated: goLive,
     definition,
     sections,

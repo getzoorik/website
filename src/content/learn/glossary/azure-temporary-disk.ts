@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
@@ -58,15 +58,15 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
             "The VM price covers the temporary disk, so it has no separate charge.",
             "Data you need to keep belongs on managed data disks.",
-            "Azure bills those for the size you provision, not for what you write. Empty space on them still costs money.",
+            "You pay for those by the size you provision, not what you write. Empty space on them still costs money.",
             [
               "Check each disk’s ",
               { a: "used vs provisioned space", href: "/learn/azure-vm-disk-usage" },
@@ -95,7 +95,7 @@ export const term: GlossaryTerm = {
   related: [
     {
       title: "Azure managed disk",
-      line: "The disk Azure bills by the size you provision.",
+      line: "The disk charged by the size you provision.",
       href: "/learn/glossary/azure-managed-disk",
     },
     {

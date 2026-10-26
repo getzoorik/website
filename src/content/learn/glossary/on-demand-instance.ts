@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "on-demand-instance",
   term: "On-demand instance (on-demand pricing)",
   title: "What is an on-demand instance?",
-  meta: "An on-demand instance is a cloud VM billed by how long it runs, with no commitment. See how AWS and Azure bill it and how it compares to reserved pricing.",
+  meta: "An on-demand instance is a cloud VM charged by how long it runs, with no commitment. See how AWS and Azure charge and how it compares to reserved pricing.",
   h1: "What is an on-demand instance?",
   card: "An on-demand instance is a cloud virtual machine (VM) you pay for by how long it runs, with no commitment.",
   group: "finops-pricing",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
@@ -26,9 +26,9 @@ export const term: GlossaryTerm = {
         {
           kind: "ul",
           items: [
-            "AWS bills Linux and Windows instances by the second, with a 60-second minimum. SUSE Linux Enterprise Server bills in full hours.",
-            "Azure bills each full minute a VM runs, so in Azure’s example 6\u00a0minutes and 45\u00a0seconds bills as 6\u00a0minutes.",
-            "On Azure, a VM that shows “Stopped” still bills for its cores. Only “Stopped (deallocated)” ends that charge.",
+            "AWS charges per second for Linux and Windows instances, with a 60-second minimum. SUSE Linux Enterprise Server is charged in full hours.",
+            "Azure charges per full minute a VM runs, so in Azure’s example 6\u00a0minutes and 45\u00a0seconds counts as 6\u00a0minutes.",
+            "On Azure, you still pay for the cores of a “Stopped” VM. Only “Stopped (deallocated)” ends that charge.",
           ],
         },
       ],
@@ -42,7 +42,7 @@ export const term: GlossaryTerm = {
           items: [
             "AWS Reserved Instances and Azure Reservations trade a one-year or three-year commitment for a discount.",
             "You pay for it even when it’s unused.",
-            "Usage outside the commitment bills at the on-demand rate, as does usage after an AWS Reserved Instance expires.",
+            "You pay the on-demand rate for usage outside the commitment, and after an AWS Reserved Instance expires.",
           ],
         },
         {
@@ -53,19 +53,19 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
             [
-              "Each node in an AKS node pool or EKS node group is a VM, billed at the on-demand rate for its ",
+              "Each node in an AKS node pool or EKS node group is a VM, charged at the on-demand rate for its ",
               { a: "size", href: "/learn/kubernetes-node-size-best-practices" },
               ".",
             ],
             "A commitment or spot price can replace that rate.",
-            "A spare node keeps billing until it’s removed.",
+            "A spare node costs you until it’s removed.",
             [
               { a: "Coral", href: "/coral" },
               " drains spare nodes so your autoscaler can remove them.",

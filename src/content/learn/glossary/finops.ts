@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "finops-pricing",
   product: "both",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
@@ -61,8 +61,8 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "ul",
@@ -70,7 +70,7 @@ export const term: GlossaryTerm = {
             [
               "Reports alone don’t ",
               { a: "reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
-              ". The bill goes down when you change what runs, or the rate you pay for it.",
+              ". Your cloud cost goes down when you change what runs, or the rate you pay for it.",
             ],
             [
               { a: "Coral", href: "/coral" },
@@ -106,10 +106,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/cloud-chargeback",
     },
   ],
-  next: {
-    title: "How to reduce cloud costs: what moves the bill",
-    href: "/learn/how-to-reduce-cloud-costs",
-  },
+  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
   sources: [
     {
       publisher: "Microsoft Learn",

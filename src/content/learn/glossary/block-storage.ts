@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "block-storage",
   term: "Block storage",
   title: "What is block storage?",
-  meta: "Block storage meaning in plain words: the disks you attach to cloud VMs, how Azure and AWS bill them by size, and how they differ from object storage.",
+  meta: "Block storage meaning in plain words: the disks you attach to cloud VMs, how Azure and AWS charge for them by size, and how they differ from object storage.",
   h1: "What is block storage?",
   card: "Block storage is storage that a server uses as a disk.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
@@ -52,18 +52,18 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "Bills differ too. A disk bills for the size you provision, full or not. Amazon S3 charges only for what you actually use.",
+          text: "Costs differ too. A disk charges for the size you provision, full or not. Amazon S3 charges only for what you actually use.",
         },
         { kind: "svg", figure: figure1 },
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "p",
-          text: "Microsoft’s billing example is a 1\u00a0TiB Standard SSD (solid-state drive) holding 120\u00a0GiB of data. You pay for all 1\u00a0TiB.",
+          text: "Microsoft’s pricing example is a 1\u00a0TiB Standard SSD (solid-state drive) holding 120\u00a0GiB of data. You pay for all 1\u00a0TiB.",
         },
         {
           kind: "ul",

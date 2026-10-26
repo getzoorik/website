@@ -109,7 +109,7 @@ const runsIn = (blocks: readonly ArticleBlock[]): readonly ArticleText[] =>
   });
 
 describe("the glossary index", () => {
-  it("lists every term file once, A–Z, each named by its slug: the thirty terms of the 25 October plan", () => {
+  it("lists every term file once, A–Z, each named by its slug: the sixty terms of the two 25 October plans", () => {
     const files = readdirSync("src/content/learn/glossary")
       .filter((name) => name.endsWith(".ts"))
       .map((name) => name.slice(0, -3))
@@ -117,7 +117,7 @@ describe("the glossary index", () => {
     expect(glossaryFiles.map((entry) => entry.file)).toEqual(files);
     for (const { file, term } of glossaryFiles) expect(term.slug, file).toBe(file);
     expect(glossaryTerms.map((term) => term.slug)).toEqual(files);
-    expect(files).toHaveLength(30);
+    expect(files).toHaveLength(60);
   });
 
   it("dates every term by real ISO days, published on or before today, and updated no earlier", () => {
@@ -136,7 +136,9 @@ describe("the glossary index", () => {
   it("draws a link to a term only once it is published, and takes the hub for neither an article nor a term", () => {
     const [first] = glossaryTerms;
     expect(isLiveHref(glossaryPath(first!.slug))).toBe(true);
-    expect(isLiveHref(`${glossaryPath(first!.slug)}#why-it-matters-for-your-bill`)).toBe(true);
+    expect(isLiveHref(`${glossaryPath(first!.slug)}#why-it-matters-for-your-cloud-cost`)).toBe(
+      true,
+    );
     expect(isLiveHref("/learn/glossary/no-such-term")).toBe(false);
     expect(isLiveHref(routes.learnGlossary)).toBe(true);
     expect(learnSlugOf(routes.learnGlossary)).toBeNull();
@@ -145,12 +147,20 @@ describe("the glossary index", () => {
     expect(cardFor("/learn/glossary/no-such-term")).toBe(pageCards[routes.learnGlossary]);
   });
 
-  it("files every term under one of the three groups, ten in each", () => {
-    for (const group of glossaryGroups) {
-      expect(
-        glossaryTerms.filter((term) => term.group === group.id),
-        group.id,
-      ).toHaveLength(10);
+  it("files every term under one of the three groups: 13 Kubernetes, 19 block storage, 28 FinOps and pricing", () => {
+    expect(
+      glossaryGroups.map((group) => glossaryTerms.filter((term) => term.group === group.id).length),
+    ).toEqual([13, 19, 28]);
+  });
+
+  it('says "cloud cost", never "bill", in its own words: only a vendor\'s own name or a source\'s address keeps it', () => {
+    /* The owner, 26 Oct 2026. A source's title is the vendor's own, so a term's sources are left out. */
+    const vendor = /Billing and Cost Management|Billing User Guide|billing account/g;
+    for (const term of glossaryTerms) {
+      const own = JSON.stringify({ ...term, sources: [] })
+        .replace(/https?:\/\/[^"\s]+/g, "")
+        .replace(vendor, "");
+      expect(own.match(/\bbill(s|ed|ing)?\b/gi), term.slug).toBeNull();
     }
   });
 
@@ -175,7 +185,7 @@ describe("the glossary index", () => {
       expect(term.sections.length, term.slug).toBeGreaterThanOrEqual(1);
       expect(term.sections.length, term.slug).toBeLessThanOrEqual(3);
       expect(term.sections.map((section) => section.title)).toContain(
-        "Why it matters for your bill",
+        "Why it matters for your cloud cost",
       );
     }
   });

@@ -53,19 +53,19 @@ export const glossaryPage = {
     /** The small line over the h1, a link back to /learn. */
     kicker: "Learn",
     title: "Cloud cost glossary",
-    deck: "Plain answers to the Kubernetes, block storage and pricing terms on your cloud bill.",
+    deck: "Plain answers to the Kubernetes, block storage and pricing terms behind your cloud cost.",
   },
   /**
    * The day the hub's own content last changed, for the sitemap; it is not printed. A new term moves the hub's sitemap
    * day on its own (`sitemap.ts`), so this moves only when the hub itself changes.
    */
-  updated: "Updated 25 October 2026",
+  updated: "Updated 26 October 2026",
   /** The hub's name in each term's trail, over its h1 and in the structured data. */
   crumb: "Glossary",
   /** After a group's count, beside its head: "10 terms". */
   count: { one: "term", many: "terms" },
   /** Its tile in /learn's More from Zoorik: the line under the h1. */
-  line: "Plain answers to the terms on your cloud bill.",
+  line: "Plain answers to the terms behind your cloud cost.",
 } as const;
 
 /** A group of the hub: its id (the section's anchor), its heading, and its terms A–Z by name. */

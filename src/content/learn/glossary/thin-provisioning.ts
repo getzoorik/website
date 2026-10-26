@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "thin-provisioning",
   term: "Thin provisioning",
   title: "What is thin provisioning?",
-  meta: "Thin provisioning means a volume takes space only as you write data. See how it differs from thick provisioning, and how Azure and AWS bill disks by size.",
+  meta: "Thin provisioning means a volume takes space only as you write data. See how it differs from thick provisioning, and how Azure and AWS charge by disk size.",
   h1: "What is thin provisioning?",
   card: "Thin provisioning in storage creates a volume that takes up space only as you write data.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
@@ -46,19 +46,19 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "p",
-          text: "Azure managed disks and Amazon EBS volumes bill the size you provision, not the data you write. So an empty GiB costs the same as a full one.",
+          text: "Azure managed disks and Amazon EBS volumes charge for the size you provision, not the data you write. So an empty GiB costs the same as a full one.",
         },
         {
           kind: "ul",
           items: [
-            "In Microsoft’s billing example, a 1\u00a0TiB Standard SSD holds 120\u00a0GiB. It still bills as 1\u00a0TiB.",
-            "An Azure managed disk bills its full size from first use.",
-            "Amazon EBS bills the GB you provision each month.",
+            "In Microsoft’s pricing example, a 1\u00a0TiB Standard SSD holds 120\u00a0GiB. You still pay for 1\u00a0TiB.",
+            "Azure charges for a managed disk’s full size from first use.",
+            "Amazon EBS charges per provisioned GB each month.",
           ],
         },
         {
@@ -91,7 +91,7 @@ export const term: GlossaryTerm = {
     },
     {
       title: "Azure managed disk",
-      line: "The Azure cloud disk, billed by its size.",
+      line: "The Azure cloud disk, charged by its size.",
       href: "/learn/glossary/azure-managed-disk",
     },
     { title: "EBS volume", line: "The AWS version.", href: "/learn/glossary/ebs-volume" },

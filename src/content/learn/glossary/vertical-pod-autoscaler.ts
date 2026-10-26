@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "vertical-pod-autoscaler",
   term: "Vertical Pod Autoscaler (VPA)",
   title: "What is VPA (Vertical Pod Autoscaler)?",
-  meta: "VPA in Kubernetes sets pod CPU and memory requests from real use. See its parts and modes, the docs’ hamster example, and how requests decide your node bill.",
+  meta: "VPA in Kubernetes sets pod CPU and memory requests from real use. See its parts and modes, the docs’ hamster example, and how requests decide your node cost.",
   h1: "What is VPA (Vertical Pod Autoscaler)?",
   card: "VPA in Kubernetes is the Vertical Pod Autoscaler, which sets the CPU and memory requests of a workload’s pods to match real use.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
@@ -68,14 +68,14 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
             "Requests set how many pods fit per node, so how many nodes you pay for.",
-            "Smaller requests reduce the bill only once the same pods fit on fewer nodes.",
+            "Smaller requests reduce the cost only once the same pods fit on fewer nodes.",
             "Bigger ones can need more nodes.",
           ],
         },

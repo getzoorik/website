@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "provisioned-iops",
   term: "Provisioned IOPS",
   title: "What is provisioned IOPS?",
-  meta: "Provisioned IOPS is the disk performance you set and pay for, used or not. See how AWS and Azure bill it, with AWS’s own gp3 example in plain numbers.",
+  meta: "Provisioned IOPS is the disk performance you set and pay for, used or not. See how AWS and Azure charge for it, with AWS’s own gp3 example in plain numbers.",
   h1: "What is provisioned IOPS?",
   card: "Provisioned IOPS is the disk performance you set and pay for, counted in input/output operations per second (IOPS).",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
@@ -45,20 +45,20 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "ul",
-          items: ["3,000\u00a0IOPS come free.", "The other 7,000 are billed as extra."],
+          items: ["3,000\u00a0IOPS come free.", "The other 7,000 are charged as extra."],
         },
         { kind: "svg", figure: figure1 },
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            "Set IOPS for your busiest hour, and you pay that level in quiet hours too.",
-            "Your virtual machine (VM) caps IOPS too. IOPS above its limit are billed but never reached.",
+            "Set IOPS for your busiest hour, and you pay that level in quiet hours.",
+            "Your virtual machine (VM) caps IOPS too. IOPS above its limit are charged but never reached.",
             "You can change IOPS on a running disk on AWS, Premium SSD v2 and Ultra Disk. Azure allows four changes per disk in 24\u00a0hours.",
             [
               "Before you choose io2, read ",

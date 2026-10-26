@@ -5,20 +5,20 @@ export const term: GlossaryTerm = {
   slug: "ebs-volume",
   term: "EBS volume",
   title: "What is an EBS volume?",
-  meta: "An EBS volume is block storage you attach to an EC2 instance. See how AWS bills it by provisioned size, and why it can grow in place but never shrink.",
+  meta: "An EBS volume is block storage you attach to an EC2 instance. See how AWS charges for it by provisioned size, and why it can grow in place but never shrink.",
   h1: "What is an EBS volume?",
-  card: "An EBS volume is a block-level storage device you attach to an EC2 instance, a virtual machine (VM) in AWS.",
+  card: "An EBS volume is a block-level storage device you attach to an EC2 instance, an AWS server, usually a virtual machine (VM).",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
       text: [
         "An EBS volume is a ",
         { a: "block-level storage", href: "/learn/glossary/block-storage" },
-        " device you attach to an EC2 instance, a virtual machine (VM) in AWS. Once attached, the volume works like a physical hard drive. EBS stands for Amazon Elastic Block Store.",
+        " device you attach to an EC2 instance, an AWS server, usually a virtual machine (VM). Once attached, the volume works like a physical hard drive. EBS stands for Amazon Elastic Block Store.",
       ],
     },
     {
@@ -44,26 +44,26 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "AWS bills all 500\u00a0GiB. With EBS, you pay for what you provision, not what you write.",
+          text: "AWS charges for all 500\u00a0GiB. With EBS, you pay for what you provision, not what you write.",
         },
         { kind: "svg", figure: figure1 },
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            "EBS bills each GB you provision, every month, until you delete the volume.",
-            "A volume kept after its instance ends still bills.",
+            "EBS charges for each provisioned GB, every month, until you delete the volume.",
+            "A volume kept after its instance ends is still charged.",
             "You can grow a volume in place, then extend its file system.",
-            "AWS says “You can’t decrease the volume size.” So a volume sized for an old peak keeps billing at that size.",
+            "AWS says “You can’t decrease the volume size.” So you keep paying for an old peak’s size.",
             [
               "To ",
               { a: "shrink an EBS volume", href: "/learn/shrink-ebs-volume" },
-              ", you copy the data to a new, smaller one with a tool such as rsync or robocopy.",
+              ", you copy the data to a new, smaller one with a tool like rsync or robocopy.",
             ],
           ],
         },
