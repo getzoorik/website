@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "block-storage",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
@@ -69,15 +69,15 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
             "Microsoft says the VM price includes ephemeral OS disks. An SSD base disk, which serves some reads, costs extra.",
             [
-              "A managed OS disk is billed on its own. Each node has one. AKS picks a bigger default one on ",
+              "A managed OS disk is charged separately. Each node has one. AKS picks a bigger default one on ",
               {
                 a: "nodes with more virtual CPUs",
                 href: "/learn/kubernetes-node-size-best-practices",

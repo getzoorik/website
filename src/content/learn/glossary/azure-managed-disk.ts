@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "azure-managed-disk",
   term: "Azure managed disk",
   title: "What is an Azure managed disk?",
-  meta: "An Azure managed disk is block storage that Azure manages for your VM. See how it’s billed by provisioned size, and why you can grow it but not shrink it.",
+  meta: "An Azure managed disk is block storage that Azure manages for your VM. See how it’s charged by provisioned size, and why you can grow it but not shrink it.",
   h1: "What is an Azure managed disk?",
   card: "An Azure managed disk is a block storage volume that Azure manages for your virtual machine (VM).",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
@@ -38,7 +38,7 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "Azure bills the provisioned size, the size you set, so you pay for all 1\u00a0TiB, not the 200\u00a0GiB you use.",
+          text: "Azure charges for the provisioned size, the size you set, so you pay for all 1\u00a0TiB, not the 200\u00a0GiB you use.",
         },
         { kind: "svg", figure: figure1 },
       ],
@@ -57,15 +57,15 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
             "You can grow a data disk while the VM keeps running, within some limits.",
             "Microsoft says shrinking an existing disk “isn’t supported and might result in data loss.”",
-            "So a disk sized for an old peak keeps billing at that size.",
+            "So you keep paying for a disk sized for an old peak.",
           ],
         },
         {

@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "max-pods-per-node",
   term: "Max pods per node",
   title: "Max pods per node: meaning and cost impact",
-  meta: "Max pods per node caps how many pods one node can run. See the EKS and AKS defaults, how to change them, and why the cap can add nodes to your bill.",
+  meta: "Max pods per node caps how many pods one node can run. See the EKS and AKS defaults, how to change them, and why the cap can add nodes you pay for.",
   h1: "Max pods per node: meaning and cost impact",
   card: "Max pods per node is the most pods one Kubernetes node can run.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
@@ -50,8 +50,8 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "p",
@@ -83,7 +83,7 @@ export const term: GlossaryTerm = {
     { title: "Node pool", line: "Where AKS sets it.", href: "/learn/glossary/node-pool" },
     {
       title: "DaemonSet",
-      line: "Runs a copy of a pod on each node it targets, each copy taking a slot.",
+      line: "Runs a copy of a pod on each targeted node, each copy taking a slot.",
       href: "/learn/glossary/daemonset",
     },
     {

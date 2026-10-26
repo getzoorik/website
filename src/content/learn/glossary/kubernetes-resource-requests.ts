@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
@@ -54,8 +54,8 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "p",
@@ -68,7 +68,7 @@ export const term: GlossaryTerm = {
             "By default, it removes a node only when its pods request under 50% of the node’s CPU and memory for pods.",
           ],
         },
-        { kind: "p", text: "So your bill follows requests." },
+        { kind: "p", text: "So your cloud cost follows requests." },
         {
           kind: "p",
           text: [

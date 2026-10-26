@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "kubernetes-resource-limits",
   term: "Resource limits (pod limits)",
   title: "What are resource limits in Kubernetes?",
-  meta: "A CPU limit in Kubernetes caps the CPU time a container can use. See how CPU and memory limits work, a docs example, and when a limit sets your node bill.",
+  meta: "A CPU limit in Kubernetes caps the CPU time a container can use. See how CPU and memory limits work, a docs example, and when a limit sets your node cost.",
   h1: "What are resource limits in Kubernetes?",
   card: "A CPU limit in Kubernetes is the most CPU time a container may use.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
@@ -55,8 +55,8 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "p",

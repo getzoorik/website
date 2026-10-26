@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "kubernetes-cost-allocation",
   term: "Kubernetes cost allocation",
   title: "What is Kubernetes cost allocation?",
-  meta: "Kubernetes cost allocation splits a shared cluster’s bill across pods and teams. See how AWS charges each pod for the larger of its request and its use.",
+  meta: "Kubernetes cost allocation splits a shared cluster’s cost across pods and teams. See how AWS charges each pod for the larger of its request and its use.",
   h1: "What is Kubernetes cost allocation?",
   card: "Kubernetes cost allocation splits a shared cluster’s cost across its pods.",
   group: "finops-pricing",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
@@ -56,14 +56,14 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
             "A pod that requests more than it uses is charged for its full request. That shows which teams hold unused capacity.",
-            "Allocation splits the bill but doesn’t reduce it.",
+            "Allocation splits the cost but doesn’t reduce it.",
             [
               { a: "Coral", href: "/coral" },
               " rebalances CPU and memory requests on AKS and EKS to match real use, so the same pods fit on fewer nodes.",
@@ -81,7 +81,7 @@ export const term: GlossaryTerm = {
   related: [
     {
       title: "Showback",
-      line: "Teams see their share but aren’t billed.",
+      line: "Teams see their share but aren’t charged.",
       href: "/learn/glossary/showback",
     },
     {

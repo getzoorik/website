@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "disk-throughput",
   term: "Disk throughput",
   title: "What is disk throughput?",
-  meta: "Disk throughput is how much data a disk reads and writes each second. See how disk size, gp3 and Premium SSD v2 set it, and why it can raise your bill.",
+  meta: "Disk throughput is how much data a disk reads and writes each second. See how disk size, gp3 and Premium SSD v2 set it, and why it can raise your cloud cost.",
   h1: "What is disk throughput?",
   card: "Disk throughput is the amount of data a disk reads and writes each second.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
@@ -22,7 +22,7 @@ export const term: GlossaryTerm = {
       text: [
         "Throughput is the size of each operation times ",
         { a: "input/output operations per second (IOPS)", href: "/learn/glossary/iops" },
-        ". Your virtual machine (VM) has its own limit too, and the smaller one wins.",
+        ". Your virtual machine (VM) has its own limit, and the smaller one wins.",
       ],
     },
   ],
@@ -46,8 +46,8 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         { kind: "p", text: "On some disks, throughput grows with size:" },
         {

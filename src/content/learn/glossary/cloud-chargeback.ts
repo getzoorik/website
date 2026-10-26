@@ -5,17 +5,17 @@ export const term: GlossaryTerm = {
   slug: "cloud-chargeback",
   term: "Chargeback (cloud / IT chargeback)",
   title: "What is chargeback in cloud computing?",
-  meta: "Chargeback in cloud computing bills each team’s budget for its share of the cloud bill. See three common AWS models and how to plan one with finance.",
+  meta: "Chargeback in cloud computing charges each team’s budget for its share of the cloud cost. See three common AWS models and how to plan one with finance.",
   h1: "What is chargeback in cloud computing?",
-  card: "Chargeback in cloud computing means billing each internal team for its share of the cloud bill.",
+  card: "Chargeback in cloud computing means charging each internal team for its share of the cloud cost.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
-      text: "Chargeback in cloud computing means billing each internal team for its share of the cloud bill. Your company pays the provider’s invoice, then charges each team through its own accounting system.",
+      text: "Chargeback in cloud computing means charging each internal team for its share of the cloud cost. Your company pays the provider’s invoice, then charges each team through its own accounting system.",
     },
     { kind: "svg", figure: figure1 },
   ],
@@ -63,8 +63,8 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "ul",
@@ -106,10 +106,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/cloud-unit-economics",
     },
   ],
-  next: {
-    title: "How to reduce cloud costs: what moves the bill",
-    href: "/learn/how-to-reduce-cloud-costs",
-  },
+  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
   sources: [
     {
       publisher: "Microsoft Learn",

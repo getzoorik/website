@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "rightsizing",
   term: "Rightsizing (cloud)",
   title: "What is rightsizing in cloud?",
-  meta: "Rightsizing in cloud matches VMs, disks and databases to what they need. See how AWS and Azure find oversized VMs, and why disks bill for their full size.",
+  meta: "Rightsizing in cloud matches VMs, disks and databases to what they need. See how AWS and Azure find oversized VMs, and why you pay for a disk’s full size.",
   h1: "What is rightsizing in cloud?",
   card: "Rightsizing in cloud cost optimization means matching a resource’s size to what it needs, based on measured use.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
@@ -25,14 +25,14 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "Right sizing cloud storage compares the size you provisioned with the data on it. Azure managed disks and Amazon EBS volumes bill for the provisioned size.",
+          text: "Right sizing cloud storage compares the size you provisioned with the data on it. Azure managed disks and Amazon EBS volumes are charged by provisioned size.",
         },
         { kind: "p", text: "Take Microsoft’s example:" },
         {
           kind: "ul",
           items: [
-            "A 1\u00a0TiB Standard SSD holds 120\u00a0GiB but bills for all 1\u00a0TiB (the E30 tier).",
-            "Its snapshots bill only for the 120\u00a0GiB used.",
+            "A 1\u00a0TiB Standard SSD holds 120\u00a0GiB. You pay for all 1\u00a0TiB (the E30 tier).",
+            "Its snapshots are charged only for the 120\u00a0GiB used.",
           ],
         },
         { kind: "svg", figure: figure1 },
@@ -53,8 +53,8 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "ul",
@@ -84,7 +84,7 @@ export const term: GlossaryTerm = {
     },
     {
       title: "Azure managed disk",
-      line: "Azure’s block storage for VMs, billed by its provisioned size.",
+      line: "Azure’s block storage for VMs, charged by provisioned size.",
       href: "/learn/glossary/azure-managed-disk",
     },
     { title: "EBS volume", line: "AWS block storage for EC2.", href: "/learn/glossary/ebs-volume" },

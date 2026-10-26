@@ -11,11 +11,11 @@ export const term: GlossaryTerm = {
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
-      text: "Kubernetes cluster utilization is the share of your nodes’ CPU and memory that pods request or use. It’s Kubernetes resource utilization across the whole cluster.",
+      text: "Kubernetes cluster utilization is the share of your nodes’ CPU and memory that pods request or use. It’s Kubernetes resource utilization across the cluster.",
     },
   ],
   sections: [
@@ -60,8 +60,8 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "ul",

@@ -51,7 +51,7 @@ export const learnPage = {
    * The day the hub's own content last changed, for the sitemap; it is not printed. A new article moves the hub's
    * sitemap day on its own (`sitemap.ts`), so this moves only when the hub itself changes.
    */
-  updated: "Updated 25 October 2026",
+  updated: "Updated 26 October 2026",
   /** The band's name for a screen reader: the two cards have no section heading of their own. */
   band: "Start here, and find the right fix",
   start: { title: "Start here", line: "Three guides that cover the whole bill." },

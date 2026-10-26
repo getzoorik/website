@@ -5,17 +5,17 @@ export const term: GlossaryTerm = {
   slug: "reserved-instance",
   term: "Reserved instance (AWS RIs, Azure reservations)",
   title: "What is a reserved instance?",
-  meta: "A reserved instance trades a one- or three-year VM commitment for a discount. See how AWS RIs and Azure Reservations bill, and why to shrink before you buy.",
+  meta: "A reserved instance trades a one- or three-year VM commitment for a discount. See what AWS RIs and Azure Reservations cost, and why to shrink before you buy.",
   h1: "What is a reserved instance?",
   card: "A reserved instance is a one-year or three-year commitment to a virtual machine (VM) setup, in return for a discount.",
   group: "finops-pricing",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
-      text: "A reserved instance is a one-year or three-year commitment to a virtual machine (VM) setup, in return for a discount. AWS calls it a Reserved Instance (RI), and Azure calls it a reservation. It’s a billing discount, not a machine.",
+      text: "A reserved instance is a one-year or three-year commitment to a virtual machine (VM) setup, in return for a discount. AWS calls it a Reserved Instance (RI), and Azure calls it a reservation. It’s a price discount, not a machine.",
     },
   ],
   sections: [
@@ -64,8 +64,8 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "ul",
@@ -104,15 +104,12 @@ export const term: GlossaryTerm = {
     },
     {
       title: "On-demand instance",
-      line: "A VM billed by how long it runs, with no commitment.",
+      line: "A VM charged by how long it runs, with no commitment.",
       href: "/learn/glossary/on-demand-instance",
     },
     { title: "Node pool", line: "Nodes that share one setup.", href: "/learn/glossary/node-pool" },
   ],
-  next: {
-    title: "How to reduce cloud costs: what moves the bill",
-    href: "/learn/how-to-reduce-cloud-costs",
-  },
+  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
   sources: [
     {
       publisher: "AWS",

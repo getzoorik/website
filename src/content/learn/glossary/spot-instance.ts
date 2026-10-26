@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "finops-pricing",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
@@ -66,8 +66,8 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "ul",
@@ -78,7 +78,7 @@ export const term: GlossaryTerm = {
               { a: "real use", href: "/learn/reduce-kubernetes-cost" },
               " mean fewer nodes.",
             ],
-            "An evicted Azure Spot VM still bills for its disks under Deallocate, its default policy. AKS spot pools default to Delete.",
+            "An evicted Azure Spot VM’s disks still cost you under Deallocate, its default policy. AKS spot pools default to Delete.",
             [
               "Mark a cluster as non-production and turn on its spot switch. ",
               { a: "Coral", href: "/coral" },

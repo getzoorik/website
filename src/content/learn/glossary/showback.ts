@@ -5,17 +5,17 @@ export const term: GlossaryTerm = {
   slug: "showback",
   term: "Showback",
   title: "What is showback in FinOps?",
-  meta: "Showback reports each team’s share of the cloud bill without charging it. See three common ways to split the bill between teams, and how chargeback differs.",
+  meta: "Showback reports each team’s share of the cloud cost without charging it. See three common ways to split the cost between teams, and how chargeback differs.",
   h1: "What is showback in FinOps?",
-  card: "Showback is a report that splits your cloud bill by team, application or cost center.",
+  card: "Showback is a report that splits your cloud cost by team, application or cost center.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
-      text: "Showback is a report that splits your cloud bill by team, application or cost center. The showback meaning is in the name: each team’s cost is shown back to it, with no charge.",
+      text: "Showback is a report that splits your cloud cost by team, application or cost center. The showback meaning is in the name: each team’s cost is shown back to it, with no charge.",
     },
   ],
   sections: [
@@ -25,7 +25,7 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "In AWS’s example, the infrastructure engineering team learns its share of last month’s spend. A showback model is how you split the bill, and AWS describes three common ones, from least to most effort:",
+          text: "In AWS’s example, the infrastructure engineering team learns its share of last month’s spend. A showback model is how you split the cost, and AWS describes three common ones, from least to most effort:",
         },
         {
           kind: "ul",
@@ -63,8 +63,8 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "ul",

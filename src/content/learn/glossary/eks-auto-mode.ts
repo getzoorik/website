@@ -11,11 +11,11 @@ export const term: GlossaryTerm = {
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
-      text: "EKS Auto Mode is a mode of Amazon Elastic Kubernetes Service (EKS), where AWS runs your nodes, not just the control plane. It picks, patches and removes the EC2 instances your pods run on, and replaces each one within 21\u00a0days.",
+      text: "EKS Auto Mode is a mode of Amazon Elastic Kubernetes Service (EKS), where AWS runs your nodes, not just the control plane. It picks, patches and removes the EC2 instances your pods run on, and replaces each within 21\u00a0days.",
     },
     {
       kind: "ul",
@@ -60,8 +60,8 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "p",

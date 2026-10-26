@@ -215,9 +215,49 @@ const CARDS: readonly {
     paths: ["/learn/glossary"],
   },
   {
+    file: "glossary-amortized-cost",
+    words: "What is amortized cost in Azure and AWS?",
+    paths: ["/learn/glossary/amortized-cost"],
+  },
+  {
+    file: "glossary-aws-instance-families",
+    words: "What are AWS instance families?",
+    paths: ["/learn/glossary/aws-instance-families"],
+  },
+  {
+    file: "glossary-azure-cobalt",
+    words: "What is Azure Cobalt?",
+    paths: ["/learn/glossary/azure-cobalt"],
+  },
+  {
+    file: "glossary-azure-disk-sizes",
+    words: "What are Azure disk sizes (P10, P30, E10)?",
+    paths: ["/learn/glossary/azure-disk-sizes"],
+  },
+  {
+    file: "glossary-azure-hybrid-benefit",
+    words: "What is Azure Hybrid Benefit?",
+    paths: ["/learn/glossary/azure-hybrid-benefit"],
+  },
+  {
+    file: "glossary-azure-macc",
+    words: "What is Azure MACC?",
+    paths: ["/learn/glossary/azure-macc"],
+  },
+  {
     file: "glossary-azure-managed-disk",
     words: "What is an Azure managed disk?",
     paths: ["/learn/glossary/azure-managed-disk"],
+  },
+  {
+    file: "glossary-azure-premium-ssd",
+    words: "What is Premium SSD in Azure?",
+    paths: ["/learn/glossary/azure-premium-ssd"],
+  },
+  {
+    file: "glossary-azure-standard-hdd",
+    words: "What is Azure Standard HDD?",
+    paths: ["/learn/glossary/azure-standard-hdd"],
   },
   {
     file: "glossary-azure-temporary-disk",
@@ -225,9 +265,29 @@ const CARDS: readonly {
     paths: ["/learn/glossary/azure-temporary-disk"],
   },
   {
+    file: "glossary-azure-ultra-disk",
+    words: "What is Ultra Disk in Azure?",
+    paths: ["/learn/glossary/azure-ultra-disk"],
+  },
+  {
+    file: "glossary-azure-vm-series",
+    words: "What is an Azure VM series?",
+    paths: ["/learn/glossary/azure-vm-series"],
+  },
+  {
+    file: "glossary-blended-vs-unblended-cost",
+    words: "Blended vs unblended cost: meaning and cost impact",
+    paths: ["/learn/glossary/blended-vs-unblended-cost"],
+  },
+  {
     file: "glossary-block-storage",
     words: "What is block storage?",
     paths: ["/learn/glossary/block-storage"],
+  },
+  {
+    file: "glossary-burstable-instance",
+    words: "What is a burstable instance?",
+    paths: ["/learn/glossary/burstable-instance"],
   },
   {
     file: "glossary-cloud-chargeback",
@@ -235,9 +295,34 @@ const CARDS: readonly {
     paths: ["/learn/glossary/cloud-chargeback"],
   },
   {
+    file: "glossary-cloud-cost-anomaly-detection",
+    words: "What is cloud cost anomaly detection?",
+    paths: ["/learn/glossary/cloud-cost-anomaly-detection"],
+  },
+  {
+    file: "glossary-cloud-cost-governance",
+    words: "What is cloud cost governance?",
+    paths: ["/learn/glossary/cloud-cost-governance"],
+  },
+  {
+    file: "glossary-cloud-tagging-strategy",
+    words: "What is a cloud tagging strategy?",
+    paths: ["/learn/glossary/cloud-tagging-strategy"],
+  },
+  {
+    file: "glossary-cloud-tco",
+    words: "What is cloud TCO (total cost of ownership)?",
+    paths: ["/learn/glossary/cloud-tco"],
+  },
+  {
     file: "glossary-cloud-unit-economics",
     words: "What is cloud unit economics?",
     paths: ["/learn/glossary/cloud-unit-economics"],
+  },
+  {
+    file: "glossary-cost-allocation-tags",
+    words: "What are cost allocation tags?",
+    paths: ["/learn/glossary/cost-allocation-tags"],
   },
   {
     file: "glossary-daemonset",
@@ -250,14 +335,44 @@ const CARDS: readonly {
     paths: ["/learn/glossary/df-vs-du"],
   },
   {
+    file: "glossary-disk-latency",
+    words: "What is disk latency?",
+    paths: ["/learn/glossary/disk-latency"],
+  },
+  {
+    file: "glossary-disk-snapshot",
+    words: "What is a disk snapshot in Azure and AWS?",
+    paths: ["/learn/glossary/disk-snapshot"],
+  },
+  {
     file: "glossary-disk-throughput",
     words: "What is disk throughput?",
     paths: ["/learn/glossary/disk-throughput"],
   },
   {
+    file: "glossary-ebs-gp3",
+    words: "What is gp3 in AWS?",
+    paths: ["/learn/glossary/ebs-gp3"],
+  },
+  {
+    file: "glossary-ebs-optimized-instance",
+    words: "What is an EBS-optimized instance?",
+    paths: ["/learn/glossary/ebs-optimized-instance"],
+  },
+  {
     file: "glossary-ebs-volume",
     words: "What is an EBS volume?",
     paths: ["/learn/glossary/ebs-volume"],
+  },
+  {
+    file: "glossary-effective-savings-rate",
+    words: "What is effective savings rate (ESR)?",
+    paths: ["/learn/glossary/effective-savings-rate"],
+  },
+  {
+    file: "glossary-egress-cost",
+    words: "What is egress cost in the cloud?",
+    paths: ["/learn/glossary/egress-cost"],
   },
   {
     file: "glossary-eks-auto-mode",
@@ -273,6 +388,26 @@ const CARDS: readonly {
     file: "glossary-finops",
     words: "What is FinOps?",
     paths: ["/learn/glossary/finops"],
+  },
+  {
+    file: "glossary-finops-maturity-model",
+    words: "What is the FinOps maturity model?",
+    paths: ["/learn/glossary/finops-maturity-model"],
+  },
+  {
+    file: "glossary-finops-personas",
+    words: "What are FinOps personas?",
+    paths: ["/learn/glossary/finops-personas"],
+  },
+  {
+    file: "glossary-horizontal-pod-autoscaler",
+    words: "What is HPA (Horizontal Pod Autoscaler)?",
+    paths: ["/learn/glossary/horizontal-pod-autoscaler"],
+  },
+  {
+    file: "glossary-instance-store",
+    words: "What is instance store in AWS?",
+    paths: ["/learn/glossary/instance-store"],
   },
   {
     file: "glossary-iops",
@@ -300,6 +435,11 @@ const CARDS: readonly {
     paths: ["/learn/glossary/kubernetes-headroom"],
   },
   {
+    file: "glossary-kubernetes-qos-class",
+    words: "What is a QoS class in Kubernetes?",
+    paths: ["/learn/glossary/kubernetes-qos-class"],
+  },
+  {
     file: "glossary-kubernetes-resource-limits",
     words: "What are resource limits in Kubernetes?",
     paths: ["/learn/glossary/kubernetes-resource-limits"],
@@ -325,6 +465,11 @@ const CARDS: readonly {
     paths: ["/learn/glossary/on-demand-instance"],
   },
   {
+    file: "glossary-pod-disruption-budget",
+    words: "What is a Pod Disruption Budget (PDB)?",
+    paths: ["/learn/glossary/pod-disruption-budget"],
+  },
+  {
     file: "glossary-provisioned-iops",
     words: "What is provisioned IOPS?",
     paths: ["/learn/glossary/provisioned-iops"],
@@ -343,6 +488,11 @@ const CARDS: readonly {
     file: "glossary-savings-plan",
     words: "What is a savings plan (AWS and Azure)?",
     paths: ["/learn/glossary/savings-plan"],
+  },
+  {
+    file: "glossary-savings-plan-coverage-vs-utilization",
+    words: "What is savings plan coverage vs utilization?",
+    paths: ["/learn/glossary/savings-plan-coverage-vs-utilization"],
   },
   {
     file: "glossary-showback",

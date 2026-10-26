@@ -11,13 +11,13 @@ export const term: GlossaryTerm = {
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
       text: "IOPS, short for input/output operations per second, is how many reads and writes a disk handles each second. The IOPS meaning in storage is a rate of operations, not bytes. Every cloud disk has a limit.",
     },
-    { kind: "p", text: "Go over that limit, and the disk makes each operation wait longer." },
+    { kind: "p", text: "Go over it, and the disk makes each operation wait longer." },
   ],
   sections: [
     {
@@ -48,8 +48,8 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         { kind: "p", text: "On some disks, the IOPS limit grows with size:" },
         {

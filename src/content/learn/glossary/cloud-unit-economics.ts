@@ -11,11 +11,11 @@ export const term: GlossaryTerm = {
   group: "finops-pricing",
   product: "both",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
-      text: "Cloud unit economics means working out the cloud cost of one business unit, such as one sale or one user. You divide cloud spend by the number of units. That ties your bill to business value.",
+      text: "Cloud unit economics means working out the cloud cost of one business unit, such as one sale or one user. You divide cloud spend by the number of units. That ties your cloud cost to business value.",
     },
     {
       kind: "p",
@@ -46,14 +46,14 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "AWS’s Well-Architected guide gives a sample target: usage grows 20%, while costs grow less than 5%. The bill goes up, but each unit costs less.",
+          text: "AWS’s Well-Architected guide gives a sample target: usage grows 20%, while costs grow less than 5%. Your cloud cost goes up, but each unit costs less.",
         },
         { kind: "svg", figure: figure1 },
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "ul",
@@ -91,12 +91,12 @@ export const term: GlossaryTerm = {
     },
     {
       title: "Cloud chargeback",
-      line: "Bills each team its share, which the team then pays from its own budget.",
+      line: "Charges each team its share, which the team then pays from its own budget.",
       href: "/learn/glossary/cloud-chargeback",
     },
     {
       title: "Showback",
-      line: "Shows each team its cost, with no bill.",
+      line: "Shows each team its cost, with no charge.",
       href: "/learn/glossary/showback",
     },
   ],

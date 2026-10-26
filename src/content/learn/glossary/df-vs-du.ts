@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
@@ -72,14 +72,14 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            "AWS bills Amazon Elastic Block Store (EBS) volumes by the GB you provision per month.",
-            "On EBS, the example disk bills 100\u00a0GiB for 30\u00a0GiB of files.",
+            "Amazon Elastic Block Store (EBS) volumes are charged per provisioned GB per month.",
+            "On EBS, you pay for 100\u00a0GiB for the example’s 30\u00a0GiB of files.",
             [
               "If ",
               { code: "df" },

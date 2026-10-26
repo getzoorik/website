@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "savings-plan",
   term: "Savings plan (AWS Savings Plans, Azure savings plan for compute)",
   title: "What is a savings plan (AWS and Azure)?",
-  meta: "An AWS savings plan trades a one- or three-year hourly commitment for cheaper compute. See how it bills and compares with Azure’s plan and reserved instances.",
+  meta: "An AWS savings plan trades a one- or three-year hourly commitment for cheaper compute. See how it works and compares to Azure’s plan and reserved instances.",
   h1: "What is a savings plan (AWS and Azure)?",
   card: "An AWS Savings Plan is a commitment to spend a set dollar amount per hour on compute, for one or three years.",
   group: "finops-pricing",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-10-26",
   definition: [
     {
       kind: "p",
@@ -33,7 +33,7 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "A $2.00-an-hour plan covers about 2.9 of them. The other 1.1 are billed on-demand, for $1.14.",
+          text: "A $2.00-an-hour plan covers about 2.9 of them. The other 1.1 are charged on-demand, for $1.14.",
         },
         { kind: "svg", figure: figure1 },
       ],
@@ -56,8 +56,8 @@ export const term: GlossaryTerm = {
       ],
     },
     {
-      id: "why-it-matters-for-your-bill",
-      title: "Why it matters for your bill",
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
       blocks: [
         {
           kind: "ul",
@@ -106,10 +106,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/reserved-instance",
     },
   ],
-  next: {
-    title: "How to reduce cloud costs: what moves the bill",
-    href: "/learn/how-to-reduce-cloud-costs",
-  },
+  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
   sources: [
     {
       publisher: "AWS",
