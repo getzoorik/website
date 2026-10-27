@@ -14,7 +14,7 @@ export const article: Article = {
   hub: "Block storage",
   topic: "Azure block storage",
   published: "2026-10-21",
-  updated: "2026-10-21",
+  updated: "2026-10-27",
   author: "vineet",
   cover: "/learn-covers/zoorik-learn-shrink-azure-managed-disk-1200x630.webp",
   short:
@@ -22,20 +22,24 @@ export const article: Article = {
   sections: [
     {
       id: "why-the-space-you-bought-stays-on",
-      title: "Why the space you bought stays on the bill",
+      title: "Why you keep paying for the space you bought",
       blocks: [
         {
           kind: "p",
-          text: "Picture a VM with four 512\u00a0GiB data disks, 2,048\u00a0GiB in all, holding 1,000\u00a0GiB. More than half of what you’re billed for (1,048\u00a0GiB) is empty, and deleting files won’t reduce the bill.",
+          text: "Picture a VM with four 512\u00a0GiB data disks, 2,048\u00a0GiB in all, holding 1,000\u00a0GiB. More than half of what you pay for (1,048\u00a0GiB) is empty. Deleting files won’t reduce the cost.",
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
-          text: "A managed disk is billed on the size you provision, not on the data it holds. Azure “maps the provisioned size (rounded up) to the nearest offered disk size”, so a 200\u00a0GiB Standard SSD is billed at the 256\u00a0GiB size, which Azure calls E15.",
+          text: "You pay for a managed disk’s provisioned size, not for the data it holds. Azure “maps the provisioned size (rounded up) to the nearest offered disk size”. So a 200\u00a0GiB Standard SSD is charged at the 256\u00a0GiB size, which Azure calls E15.",
         },
         {
           kind: "p",
-          text: "Premium SSD and Standard SSD come in sizes that double from 4\u00a0GiB to 32,767\u00a0GiB. A 512\u00a0GiB Premium SSD (size P20) therefore costs the same whether it holds 500\u00a0GiB or 5\u00a0GiB. Premium SSD v2 has no fixed sizes: it’s billed for the GiB you provision, plus any IOPS and throughput above its included 3,000\u00a0IOPS and 125\u00a0MB/s.",
+          text: "Premium SSD and Standard SSD come in sizes that double from 4\u00a0GiB to 32,767\u00a0GiB. A 512\u00a0GiB Premium SSD (size P20) therefore costs the same whether it holds 500\u00a0GiB or 5\u00a0GiB.",
+        },
+        {
+          kind: "p",
+          text: "Premium SSD v2 has no fixed sizes. You pay for the GiB you provision, plus any IOPS and throughput above its included 3,000\u00a0IOPS and 125\u00a0MB/s.",
         },
         {
           kind: "p",
@@ -43,7 +47,7 @@ export const article: Article = {
             { code: "fstrim" },
             " and the ",
             { code: "discard" },
-            " mount option tell Azure which blocks are free, but Microsoft notes this saves money on disks billed for the storage they consume, “such as unmanaged standard disks and disk snapshots.” A managed disk isn’t one of them.",
+            " mount option tell Azure which blocks are free. Microsoft notes this saves money on disks charged for the storage they consume, “such as unmanaged standard disks and disk snapshots.” A managed disk isn’t one of them.",
           ],
         },
         {
@@ -54,9 +58,9 @@ export const article: Article = {
               a: "expand a data disk without deallocating the VM",
               href: "/learn/azure-disk-expand-without-downtime",
             },
-            ", with exceptions such as taking a Premium SSD past 4\u00a0TiB, but when the data shrinks again, the space and its charge both stay. ",
+            ", with exceptions such as taking a Premium SSD past 4\u00a0TiB. But when the data shrinks again, the space and its charge both stay. ",
             { a: "Azure disk cost optimization", href: "/learn/azure-disk-cost-optimization" },
-            " covers the rest of the disk bill.",
+            " covers the rest of what you pay for disks.",
           ],
         },
       ],
@@ -114,22 +118,22 @@ export const article: Article = {
               { a: "Measure what each mount holds", href: "/learn/azure-vm-disk-usage" },
               " with ",
               { code: "df -Th" },
-              ", then choose the new size. On Premium SSD and Standard SSD, pick a size at one of the steps, since a 1,100\u00a0GiB disk is billed as 2,048\u00a0GiB. ",
+              ", then choose the new size. On Premium SSD and Standard SSD, pick a step size, since a 1,100\u00a0GiB disk is charged as 2,048\u00a0GiB. ",
               { a: "Premium SSD v2", href: "/learn/premium-ssd-v2-vs-premium-ssd" },
-              " has no steps, but it can’t be an OS disk, and in most regions with availability zones it attaches only to zonal VMs.",
+              " has no steps, but it can’t be an OS disk. In most regions with availability zones, it attaches only to zonal VMs.",
             ],
           ],
         },
         {
           kind: "callout",
           label: "Worked example",
-          text: "Spread evenly, the example’s 1,000\u00a0GiB puts 1,000 ÷ 4 = 250\u00a0GiB on each 512\u00a0GiB disk. Copying each one to the next step down, 256\u00a0GiB, halves the billed size from 2,048 to 1,024\u00a0GiB but leaves every new disk 98% full. So on Premium SSD and Standard SSD, copy a disk only when its data, plus the room you want, fits in half its billed size. This VM passes only if 6\u00a0GiB of room per disk (256 − 250) is enough.",
+          text: "Spread evenly, the example’s 1,000\u00a0GiB puts 1,000 ÷ 4 = 250\u00a0GiB on each 512\u00a0GiB disk. Copying each one to the next step down, 256\u00a0GiB, halves the charged size to 1,024\u00a0GiB but leaves every new disk 98% full. So on Premium SSD and Standard SSD, copy a disk only when its data, plus the room you want, fits in half its charged size. This VM passes only if 6\u00a0GiB of room per disk (256 − 250) is enough.",
         },
         {
           kind: "ol",
           start: 2,
           items: [
-            "In the Azure portal, open the VM’s Disks pane, select Create and attach a new disk, set its Storage type and Size (GiB), then select Save.",
+            "In the Azure portal, open the VM’s Disks pane and select Create and attach a new disk. Set its Storage type and Size (GiB), then select Save.",
             [
               "Partition, format and mount the new disk at a temporary path. ",
               { code: "parted" },
@@ -229,8 +233,8 @@ export const article: Article = {
             [
               "Delete the old disk once you’re sure. A ",
               { a: "detached disk isn’t deleted", href: "/learn/find-unattached-disks-azure" },
-              " and still bills for its provisioned size. Snapshot it first if you want a way back (a ",
-              { a: "snapshot is billed", href: "/learn/azure-disk-snapshot-cost" },
+              ", and you still pay for its provisioned size. Snapshot it first if you want a way back (a ",
+              { a: "snapshot is charged", href: "/learn/azure-disk-snapshot-cost" },
               " only for the data it holds), then delete it in the portal.",
             ],
           ],
@@ -249,8 +253,8 @@ export const article: Article = {
               ", which “ensures that the VM starts even if the file system is corrupt or the disk doesn’t exist at boot time.”",
             ],
             [
-              { b: "Double billing." },
-              " Both disks bill from step 2 to step 10, the old one until you delete it.",
+              { b: "Double cost." },
+              " You pay for both disks from step 2 to step 10, the old one until you delete it.",
             ],
             [
               { b: "A new fixed size." },
@@ -282,7 +286,7 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Rule of thumb",
-          text: "An OS disk that was never expanded is rarely worth a rebuild. Microsoft says the default OS disk on a Linux VM is typically 30\u00a0GB, which Premium SSD or Standard SSD bills at the 32\u00a0GiB step.",
+          text: "An OS disk that was never expanded is rarely worth a rebuild. Microsoft says the default OS disk on a Linux VM is typically 30\u00a0GB. Premium SSD or Standard SSD charges it at the 32\u00a0GiB step.",
         },
         {
           kind: "ol",
@@ -303,7 +307,7 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " makes the copy once, onto a pool of disks, then rightsizes that pool autonomously, without any downtime after the one switch. It works on the data disks of running VMs.",
+            " makes the copy once, onto a pool of disks, then rightsizes that pool autonomously while your services keep running. It works on the data disks of running Windows and Linux VMs. It never touches the OS disk.",
           ],
         },
         {
@@ -311,49 +315,33 @@ export const article: Article = {
           items: [
             [
               { b: "The pool." },
-              " Amoeba installs its agent through Azure Run Command and builds one btrfs pool beside your disks, on Premium SSD v2 where the region and zone offer it and on Premium SSD otherwise. It sizes the pool from the highest use of the last 7\u00a0days, so the pool sits inside its target band, 80% to 90% full by default, with room for the largest recent 15-minute rise and at least 10\u00a0GiB free. Each data mount becomes a subvolume, its own part of the pool, mounted at its old path.",
+              " Amoeba moves the VM’s data disks onto one btrfs pool sized to your data, with room to grow. On Azure the pool uses Premium SSD v2 where your VM’s region and zone offer it, and Premium SSD otherwise.",
             ],
             [
-              { b: "The copy." },
-              " The agent copies each data mount onto the pool with ",
-              { code: "rsync" },
-              " while your services keep running.",
+              { b: "The move." },
+              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
             ],
             [
-              { b: "The switch." },
-              " The agent stops the systemd services that hold the data mounts open, checks that the final ",
-              { code: "rsync" },
-              " pass has nothing left to copy, and mounts the pool at the same paths. Then it starts the services again, which ends the interruption that began with the stop. If the switch fails, the agent restores the original mounts and Amoeba ",
-              { a: "tries again", href: "/amoeba/guide#at-the-switch" },
-              ", so services can restart more than once.",
+              { b: "The old disks." },
+              " Once the switch is checked, Amoeba snapshots each old disk and deletes the disk. It keeps each snapshot for a few days, then deletes it too.",
             ],
             [
-              { b: "The soak." },
-              " For 2\u00a0hours after the switch, any disk error, or 99th-percentile disk latency above 1.2 times its level before the switch, pauses the move. A pause keeps your services on the pool: a move only goes forward. After the soak, Amoeba detaches each source disk, takes an incremental snapshot of it, and deletes the disk once its snapshot is complete, keeping that snapshot for 7\u00a0days.",
-            ],
-            [
-              { b: "Expands." },
-              " Amoeba holds the pool in its band. When data grows, it grows a disk in place or adds one while the pool stays mounted.",
-            ],
-            [
-              { b: "Shrinks." },
-              " They start once the move is done and 7 full days of data are in. One disk at a time, the agent moves that disk’s data onto the others with ",
-              { code: "btrfs device remove" },
-              ", and Amoeba detaches and deletes the empty disk, which stops its billing. If you set shrinks to Manual, each one waits for you.",
+              { b: "Rightsizing." },
+              " Amoeba grows the pool before it fills, and sooner when data arrives fast. When your data goes down and stays down, it shrinks the pool one disk at a time. So you pay for close to what you use.",
             ],
           ],
         },
         {
           kind: "p",
           text: [
-            "What you give up: you pay for both sets of disks from when the pool’s disks are created until the source disks are deleted after the soak, then for the snapshots for 7\u00a0days. Data on ",
+            "What you give up: you pay for both sets of disks only while the move runs, and then for the snapshots while they’re kept. Data on ",
             { a: "zone-redundant (ZRS) disks", href: "/learn/azure-disk-lrs-vs-zrs" },
             " moves to a locally redundant pool and loses its zone redundancy.",
           ],
         },
         {
           kind: "p",
-          text: "Amoeba works on Windows and Linux VMs. On Linux, it needs systemd, kernel 5.14 or later and btrfs loaded or loadable, and every process that keeps a data mount open must run as a systemd service. VMs in the Red Hat family are not moved. Every VM needs 3 free data-disk slots: 2 for the pool and 1 kept free for an urgent expand.",
+          text: "On Linux, the VM needs a recent kernel with btrfs. Every service that keeps a data mount open must run under systemd. The VM also needs a few free disk slots for the pool.",
         },
       ],
     },
@@ -373,7 +361,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Amoeba does the same job on AWS: it pools the EBS data volumes of running EC2 instances onto gp3\u00a0volumes in the instance’s Availability Zone and never touches the root volume. It installs its agent through AWS Systems Manager Run Command, on Nitro instances that Systems Manager manages. After the soak, it takes an EBS snapshot of each source volume before deleting it.",
+          text: "Amoeba does the same job on AWS. It moves the EBS data volumes of running EC2 instances onto one btrfs pool built from gp3\u00a0volumes, and never touches the root volume. Once the switch is checked, it snapshots each old volume before deleting it, as on Azure.",
         },
       ],
     },

@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-10-27",
   definition: [
     {
       kind: "p",
@@ -91,19 +91,19 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously. A 2-hour soak follows the switch to the pool.",
+            " moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. Then it rightsizes the pool, so you pay for close to what you use.",
           ],
         },
         {
           kind: "p",
-          text: "The p99 marks the time 99 in 100 operations finish within. During the soak, any disk error, or p99\u00a0disk latency above 1.2 times its level before the switch, pauses the move.",
+          text: "Amoeba copies your data while your services run. If disk latency rises too high during the copy, Amoeba slows the copy.",
         },
         {
           kind: "p",
           text: [
             "The ",
             { a: "free assessment", href: "/assessment?p=amoeba" },
-            " works out your own figure.",
+            " estimates your own saving.",
           ],
         },
       ],
