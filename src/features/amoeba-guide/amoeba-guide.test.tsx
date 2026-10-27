@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { amoebaDocs } from "@/config/site";
 import { amoebaGuide, amoebaGuideRowIds, amoebaGuideSectionIds } from "@/content/amoeba-guide";
 import { learnSlugOf, titleLink } from "@/content/learn/published";
+import { documentFacts } from "@/features/documents/document-facts";
 
 /* The nav and the footer read the pathname. */
 const pathname = vi.hoisted(() => ({ current: "/amoeba/guide" }));
@@ -20,7 +21,7 @@ import { AmoebaGuide } from "@/features/amoeba-guide/amoeba-guide";
  * own contract on top of the
  * documents kit, which `documents.test.tsx` covers: the groups and their
  * numbered rows, the ids a link made before the rows still lands on, the hero
- * with no download, the Updated line and the summary, the Related lines, the
+ * and its PDF, the Updated line and the summary, the Related lines, the
  * 12 placeholders, the connect well, the role table's codes, and the words the
  * site never prints. It describes Amoeba at product level (owner, 27 Oct 2026):
  * the move only goes forward, with no soak, no going back and no band.
@@ -232,7 +233,7 @@ describe("/amoeba/guide groups and rows", () => {
 });
 
 describe("/amoeba/guide page", () => {
-  it("has one h1 and the deck, and no download block: no Amoeba guide PDF exists", () => {
+  it("has one h1 and the deck", () => {
     const container = page();
     expect(container.querySelectorAll("h1")).toHaveLength(1);
     expect(text(container.querySelector("h1"))).toBe("Amoeba product guide");
@@ -240,8 +241,27 @@ describe("/amoeba/guide page", () => {
     expect(text(container.querySelector(".doc-deck"))).toBe(
       "How to onboard a VM, what Amoeba changes, and how you stay in control.",
     );
-    expect(container.querySelector(".doc-hero .dl, .doc-hero-grid")).toBeNull();
-    expect(container.querySelector('a[href$=".pdf"], a[download]')).toBeNull();
+  });
+
+  it("offers the guide's PDF in one download row, with the facts read from the file", () => {
+    const container = page();
+    const facts = documentFacts("amoeba-guide");
+    const rows = container.querySelectorAll(".doc-hero-grid > .dl > a.dl-r");
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toHaveAttribute("href", "/docs/amoeba-product-guide.pdf");
+    expect(rows[0]).toHaveAttribute("download");
+    expect(rows[0]).toHaveAttribute(
+      "aria-label",
+      `Download the Amoeba product guide, ${facts.spoken}`,
+    );
+    expect(text(rows[0]!.querySelector(".dl-t"))).toBe("PDF");
+    expect(rows[0]!.querySelector(".dl-f")!.textContent).toBe(facts.short);
+    /* The guide's own PDF is the page's only download. */
+    expect(
+      [...container.querySelectorAll('main a[href$=".pdf"], main a[download]')].map((a) =>
+        a.getAttribute("href"),
+      ),
+    ).toEqual(["/docs/amoeba-product-guide.pdf"]);
   });
 
   it("opens the column on the Updated line and the summary: the product page first", () => {

@@ -48,6 +48,7 @@ describe("robots.txt", () => {
       "/coral/faq",
       "/privacy",
       "/docs/coral-product-guide.pdf",
+      "/docs/amoeba-product-guide.pdf",
     ]) {
       expect(blocked(path), path).toBe(false);
     }

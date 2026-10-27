@@ -95,7 +95,7 @@ describe("sitemap.xml", () => {
       "/amoeba": "2026-10-23",
       "/assessment": "2026-10-21",
       "/marketplaces": "2026-10-21",
-      "/docs": "2026-10-21",
+      "/docs": "2026-10-27",
       "/coral/guide": updated,
       /* The four questions of 25 Oct 2026. */
       "/coral/faq": "2026-10-25",

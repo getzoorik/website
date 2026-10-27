@@ -84,11 +84,10 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
     description:
       "Onboard a VM to Amoeba on Azure or AWS. See how its data moves onto one btrfs pool, how that pool grows and shrinks, and how you stay in control.",
   },
-  /* No PDF yet: no download block (the Docs hub says "PDF to come"). */
   hero: {
     title: "Amoeba product guide",
     deck: "How to onboard a VM, what Amoeba changes, and how you stay in control.",
-    downloads: [],
+    downloads: [{ label: "PDF", document: "amoeba-guide" }],
   },
   updated: "Updated 27 October 2026",
   summary: [
