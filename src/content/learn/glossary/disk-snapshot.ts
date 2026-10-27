@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-10-27",
   definition: [
     {
       kind: "p",
@@ -68,15 +68,15 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously. Each move includes a 2-hour soak that watches for disk errors.",
+            " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously.",
           ],
         },
         {
           kind: "p",
           text: [
-            "After the soak, Amoeba takes a snapshot of each source disk before deleting it: an ",
+            "Once the switch to the pool is verified, Amoeba takes a snapshot of each source disk before deleting it. It’s an ",
             { a: "incremental snapshot", href: "/learn/azure-disk-snapshot-cost" },
-            " on Azure, an EBS snapshot on AWS. It keeps each one for 7\u00a0days, then deletes it.",
+            " on Azure, an EBS snapshot on AWS. It keeps each snapshot for 7\u00a0days after the disk is deleted, then deletes it.",
           ],
         },
         {
