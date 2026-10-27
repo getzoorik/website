@@ -4,17 +4,17 @@ import type { FaqSection } from "@/content/faq";
 /**
  * `/amoeba/faq`: every string the page prints, verbatim from the approved mock:
  * 8 groups ("About Amoeba" first), 29 questions, their short answers, and the
- * two callouts atop their groups. It keeps the 48-hour soak and going back, as
- * the approved mock does. The mock's typography is kept: curly quotes and
- * apostrophes, and a no-break space between a figure and its unit ("48 h",
- * "7 days").
+ * two callouts atop their groups. On 27 October 2026 its Amoeba answers were
+ * rewritten at product level (docs PRODUCT-LEVEL-AMOEBA.md): what Amoeba does,
+ * and none of its internal numbers. They replace the mock's older ones. The
+ * mock's typography is kept: curly quotes and apostrophes.
  *
  * 🔴 CLIENT ANSWERS ONLY. Each question carries its short answer and nothing
  * else: the draft's technical answers are for Zoorik's own team and never reach
  * this site, nor do its deck, fine print, cards, sources or gaps.
  * `src/app/internal-docs.test.ts` fails if they come back.
  *
- * Five facts are still to come, each a whole bullet carried as a `{ ph }`
+ * Four facts are still to come, each a whole bullet carried as a `{ ph }`
  * segment in the mock's place. Filling one is replacing its segment with text;
  * nothing else changes.
  *
@@ -72,7 +72,7 @@ export const amoebaFaqPage = {
     title: "Amoeba FAQ",
     deck: "Safety, downtime, expanding, agent and costs.",
   },
-  updated: "Updated 19 October 2026",
+  updated: "Updated 27 October 2026",
 } as const;
 
 /** The 8 groups and 29 questions, in the mock's order. */
@@ -86,7 +86,7 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         question: "What is Amoeba?",
         short: [
           "Amoeba is block storage cost optimization for VMs on Azure and AWS.",
-          "It moves a VM’s data disks onto one pool sized to the data plus 20%, then expands and shrinks that pool online, one disk at a time.",
+          "It moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. It grows the pool before it fills, and shrinks it one disk at a time when your data goes down and stays down. So you pay for close to what you use.",
           [
             "More on the product page: ",
             { href: routes.amoeba, text: "Block storage cost optimization on Azure and AWS" },
@@ -98,8 +98,8 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         id: "which-disks-does-amoeba-work-on",
         question: "Which disks does Amoeba work on?",
         short: [
-          "The data disks of running VMs: Azure managed disks, and Amazon EBS volumes on EC2 instances.",
-          "On Linux: systemd, kernel 5.14 or later, btrfs, and a VM size with at least 8 data-disk slots. Red Hat family VMs are not moved.",
+          "The data disks of running Windows and Linux VMs: Azure managed disks, and Amazon EBS volumes on EC2 instances. Amoeba never touches the OS disk or root volume.",
+          "On Linux, the kernel must be recent and support btrfs. Every service that keeps a data mount open must run under systemd. The VM needs a few free disk slots for the pool.",
           "On AWS, the instance must be managed by AWS Systems Manager and be a Nitro type.",
         ],
       },
@@ -107,9 +107,9 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         id: "what-does-onboarding-a-vm-change",
         question: "What does onboarding a VM change?",
         short: [
-          "Amoeba installs its agent through Azure Run Command or AWS Systems Manager, builds the pool beside your disks and copies the data inside the VM.",
-          "At the switch, the systemd services on the data mounts restart, and the pool is mounted at the same paths.",
-          "For 48\u00a0hours you can go back to the original disks.",
+          "Amoeba installs its agent through Azure Run Command or AWS Systems Manager. It builds the pool beside your disks and copies your data while your services run.",
+          "Then it switches each mount to the pool at the same path, with a short restart of the services that use it.",
+          "Once the switch is checked, Amoeba snapshots each source disk and deletes the disk. It keeps each snapshot for a few days, then deletes it too.",
         ],
       },
       {
@@ -128,7 +128,7 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
           [
             "The ",
             { href: `${routes.assessment}?p=amoeba`, text: "free block storage cost assessment" },
-            " works out your own figure from your Azure VMs, at list price. For Amazon EBS, book a call.",
+            " works out your own figure from your Azure VMs and EC2 instances, at list price.",
           ],
         ],
       },
@@ -136,7 +136,7 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         id: "how-do-i-get-amoeba",
         question: "How do I get Amoeba?",
         short: [
-          "Amoeba is in early access. Book a demo for early access, or, on Azure, run the free assessment first.",
+          "Amoeba is in early access. Book a demo for early access, or run the free assessment first.",
         ],
       },
     ],
@@ -171,21 +171,21 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
       },
       {
         id: "can-i-go-back-to-my",
-        question: "Can I go back to my original disks?",
+        question: "What happens to my original disks?",
         short: [
-          "Yes, during the 48\u00a0h soak after the switch. “Go back” returns the VM to its source disks and deletes the pool’s disks.",
-          "After the soak, the source disks are deleted. Each leaves a safety snapshot, kept for 7\u00a0days.",
-          "Going back needs the agent connected.",
+          "A move only goes forward. Once the switch is checked, Amoeba detaches each source disk and takes a snapshot of it.",
+          "It deletes a source disk only after that disk’s own snapshot is complete.",
+          "It keeps each safety snapshot for a few days, then deletes it too.",
         ],
       },
       {
         id: "which-resources-does-amoeba-delete",
         question: "Which resources does Amoeba delete?",
         short: [
-          "An elastic disk it emptied in a shrink.",
-          "A source disk after the soak, once its snapshot is complete.",
-          "The pool’s disks after you go back, and a disk an expand created and gave up on.",
-          "A safety snapshot when its 7\u00a0days end.",
+          "A pool disk it emptied in a shrink.",
+          "A source disk after the switch is checked, once its snapshot is complete.",
+          "A disk an expand created and gave up on.",
+          "A safety snapshot, a few days after its source disk is deleted.",
         ],
       },
     ],
@@ -195,16 +195,16 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
     title: "Downtime and performance",
     callout: {
       title: "Services restart at the switch",
-      text: "Moving a VM onto its pool restarts the systemd services that use its data mounts. After that, the pool expands and shrinks online.",
+      text: "Moving a VM onto its pool restarts the systemd services that use its data mounts. After that, the pool expands and shrinks while it stays mounted.",
     },
     questions: [
       {
         id: "is-there-downtime",
         question: "Is there downtime?",
         short: [
-          "At the switch onto the pool, and again if you go back: the systemd services that use the VM’s data mounts stop, the mounts move, and the services start again.",
+          "At the switch onto the pool: the systemd services that use the VM’s data mounts stop, the mounts move, and the services start again.",
           "The switch runs by itself as soon as the copy has caught up. You don’t pick its time.",
-          "After that, the pool expands and shrinks online, without unmounting.",
+          "After that, the pool expands and shrinks while your services run, without unmounting.",
         ],
       },
       {
@@ -220,8 +220,8 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         id: "what-disk-performance-does-the-pool",
         question: "What disk performance does the pool get?",
         short: [
-          "On Premium SSD v2, each pool disk gets at least 3,000 IOPS and 125 MBps, and more IOPS when the VM’s own load needs it.",
-          "On Premium SSD and Standard SSD, each disk has the performance of its size tier.",
+          "On Premium SSD v2 and gp3, each pool disk gets at least the baseline performance its cloud includes. It gets more when the VM’s own load needs it.",
+          "On Premium SSD, each disk carries the performance of its size, and Amoeba picks sizes that carry the load.",
           "Amoeba doesn’t shrink a pool when the disks that stay couldn’t serve the VM’s disk load.",
         ],
       },
@@ -232,16 +232,16 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
     title: "Expanding when data grows",
     callout: {
       title: "Expands run on their own",
-      text: "Amoeba expands a pool on its own as it fills, except while a move is paused after the switch. Only shrinks can wait for you, in “Manual”.",
+      text: "Amoeba expands a pool on its own as it fills. Only shrinks can wait for you, in “Manual”.",
     },
     questions: [
       {
         id: "how-fast-does-amoeba-expand-when",
         question: "How fast does Amoeba expand when data grows suddenly?",
         short: [
-          "The agent reports every 15\u00a0seconds, and Amoeba checks each pool every 60\u00a0seconds.",
-          "When free space falls below 12% of the pool, or 25\u00a0GiB if that is more, it expands at once.",
-          "It also expands when the pool is above its band, or would reach that floor within 6\u00a0hours at its fill rate.",
+          "Amoeba grows the pool before it fills, and sooner when data arrives fast.",
+          "The agent reports the pool’s use regularly, and Amoeba weighs an expand on every report.",
+          "An expand adds room while the pool stays mounted, so your services keep running.",
           [{ ph: "typical time from the trigger to the added capacity" }],
         ],
       },
@@ -249,7 +249,7 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         id: "does-manual-stop-amoeba-from-expanding",
         question: "Does “Manual” stop Amoeba from expanding?",
         short: [
-          "No. “When Zoorik shrinks” governs shrinks only. Expands run on their own, except while a move is paused after the switch.",
+          "No. “When Zoorik shrinks” governs shrinks only. Expands run on their own, whatever the setting.",
         ],
       },
     ],
@@ -262,7 +262,7 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         id: "what-happens-if-the-agent-stops",
         question: "What happens if the agent stops reporting?",
         short: [
-          "After 120\u00a0seconds without a report, the agent reads “Disconnected”. Amoeba then reinstalls it through Azure Run Command or AWS Systems Manager, never during a move step or a pool operation.",
+          "If the agent stops reporting for a few minutes, it reads “Disconnected”. Amoeba then reinstalls it through Azure Run Command or AWS Systems Manager, never during a move step or a pool operation.",
           "Commands wait until it reconnects. The pool stays mounted, but it can’t expand or shrink in the meantime.",
           "“Reinstall” in Settings installs it again.",
         ],
@@ -271,8 +271,8 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         id: "what-does-the-agent-send-to",
         question: "What does the agent send to Zoorik?",
         short: [
-          "Every 15\u00a0seconds: each mount’s size and use, the disks behind it, disk activity, and the pool’s error counters.",
-          "Host facts: the kernel version, the OS family, whether btrfs is available, and the encryption state.",
+          "In its regular reports: each mount’s size and use, the disks behind it, disk activity, and the pool’s error counters.",
+          "Host facts: the kernel version, whether btrfs is available, and the encryption state.",
           "During the move: copy progress, and how busy the disks are.",
         ],
       },
@@ -295,10 +295,10 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         id: "which-linux-distributions-does-amoeba-support",
         question: "Which Linux distributions does Amoeba support?",
         short: [
-          "Linux with systemd, kernel 5.14 or later, and btrfs available.",
+          "Any Linux with systemd and a recent kernel that supports btrfs.",
           "rsync, btrfs-progs and psmisc installed; the installer doesn’t add them.",
-          "VMs whose OS is in the Red Hat family, as the agent reads it, are not moved onto a pool.",
-          [{ ph: "supported Linux distributions and versions" }],
+          "Amoeba doesn’t read the OS name. The running kernel alone decides.",
+          "Amoeba loads a btrfs module that isn’t loaded yet. If the kernel has no btrfs, the move pauses.",
         ],
       },
       {
@@ -314,17 +314,17 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         short: [
           "Yes. Amoeba pools the non-root EBS data volumes of running EC2 instances onto gp3 volumes in the instance’s Availability Zone.",
           "You connect an account with its 12-digit ID and a script in AWS CloudShell that creates the IAM role ZoorikStorageOperator. The role trusts Zoorik only with your organisation’s external ID.",
-          "The agent installs through AWS Systems Manager. Instances must be Linux, running, managed by Systems Manager, and a Nitro type.",
+          "The agent installs through AWS Systems Manager. Instances must be running, managed by Systems Manager, and a Nitro type.",
         ],
       },
       {
         id: "which-disk-types-does-the-pool",
         question: "Which disk types does the pool use?",
         short: [
-          "On Azure: the type your data sits on today: Premium SSD v2, Premium SSD or Standard SSD.",
+          "On Azure: Premium SSD v2 where the VM’s region and zone offer it.",
           "Where the VM’s region or zone doesn’t offer Premium SSD v2, the pool uses Premium SSD.",
           "Each VM gets one pool, on one disk type.",
-          "Data on Standard HDD or Ultra Disk moves to Premium SSD v2 or Premium SSD, which costs more. Zone-redundant (ZRS) disks map to a locally redundant pool.",
+          "Data on Standard HDD, Standard SSD or Ultra Disk moves to Premium SSD v2 or Premium SSD. From Standard HDD or Standard SSD, that can cost more. Zone-redundant (ZRS) disks map to a locally redundant pool.",
           "On AWS, the pool uses gp3 volumes in the instance’s Availability Zone.",
         ],
       },
@@ -341,15 +341,15 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
           "Before the pool: what the planned pool would cost, against the disks you have now.",
           "After the move: what the source disks cost a month, against what the pool costs.",
           "At Azure’s list price for the region, with a 730-hour month.",
-          "On AWS, at the AWS Price List API’s list price. EBS bills per GB-month.",
+          "On AWS, at the AWS Price List API’s list price. AWS charges for EBS per GB-month.",
         ],
       },
       {
         id: "do-i-pay-for-both-sets",
         question: "Do I pay for both sets of disks during the move?",
         short: [
-          "Yes, from Provision until the source disks are deleted after the 48\u00a0h soak.",
-          "Each safety snapshot is kept for 7\u00a0days, then deleted.",
+          "Yes, but only while the move runs. The source disks are deleted once the switch is checked.",
+          "Then you pay for the safety snapshots for the few days they’re kept.",
           "The console’s disk spend counts both sets while the move runs.",
         ],
       },
@@ -357,8 +357,8 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         id: "what-does-amoeba-cost",
         question: "What does Amoeba cost?",
         short: [
-          "The assessment is free. If you pay for Amoeba, the price, billing period and payment terms are in your order.",
-          "Your cloud provider bills you directly for the disks and snapshots Amoeba creates or keeps.",
+          "The assessment is free. If you pay for Amoeba, your order sets the price, how often you pay and the payment terms.",
+          "Your cloud provider charges you directly for the disks and snapshots Amoeba creates or keeps.",
         ],
       },
     ],
@@ -372,7 +372,7 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         question: "How do I see what my VMs could save?",
         short: [
           "Run the free block storage assessment in your terminal or Cloud Shell, on Azure or AWS. It writes one PDF report with each VM’s estimated saving at list price.",
-          "It sends nothing anywhere, and asks once before it reads inside your VMs.",
+          "It sends nothing to Zoorik, and asks once before it reads inside your VMs.",
         ],
       },
       {
@@ -398,7 +398,7 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         short: [
           "The IAM role ZoorikStorageOperator, created by a script you run in AWS CloudShell. It trusts Zoorik’s AWS account only with your organisation’s external ID.",
           "It can read EC2 and Systems Manager; create, modify, attach, detach and delete volumes; create and delete snapshots; and run commands through Systems Manager.",
-          "Instances must be Linux, running, managed by Systems Manager and a Nitro type, with at least one EBS data volume.",
+          "Instances must be running, managed by Systems Manager and a Nitro type, with at least one EBS data volume.",
         ],
       },
     ],

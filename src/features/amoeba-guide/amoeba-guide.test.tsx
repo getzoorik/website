@@ -21,9 +21,9 @@ import { AmoebaGuide } from "@/features/amoeba-guide/amoeba-guide";
  * documents kit, which `documents.test.tsx` covers: the groups and their
  * numbered rows, the ids a link made before the rows still lands on, the hero
  * with no download, the Updated line and the summary, the Related lines, the
- * 13 placeholders, the connect well, the role table's codes, and the words the
- * site never prints. It keeps the 48-hour soak and going back, as the approved
- * mock does.
+ * 12 placeholders, the connect well, the role table's codes, and the words the
+ * site never prints. It describes Amoeba at product level (owner, 27 Oct 2026):
+ * the move only goes forward, with no soak, no going back and no band.
  *
  * The page component is rendered, not the route: while `amoebaDocs` is off the
  * route answers 404, which the last block checks.
@@ -114,7 +114,6 @@ const PLACEHOLDERS = [
     "what happens to writes made on the pool if a late check fails after the services restarted",
   ],
   ["the-soak-and-going-back", "how to restore from a safety snapshot, and who does it"],
-  ["when-amoeba-expands", "what you do if a paused pool fills"],
   ["how-an-expand-runs", "typical time from the trigger to the added capacity"],
   ["what-the-role-allows", "when Amoeba reapplies a VM"],
 ];
@@ -168,17 +167,20 @@ describe("/amoeba/guide groups and rows", () => {
     expect([...amoebaGuideRowIds]).toEqual(ROW_IDS);
   });
 
-  it("keeps the 48-hour soak and going back, as the approved mock does", () => {
+  it("keeps the old rows' ids, and says a move only goes forward: no soak, no going back, no band", () => {
     const container = page();
     expect(text(container.querySelector("#the-soak-and-going-back > summary h3"))).toBe(
-      "The soak, and going back",
+      "After the switch",
     );
     expect(text(container.querySelector("#going-back-during-the-soak > summary h3"))).toBe(
-      "Going back during the soak",
+      "The source disks",
     );
+    expect(text(container.querySelector("#go-back-and-resume > summary h3"))).toBe("Resume");
     expect(text(container.querySelector("#remove-amoeba-from-a-vm .gd-lede"))).toContain(
-      "or go back within the first 48 h",
+      "A move only goes forward",
     );
+    const words = text(container.querySelector("article.gd-main"));
+    expect(words).not.toMatch(/\bsoak|\bgo back|\bgoing back|\bband\b|\bonline\b|\bbill/i);
   });
 
   it("closes two groups on a Related line to Learn and the assessment", () => {
@@ -245,7 +247,7 @@ describe("/amoeba/guide page", () => {
   it("opens the column on the Updated line and the summary: the product page first", () => {
     const container = page();
     const top = container.querySelector("article.gd-main > .fq-upd")!;
-    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 9 October 2026");
+    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 27 October 2026");
     const list = top.querySelector("dl.doc-sum")!;
     expect([...list.querySelectorAll("dt")].map(text)).toEqual([
       "Product page",
@@ -256,7 +258,7 @@ describe("/amoeba/guide page", () => {
     expect(list.querySelector("dd a")).toHaveAttribute("href", "/amoeba");
     const last = [...list.querySelectorAll("dd")][3]!;
     expect([...last.querySelectorAll("p")].map(text)).toEqual([
-      "You pick each VM. Per VM, you choose whether shrinks run on their own or wait for you, and the band the pool is held in.",
+      "You pick each VM. Per VM, you choose whether shrinks run on their own or wait for you.",
       "Onboarding starts the move, and services on the data mounts restart at the switch. See Moving a VM onto its pool.",
     ]);
     expect(last.querySelector("a")).toHaveAttribute("href", "#moving-a-vm-onto-its-pool");
@@ -268,7 +270,7 @@ describe("/amoeba/guide page", () => {
     expect(text(container.querySelector("article.gd-main"))).not.toMatch(/section \d/i);
   });
 
-  it("carries the 13 placeholders in page order, each its own “To come: ” kept out of snippets", () => {
+  it("carries the 12 placeholders in page order, each its own “To come: ” kept out of snippets", () => {
     const container = page();
     const spans = [...container.querySelectorAll(".ph")];
     expect(
@@ -444,10 +446,10 @@ describe("the [Coral | Amoeba] switch", () => {
 });
 
 describe("the /amoeba/guide route", () => {
-  it("titles, describes and canonicalises the page in the approved mock's words", () => {
+  it("titles, describes and canonicalises the page", () => {
     expect(metadata.title).toBe("Amoeba product guide");
     expect(metadata.description).toBe(
-      "How to onboard a VM to Amoeba on Azure or AWS, how its data moves onto one pool, how the pool expands and shrinks online, and how you stay in control.",
+      "Onboard a VM to Amoeba on Azure or AWS. See how its data moves onto one btrfs pool, how that pool grows and shrinks, and how you stay in control.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/amoeba/guide" });
     expect(metadata).not.toHaveProperty("robots");

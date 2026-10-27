@@ -17,7 +17,7 @@ import AmoebaFaqPage from "@/app/amoeba/faq/page";
 /**
  * `/amoeba/faq`: the ids shared links depend on, the first group "About
  * Amoeba", the groups and their two callouts, the 29 questions that open in
- * place with their short answers, the five facts still to come, and what the
+ * place with their short answers, the four facts still to come, and what the
  * page never carries. The body is rendered on its own, as it renders whatever
  * the flag says; the route is checked held (404) and, with the flag mocked on,
  * published. Its metadata is in `src/app/metadata.test.ts`.
@@ -86,11 +86,6 @@ const PLACEHOLDERS = [
     "how-fast-does-amoeba-expand-when",
     4,
     "To come: typical time from the trigger to the added capacity",
-  ],
-  [
-    "which-linux-distributions-does-amoeba-support",
-    4,
-    "To come: supported Linux distributions and versions",
   ],
   [
     "does-amoeba-work-on-windows-vms",
@@ -170,12 +165,12 @@ describe("the body", () => {
       [
         "downtime-and-performance",
         "Services restart at the switch",
-        "Moving a VM onto its pool restarts the systemd services that use its data mounts. After that, the pool expands and shrinks online.",
+        "Moving a VM onto its pool restarts the systemd services that use its data mounts. After that, the pool expands and shrinks while it stays mounted.",
       ],
       [
         "expanding-when-data-grows",
         "Expands run on their own",
-        "Amoeba expands a pool on its own as it fills, except while a move is paused after the switch. Only shrinks can wait for you, in “Manual”.",
+        "Amoeba expands a pool on its own as it fills. Only shrinks can wait for you, in “Manual”.",
       ],
     ]);
     for (const aside of callouts) expect(aside.nextElementSibling).toHaveClass("fq-list");
@@ -184,7 +179,7 @@ describe("the body", () => {
   it("opens its column on the Updated line, over the questions", () => {
     const top = page.querySelector("article.fq-main > .fq-upd")!;
     expect(top).toBe(page.querySelector("article.fq-main")!.firstElementChild);
-    expect(text(top)).toBe("Updated 19 October 2026");
+    expect(text(top)).toBe("Updated 27 October 2026");
   });
 
   it("ends after question 29: no download line, no PDF, and links out only from About Amoeba", () => {
@@ -227,10 +222,14 @@ describe("the body", () => {
       });
     });
 
-    it("keeps the mock's typography: curly quotes and a no-break space before a unit", () => {
-      const soak = page.querySelector("#can-i-go-back-to-my li")!.textContent!;
-      expect(soak).toBe(
-        "Yes, during the 48 h soak after the switch. “Go back” returns the VM to its source disks and deletes the pool’s disks.",
+    it("keeps the mock's typography: curly quotes, apostrophes, and a no-break space before a unit", () => {
+      /* No figure in an answer carries a unit today; one that comes back takes a no-break space. */
+      expect(page.textContent).not.toMatch(
+        /\d (?:h|GiB|GB|MiB|MB|TiB|days?|hours?|minutes?|seconds?)\b/,
+      );
+      const snapshot = page.querySelector("#can-i-go-back-to-my li:nth-child(2)")!.textContent!;
+      expect(snapshot).toBe(
+        "It deletes a source disk only after that disk’s own snapshot is complete.",
       );
       expect(text(page.querySelector("#does-manual-stop-amoeba-from-expanding h3"))).toBe(
         "Does “Manual” stop Amoeba from expanding?",
@@ -246,9 +245,9 @@ describe("the body", () => {
     });
   });
 
-  it("carries the five facts to come as whole bullets, in the mock's places", () => {
+  it("carries the four facts to come as whole bullets, in the mock's places", () => {
     const placeholders = [...page.querySelectorAll(".ph")];
-    expect(placeholders).toHaveLength(5);
+    expect(placeholders).toHaveLength(4);
     expect(
       placeholders.map((ph) => {
         const li = ph.parentElement!;

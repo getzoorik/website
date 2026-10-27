@@ -99,8 +99,8 @@ describe("sitemap.xml", () => {
       "/coral/guide": updated,
       /* The four questions of 25 Oct 2026. */
       "/coral/faq": "2026-10-25",
-      /* The Amoeba FAQ's assessment answer names the PDF report. */
-      ...(amoebaDocs ? { "/amoeba/guide": updated, "/amoeba/faq": "2026-10-19" } : {}),
+      /* The Amoeba guide and FAQ, rewritten at product level on 27 Oct 2026. */
+      ...(amoebaDocs ? { "/amoeba/guide": "2026-10-27", "/amoeba/faq": "2026-10-27" } : {}),
       /* The three guides print "Updated 16 October 2026"; /open-source gives its content file's date. */
       "/docs/install-coral-with-helm": "2026-10-16",
       "/docs/install-coral-with-terraform": "2026-10-16",
