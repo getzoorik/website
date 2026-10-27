@@ -12,7 +12,11 @@
 export const nvidiaInceptionLegal =
   "© 2025 NVIDIA, the NVIDIA logo, and NVIDIA Inception are trademarks and/or registered trademarks of NVIDIA Corporation in the U.S. and other countries.";
 
-/** One program: its name, its badge (the file under /badges/ and the size it is drawn at), the line and the trademark line. */
+/**
+ * One program: its name, its badge (the file under /badges/ and the size it is drawn at), the line and the trademark
+ * line; then, for the structured data's `memberOf`, the program's own page and the company that runs it, with that
+ * company's Wikidata entry.
+ */
 export interface Membership {
   readonly name: string;
   readonly badge: {
@@ -22,6 +26,12 @@ export interface Membership {
   };
   readonly line: string;
   readonly legal: string;
+  readonly url: string;
+  readonly host: {
+    readonly name: string;
+    readonly url: string;
+    readonly wikidata: string;
+  };
 }
 
 /**
@@ -34,5 +44,11 @@ export const memberships: readonly Membership[] = [
     badge: { src: "/badges/nvidia-inception-program-badge.svg", width: 200, height: 86 },
     line: "Zoorik is a member of the NVIDIA Inception program.",
     legal: nvidiaInceptionLegal,
+    url: "https://www.nvidia.com/en-us/startups/",
+    host: {
+      name: "NVIDIA",
+      url: "https://www.nvidia.com/",
+      wikidata: "https://www.wikidata.org/wiki/Q182477",
+    },
   },
 ];

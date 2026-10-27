@@ -58,6 +58,7 @@ import {
   versusRoute,
 } from "@/content/learn-compare";
 import { marketplacesPage } from "@/content/marketplaces";
+import { memberships } from "@/content/memberships";
 import { openSourceGuides, openSourcePage, type OpenSourceGuideId } from "@/content/open-source";
 import { partnersPage } from "@/content/partners";
 import type { Article } from "@/content/learn/article";
@@ -140,7 +141,9 @@ const guides: Readonly<Record<ProductId, string | null>> = {
  * profiles the footer's row does not show: Bluesky (@zoorik.com), GitLab,
  * Substack, Instagram, Artifact Hub, npm, Quay and Gravatar; then Hacker News,
  * dev.to, Mastodon and Wellfound; then the directories: F6S, Tracxn's company
- * and legal-entity pages, G2's seller page and SaaSBrowser.
+ * and legal-entity pages, G2's seller page and SaaSBrowser. It is `memberOf`
+ * each program /about lists under Programs (`memberships.ts`), as a
+ * ProgramMembership with the program's page and the company that runs it.
  * No founder and no founding date: /about names neither.
  */
 export const organization = {
@@ -193,6 +196,17 @@ export const organization = {
     g2Seller,
     saasBrowserProfile,
   ],
+  memberOf: memberships.map((membership) => ({
+    "@type": "ProgramMembership",
+    programName: membership.name,
+    url: membership.url,
+    hostingOrganization: {
+      "@type": "Organization",
+      name: membership.host.name,
+      url: membership.host.url,
+      sameAs: membership.host.wikidata,
+    },
+  })),
 } as const;
 
 const website = {
