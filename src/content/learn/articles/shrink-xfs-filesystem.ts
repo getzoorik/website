@@ -352,56 +352,44 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " optimizes block storage on Azure managed disks and Amazon EBS, and it makes the copy once.",
+            " optimizes block storage on Azure managed disks and Amazon EBS, and it makes the copy once. It works on the data disks of running Windows and Linux VMs. It never touches the OS disk or root volume.",
           ],
         },
         {
           kind: "p",
-          text: "Before the copy, it checks the VM’s running kernel, not the OS name. The kernel needs btrfs, built in or as a module Amoeba can load. Where it has none, the XFS mount stays where it is, and the manual copy above is the route.",
+          text: "Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. An XFS data mount moves like any other, including one on LVM, when every disk under it is a cloud data disk.",
         },
         {
           kind: "p",
-          text: "Amoeba moves any mounted, block-backed data filesystem, XFS and ext4 included, and stacks on LVM, mdraid or LUKS. Every disk under the mount must be a cloud data disk.",
+          text: "On Azure the pool uses Premium SSD v2 where your region offers it, and Premium SSD otherwise. On AWS it uses gp3.",
         },
         {
           kind: "p",
-          text: "Amoeba sizes the btrfs pool, one per VM, so the highest use of the last 7\u00a0days sits at 80% full or less. It also leaves room under 95% for the largest recent 15-minute rise and for 7 more days of growth. No pool is smaller than 125\u00a0GiB.",
+          text: "Amoeba copies your data while your services run. Then it switches each mount to the pool, at the same path, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
         },
         {
           kind: "p",
-          text: "The agent copies each data mount onto the pool with rsync while services run. Each mount becomes a subvolume at the same path as before.",
+          text: "Once the switch is checked, Amoeba snapshots each old disk, deletes the disk, and keeps the snapshot for a few days before deleting it too. You pay for both sets of disks only while the move runs, and then for the snapshots while they’re kept.",
         },
         {
           kind: "p",
-          text: "At the switch, the agent stops the systemd services that hold those mounts, without killing any process, and starts them again on the pool. That restart is the service interruption.",
-        },
-        {
-          kind: "p",
-          text: "If the switch fails, the agent restores the original mounts and Amoeba tries again. So services can restart more than once.",
-        },
-        {
-          kind: "p",
-          text: "Once Amoeba has checked the pool after the switch, it detaches each source disk, snapshots it and deletes it. You pay for both sets of disks until then. After that, you pay for each safety snapshot for 7\u00a0days, and then Amoeba deletes it.",
-        },
-        {
-          kind: "p",
-          text: "Shrinks can start only once the move is done and 7 full days of data are in. A shrink takes one disk at a time.",
+          text: "Amoeba then rightsizes the pool. It grows the pool before it fills, and sooner when data arrives fast.",
         },
         {
           kind: "p",
           text: [
-            "The agent moves that disk’s data onto the others with ",
+            "When your data goes down and stays down, it shrinks the pool one disk at a time, with ",
             { a: { code: "btrfs device remove" }, href: "/learn/btrfs-device-remove" },
-            ". Then Amoeba detaches the empty disk and deletes it, with no snapshot.",
+            ". So you pay for close to what you use.",
           ],
         },
         {
           kind: "p",
-          text: "Amoeba works on Windows and Linux VMs. On Linux, it needs systemd, kernel 5.14 or later, and btrfs loaded or loadable. Every process that keeps a data mount open must run as a systemd service.",
+          text: "On Linux, the kernel must support btrfs, and every service that keeps a data mount open must run under systemd. The VM needs a few free disk slots for the pool.",
         },
         {
           kind: "p",
-          text: "The VM also needs free data-disk slots, with 1 kept free for an urgent expand. A gp3 or Premium SSD v2 pool starts with at least 2\u00a0disks, so it needs at least 3 free slots. A Premium SSD pool can start as one disk, and then 2 are enough.",
+          text: "Amoeba checks the running kernel, not the OS name. Where the kernel has no btrfs, the XFS mount stays where it is, and the manual copy above is the route.",
         },
       ],
     },

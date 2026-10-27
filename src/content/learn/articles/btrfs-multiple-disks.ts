@@ -489,7 +489,7 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " optimizes block storage on Azure managed disks and Amazon EBS. It moves a VM’s data mounts onto one btrfs pool of this kind, then rightsizes the pool as the data grows and shrinks.",
+            " optimizes block storage. It works on the data disks of running VMs: Azure managed disks and Amazon EBS volumes, on Windows and Linux VMs. It never touches the OS disk or root volume.",
           ],
         },
         {
@@ -497,55 +497,29 @@ export const article: Article = {
           items: [
             [
               { b: "The pool." },
-              " One btrfs pool per VM. Each data mount becomes a subvolume at its old path.",
+              " Amoeba moves a VM’s data disks onto one btrfs pool, sized to your data, with room to grow. On Azure the pool uses Premium SSD v2 where your region offers it, and Premium SSD otherwise. On AWS it uses gp3.",
             ],
             [
-              { b: "The disks." },
-              " On AWS, the pool starts with at least 2 gp3\u00a0volumes of equal size, in the instance’s Availability Zone. On Azure, it starts with at least 2 equal Premium SSD v2\u00a0disks where the region and zone offer them. Elsewhere on Azure, it uses Premium SSD: the cheapest mix of standard sizes, which can be a single disk.",
+              { b: "The move." },
+              " Amoeba copies your data while your services run. Then it switches each mount to a pool subvolume at the same path, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
             ],
             [
-              { b: "Its size." },
-              " Amoeba sizes the pool so the highest use of the last 7\u00a0days sits at 80% full or less. It leaves room under 95% for the largest 15-minute rise and for 7 more days of growth. The pool is never under 125\u00a0GiB.",
+              { b: "The old disks." },
+              " Once the switch is checked, Amoeba snapshots each old disk and deletes the disk. It keeps the snapshot for a few days, then deletes it too.",
             ],
             [
-              { b: "The switch." },
-              " The agent copies every data mount onto the pool with rsync while services run. At the switch, it stops the systemd services that hold those mounts and checks that a final rsync pass has nothing left to copy. Then it mounts the subvolumes and starts the services again.",
+              { b: "Cost during the move." },
+              " You pay for both sets of disks only while the move runs. Then you pay for the snapshots while they’re kept.",
             ],
             [
-              { b: "The restart." },
-              " Restarting the services is the service interruption. If the switch fails, the agent restores the original mounts and Amoeba tries again, so services can restart more than once.",
-            ],
-            [
-              { b: "Adding space." },
-              " Amoeba expands while the pool stays mounted. It expands when the pool is 95% full or more on 2 reports in a row, sent 30\u00a0seconds apart. Once the pool is 80% full, it also expands if, at the last 10\u00a0minutes’ fill rate, it would reach 95% within 30\u00a0minutes.",
-            ],
-            [
-              { b: "How much it adds." },
-              " An expand brings the pool back to 80% full, plus the fill expected over the next 65\u00a0minutes. Amoeba also adds room when the largest disk runs short of unallocated space for metadata.",
-            ],
-            [
-              { b: "Where the space comes from." },
-              " On AWS, Amoeba grows gp3\u00a0volumes in place first, then adds new ones. On Azure, routine growth grows disks first, and an urgent expand adds a disk first.",
-            ],
-            [
-              { b: "Giving space back." },
-              " A shrink starts only after the move is done and 7 full days of data are in. The pool must also have had no size change in those 7\u00a0days, and a peak under 80% full. It never goes under 125\u00a0GiB.",
-            ],
-            [
-              { b: "One disk at a time." },
-              " The agent moves one disk’s data onto the others with ",
-              { code: "btrfs device remove" },
-              ". Amoeba then detaches and deletes the empty disk, so you stop paying for it. It never detaches a disk while the pool is 95% full or more, or while an urgent expand or a compaction runs on the VM.",
+              { b: "Rightsizing." },
+              " Amoeba grows the pool while it stays mounted, before it fills, and sooner when data arrives fast. When your data goes down and stays down, it shrinks the pool one disk at a time. So you pay for close to what you use.",
             ],
           ],
         },
         {
           kind: "p",
-          text: "Amoeba works on Windows and Linux VMs. On Linux, it needs systemd, kernel 5.14 or later, and btrfs in the running kernel, built in or as a module Amoeba can load.",
-        },
-        {
-          kind: "p",
-          text: "The VM also needs free data-disk slots, with 1 kept free for an urgent expand. A gp3 or Premium SSD v2 pool starts with 2\u00a0disks, so it needs 3 free slots. A Premium SSD pool can start as one disk, so 2 are enough.",
+          text: "On Linux, the kernel must support btrfs, and every service that keeps a data mount open must run under systemd. The VM also needs a few free disk slots for the pool.",
         },
       ],
     },
