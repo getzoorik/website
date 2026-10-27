@@ -138,7 +138,8 @@
  * drawn figure keeps its drawn size on a phone and scrolls inside its own box, so its words never shrink. */
 .ar-cover{margin:24px 0 4px}
 .ar-cover img{display:block;width:100%;height:auto;aspect-ratio:1200/630;border:1px solid var(--line);border-radius:var(--r-card)}
-.doc-prose .fq-sec-b>.doc-call.ar-call{margin-top:24px}
+.fq-sec-b.doc-prose>.doc-call.ar-call{margin-top:24px}
+.fq-sec-b.doc-prose>.ar-fig+.doc-call.ar-call{margin-top:28px}
 .ar-frame .fq-sec-b>.doc-call.ar-call:first-child{margin-top:0}
 .doc-prose .ar-call+p,.doc-prose .ar-call+ul,.doc-prose .ar-call+ol,.doc-prose .ar-call+h3{margin-top:24px}
 .doc-prose figure.ar-fig{margin:28px 0 0}

@@ -90,24 +90,18 @@ export const article: Article = {
         {
           kind: "table",
           columns: [
-            { label: "Profile", width: "16%" },
-            { label: "Copies", width: "37%" },
-            { label: "Usable share of raw space, equal disks", width: "14%" },
-            { label: "Fewest disks", width: "19%" },
-            { label: "Disks it can lose", width: "14%" },
+            { label: "Profile", width: "19%" },
+            { label: "Copies", width: "29%" },
+            { label: "Usable share, equal disks", width: "15%" },
+            { label: "Fewest disks", width: "22%" },
+            { label: "Disks it can lose", width: "15%" },
           ],
           rows: [
             [[{ code: "single" }], "1", "100%", "1", "0"],
             [[{ code: "dup" }], "2, on one disk", "50%", "1", "0"],
-            [
-              [{ code: "raid0" }],
-              "1, striped across disks",
-              "100%",
-              "1 (kernel 5.15 or later)",
-              "0",
-            ],
-            [[{ code: "raid1" }], "2, on two different disks", "50%", "2", "1"],
-            [[{ code: "raid1c3" }], "3, on three different disks", "33%", "3", "2"],
+            [[{ code: "raid0" }], "1, striped", "100%", "1 (kernel 5.15 or later)", "0"],
+            [[{ code: "raid1" }], "2, on two disks", "50%", "2", "1"],
+            [[{ code: "raid1c3" }], "3, on three disks", "33%", "3", "2"],
             [[{ code: "raid10" }], "2, striped", "50%", "2 (kernel 5.15 or later)", "1"],
           ],
         },
@@ -131,9 +125,9 @@ export const article: Article = {
             { code: "raid1" },
             " metadata takes about 3\u00a0GiB on each disk, so ",
             { code: "single" },
-            " data gets (50 − 3) + (100 − 3) = 144\u00a0GiB, roughly. ",
+            " data gets (50\u00a0−\u00a03)\u00a0+\u00a0(100\u00a0−\u00a03)\u00a0=\u00a0144\u00a0GiB, roughly. ",
             { code: "raid1" },
-            " data needs every chunk on both disks, so it stops at 50\u00a0GiB at most, a third of the 150\u00a0GiB raw. The top 100 − 50 = 50\u00a0GiB of the larger disk stays unused.",
+            " data needs every chunk on both disks, so it stops at 50\u00a0GiB at most, a third of the 150\u00a0GiB raw. The top 100\u00a0−\u00a050\u00a0=\u00a050\u00a0GiB of the larger disk stays unused.",
           ],
         },
         { kind: "svg", figure: figure1 },
@@ -233,7 +227,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Adding a device to the filesystem works while it’s mounted, and btrfs refuses a disk that already holds a filesystem. The ",
+            "You can add a device to the filesystem while it’s mounted. btrfs refuses a disk that already holds a filesystem. The ",
             { code: "-f" },
             " flag overrides that by overwriting whatever is on the disk, so use it only on a disk you’ve confirmed is the new one.",
           ],
@@ -244,7 +238,7 @@ export const article: Article = {
           text: [
             "If the old disks are fully allocated, one new disk can’t take ",
             { code: "raid1" },
-            " chunks alone, and the step 4 conversion can fail. Add disks while the old ones still have room, or add two.",
+            " chunks alone. The metadata conversion in step 4 below can then fail. Add disks while the old ones still have room, or add two.",
           ],
         },
         {
@@ -326,8 +320,11 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "AWS changes an EBS volume’s size while it’s in use. Grow it as in ",
-            { a: "increasing an EBS volume", href: "/learn/increase-ebs-volume-size" },
+            "AWS changes an EBS volume’s size while it’s in use. Grow it ",
+            {
+              a: "in the EC2 console or with the AWS CLI",
+              href: "/learn/increase-ebs-volume-size",
+            },
             ", then continue at step 3.",
           ],
         },
@@ -379,16 +376,16 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Growing goes one way. Microsoft says shrinking an existing disk “isn’t supported and might result in data loss,” and ",
-            { a: "shrinking an EBS volume", href: "/learn/shrink-ebs-volume" },
-            " covers AWS.",
+            "Growing goes one way. Microsoft says shrinking an existing disk “isn’t supported and might result in data loss.” AWS can’t ",
+            { a: "shrink an EBS volume", href: "/learn/shrink-ebs-volume" },
+            " either.",
           ],
         },
         {
           kind: "p",
           text: [
             "A btrfs pool gets smaller a whole disk at a time instead. ",
-            { code: "btrfs device remove" },
+            { a: { code: "btrfs device remove" }, href: "/learn/btrfs-device-remove" },
             " moves that disk’s data onto the others. It fails if the disks left can’t meet the profiles, as ",
             { code: "raid1" },
             " can’t on one disk.",
@@ -397,8 +394,6 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            { a: "Removing a disk", href: "/learn/btrfs-device-remove" },
-            " walks through the checks. ",
             { a: "Shrinking one Azure disk", href: "/learn/shrink-azure-managed-disk" },
             " covers a VM without a pool.",
           ],
@@ -414,9 +409,14 @@ export const article: Article = {
           text: [
             "Plain ",
             { code: "df" },
-            " gives one number for space that btrfs splits by profile, and the btrfs(5) glossary says it doesn’t give accurate results. ",
+            " gives one number for space that btrfs splits by profile. The btrfs(5) glossary says its results aren’t accurate.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
             { code: "btrfs filesystem usage" },
-            " shows the split, and its manual says it’s meant to replace ",
+            " shows the split. Its manual says it’s meant to replace ",
             { code: "btrfs filesystem df" },
             " in the long run. Run it as root, since a normal user doesn’t get the per-profile detail:",
           ],
@@ -426,35 +426,19 @@ export const article: Article = {
         {
           kind: "table",
           columns: [
-            { label: "Line", width: "14%" },
-            { label: "What it counts", width: "86%" },
+            { label: "Line", width: "21%" },
+            { label: "What it counts", width: "79%" },
           ],
           rows: [
-            [
-              "Device size",
-              "Raw capacity of all the disks that the filesystem can use, without the slack",
-            ],
-            [
-              "Device allocated",
-              "Space already given to data, metadata and system chunks, including space reserved in them but not yet written",
-            ],
-            [
-              "Device unallocated",
-              "Space in no chunk yet, which new chunks, a balance or a profile change draw on",
-            ],
+            ["Device size", "Raw capacity of every disk the filesystem can use, less the slack"],
+            ["Device allocated", "Space given to data, metadata and system chunks, written or not"],
+            ["Device unallocated", "Space in no chunk yet, which new chunks and a balance draw on"],
             [
               "Device slack",
               "Disk space the filesystem doesn’t use, such as a grown disk before you resize",
             ],
             ["Used", "Data and metadata actually stored"],
-            [
-              "Free (estimated)",
-              [
-                "An approximate figure for the space still usable for data. It can differ from the Avail column of ",
-                { code: "df" },
-                ", because the two are worked out differently, for example when two profiles are present. The min beside it is the smallest the estimate can be when more than one profile is present",
-              ],
-            ],
+            ["Free (estimated)", "An estimate of the space still usable for data"],
             [
               "Data ratio, Metadata ratio",
               [
@@ -470,9 +454,17 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Below it, root sees each profile with its size and how full it is, then the unallocated space on each disk. ",
-            { a: "Unallocated space vs free space", href: "/learn/btrfs-unallocated-space" },
-            " explains how the three kinds of space relate.",
+            "The Free (estimated) figure can differ from the Avail column of ",
+            { code: "df" },
+            ", because the two are worked out differently. The min beside it is the smallest the estimate can be when more than one profile is present.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "Below it, root sees each profile with its size and how full it is, then the ",
+            { a: "unallocated space", href: "/learn/btrfs-unallocated-space" },
+            " on each disk.",
           ],
         },
         {
@@ -519,7 +511,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "On Linux, the kernel must support btrfs, and every service that keeps a data mount open must run under systemd. The VM also needs a few free disk slots for the pool.",
+          text: "On Linux, the VM needs a recent kernel with btrfs. Every service that keeps a data mount open must run under systemd. The VM also needs a few free disk slots for the pool.",
         },
       ],
     },
@@ -576,6 +568,11 @@ export const article: Article = {
   ],
   related: [
     {
+      title: "Can you shrink an Azure managed disk?",
+      where: "Learn",
+      href: "/learn/shrink-azure-managed-disk",
+    },
+    {
       title: "btrfs device remove: take a disk out of a btrfs pool",
       where: "Learn",
       href: "/learn/btrfs-device-remove",
@@ -589,11 +586,6 @@ export const article: Article = {
       title: "How to combine EBS volumes into one: LVM, RAID 0 or a btrfs pool",
       where: "Learn",
       href: "/learn/combine-ebs-volumes",
-    },
-    {
-      title: "Can you shrink an Azure managed disk?",
-      where: "Learn",
-      href: "/learn/shrink-azure-managed-disk",
     },
     {
       title: "btrfs vs LVM: which one can shrink on a cloud VM?",

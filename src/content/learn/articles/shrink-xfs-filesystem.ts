@@ -40,10 +40,13 @@ export const article: Article = {
         },
         {
           kind: "p",
+          text: "Each AG is a slice of the device that keeps its own free-space and inode records. Growing fits this design well.",
+        },
+        {
+          kind: "p",
           text: [
-            "Each AG is a slice of the device that keeps its own free-space and inode records. Growing fits this design well. ",
             { code: "xfs_growfs" },
-            " adds space at the end, the man page notes that “the filesystem must be mounted to be grown,” and the existing contents are undisturbed.",
+            " adds space at the end and leaves the data already there in place. The man page notes that “the filesystem must be mounted to be grown.”",
           ],
         },
         {
@@ -53,9 +56,12 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "For Red Hat, whose RHEL uses XFS as its default filesystem, XFS filesystem shrinking is unsupported. Its filesystem comparison sets XFS against ext4, which “supports both extending and reducing the size of a file system.” Even ext4 shrinks only while unmounted, as ",
-            { a: "shrinking ext4 with resize2fs", href: "/learn/resize2fs-shrink-ext4" },
-            " explains.",
+            "For Red Hat, whose RHEL uses XFS as its default filesystem, XFS filesystem shrinking is unsupported. Its filesystem comparison sets XFS against ext4, which “supports both extending and reducing the size of a file system.” Even ext4 ",
+            {
+              a: "shrinks only while unmounted, with resize2fs",
+              href: "/learn/resize2fs-shrink-ext4",
+            },
+            ".",
           ],
         },
       ],
@@ -114,6 +120,7 @@ export const article: Article = {
           kind: "p",
           text: "Pick rsync when a short stop matters more, and the pipe when the data is small enough that a full stop is acceptable.",
         },
+        { kind: "h3", id: "the-copy-step-by-step", title: "The copy, step by step" },
         {
           kind: "ol",
           items: [
@@ -137,60 +144,64 @@ export const article: Article = {
               { code: "/mnt/new" },
               ".",
             ],
-            {
-              text: "With rsync, run the first pass now, while the application works. With xfsdump, skip this step.",
-              blocks: [
-                { kind: "code", lang: "bash", code: "sudo rsync -aHAX /data/ /mnt/new/" },
-                {
-                  kind: "p",
-                  text: [
-                    "Archive mode (",
-                    { code: "-a" },
-                    ") leaves out hard links, ACLs and extended attributes. ",
-                    { code: "-H" },
-                    ", ",
-                    { code: "-A" },
-                    " and ",
-                    { code: "-X" },
-                    " add them back, as in the Azure guide’s first pass. The trailing slash on ",
-                    { code: "/data/" },
-                    " copies its contents.",
-                  ],
-                },
-              ],
-            },
+            "With rsync, run the first pass now, while the application works. With xfsdump, skip this step.",
+          ],
+        },
+        { kind: "code", lang: "bash", code: "sudo rsync -aHAX /data/ /mnt/new/" },
+        {
+          kind: "p",
+          text: [
+            "Archive mode (",
+            { code: "-a" },
+            ") leaves out hard links, ACLs and extended attributes. The ",
+            { code: "-H" },
+            ", ",
+            { code: "-A" },
+            " and ",
+            { code: "-X" },
+            " flags add them back, as in the Azure guide’s first pass. The trailing slash on ",
+            { code: "/data/" },
+            " copies its contents.",
+          ],
+        },
+        {
+          kind: "ol",
+          start: 5,
+          items: [
             "Stop every service that writes to the mount: the downtime starts here.",
-            {
-              text: "Run the final copy. With rsync, that’s the second pass. With xfsdump, it’s the whole pipe.",
-              blocks: [
-                { kind: "code", lang: "bash", code: "sudo rsync -aHAX --delete /data/ /mnt/new/" },
-                {
-                  kind: "p",
-                  text: [
-                    { code: "--delete" },
-                    " removes files from ",
-                    { code: "/mnt/new" },
-                    " that are gone from ",
-                    { code: "/data" },
-                    ", as in the Azure guide’s final pass. With xfsdump, run this pipe instead:",
-                  ],
-                },
-                {
-                  kind: "code",
-                  lang: "bash",
-                  code: "sudo xfsdump -J - /data | sudo xfsrestore -J - /mnt/new",
-                },
-                {
-                  kind: "p",
-                  text: [
-                    { code: "-J" },
-                    " stops xfsdump updating its dump inventory, which a one-off copy doesn’t need. The man page’s example passes it to ",
-                    { code: "xfsrestore" },
-                    " too.",
-                  ],
-                },
-              ],
-            },
+            "Run the final copy. With rsync, that’s the second pass. With xfsdump, it’s the whole pipe.",
+          ],
+        },
+        { kind: "code", lang: "bash", code: "sudo rsync -aHAX --delete /data/ /mnt/new/" },
+        {
+          kind: "p",
+          text: [
+            { code: "--delete" },
+            " removes files from ",
+            { code: "/mnt/new" },
+            " that are gone from ",
+            { code: "/data" },
+            ", as in the Azure guide’s final pass. With xfsdump, run this pipe instead:",
+          ],
+        },
+        {
+          kind: "code",
+          lang: "bash",
+          code: "sudo xfsdump -J - /data | sudo xfsrestore -J - /mnt/new",
+        },
+        {
+          kind: "p",
+          text: [
+            { code: "-J" },
+            " stops xfsdump updating its dump inventory, which a one-off copy doesn’t need. The man page’s example passes it to ",
+            { code: "xfsrestore" },
+            " too.",
+          ],
+        },
+        {
+          kind: "ol",
+          start: 7,
+          items: [
             [
               "With the services still stopped, unmount the old filesystem and ",
               { code: "/mnt/new" },
@@ -238,21 +249,13 @@ export const article: Article = {
               ".",
             ],
             [
-              "To take a disk out of the volume group, empty it with ",
+              "To ",
+              { a: "take a disk out of the volume group", href: "/learn/remove-disk-from-lvm" },
+              ", empty it with ",
               { code: "pvmove" },
-              ", which needs free extents on the other disks. The steps are in ",
-              { a: "taking a disk out of LVM", href: "/learn/remove-disk-from-lvm" },
-              ".",
+              ", which needs free extents on the other disks.",
             ],
             "Detach and delete the emptied disk, as in steps 10 and 11 above. Its charge stops only then.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "For data whose size goes both ways, ",
-            { a: "comparing btrfs with LVM", href: "/learn/btrfs-vs-lvm" },
-            " shows the two stacks side by side.",
           ],
         },
       ],
@@ -285,7 +288,7 @@ export const article: Article = {
             { code: "xfs_info" },
             " man page’s example reads ",
             { code: "agcount=8, agsize=5974144 blks" },
-            " with a block size of 4,096 bytes. That makes 8 × 5,974,144 = 47,793,152 blocks, the ",
+            " with a block size of 4,096 bytes. That makes 8\u00a0×\u00a05,974,144\u00a0=\u00a047,793,152 blocks, the ",
             { code: "blocks=" },
             " value ",
             { code: "xfs_info" },
@@ -294,16 +297,17 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The last AG, AG7 (they count from AG0), starts at block 7 × 5,974,144 = 41,819,008, which is 159.5\u00a0GiB from the start. Any new size at or below 41,819,008 blocks would remove AG7, and the kernel refuses it.",
+          text: "The last AG, AG7 (they count from AG0), starts at block 7\u00a0×\u00a05,974,144\u00a0=\u00a041,819,008, which is 159.5\u00a0GiB from the start. Any new size at or below 41,819,008 blocks would remove AG7, and the kernel refuses it.",
         },
         {
           kind: "p",
           text: "So a shrink can give back less than one AG: under 22.8\u00a0GiB of 182.3\u00a0GiB, or less than an eighth. Even that works only when the tail is empty.",
         },
         { kind: "svg", figure: figure2 },
+        { kind: "h3", id: "run-the-shrink", title: "Run the shrink" },
         {
           kind: "p",
-          text: "This shrink leaves the cloud disk and its cost as they were. If you still want the filesystem smaller, it takes three steps:",
+          text: "An in-place shrink leaves the cloud disk and its cost as they were. If you still want the filesystem smaller, it takes three steps:",
         },
         {
           kind: "ol",
@@ -322,13 +326,13 @@ export const article: Article = {
           kind: "ol",
           start: 2,
           items: [
-            "The shrink runs on the mounted filesystem and the kernel flags it as experimental, so take a backup or a snapshot of the disk first.",
+            "Take a backup or a snapshot of the disk first. The shrink runs on the mounted filesystem. The kernel flags it as experimental.",
             [
               "Run the shrink with the new size in filesystem blocks, the ",
               { code: "bsize" },
               " unit that ",
               { code: "xfs_info" },
-              " reports. At 4,096 bytes a block, each GiB you give back is 1,073,741,824 ÷ 4,096 = 262,144 blocks. In the example, the new size must stay above 41,819,008 blocks.",
+              " reports. At 4,096 bytes a block, each GiB you give back is 1,073,741,824\u00a0÷\u00a04,096\u00a0=\u00a0262,144 blocks. In the example, the new size must stay above 41,819,008 blocks.",
             ],
           ],
         },
@@ -352,44 +356,48 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " optimizes block storage on Azure managed disks and Amazon EBS, and it makes the copy once. It works on the data disks of running Windows and Linux VMs. It never touches the OS disk or root volume.",
+            " optimizes block storage on Azure managed disks and Amazon EBS. It makes this copy for you, once, on the data disks of running Windows and Linux VMs. It never touches the OS disk or root volume.",
           ],
         },
         {
           kind: "p",
-          text: "Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. An XFS data mount moves like any other, including one on LVM, when every disk under it is a cloud data disk.",
+          text: "An XFS data mount moves like any other, including one on LVM, when every disk under it is a cloud data disk.",
         },
         {
-          kind: "p",
-          text: "On Azure the pool uses Premium SSD v2 where your region offers it, and Premium SSD otherwise. On AWS it uses gp3.",
-        },
-        {
-          kind: "p",
-          text: "Amoeba copies your data while your services run. Then it switches each mount to the pool, at the same path, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
-        },
-        {
-          kind: "p",
-          text: "Once the switch is checked, Amoeba snapshots each old disk, deletes the disk, and keeps the snapshot for a few days before deleting it too. You pay for both sets of disks only while the move runs, and then for the snapshots while they’re kept.",
-        },
-        {
-          kind: "p",
-          text: "Amoeba then rightsizes the pool. It grows the pool before it fills, and sooner when data arrives fast.",
-        },
-        {
-          kind: "p",
-          text: [
-            "When your data goes down and stays down, it shrinks the pool one disk at a time, with ",
-            { a: { code: "btrfs device remove" }, href: "/learn/btrfs-device-remove" },
-            ". So you pay for close to what you use.",
+          kind: "ul",
+          items: [
+            [
+              { b: "The pool." },
+              " Amoeba moves a VM’s data disks onto one btrfs pool, sized to your data, with room to grow. On Azure the pool uses Premium SSD v2 where your region offers it, and Premium SSD otherwise. On AWS it uses gp3.",
+            ],
+            [
+              { b: "The move." },
+              " Amoeba copies your data while your services run. Then it switches each mount to the pool at the same path, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
+            ],
+            [
+              { b: "The old disks." },
+              " Once the switch is checked, Amoeba snapshots each old disk and deletes the disk. It keeps the snapshot for a few days, then deletes it too.",
+            ],
+            [
+              { b: "Cost during the move." },
+              " You pay for both sets of disks only while the move runs. Then you pay for the snapshots while they’re kept.",
+            ],
+            [
+              { b: "Rightsizing." },
+              " Amoeba grows the pool before it fills, and sooner when data arrives fast. When your data goes down and stays down, it shrinks the pool one disk at a time, with ",
+              { a: { code: "btrfs device remove" }, href: "/learn/btrfs-device-remove" },
+              ". So you pay for close to what you use.",
+            ],
           ],
         },
+        { kind: "h3", id: "what-the-vm-needs", title: "What the VM needs" },
         {
           kind: "p",
-          text: "On Linux, the kernel must support btrfs, and every service that keeps a data mount open must run under systemd. The VM needs a few free disk slots for the pool.",
+          text: "On Linux, the VM needs a recent kernel with btrfs. Every service that keeps a data mount open must run under systemd. The VM also needs a few free disk slots for the pool.",
         },
         {
           kind: "p",
-          text: "Amoeba checks the running kernel, not the OS name. Where the kernel has no btrfs, the XFS mount stays where it is, and the manual copy above is the route.",
+          text: "Amoeba checks the running kernel, not the OS name. Where the kernel has no btrfs, the XFS mount stays where it is. The manual copy above is then the route.",
         },
       ],
     },
