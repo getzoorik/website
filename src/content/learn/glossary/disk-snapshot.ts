@@ -68,15 +68,15 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously.",
+            " moves a VM’s data disks onto one btrfs pool sized to your data, then rightsizes it autonomously.",
           ],
         },
         {
           kind: "p",
           text: [
-            "Once the switch to the pool is verified, Amoeba takes a snapshot of each source disk before deleting it. It’s an ",
+            "Once the switch to the pool is checked, Amoeba snapshots each old disk and deletes the disk. On Azure it’s an ",
             { a: "incremental snapshot", href: "/learn/azure-disk-snapshot-cost" },
-            " on Azure, an EBS snapshot on AWS. It keeps each snapshot for 7\u00a0days after the disk is deleted, then deletes it.",
+            ", and on AWS an EBS snapshot. Amoeba keeps each snapshot for a few days, then deletes it too.",
           ],
         },
         {

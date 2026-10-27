@@ -307,7 +307,7 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " makes the copy once, onto a pool of disks, then rightsizes that pool autonomously, without any downtime after the one switch. It works on the data disks of running VMs.",
+            " makes the copy once, onto a pool of disks, then rightsizes that pool autonomously while your services keep running. It works on the data disks of running Windows and Linux VMs. It never touches the OS disk.",
           ],
         },
         {
@@ -315,61 +315,35 @@ export const article: Article = {
           items: [
             [
               { b: "The pool." },
-              " Amoeba installs its agent through Azure Run Command. It builds one btrfs pool beside your disks, on Premium SSD v2 where the region and zone offer it and on Premium SSD otherwise. Each data mount becomes a subvolume, its own part of the pool, mounted at its old path.",
+              " Amoeba moves the VM’s data disks onto one btrfs pool sized to your data, with room to grow. On Azure the pool uses Premium SSD v2 where your region offers it, and Premium SSD otherwise.",
             ],
             [
-              { b: "Its size." },
-              " Amoeba sizes the pool so the highest use of the last 7\u00a0days sits at 80% full or less. No pool is smaller than 125\u00a0GiB.",
-            ],
-            [
-              { b: "The copy." },
-              " The agent copies each data mount onto the pool with ",
-              { code: "rsync" },
-              " while your services keep running.",
-            ],
-            [
-              { b: "The switch." },
-              " The agent stops the systemd services that hold the data mounts open, checks that the final ",
-              { code: "rsync" },
-              " pass has nothing left to copy, and mounts the pool at the same paths. Then it starts the services again, which ends the interruption that began with the stop. If the switch fails, the agent restores the original mounts and Amoeba ",
+              { b: "The move." },
+              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and ",
               { a: "tries again", href: "/amoeba/guide#at-the-switch" },
-              ", so services can restart more than once.",
+              ".",
             ],
             [
-              { b: "The check." },
-              " After the switch, Amoeba waits for one fresh report on the btrfs pool’s error counters. Any device error pauses the move, which keeps your services on the pool: a move only goes forward. With none, Amoeba detaches each source disk, takes an incremental snapshot and deletes the disk once the snapshot completes.",
+              { b: "The old disks." },
+              " Once the switch is checked, Amoeba snapshots each old disk and deletes the disk. It keeps each snapshot for a few days, then deletes it too.",
             ],
             [
-              { b: "Expands." },
-              " Amoeba expands the pool at 95% full, or from 80% full if it would reach 95% within 30\u00a0minutes. An expand brings it back to 80% full, growing or adding a disk while the pool stays mounted.",
-            ],
-            [
-              { b: "Shrinks." },
-              " A shrink can start once the move is done, 7 full days of data are in and the 7-day peak is under 80% full. If you set shrinks to Manual, each one waits for you.",
-            ],
-            [
-              { b: "One disk at a time." },
-              " The agent moves one disk’s data onto the others with ",
-              { code: "btrfs device remove" },
-              ". Amoeba then detaches and deletes the empty disk, so you stop paying for it.",
+              { b: "Rightsizing." },
+              " Amoeba grows the pool before it fills, and sooner when data arrives fast. When your data goes down and stays down, it shrinks the pool one disk at a time. So you pay for close to what you use.",
             ],
           ],
         },
         {
           kind: "p",
           text: [
-            "What you give up: you pay for both sets of disks until the source disks are deleted, right after the switch is checked. Then you pay for each snapshot for 7\u00a0days. Data on ",
+            "What you give up: you pay for both sets of disks only while the move runs, and then for the snapshots while they’re kept. Data on ",
             { a: "zone-redundant (ZRS) disks", href: "/learn/azure-disk-lrs-vs-zrs" },
             " moves to a locally redundant pool and loses its zone redundancy.",
           ],
         },
         {
           kind: "p",
-          text: "Amoeba works on Windows and Linux VMs. On Linux, it needs systemd, kernel 5.14 or later and btrfs loaded or loadable. Every process that keeps a data mount open must run as a systemd service.",
-        },
-        {
-          kind: "p",
-          text: "A Premium SSD v2 or gp3 pool needs 3 free data-disk slots: 2 for the pool and 1 kept free for an urgent expand. A Premium SSD pool can start as one disk, so 2 are enough.",
+          text: "On Linux, the kernel must support btrfs, and every service that keeps a data mount open must run under systemd. The VM also needs a few free disk slots for the pool.",
         },
       ],
     },
@@ -389,11 +363,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Amoeba does the same job on AWS. It pools the EBS data volumes of running EC2 instances onto gp3\u00a0volumes in the instance’s Availability Zone, and never touches the root volume.",
-        },
-        {
-          kind: "p",
-          text: "It installs its agent through AWS Systems Manager Run Command, on Nitro instances that Systems Manager manages. Once the switch is checked, it takes an EBS snapshot of each source volume before deleting it.",
+          text: "Amoeba does the same job on AWS. It moves the EBS data volumes of running EC2 instances onto one btrfs pool built from gp3\u00a0volumes, and never touches the root volume. Once the switch is checked, it snapshots each old volume before deleting it, as on Azure.",
         },
       ],
     },

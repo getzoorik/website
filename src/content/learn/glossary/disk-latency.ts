@@ -91,12 +91,12 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously.",
+            " moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. Then it rightsizes the pool, so you pay for close to what you use.",
           ],
         },
         {
           kind: "p",
-          text: "While Amoeba copies data onto the pool, it watches disk latency. If the average wait per I/O passes both 50\u00a0ms and twice its starting level, Amoeba slows the copy.",
+          text: "Amoeba copies your data while your services run. If disk latency rises too high during the copy, Amoeba slows the copy.",
         },
         {
           kind: "p",
