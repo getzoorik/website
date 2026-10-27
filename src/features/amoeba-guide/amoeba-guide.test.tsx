@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { amoebaDocs } from "@/config/site";
 import { amoebaGuide, amoebaGuideRowIds, amoebaGuideSectionIds } from "@/content/amoeba-guide";
 import { learnSlugOf, titleLink } from "@/content/learn/published";
+import { documentFacts } from "@/features/documents/document-facts";
 
 /* The nav and the footer read the pathname. */
 const pathname = vi.hoisted(() => ({ current: "/amoeba/guide" }));
@@ -20,10 +21,10 @@ import { AmoebaGuide } from "@/features/amoeba-guide/amoeba-guide";
  * own contract on top of the
  * documents kit, which `documents.test.tsx` covers: the groups and their
  * numbered rows, the ids a link made before the rows still lands on, the hero
- * with no download, the Updated line and the summary, the Related lines, the
- * 13 placeholders, the connect well, the role table's codes, and the words the
- * site never prints. It keeps the 48-hour soak and going back, as the approved
- * mock does.
+ * and its PDF, the Updated line and the summary, the Related lines, the
+ * 12 placeholders, the connect well, the role table's codes, and the words the
+ * site never prints. It describes Amoeba at product level (owner, 27 Oct 2026):
+ * the move only goes forward, with no soak, no going back and no band.
  *
  * The page component is rendered, not the route: while `amoebaDocs` is off the
  * route answers 404, which the last block checks.
@@ -114,7 +115,6 @@ const PLACEHOLDERS = [
     "what happens to writes made on the pool if a late check fails after the services restarted",
   ],
   ["the-soak-and-going-back", "how to restore from a safety snapshot, and who does it"],
-  ["when-amoeba-expands", "what you do if a paused pool fills"],
   ["how-an-expand-runs", "typical time from the trigger to the added capacity"],
   ["what-the-role-allows", "when Amoeba reapplies a VM"],
 ];
@@ -168,16 +168,39 @@ describe("/amoeba/guide groups and rows", () => {
     expect([...amoebaGuideRowIds]).toEqual(ROW_IDS);
   });
 
-  it("keeps the 48-hour soak and going back, as the approved mock does", () => {
+  it("keeps the old rows' ids, and says a move only goes forward: no soak, no going back, no band", () => {
     const container = page();
     expect(text(container.querySelector("#the-soak-and-going-back > summary h3"))).toBe(
-      "The soak, and going back",
+      "After the switch",
     );
     expect(text(container.querySelector("#going-back-during-the-soak > summary h3"))).toBe(
-      "Going back during the soak",
+      "The source disks",
     );
+    expect(text(container.querySelector("#go-back-and-resume > summary h3"))).toBe("Resume");
     expect(text(container.querySelector("#remove-amoeba-from-a-vm .gd-lede"))).toContain(
-      "or go back within the first 48 h",
+      "A move only goes forward",
+    );
+    const words = text(container.querySelector("article.gd-main"));
+    expect(words).not.toMatch(/\bsoak|\bgo back|\bgoing back|\bband\b|\bonline\b|\bbill/i);
+  });
+
+  it("stays at product level: no day counts, session timings, quiet hour or internal command names", () => {
+    const words = text(page().querySelector("article.gd-main"));
+    expect(words).not.toMatch(
+      /\b\d+ days\b|\bminutes\b|\b12 hours\b|quietest|device remove|governance/i,
+    );
+    expect(words).toContain("The kernel must be recent and support btrfs");
+    expect(words).toContain("The VM’s kernel is too old, or doesn’t support btrfs.");
+  });
+
+  it("gives the switch's placeholder a bullet of its own, so no sentence runs into it", () => {
+    const items = [...page().querySelectorAll("#at-the-switch li")].map(text);
+    expect(items).toHaveLength(5);
+    expect(items[2]).toBe(
+      "If any step fails, the agent tries to put the original mounts back and start the services again. The source disks are never written during the switch. Amoeba then tries the switch again, so your services can restart more than once.",
+    );
+    expect(items[3]).toBe(
+      "To come: what happens to writes made on the pool if a late check fails after the services restarted",
     );
   });
 
@@ -230,7 +253,7 @@ describe("/amoeba/guide groups and rows", () => {
 });
 
 describe("/amoeba/guide page", () => {
-  it("has one h1 and the deck, and no download block: no Amoeba guide PDF exists", () => {
+  it("has one h1 and the deck", () => {
     const container = page();
     expect(container.querySelectorAll("h1")).toHaveLength(1);
     expect(text(container.querySelector("h1"))).toBe("Amoeba product guide");
@@ -238,14 +261,33 @@ describe("/amoeba/guide page", () => {
     expect(text(container.querySelector(".doc-deck"))).toBe(
       "How to onboard a VM, what Amoeba changes, and how you stay in control.",
     );
-    expect(container.querySelector(".doc-hero .dl, .doc-hero-grid")).toBeNull();
-    expect(container.querySelector('a[href$=".pdf"], a[download]')).toBeNull();
+  });
+
+  it("offers the guide's PDF in one download row, with the facts read from the file", () => {
+    const container = page();
+    const facts = documentFacts("amoeba-guide");
+    const rows = container.querySelectorAll(".doc-hero-grid > .dl > a.dl-r");
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toHaveAttribute("href", "/docs/amoeba-product-guide.pdf");
+    expect(rows[0]).toHaveAttribute("download");
+    expect(rows[0]).toHaveAttribute(
+      "aria-label",
+      `Download the Amoeba product guide, ${facts.spoken}`,
+    );
+    expect(text(rows[0]!.querySelector(".dl-t"))).toBe("PDF");
+    expect(rows[0]!.querySelector(".dl-f")!.textContent).toBe(facts.short);
+    /* The guide's own PDF is the page's only download. */
+    expect(
+      [...container.querySelectorAll('main a[href$=".pdf"], main a[download]')].map((a) =>
+        a.getAttribute("href"),
+      ),
+    ).toEqual(["/docs/amoeba-product-guide.pdf"]);
   });
 
   it("opens the column on the Updated line and the summary: the product page first", () => {
     const container = page();
     const top = container.querySelector("article.gd-main > .fq-upd")!;
-    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 9 October 2026");
+    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 27 October 2026");
     const list = top.querySelector("dl.doc-sum")!;
     expect([...list.querySelectorAll("dt")].map(text)).toEqual([
       "Product page",
@@ -256,7 +298,7 @@ describe("/amoeba/guide page", () => {
     expect(list.querySelector("dd a")).toHaveAttribute("href", "/amoeba");
     const last = [...list.querySelectorAll("dd")][3]!;
     expect([...last.querySelectorAll("p")].map(text)).toEqual([
-      "You pick each VM. Per VM, you choose whether shrinks run on their own or wait for you, and the band the pool is held in.",
+      "You pick each VM. Per VM, you choose whether shrinks run on their own or wait for you.",
       "Onboarding starts the move, and services on the data mounts restart at the switch. See Moving a VM onto its pool.",
     ]);
     expect(last.querySelector("a")).toHaveAttribute("href", "#moving-a-vm-onto-its-pool");
@@ -268,7 +310,7 @@ describe("/amoeba/guide page", () => {
     expect(text(container.querySelector("article.gd-main"))).not.toMatch(/section \d/i);
   });
 
-  it("carries the 13 placeholders in page order, each its own “To come: ” kept out of snippets", () => {
+  it("carries the 12 placeholders in page order, each its own “To come: ” kept out of snippets", () => {
     const container = page();
     const spans = [...container.querySelectorAll(".ph")];
     expect(
@@ -444,10 +486,10 @@ describe("the [Coral | Amoeba] switch", () => {
 });
 
 describe("the /amoeba/guide route", () => {
-  it("titles, describes and canonicalises the page in the approved mock's words", () => {
+  it("titles, describes and canonicalises the page", () => {
     expect(metadata.title).toBe("Amoeba product guide");
     expect(metadata.description).toBe(
-      "How to onboard a VM to Amoeba on Azure or AWS, how its data moves onto one pool, how the pool expands and shrinks online, and how you stay in control.",
+      "Onboard a VM to Amoeba on Azure or AWS. See how its data moves onto one btrfs pool, how that pool grows and shrinks, and how you stay in control.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/amoeba/guide" });
     expect(metadata).not.toHaveProperty("robots");

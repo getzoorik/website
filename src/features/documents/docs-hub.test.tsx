@@ -164,8 +164,49 @@ describe("/docs", () => {
     ]);
   });
 
+  it.runIf(amoebaDocs && amoebaOnePager)(
+    "downloads Amoeba's guide and one-pager under their tiles, and says PDF to come under its FAQ",
+    () => {
+      /* Amoeba's one-pager has no worked example, so its line is its own, not Coral's. */
+      expect(
+        [...page().querySelectorAll("#amoeba .dt-grid > article.dt")].map((tile) =>
+          text(tile.querySelector(".dt-l")),
+        ),
+      ).toEqual([
+        "Onboard, what changes, staying in control",
+        "Safety, downtime, expanding, agent and costs",
+        "Cost, safety, visibility and how it works",
+      ]);
+      const rows = [...page().querySelectorAll("#amoeba .dt-pdf")];
+      expect(rows).toHaveLength(3);
+      const downloads = [
+        [rows[0]!, "amoeba-guide", "the Amoeba product guide", "PDF"],
+        [rows[2]!, "amoeba-one-pager", "the Amoeba one-pager", "PDF"],
+      ] as const;
+      for (const [row, id, name, label] of downloads) {
+        const a = row.querySelector("a")!;
+        const facts = documentFacts(id);
+        expect(a).toHaveAttribute("href", documents[id].pdf);
+        expect(a).toHaveAttribute("download");
+        expect(a).toHaveAttribute("aria-label", `Download ${name}, ${facts.spoken}`);
+        expect(row.querySelector("a > span")!.textContent).toBe(label);
+        expect(a.querySelector("small")!.textContent).toBe(facts.short);
+        expect(a.querySelector("small")!.textContent).toMatch(SHORT);
+      }
+      expect(rows[0]!.querySelector("a")).toHaveAttribute("href", "/docs/amoeba-product-guide.pdf");
+      expect(rows[1]!.querySelector("a")).toBeNull();
+      expect(rows[1]!.querySelector("span.dt-none")).toHaveTextContent(/^PDF to come$/);
+    },
+  );
+
   it("says each download's facts the way the mock does: PDF, pages, size, paper", () => {
-    for (const id of ["coral-guide", "coral-faq", "coral-one-pager"] as const) {
+    for (const id of [
+      "coral-guide",
+      "coral-faq",
+      "coral-one-pager",
+      "amoeba-guide",
+      "amoeba-one-pager",
+    ] as const) {
       const { pages, paper, short, spoken } = documentFacts(id);
       expect(spoken).toBe(`PDF, ${short.replace(/\u00a0/g, " ").replace(" · ", ", ")}, ${paper}`);
       expect(short.startsWith(`${pages}\u00a0page`)).toBe(true);
@@ -338,10 +379,10 @@ describe("the hub under each hold of the Amoeba documents", () => {
     expect(groups.map((group) => group.product)).toEqual(["coral"]);
   });
 
-  it("guide and FAQ released, one-pager held: their two tiles, each with no PDF yet", async () => {
+  it("guide and FAQ released, one-pager held: their two tiles, the guide's PDF and none yet for the FAQ", async () => {
     const groups = await hubWith({ amoebaDocs: true, amoebaOnePager: false });
     expect(amoebaTiles(groups)).toEqual([
-      ["Product guide", "/amoeba/guide", null],
+      ["Product guide", "/amoeba/guide", "amoeba-guide"],
       ["FAQ", "/amoeba/faq", null],
     ]);
   });
@@ -357,7 +398,7 @@ describe("the hub under each hold of the Amoeba documents", () => {
     expect(groups[1]!.line).toBe("Block storage cost optimization on Azure\u00a0and\u00a0AWS");
     expect(groups[1]!.pageLink).toEqual({ label: "Product page", href: "/amoeba" });
     expect(amoebaTiles(groups)).toEqual([
-      ["Product guide", "/amoeba/guide", null],
+      ["Product guide", "/amoeba/guide", "amoeba-guide"],
       ["FAQ", "/amoeba/faq", null],
       ["One-pager", null, "amoeba-one-pager"],
     ]);

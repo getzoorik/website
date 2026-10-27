@@ -6,47 +6,51 @@ import { figure as figure3 } from "@/features/learn/figures/azure-disk-cost-opti
 export const article: Article = {
   slug: "azure-disk-cost-optimization",
   title: "Azure disk cost optimization",
-  meta: "Azure disk cost optimization: a managed disk bills by size tier every hour, however full it is. Delete unattached disks, reset performance, then size to data.",
+  meta: "Azure disk cost optimization: a managed disk is charged by size tier every hour, however full it is. Delete unattached disks, reset performance, then size to data.",
   h1: "Azure disk cost optimization: stop paying for empty space",
-  deck: "What a managed disk bills for, why the space you bought stays on the bill, and how to pay for your data instead.",
-  card: "What Azure bills a managed disk for, why disks only grow, and how Amoeba sizes a pool to your data.",
+  deck: "What a managed disk is charged for, why you keep paying for the space you bought, and how to pay for your data instead.",
+  card: "What Azure charges for a managed disk, why disks only grow, and how Amoeba sizes a pool to your data.",
   product: "amoeba",
   hub: "Block storage",
   topic: "Azure block storage",
   published: "2026-10-21",
-  updated: "2026-10-21",
+  updated: "2026-10-27",
   author: "sheldon",
   cover: "/learn-covers/zoorik-learn-azure-disk-cost-optimization-1200x630.webp",
   short:
-    "Azure disk cost optimization starts with one billing rule. A managed disk is billed hourly on the size you provision, rounded up to the nearest size Azure offers, whatever it holds. Premium SSD v2 also bills IOPS and throughput above a free baseline. Delete unattached disks, set raised performance back, then size disks to the data. Azure grows a disk in place but never shrinks it, so that last step takes a copy or a pool that resizes.",
+    "Azure disk cost optimization starts with one pricing rule. A managed disk is charged hourly on the size you provision, rounded up to the nearest size Azure offers, whatever it holds. Premium SSD v2 also charges for IOPS and throughput above a free baseline. Delete unattached disks, set raised performance back, then size disks to the data. Azure grows a disk in place but never shrinks it, so that last step takes a copy or a pool that resizes.",
   sections: [
     {
       id: "a-managed-disk-bills-for-its-size",
-      title: "A managed disk bills for its size, every hour",
+      title: "A managed disk is charged for its size, every hour",
       blocks: [
         {
           kind: "p",
-          text: "Picture a VM with four 512\u00a0GiB data disks holding 1,000\u00a0GiB of data. Azure bills all four in full, every hour.",
+          text: "Picture a VM with four 512\u00a0GiB data disks holding 1,000\u00a0GiB of data. Azure charges for all four in full, every hour.",
         },
         {
           kind: "p",
-          text: "A managed disk is billed on its provisioned size, which Azure rounds up to the nearest offered disk size, so a 200\u00a0GiB Standard SSD is billed as an E15, the 256\u00a0GiB tier. The charge is prorated hourly from the monthly price, and Microsoft’s pricing page says you’re charged the same rate for your provisioned disk regardless of how much of the disk space is being used.",
+          text: "A managed disk is charged on its provisioned size, which Azure rounds up to the nearest offered disk size. A 200\u00a0GiB Standard SSD is therefore charged as an E15, the 256\u00a0GiB tier.",
+        },
+        {
+          kind: "p",
+          text: "The charge is prorated hourly from the monthly price. Microsoft’s pricing page says you’re charged the same rate for your provisioned disk regardless of how much of the disk space is being used.",
         },
         {
           kind: "callout",
           label: "Worked example",
-          text: "The four disks total 4 × 512 = 2,048\u00a0GiB, and the 1,000\u00a0GiB of data fills 1,000 ÷ 2,048 = 49% of it. That leaves 2,048 − 1,000 = 1,048\u00a0GiB, 51% of the billed GiB, holding nothing. Each GiB of data carries 2,048 ÷ 1,000 = 2.05\u00a0GiB of billed disk.",
+          text: "The four disks total 4 × 512 = 2,048\u00a0GiB, and the 1,000\u00a0GiB of data fills 1,000 ÷ 2,048 = 49% of it. That leaves 2,048 − 1,000 = 1,048\u00a0GiB, 51% of what you pay for, holding nothing. Each GiB of data carries 2,048 ÷ 1,000 = 2.05\u00a0GiB of disk you pay for.",
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
-          text: "Each size tier is named by its type’s letter and a number, P for Premium SSD, E for Standard SSD and S for Standard HDD. A 512\u00a0GiB Premium SSD is a P20, billed as one whether it holds 500\u00a0GiB or 5\u00a0GiB. On top of capacity, each type adds its own meters, and snapshots bill separately.",
+          text: "Each size tier is named by its type’s letter and a number, P for Premium SSD, E for Standard SSD and S for Standard HDD. A 512\u00a0GiB Premium SSD is a P20, charged as one whether it holds 500\u00a0GiB or 5\u00a0GiB. On top of capacity, each type adds its own meters, and snapshots are charged separately.",
         },
         {
           kind: "table",
           columns: [
             { label: "Disk type", width: "14%" },
-            { label: "What you’re billed for", width: "84%" },
+            { label: "What you’re charged for", width: "84%" },
             { label: "Reservation discount", width: "10%" },
           ],
           rows: [
@@ -62,7 +66,7 @@ export const article: Article = {
             ],
             [
               "Standard HDD",
-              "Its size tier, S4 to S80, plus transactions counted in 16\u00a0KiB units, billed per 10,000 and capped per disk per hour",
+              "Its size tier, S4 to S80, plus transactions counted in 16\u00a0KiB units, charged per 10,000 and capped per disk per hour",
               "None",
             ],
             [
@@ -85,7 +89,11 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Every expansion is one-way. A migration, a bulk import or a log spike fills a disk, and someone expands it a tier, say from a P30 (1,024\u00a0GiB) to a P40 (2,048\u00a0GiB). The data later goes back down, and the tier and its charge stay where the peak left them.",
+          text: "Every expansion is one-way. A migration, a bulk import or a log spike fills a disk. Someone expands it a tier, say from a P30 (1,024\u00a0GiB) to a P40 (2,048\u00a0GiB).",
+        },
+        {
+          kind: "p",
+          text: "The data later goes back down, and the tier and its charge stay where the peak left them.",
         },
         { kind: "svg", figure: figure2 },
         {
@@ -93,8 +101,12 @@ export const article: Article = {
           text: [
             "Growing is routine. You can ",
             { a: "expand a managed data disk", href: "/learn/azure-disk-expand-without-downtime" },
-            " without deallocating the VM, then grow the partition and the filesystem inside it. On Standard HDD, Standard SSD and Premium SSD, a disk at 4\u00a0TiB or less must be detached, with the VM deallocated, before it grows past 4\u00a0TiB.",
+            " without deallocating the VM, then grow the partition and the filesystem inside it.",
           ],
+        },
+        {
+          kind: "p",
+          text: "On Standard HDD, Standard SSD and Premium SSD, a disk of 4\u00a0TiB or less is the exception. To grow it past 4\u00a0TiB, you must detach it and deallocate the VM first.",
         },
         {
           kind: "p",
@@ -143,7 +155,7 @@ export const article: Article = {
           items: [
             [
               { b: "Performance tiers." },
-              " Some Premium SSD sizes can run at a performance tier above the one their size sets, and Microsoft bills the disk at that tier until you change it back.",
+              " Some Premium SSD sizes can run at a performance tier above the one their size sets. Microsoft then charges that tier’s price until you change it back.",
             ],
             [
               { b: "On-demand bursting." },
@@ -163,7 +175,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Azure positions Standard SSD for web servers, lightly used enterprise applications, and development and test environments, and ",
+            "Azure positions Standard SSD for web servers, lightly used enterprise applications, and development and test environments. It positions ",
             {
               a: "Premium SSD for production workloads",
               href: "/learn/premium-ssd-vs-standard-ssd-azure",
@@ -178,7 +190,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Premium SSD v2 bills capacity, IOPS and throughput separately, and Microsoft describes it as ",
+            "Premium SSD v2 charges for capacity, IOPS and throughput separately. Microsoft describes it as ",
             {
               a: "offering higher performance than Premium SSD",
               href: "/learn/premium-ssd-v2-vs-premium-ssd",
@@ -189,14 +201,17 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Watch out",
-          text: "Once a disk is on Premium SSD v2, you can’t switch it directly to another type, so moving off it later takes a migration through snapshots.",
+          text: "Once a disk is on Premium SSD v2, you can’t switch it directly to another type. Moving off it later takes a migration through snapshots.",
         },
         { kind: "h3", id: "keep-snapshots-incremental", title: "Keep snapshots incremental" },
         {
           kind: "p",
           text: [
-            { a: "Snapshots are billed on the used size", href: "/learn/azure-disk-snapshot-cost" },
-            " of the data, so a full snapshot of a 500\u00a0GiB disk holding 50\u00a0GiB is billed for 50\u00a0GiB. Full snapshots can sit on Premium SSD storage. Incremental snapshots always sit on Standard HDD storage and hold only the differences since the last snapshot, which Microsoft calls more cost efficient.",
+            {
+              a: "Snapshots are charged on the used size",
+              href: "/learn/azure-disk-snapshot-cost",
+            },
+            ": a full snapshot of a 500\u00a0GiB disk holding 50\u00a0GiB is charged for 50\u00a0GiB. Full snapshots can sit on Premium SSD storage. Incremental snapshots always sit on Standard HDD storage and hold only the differences since the last snapshot, which Microsoft calls more cost efficient.",
           ],
         },
         { kind: "h3", id: "size-each-disk-to-its-data", title: "Size each disk to its data" },
@@ -226,7 +241,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "A reservation is bought per disk SKU, so in Microsoft’s own example a P40 reservation doesn’t pay for two P30\u00a0disks, even though 2 × 1,024\u00a0GiB adds up to the P40’s 2,048\u00a0GiB. The discount applies hourly, and unused reserved capacity doesn’t carry over. A reservation doesn’t renew automatically, though it can be exchanged or refunded within the limits Azure sets.",
+          text: "A reservation is bought per disk SKU. In Microsoft’s own example, a P40 reservation doesn’t pay for two P30\u00a0disks, even though 2 × 1,024\u00a0GiB adds up to the P40’s 2,048\u00a0GiB.",
+        },
+        {
+          kind: "p",
+          text: "The discount applies hourly, and unused reserved capacity doesn’t carry over. A reservation doesn’t renew automatically, though it can be exchanged or refunded within the limits Azure sets.",
         },
         {
           kind: "callout",
@@ -246,14 +265,31 @@ export const article: Article = {
         {
           kind: "ol",
           items: [
-            "Price each disk at the tier it’s billed at, not its provisioned size. The 200\u00a0GiB Standard SSD from earlier is an E15.",
-            "Add each meter beyond capacity: transactions on Standard SSD and Standard HDD, IOPS and throughput on Ultra Disk and above the free baseline on Premium SSD v2, on-demand bursting where enabled, and snapshots at their used size.",
+            "Price each disk at the tier it’s charged at, not its provisioned size. The 200\u00a0GiB Standard SSD from earlier is an E15.",
+            {
+              text: "Add each meter beyond capacity:",
+              blocks: [
+                {
+                  kind: "ul",
+                  items: [
+                    "Transactions on Standard SSD and Standard HDD.",
+                    "IOPS and throughput on Ultra Disk, and above the free baseline on Premium SSD v2.",
+                    "On-demand bursting, where enabled.",
+                    "Snapshots, at their used size.",
+                  ],
+                },
+              ],
+            },
             "Use your region’s price on the day you plan, because Azure disk pricing differs by region and changes over time.",
           ],
         },
         {
           kind: "p",
-          text: "To compare Azure managed disk pricing per TB, divide each tier’s monthly price by its size. The tiers double from one to the next (P30 is 1,024\u00a0GiB, P40 is 2,048\u00a0GiB, P50 is 4,096\u00a0GiB), so a disk just past a boundary pays for nearly twice the space it asked for. Premium SSD v2 has one capacity rate per GiB, so its cost per TiB is that rate times 1,024, before any performance above the baseline.",
+          text: "To compare Azure managed disk pricing per TB, divide each tier’s monthly price by its size. The tiers double from one to the next: P30 is 1,024\u00a0GiB, P40 is 2,048\u00a0GiB and P50 is 4,096\u00a0GiB. So a disk just past a boundary pays for nearly twice the space it asked for.",
+        },
+        {
+          kind: "p",
+          text: "Premium SSD v2 has one capacity rate per GiB. Its cost per TiB is that rate times 1,024, before any performance above the baseline.",
         },
       ],
     },
@@ -265,58 +301,52 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            ", Zoorik’s block storage optimization for Azure managed disks and Amazon EBS, keeps block storage sized to the data as the data changes. It works on the data disks of running Windows and Linux VMs, moving each VM’s data disks onto one pool, then rightsizing it. On Linux, it works like this:",
+            ", Zoorik’s block storage optimization, keeps block storage sized to your data as the data changes. It works on the data disks of running VMs: Azure managed disks and Amazon EBS volumes, on Windows and Linux VMs. It never touches the OS disk or root volume.",
           ],
         },
+        { kind: "p", text: "On Linux, it works like this:" },
         {
           kind: "ul",
           items: [
             [
               { b: "The pool." },
-              " Amoeba installs its agent through Azure Run Command and builds one btrfs pool beside your disks, on Premium SSD v2 where the region and zone offer it and on Premium SSD otherwise. It sizes the pool from the highest use of the last 7\u00a0days, so the pool sits inside its target band, 80% to 90% full by default, with room for the largest recent 15-minute rise and at least 10\u00a0GiB free. Each data mount becomes a subvolume mounted at its old path, so application code needs no changes.",
+              " Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. On Azure the pool uses Premium SSD v2 where your region and zone offer it, and Premium SSD otherwise. Each data mount keeps its old path, so application code needs no changes.",
             ],
             [
-              { b: "The switch." },
-              " Once ",
-              { code: "rsync" },
-              " has copied the data, the agent stops the systemd services that hold the data mounts open, checks that the final pass has nothing left to copy, mounts the pool at the same paths and starts the services again. That restart is the service interruption. If the switch fails, the agent puts the original mounts back and Amoeba retries it, so the one switch can restart services more than once.",
-            ],
-            [
-              { b: "The soak." },
-              " A 2-hour soak follows, in which any disk error, or p99\u00a0disk latency above 1.2 times its level before the switch, pauses the move. There is no switching back.",
+              { b: "The move." },
+              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again, so services can restart more than once.",
             ],
             [
               { b: "The source disks." },
-              " After the soak, each source disk is detached, snapshotted and deleted once its incremental snapshot is complete. The snapshot is kept for 7\u00a0days.",
+              " Once the switch is checked, Amoeba snapshots each source disk, deletes the disk, and keeps the snapshot for a few days before deleting it too.",
             ],
             [
               { b: "Growing." },
-              " When the pool’s lowest use over the last 30\u00a0minutes is above the band, Amoeba grows a disk in place or adds one while the pool stays mounted. Its safety floor is 5% of the pool or 10\u00a0GiB, whichever is larger. Free space below that floor triggers an urgent expand, and so does a fill rate in the last 10\u00a0minutes that would reach the floor within 30\u00a0minutes.",
+              " Amoeba grows the pool before it fills, and sooner when data arrives fast. It grows a disk in place or adds one while the pool stays mounted.",
             ],
             [
               { b: "Shrinking." },
-              " Shrinks start once the move is done and 7 full days of data are in. The agent moves one disk’s data onto the others with ",
-              { code: "btrfs device remove" },
-              ", and Amoeba detaches and deletes the empty disk, which stops its billing. With shrinks set to Manual, each one waits for you.",
+              " When your data goes down and stays down, Amoeba shrinks the pool one disk at a time. It moves that disk’s data onto the others and deletes the empty disk, so you pay for close to what you use. With shrinks set to “Manual”, each one waits for you.",
             ],
           ],
         },
+        { kind: "h3", id: "before-you-move-a-vm", title: "Before you move a VM" },
         {
           kind: "p",
-          text: "During the move you pay for both sets of disks, from the moment the pool’s disks are created until the source disks are deleted after the soak, then for the snapshots for 7\u00a0days.",
+          text: "You pay for both sets of disks only while the move runs, and then for the snapshots while they’re kept. The overlap runs from when the pool’s disks are created until the source disks are deleted.",
         },
         { kind: "svg", figure: figure3 },
         {
           kind: "p",
           text: [
-            "Data on Standard HDD or Standard SSD moves to Premium SSD v2 or Premium SSD, so check the estimate for those VMs and any Premium SSD reservation, which covers only its own SKU. Pool disks are locally redundant, so data on ",
+            "Data on Standard HDD or Standard SSD moves to Premium SSD v2 or Premium SSD. Check the estimate for those VMs and for any Premium SSD reservation, which covers only its own SKU. Pool disks are locally redundant, so data on ",
             { a: "zone-redundant (ZRS) disks", href: "/learn/azure-disk-lrs-vs-zrs" },
             " loses zone redundancy.",
           ],
         },
         {
           kind: "p",
-          text: "The VM needs 3 free data-disk slots: 2 for the pool and 1 kept free for an urgent expand. On Linux it needs systemd, kernel 5.14 or later and btrfs loaded or loadable, and every process that keeps a data mount open must run as a systemd service. VMs whose OS is in the Red Hat family are not moved.",
+          text: "On Linux, the kernel must be recent and support btrfs, and every service that keeps a data mount open must run under systemd. The running kernel decides, never the OS name. The VM also needs a few free disk slots for the pool.",
         },
         {
           kind: "p",

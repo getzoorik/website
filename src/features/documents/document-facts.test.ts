@@ -78,6 +78,7 @@ describe("the published documents", () => {
     expect(documents["coral-guide"].canonical).toBe("/coral/guide");
     expect(documents["coral-faq"].canonical).toBe("/coral/faq");
     expect(documents["coral-one-pager"].canonical).toBe("/coral");
+    expect(documents["amoeba-guide"].canonical).toBe("/amoeba/guide");
     expect(documents["amoeba-one-pager"].canonical).toBe("/amoeba");
   });
 });
