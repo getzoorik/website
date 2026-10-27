@@ -462,7 +462,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Below it, root sees each profile with its size and how full it is, then the ",
+            "Below the Overall section, root sees each profile with its size and how full it is, then the ",
             { a: "unallocated space", href: "/learn/btrfs-unallocated-space" },
             " on each disk.",
           ],
