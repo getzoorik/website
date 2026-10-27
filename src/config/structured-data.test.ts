@@ -173,7 +173,7 @@ describe("the home page's structured data", () => {
     expect(amoeba.description).toBe(amoebaPageContent.meta.appDescription);
     /* What "What is Amoeba?" says. */
     expect(amoeba.description).toBe(
-      "Block storage cost optimization for VMs on Azure and AWS. Amoeba moves a VM’s data disks onto one pool sized to the data plus 20%, then expands and shrinks that pool online, one disk at a time.",
+      "Block storage cost optimization for VMs on Azure and AWS. Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. Then it rightsizes that pool, one disk at a time.",
     );
     const [whatIs] = amoebaPageContent.about.paragraphs;
     expect(whatIs).toContain("block storage cost optimization platform for VMs on Azure and AWS");

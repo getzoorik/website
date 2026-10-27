@@ -1120,7 +1120,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
             {
               kind: "ul",
               items: [
-                "The agent sends its reports to Zoorik, and keeps two channels open to it over WebSocket (wss). All three use the agent’s own key, from /etc/amoeba-agent.env.",
+                "The agent sends its reports to Zoorik, and keeps two channels open to it over WebSocket (wss). The reports and both channels use the agent’s own key, from /etc/amoeba-agent.env.",
                 "Zoorik signs every command with that key (HMAC-SHA256), and the agent checks the signature before it acts. A key from another VM can’t act for this one.",
                 "Zoorik reaches the VM through Azure Run Command, to install the agent and to check the move. Azure adds its Run Command extension to a VM that doesn’t have it yet. It keeps a copy of each command and its output under /var/lib/waagent, and records each run in the activity log.",
                 "On AWS, Zoorik reaches the instance through AWS Systems Manager (AWS-RunShellScript), which keeps each command’s history in your account.",
