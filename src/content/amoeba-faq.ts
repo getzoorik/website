@@ -212,7 +212,7 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         question: "Does the copy slow down my VM?",
         short: [
           "The copy runs inside the VM, and Amoeba sets its speed from your VM’s own disk load.",
-          "When the disks are busy, the copy slows down or waits. This needs cgroup v2 IO readings on the VM; without them the copy doesn’t back off.",
+          "When the disks are busy, the copy slows down or waits. This needs cgroup v2 on the VM. Without it, the copy doesn’t slow down for your load.",
           [{ ph: "measured effect of the copy on disk latency" }],
         ],
       },
@@ -281,7 +281,7 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         question: "How is the agent installed and updated?",
         short: [
           "Through Azure Run Command or AWS Systems Manager, when you onboard the VM.",
-          "It runs as the systemd service amoeba-agent.service, as root, on Java 17 or later.",
+          "It runs as the systemd service amoeba-agent.service, as root.",
           "Amoeba updates it to each new release by itself. A version that fails its health check rolls back.",
         ],
       },
@@ -296,7 +296,7 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         question: "Which Linux distributions does Amoeba support?",
         short: [
           "Any Linux with systemd and a recent kernel that supports btrfs.",
-          "rsync, btrfs-progs and psmisc installed; the installer doesn’t add them.",
+          "It also needs rsync, btrfs-progs and psmisc. The installer doesn’t add them.",
           "Amoeba doesn’t read the OS name. The running kernel alone decides.",
           "Amoeba loads a btrfs module that isn’t loaded yet. If the kernel has no btrfs, the move pauses.",
         ],

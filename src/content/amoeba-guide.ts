@@ -137,7 +137,11 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                   body: [
                     {
                       kind: "p",
-                      text: "Connect your Azure directory once. A script you run in Azure Cloud Shell gives Zoorik’s app a custom role on the subscriptions you choose. On AWS, enter your 12-digit account ID, then run a script in AWS CloudShell that creates the IAM role ZoorikStorageOperator. It trusts Zoorik’s AWS account only with your organisation’s external ID.",
+                      text: "Connect your Azure directory once. A script you run in Azure Cloud Shell gives Zoorik’s app a custom role on the subscriptions you choose.",
+                    },
+                    {
+                      kind: "p",
+                      text: "On AWS, enter your 12-digit account ID, then run a script in AWS CloudShell that creates the IAM role ZoorikStorageOperator. It trusts Zoorik’s AWS account only with your organisation’s external ID.",
                     },
                   ],
                 },
@@ -253,14 +257,14 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                 [
                   "Linux",
                   [
-                    "The kernel must support btrfs, built in or as a module, and services on data mounts must run under systemd. The agent also needs rsync, btrfs-progs (mkfs.btrfs and btrfs) and psmisc (fuser), which the installer doesn’t add, and cgroup v2 for its disk-load readings. Amoeba checks the running kernel, never the OS name. ",
+                    "The kernel must be recent and support btrfs, built in or as a module, and services on data mounts must run under systemd. The agent also needs rsync, btrfs-progs (mkfs.btrfs and btrfs) and psmisc (fuser), which the installer doesn’t add, and cgroup v2 for its disk-load readings. Amoeba checks the running kernel, never the OS name. ",
                     { ph: "supported Linux distributions and versions" },
                   ],
                 ],
                 ["Windows", [{ ph: "supported Windows versions and what Amoeba needs on them" }]],
                 [
                   "Services on data mounts",
-                  "Every process that keeps a data mount open must run as a systemd service, so the agent can stop it and start it again at the switch.",
+                  "Every process that keeps a data mount open must run as a systemd service. Then the agent can stop it and start it again at the switch.",
                 ],
                 [
                   "Java",
@@ -384,7 +388,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
               items: [
                 "The list comes from Azure Resource Graph only. Amoeba doesn’t look inside a VM, or show its used space or savings, until the VM’s agent reports.",
                 [
-                  "VMs that can’t be onboarded are counted in one line under the list, with the reason, for example a VM that is stopped or has only an OS disk. ",
+                  "VMs that can’t be onboarded are counted in one line under the list, with the reason. For example, the VM is stopped or has only an OS disk. ",
                   { ph: "how Windows VMs appear in the onboarding list" },
                 ],
                 "The list can be a little behind Azure.",
@@ -521,7 +525,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
               kind: "ul",
               items: [
                 "Amoeba updates the agent to each new release by itself.",
-                "If a new version fails its health check, the installer goes back to the previous one.",
+                "If a new version fails its health check, the installer restores the previous one.",
               ],
             },
           ],
@@ -560,7 +564,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
               rows: [
                 [
                   "Dashboard",
-                  "The VM’s status, what its disks cost (today and with a pool, or before and now), its capacity, and 30 days of used space, provisioned space and IOPS.",
+                  "The VM’s status and capacity, and what its disks cost: today and with a pool, or before and now. Also its recent used space, provisioned space and IOPS.",
                 ],
                 [
                   "Disks",
@@ -572,11 +576,11 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                 ],
                 [
                   "Operations",
-                  "Expands and shrinks running now, a shrink waiting for you in “Manual”, and a log of the last 30 days with each outcome and its reason.",
+                  "Expands and shrinks running now, and a shrink waiting for you in “Manual”. A log of recent expands and shrinks, with each outcome and its reason.",
                 ],
                 [
                   "Impact",
-                  "Before and now, what the pool has saved since it went live, and 30 days of capacity and spend.",
+                  "Before and now, what the pool has saved since it went live, and recent capacity and spend.",
                 ],
                 [
                   "Settings",
@@ -613,7 +617,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
             },
             {
               kind: "p",
-              text: "Every figure is a value, or a dash that says why it is missing, such as “Available once the agent reports”, “No Azure price for this disk” or “Agent not reporting”. Amoeba never fills a gap with a guess.",
+              text: "Every figure is a value, or a dash that says why it is missing. The dash reads, for example, “Available once the agent reports”, “No Azure price for this disk” or “Agent not reporting”. Amoeba never fills a gap with a guess.",
             },
           ],
         },
@@ -689,12 +693,11 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
               items: [
                 "The agent stops every systemd service that holds a data mount open, with systemctl stop. It never kills a process itself.",
                 "It checks nothing is left to copy, saves /etc/fstab, mounts the pool at each data mount’s path, and starts the services again. Your mount paths stay the same.",
+                "If any step fails, the agent tries to put the original mounts back and start the services again. The source disks are never written during the switch. Amoeba then tries the switch again, so your services can restart more than once.",
                 [
-                  "If any step fails, the agent tries to put the original mounts back and start the services again. ",
                   {
                     ph: "what happens to writes made on the pool if a late check fails after the services restarted",
                   },
-                  " The source disks are never written during the switch. Amoeba then tries the switch again, so your services can restart more than once.",
                 ],
                 "A process that holds a data mount open outside a systemd service can’t be stopped cleanly, so the switch can’t finish.",
               ],
@@ -724,7 +727,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
             {
               kind: "ul",
               items: [
-                "The move pauses when a phase can’t go on safely, for example when the VM can’t take a pool, a copy fails, or the outcome of the switch can’t be known.",
+                "The move pauses when a phase can’t go on safely. For example, the VM can’t take a pool, a copy fails, or the outcome of the switch can’t be known.",
                 "Pool → Migration shows where it paused and why. “Resume” appears when the move can run again.",
                 "A VM Amoeba declines, for example one with too few data-disk slots, shows why and stays on its own disks.",
               ],
@@ -781,7 +784,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
             },
             {
               kind: "p",
-              text: "In “Auto” the shrink starts by itself, in the pool’s quietest hour. In “Manual” it waits for you on Operations.",
+              text: "In “Auto” the shrink starts by itself, when the pool is quiet. In “Manual” it waits for you on Operations.",
             },
           ],
         },
@@ -799,7 +802,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                 ["Check", "Amoeba picks the disk to remove and checks the shrink is still safe."],
                 [
                   "Move the data",
-                  "The agent moves the disk’s data onto the other disks with btrfs device remove, which takes the disk out of the btrfs pool.",
+                  "The agent moves the disk’s data onto the other disks and takes the disk out of the btrfs pool.",
                 ],
                 [
                   "Remove the disk",
@@ -831,7 +834,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                   "The other disks couldn’t keep up with the VM’s disk load, judged from the peak of recent readings.",
                 ],
                 ["No readings", "Amoeba is waiting for disk-load readings from the agent."],
-                ["Kernel", "The VM’s kernel doesn’t support btrfs."],
+                ["Kernel", "The VM’s kernel is too old, or doesn’t support btrfs."],
                 ["Disk errors", "The pool reports disk errors."],
                 ["VM size", "The VM size isn’t in Azure’s size list for its region yet."],
               ],
@@ -866,7 +869,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                   "When Zoorik shrinks",
                   "Settings → Shrinking",
                   "Auto",
-                  "“Auto” runs each shrink by itself, in the pool’s quietest hour. “Manual” holds it until you start it on Operations. Expands are automatic either way.",
+                  "“Auto” runs each shrink by itself, when the pool is quiet. “Manual” holds it until you start it on Operations. Expands are automatic either way.",
                 ],
                 [
                   "Reinstall",
@@ -963,7 +966,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                 [
                   "Saved by shrinks, Offset by expands",
                   "Operations",
-                  "The monthly change from the last 30 days of shrinks and expands, and the net.",
+                  "The monthly change from recent shrinks and expands, and the net.",
                 ],
               ],
             },
@@ -1117,9 +1120,9 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
             {
               kind: "ul",
               items: [
-                "The agent sends its reports to Zoorik, and keeps a command channel and a governance channel open to it over WebSocket (wss). All three use the agent’s own key, from /etc/amoeba-agent.env.",
+                "The agent sends its reports to Zoorik, and keeps two channels open to it over WebSocket (wss). All three use the agent’s own key, from /etc/amoeba-agent.env.",
                 "Zoorik signs every command with that key (HMAC-SHA256), and the agent checks the signature before it acts. A key from another VM can’t act for this one.",
-                "Zoorik reaches the VM through Azure Run Command, to install the agent and to check the move. Azure adds its Run Command extension to a VM that doesn’t have it yet, keeps a copy of each command and its output under /var/lib/waagent, and records each run in the activity log.",
+                "Zoorik reaches the VM through Azure Run Command, to install the agent and to check the move. Azure adds its Run Command extension to a VM that doesn’t have it yet. It keeps a copy of each command and its output under /var/lib/waagent, and records each run in the activity log.",
                 "On AWS, Zoorik reaches the instance through AWS Systems Manager (AWS-RunShellScript), which keeps each command’s history in your account.",
               ],
             },
@@ -1131,7 +1134,11 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
           body: [
             {
               kind: "p",
-              text: "New pool disks take the encryption key of the first encrypted source disk: your customer-managed KMS key on AWS, or your disk encryption set on Azure. Encryption at rest carries over. VMs that use Azure Disk Encryption are not moved as they are.",
+              text: "New pool disks take the encryption key of the first encrypted source disk. That is your customer-managed KMS key on AWS, or your disk encryption set on Azure. Encryption at rest carries over.",
+            },
+            {
+              kind: "p",
+              text: "VMs that use Azure Disk Encryption are not moved as they are.",
             },
           ],
         },
@@ -1141,7 +1148,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
           body: [
             {
               kind: "p",
-              text: "Sign in with a Microsoft or Google account, as for Coral. A session ends after 30 minutes idle or 12 hours.",
+              text: "Sign in with a Microsoft or Google account, as for Coral.",
             },
           ],
         },
@@ -1151,7 +1158,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
       id: "remove-amoeba-from-a-vm",
       title: "Remove Amoeba from a VM",
       lede: [
-        "A move only goes forward, so a VM stays on its pool. To stop Amoeba, wait until no VM is creating a pool. Then remove Zoorik’s access (on Azure, the Zoorik Storage Operator role assignment or Zoorik’s app; on AWS, the ZoorikStorageOperator role) and run ",
+        "A move only goes forward, so a VM stays on its pool. To stop Amoeba, wait until no VM is creating a pool. Then remove Zoorik’s access and run ",
         { code: "systemctl disable --now amoeba-agent" },
         " on each VM.",
       ],
@@ -1162,7 +1169,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
           body: [
             {
               kind: "p",
-              text: "While a pool is live, Amoeba needs its role to add disks. If you remove the role’s assignment, the pool can’t expand.",
+              text: "Zoorik’s access is the Zoorik Storage Operator role assignment or Zoorik’s app on Azure, and the ZoorikStorageOperator role on AWS. While a pool is live, Amoeba needs its role to add disks. If you remove the role’s assignment, the pool can’t expand.",
             },
           ],
         },

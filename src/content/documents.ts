@@ -180,8 +180,14 @@ export interface DocTileEntry {
 /** The hub's missing-file words. */
 export const pdfToCome = "PDF to come";
 
-/** The one-pager's line on the hub, where its facts sit in the PDF row under it. */
-const ONE_PAGER_LINE = "Cost, safety, visibility and an example";
+/**
+ * Each one-pager's line on the hub, where its facts sit in the PDF row under it. Coral's has a
+ * worked example; Amoeba's has none, so its line names how it works instead.
+ */
+const ONE_PAGER_LINE: Readonly<Record<ProductId, string>> = {
+  coral: "Cost, safety, visibility and an example",
+  amoeba: "Cost, safety, visibility and how it works",
+};
 
 interface ShelfEntry extends DocTileEntry {
   /** Whether the tile is listed at all: its page is published, or its PDF is. */
@@ -207,7 +213,7 @@ const shelves: Readonly<Record<ProductId, readonly ShelfEntry[]>> = {
     },
     {
       title: "One-pager",
-      line: ONE_PAGER_LINE,
+      line: ONE_PAGER_LINE.coral,
       pdf: { label: "PDF", document: "coral-one-pager" },
       released: documents["coral-one-pager"].released,
     },
@@ -245,7 +251,7 @@ const shelves: Readonly<Record<ProductId, readonly ShelfEntry[]>> = {
     },
     {
       title: "One-pager",
-      line: ONE_PAGER_LINE,
+      line: ONE_PAGER_LINE.amoeba,
       pdf: { label: "PDF", document: "amoeba-one-pager" },
       released: documents["amoeba-one-pager"].released,
     },

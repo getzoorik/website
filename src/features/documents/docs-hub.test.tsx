@@ -167,6 +167,16 @@ describe("/docs", () => {
   it.runIf(amoebaDocs && amoebaOnePager)(
     "downloads Amoeba's guide and one-pager under their tiles, and says PDF to come under its FAQ",
     () => {
+      /* Amoeba's one-pager has no worked example, so its line is its own, not Coral's. */
+      expect(
+        [...page().querySelectorAll("#amoeba .dt-grid > article.dt")].map((tile) =>
+          text(tile.querySelector(".dt-l")),
+        ),
+      ).toEqual([
+        "Onboard, what changes, staying in control",
+        "Safety, downtime, expanding, agent and costs",
+        "Cost, safety, visibility and how it works",
+      ]);
       const rows = [...page().querySelectorAll("#amoeba .dt-pdf")];
       expect(rows).toHaveLength(3);
       const downloads = [

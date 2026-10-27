@@ -184,6 +184,26 @@ describe("/amoeba/guide groups and rows", () => {
     expect(words).not.toMatch(/\bsoak|\bgo back|\bgoing back|\bband\b|\bonline\b|\bbill/i);
   });
 
+  it("stays at product level: no day counts, session timings, quiet hour or internal command names", () => {
+    const words = text(page().querySelector("article.gd-main"));
+    expect(words).not.toMatch(
+      /\b\d+ days\b|\bminutes\b|\b12 hours\b|quietest|device remove|governance/i,
+    );
+    expect(words).toContain("The kernel must be recent and support btrfs");
+    expect(words).toContain("The VM’s kernel is too old, or doesn’t support btrfs.");
+  });
+
+  it("gives the switch's placeholder a bullet of its own, so no sentence runs into it", () => {
+    const items = [...page().querySelectorAll("#at-the-switch li")].map(text);
+    expect(items).toHaveLength(5);
+    expect(items[2]).toBe(
+      "If any step fails, the agent tries to put the original mounts back and start the services again. The source disks are never written during the switch. Amoeba then tries the switch again, so your services can restart more than once.",
+    );
+    expect(items[3]).toBe(
+      "To come: what happens to writes made on the pool if a late check fails after the services restarted",
+    );
+  });
+
   it("closes two groups on a Related line to Learn and the assessment", () => {
     const related = [...page().querySelectorAll(".fq-sec-b > p.doc-related")];
     expect(

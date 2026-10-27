@@ -30,7 +30,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "A managed disk is charged on its provisioned size, which Azure rounds up to the nearest offered disk size. A 200\u00a0GiB Standard SSD is therefore charged as an E15, the 256\u00a0GiB tier. The charge is prorated hourly from the monthly price, and Microsoft’s pricing page says you’re charged the same rate for your provisioned disk regardless of how much of the disk space is being used.",
+          text: "A managed disk is charged on its provisioned size, which Azure rounds up to the nearest offered disk size. A 200\u00a0GiB Standard SSD is therefore charged as an E15, the 256\u00a0GiB tier.",
+        },
+        {
+          kind: "p",
+          text: "The charge is prorated hourly from the monthly price. Microsoft’s pricing page says you’re charged the same rate for your provisioned disk regardless of how much of the disk space is being used.",
         },
         {
           kind: "callout",
@@ -85,7 +89,11 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Every expansion is one-way. A migration, a bulk import or a log spike fills a disk, and someone expands it a tier, say from a P30 (1,024\u00a0GiB) to a P40 (2,048\u00a0GiB). The data later goes back down, and the tier and its charge stay where the peak left them.",
+          text: "Every expansion is one-way. A migration, a bulk import or a log spike fills a disk. Someone expands it a tier, say from a P30 (1,024\u00a0GiB) to a P40 (2,048\u00a0GiB).",
+        },
+        {
+          kind: "p",
+          text: "The data later goes back down, and the tier and its charge stay where the peak left them.",
         },
         { kind: "svg", figure: figure2 },
         {
@@ -93,8 +101,12 @@ export const article: Article = {
           text: [
             "Growing is routine. You can ",
             { a: "expand a managed data disk", href: "/learn/azure-disk-expand-without-downtime" },
-            " without deallocating the VM, then grow the partition and the filesystem inside it. On Standard HDD, Standard SSD and Premium SSD, a disk at 4\u00a0TiB or less must be detached, with the VM deallocated, before it grows past 4\u00a0TiB.",
+            " without deallocating the VM, then grow the partition and the filesystem inside it.",
           ],
+        },
+        {
+          kind: "p",
+          text: "On Standard HDD, Standard SSD and Premium SSD, a disk of 4\u00a0TiB or less is the exception. To grow it past 4\u00a0TiB, you must detach it and deallocate the VM first.",
         },
         {
           kind: "p",
@@ -163,7 +175,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Azure positions Standard SSD for web servers, lightly used enterprise applications, and development and test environments, and ",
+            "Azure positions Standard SSD for web servers, lightly used enterprise applications, and development and test environments. It positions ",
             {
               a: "Premium SSD for production workloads",
               href: "/learn/premium-ssd-vs-standard-ssd-azure",
@@ -189,7 +201,7 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Watch out",
-          text: "Once a disk is on Premium SSD v2, you can’t switch it directly to another type, so moving off it later takes a migration through snapshots.",
+          text: "Once a disk is on Premium SSD v2, you can’t switch it directly to another type. Moving off it later takes a migration through snapshots.",
         },
         { kind: "h3", id: "keep-snapshots-incremental", title: "Keep snapshots incremental" },
         {
@@ -229,7 +241,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "A reservation is bought per disk SKU, so in Microsoft’s own example a P40 reservation doesn’t pay for two P30\u00a0disks, even though 2 × 1,024\u00a0GiB adds up to the P40’s 2,048\u00a0GiB. The discount applies hourly, and unused reserved capacity doesn’t carry over. A reservation doesn’t renew automatically, though it can be exchanged or refunded within the limits Azure sets.",
+          text: "A reservation is bought per disk SKU. In Microsoft’s own example, a P40 reservation doesn’t pay for two P30\u00a0disks, even though 2 × 1,024\u00a0GiB adds up to the P40’s 2,048\u00a0GiB.",
+        },
+        {
+          kind: "p",
+          text: "The discount applies hourly, and unused reserved capacity doesn’t carry over. A reservation doesn’t renew automatically, though it can be exchanged or refunded within the limits Azure sets.",
         },
         {
           kind: "callout",
@@ -250,13 +266,30 @@ export const article: Article = {
           kind: "ol",
           items: [
             "Price each disk at the tier it’s charged at, not its provisioned size. The 200\u00a0GiB Standard SSD from earlier is an E15.",
-            "Add each meter beyond capacity: transactions on Standard SSD and Standard HDD, IOPS and throughput on Ultra Disk and above the free baseline on Premium SSD v2, on-demand bursting where enabled, and snapshots at their used size.",
+            {
+              text: "Add each meter beyond capacity:",
+              blocks: [
+                {
+                  kind: "ul",
+                  items: [
+                    "Transactions on Standard SSD and Standard HDD.",
+                    "IOPS and throughput on Ultra Disk, and above the free baseline on Premium SSD v2.",
+                    "On-demand bursting, where enabled.",
+                    "Snapshots, at their used size.",
+                  ],
+                },
+              ],
+            },
             "Use your region’s price on the day you plan, because Azure disk pricing differs by region and changes over time.",
           ],
         },
         {
           kind: "p",
-          text: "To compare Azure managed disk pricing per TB, divide each tier’s monthly price by its size. The tiers double from one to the next (P30 is 1,024\u00a0GiB, P40 is 2,048\u00a0GiB, P50 is 4,096\u00a0GiB), so a disk just past a boundary pays for nearly twice the space it asked for. Premium SSD v2 has one capacity rate per GiB, so its cost per TiB is that rate times 1,024, before any performance above the baseline.",
+          text: "To compare Azure managed disk pricing per TB, divide each tier’s monthly price by its size. The tiers double from one to the next: P30 is 1,024\u00a0GiB, P40 is 2,048\u00a0GiB and P50 is 4,096\u00a0GiB. So a disk just past a boundary pays for nearly twice the space it asked for.",
+        },
+        {
+          kind: "p",
+          text: "Premium SSD v2 has one capacity rate per GiB. Its cost per TiB is that rate times 1,024, before any performance above the baseline.",
         },
       ],
     },
@@ -293,10 +326,11 @@ export const article: Article = {
             ],
             [
               { b: "Shrinking." },
-              " When your data goes down and stays down, Amoeba shrinks the pool one disk at a time. It moves that disk’s data onto the others and deletes the empty disk, so you pay for close to what you use. With shrinks set to Manual, each one waits for you.",
+              " When your data goes down and stays down, Amoeba shrinks the pool one disk at a time. It moves that disk’s data onto the others and deletes the empty disk, so you pay for close to what you use. With shrinks set to “Manual”, each one waits for you.",
             ],
           ],
         },
+        { kind: "h3", id: "before-you-move-a-vm", title: "Before you move a VM" },
         {
           kind: "p",
           text: "You pay for both sets of disks only while the move runs, and then for the snapshots while they’re kept. The overlap runs from when the pool’s disks are created until the source disks are deleted.",
@@ -312,7 +346,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "On Linux, the kernel must support btrfs, and every service that keeps a data mount open must run under systemd. The running kernel decides, never the OS name. The VM also needs a few free disk slots for the pool.",
+          text: "On Linux, the kernel must be recent and support btrfs, and every service that keeps a data mount open must run under systemd. The running kernel decides, never the OS name. The VM also needs a few free disk slots for the pool.",
         },
         {
           kind: "p",
