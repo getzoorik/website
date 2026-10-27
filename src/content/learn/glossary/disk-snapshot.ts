@@ -84,7 +84,7 @@ export const term: GlossaryTerm = {
           text: [
             "The ",
             { a: "free assessment", href: "/assessment?p=amoeba" },
-            " works out your own figure.",
+            " estimates your own saving.",
           ],
         },
       ],

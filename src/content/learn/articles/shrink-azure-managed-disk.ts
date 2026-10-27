@@ -120,7 +120,7 @@ export const article: Article = {
               { code: "df -Th" },
               ", then choose the new size. On Premium SSD and Standard SSD, pick a step size, since a 1,100\u00a0GiB disk is charged as 2,048\u00a0GiB. ",
               { a: "Premium SSD v2", href: "/learn/premium-ssd-v2-vs-premium-ssd" },
-              " has no steps, but it can’t be an OS disk, and in most regions with availability zones it attaches only to zonal VMs.",
+              " has no steps, but it can’t be an OS disk. In most regions with availability zones, it attaches only to zonal VMs.",
             ],
           ],
         },
@@ -133,7 +133,7 @@ export const article: Article = {
           kind: "ol",
           start: 2,
           items: [
-            "In the Azure portal, open the VM’s Disks pane, select Create and attach a new disk, set its Storage type and Size (GiB), then select Save.",
+            "In the Azure portal, open the VM’s Disks pane and select Create and attach a new disk. Set its Storage type and Size (GiB), then select Save.",
             [
               "Partition, format and mount the new disk at a temporary path. ",
               { code: "parted" },
@@ -315,7 +315,7 @@ export const article: Article = {
           items: [
             [
               { b: "The pool." },
-              " Amoeba moves the VM’s data disks onto one btrfs pool sized to your data, with room to grow. On Azure the pool uses Premium SSD v2 where your region offers it, and Premium SSD otherwise.",
+              " Amoeba moves the VM’s data disks onto one btrfs pool sized to your data, with room to grow. On Azure the pool uses Premium SSD v2 where your VM’s region and zone offer it, and Premium SSD otherwise.",
             ],
             [
               { b: "The move." },
@@ -343,7 +343,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "On Linux, the kernel must support btrfs, and every service that keeps a data mount open must run under systemd. The VM also needs a few free disk slots for the pool.",
+          text: "On Linux, the VM needs a recent kernel with btrfs. Every service that keeps a data mount open must run under systemd. The VM also needs a few free disk slots for the pool.",
         },
       ],
     },
