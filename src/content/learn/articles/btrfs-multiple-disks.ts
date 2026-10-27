@@ -1,10 +1,11 @@
 import type { Article } from "@/content/learn/article";
 import { figure as figure1 } from "@/features/learn/figures/btrfs-multiple-disks/1";
+import { figure as figure2 } from "@/features/learn/figures/btrfs-multiple-disks/2";
 
 export const article: Article = {
   slug: "btrfs-multiple-disks",
   title: "btrfs on multiple disks: how a btrfs pool works",
-  meta: "btrfs on multiple disks: how the single and raid1 profiles use disks of different sizes, how btrfs device add grows a mounted pool, and how to read its usage.",
+  meta: "btrfs on multiple disks: create one filesystem across disks of different sizes, choose single or raid1, add a disk while mounted, grow one and read usage.",
   h1: "btrfs on multiple disks: how a btrfs pool works",
   deck: "One filesystem across several cloud disks: the profiles, adding or growing a disk while mounted, and the usage report.",
   card: "How one btrfs filesystem spans several disks, how to add a disk while it’s mounted, and how to read its usage.",
@@ -14,58 +15,84 @@ export const article: Article = {
   published: "2026-10-27",
   updated: "2026-10-27",
   author: "sourabh",
+  cover: "/learn-covers/zoorik-learn-btrfs-multiple-disks-1200x630.webp",
   short: [
-    "btrfs on multiple disks is one filesystem spread across several block devices, and ",
+    "btrfs on multiple disks is one filesystem across several block devices, and ",
     { code: "btrfs device add" },
-    " adds another disk while it stays mounted. btrfs hands out space in chunks, and a profile sets the number of copies of each. ",
+    " adds one while it’s mounted. The ",
     { code: "single" },
-    " keeps one copy and uses every disk at its full size, even when the sizes differ. ",
+    " profile keeps one copy of each chunk and uses every disk in full, even at different sizes. ",
     { code: "raid1" },
-    " puts two copies on two different disks, so at most half the raw space is usable.",
+    " keeps two copies on two different disks, so at most half the raw space is usable.",
   ],
   sections: [
     {
-      id: "how-btrfs-spans-multiple-disks",
-      title: "How btrfs spans multiple disks",
+      id: "how-btrfs-spans-multiple-disks-one-chunk",
+      title: "How btrfs spans multiple disks, one chunk at a time",
       blocks: [
         {
           kind: "p",
-          text: "A btrfs filesystem can sit on one block device or several, and you can add, remove or replace devices later. On a cloud VM each device is usually a whole data disk: an Azure managed disk, or an Amazon Elastic Block Store (EBS) volume. Every device carries the filesystem’s UUID, which is how btrfs groups them. On a system with udev, each one is registered with the kernel as it appears, so you can mount the whole set by naming any one disk.",
-        },
-        {
-          kind: "p",
           text: [
-            "btrfs doesn’t give each disk a fixed slice of your files. It allocates space in chunks, typically 1\u00a0GiB for data, and 256\u00a0MiB or 1\u00a0GiB for metadata, depending on whether the filesystem is under or over 50\u00a0GiB. For each new chunk, the kernel ranks the disks: those with room for a full-size chunk come first, ordered by unallocated space, largest first. A ",
-            { code: "single" },
-            " chunk goes on the top disk, a ",
+            "Picture a VM with a btrfs filesystem on one 50\u00a0GiB data disk. You attach a 100\u00a0GiB disk and run ",
+            { code: "btrfs device add" },
+            ". Then one balance can convert the metadata, the filesystem’s record of its files, to ",
             { code: "raid1" },
-            " chunk on the top two. Traditional RAID works across whole disks of equal size. btrfs applies its RAID rules inside each block group, its unit of allocation, which is why one btrfs filesystem across multiple disks of different sizes works.",
+            ".",
           ],
         },
         {
           kind: "p",
           text: [
-            "Subvolumes sit on top. Each is a directory tree you can mount like a filesystem of its own, with the ",
+            "Of the 150\u00a0GiB, roughly 144\u00a0GiB is then usable for ",
+            { code: "single" },
+            " data. Mirror the data with ",
+            { code: "raid1" },
+            ", and at most 50\u00a0GiB is.",
+          ],
+        },
+        {
+          kind: "p",
+          text: "On a cloud VM, each btrfs device is usually a whole data disk: an Azure managed disk, or an Amazon Elastic Block Store (EBS) volume. Every device carries the filesystem’s UUID, which is how btrfs groups them. Where udev runs, each one is registered with the kernel as it appears, so naming any one disk mounts the whole set.",
+        },
+        {
+          kind: "p",
+          text: "btrfs allocates space in chunks, and each new chunk goes to the disks with the most unallocated space. Traditional RAID works across whole disks of equal size. btrfs applies its RAID rules inside each chunk instead, which is why one btrfs filesystem across multiple disks of different sizes works.",
+        },
+        {
+          kind: "callout",
+          label: "For engineers",
+          text: [
+            "Data chunks are typically 1\u00a0GiB, and metadata chunks 256\u00a0MiB, or 1\u00a0GiB once the filesystem passes 50\u00a0GiB. For each new chunk, the kernel puts disks with room for a full-size chunk first, then ranks by unallocated space, largest first. A ",
+            { code: "single" },
+            " chunk takes the first disk in that order, and a ",
+            { code: "raid1" },
+            " chunk the first two.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "Subvolumes sit on top. Each is a directory tree you can mount on its own with the ",
             { code: "subvol=" },
-            " option, and all of them share the same pool of free space. That shared space is what makes a btrfs storage pool useful on a VM: no mount runs out while free space sits on a disk that belongs to another.",
+            " option, and all share one pool of free space. That makes a btrfs storage pool useful on a VM: no mount runs out while free space sits on a disk that belongs to another.",
           ],
         },
       ],
     },
     {
-      id: "data-and-metadata-profiles-single-raid1-and",
-      title: "Data and metadata profiles: single, raid1 and the rest",
+      id: "the-profile-decides-how-much-of-each",
+      title: "The profile decides how much of each disk you can use",
       blocks: [
         {
           kind: "p",
-          text: "A profile sets how many copies btrfs keeps of each chunk and where it puts them. Data and metadata each get one, written data/metadata, so single/raid1 means one copy of your files and two of the filesystem’s own trees.",
+          text: "A profile sets how many copies btrfs keeps of each chunk and where it puts them. Data and metadata each get their own profile, written data/metadata: single/raid1 means one copy of your files and two of their metadata.",
         },
         {
           kind: "table",
           columns: [
             { label: "Profile", width: "16%" },
             { label: "Copies", width: "37%" },
-            { label: "Usable share of raw space", width: "14%" },
+            { label: "Usable share of raw space, equal disks", width: "14%" },
             { label: "Fewest disks", width: "19%" },
             { label: "Disks it can lose", width: "14%" },
           ],
@@ -97,32 +124,77 @@ export const article: Article = {
           ],
         },
         {
-          kind: "p",
+          kind: "callout",
+          label: "Worked example",
           text: [
-            "Disk sizes count differently under each profile. The btrfs documentation works through two disks of 50\u00a0GiB and 100\u00a0GiB. With data and metadata both in ",
+            "In btrfs-device(8)’s example, ",
             { code: "raid1" },
-            ", every chunk needs a copy on each disk, so usable space stops at 50\u00a0GiB at most and the top 50\u00a0GiB of the larger disk stays unused. Put data in ",
+            " metadata takes about 3\u00a0GiB on each disk, so ",
             { code: "single" },
-            " and keep metadata in ",
+            " data gets (50 − 3) + (100 − 3) = 144\u00a0GiB, roughly. ",
             { code: "raid1" },
-            ", and usable space comes to roughly 144\u00a0GiB, once metadata has taken about 3\u00a0GiB on each disk.",
+            " data needs every chunk on both disks, so it stops at 50\u00a0GiB at most, a third of the 150\u00a0GiB raw. The top 100 − 50 = 50\u00a0GiB of the larger disk stays unused.",
           ],
         },
-        { kind: "diagram", figure: figure1 },
+        { kind: "svg", figure: figure1 },
+        {
+          kind: "h3",
+          id: "choosing-single-or-raid1-data-on-cloud",
+          title: "Choosing single or raid1 data on cloud disks",
+        },
         {
           kind: "p",
           text: [
-            "If you don’t name the profiles, mkfs.btrfs picks them from the device count. On several devices, data defaults to ",
-            { code: "single" },
-            " (since btrfs-progs 5.8, and ",
-            { code: "raid0" },
-            " before that) and metadata to ",
+            "An Azure locally redundant (LRS) managed disk is already written three times in one datacenter. AWS replicates each EBS volume within its Availability Zone. ",
             { code: "raid1" },
-            ". On one device, metadata defaults to ",
-            { code: "dup" },
-            ". The manual recommends choosing specific profiles, which also keeps the result the same across versions. To make btrfs span multiple disks from the start, list them all. mkfs.btrfs writes a new, empty filesystem over every device you name, so check each one with ",
+            " data adds a copy that btrfs controls, and takes two GiB of disk for every GiB of data.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "Scrub reads all the data and checks its checksums. With ",
+            { code: "raid1" },
+            ", it can repair a bad block from the other copy. With ",
+            { code: "single" },
+            ", it finds the damage but has no copy to fix it from.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "Keep metadata in ",
+            { code: "raid1" },
+            " either way, since it describes every file. For data, choose:",
+          ],
+        },
+        {
+          kind: "ul",
+          items: [
+            [
+              { b: [{ code: "single" }, " data"] },
+              " when the provider’s replication and your backups are your protection. You get every disk’s full size, and losing a disk loses the data on it.",
+            ],
+            [
+              { b: [{ code: "raid1" }, " data"] },
+              " when you want scrub to repair, or the filesystem to survive losing a whole disk, such as one detached by mistake. It then mounts with the ",
+              { code: "degraded" },
+              " option until you replace the disk.",
+            ],
+          ],
+        },
+      ],
+    },
+    {
+      id: "create-one-btrfs-filesystem-on-several-disks",
+      title: "Create one btrfs filesystem on several disks",
+      blocks: [
+        {
+          kind: "p",
+          text: [
+            "To make btrfs span multiple disks from the start, name every disk in one command. Check each one with ",
             { code: "lsblk" },
-            " first:",
+            " first, because mkfs.btrfs writes a new, empty filesystem over every device you name:",
           ],
         },
         {
@@ -132,21 +204,25 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: [
-            "An Azure locally redundant (LRS) managed disk is already written three times within one datacenter, and AWS replicates each EBS volume within its Availability Zone. ",
-            { code: "raid1" },
-            " data adds a copy that btrfs itself controls. Scrub, which reads everything and verifies its checksums, can then repair a bad block, where with ",
-            { code: "single" },
-            " it finds the damage and has no copy to fix it from. With ",
-            { code: "raid1" },
-            " metadata too, the filesystem survives losing a whole disk, such as one detached by mistake, and mounts with the ",
-            { code: "degraded" },
-            " option until you replace it. That costs a second GiB of disk for every GiB of data. If the provider’s replication and your backups are your protection, ",
-            { code: "single" },
-            " data gives you the full size of every disk you attach. Keep metadata in ",
-            { code: "raid1" },
-            " either way, since it holds the trees that describe every file.",
+          text: "mkfs.btrfs picks profiles from the device count when you don’t name them:",
+        },
+        {
+          kind: "ul",
+          items: [
+            ["On one device, metadata defaults to ", { code: "dup" }, "."],
+            [
+              "On several, data defaults to ",
+              { code: "single" },
+              " and metadata to ",
+              { code: "raid1" },
+              ".",
+            ],
+            ["Before btrfs-progs 5.8, the multi-device data default was ", { code: "raid0" }, "."],
           ],
+        },
+        {
+          kind: "p",
+          text: "The manual recommends naming both profiles. That keeps the result the same across versions.",
         },
       ],
     },
@@ -154,7 +230,23 @@ export const article: Article = {
       id: "btrfs-device-add-add-a-disk-to",
       title: "btrfs device add: add a disk to the pool without unmounting",
       blocks: [
-        { kind: "p", text: "Adding a device to the filesystem works while it’s mounted:" },
+        {
+          kind: "p",
+          text: [
+            "Adding a device to the filesystem works while it’s mounted, and btrfs refuses a disk that already holds a filesystem. The ",
+            { code: "-f" },
+            " flag overrides that by overwriting whatever is on the disk, so use it only on a disk you’ve confirmed is the new one.",
+          ],
+        },
+        {
+          kind: "callout",
+          label: "Watch out",
+          text: [
+            "If the old disks are fully allocated, one new disk can’t take ",
+            { code: "raid1" },
+            " chunks alone, and the step 4 conversion can fail. Add disks while the old ones still have room, or add two.",
+          ],
+        },
         {
           kind: "ol",
           items: [
@@ -164,15 +256,7 @@ export const article: Article = {
               { code: "lsblk" },
               ", and check that it’s the empty disk you just attached.",
             ],
-            "Add it to the pool and look at the result.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "btrfs refuses a disk that already holds a filesystem. The ",
-            { code: "-f" },
-            " flag overrides that and overwrites whatever is on the disk, so use it only on a disk you’ve confirmed is the new one.",
+            "Add it to the pool, then list, disk by disk, what each profile has allocated there:",
           ],
         },
         {
@@ -181,41 +265,40 @@ export const article: Article = {
           code: "sudo btrfs device add /dev/sdf /data\nsudo btrfs device usage /data",
         },
         {
-          kind: "p",
-          text: [
-            "The manual says the add is instant. btrfs registers the disk in the filesystem’s structures and moves no existing data, after first discarding (TRIM) the whole disk where the disk supports it, unless you pass ",
-            { code: "-K" },
-            ". With ",
-            { code: "single" },
-            " data the new space is usable at once. New chunks go to the top-ranked disk, so while the new disk has the most room, the next ones land there.",
-          ],
-        },
-        {
-          kind: "p",
-          text: "A balance rewrites existing chunks, and the allocator places them as it places new ones, so old data spreads onto the new disk too. That is a long job: every chunk it moves is rewritten with its block pointers updated, and the balance needs unallocated space to work in.",
-        },
-        {
-          kind: "p",
-          text: [
-            { code: "raid1" },
-            " needs more planning, because each ",
-            { code: "raid1" },
-            " chunk takes space on two disks at once. Once the old disks have no unallocated space left, one new disk can’t take ",
-            { code: "raid1" },
-            " chunks by itself, so add disks while the old ones still have room, or add two.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "A filesystem you created on one disk keeps its ",
-            { code: "dup" },
-            " metadata after you add a second. Convert it so the two copies sit on different disks, and the system chunks follow the metadata to ",
-            { code: "raid1" },
-            ":",
+          kind: "ol",
+          start: 4,
+          items: [
+            [
+              "If the filesystem started on one disk, its metadata is still ",
+              { code: "dup" },
+              ", both copies on the same disk. Convert it to ",
+              { code: "raid1" },
+              " with a balance. The copies then sit on different disks, and the system chunks, which map addresses to places on the disks, follow the metadata:",
+            ],
           ],
         },
         { kind: "code", lang: "bash", code: "sudo btrfs balance start -mconvert=raid1 /data" },
+        {
+          kind: "p",
+          text: [
+            "The manual says the add itself is instant. btrfs registers the disk and moves no existing data. First, where the disk supports it, btrfs discards (TRIMs) the whole disk, unless you pass ",
+            { code: "-K" },
+            ".",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "With ",
+            { code: "single" },
+            " data, the new space is usable at once. New chunks go to the disk with the most unallocated space. While that’s the new disk, the next chunks land there.",
+          ],
+        },
+        {
+          kind: "p",
+          text: "A balance rewrites existing chunks, and the allocator places them as it places new ones, so old data spreads onto the new disk too. It’s a long job, because every chunk it moves is rewritten with its block pointers updated.",
+        },
+        { kind: "svg", figure: figure2 },
       ],
     },
     {
@@ -225,46 +308,98 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "The other way to add space is to make one disk bigger. Azure can ",
+            "Azure can ",
             {
               a: "expand a managed data disk without deallocating the VM",
               href: "/learn/azure-disk-expand-without-downtime",
             },
-            ", with a size limit: a Standard HDD, Standard SSD or Premium SSD disk of 4\u00a0TiB or less needs the VM deallocated and the disk detached to grow past 4\u00a0TiB. That limit doesn’t apply to Premium SSD v2 or Ultra Disk. AWS changes an EBS volume’s size while it’s in use, as in ",
+            ", with a size limit:",
+          ],
+        },
+        {
+          kind: "ul",
+          items: [
+            "A Standard HDD, Standard SSD or Premium SSD disk of 4\u00a0TiB or less can’t grow past 4\u00a0TiB that way. Deallocate the VM and detach the disk first.",
+            "Premium SSD v2 and Ultra Disk have no such limit.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "AWS changes an EBS volume’s size while it’s in use. Grow it as in ",
             { a: "increasing an EBS volume", href: "/learn/increase-ebs-volume-size" },
-            ".",
+            ", then continue at step 3.",
+          ],
+        },
+        {
+          kind: "ol",
+          items: [
+            "On Azure, grow the disk. Azure rounds the size up to the nearest managed disk size.",
           ],
         },
         {
           kind: "code",
           lang: "bash",
-          code: "az disk update --resource-group <resource-group> --name <disk-name> --size-gb 256\necho 1 | sudo tee /sys/class/block/sdf/device/rescan\nsudo btrfs filesystem show /data\nsudo btrfs filesystem resize 4:max /data",
+          code: "az disk update --resource-group <resource-group> --name <disk-name> --size-gb 256",
         },
         {
-          kind: "p",
-          text: [
-            "Azure rounds the size up to the nearest managed disk size, and Linux doesn’t see it until the device is rescanned. Replace ",
-            { code: "sdf" },
-            " with your disk’s name. Microsoft allows up to 10\u00a0minutes for a Premium SSD v2 or Ultra Disk to show its new size. ",
-            { code: "btrfs filesystem show" },
-            " lists each disk’s devid, and ",
-            { code: "resize <devid>:max" },
-            " grows that disk’s share to the whole device. Without a devid, resize acts on devid 1, which may not be the disk you grew. Until you run it, the extra space shows as Device slack. If the disk carries a partition, grow the partition first, since resize doesn’t touch partitions.",
+          kind: "ol",
+          start: 2,
+          items: [
+            [
+              "Rescan the device, because Linux doesn’t see the new size until you do. Replace ",
+              { code: "sdf" },
+              " with your disk’s name. Microsoft allows up to 10\u00a0minutes for a Premium SSD v2 or Ultra Disk to show it.",
+            ],
           ],
+        },
+        {
+          kind: "code",
+          lang: "bash",
+          code: "echo 1 | sudo tee /sys/class/block/sdf/device/rescan",
+        },
+        { kind: "ol", start: 3, items: ["Find the devid of the disk you grew."] },
+        { kind: "code", lang: "bash", code: "sudo btrfs filesystem show /data" },
+        {
+          kind: "ol",
+          start: 4,
+          items: [
+            [
+              "Grow that disk’s share to the whole device with ",
+              { code: "resize <devid>:max" },
+              ". Here sdf, the pool’s fourth disk, is devid 4. Without a devid, resize acts on devid 1, which may not be the disk you grew.",
+            ],
+          ],
+        },
+        { kind: "code", lang: "bash", code: "sudo btrfs filesystem resize 4:max /data" },
+        {
+          kind: "p",
+          text: "resize doesn’t touch partitions. If the disk has one, grow the partition first.",
         },
         {
           kind: "p",
           text: [
             "Growing goes one way. Microsoft says shrinking an existing disk “isn’t supported and might result in data loss,” and ",
             { a: "shrinking an EBS volume", href: "/learn/shrink-ebs-volume" },
-            " covers AWS. A btrfs pool gets smaller a whole disk at a time instead. ",
+            " covers AWS.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "A btrfs pool gets smaller a whole disk at a time instead. ",
             { code: "btrfs device remove" },
-            " moves that disk’s data onto the others, and fails if the disks left can’t meet the profiles, as ",
+            " moves that disk’s data onto the others. It fails if the disks left can’t meet the profiles, as ",
             { code: "raid1" },
-            " can’t on one disk. ",
-            { a: "btrfs device remove", href: "/learn/btrfs-device-remove" },
-            " walks through the checks, and the guide to ",
-            { a: "shrinking one Azure disk", href: "/learn/shrink-azure-managed-disk" },
+            " can’t on one disk.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            { a: "Removing a disk", href: "/learn/btrfs-device-remove" },
+            " walks through the checks. ",
+            { a: "Shrinking one Azure disk", href: "/learn/shrink-azure-managed-disk" },
             " covers a VM without a pool.",
           ],
         },
@@ -283,7 +418,7 @@ export const article: Article = {
             { code: "btrfs filesystem usage" },
             " shows the split, and its manual says it’s meant to replace ",
             { code: "btrfs filesystem df" },
-            " in the long run. Run it as root, because a normal user doesn’t get the per-profile detail:",
+            " in the long run. Run it as root, since a normal user doesn’t get the per-profile detail:",
           ],
         },
         { kind: "code", lang: "bash", code: "sudo btrfs filesystem usage /data" },
@@ -291,8 +426,8 @@ export const article: Article = {
         {
           kind: "table",
           columns: [
-            { label: "Line", width: "16%" },
-            { label: "What it counts", width: "84%" },
+            { label: "Line", width: "14%" },
+            { label: "What it counts", width: "86%" },
           ],
           rows: [
             [
@@ -314,7 +449,11 @@ export const article: Article = {
             ["Used", "Data and metadata actually stored"],
             [
               "Free (estimated)",
-              "An approximate figure for the space still usable for data. The min beside it is the smallest the estimate can be when more than one profile is present",
+              [
+                "An approximate figure for the space still usable for data. It can differ from the Avail column of ",
+                { code: "df" },
+                ", because the two are worked out differently, for example when two profiles are present. The min beside it is the smallest the estimate can be when more than one profile is present",
+              ],
             ],
             [
               "Data ratio, Metadata ratio",
@@ -332,19 +471,13 @@ export const article: Article = {
           kind: "p",
           text: [
             "Below it, root sees each profile with its size and how full it is, then the unallocated space on each disk. ",
-            { code: "btrfs device usage /data" },
-            " lists, disk by disk, what each profile has allocated there.",
+            { a: "Unallocated space vs free space", href: "/learn/btrfs-unallocated-space" },
+            " explains how the three kinds of space relate.",
           ],
         },
         {
           kind: "p",
-          text: [
-            "“Multiple profiles: yes” can mean a profile conversion was interrupted, and the btrfs(5) manual’s answer is to restart the same conversion balance, which carries on until every block group has the new profile. Free (estimated) can also differ from the Avail column of ",
-            { code: "df" },
-            ", because the two are worked out differently, for example when two profiles are present. ",
-            { a: "btrfs unallocated space vs free space", href: "/learn/btrfs-unallocated-space" },
-            " explains how the three kinds of space relate.",
-          ],
+          text: "“Multiple profiles: yes” can mean a profile conversion was interrupted. btrfs(5) says to restart the same conversion balance, which carries on until every chunk has the new profile.",
         },
       ],
     },
@@ -356,7 +489,7 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " optimizes block storage on Azure managed disks and Amazon EBS, and the pool it builds is this kind of filesystem. It moves a VM’s data mounts onto one btrfs pool, then rightsizes the pool as the data grows and shrinks.",
+            " optimizes block storage on Azure managed disks and Amazon EBS. It moves a VM’s data mounts onto one btrfs pool of this kind, then rightsizes the pool as the data grows and shrinks.",
           ],
         },
         {
@@ -364,27 +497,55 @@ export const article: Article = {
           items: [
             [
               { b: "The pool." },
-              " One btrfs filesystem per VM, starting with at least 2\u00a0disks of equal size: gp3\u00a0volumes in the instance’s Availability Zone on AWS, and Premium SSD v2 on Azure where the region and zone offer it, Premium SSD otherwise. Amoeba sizes it from the highest use of the last 7\u00a0days, to sit inside its target band, 80% to 90% full by default, with at least 10\u00a0GiB free. Each data mount becomes a subvolume at its old path.",
+              " One btrfs pool per VM. Each data mount becomes a subvolume at its old path.",
+            ],
+            [
+              { b: "The disks." },
+              " On AWS, the pool starts with at least 2 gp3\u00a0volumes of equal size, in the instance’s Availability Zone. On Azure, it starts with at least 2 equal Premium SSD v2\u00a0disks where the region and zone offer them. Elsewhere on Azure, it uses Premium SSD: the cheapest mix of standard sizes, which can be a single disk.",
+            ],
+            [
+              { b: "Its size." },
+              " Amoeba sizes the pool so the highest use of the last 7\u00a0days sits at 80% full or less. It leaves room under 95% for the largest 15-minute rise and for 7 more days of growth. The pool is never under 125\u00a0GiB.",
             ],
             [
               { b: "The switch." },
-              " The agent copies each data mount onto the pool with rsync while services run. At the switch it stops the systemd services that hold those mounts, checks that a final rsync pass has nothing left to copy, mounts the subvolumes and starts the services again. That restart is the service interruption. If the switch fails, the agent restores the original mounts and Amoeba tries again, so services can restart more than once.",
+              " The agent copies every data mount onto the pool with rsync while services run. At the switch, it stops the systemd services that hold those mounts and checks that a final rsync pass has nothing left to copy. Then it mounts the subvolumes and starts the services again.",
+            ],
+            [
+              { b: "The restart." },
+              " Restarting the services is the service interruption. If the switch fails, the agent restores the original mounts and Amoeba tries again, so services can restart more than once.",
             ],
             [
               { b: "Adding space." },
-              " Amoeba expands while the pool stays mounted: when its lowest use over the last 30\u00a0minutes is above the band’s top edge, or when free space falls below 5% of the pool or 10\u00a0GiB, whichever is larger, or would fall below that within 30\u00a0minutes at the last 10\u00a0minutes’ fill rate. On AWS it grows gp3\u00a0volumes in place first, then adds new ones. On Azure a normal expand grows disks first, and an urgent one adds a disk first.",
+              " Amoeba expands while the pool stays mounted. It expands when the pool is 95% full or more on 2 reports in a row, sent 30\u00a0seconds apart. Once the pool is 80% full, it also expands if, at the last 10\u00a0minutes’ fill rate, it would reach 95% within 30\u00a0minutes.",
+            ],
+            [
+              { b: "How much it adds." },
+              " An expand brings the pool back to 80% full, plus the fill expected over the next 65\u00a0minutes. Amoeba also adds room when the largest disk runs short of unallocated space for metadata.",
+            ],
+            [
+              { b: "Where the space comes from." },
+              " On AWS, Amoeba grows gp3\u00a0volumes in place first, then adds new ones. On Azure, routine growth grows disks first, and an urgent expand adds a disk first.",
             ],
             [
               { b: "Giving space back." },
-              " One disk at a time, the agent moves that disk’s data onto the others with ",
+              " A shrink starts only after the move is done and 7 full days of data are in. The pool must also have had no size change in those 7\u00a0days, and a peak under 80% full. It never goes under 125\u00a0GiB.",
+            ],
+            [
+              { b: "One disk at a time." },
+              " The agent moves one disk’s data onto the others with ",
               { code: "btrfs device remove" },
-              ". Amoeba then detaches and deletes the empty disk, which stops its billing. It never does this while the pool is at or above the band’s top edge, or during an urgent expand.",
+              ". Amoeba then detaches and deletes the empty disk, so you stop paying for it. It never detaches a disk while the pool is 95% full or more, or while an urgent expand or a compaction runs on the VM.",
             ],
           ],
         },
         {
           kind: "p",
-          text: "Amoeba works on Windows and Linux VMs. On Linux, it needs systemd, kernel 5.14 or later, and btrfs loaded or loadable. The VM needs 3 free data-disk slots: 2 for the pool and 1 kept free for an urgent expand. VMs in the Red Hat family are not moved.",
+          text: "Amoeba works on Windows and Linux VMs. On Linux, it needs systemd, kernel 5.14 or later, and btrfs in the running kernel, built in or as a module Amoeba can load.",
+        },
+        {
+          kind: "p",
+          text: "The VM also needs free data-disk slots, with 1 kept free for an urgent expand. A gp3 or Premium SSD v2 pool starts with 2\u00a0disks, so it needs 3 free slots. A Premium SSD pool can start as one disk, so 2 are enough.",
         },
       ],
     },
