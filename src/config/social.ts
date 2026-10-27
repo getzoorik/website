@@ -208,6 +208,16 @@ const CARDS: readonly {
     words: "Safe-to-evict and do-not-disrupt annotations",
     paths: ["/learn/safe-to-evict-do-not-disrupt"],
   },
+  {
+    file: "learn-shrink-xfs-filesystem",
+    words: "Shrink an XFS filesystem: what works instead",
+    paths: ["/learn/shrink-xfs-filesystem"],
+  },
+  {
+    file: "learn-btrfs-multiple-disks",
+    words: "btrfs on multiple disks: how a btrfs pool works",
+    paths: ["/learn/btrfs-multiple-disks"],
+  },
   /* The glossary's hub, then each term by its h1. */
   {
     file: "glossary",
