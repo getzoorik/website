@@ -1,6 +1,7 @@
 import { substackPublication } from "@/config/entity";
 import { routes } from "@/config/site";
 import { socialProfiles } from "@/content/footer";
+import { nvidiaInceptionLegal } from "@/content/memberships";
 
 /**
  * `/news`, Zoorik News: every string the page prints, verbatim from the approved mock. The Radar part is refreshed
@@ -99,6 +100,8 @@ export interface NewsAnnouncement {
   readonly href: string;
   /** The link's words, on the latest announcement's button. */
   readonly cta: string;
+  /** The trademark line another company asks for where its name appears, printed small at the page's foot. */
+  readonly legal?: string;
 }
 
 /** One item of a Radar stream. */
@@ -249,6 +252,15 @@ export const newsRadar: NewsRadar = {
 };
 
 export const newsFromZoorik: readonly NewsAnnouncement[] = [
+  {
+    date: "2026-10-27",
+    tag: "Company",
+    title: "Zoorik joins the NVIDIA Inception Program",
+    line: "Zoorik is now a member of the NVIDIA Inception program, NVIDIA’s program for startups.",
+    href: `${routes.about}#programs`,
+    cta: "About Zoorik",
+    legal: nvidiaInceptionLegal,
+  },
   {
     date: "2026-10-17",
     tag: "Assessment",

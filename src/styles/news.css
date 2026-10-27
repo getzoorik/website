@@ -39,3 +39,5 @@ img.dt-ic.nw-logo{max-width:none}
 .nw-g + .nw-g{margin-top:36px}
 .nw-g[hidden]{display:none!important}
 .nw-note{margin-top:28px;font-size:var(--fs-micro);color:var(--muted)}
+/* repo: an announcing company's trademark line (NVIDIA's), small, under the Radar's note */
+.nw-tm{margin-top:8px;font-size:var(--fs-micro);line-height:1.5;color:var(--muted)}

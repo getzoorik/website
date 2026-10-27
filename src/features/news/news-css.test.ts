@@ -54,6 +54,7 @@ describe("the news sheet", () => {
       ".nw-g + .nw-g",
       ".nw-g[hidden]",
       ".nw-note",
+      ".nw-tm",
     ]);
     const stray = found.filter((s) => !/\.nw-[\w-]+/.test(s));
     expect(stray, `selector(s) in news.css without an nw- class: ${stray.join(", ")}`).toEqual([]);

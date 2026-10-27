@@ -32,7 +32,8 @@ import { isOffSite, offSiteProps } from "@/lib/links";
  *            closing row's pair, on the band
  *   zoorik   From Zoorik: the other announcements, as Read more tiles, each with its product's mark or ours
  *   radar    Zoorik Radar: its week, one row of chips for the three streams, each stream's items as tiles that open
- *            their source in a new tab, each with the source's logo, then what the Radar reads
+ *            their source in a new tab, each with the source's logo, then what the Radar reads, and under it, small,
+ *            the trademark line an announcement's company asks for (NVIDIA's, for NVIDIA Inception)
  *
  * Drawn on the server but for the chips (`RadarStreams`), which only hide streams, so the page reads whole without
  * scripting. The pair rises as it arrives, as the closing row's does on home. No closing assessment row, and the
@@ -215,7 +216,10 @@ function FromZoorik({
   );
 }
 
-/** Zoorik Radar: its week, the stream chips and each stream's tiles, then what it reads. */
+/* The trademark lines the announcements carry, each once: the page's last words, small. */
+const trademarks = [...new Set(newsFromZoorik.flatMap((item) => (item.legal ? [item.legal] : [])))];
+
+/** Zoorik Radar: its week, the stream chips and each stream's tiles, then what it reads, then the trademark lines. */
 function Radar(): React.JSX.Element {
   return (
     <section className="sec nw-sec" id={radar.id} aria-labelledby={`${radar.id}-h`}>
@@ -247,6 +251,11 @@ function Radar(): React.JSX.Element {
           }))}
         />
         <p className="nw-note">{radar.note(newsRadar.window)}</p>
+        {trademarks.map((line) => (
+          <p className="nw-tm" key={line}>
+            {line}
+          </p>
+        ))}
       </div>
     </section>
   );

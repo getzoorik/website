@@ -37,6 +37,11 @@
 /programs/*
   Cache-Control: public, max-age=2592000
 
+# The programs' member badges on /about, each the program's own file, unchanged: a month, like the share cards.
+# A new badge gets a new file name, so a cached one is never stale.
+/badges/*
+  Cache-Control: public, max-age=2592000
+
 # The communities' own logos on /community: a month, like the share cards. A redrawn logo gets a new file
 # name, so a cached one is never stale. Not under /community/: a /community/* rule would match pages there too.
 /community-logos/*

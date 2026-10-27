@@ -9,6 +9,7 @@ import {
 import { calendarUrl, contactEmail, routes, site } from "@/config/site";
 import { caseStudy } from "@/content/case-studies";
 import type { FooterSocialPlatform } from "@/content/footer";
+import { memberships } from "@/content/memberships";
 import { newsFromZoorik } from "@/content/news";
 import { platformLabel, products, type ProductId } from "@/content/products";
 
@@ -30,7 +31,8 @@ import { platformLabel, products, type ProductId } from "@/content/products";
  * ─── THE SECTION IDS ARE ADDRESSES ─────────────────────────────────────────
  * `#what-we-build`, `#how-we-build`, `#company` and `#find-us`: a link to a
  * part of the page keeps its hash (`hashKeepingRoutes`), so these ids are
- * shared addresses. Keep an id when its heading changes.
+ * shared addresses. Keep an id when its heading changes. `#programs`, the
+ * programs under the Company facts, is one too: /news links there.
  */
 
 export interface AboutSection {
@@ -91,7 +93,7 @@ export const cin = "U62011KA2026PTC228102";
  * page does not print it. Whoever changes /about's content moves this to that
  * day in the same PR; never the build's date.
  */
-export const aboutLastUpdated = "21 October 2026";
+export const aboutLastUpdated = "27 October 2026";
 
 /** The year Zoorik Private Limited was incorporated: the Company facts' and the first milestone's. */
 const incorporated = "2026";
@@ -132,6 +134,9 @@ const announced = (href: string) => newsFromZoorik.find((item) => item.href === 
 const installs = announced(routes.openSource);
 const assessment = announced(routes.assessment);
 const assessmentVersion = assessment.title.match(/\d+\.\d+/)![0];
+/* The NVIDIA Inception announcement, which links to the programs here: the milestone's day and title are its. */
+const programs = { id: "programs", title: "Programs" } as const;
+const inception = announced(`${routes.about}#${programs.id}`);
 
 /* The case study's own figures: its label (the first part of its kicker, "Value Lab"), its headline figure
    (−58%), the bill on the day Coral was connected and today's, and the day it was published. */
@@ -195,12 +200,15 @@ export const about = {
       { term: "Email", value: { text: contactEmail, href: `mailto:${contactEmail}` } },
       { term: "Book a demo", value: { text: "cal.com/zoorik/talk", href: calendarUrl } },
     ] satisfies readonly AboutFact[] as readonly AboutFact[],
+    /** Under the facts: the programs Zoorik is a member of, each its badge, its line and its trademark line. */
+    programs: { ...programs, items: memberships },
   },
   /**
    * Milestones: public, dated facts only; no customer, revenue or user figure until there is one to state. The
    * case study's figures are read from the study (`case-studies.ts`); "eight days" is its "8 days"
-   * (`band.stats[3]`), in words as its prose and the hub's card say it. The Helm and Terraform milestone's day, and
-   * the assessment's day and version, are read from their announcements on /news (`newsFromZoorik`).
+   * (`band.stats[3]`), in words as its prose and the hub's card say it. The Helm and Terraform milestone's day, the
+   * assessment's day and version, and the NVIDIA Inception milestone's day and title are read from their
+   * announcements on /news (`newsFromZoorik`).
    */
   milestones: {
     section: { id: "milestones", title: "Milestones" },
@@ -227,6 +235,11 @@ export const about = {
         title: `Free assessment ${assessmentVersion}`,
         line: "One command on PyPI and npm writes one PDF report for Coral and Amoeba.",
         link: { text: "Run it", href: routes.assessment },
+      },
+      {
+        date: dayOf(inception.date),
+        title: inception.title,
+        line: "Zoorik is now a member of NVIDIA’s program for startups.",
       },
     ] satisfies readonly AboutMilestone[] as readonly AboutMilestone[],
   },

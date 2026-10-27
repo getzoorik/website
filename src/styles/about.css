@@ -31,6 +31,16 @@
 .ab-f dd a{color:var(--text);text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--accent) 35%,transparent);
   text-underline-offset:3px}
 @media (hover:hover){.ab-f dd a:hover{color:var(--accent)}}
+/* Programs: one more row under the facts, its label as theirs, each program's badge beside its line, and the
+   program's trademark line in small print. The badge carries its own clear space (25 of its 500 units a side), so it
+   moves left by that much to line its frame up with the label. */
+.ab-prog{padding:16px 0 20px;border-bottom:1px solid var(--line)}
+.ab-prog h3{font-size:var(--fs-micro);font-weight:500;line-height:1.5;color:var(--muted)}
+.ab-pg + .ab-pg{margin-top:20px}
+.ab-pr{display:flex;flex-wrap:wrap;align-items:center;gap:4px 20px;margin-top:6px}
+.ab-pr img{display:block;width:200px;height:auto;margin-left:-10px}
+.ab-pr p{font-size:1rem;line-height:1.55;color:var(--text)}
+.ab-tm{margin-top:8px;font-size:var(--fs-micro);line-height:1.5;color:var(--muted)}
 /* Find us: two cards, the stores' buttons and the social row, a size up from the footer's */
 .ab-find{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
 @media (min-width:720px){.ab-find{grid-template-columns:repeat(2,minmax(0,1fr))}}
