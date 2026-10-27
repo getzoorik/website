@@ -33,12 +33,16 @@
  *    sits; two more at the foot: the end state at once under reduced motion, and the real digits
  *    in forced colours.
  *
- * A mock defect kept as the mock draws it (the mock is frozen): the figure's column is a fixed
- * 7.5rem (`.ofx-axis`, `.ofx-row`), and the figure's own size grows with the window
- * (`.ofx-rn .od`), so from about 1150px wide the figure is wider than its column and runs past
- * the row rules into the card's padding: 4.5px at 1280, 10px at 1440, 19px at 1920 (measured,
- * the same in the mock). A third track of minmax(7.5rem,max-content), or about 9rem, on both
- * would end every figure on the rules; it waits on a fix in the mock first.
+ *
+ * Then the 23 Oct 2026 pass (home-hero-option-M1f-gargantua.html, `make_options.py`'s OFX_CSS), at
+ * the foot, VERBATIM but for two removals: the "Off the cost it optimizes" row and its 0-100% ticks are
+ * gone (owner: "remove ... 0% 25% 50% 75% 100%"), with their rules (`.ofx-axis`, `.ofx-ticks`); and
+ * the navy card's glow is gone (owner: "remove the glowness, it's a noise"), with its rule, where
+ * the mock hides it (`#offers .ofx-free::before{display:none}`). Each row is one line (mark, name,
+ * tags, a 6px band, the figure at 20px/500), the card and the panel take the blocks' 4px and the
+ * bands 1px, and above 1100px the panel stands exactly as tall as the card. The figure's own column
+ * is 5.5rem there and the figure a fixed 1.25rem, so it ends on the rules at every width (the old
+ * 7.5rem column ran up to 19px past them at 1920).
  */
 /* what we offer: the figures, a counter that rolls up and each range drawn to one scale */
 .ofx{--ease:cubic-bezier(.22,.9,.3,1)}
@@ -79,9 +83,10 @@
 .ofx-row.is-in .od-d::before{transform:translateY(calc(var(--v) * -1em))}
 .od-x{display:inline-block}
 /* the free assessment: a navy card, its own button */
-.ofx-free{position:relative;display:flex;flex-direction:column;height:100%;box-sizing:border-box;padding:28px 26px 26px;border-radius:12px;
+/* smaller (owner, 23 Oct 2026: "this section is looking too big ... make it small a little bit"): the free card, the
+   range figures, the rows and the scale's padding step down; the h2 and the section's padding match the other sections */
+.ofx-free{position:relative;display:flex;flex-direction:column;height:100%;box-sizing:border-box;padding:22px 22px 22px;border-radius:12px;
   background:var(--brand);color:#fff;overflow:hidden}
-.ofx-free::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(420px 260px at 80% 0%,rgba(128,149,249,.28),rgba(128,149,249,0) 70%)}
 .ofx-free > *{position:relative}
 .ofx-free-l{display:flex;align-items:center;gap:10px;margin:0;font-size:1rem;font-weight:600}
 .ofx-free-i{display:grid;place-items:center;width:28px;height:28px;border-radius:7px;background:rgba(255,255,255,.1)}
@@ -91,10 +96,10 @@
    mark. */
 .ofx-free-i{background:none;border-radius:0}
 .ofx-free-i .zl-mark{width:28px;height:28px;color:#FFFFFF;overflow:visible}
-.ofx-free-n{margin:18px 0 0;font-size:clamp(2.5rem,1.8rem + 1.4vw,3.25rem);font-weight:600;line-height:1;letter-spacing:-.045em;color:#43D9A8}
-.ofx-free-c{margin:12px 0 0;max-width:24rem;font-size:.9375rem;line-height:1.5;color:rgba(255,255,255,.7)}
+.ofx-free-n{margin:12px 0 0;font-size:clamp(2rem,1.5rem + 1vw,2.5rem);font-weight:600;line-height:1;letter-spacing:-.045em;color:#43D9A8}
+.ofx-free-c{margin:8px 0 0;max-width:24rem;font-size:.9375rem;line-height:1.5;color:rgba(255,255,255,.7)}
 .ofx-free-go{align-self:flex-start;margin-top:auto}
-.ofx-free-c + .ofx-free-go{margin-top:24px}
+.ofx-free-c + .ofx-free-go{margin-top:18px}
 .ofx-free-go svg{width:16px;height:16px}
 /* repo: the focus ring on the navy takes the dark grounds' --accent-dark, as motion.css gives every dark ground (`.hero`,
    `.cta-panel`, `.as-cal`): the mock's --accent ring measures 3.3:1 on #070F52, at the 3:1 floor; --accent-dark 6.3:1. */
@@ -105,17 +110,12 @@
 
 /* ── B: one scale ── */
 .ofx-split{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.6fr);gap:clamp(32px,5vw,72px);align-items:stretch}
-.ofx-side{display:flex;flex-direction:column;gap:14px}
-.ofx-side .ofx-free{flex:1;margin-top:18px}
-.ofx-scale{display:flex;flex-direction:column;padding:28px 30px 18px;border:1px solid var(--line);border-radius:12px;background:#fff}
-.ofx-axis{display:grid;grid-template-columns:minmax(0,15rem) minmax(0,1fr) 7.5rem;gap:24px;align-items:end;padding-bottom:12px;border-bottom:1px solid var(--line)}
-.ofx-axis-l{font-size:.8125rem;font-weight:500;color:var(--muted)}
-.ofx-ticks{position:relative;height:18px;grid-column:2}
-.ofx-ticks span{position:absolute;left:calc(var(--t) * 1%);bottom:0;transform:translateX(-50%);font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums}
-.ofx-ticks span:first-child{transform:none}.ofx-ticks span:last-child{transform:translateX(-100%)}
+.ofx-side{display:flex;flex-direction:column;gap:12px}
+.ofx-side .ofx-free{flex:1;margin-top:8px}
+.ofx-scale{display:flex;flex-direction:column;padding:22px 26px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
 .ofx-rows{flex:1;display:flex;flex-direction:column;margin:0;padding:0;list-style:none}
 .ofx-row{--d0:calc(var(--i) * 260ms);flex:1;display:grid;grid-template-columns:minmax(0,15rem) minmax(0,1fr) 7.5rem;gap:24px;align-items:center;
-  min-height:96px;margin:0;border-bottom:1px solid var(--line-soft)}
+  min-height:72px;margin:0;border-bottom:1px solid var(--line-soft)}
 /* repo: the stagger keeps the mock's one start. The mock marks every row at once from its one observer, and `--i * 260ms`
    spaces them from that moment; here each row is marked as it comes in (`HomeMotion`), and the rows' list keeps a clock
    (`data-mo-clock`) that gives each row `--late`, how long after the first row in it came. Taken off its turn, rows that
@@ -132,13 +132,12 @@
 .ofx-row[data-k="both"] .hi{background:var(--good);box-shadow:0 6px 16px -6px color-mix(in srgb,var(--good) 70%,transparent)}
 .ofx-row[data-k="both"] .lo{background:color-mix(in srgb,var(--good) 16%,#fff)}
 .ofx-row.is-in .ofx-track i{transform:none}
-.ofx-rn .od{font-size:clamp(1.75rem,1.3rem + .9vw,2.25rem);font-weight:600;letter-spacing:-.04em;color:var(--text)}
+.ofx-rn .od{font-size:clamp(1.5rem,1.15rem + .7vw,1.875rem);font-weight:600;letter-spacing:-.04em;color:var(--text)}
 .ofx-rn{text-align:right}
 @media (max-width:1100px){.ofx-split{grid-template-columns:minmax(0,1fr)}.ofx-side .ofx-free{margin-top:8px}}
 @media (max-width:760px){
   .ofx-scale{padding:22px 18px 10px}
-  .ofx-axis{grid-template-columns:minmax(0,1fr)}.ofx-axis-l{display:none}.ofx-ticks{grid-column:1}
-  .ofx-row{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"l n" "t t";gap:12px 16px;padding:18px 0}
+  .ofx-row{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"l n" "t t";gap:10px 16px;padding:14px 0}
   .ofx-rl{grid-area:l}.ofx-rn{grid-area:n;align-self:start}.ofx-track{grid-area:t}}
 @media (prefers-reduced-motion:reduce){.ofx *{transition:none!important}}
 /* repo: under reduced motion, everything in its end state from the sheet alone. The mock's script adds `.is-on` before
@@ -152,3 +151,39 @@
 /* repo: in forced colours a transparent fill may be forced visible, which would set each real digit under its strip;
    the strip goes and the digits stand as text. */
 @media (forced-colors:active){.od-d{-webkit-text-fill-color:currentColor}.od-d::before{content:none}}
+
+/* ── 23 Oct 2026: the ranges with tags, one line a row, as tall as the card ── */
+/* the blocks' corners from the design language, never curves (owner: "they should be pointy from corner not circular ...
+   We don't use circular curves in our website"): card and panel 4px (--r-card), bars 1px (--r-hair). The tags stay the
+   site's pills (owner, next: "tags should be same as earlier") */
+#offers .ofx-free,#offers .ofx-scale{border-radius:var(--r-card)}
+#offers .ofx-rows,#offers .ofx-row{flex:none}
+/* desktop: the ranges stand exactly as tall as the card beside them, top to top and foot to foot (owner: "too much thinner
+   at least it should aligned with its left content"); the title and the note sit above the card alone */
+@media(min-width:1101px){
+  #offers .ofx-split{grid-template-areas:"h ." "n ." "c t";grid-template-rows:auto auto 1fr;row-gap:12px;align-items:stretch}
+  #offers .ofx-side{display:contents}
+  #offers .ofx-side h2{grid-area:h}
+  #offers .ofx-note{grid-area:n;margin-bottom:8px}
+  #offers .ofx-side .ofx-free{grid-area:c;margin-top:0}
+  #offers .ofx-scale{grid-area:t}
+  #offers .ofx-rows,#offers .ofx-row{flex:1}}
+#offers .ofx-scale{padding:6px 22px}
+#offers .ofx-row{grid-template-columns:minmax(0,24rem) minmax(0,1fr) 5.5rem;gap:20px;min-height:52px;padding:10px 0}
+#offers .ofx-rl{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px}
+#offers .ofx-h{gap:8px;font-size:.9375rem;font-weight:500;white-space:nowrap}
+#offers .ofx-m svg{width:18px;height:18px}
+#offers .ofx-m.is-two svg + svg{margin-left:-4px}
+#offers .ofx-tags{margin:0}
+#offers .ofx-tags .chips-g{gap:6px;flex-wrap:nowrap}
+#offers .ofx-tags .chip{height:22px;padding:0 8px;gap:5px;font-size:.75rem;font-weight:400;color:var(--muted)}
+#offers .ofx-tags .chip svg{width:12px;height:12px}
+#offers .ofx-track{height:6px;border-radius:var(--r-hair)}
+#offers .ofx-track i{border-radius:var(--r-hair)}
+#offers .ofx-track .hi{box-shadow:none}
+#offers .ofx-rn .od{font-size:1.25rem;font-weight:500;letter-spacing:-.02em}
+@media(max-width:760px){
+  #offers .ofx-scale{padding:4px 16px}
+  #offers .ofx-row{grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;min-height:0;padding:12px 0}
+  #offers .ofx-h{white-space:normal}
+  #offers .ofx-tags .chips-g{flex-wrap:wrap}}

@@ -1,18 +1,19 @@
-/* Zoorik marketing: Learn and the pages built on it: /learn, /compare with its two versus pages and two alternatives
- * pages, and /community. Ported from the mock's two blocks, whole, rule for rule and in their order: `learn-v2` (the
- * search, the heads, the chips, the subject cards, the covers, the article cards, Find the right fix, the proof panel,
- * Community, option B's paths, the narrow widths and reduced motion), then `learn-v2b` (/learn's Watch and read and
- * More from Zoorik, the Zoorik News card, the Compare block's heads, the market map, then the versus and alternatives
- * pages). Two parts of the mock's sheet are not here: its What changed rules (`.nw-list`, `.nw` and the rest), whose
+/* Zoorik marketing: Learn and the pages built on it: /learn, Cloud cost optimization tools, the two versus pages and
+ * two alternatives pages under it, and /community. Ported from the mock's two blocks, whole, rule for rule and
+ * in their order: `learn-v2` (the search, the heads, the chips, the subject cards, the covers, the article cards,
+ * Find the right fix, the proof panel, option B's paths, the narrow widths and reduced motion), then `learn-v2b`
+ * (/learn's Watch and read and More from Zoorik, the Zoorik News card, the Compare block's heads, the market list,
+ * then the versus and alternatives pages). Two parts of the mock's sheet are not here: its What changed rules (`.nw-list`, `.nw` and the rest), whose
  * section the hub no longer draws (the news lives at /news, and its `nw-` classes are /news's own), and its /community
  * block, which is /community's own sheet (`community.css`, loaded after this one). No rule is deleted while the pages
  * built on this sheet are being built: a rule whose part the hub no longer draws (the Zoorik News card, the Compare
- * block's heads, Community and events) stays for now. Imported by each page that draws them, so Next loads it after
- * globals.css, where the mock carries it after the site system.
+ * block's heads) stays for now; the old Community and events rules went when /community was redrawn, and the market
+ * map's tabs, line and sub-headings when Cloud cost optimization tools took the map's place. Imported by each page that
+ * draws them, so Next loads it after globals.css, where the mock carries it after the site system.
  *
  * ─── EVERY SELECTOR IS LEARN'S OWN ─────────────────────────────────────────────
  * The App Router keeps a visited page's sheet in the document, so each selector names one of Learn's own classes
- * (`lv-`, `sj`, `fx`, `cm`, `pt`, `pb`, `pp`, `mk-`, `vp-`, `vx`, `ap-`, `wr`), which no other page draws
+ * (`lv-`, `sj`, `fx`, `pt`, `pb`, `pp`, `mk-`, `vp-`, `vx`, `ap-`, `wr`), which no other page draws
  * (`learn-css.test.ts`). Two mock rules change for that:
  *   - the mock's page-wide `.doc-hero .hero-in` is written on `.lv-hero`, the class the Learn pages' hero carries,
  *     at the same specificity;
@@ -25,7 +26,8 @@
  * mock: the films' hover zoom is stilled under reduced motion, as the mock stills the cards' lift, and a Find the right
  * fix Read line whose article is not published yet is set as plain text.
  *
- * Loaded only by the pages that draw it (`src/app/learn/**`, `src/app/compare/**`, `src/app/community`). */
+ * Loaded only by the pages that draw it (`src/app/learn/**`, `src/app/cloud-cost-optimization-library`,
+ * `src/app/cloud-cost-optimization-library/**`, `src/app/community`). */
 /* ══ learn-v2 ══ */
 /* /learn (option A) */
 /* scoped: the mock writes `.doc-hero .hero-in`, page-wide; the Learn pages' hero carries `lv-hero` */
@@ -124,24 +126,6 @@ p.fx-read{color:inherit;font-weight:inherit}
 .lv-pt b{font-size:1.25rem;font-weight:600;color:#FAF7F3}
 .lv-pt small{color:rgba(250,247,243,.72);font-size:.9375rem}
 .lv-proof .fx-read{margin-top:0}
-/* community */
-.cm{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:16px}
-.cm-ev{padding:24px;border-radius:var(--r-card);background:#050B3D;color:#FAF7F3}
-.cm-k{font:500 .6875rem/1 var(--code);letter-spacing:.08em;text-transform:uppercase;color:rgba(250,247,243,.6)}
-.cm-ev ol{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:14px}
-.cm-ev li{display:flex;align-items:center;gap:14px}
-.cm-ev li > span:last-child{display:flex;flex-direction:column;gap:2px}
-.cm-ev li b{font-weight:600}
-.cm-ev li small{font-size:.8125rem;color:rgba(250,247,243,.66)}
-.cm-date{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:58px;height:58px;border-radius:var(--r-card);background:rgba(250,247,243,.08);border:1px solid rgba(250,247,243,.18)}
-.cm-date b{font-size:1rem}
-.cm-date span{font:500 .625rem/1 var(--code);text-transform:uppercase;letter-spacing:.06em;color:rgba(250,247,243,.66);margin-top:3px}
-.cm-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.cm-c{display:flex;flex-direction:column;gap:4px;padding:18px 20px;border:1px solid var(--line);border-radius:var(--r-card);background:#fff;text-decoration:none;color:var(--text);transition:border-color var(--d-fast) var(--ease)}
-.cm-c:hover{border-color:var(--card-hover)}
-.cm-c b{display:inline-flex;align-items:center;gap:6px;font-weight:600}
-.cm-c b svg{width:13px;height:13px;color:var(--muted)}
-.cm-c small{font-size:.875rem;line-height:1.5;color:var(--muted)}
 /* option B: paths (the concept not picked; no page draws them, kept so the sheet is the mock's whole) */
 .pt-q{margin-top:28px;font-size:.875rem;font-weight:500;color:rgba(250,247,243,.7)}
 .pt-row{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:12px}
@@ -156,9 +140,9 @@ p.fx-read{color:inherit;font-weight:inherit}
 .pb .lv-chips{margin:0 0 24px}
 .pp{padding-bottom:clamp(36px,4.5vw,64px)}
 @media(max-width:1100px){.pt-row{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:1000px){.lv-grid3,.sj-row{grid-template-columns:repeat(2,minmax(0,1fr))}.fx,.cm{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:1000px){.lv-grid3,.sj-row{grid-template-columns:repeat(2,minmax(0,1fr))}.fx{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:760px){
-  .lv-grid3,.sj-row,.cm-list{grid-template-columns:minmax(0,1fr)}
+  .lv-grid3,.sj-row{grid-template-columns:minmax(0,1fr)}
   .pt-row{grid-template-columns:repeat(2,minmax(0,1fr))}
   .lv-proof{grid-template-columns:minmax(0,1fr)}
 }
@@ -207,7 +191,7 @@ p.fx-read{color:inherit;font-weight:inherit}
 /* repo: the films' hover zoom, stilled under reduced motion as the cards' lift is; the mock leaves it moving */
 @media(prefers-reduced-motion:reduce){.wr-th img{transition:none}.wr-film:hover .wr-th img{transform:none}}
 /* Zoorik News's card, in What changed this week's place: /learn no longer draws it; kept, as no
-   rule of this sheet is deleted while /compare and /community are built on it */
+   rule of this sheet is deleted while the pages built on it are being built */
 .lv-news{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px 32px;align-items:end;padding:clamp(24px,3vw,36px);border-radius:var(--r-shell);background:#050B3D;color:#FAF7F3;text-decoration:none}
 .lv-news::after{content:"";position:absolute;right:-120px;top:-160px;width:420px;height:420px;border-radius:50%;background:radial-gradient(closest-side,rgba(59,91,245,.32),transparent)}
 .lv-news > *{position:relative;z-index:1}
@@ -221,20 +205,11 @@ p.fx-read{color:inherit;font-weight:inherit}
 .lv-h3{margin:8px 0 16px;font-size:1.0625rem;font-weight:600;color:var(--muted)}
 .lv-h3 + .lv-grid3{margin-bottom:36px}
 .lv-grid3 + .lv-h3{margin-top:40px}
-/* the market map */
-.mk-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:20px}
-.mk-tabs button{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border:1px solid var(--line);border-radius:var(--r-card);background:#fff;font:inherit;color:var(--text);text-align:left;cursor:pointer}
-.mk-tabs button b{font-weight:600}
-.mk-tabs button small{font:500 .75rem/1 var(--code);color:var(--muted)}
-.mk-tabs button[aria-selected="true"]{background:#050B3D;border-color:#050B3D;color:#FAF7F3}
-.mk-tabs button[aria-selected="true"] small{color:rgba(250,247,243,.66)}
-.mk-tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.mk-lede{margin-bottom:14px;color:var(--muted)}
+/* the market list (the alternatives pages) */
 .mk-headrow,.mk-row{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,2fr) 150px 120px;gap:16px;align-items:center}
 .mk-headrow{padding:0 16px 10px;font:500 .6875rem/1 var(--code);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .mk-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
 .mk-row{padding:14px 16px;border-bottom:1px solid var(--line);background:#fff}
-.mk-sub{padding:16px 16px 8px;font:500 .75rem/1 var(--code);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);border-bottom:1px solid var(--line);background:var(--surface-2)}
 .mk-n{display:flex;flex-direction:column;gap:2px;min-width:0}
 .mk-n a{display:inline-flex;align-items:center;gap:6px;font-weight:600;color:var(--text);text-decoration:none}
 .mk-n a:hover{color:var(--accent)}
@@ -256,6 +231,12 @@ p.fx-read{color:inherit;font-weight:inherit}
 .mk-note a{color:var(--accent)}
 /* versus and alternatives pages */
 .vp-kick{margin:0 0 14px;font:500 .75rem/1 var(--code);letter-spacing:.08em;text-transform:uppercase;color:rgba(250,247,243,.66)}
+/* repo: the glossary's hub draws its kicker as a link back to /learn, white on hover; the mock's kickers are words.
+   The link carries `gl-kl`, which names no rule but keeps it out of the site system's `.hero p a:not([class])` and
+   `main p a:not([class])`, so it rests at the kicker's colour, not underlined */
+.vp-kick a{color:inherit;text-decoration:none}
+@media(hover:hover){.vp-kick a:hover{color:#fff;text-decoration:underline;text-underline-offset:3px}}
+.vp-kick a:focus-visible{color:#fff}
 .vp-glance{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .vp-side{padding:clamp(24px,3vw,36px);border:1px solid var(--line);border-radius:var(--r-card);background:#fff}
 .vp-ours{background:#050B3D;border-color:#050B3D;color:#FAF7F3}
@@ -296,7 +277,7 @@ p.fx-read{color:inherit;font-weight:inherit}
 .ap-q p{margin-top:8px;font-size:.9375rem;line-height:1.55;color:var(--muted)}
 .ap-vs{display:inline-flex;align-items:center;gap:4px;margin-left:6px;font-size:.75rem;font-weight:600;color:var(--accent);text-decoration:none;white-space:nowrap}
 .ap-vs svg{width:12px;height:12px}
-@media(max-width:1000px){.mk-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.ap-q{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:1000px){.ap-q{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){
   .mk-headrow{display:none}
   .mk-row{grid-template-columns:minmax(0,1fr) auto;gap:8px 12px}
@@ -305,3 +286,49 @@ p.fx-read{color:inherit;font-weight:inherit}
   .vp-glance,.ap-q{grid-template-columns:minmax(0,1fr)}
   .vp-t th,.vp-t td{padding:12px}
 }
+
+/* ══ learn-v3: the hub as it is now (the band, All articles, Watch and read, More from Zoorik) ══ */
+.lr-pair .as-grid > *{grid-row:auto;display:flex;flex-direction:column;align-items:flex-start}
+.lr-own{display:block;width:36px;height:36px;margin-bottom:18px;color:#fff}
+.lr-own-l{color:var(--accent)}
+.lr-c p{margin-bottom:18px}
+.lr-list{list-style:none;margin:0;padding:0;width:100%;border-top:1px solid var(--line)}
+.lr-dark{border-top-color:rgba(255,255,255,.14)}
+.lr-l{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid var(--line);font-size:.9375rem;font-weight:500;color:var(--text);text-decoration:none}
+.lr-dark .lr-l{border-bottom-color:rgba(255,255,255,.14);color:#fff}
+.lr-l .dt-go{flex:none;width:16px;height:16px;color:var(--accent);transition:transform var(--d-fast) var(--ease)}
+.lr-dark .lr-l .dt-go{color:#8EA2FF}
+@media(hover:hover){.lr-l:hover span{color:var(--accent)}.lr-dark .lr-l:hover span{color:#C8D1FC}.lr-l:hover .dt-go{transform:translateX(2px)}}
+.lr-sec{padding-block:clamp(40px,5vw,64px)}
+.lr-sec + .lr-sec{padding-top:0}
+.lr-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:28px}
+.lr-chips button,.lr-more button{font:500 .8125rem/1 var(--sans);padding:9px 13px;border:1px solid var(--line);border-radius:var(--r-pill);background:#fff;color:var(--text);cursor:pointer}
+.lr-chips button[aria-pressed="true"]{background:var(--text);border-color:var(--text);color:#fff}
+.lr-more{display:flex;justify-content:center;margin-top:28px}
+.lr-more button{padding:12px 18px;font-size:.875rem}
+/* the case studies' tile size: 24 px padding, 151 px tall at 1440 */
+.lr-t .dt-a{grid-template-columns:164px minmax(0,1fr) 16px;align-items:center;gap:16px;padding:24px;min-height:149px;box-sizing:border-box}
+.lr-t .dt-go{align-self:start;color:var(--accent)}
+.lr-th{display:block;box-sizing:border-box;width:164px;aspect-ratio:1200/630;overflow:hidden;border:1px solid var(--line);border-radius:6px;background:#fff}
+.lr-th img{display:block;width:100%;height:100%;object-fit:cover}
+.lr-th.lr-film{width:164px;aspect-ratio:16/9}
+.lr-md{display:grid;place-items:center;background:var(--text);border-color:var(--text)}
+.lr-md svg{width:30px;height:18px;fill:#fff}
+.lr-t .dt-t{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.lr-m{display:block;margin-top:6px;font-size:var(--fs-micro);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lr-t[hidden],.lr-more[hidden]{display:none!important}
+/* the tile as the cover: flat white, the subject top left, the heading large, the byline, the cover's diagram on the right */
+.lr-cv .dt-a{display:grid;grid-template-columns:minmax(0,1fr) 126px 16px;gap:12px;align-items:stretch;padding:16px 18px 16px 24px;min-height:149px}
+.lr-cvt{display:flex;flex-direction:column;justify-content:space-between;min-width:0}
+.lr-eb{font-size:var(--fs-micro);font-weight:500;color:var(--muted)}
+.lr-cv .dt-t{display:-webkit-box;font-size:1.125rem;font-weight:600;line-height:1.2;letter-spacing:-.015em;-webkit-line-clamp:3}
+.lr-cv .lr-m{margin-top:8px}
+.lr-art{align-self:center;width:126px;height:117px;background-repeat:no-repeat;background-size:281px auto;background-position:-140px -16px}
+.lr-cv .dt-go{align-self:start;margin-top:2px;color:var(--accent)}
+@media(hover:hover){.lr-cv:hover .dt-t{color:var(--accent)}}
+@media(max-width:1400px){.lr-cv .dt-a{grid-template-columns:minmax(0,1fr) 96px 16px}
+  .lr-cv .lr-art{width:96px;height:89px;background-size:214px auto;background-position:-107px -12px}.lr-cv .dt-t{font-size:1.0625rem}}
+@media(max-width:640px){.lr-cv .dt-a{min-height:0}}
+/* the glossary's hub (/learn/glossary): each group's tiles two up from 981px, as Compare's two by two, so a group of
+   ten terms fills five rows; one column below, as every tile row */
+@media(min-width:981px){.dt-grid.lr-2{grid-template-columns:repeat(2,minmax(0,1fr))}}

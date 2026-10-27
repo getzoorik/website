@@ -21,7 +21,7 @@ import { contactEmail } from "@/config/site";
  * The day /brand-assets's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /brand-assets's content moves this to that day in the same PR; never the build's date.
  */
-export const brandAssetsLastUpdated = "19 October 2026";
+export const brandAssetsLastUpdated = "21 October 2026";
 
 /** Where the kit's files are served (`public/brand-kit/`, a month in the browser: `public/_headers`). */
 export const brandKitDir = "/brand-kit";
@@ -85,9 +85,9 @@ const smallMarks = (ink: "bone" | "navy"): readonly BrandFile[] =>
 const tagged = `The logo over “${brandTagline}”`;
 
 export const brandAssetsPage = {
-  /** The page's `<title>` (through the site's " · Zoorik" template) and description. */
+  /** The page's `<title>` (through the site's "%s | Zoorik" template) and description. */
   meta: {
-    title: "Brand assets: the Zoorik logo, colours and words",
+    title: "Brand assets",
     description:
       "Download the Zoorik logo, mark and brand kit, with the colours, the tagline and the rules for using them.",
   },

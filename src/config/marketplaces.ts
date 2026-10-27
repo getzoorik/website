@@ -8,11 +8,12 @@ import type { ProductId } from "@/content/products";
  * full, "in" for both, text only: no store logo, whose licence is the store's,
  * and no trademark line.
  *
- * 🔴 AMOEBA IS NOT LISTED YET. It will be in both stores.
- * Until a listing exists its entry is `null`, and a product listed in no store
- * draws no line: /amoeba's hero has none, and no Coral fallback. A line or button that names no product (the home
- * hero, the footer) opens Coral's, and the structured data claims only the
- * listings that exist. Put each URL here when it is live; nothing else changes.
+ * 🔴 A STORE THAT DOES NOT LIST A PRODUCT HOLDS `null` FOR IT. Each product's
+ * line names only the stores that list it, with no Coral fallback. Both stores
+ * list both products. Buttons that name no product (the footer, /about) open
+ * Zoorik's own page in each store, where both products are listed; the
+ * structured data claims only the listings that exist. Put each URL here when
+ * it is live; nothing else changes.
  */
 
 export type MarketplaceId = "aws" | "microsoft";
@@ -20,8 +21,12 @@ export type MarketplaceId = "aws" | "microsoft";
 export interface Marketplace {
   readonly id: MarketplaceId;
   readonly name: string;
-  /** Coral's is always there: it is the listing every link falls back to. */
+  /** Each product's listing, or `null` in a store that does not list it. */
   readonly listings: { readonly coral: string; readonly amoeba: string | null };
+  /** Zoorik's own page in the store, which lists every product it sells there. */
+  readonly profile: string;
+  /** Where the home hero's line sends a buyer: every Zoorik product in the store, side by side. */
+  readonly catalogue: string;
 }
 
 /** AWS first, as the mock's line reads. */
@@ -31,40 +36,45 @@ export const marketplaces: readonly Marketplace[] = [
     name: "AWS Marketplace",
     listings: {
       coral: "https://aws.amazon.com/marketplace/pp/prodview-kx44lqme4vwys",
-      amoeba: null,
+      amoeba: "https://aws.amazon.com/marketplace/pp/prodview-u52eig5hqarzy",
     },
+    profile: "https://aws.amazon.com/marketplace/seller-profile?id=seller-mtaavozrqchlk",
+    catalogue: "https://aws.amazon.com/marketplace/seller-profile?id=seller-mtaavozrqchlk",
   },
   {
     id: "microsoft",
     name: "Microsoft Marketplace",
     listings: {
       coral: "https://marketplace.microsoft.com/en-us/product/zoorik.coral",
-      amoeba: null,
+      amoeba: "https://marketplace.microsoft.com/en-us/product/zoorik.amoeba",
     },
+    profile:
+      "https://marketplace.microsoft.com/en-us/partners/04f64eb0-8878-4f14-9578-bc5d104737e7/overview",
+    catalogue: "https://marketplace.microsoft.com/en-us/search/products?page=1&search=zoorik",
   },
 ];
 
-/** Zoorik's own page in AWS Marketplace, which its structured data lists among
- *  its profiles. */
-export const awsSellerProfile =
-  "https://aws.amazon.com/marketplace/seller-profile?id=seller-mtaavozrqchlk";
+/** Zoorik's own page in each store, which its structured data lists among its profiles. */
+export const storeProfiles: readonly string[] = marketplaces.map(
+  (marketplace) => marketplace.profile,
+);
 
-/** The line's own words: "Available in" one store "and" the other; a line that
- *  names its product reads "<name> is available in" (the home hero). */
+/** The line's own words: "Available in" one store "and" the other; the home
+ *  hero's line names both products, "Coral and Amoeba are available in". */
 export const marketplaceWords = {
   lead: "Available in",
-  namedLead: " is available in",
+  namedLead: " are available in",
   join: " and ",
 } as const;
 
-/** The stores that list a product, in the line's order: none for Amoeba yet. */
+/** The stores that list a product, in the line's order. */
 export function storesListing(product: ProductId): readonly Marketplace[] {
   return marketplaces.filter((marketplace) => marketplace.listings[product] !== null);
 }
 
-/** Where a link to one store goes: the product's listing, or Coral's when it names no product. */
+/** Where a link to one store goes: the product's listing, or Zoorik's page there when it names no product. */
 export function marketplaceListing(marketplace: Marketplace, product?: ProductId): string {
-  return (product && marketplace.listings[product]) ?? marketplace.listings.coral;
+  return (product && marketplace.listings[product]) ?? marketplace.profile;
 }
 
 /** The listings a product really has, for its structured data's `sameAs`. */

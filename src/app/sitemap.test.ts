@@ -3,9 +3,10 @@ import { dirname, join } from "node:path";
 
 import { describe, expect, it, vi } from "vitest";
 
-import { amoebaDocs, learnPath, routes, site } from "@/config/site";
+import { amoebaDocs, comparePath, glossaryPath, learnPath, routes, site } from "@/config/site";
 import { homeLastUpdated } from "@/content/hero";
 import { learnPage } from "@/content/learn";
+import { glossaryPage, glossaryTerms } from "@/content/learn/glossary";
 import { learnArticles } from "@/content/learn/published";
 import { versusPages, versusRoute } from "@/content/learn-compare";
 import { isoDay } from "@/lib/content-date";
@@ -39,7 +40,7 @@ function importGraph(file: string, seen = new Set<string>()): Set<string> {
 }
 
 describe("sitemap.xml", () => {
-  it("lists the home page, the product pages, the assessment, the documents, the install and contributing guides, open source, Learn and every article in its index, Learn's comparison pages, the case studies, /events, /about, /careers, /brand-assets, /referrals, /partners, /design-partners, the privacy policy, the terms and security, absolute, and nothing else", () => {
+  it("lists the home page, the product pages, the assessment, the documents, the install and contributing guides, open source, Learn and every article in its index, the glossary and every term in its index, Cloud cost optimization tools and the comparison pages, Value Lab and the case study, /events, /about, /careers, /brand-assets, /referrals, /partners, /design-partners, the privacy policy, the terms and security, absolute, and nothing else", () => {
     expect(sitemap().map((entry) => entry.url)).toEqual([
       `${site.url}/`,
       `${site.url}/coral`,
@@ -57,13 +58,16 @@ describe("sitemap.xml", () => {
       `${site.url}/learn`,
       /* Every article in the Learn index, A–Z by slug. */
       ...learnArticles.map((article) => `${site.url}${learnPath(article.slug)}`),
-      `${site.url}/compare`,
-      `${site.url}/compare/coral-alternatives`,
-      `${site.url}/compare/amoeba-alternatives`,
+      `${site.url}/learn/glossary`,
+      /* Every term in the glossary index, A–Z by slug. */
+      ...glossaryTerms.map((term) => `${site.url}${glossaryPath(term.slug)}`),
+      `${site.url}/cloud-cost-optimization-library`,
+      `${site.url}/cloud-cost-optimization-library/coral-alternatives`,
+      `${site.url}/cloud-cost-optimization-library/amoeba-alternatives`,
       /* The live versus pages, read from their data: no test spells a competitor's name. */
       ...versusPages.map((page) => `${site.url}${versusRoute(page)}`),
-      `${site.url}/case-studies`,
-      `${site.url}/case-studies/coral-dev-cluster`,
+      `${site.url}/value-lab`,
+      `${site.url}/value-lab/coral-dev-cluster`,
       `${site.url}/events`,
       `${site.url}/news`,
       `${site.url}/community`,
@@ -85,24 +89,23 @@ describe("sitemap.xml", () => {
     );
     const updated = "2026-10-09";
     expect(dates).toEqual({
-      /* The page descriptions in the current product words. */
-      "/": "2026-10-19",
-      "/coral": "2026-10-17",
-      "/amoeba": "2026-10-17",
-      "/assessment": "2026-10-18",
-      /* Where to find Zoorik: the day it was published. */
-      "/marketplaces": "2026-10-19",
-      /* The install guides' tiles and the Open source group. */
-      "/docs": "2026-10-16",
+      /* A page that prints no day: the day its content last changed (the heading pass, 23 Oct 2026). */
+      "/": "2026-10-23",
+      "/coral": "2026-10-23",
+      "/amoeba": "2026-10-23",
+      "/assessment": "2026-10-21",
+      "/marketplaces": "2026-10-21",
+      "/docs": "2026-10-21",
       "/coral/guide": updated,
-      "/coral/faq": updated,
+      /* The four questions of 25 Oct 2026. */
+      "/coral/faq": "2026-10-25",
       /* The Amoeba FAQ's assessment answer names the PDF report. */
       ...(amoebaDocs ? { "/amoeba/guide": updated, "/amoeba/faq": "2026-10-19" } : {}),
       /* The three guides print "Updated 16 October 2026"; /open-source gives its content file's date. */
       "/docs/install-coral-with-helm": "2026-10-16",
       "/docs/install-coral-with-terraform": "2026-10-16",
       "/docs/contributing": "2026-10-16",
-      "/open-source": "2026-10-20",
+      "/open-source": "2026-10-21",
       /* The hub: its own day or its newest article's, whichever is later. Each article: the day it last changed. */
       "/learn": learnArticles.reduce(
         (day, article) => (article.updated > day ? article.updated : day),
@@ -111,27 +114,31 @@ describe("sitemap.xml", () => {
       ...Object.fromEntries(
         learnArticles.map((article) => [learnPath(article.slug), article.updated]),
       ),
+      /* The glossary's hub: its own day or its newest term's, whichever is later. Each term: the day it last
+         changed. */
+      "/learn/glossary": glossaryTerms.reduce(
+        (day, term) => (term.updated > day ? term.updated : day),
+        isoDay(glossaryPage.updated),
+      ),
+      ...Object.fromEntries(glossaryTerms.map((term) => [glossaryPath(term.slug), term.updated])),
+      /* Cloud cost optimization tools: the day its content last changed. */
+      "/cloud-cost-optimization-library": "2026-10-21",
       /* The comparison pages: the day they were checked and published. */
-      "/compare": "2026-10-19",
-      "/compare/coral-alternatives": "2026-10-19",
-      "/compare/amoeba-alternatives": "2026-10-19",
+      "/cloud-cost-optimization-library/coral-alternatives": "2026-10-19",
+      "/cloud-cost-optimization-library/amoeba-alternatives": "2026-10-19",
       ...Object.fromEntries(versusPages.map((page) => [versusRoute(page), "2026-10-19"])),
-      "/case-studies": "2026-10-19",
-      "/case-studies/coral-dev-cluster": "2026-10-12",
-      "/events": "2026-10-19",
+      "/value-lab": "2026-10-21",
+      "/value-lab/coral-dev-cluster": "2026-10-12",
+      "/events": "2026-10-21",
       /* Zoorik News: the week of its latest Radar. */
       "/news": "2026-10-19",
-      /* Zoorik Community: the day it was published. */
-      "/community": "2026-10-19",
-      /* Milestones and Zoorik on the web. */
-      "/about": "2026-10-19",
-      /* The day its content last changed (the LinkedIn button), not the day it was published. */
-      "/careers": "2026-10-19",
-      /* The company pages: the day they were published. */
-      "/brand-assets": "2026-10-19",
-      "/referrals": "2026-10-19",
-      "/partners": "2026-10-19",
-      "/design-partners": "2026-10-19",
+      "/community": "2026-10-21",
+      "/about": "2026-10-21",
+      "/careers": "2026-10-25",
+      "/brand-assets": "2026-10-21",
+      "/referrals": "2026-10-21",
+      "/partners": "2026-10-21",
+      "/design-partners": "2026-10-21",
       "/privacy": "2026-10-19",
       "/terms": "2026-10-06",
       "/security": updated,
@@ -144,14 +151,16 @@ describe("sitemap.xml", () => {
   it("dates the home page by its content file, homeLastUpdated, and by nothing else", () => {
     const home = sitemap().find((entry) => new URL(entry.url).pathname === "/")!;
     expect(home.lastModified).toBe(isoDay(homeLastUpdated));
-    expect(homeLastUpdated).toBe("19 October 2026");
+    expect(homeLastUpdated).toBe("23 October 2026");
   });
 
   it("dates every page it lists, and none in the future", () => {
     /* The page's own printed date, or its content file's `lastUpdated`: a page
        without one is never told to recrawl. */
     const entries = sitemap();
-    expect(entries).toHaveLength((amoebaDocs ? 34 : 32) + learnArticles.length);
+    expect(entries).toHaveLength(
+      (amoebaDocs ? 35 : 33) + learnArticles.length + glossaryTerms.length,
+    );
     /* Today is `LEARN_TODAY` when set (articles dated ahead, checked as of the day they go live), else the latest
        calendar day anywhere on Earth (UTC+14), so a date set to today in any time zone is not "the future". */
     const latestToday = learnToday();
@@ -180,14 +189,16 @@ describe("sitemap.xml", () => {
     const listed = sitemap().map((entry) => new URL(entry.url).pathname);
     /* A held page answers 404 (`amoebaDocs`). */
     const held: string[] = amoebaDocs ? [] : [routes.amoebaGuide, routes.amoebaFaq];
-    /* A dynamic route stands for the pages it prerenders: /compare/[slug] for the live versus pages, /learn/[slug]
-       for every article in the Learn index. */
+    /* A dynamic route stands for the pages it prerenders: /cloud-cost-optimization-library/[slug] for the live versus pages, /learn/[slug]
+       for every article in the Learn index, /learn/glossary/[slug] for every term in the glossary index. */
     const pages = (route: string) =>
-      route === `${routes.compare}/[slug]`
+      route === `${comparePath}/[slug]`
         ? versusPages.map(versusRoute)
         : route === `${routes.learn}/[slug]`
           ? learnArticles.map((article) => learnPath(article.slug))
-          : [route];
+          : route === `${routes.learnGlossary}/[slug]`
+            ? glossaryTerms.map((term) => glossaryPath(term.slug))
+            : [route];
     for (const folder of pageRoutes()) {
       const source = readFileSync(`src/app${folder === "/" ? "" : folder}/page.tsx`, "utf8");
       const noindex = /robots:\s*\{\s*index:\s*false/.test(source);

@@ -3,8 +3,8 @@ import { readdirSync } from "node:fs";
 import { render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { routes } from "@/config/site";
-import { socialImage } from "@/config/social";
+import { comparePath } from "@/config/site";
+import { pageCards } from "@/config/social";
 import { pageStructuredData } from "@/config/structured-data";
 import {
   alternativesPages,
@@ -16,13 +16,13 @@ import { marketChecked, marketGroups, marketMarks, versusFacts } from "@/content
 import { products } from "@/content/products";
 
 /* The nav and the footer read the pathname; `notFound` stays Next's own. */
-const pathname = vi.hoisted(() => ({ current: "/compare" }));
+const pathname = vi.hoisted(() => ({ current: "/cloud-cost-optimization-library" }));
 vi.mock("next/navigation", async (original) => ({
   ...(await original<typeof import("next/navigation")>()),
   usePathname: () => pathname.current,
 }));
 
-import * as route from "@/app/compare/[slug]/page";
+import * as route from "@/app/cloud-cost-optimization-library/[slug]/page";
 import {
   getRedirectUrl,
   unstable_getResponseFromNextConfig,
@@ -32,7 +32,7 @@ import nextConfig from "../../../next.config";
 import { marketTool } from "./market-rows";
 
 /**
- * The versus pages, one dynamic route under /compare: only
+ * The versus pages, one dynamic route under /cloud-cost-optimization-library: only
  * the two live pages exist, each prints its rows from the market data with every claim about the other tool linked to
  * its source, the day it was checked, and no SOC 2 row; any other slug, a held page among them, is a 404, and each
  * live page's old address under /learn redirects here. Competitors' names are read from the data, never typed here.
@@ -55,7 +55,7 @@ const printed = (cell: { mark: keyof typeof marketMarks; note: string }) =>
   `${marketMarks[cell.mark].word}${cell.note ? ` · ${cell.note}` : ""}`;
 
 afterEach(() => {
-  pathname.current = routes.compare;
+  pathname.current = comparePath;
 });
 
 describe("the versus route", () => {
@@ -65,24 +65,25 @@ describe("the versus route", () => {
       versusPages.map((entry) => ({ slug: entry.slug })),
     );
     expect(versusPages.map((entry) => entry.product)).toEqual(["coral", "amoeba"]);
-    for (const entry of versusPages) expect(versusRoute(entry)).toBe(`/compare/${entry.slug}`);
-    /* No file or folder under /compare is named after a company: the hub, the one dynamic segment for the versus
-       pages, and the two alternatives pages. */
-    expect(readdirSync("src/app/compare").sort()).toEqual(
+    for (const entry of versusPages)
+      expect(versusRoute(entry)).toBe(`${comparePath}/${entry.slug}`);
+    /* No file or folder under the tools hub is named after a company: its own page, the one dynamic segment for the
+       versus pages, and the two alternatives pages. */
+    expect(readdirSync(`src/app${comparePath}`).sort()).toEqual(
       [
         "[slug]",
         "page.tsx",
-        ...alternativesPages.map((entry) => entry.route.slice(`${routes.compare}/`.length)),
+        ...alternativesPages.map((entry) => entry.route.slice(`${comparePath}/`.length)),
       ].sort(),
     );
-    expect(readdirSync("src/app/compare/[slug]")).toEqual(["page.tsx"]);
+    expect(readdirSync(`src/app${comparePath}/[slug]`)).toEqual(["page.tsx"]);
   });
 
-  it("takes each page's old address under /learn to its own address under /compare, with a 301", async () => {
+  it("takes each page's old address under /learn to its own address under the tools hub, with a 301", async () => {
     const old = [
       ...versusPages.map((entry) => [`/learn/compare/${entry.slug}`, versusRoute(entry)] as const),
       ...alternativesPages.map(
-        (entry) => [entry.route.replace(routes.compare, "/learn"), entry.route] as const,
+        (entry) => [entry.route.replace(comparePath, "/learn"), entry.route] as const,
       ),
     ];
     expect(old).toHaveLength(4);
@@ -136,15 +137,23 @@ describe.each(versusPages.map((entry) => [entry.slug, entry] as const))("%s", (_
   const tool = marketTool(facts.tool);
   const ours = products[entry.product].name;
 
-  it("is titled, described and canonicalised as its mock, with the site's default card", async () => {
+  it("is titled, described and canonicalised as its mock, with its own card", async () => {
     const metadata = await route.generateMetadata({ params: params(entry.slug) });
     expect(metadata.title).toBe(entry.meta.title);
     expect(metadata.description).toBe(entry.meta.description);
     expect(metadata.alternates).toEqual({ canonical: versusRoute(entry) });
     expect(metadata.openGraph).toMatchObject({
       url: versusRoute(entry),
-      title: `${entry.meta.title} · Zoorik`,
-      images: [socialImage],
+      title: `${entry.meta.title} | Zoorik`,
+      /* the product's comparison card, the same as its alternatives page's */
+      images: [pageCards[versusRoute(entry)]],
+    });
+    expect(metadata.openGraph).toMatchObject({
+      images: [
+        {
+          url: `/og/pages/${entry.product === "coral" ? "kubernetes-cost-tools" : "block-storage-tools"}.png`,
+        },
+      ],
     });
     expect(entry.meta.title).toBe(`${ours} vs ${facts.name}`);
   });

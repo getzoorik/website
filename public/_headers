@@ -37,6 +37,16 @@
 /programs/*
   Cache-Control: public, max-age=2592000
 
+# The communities' own logos on /community: a month, like the share cards. A redrawn logo gets a new file
+# name, so a cached one is never stale. Not under /community/: a /community/* rule would match pages there too.
+/community-logos/*
+  Cache-Control: public, max-age=2592000
+
+# The events' own banners on /events. A month in the browser, not immutable: each file is named for its event,
+# and a replaced picture keeps that name. Not under /events/: an /events/* rule would match pages there too.
+/event-banners/*
+  Cache-Control: public, max-age=2592000
+
 # The brand kit (/brand-assets): the logo and mark files and the kit's ZIP. A month in the browser, not
 # immutable: the names are stable and a redrawn file replaces its predecessor at the same address.
 /brand-kit/*
@@ -63,7 +73,7 @@
   Link: <https://zoorik.com/amoeba>; rel="canonical"
 
 /docs/coral-case-study-dev-cluster.pdf
-  Link: <https://zoorik.com/case-studies/coral-dev-cluster>; rel="canonical"
+  Link: <https://zoorik.com/value-lab/coral-dev-cluster>; rel="canonical"
 
 /docs/coral-assessment-example.pdf
   Link: <https://zoorik.com/assessment>; rel="canonical"

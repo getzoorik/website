@@ -34,8 +34,8 @@ const page = () => render(<AboutRoute />).container;
 const main = () => page().querySelector("main")!;
 
 describe("/about's metadata", () => {
-  it("has an absolute title, the mock's description and its canonical", () => {
-    expect(metadata.title).toEqual({ absolute: "About Zoorik: who builds Coral and Amoeba" });
+  it("has its title through the template, the mock's description and its canonical", () => {
+    expect(metadata.title).toBe("About");
     expect(metadata.description).toBe(
       "Zoorik Private Limited builds Coral, Kubernetes cost optimization on AKS and EKS, and Amoeba, block storage cost optimization on Azure and AWS.",
     );
@@ -43,7 +43,7 @@ describe("/about's metadata", () => {
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/about",
-      title: "About Zoorik: who builds Coral and Amoeba",
+      title: "About | Zoorik",
     });
   });
 });
@@ -92,7 +92,7 @@ describe("/about", () => {
       "Company",
       "Milestones",
       "Zoorik Private Limited is founded",
-      "Validation Lab: −58% on our own cluster",
+      "Value Lab: −58% on our own cluster",
       "Coral installs with Helm and Terraform",
       "Free assessment 1.3",
       "Find us",
@@ -192,7 +192,7 @@ describe("/about", () => {
       [
         "2026-10-12",
         "12 Oct 2026",
-        "Validation Lab: −58% on our own cluster",
+        "Value Lab: −58% on our own cluster",
         "Coral reduced our own AKS development cluster’s machine bill from $368.65 to $154.76 a month in eight days. Read the case study.",
       ],
       [
@@ -260,15 +260,15 @@ describe("/about", () => {
     expect(about.what.lede).toMatch(/^Zoorik reduces cloud cost, autonomously\. /);
   });
 
-  it("moves its sitemap date to the day Milestones and Zoorik on the web landed", () => {
-    expect(aboutLastUpdated).toBe("19 October 2026");
+  it("moves its sitemap date to the day its title took the pipe", () => {
+    expect(aboutLastUpdated).toBe("21 October 2026");
   });
 
   it("puts the two stores as buttons under Available on, naming no product", () => {
     const stores = main().querySelector("#find-us .ab-find > .pl:first-child")!;
     const buttons = [...stores.querySelectorAll(".mkt-btns.ab-mb > a.mkt-b")];
     expect(buttons.map((button) => button.getAttribute("href"))).toEqual(
-      marketplaces.map((marketplace) => marketplace.listings.coral),
+      marketplaces.map((marketplace) => marketplace.profile),
     );
     expect(buttons.map((button) => text(button))).toEqual([
       "AWS Marketplace (opens in a new tab)",

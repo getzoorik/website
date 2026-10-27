@@ -91,7 +91,7 @@ export const cin = "U62011KA2026PTC228102";
  * page does not print it. Whoever changes /about's content moves this to that
  * day in the same PR; never the build's date.
  */
-export const aboutLastUpdated = "19 October 2026";
+export const aboutLastUpdated = "21 October 2026";
 
 /** The year Zoorik Private Limited was incorporated: the Company facts' and the first milestone's. */
 const incorporated = "2026";
@@ -133,7 +133,7 @@ const installs = announced(routes.openSource);
 const assessment = announced(routes.assessment);
 const assessmentVersion = assessment.title.match(/\d+\.\d+/)![0];
 
-/* The case study's own figures: its label (the first part of its kicker, "Validation Lab"), its headline figure
+/* The case study's own figures: its label (the first part of its kicker, "Value Lab"), its headline figure
    (−58%), the bill on the day Coral was connected and today's, and the day it was published. */
 const studyLabel = caseStudy.hero.kicker.split(" · ")[0]!;
 const studySteps = caseStudy.result.costs.steps;
@@ -141,9 +141,9 @@ const studyBefore = studySteps[0]!.label;
 const studyAfter = studySteps[studySteps.length - 1]!.label;
 
 export const about = {
-  /** An absolute `<title>` (with /careers's): the mock's, with no " · Zoorik" after it. */
+  /** The `<title>`'s own words, before " | Zoorik", and the description. */
   meta: {
-    title: "About Zoorik: who builds Coral and Amoeba",
+    title: "About",
     description:
       "Zoorik Private Limited builds Coral, Kubernetes cost optimization on AKS and EKS, and Amoeba, block storage cost optimization on Azure and AWS.",
   },

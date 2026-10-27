@@ -1,150 +1,167 @@
-import type { CSSProperties } from "react";
+import type { ReactNode } from "react";
 
-import { TurningMark } from "@/components/brand/turning-mark";
+import { Arrow } from "@/components/primitives/arrow";
+import { ExternalArrow } from "@/components/primitives/external-arrow";
 import { NewTabHint } from "@/components/primitives/new-tab-hint";
+import { Reveal } from "@/components/primitives/reveal";
 import { contactEmail } from "@/config/site";
-import { caseStudy } from "@/content/case-studies";
-import { MailGlyph } from "@/features/assessment/assessment-marks";
-import { named } from "@/features/legal/named";
+import { LinkTile } from "@/features/documents/link-tile";
 import { offSiteProps } from "@/lib/links";
 
 /**
- * What /referrals and /partners share, and /design-partners with them: the utility hero with its label, the terminal
- * each page draws a command in, and the navy close with its ready email. Server components; the one island is
- * `ProgramsMotion`.
+ * What /design-partners, /referrals and /partners share, on the documents' frame (the utility hero: the title and one
+ * line): the pair on the band, the closing row's two cards (the offer on the white card with its quiet pill, the ask
+ * on the navy one), and the sections under it, each a heading and its own element: Read more tiles, numbered steps,
+ * or cards joined by arrows. Server components; the pair's cards rise as they arrive (`Reveal`), and /referrals's Copy
+ * buttons are the one island of their own (`ShareCommand`).
+ *
+ * /marketplaces draws its pair, sections and ready email from here too.
  */
-
-/** Custom properties, which React's style type does not know, as the mock writes them inline. */
-export const vars = (values: Readonly<Record<`--${string}`, string | number>>): CSSProperties =>
-  values as CSSProperties;
 
 /** A ready email to the founders, its subject naming the program (`Referral%20program`, as the mock encodes it). */
 export const programMailto = (subject: string): string =>
   `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}`;
 
-/** A ready email's button: its label and its mail's subject. */
-interface Write {
+/** A link's label and where it leads. */
+interface Go {
   readonly label: string;
-  readonly subject: string;
+  readonly href: string;
 }
 
-export interface ProgramHeroProps {
-  readonly soon: string;
-  readonly title: string;
-  readonly deck: string;
-  /** The light button: a ready email. */
-  readonly write: Write;
-  /** The wire button: a section further down, or (on /design-partners) the calendar, in a new tab. */
-  readonly more: { readonly label: string; readonly href: string };
-}
-
-/**
- * /about's utility hero (the dark band, its glow and the turning mark), with the program's label over the h1 ("Coming
- * soon", or /design-partners's "Open now") and two buttons under the line: a ready email and a link down the page, or
- * off the site. An off-site link opens a new tab and says so to a screen reader, with no arrow, as the mock draws it
- * (the bar's Book a demo is the same).
- */
-export function ProgramHero({
-  soon,
-  title,
-  deck,
-  write,
-  more,
-}: ProgramHeroProps): React.JSX.Element {
+/** The pair on the band: the white card, then the navy one. No heading of its own: each card has its h2. */
+export function ProgramPair({ children }: { readonly children: ReactNode }): React.JSX.Element {
   return (
-    <header className="hero doc-hero" id="top">
-      <TurningMark />
-      <div className="wrap hero-in">
-        <p className="pg-soon">{soon}</p>
-        <h1>{title}</h1>
-        <p className="doc-deck">{named(deck)}</p>
-        <div className="hero-cta">
-          <a className="btn btn-light" href={programMailto(write.subject)}>
-            {write.label}
-          </a>
-          <a className="btn btn-wire" href={more.href} {...offSiteProps(more.href)}>
-            {more.label}
-            <NewTabHint href={more.href} />
-          </a>
-        </div>
-      </div>
-    </header>
-  );
-}
-
-/**
- * A terminal window: three dots and its title, then its lines, a line that starts "$ " set as the command (white, its
- * "$" green).
- */
-export function Terminal({
-  title,
-  lines,
-}: {
-  readonly title: string;
-  readonly lines: readonly string[];
-}): React.JSX.Element {
-  return (
-    <div className="pv-term">
-      <div className="pv-bar">
-        <i />
-        <i />
-        <i />
-        <span>{title}</span>
-      </div>
-      <pre>
-        {lines.map((line, n) => (
-          <span className={line.startsWith("$") ? "pv-ln pv-cmd" : "pv-ln"} key={n}>
-            {line}
-          </span>
-        ))}
-      </pre>
-    </div>
-  );
-}
-
-/**
- * The navy close: the question, its line (the terms will be on this page; on /design-partners, how to apply, its
- * product names kept from translation), and "Write to us", a ready email to the founders. No id and no heading anchor,
- * as the mock draws it.
- */
-export function ProgramClose({
-  title,
-  line,
-  write,
-}: {
-  readonly title: string;
-  readonly line: string;
-  readonly write: Write;
-}): React.JSX.Element {
-  return (
-    <section className="sec">
+    <section className="sec sec-band cp-pair">
       <div className="wrap">
-        <div className="pv-close">
-          <div>
-            <h2>{title}</h2>
-            <p>{named(line)}</p>
-          </div>
-          <a className="pv-cta" href={programMailto(write.subject)}>
-            <MailGlyph /> {write.label}
-          </a>
-        </div>
+        <div className="as-grid">{children}</div>
       </div>
     </section>
   );
 }
 
-const studyCosts = caseStudy.result.costs;
+/**
+ * The white card: the quiet pill at its top right, the page's own mark or element, the offer's title and line, what
+ * the page draws under the line (the commands, the ranges), and the ink button. First to rise.
+ */
+export function OfferCard({
+  flag,
+  mark,
+  title,
+  line,
+  extra,
+  go,
+}: {
+  readonly flag: string;
+  readonly mark: ReactNode;
+  readonly title: string;
+  readonly line: ReactNode;
+  readonly extra?: ReactNode;
+  readonly go: Go;
+}): React.JSX.Element {
+  return (
+    <Reveal className="as-card as-mini cp-w" order={0}>
+      <span className="cp-flag">{flag}</span>
+      {mark}
+      <h2 className="as-h">{title}</h2>
+      <p>{line}</p>
+      {extra}
+      <a className="btn-ink" href={go.href}>
+        {go.label} <Arrow />
+      </a>
+    </Reveal>
+  );
+}
 
 /**
- * The case study's figures, as both pages print them: what the study is (the first part of its own kicker, so the label
- * follows the study: ours reads "Validation Lab", and a client's study will read "Customer"), its headline figure
- * (−58%), and the machine bill when Coral was connected and today, each with its label. Read from the study, never
- * typed twice.
+ * The navy card: its mark, the ask's title and line, what the page draws under the line (the three things we ask),
+ * and the white button: a ready email, or the calendar in a new tab, which says so to a screen reader. Both leave the
+ * page, so the button ends on the arrow out. Second to rise.
  */
-export const studyFigures = {
-  href: caseStudy.route,
-  label: caseStudy.hero.kicker.split(" · ")[0]!,
-  figure: caseStudy.band.stats[0].value,
-  before: studyCosts.steps[0],
-  after: studyCosts.steps[studyCosts.steps.length - 1]!,
-} as const;
+export function AskCard({
+  mark,
+  title,
+  line,
+  extra,
+  go,
+}: {
+  readonly mark: ReactNode;
+  readonly title: string;
+  readonly line: string;
+  readonly extra?: ReactNode;
+  readonly go: Go;
+}): React.JSX.Element {
+  return (
+    <Reveal className="as-cal cp-d" order={1}>
+      {mark}
+      <h2 className="as-h">{title}</h2>
+      <p>{line}</p>
+      {extra}
+      <a className="cta-go" href={go.href} {...offSiteProps(go.href)}>
+        <span>
+          {go.label}
+          <NewTabHint href={go.href} />
+        </span>
+        <ExternalArrow />
+      </a>
+    </Reveal>
+  );
+}
+
+/** A section under the pair: its heading in the site's row, then the page's own element. */
+export function ProgramSection({
+  id,
+  title,
+  children,
+}: {
+  readonly id: string;
+  readonly title: string;
+  readonly children: ReactNode;
+}): React.JSX.Element {
+  return (
+    <section className="sec cp-sec" id={id} aria-labelledby={`${id}-h`}>
+      <div className="wrap">
+        <div className="sec-hrow">
+          <h2 id={`${id}-h`}>{title}</h2>
+        </div>
+        {children}
+      </div>
+    </section>
+  );
+}
+
+/** One Read more tile: its glyph, title and line, and where it leads (none draws it as words alone). */
+interface ProgramTile {
+  readonly icon: ReactNode;
+  readonly title: string;
+  readonly line: ReactNode;
+  readonly href?: string;
+}
+
+/** A section of Read more tiles, three or four to a row. */
+export function ProgramTiles({
+  id,
+  title,
+  cols,
+  tiles,
+}: {
+  readonly id: string;
+  readonly title: string;
+  readonly cols: 3 | 4;
+  readonly tiles: readonly ProgramTile[];
+}): React.JSX.Element {
+  return (
+    <ProgramSection id={id} title={title}>
+      <div className={`dt-grid cp-${cols}`}>
+        {tiles.map((tile) => (
+          <LinkTile
+            key={tile.title}
+            href={tile.href ?? null}
+            icon={tile.icon}
+            title={tile.title}
+            line={tile.line}
+          />
+        ))}
+      </div>
+    </ProgramSection>
+  );
+}

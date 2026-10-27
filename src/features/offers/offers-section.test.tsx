@@ -1,9 +1,12 @@
+import { readFileSync } from "node:fs";
+
 import { render } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { BrandMark } from "@/components/brand/brand-mark";
 import { AmoebaMark, CoralMark } from "@/components/brand/product-marks";
+import { offersContent } from "@/content/offers";
 import { routes } from "@/config/site";
 import { savingsFigures, savingsQualifier, type SavingsKey } from "@/content/savings";
 import { HomeMotion } from "@/features/home-motion/home-motion";
@@ -11,8 +14,8 @@ import { HomeMotion } from "@/features/home-motion/home-motion";
 import { OffersSection } from "./offers-section";
 
 /**
- * What we offer: the title, the qualifier and the free assessment as a navy
- * card on the left, one 0 to 100% scale with a row for each range on the right.
+ * What we offer: the title, the qualifier and the free assessment as a flat
+ * navy card on the left, the ranges on the right, a row for each on one line.
  */
 let section: HTMLElement;
 let rows: HTMLElement[];
@@ -35,7 +38,9 @@ describe("What we offer", () => {
       "ofx-side ofx-in mo-r",
       "ofx-scale",
     ]);
-    expect(section.querySelector(".ofx-side > h2#offers-h")).toHaveTextContent("What we offer");
+    expect(section.querySelector(".ofx-side > h2#offers-h")).toHaveTextContent(
+      "Cloud cost assessment",
+    );
     expect(section.querySelectorAll("h2")).toHaveLength(1);
   });
 
@@ -78,13 +83,12 @@ describe("What we offer", () => {
     expect(go.querySelector("svg path")).toHaveAttribute("d", "M5 12h14M13 5l7 7-7 7");
   });
 
-  it("draws the scale's axis once, hidden from assistive tech: what it measures and five ticks", () => {
-    const axis = section.querySelector(".ofx-scale > .ofx-axis")!;
-    expect(axis).toHaveAttribute("aria-hidden", "true");
-    expect(text(axis.querySelector(".ofx-axis-l"))).toBe("Off the cost it optimizes");
-    const ticks = [...axis.querySelectorAll(".ofx-ticks > span")];
-    expect(ticks.map(text)).toEqual(["0%", "25%", "50%", "75%", "100%"]);
-    expect(ticks.map((tick) => prop(tick, "--t"))).toEqual(["0", "25", "50", "75", "100"]);
+  it("draws no axis: the ranges' panel holds the rows alone (owner, 23 Oct 2026)", () => {
+    const scale = section.querySelector(".ofx-scale")!;
+    expect([...scale.children].map((el) => el.tagName)).toEqual(["UL"]);
+    expect(section.querySelector(".ofx-axis, .ofx-ticks, .ofx-axis-l")).toBeNull();
+    expect(section.textContent).not.toMatch(/Off the cost it optimizes|0%25%|100%/);
+    expect(offersContent).not.toHaveProperty("axis");
   });
 
   it("names the free card and each row in an h3 under the section's one h2", () => {
@@ -92,7 +96,7 @@ describe("What we offer", () => {
       (h) => `${h.tagName.toLowerCase()} ${h.className} ${text(h)}`,
     );
     expect(headings).toEqual([
-      "h2  What we offer",
+      "h2  Cloud cost assessment",
       "h3 ofx-free-l Free assessment",
       "h3 ofx-h Coral",
       "h3 ofx-h Amoeba",
@@ -135,7 +139,7 @@ describe("What we offer", () => {
   it("reads every range, its spoken form and its caption from the savings content", () => {
     rows.forEach((row, index) => {
       const { range, spoken, caption } = savingsFigures[RANGES[index]!];
-      expect(text(row.querySelector(".ofx-rl > .ofx-cap"))).toBe(caption);
+      expect(text(row.querySelector(".ofx-rl > .ofx-cap > .sr-only"))).toBe(caption);
       const figure = row.querySelector(".ofx-rn > .od")!;
       expect(figure).toHaveAttribute("role", "img");
       expect(figure).toHaveAttribute("aria-label", spoken);
@@ -146,11 +150,42 @@ describe("What we offer", () => {
       "50–60%",
       "20–30%",
     ]);
-    expect(rows.map((row) => text(row.querySelector(".ofx-cap")))).toEqual([
+    expect(rows.map((row) => text(row.querySelector(".ofx-cap > .sr-only")))).toEqual([
       "off AKS and EKS cost",
       "off block storage cost",
       "off your overall cloud bill",
     ]);
+  });
+
+  it("shows what each range is a share of as tags, the caption kept for a screen reader", () => {
+    for (const row of rows) {
+      const cap = row.querySelector(".ofx-rl > p.ofx-cap.ofx-tags")!;
+      /* The caption's words first, unseen; then the tags, unheard, as the product sections draw them. */
+      expect([...cap.children].map((el) => el.className)).toEqual(["sr-only", "chips-g"]);
+      expect(cap.querySelector(".chips-g")).toHaveAttribute("aria-hidden", "true");
+    }
+    const tags = rows.map((row) =>
+      [...row.querySelectorAll(".chips-g > span.chip")].map((chip) => [
+        chip.querySelector("svg")?.getAttribute("data-mark") ?? null,
+        chip.querySelector("svg")?.getAttribute("class") ?? null,
+        text(chip),
+      ]),
+    );
+    /* The mark names the cloud and the word its service: Azure's mark unclassed, AWS's smile `.aws`. */
+    expect(tags).toEqual([
+      [
+        ["azure", null, "AKS"],
+        ["aws", "aws", "EKS"],
+      ],
+      [
+        ["azure", null, "Managed Disks"],
+        ["aws", "aws", "EBS"],
+      ],
+      [[null, null, "Overall cloud bill"]],
+    ]);
+    /* Each Azure mark names its own gradients, so the three never share one. */
+    const gradients = [...section.querySelectorAll("linearGradient")].map((g) => g.id);
+    expect(new Set(gradients).size).toBe(gradients.length);
   });
 
   it("rolls each figure on a strip the page's text never carries", () => {
@@ -197,6 +232,25 @@ describe("What we offer", () => {
       ["50", "50", "10"],
       ["20", "20", "10"],
     ]);
+  });
+
+  it("is drawn flat and pointy: no glow on the card, blocks at 4px, bands at 1px, one line a row", () => {
+    /* The rules alone: the sheet's notes name what went. */
+    const sheet = readFileSync("src/styles/home-offers.css", "utf8").replace(
+      /\/\*[\s\S]*?\*\//g,
+      "",
+    );
+    expect(sheet).not.toMatch(/radial-gradient|\.ofx-free::before|\.ofx-axis|\.ofx-ticks/);
+    expect(sheet).toContain("#offers .ofx-free,#offers .ofx-scale{border-radius:var(--r-card)}");
+    expect(sheet).toContain("#offers .ofx-track{height:6px;border-radius:var(--r-hair)}");
+    expect(sheet).toContain("#offers .ofx-track .hi{box-shadow:none}");
+    expect(sheet).toContain(
+      "#offers .ofx-rn .od{font-size:1.25rem;font-weight:500;letter-spacing:-.02em}",
+    );
+    /* Above 1100px the panel shares the card's grid row, so the two match top to top and foot to foot. */
+    expect(sheet).toMatch(
+      /@media\(min-width:1101px\)\{\n {2}#offers \.ofx-split\{grid-template-areas:"h \." "n \." "c t";/,
+    );
   });
 
   it("names no price", () => {

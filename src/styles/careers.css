@@ -1,181 +1,112 @@
-/* Zoorik marketing: `/careers`.
+/* Zoorik marketing: `/careers`, the page's frame (option A, 24 Oct 2026, as its third pass of 25 Oct leaves it): the
+ * hero and its rings, What you will build, the bands, the close, and LinkedIn's lockup in both. Our values are in
+ * careers-values.css and their scenes in careers-scenes.css, How we work and How we hire in careers-work.css.
  *
- * Ported from the mock's careers block, rule for rule, in its order. Imported by the page itself, so
- * Next loads it after globals.css: where the mock carries the block, after the site system and the
- * documents' sheet.
+ * Ported from the proposal's sheets (`careers-23oct`, then `careers-motion`: ux-design/_proposals/2026-10-24-careers),
+ * rule for rule, in their order, keeping their `cq-` names. Imported by the page itself, so Next loads it after
+ * globals.css, where the mock carries its sheets: after the site system.
  *
- * One change: the mock hides each `.rv` under `.cr-js`, a class its head script puts on <html> before
- * the first paint. Here the page's <main> carries `.cr-main` from the server, and the motion island's
- * <noscript> style draws every `.rv` at rest when scripting is off (careers-motion.tsx).
+ * The 23 Oct language: blocks pointy (--r-card on the films, the tiles and the close), pills only for the stack and
+ * the teams; no glow and no floating art; quiet labels; navy for the dark surfaces.
  *
- * Everything else on the page is shared: the utility hero (`.hero.doc-hero`, the glow), the section
- * head and band, the buttons (`.btn-light`, `.alink`) and the footer.
+ * Shared, not here: the hero (`.hero`, its scrim `.hero::after`, `.hero-in`, `.hero-sub`, `.hero-cta`), the section
+ * head, the buttons (`.btn-light`, `.btn-wire`), `.alink` and the footer.
  *
- * Minimal: the mock's caps labels (`.cr-eye`, `.cr-k`) and values-interview card (`.cr-vic*`, `.cr-vb*`) are
- * left out with their rules; each behaviour is its name and tick on one centred row; "We ask" and the team
- * groups are plain muted text. */
+ * What differs from the mock, and why:
+ *  - the option's other hero (B, the film) and its first figure (the six letters, `.cq-letters`) are not built, and
+ *    their rules are left out;
+ *  - the rings turn only while the figure is on screen: their animation is written paused, and `CareersMotion` gives
+ *    `.cq-orbit` its `.is-on` while any of it is in view. The mock's run always.
+ *  - the mark in the middle paints its bone through `fill` (`.cq-core svg`), where the mock's symbol reads it from
+ *    `--zm-sq`. */
 
-/* repo: sections.css sets `.sec-head p{text-wrap:pretty}` on every page; the mock's sheet has no such rule, so its
-   section ledes wrap greedily (at 390px "Two products that change live systems, safely." breaks before "safely.",
-   not "systems,") */
-.cr-main .sec-head p{text-wrap:wrap}
+/* repo: sections.css sets `.hero-sub,.sec-head p{text-wrap:pretty}` on every page; the mock's sheet has no such rule,
+   so its hero line and section ledes wrap greedily */
+.cq-main .sec-head p,.cq-hero .hero-sub{text-wrap:wrap}
 
-/* Careers: the site's tokens only. Accent = what you can act on or have chosen; the dark band is
-   the site's --ground; corners --r-card/--r-ctl; weights 400/500/600; motion plays once. */
-.hero-cta .cr-hl{display:inline-flex;align-items:center;gap:8px;color:#fff;font-weight:500;text-decoration:none;padding:12px 4px}
-.hero-cta .cr-hl svg{width:16px;height:16px}
-.hero-cta .cr-hl:hover{text-decoration:underline;text-underline-offset:4px}
-.cr-tick{display:grid;place-items:center;width:22px;height:22px;flex:none;margin-top:2px;border-radius:50%;background:var(--accent-wash);color:var(--accent)}
-.cr-tick svg{width:12px;height:12px}
-/* the values picker */
-.cr-tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
-.cr-tab{display:flex;flex-direction:column;align-items:flex-start;gap:14px;min-height:132px;padding:18px;text-align:left;cursor:pointer;
-  border:1px solid var(--line);border-radius:var(--r-card);background:var(--surface);color:var(--text);font:inherit;
-  transition:border-color .16s var(--ease),box-shadow .16s var(--ease),transform .16s var(--ease)}
-.cr-tab:hover{border-color:var(--line-ctl,#868DAB)}
-.cr-tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.cr-tab[aria-selected="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:color-mix(in srgb,var(--accent) 4%,#fff)}
-.cr-tl{font-size:2.25rem;line-height:1;font-weight:600;letter-spacing:-.03em;color:var(--muted)}
-.cr-tab[aria-selected="true"] .cr-tl{color:var(--accent)}
-.cr-tn{font-size:.875rem;font-weight:500;line-height:1.3}
-.cr-panel{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:56px;margin-top:20px;padding:32px;
-  border:1px solid var(--line);border-radius:var(--r-card);background:var(--surface)}
-.cr-panel[hidden]{display:none}
-.cr-panel:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.cr-panel.is-in{animation:crIn .32s var(--ease) both}
-@keyframes crIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.cr-big{display:grid;place-items:center;width:56px;height:56px;margin-bottom:20px;border-radius:var(--r-card);background:var(--accent-wash);
-  color:var(--accent);font-size:1.75rem;font-weight:600;letter-spacing:-.03em}
-.cr-pl h3{margin-top:10px;font-size:1.5rem;line-height:1.15;letter-spacing:-.02em}
-.cr-pnav{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:24px;border-top:1px solid var(--line)}
-.cr-pb{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--line);border-radius:var(--r-ctl);background:var(--surface);
-  color:var(--text);font:inherit;font-size:.9375rem;font-weight:500;text-decoration:none;cursor:pointer;transition:border-color .16s var(--ease),color .16s var(--ease)}
-.cr-pb:hover{border-color:var(--accent);color:var(--accent)}
-.cr-pb:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.cr-pb svg{width:16px;height:16px;flex:none}
-.cr-pb.is-next{margin-left:auto}
-.cr-q{margin-top:24px;padding:16px 18px;border-left:2px solid var(--accent);background:color-mix(in srgb,var(--accent) 4%,#fff);font-size:.9375rem;line-height:1.5;text-wrap:pretty}
-.cr-q span{display:block;margin-bottom:4px;font-size:.875rem;font-weight:500;color:var(--muted)}
-.cr-mean{margin-top:16px;font-size:1.0625rem;color:var(--muted);text-wrap:pretty;max-width:42ch}
-.cr-live{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 28px;align-content:start}
-.cr-live li{display:flex;align-items:center;gap:12px}
-.cr-live h4{font-size:1rem;font-weight:500;line-height:1.35}
-.cr-live .cr-tick{margin-top:0}
-/* how we work: four habits, no boxes */
-.cr-work{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:40px}
-.cr-wk{padding-top:28px;border-top:1px solid var(--line)}
-.cr-wk h3{font-size:var(--fs-h3);line-height:1.35}
-.cr-wk p{margin-top:8px;color:var(--muted);text-wrap:pretty}
-/* how we hire: a line of six steps */
-.cr-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:20px;position:relative}
-.cr-line{position:relative;height:1px;margin:14px calc((100% - 100px) / 6 - 14px) -15px 14px;background:var(--line)}
-.cr-line i{position:absolute;inset:0;background:var(--line-ctl,#868DAB);transform-origin:left;transform:scaleX(0);transition:transform 1.4s var(--ease)}
-.cr-line.is-on i{transform:scaleX(1)}
-.cr-steps li{position:relative}
-.cr-n{position:relative;display:grid;place-items:center;width:29px;height:29px;margin-bottom:16px;border-radius:50%;
-  border:1px solid var(--line-ctl,#868DAB);background:var(--surface);font-size:.8125rem;font-weight:600;font-variant-numeric:tabular-nums}
-.cr-steps li.is-v .cr-n{border-color:var(--accent);background:var(--accent);color:#fff}
-.cr-steps h3{font-size:var(--fs-h3);font-weight:600;line-height:1.35}
-.cr-steps p{margin-top:6px;color:var(--muted);font-size:.9375rem;text-wrap:pretty}
-.cr-flag{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:3px 10px;border-radius:999px;background:var(--accent-wash);color:var(--accent);
-  font-size:.75rem;font-weight:500;text-decoration:none}
-.cr-flag svg{width:12px;height:12px}
-.cr-flag:hover{text-decoration:underline;text-underline-offset:3px}
-.cr-steps .cr-mode{margin-top:0;display:flex;align-items:center;gap:6px;margin-bottom:8px;font-size:.75rem;font-weight:500;color:var(--muted)}
-.cr-mode svg{width:14px;height:14px}
-/* the hero: copy left, the six letters right */
-.cr-hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:56px;align-items:center}
-.cr-hgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;width:100%;max-width:400px;margin-left:auto}
-.cr-ht{aspect-ratio:1;display:flex;flex-direction:column;justify-content:space-between;padding:16px;border-radius:var(--r-card);
-  border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.035);animation:crTile .6s var(--ease) both;animation-delay:calc(var(--i) * 70ms + 120ms)}
-.cr-ht{color:#fff;text-decoration:none;transition:border-color .16s var(--ease),background-color .16s var(--ease)}
-.cr-ht:hover{border-color:rgba(255,255,255,.42);background:rgba(255,255,255,.07)}
-.cr-ht:hover b{color:#fff}
-.cr-ht:focus-visible{outline:2px solid #8095F9;outline-offset:2px}
-.cr-ht b{font-size:2.75rem;font-weight:600;line-height:1;letter-spacing:-.03em;color:#8E98EB;transition:color .16s var(--ease)}
-.cr-ht small{font-size:.8125rem;font-weight:500;color:rgba(255,255,255,.72)}
-@keyframes crTile{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-/* what you will build */
-.cr-prods{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
-.cr-prod{overflow:hidden;border:1px solid var(--line);border-radius:var(--r-card);background:var(--surface)}
-.cr-vid{position:relative;aspect-ratio:16/9;background:var(--ground);overflow:hidden}
-.cr-stack{list-style:none;margin:0 0 18px;padding:0;display:flex;flex-wrap:wrap;gap:6px}
-.cr-stack li{padding:4px 10px;border:1px solid var(--line);border-radius:999px;font-size:.8125rem;font-weight:500;color:var(--muted)}
-.cr-vid video{display:block;width:100%;height:100%;object-fit:cover;object-position:top center}
-.cr-pc{padding:24px}
-.cr-pc h3{font-size:var(--fs-h3);font-weight:600;letter-spacing:-.015em}
-.cr-pc p{margin:6px 0 16px;color:var(--muted)}
-/* introduce yourself: the site's dark ground */
-.cr-join{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:56px;align-items:center;padding:48px;
-  border-radius:var(--r-card);background:var(--ground);color:#fff}
-.cr-join h2{font-size:var(--fs-h2);line-height:1.12;letter-spacing:-.02em}
-.cr-jc>p{margin-top:16px;max-width:52ch;color:rgba(255,255,255,.74);text-wrap:pretty}
-.cr-jb{display:flex;align-items:center;flex-wrap:wrap;gap:12px 20px;margin-top:28px}
-.cr-jb span{color:rgba(255,255,255,.68);font-size:.9375rem}
-.cr-jb span a{color:#fff;text-underline-offset:3px}
-.cr-jt{display:grid;gap:24px}
-.cr-jg p{font-size:.875rem;font-weight:500;color:rgba(255,255,255,.6)}
-.cr-jg ul{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
-.cr-join .cr-jg a{display:inline-block;padding:7px 14px;border:1px solid rgba(255,255,255,.2);border-radius:999px;color:#fff;text-decoration:none;
-  font-size:.875rem;font-weight:500;transition:border-color .16s var(--ease),background-color .16s var(--ease)}
-.cr-join .cr-jg a:hover{color:#fff;text-decoration:none;border-color:rgba(255,255,255,.7);background:rgba(255,255,255,.08)}
-.cr-jg a:focus-visible{outline:2px solid #8095F9;outline-offset:2px}
-.cr-join{position:relative;overflow:hidden;isolation:isolate}
-.cr-jc,.cr-jt{position:relative;z-index:1}
-.cr-jart{position:absolute;z-index:0;right:-160px;top:50%;width:460px;height:460px;margin-top:-230px;opacity:.55;pointer-events:none}
-/* alive: reveal on scroll, once */
-.cr-main .rv{opacity:0;transform:translateY(18px);transition:opacity .6s var(--ease),transform .6s var(--ease);transition-delay:calc(var(--d,0) * 90ms)}
-.cr-main .rv.is-in{opacity:1;transform:none}
-.cr-main .cr-steps .rv{transition-delay:calc(var(--d,0) * 220ms + 150ms)}
-/* the hero letters: a light walks across them */
-.cr-ht.is-lit{border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.08)}
-.cr-ht.is-lit b{color:#fff}
-/* the values play by themselves: the active tab fills, then moves on */
-.cr-tab{position:relative;overflow:hidden}
-.cr-tab::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:100%;background:var(--accent);transform:scaleX(0);transform-origin:left}
-.cr-pick.is-auto .cr-tab[aria-selected="true"]::after{animation:crFill var(--auto,7s) linear forwards}
-@keyframes crFill{to{transform:scaleX(1)}}
-.cr-panel.is-in .cr-live li{animation:crIn .45s var(--ease) both;animation-delay:calc(var(--k) * 55ms + 80ms)}
-/* how we work: the pictures */
-.cr-vis{display:block;width:100%;max-width:200px;height:96px;margin-bottom:22px}
-.cr-vis rect,.cr-vis path,.cr-vis circle{vector-effect:non-scaling-stroke}
-.v-team .seat{fill:none;stroke:var(--line);stroke-width:1.5}
-.v-team .on{fill:var(--accent);opacity:0;transform-box:fill-box;transform-origin:center;transform:scale(.4)}
-.v-team .link{fill:none;stroke:var(--accent);stroke-width:1.5;stroke-dasharray:1;stroke-dashoffset:1;opacity:.5}
-.is-in .v-team .on{animation:crPop .45s var(--ease) both;animation-delay:calc(var(--k) * 260ms + 300ms)}
-.is-in .v-team .link{animation:crDraw 1.2s var(--ease) .55s forwards}
-.v-doc .page{fill:var(--surface);stroke:var(--line-ctl,#868DAB);stroke-width:1.5}
-.v-doc .ln{fill:none;stroke:var(--muted);stroke-width:3;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;opacity:.55}
-.v-doc .ok{fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1}
-.is-in .v-doc .ln{animation:crDraw .5s var(--ease) both;animation-delay:calc(var(--k) * 260ms + 300ms)}
-.is-in .v-doc .ok{animation:crDraw .4s var(--ease) 1.45s forwards}
-.v-async .day{stroke:var(--line-ctl,#868DAB);stroke-width:1.5}
-.v-async .tick{fill:var(--surface);stroke:var(--line-ctl,#868DAB);stroke-width:1.5}
-.v-async .msg rect{fill:var(--accent-wash);stroke:var(--accent);stroke-width:1.2}
-.v-async .msg path{stroke:var(--accent);stroke-width:1.2;stroke-dasharray:2 3}
-.v-async .msg{opacity:0;transform:translateY(8px)}
-.is-in .v-async .msg{animation:crIn .5s var(--ease) both;animation-delay:calc(var(--k) * 420ms + 300ms)}
-.v-res .base{stroke:var(--line-ctl,#868DAB);stroke-width:1.5}
-.v-res .bar{fill:var(--accent-wash);stroke:var(--accent);stroke-width:1.2;transform-box:fill-box;transform-origin:bottom;transform:scaleY(0)}
-.v-res .up{fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1}
-.is-in .v-res .bar{animation:crRise .6s var(--ease) both;animation-delay:calc(var(--k) * 220ms + 300ms)}
-.is-in .v-res .up{animation:crDraw .7s var(--ease) 1.1s forwards}
-@keyframes crDraw{to{stroke-dashoffset:0}}
-@keyframes crPop{to{opacity:1;transform:none}}
-@keyframes crRise{to{transform:none}}
-/* the close: the mark turns, slowly, as in the site's hero */
-.cr-jart{animation:crTurn 48s linear infinite}
-@keyframes crTurn{from{rotate:0deg}to{rotate:360deg}}
+/* the bands: flat --surface-2, no wash */
+.sec-band.cq-band{background:var(--surface-2);border-block:0}
+/* the hero: a quiet navy band, Brand 2.0's centre light in two navy shades; the rings its figure */
+.hero.cq-hero{position:relative;isolation:isolate;overflow:hidden;background:#070F52;color:#fff}
+.hero.cq-hero::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(80% 90% at 70% 55%,#09124D 0%,#020520 100%)}
+.cq-hin{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:56px;align-items:center}
+.cq-eye{display:flex;align-items:center;gap:8px;margin:0 0 14px;font-size:.875rem;font-weight:500;line-height:1.4;color:rgba(250,247,243,.72)}
+.cq-hero h1{max-width:18ch;color:#FAF7F3}
+.cq-hero .hero-sub{margin-top:20px;max-width:46ch;color:rgba(250,247,243,.76)}
+.cq-hero .hero-cta{margin-top:36px}
+.cq-hero .hero-cta .btn svg{width:16px;height:16px}
+.cq-hero .btn-light{background:#FAF7F3;color:#070F52}
+.cq-hero .btn-light:hover{background:#fff}
+.cq-quiet{margin-top:24px;font-size:.875rem;line-height:1.6;color:rgba(250,247,243,.6)}
+/* the logo is set in the sentence's own size: "Linked" in the line's type, the "in" box one cap-height tall on its baseline */
+.cq-lockup{display:inline;white-space:nowrap}
+.cq-join .btn-wire{gap:.3em}
+.cq-lkw{font-size:1em;font-weight:700;letter-spacing:-.01em;color:#FAF7F3}
+.cq-quiet svg.cq-li,.cq-join .btn svg.cq-li{display:inline-block;width:.95em;height:.95em;margin-left:.06em;vertical-align:-.12em}
+/* the hero's LinkedIn link carries the mock's `cq-lk`, which names no rule but keeps it out of the site system's
+   `.hero p a:not([class])` and `main p a:not([class])`: this rule's bone holds, and it is not underlined */
+.cq-quiet a{color:#FAF7F3;text-underline-offset:4px;text-decoration-color:rgba(250,247,243,.4)}
+@media (hover:hover){.cq-quiet a:hover{text-decoration-color:currentColor}}
+/* repo: the bar's 84px strip in the band's outer shade, on this page alone. The bar is the hero's sibling, not its
+   child, so the page is found by its hero (`:has`), as hero.css does for the home page; the mock, one page, writes
+   the same rule */
+:root:has(.cq-hero) .nav:not(.solid)::before{background:linear-gradient(180deg,#020520 0,#020520 66px,rgba(2,5,32,.55) 74px,rgba(2,5,32,0) 84px)}
+/* what you will build: no card outline, the film in its 4px frame, a quiet label, the title, the stack */
+.cq-prods{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:48px 32px}
+.cq-vid{aspect-ratio:16/9;overflow:hidden;border-radius:var(--r-card);background:#070F52}
+.cq-vid video{display:block;width:100%;height:100%;object-fit:cover;object-position:top center}
+.cq-plabel{display:flex;align-items:center;gap:8px;margin:24px 0 8px;font-size:.875rem;font-weight:500;color:var(--muted)}
+.cq-plabel svg{width:16px;height:16px;flex:none}
+.cq-prod h3{font-size:var(--fs-h3);font-weight:600;letter-spacing:-.015em}
+.cq-stack{list-style:none;margin:14px 0 18px;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.cq-stack li{padding:3px 10px;border:1px solid var(--line);border-radius:var(--r-pill);font-size:.8125rem;font-weight:500;color:var(--muted)}
+/* the close: flat navy, no art */
+.cq-join{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:56px;align-items:center;padding:48px;
+  border-radius:var(--r-card);background:var(--brand);color:#fff}
+.cq-join h2{font-size:var(--fs-h2);line-height:1.12;letter-spacing:-.02em;color:#fff}
+.cq-jc>p{margin-top:14px;max-width:52ch;color:rgba(255,255,255,.76);text-wrap:pretty}
+.cq-jb{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-top:28px}
+.cq-join .btn-light{background:#FAF7F3;color:var(--brand)}
+.cq-join p.cq-mail{margin-top:18px;font-size:.9375rem;color:rgba(255,255,255,.68)}
+.cq-join .cq-mail a{color:#fff;text-underline-offset:3px}
+.cq-jt{display:grid;gap:24px}
+.cq-jg p{font-size:.875rem;font-weight:500;color:rgba(255,255,255,.62)}
+.cq-jg ul{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.cq-join .cq-jg a{display:inline-block;padding:6px 14px;border:1px solid rgba(255,255,255,.24);border-radius:var(--r-pill);color:#fff;text-decoration:none;
+  font-size:.875rem;font-weight:500;transition:border-color .16s var(--ease)}
+@media (hover:hover){.cq-join .cq-jg a:hover{color:#fff;text-decoration:none;border-color:rgba(255,255,255,.7)}}
+.cq-jg a:focus-visible,.cq-join .btn:focus-visible{outline:2px solid #8095F9;outline-offset:2px}
 /* narrower screens */
-@media (max-width:1100px){.cr-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}.cr-work{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .cr-steps{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:32px}.cr-line{display:none}}
-@media (max-width:900px){.cr-panel,.cr-hero,.cr-join,.cr-prods{grid-template-columns:minmax(0,1fr);gap:32px}
-  .cr-panel{padding:24px}.cr-hgrid{margin-left:0;max-width:340px}.cr-join{padding:36px 28px}}
-@media (max-width:640px){.cr-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.cr-tab{min-height:0}.cr-tl{font-size:1.75rem}
-  .cr-live,.cr-work{grid-template-columns:minmax(0,1fr)}.cr-steps{grid-template-columns:minmax(0,1fr)}
-  .cr-hgrid{grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;max-width:none}.cr-ht{padding:8px;aspect-ratio:auto}.cr-ht b{font-size:1.5rem}.cr-ht small{display:none}}
-@media (max-width:640px){.cr-pb{flex:1 1 100%;justify-content:center}.cr-pb.is-next{margin-left:0}.cr-jart{display:none}}
-@media (prefers-reduced-motion:reduce){.cr-main .rv{opacity:1;transform:none;transition:none}.cr-jart{animation:none}
-  .v-team .on,.v-async .msg{opacity:1;transform:none}.v-team .link,.v-doc .ln,.v-doc .ok,.v-res .up{stroke-dashoffset:0}.v-res .bar{transform:none}
-  .is-in .cr-vis *{animation:none!important}.cr-panel.is-in .cr-live li{animation:none}
-  .cr-panel.is-in,.cr-ht{animation:none}.cr-tab,.cr-pb,.cr-ht{transition:none}.cr-line i{transition:none;transform:none}}
+@media (max-width:900px){.cq-hin,.cq-join,.cq-prods{grid-template-columns:minmax(0,1fr);gap:32px}.cq-join{padding:36px 28px}}
+@media (prefers-reduced-motion:reduce){.cq-jg a{transition:none}}
+
+/* ── the hero's figure: the mark, three rings, the marks upright as the rings turn ── */
+.cq-orbit{--s:460px;position:relative;width:var(--s);height:var(--s);margin-left:auto}
+.cq-ring{position:absolute;left:50%;top:50%;border:1px solid rgba(250,247,243,.14);border-radius:50%;
+  animation:cqSpin var(--t) linear infinite paused}
+.cq-r1{--t:70s;--r:calc(var(--s) * .2);width:calc(var(--r) * 2);height:calc(var(--r) * 2);margin:calc(var(--r) * -1)}
+.cq-r2{--t:100s;--r:calc(var(--s) * .335);width:calc(var(--r) * 2);height:calc(var(--r) * 2);margin:calc(var(--r) * -1);animation-direction:reverse}
+.cq-r3{--t:140s;--r:calc(var(--s) * .465);width:calc(var(--r) * 2);height:calc(var(--r) * 2);margin:calc(var(--r) * -1)}
+.cq-o{position:absolute;left:50%;top:50%;width:42px;height:42px;margin:-21px;transform:rotate(var(--a)) translateY(calc(var(--r) * -1)) rotate(calc(var(--a) * -1))}
+.cq-ol{display:grid;place-items:center;width:100%;height:100%;border-radius:var(--r-card);background:#FAF7F3;color:#0F1222;
+  animation:cqSpin var(--t) linear infinite reverse paused}
+.cq-r2 .cq-ol{animation-direction:normal}
+.cq-ol svg{width:22px;height:22px}
+/* Install your way's Helm and Terraform paint in the sheet's colour; here their own, as the mock's fill */
+.cq-ol .cq-helm{fill:#0F1689}
+.cq-ol .cq-tf{fill:#844FBA}
+.cq-core{position:absolute;left:50%;top:50%;width:76px;height:76px;margin:-38px}
+.cq-core svg{width:100%;height:100%;fill:#FAF7F3}
+@keyframes cqSpin{to{rotate:360deg}}
+/* on screen they turn; under the pointer they rest */
+.cq-orbit.is-on .cq-ring,.cq-orbit.is-on .cq-ol{animation-play-state:running}
+@media (hover:hover){.cq-orbit:hover .cq-ring,.cq-orbit:hover .cq-ol{animation-play-state:paused}}
+/* ── the stack, as marks ── */
+.cq-stack li{display:inline-flex;align-items:center;gap:6px}
+.cq-stack li svg{width:14px;height:14px;flex:none}
+@media (max-width:1100px){.cq-orbit{--s:400px}}
+@media (max-width:900px){.cq-orbit{--s:350px;margin:8px auto 0}}
+@media (max-width:640px){.cq-orbit{--s:320px}.cq-o{width:32px;height:32px;margin:-16px}.cq-ol svg{width:17px;height:17px}
+  .cq-core{width:56px;height:56px;margin:-28px}}
+@media (prefers-reduced-motion:reduce){.cq-ring,.cq-ol{animation:none!important}}

@@ -4,12 +4,25 @@
 //
 //   node scripts/learn-from-draft.mjs --drafts <dir> --figures <dir> --calendar <file> <slug>...
 //   node scripts/learn-from-draft.mjs --drafts <dir> --figures <dir> --calendar <file> --all
+//   node scripts/learn-from-draft.mjs --glossary --drafts <dir> --visual <dir> --day <iso day> (<slug>... | --all)
 //
-// Each flag may instead come from the environment: LEARN_DRAFTS, LEARN_FIGURES, LEARN_CALENDAR.
+// Each flag but --glossary may instead come from the environment: LEARN_DRAFTS, LEARN_FIGURES, LEARN_CALENDAR,
+// LEARN_VISUAL, LEARN_DAY.
 //
 //   --drafts    the folder of drafts, <slug>.md each, with the cloud cost pillar among them
 //   --figures   the folder of figure files, <slug>-<n>.html each: one scoped <style>, then one <figure>
 //   --calendar  a JSON file with `schedule` (each article's day and author key) and `authors`
+//   --visual    (optional) the folder of drawn figures: <slug>/fig-<n>-*.svg and <slug>/captions.json. Where it has
+//               an article's n-th figure, that drawing is used in place of the figure file
+//   --day       (optional) the ISO day the articles go live, in place of the calendar's
+//   --glossary  glossary terms in place of articles: src/content/learn/glossary/<slug>.ts, and the term's one drawn
+//               figure under src/features/learn/figures/glossary/<slug>/1.ts. It reads the drafts, their drawings
+//               (--visual) and the day they go live or change (--day; a term already on the site keeps the day it
+//               was published), and needs no figure files or calendar
+//
+// A paragraph that opens with a bold label ("**Worked example.**", "**Rule of thumb.**", "**Watch out.**", "**For
+// engineers.**", "**Note.**") is a callout. A drawn figure loses its "[ FIG n // … ]" line, and what is under it moves
+// up into its place. An article's cover is public/learn-covers/zoorik-learn-<slug>-1200x630.webp when there is one.
 //
 // A draft is front matter (title, meta, h1, deck, card, product, hub_group, type), then the short answer, the
 // sections ("## " headings, an id after a heading as {#id}), and the foot: the help box, the sources and the Related
@@ -18,10 +31,19 @@
 // Text may carry **bold**, `code`, [links](/path) and links to other sites; the article gets curly quotes and a
 // no-break space between a figure and its unit, as the page prints them.
 //
-// The article's day and author come from the calendar, its topic from the pillar's list of every article, a
-// comparison's two sides from its h1, and its share card from public/og/zoorik-learn-<slug>-1200x630.png when there
-// is one. The pillar's list itself is not copied: the page draws it from the index. The output is formatted with the
-// repo's Prettier settings, and a second run writes the same files.
+// The article's day and author come from the calendar, its topic from the pillar's list of every article, and a
+// comparison's two sides from its h1; its share card is found by its address (`pageCards` in src/config/social.ts).
+// The pillar's list itself is not copied: the page draws it from the index. The output is formatted with the repo's
+// Prettier settings, and a second run writes the same files.
+//
+// A glossary draft is front matter (slug, route, group, product, term, title, h1, meta), the definition with what
+// stands beside it before the first "## " heading, two to four sections in an article's blocks with one [DIAGRAM: …]
+// among them, "## Related terms" (each line "- [Term](/learn/glossary/<slug>): its line"), "**Read next:**" and the
+// sources. The title loses its " | Zoorik" (the site's template adds it); the hub's line under the term is the
+// definition's first sentence. Every link to another term must lead to one of the drafts.
+//
+// In both modes a link to the old /case-studies/<study> address, which the article drafts still write, is written to
+// /value-lab/<study>, where the study lives now.
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -34,6 +56,8 @@ import { curly } from "./curly-quotes.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ARTICLES = join(ROOT, "src", "content", "learn", "articles");
 const FIGURES = join(ROOT, "src", "features", "learn", "figures");
+const TERMS = join(ROOT, "src", "content", "learn", "glossary");
+const TERM_FIGURES = join(FIGURES, "glossary");
 
 /** The cloud cost pillar, whose last section lists every article: the page draws that list from the index. */
 const PILLAR = "how-to-reduce-cloud-costs";
@@ -53,6 +77,7 @@ const VERSUS = {
 // ─── the command line ────────────────────────────────────────────────────────────────────────────────────────────
 
 const argv = process.argv.slice(2);
+const glossary = argv.includes("--glossary");
 const flag = (name, env) => {
   const at = argv.indexOf(`--${name}`);
   if (at >= 0) {
@@ -65,11 +90,23 @@ const flag = (name, env) => {
 const draftsDir = flag("drafts", "LEARN_DRAFTS");
 const figuresDir = flag("figures", "LEARN_FIGURES");
 const calendarFile = flag("calendar", "LEARN_CALENDAR");
+const visualDir = flag("visual", "LEARN_VISUAL");
+const goLive = flag("day", "LEARN_DAY");
+if (goLive && !/^\d{4}-\d{2}-\d{2}$/.test(goLive)) {
+  console.error(`--day is an ISO day: "${goLive}"`);
+  process.exit(1);
+}
 const named = argv.filter((arg) => !arg.startsWith("--"));
 const all = argv.includes("--all");
-if (!draftsDir || !figuresDir || !calendarFile || (!all && named.length === 0)) {
+if (
+  !draftsDir ||
+  (glossary ? !visualDir || !goLive : !figuresDir || !calendarFile) ||
+  (!all && named.length === 0)
+) {
   console.error(
-    "usage: node scripts/learn-from-draft.mjs --drafts <dir> --figures <dir> --calendar <file> (<slug>... | --all)",
+    glossary
+      ? "usage: node scripts/learn-from-draft.mjs --glossary --drafts <dir> --visual <dir> --day <iso day> (<slug>... | --all)"
+      : "usage: node scripts/learn-from-draft.mjs --drafts <dir> --figures <dir> --calendar <file> (<slug>... | --all)",
   );
   process.exit(1);
 }
@@ -79,7 +116,7 @@ const slugs = all
       .map((name) => name.slice(0, -3))
       .sort()
   : named;
-const calendar = JSON.parse(readFileSync(calendarFile, "utf8"));
+const calendar = glossary ? null : JSON.parse(readFileSync(calendarFile, "utf8"));
 
 // ─── text ────────────────────────────────────────────────────────────────────────────────────────────────────────
 
@@ -98,6 +135,9 @@ const words = (s) => {
 };
 
 const LINK = /\[([^\]]+)\]\(([^)\s]+)\)/g;
+
+/** A link's address as the site serves it: the case studies moved from /case-studies to Value Lab. */
+const moved = (href) => href.replace(/^\/case-studies(?=$|[/?#])/, "/value-lab");
 const CODE = /`([^`]+)`/g;
 
 /** Joins neighbouring strings, and returns one string where the run is only words. */
@@ -128,7 +168,7 @@ function inline(source, links = true) {
       const run = inline(words, false);
       const a = typeof run === "string" ? run : run.length === 1 && run[0].code ? run[0] : null;
       if (a === null) throw new Error(`a link's words are words or one piece of code: ${words}`);
-      return hold({ a, href });
+      return hold({ a, href: moved(href) });
     });
   }
   s = s.replace(CODE, (_, code) => hold({ code }));
@@ -137,8 +177,12 @@ function inline(source, links = true) {
   let last = 0;
   for (const match of s.matchAll(/\*\*(.+?)\*\*/g)) {
     pieces.push(s.slice(last, match.index));
-    if (/\u0003/.test(match[1])) throw new Error(`bold holds a link or code: ${source}`);
-    pieces.push({ b: match[1] });
+    /* Bold may hold a link or code: its words, then, are pieces, as any run's are. */
+    pieces.push({
+      b: compact(
+        match[1].split(/\u0003(\d+)\u0003/).map((part, i) => (i % 2 ? keep[Number(part)] : part)),
+      ),
+    });
     last = match.index + match[0].length;
   }
   pieces.push(s.slice(last));
@@ -341,15 +385,33 @@ function item(lines, ctx) {
   return { text, blocks: render(parse(dedent(more)), ctx) };
 }
 
+const CALLOUT =
+  /^\*\*(Worked example|Rule of thumb|Watch out|For engineers|Note)\.\*\*\s*([\s\S]*)$/;
+
+/** The drawing of an article's n-th figure, or null where there is none. */
+function drawing(slug, n) {
+  if (!visualDir) return null;
+  const dir = join(visualDir, slug);
+  if (!existsSync(dir)) return null;
+  const file = readdirSync(dir)
+    .sort()
+    .find((name) => new RegExp(`^fig-${n}-.*\\.svg$`).test(name));
+  return file ? join(dir, file) : null;
+}
+
 function render(blocks, ctx) {
   return blocks.map((b) => {
     switch (b.kind) {
-      case "p":
-        return { kind: "p", text: inline(b.text) };
+      case "p": {
+        const callout = CALLOUT.exec(b.text);
+        return callout
+          ? { kind: "callout", label: callout[1], text: inline(callout[2]) }
+          : { kind: "p", text: inline(b.text) };
+      }
       case "h3":
         return {
           kind: "h3",
-          id: slugOf(b.text),
+          id: /\{#([^}]+)\}\s*$/.exec(b.text)?.[1] ?? slugOf(b.text),
           title: words(b.text.replace(/\s*\{#[^}]*\}/g, "")),
         };
       case "code":
@@ -358,6 +420,10 @@ function render(blocks, ctx) {
         return table(b.rows);
       case "diagram":
         ctx.figures += 1;
+        if (drawing(ctx.slug, ctx.figures)) {
+          ctx.drawn.add(ctx.figures);
+          return { kind: "svg", figure: `\u0007${ctx.figures}` };
+        }
         return { kind: "diagram", figure: `\u0007${ctx.figures}` };
       case "ol":
         return {
@@ -395,7 +461,7 @@ function front(text) {
 function where(href) {
   const path = href.split("#")[0].split("?")[0];
   if (path.startsWith("/learn/")) return "Learn";
-  if (path.startsWith("/case-studies")) return "Case study";
+  if (path.startsWith("/case-studies") || path.startsWith("/value-lab/")) return "Case study";
   if (path.startsWith("/docs/")) return "Docs";
   const m = /^\/(coral|amoeba)(\/(guide|faq))?$/.exec(path);
   if (m) {
@@ -405,7 +471,12 @@ function where(href) {
     return name;
   }
   return (
-    { "/assessment": "Assessment", "/compare": "Compare", "/about": "About" }[path] ?? "Zoorik"
+    {
+      "/assessment": "Assessment",
+      "/compare": "Cloud cost optimization tools",
+      "/cloud-cost-optimization-library": "Cloud cost optimization tools",
+      "/about": "About",
+    }[path] ?? "Zoorik"
   );
 }
 
@@ -452,7 +523,7 @@ function versusOf(slug, h1) {
   return [parts.slice(0, -1).join(" · "), parts.at(-1)];
 }
 
-const TOPICS = topics();
+const TOPICS = glossary ? null : topics();
 
 function convert(slug) {
   const { meta, body } = front(readFileSync(join(draftsDir, `${slug}.md`), "utf8"));
@@ -472,7 +543,7 @@ function convert(slug) {
     .replace("**Short answer.**", "")
     .trim();
 
-  const ctx = { figures: 0 };
+  const ctx = { slug, figures: 0, drawn: new Set() };
   const sections = [];
   let current = null;
   for (const line of mainLines.slice(first)) {
@@ -525,7 +596,7 @@ function convert(slug) {
   if (!topic) throw new Error(`${slug}: not in the pillar's list of every article`);
   const product = { Coral: "coral", Amoeba: "amoeba", Both: "both" }[meta.product];
   if (!product) throw new Error(`${slug}: product "${meta.product}"`);
-  const card = `/og/zoorik-learn-${slug}-1200x630.png`;
+  const cover = `/learn-covers/zoorik-learn-${slug}-1200x630.webp`;
   const h1 = typo(meta.h1);
 
   const article = {
@@ -541,20 +612,194 @@ function convert(slug) {
     hub: meta.hub_group,
     topic,
     ...(meta.type === "versus" ? { versus: versusOf(slug, meta.h1) } : {}),
-    published: day.date,
-    updated: day.date,
+    published: goLive ?? day.date,
+    updated: goLive ?? day.date,
     author: day.author,
-    /* A share card's picture draws the h1, so its alt text reads the h1. */
-    ...(existsSync(join(ROOT, "public", card))
-      ? { shareCard: { url: card, alt: `Zoorik. ${h1}${/[.?!]$/.test(h1) ? "" : "."}` } }
-      : {}),
+    ...(existsSync(join(ROOT, "public", cover)) ? { cover } : {}),
     short: inline(short),
     sections: drawn,
     help: { product: helpProduct.toLowerCase(), text: inline(helpText), links },
     sources,
     related,
   };
-  return { article, figures: ctx.figures };
+  return { article, figures: ctx.figures, drawn: ctx.drawn };
+}
+
+// ─── a glossary term ─────────────────────────────────────────────────────────────────────────────────────────────
+
+const GROUPS = ["kubernetes", "block-storage", "finops-pricing"];
+
+/** The drafts' slugs: every link to a term must lead to one of them. */
+const DRAFTED = glossary
+  ? new Set(
+      readdirSync(draftsDir)
+        .filter((name) => name.endsWith(".md"))
+        .map((name) => name.slice(0, -3)),
+    )
+  : null;
+
+/** Every link in a run of text, bold's own included. */
+const linksIn = (run) =>
+  typeof run === "string"
+    ? []
+    : run.flatMap((piece) =>
+        typeof piece === "string"
+          ? []
+          : "a" in piece
+            ? [piece]
+            : "b" in piece
+              ? linksIn(piece.b)
+              : [],
+      );
+
+/** Every link in some blocks, a list item's own blocks included. */
+const linksOf = (blocks) =>
+  blocks.flatMap((block) => {
+    if (block.kind === "p" || block.kind === "callout") return linksIn(block.text);
+    if (block.kind === "ul" || block.kind === "ol")
+      return block.items.flatMap((item) =>
+        typeof item === "string" || Array.isArray(item)
+          ? linksIn(item)
+          : [...linksIn(item.text), ...linksOf(item.blocks)],
+      );
+    if (block.kind === "table")
+      return [...block.columns.map((c) => c.label), ...block.rows.flat()].flatMap(linksIn);
+    return [];
+  });
+
+/** A run of text as plain words: links and code as their words. */
+const plain = (run) =>
+  typeof run === "string"
+    ? run
+    : run
+        .map((piece) =>
+          typeof piece === "string"
+            ? piece
+            : "b" in piece
+              ? plain(piece.b)
+              : "code" in piece
+                ? piece.code
+                : typeof piece.a === "string"
+                  ? piece.a
+                  : piece.a.code,
+        )
+        .join("");
+
+/** The day a term already on the site was published: a later run moves its `updated` day to --day, never this one. */
+function publishedDay(slug) {
+  const file = join(TERMS, `${slug}.ts`);
+  return existsSync(file)
+    ? /\bpublished: "(\d{4}-\d{2}-\d{2})"/.exec(readFileSync(file, "utf8"))?.[1]
+    : undefined;
+}
+
+function convertTerm(slug) {
+  const { meta, body } = front(readFileSync(join(draftsDir, `${slug}.md`), "utf8"));
+  if (meta.slug !== slug) throw new Error(`${slug}: its front matter names ${meta.slug}`);
+  if (meta.type !== "glossary") throw new Error(`${slug}: not a glossary draft`);
+  if (meta.route !== `/learn/glossary/${slug}`)
+    throw new Error(`${slug}: its route is ${meta.route}`);
+  if (!GROUPS.includes(meta.group)) throw new Error(`${slug}: group "${meta.group}"`);
+  if (!meta.title.endsWith(" | Zoorik")) throw new Error(`${slug}: its title ends " | Zoorik"`);
+  const title = meta.title.slice(0, -" | Zoorik".length);
+  if (title !== meta.h1) throw new Error(`${slug}: its title is its h1 and " | Zoorik"`);
+  const product = { Coral: "coral", Amoeba: "amoeba", Both: "both" }[meta.product];
+  if (!product) throw new Error(`${slug}: product "${meta.product}"`);
+  if (Array.isArray(meta.owner_flags) && meta.owner_flags.length > 0)
+    throw new Error(`${slug}: owner flags are open: ${meta.owner_flags.join("; ")}`);
+
+  const lines = body.split("\n");
+  const at = lines.findIndex((line) => line.startsWith("**Read next:**"));
+  if (at < 0) throw new Error(`${slug}: no Read next`);
+  const main = lines.slice(0, at);
+  const foot = lines.slice(at);
+
+  const first = main.findIndex((line) => line.startsWith("## "));
+  const ctx = { slug, figures: 0, drawn: new Set() };
+  const definition = render(parse(main.slice(0, first)), ctx);
+  if (definition[0]?.kind !== "p") throw new Error(`${slug}: it opens on its definition`);
+
+  const parts = [];
+  for (const line of main.slice(first)) {
+    if (line.startsWith("## ")) parts.push({ heading: line.slice(3).trim(), lines: [] });
+    else parts.at(-1).lines.push(line);
+  }
+  const relatedPart = parts.find((part) => part.heading === "Related terms");
+  if (!relatedPart) throw new Error(`${slug}: no Related terms`);
+  const sections = parts
+    .filter((part) => part !== relatedPart)
+    .map(({ heading, lines: own }) => ({
+      id: slugOf(heading),
+      title: words(heading),
+      blocks: render(parse(own), ctx),
+    }));
+  if (ctx.figures !== 1 || !ctx.drawn.has(1))
+    throw new Error(`${slug}: a term has one figure, drawn in ${visualDir}/${slug}`);
+
+  const related = relatedPart.lines
+    .filter((line) => line.startsWith("- "))
+    .map((line) => {
+      const m = /^- \[([^\]]+)\]\(\/learn\/glossary\/([a-z0-9-]+)\): (.+?)\s*$/.exec(line);
+      if (!m)
+        throw new Error(
+          `${slug}: a Related terms line is "- [Term](/learn/glossary/<slug>): line": ${line}`,
+        );
+      const [, title, target, rest] = m;
+      /* Its line, a sentence of its own under the tile's title: its first letter in capitals, and a full stop where
+         the draft leaves it off, as most drafts write it. */
+      const text = words(rest);
+      return {
+        title: words(title),
+        line: `${text[0].toUpperCase()}${text.slice(1)}${/[.?!]$/.test(text) ? "" : "."}`,
+        href: `/learn/glossary/${target}`,
+      };
+    });
+
+  const next = /^\*\*Read next:\*\* \[([^\]]+)\]\((\/learn\/[a-z0-9-]+)\)\s*$/.exec(foot[0]);
+  if (!next) throw new Error(`${slug}: "**Read next:** [Title](/learn/<slug>)": ${foot[0]}`);
+  const s0 = foot.indexOf("**Sources:**");
+  if (s0 < 0) throw new Error(`${slug}: no Sources`);
+  const sources = foot
+    .slice(s0 + 1)
+    .filter((line) => line.startsWith("- "))
+    .map(source);
+
+  /* A link to another term leads to one of the drafts: a term not drafted would be a dead link once published. */
+  const links = [
+    ...linksOf(definition),
+    ...sections.flatMap((section) => linksOf(section.blocks)),
+    ...related.map((tile) => ({ href: tile.href })),
+  ];
+  for (const { href } of links) {
+    const term = /^\/learn\/glossary\/([^/?#]+)/.exec(href)?.[1];
+    if (term && !DRAFTED.has(term))
+      throw new Error(`${slug}: a link to a term not drafted: ${href}`);
+    if (term === slug) throw new Error(`${slug}: a link to its own page`);
+  }
+
+  /* The hub's line: the definition's first sentence, in plain words. */
+  const opening = plain(definition[0].text);
+  const card = /^(.+?[.?!])(?=\s|$)/.exec(opening)?.[1];
+  if (!card) throw new Error(`${slug}: its definition's first sentence ends on no full stop`);
+
+  const term = {
+    slug,
+    term: curly(meta.term),
+    title: typo(title),
+    meta: curly(meta.meta),
+    h1: typo(meta.h1),
+    card,
+    group: meta.group,
+    product,
+    published: publishedDay(slug) ?? goLive,
+    updated: goLive,
+    definition,
+    sections,
+    related,
+    next: { title: words(next[1]), href: next[2] },
+    sources,
+  };
+  return { term, figures: ctx.figures };
 }
 
 // ─── the files ───────────────────────────────────────────────────────────────────────────────────────────────────
@@ -619,17 +864,88 @@ export const figure: LearnFigure = {
 `;
 }
 
+/** A coordinate as the SVG writes it: at most two decimals, no trailing zeros. */
+const num = (v) => String(Number(v.toFixed(2)));
+
+/**
+ * A drawing without its "[ FIG n // … ]" line: the line goes from the picture and from its title, and everything under
+ * it moves up into its place, the canvas and its frame shortening by as much.
+ */
+function unkick(svg, name) {
+  const kicker = /<text[^>]*>\s*\[\s*FIG \d+ \/\/[^<]*\]\s*<\/text>/.exec(svg);
+  if (!kicker) return svg;
+  const next = /<text[^>]*\by="([\d.]+)"/.exec(svg.slice(kicker.index + kicker[0].length));
+  const up = Number(next[1]) - Number(/\by="([\d.]+)"/.exec(kicker[0])[1]);
+  let out = svg.slice(0, kicker.index) + svg.slice(kicker.index + kicker[0].length);
+  out = out.replace(/(<title[^>]*>)\s*\[\s*FIG \d+ \/\/[^\]]*\]\s*/, "$1");
+  out = out.replace(
+    /viewBox="0 0 ([\d.]+) ([\d.]+)"/,
+    (_, w, h) => `viewBox="0 0 ${w} ${num(h - up)}"`,
+  );
+  out = out.replace(/(<svg[^>]*\bheight=")([\d.]+)"/, (_, head, h) => `${head}${num(h - up)}"`);
+  const frame = /<\/desc>\s*(<rect[^>]*>)/.exec(out);
+  if (!frame) throw new Error(`${name}: a drawing's frame follows its description`);
+  const at = frame.index + frame[0].length - frame[1].length;
+  const rect = frame[1].replace(/\bheight="([\d.]+)"/, (_, h) => `height="${num(h - up)}"`);
+  out = `${out.slice(0, at)}${rect}<g transform="translate(0 -${num(up)})">${out.slice(at + frame[1].length)}`;
+  return `${out.slice(0, out.lastIndexOf("</svg>"))}</g></svg>`;
+}
+
+function drawingModule(slug, n) {
+  const name = `${slug}-${n}`;
+  const svg = readFileSync(drawing(slug, n), "utf8")
+    .replace(/<\?xml[^>]*>\s*/, "")
+    .trim();
+  const captions = join(visualDir, slug, "captions.json");
+  const caption = existsSync(captions)
+    ? JSON.parse(readFileSync(captions, "utf8"))[String(n)]
+    : null;
+  if (!caption) throw new Error(`${name}: a drawing has no caption`);
+  return `import type { LearnSvgFigure } from "@/content/learn/article";
+
+export const figure: LearnSvgFigure = {
+  markup: ${template(unkick(svg, name))},
+  caption: ${literal(inline(caption))},
+};
+`;
+}
+
 async function write(file, body) {
   const options = { ...(await prettier.resolveConfig(file)), filepath: file };
   mkdirSync(dirname(file), { recursive: true });
   writeFileSync(file, await prettier.format(body, options));
 }
 
-for (const slug of slugs) {
-  const { article, figures } = convert(slug);
+async function writeTerm(slug) {
+  const { term, figures } = convertTerm(slug);
+  const dir = join(TERM_FIGURES, slug);
+  rmSync(dir, { recursive: true, force: true });
+  for (let n = 1; n <= figures; n++) await write(join(dir, `${n}.ts`), drawingModule(slug, n));
+  const imports = Array.from(
+    { length: figures },
+    (_, k) =>
+      `import { figure as figure${k + 1} } from "@/features/learn/figures/glossary/${slug}/${k + 1}";`,
+  );
+  const body = `import type { GlossaryTerm } from "@/content/learn/glossary-term";
+${imports.join("\n")}
+
+export const term: GlossaryTerm = ${literal(term).replace(/"\\u0007(\d+)"/g, "figure$1")};
+`;
+  await write(join(TERMS, `${slug}.ts`), body);
+  console.log(`glossary: ${slug}`);
+}
+
+if (glossary) for (const slug of slugs) await writeTerm(slug);
+
+for (const slug of glossary ? [] : slugs) {
+  const { article, figures, drawn } = convert(slug);
   const dir = join(FIGURES, slug);
   rmSync(dir, { recursive: true, force: true });
-  for (let n = 1; n <= figures; n++) await write(join(dir, `${n}.ts`), figureModule(slug, n));
+  for (let n = 1; n <= figures; n++)
+    await write(
+      join(dir, `${n}.ts`),
+      drawn.has(n) ? drawingModule(slug, n) : figureModule(slug, n),
+    );
   const imports = Array.from(
     { length: figures },
     (_, k) =>

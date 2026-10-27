@@ -1,186 +1,190 @@
-import { Arrow } from "@/components/primitives/arrow";
+import { AwsMark, AzureMark } from "@/components/brand/cloud-marks";
 import { ExternalArrow } from "@/components/primitives/external-arrow";
+import { NamedText } from "@/components/primitives/named-text";
 import { NewTabHint } from "@/components/primitives/new-tab-hint";
-import { communityPage } from "@/content/community";
-import { events } from "@/content/events";
-import { CommunityEvents } from "@/features/community/community-events";
-import { upcoming } from "@/features/events/event-facts";
+import { Reveal } from "@/components/primitives/reveal";
+import { site } from "@/config/site";
+import { communityPage, type Community, type CommunityLogo } from "@/content/community";
+import { products } from "@/content/products";
+import { MediumMark, RedditMark } from "@/features/community/community-marks";
+import { ArrowOutGlyph } from "@/features/documents/document-glyphs";
+import { LinkTile } from "@/features/documents/link-tile";
 import { named } from "@/features/legal/named";
-import { LearnFrame, LearnSection, sectionClass } from "@/features/learn/learn-parts";
+import { LearnFrame, sectionClass } from "@/features/learn/learn-parts";
 import { offSiteProps } from "@/lib/links";
 
 /**
  * `/community`, Zoorik Community, on Learn's frame:
  *
- *   hero                   the page's name and its deck
- *   r/zoorik               the navy panel: Join r/zoorik (a new tab), this week's Zoorik Radar on /news, and a drawing of
- *                          four threads beside them
- *   Zoorik everywhere      the eight places Zoorik posts, each with our handle there (band)
- *   Events                 the next three big events, with /events's rules, and the link to /events
- *   The wider community    six communities, each in a new tab (band)
- *   closing card           Want to shape what we build? A link to /design-partners
- *   closing row            the site's assessment row, as every Learn page ends
+ *   hero          the page's name and its deck
+ *   ours          r/zoorik on the white card and Zoorik News on Medium on the navy one, the closing row's pair (band)
+ *   communities   FinOps and cloud cost communities: four groups of three tiles, each with its own logo and its own page
+ *                 in a new tab, then the day they were checked and an address to suggest one
+ *   more          More from Zoorik: /events and /design-partners
+ *   closing row   the site's assessment row, as every Learn page ends
  *
- * Drawn on the server. One island: the events drop one that has ended in the reader's browser (`CommunityEvents`).
- * The mock has no motion but the links' hover; no figure but the design partners' places (`designPartnerPlaces`).
+ * Drawn on the server; the pair rises as it arrives, as the closing row's does on home.
  */
 
-const { hero, reddit, channels, wider, shape } = communityPage;
+const { hero, ours, communities, more } = communityPage;
 
-/** The r/zoorik panel's drawing: four threads, each its title bar and its shorter line, as widths in %. */
-const THREADS = [
-  [78, 52],
-  [64, 40],
-  [86, 58],
-  [58, 34],
-] as const;
+/** The names a page translator must leave alone in this page's lines. */
+const NAMES = [site.name, products.coral.name, products.amoeba.name];
 
-/**
- * The events the page follows (`communityPage.events.names`, the event's name before its year) still to come on
- * `today`, with their days known, in /events's order. All of them go to the card, which shows the first few, so one
- * that ends in the reader's browser makes room for the next.
- */
-export function communityEvents(today: string) {
-  const { names } = communityPage.events;
-  return upcoming(events, today).filter(
-    (event) => event.startDate.length === 10 && names.includes(event.name.split(" 20")[0]!),
+/** Where each logo file lives; the other marks are drawn in the page. */
+const LOGO_FILES: Partial<Record<CommunityLogo, string>> = {
+  "finops-foundation": "/community-logos/finops-foundation.svg",
+  karpenter: "/community-logos/karpenter.svg",
+  opencost: "/community-logos/opencost.svg",
+};
+
+/** A community's logo in the tile's icon slot (`dt-ic`), 28px. */
+function Logo({
+  logo,
+  mark,
+}: {
+  readonly logo: CommunityLogo;
+  /** Unique on the page: the Azure mark's gradients are named by it. */
+  readonly mark: string;
+}): React.JSX.Element {
+  const className = "dt-ic cm-logo";
+  if (logo === "reddit") return <RedditMark className={className} />;
+  if (logo === "azure") return <AzureMark className={className} idSuffix={mark} />;
+  if (logo === "aws") return <AwsMark className={className} />;
+  return (
+    // eslint-disable-next-line @next/next/no-img-element -- a 28px logo file, drawn as the mock draws it
+    <img
+      className={className}
+      src={LOGO_FILES[logo]}
+      alt=""
+      width={28}
+      height={28}
+      loading="lazy"
+    />
   );
 }
 
-/** An off-site link's arrow and what a screen reader hears, after its words. */
-function Out({ href }: { readonly href: string }): React.JSX.Element {
+/** Our own two: r/zoorik (white) and Zoorik News on Medium (navy), on the band. */
+function Ours(): React.JSX.Element {
+  const { reddit, news } = ours;
   return (
-    <>
-      <ExternalArrow />
-      <NewTabHint href={href} />
-    </>
-  );
-}
-
-function Reddit(): React.JSX.Element {
-  const { join, radar } = reddit;
-  return (
-    <section className={sectionClass()} id={reddit.id} aria-labelledby={`${reddit.id}-h`}>
+    <section className="sec sec-band" id={ours.id} aria-label={ours.label}>
       <div className="wrap">
-        <div className="cm-rd">
-          <div className="cm-rdc">
-            <p className="cm-k">{reddit.kicker}</p>
-            <h2 id={`${reddit.id}-h`}>{reddit.title}</h2>
-            <p>{named(reddit.line)}</p>
-            <div className="cm-acts">
-              <a className="cm-btn" href={join.href} {...offSiteProps(join.href)}>
-                {join.label} <Out href={join.href} />
-              </a>
-              <a className="cm-btn2" href={radar.href}>
-                {radar.label} <Arrow />
-              </a>
-            </div>
-          </div>
-          <div className="cm-feed" aria-hidden="true">
-            {THREADS.map(([title, line], k) => (
-              <span className="cm-th" key={k}>
-                <i className="cm-up" />
-                <span>
-                  <b style={{ width: `${title}%` }} />
-                  <em style={{ width: `${line}%` }} />
-                </span>
+        <div className="as-grid">
+          <Reveal className="as-card as-mini" order={0}>
+            <RedditMark className="cm-own" />
+            <h2 className="as-h">{reddit.title}</h2>
+            <p>
+              <NamedText text={reddit.line} name={NAMES} />
+            </p>
+            <a className="btn-ink" href={reddit.join.href} {...offSiteProps(reddit.join.href)}>
+              {reddit.join.label} <ArrowOutGlyph />
+              <NewTabHint href={reddit.join.href} />
+            </a>
+          </Reveal>
+          <Reveal className="as-cal" order={1}>
+            <MediumMark className="cm-own" />
+            <h2 className="as-h">
+              <NamedText text={news.title} name={NAMES} />
+            </h2>
+            <p>
+              <NamedText text={news.line} name={NAMES} />
+            </p>
+            <a className="cta-go" href={news.subscribe.href} {...offSiteProps(news.subscribe.href)}>
+              <span>
+                {news.subscribe.label}
+                <NewTabHint href={news.subscribe.href} />
               </span>
-            ))}
-          </div>
+              <ExternalArrow />
+            </a>
+          </Reveal>
         </div>
       </div>
     </section>
   );
 }
 
-/**
- * Zoorik everywhere: each place a card, its name and the arrow, then our handle there and what we post. The handle and
- * the line are set as the mock sets them, with no name kept from translation: `.cm-ch span` sizes every span in the
- * card, so a `named()` span inside would print smaller.
- */
-function Channels(): React.JSX.Element {
+function CommunityTile({
+  community,
+  mark,
+}: {
+  readonly community: Community;
+  readonly mark: string;
+}): React.JSX.Element {
   return (
-    <LearnSection id={channels.id} title={named(channels.title)} lede={channels.lede} band>
-      <div className="cm-ch">
-        {channels.links.map((link) => (
-          <a key={link.name} href={link.href} {...offSiteProps(link.href)}>
-            <b>
-              {link.name} <ExternalArrow />
-            </b>
-            <span>{link.handle}</span>
-            <small>{link.what}</small>
-            <NewTabHint href={link.href} />
-          </a>
-        ))}
-      </div>
-    </LearnSection>
+    <LinkTile
+      href={community.href}
+      icon={<Logo logo={community.logo} mark={mark} />}
+      title={community.name}
+      line={community.what}
+    />
   );
 }
 
-function Events({ buildDay }: { readonly buildDay: string }): React.JSX.Element {
-  const { id, title, lede, count, all } = communityPage.events;
+/** The communities: each group's plain grey name, then its tiles; then the day they were checked. */
+function Communities(): React.JSX.Element {
+  const { note } = communities;
   return (
-    <LearnSection id={id} title={title} lede={lede}>
-      <CommunityEvents
-        events={communityEvents(buildDay)}
-        buildDay={buildDay}
-        count={count}
-        all={all}
-      />
-    </LearnSection>
-  );
-}
-
-function Wider(): React.JSX.Element {
-  return (
-    <LearnSection id={wider.id} title={wider.title} lede={wider.lede} band>
-      <div className="cm-list">
-        {wider.links.map((link) => (
-          <a className="cm-c" key={link.name} href={link.url} {...offSiteProps(link.url)}>
-            <b>
-              {link.name} <ExternalArrow />
-            </b>
-            <small>{link.line}</small>
-            <NewTabHint href={link.url} />
-          </a>
-        ))}
-      </div>
-    </LearnSection>
-  );
-}
-
-/** The closing card, one link to /design-partners. No id and no heading, as the mock draws it. */
-function Shape(): React.JSX.Element {
-  return (
-    <section className={sectionClass()}>
+    <section className={sectionClass()} id={communities.id} aria-labelledby={`${communities.id}-h`}>
       <div className="wrap">
-        <a className="cm-shape" href={shape.href}>
-          <span>
-            <b>{shape.title}</b>
-            <small>{named(shape.line)}</small>
-          </span>
-          <span className="fx-read">
-            {shape.go} <Arrow />
-          </span>
-        </a>
+        <div className="sec-hrow">
+          <h2 id={`${communities.id}-h`}>{communities.title}</h2>
+        </div>
+        {communities.groups.map((group) => (
+          <div className="cm-sub" key={group.name}>
+            <h3 className="cm-sl">{group.name}</h3>
+            <div className="dt-grid">
+              {group.communities.map((community, index) => (
+                <CommunityTile
+                  community={community}
+                  mark={`cm-${group.name.toLowerCase()}-${index}`}
+                  key={community.href}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+        <p className="cm-note">
+          {note.before}
+          {communities.checked}
+          {note.ask}
+          <a href={`mailto:${note.email}`}>{note.email}</a>
+          {note.end}
+        </p>
       </div>
     </section>
   );
 }
 
-export function CommunityPage({
-  buildDay,
-}: {
-  /** The build's day ("2026-10-19"), which trims the events. */
-  readonly buildDay: string;
-}): React.JSX.Element {
+/** More from Zoorik: two pages of this site, as the Read more tiles. */
+function More(): React.JSX.Element {
+  return (
+    <section className={sectionClass()} id={more.id} aria-labelledby={`${more.id}-h`}>
+      <div className="wrap">
+        <div className="sec-hrow">
+          <h2 id={`${more.id}-h`}>{named(more.title)}</h2>
+        </div>
+        <div className="dt-grid dt-2x2">
+          {more.tiles.map((tile) => (
+            <LinkTile
+              key={tile.href}
+              href={tile.href}
+              title={tile.title}
+              line={<NamedText text={tile.line} name={NAMES} />}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function CommunityPage(): React.JSX.Element {
   return (
     <LearnFrame hero={{ title: named(hero.title), deck: named(hero.deck) }}>
-      <Reddit />
-      <Channels />
-      <Events buildDay={buildDay} />
-      <Wider />
-      <Shape />
+      <Ours />
+      <Communities />
+      <More />
     </LearnFrame>
   );
 }

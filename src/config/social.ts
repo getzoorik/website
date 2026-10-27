@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 
-import { site } from "@/config/site";
+import { routes, site } from "@/config/site";
+import { alternativesPages, versusPages, versusRoute } from "@/content/learn-compare";
+import type { ProductId } from "@/content/products";
 
 /** The X account the footer links to (x.com/getzoorik), named as every page's card site and creator. */
 export const xHandle = "@getzoorik";
@@ -38,27 +40,497 @@ export const shareImage = (url: ShareImage["url"], alt: string): ShareImage => (
 });
 
 /**
- * The pages with a card of their own, drawn by the brand kit and copied byte
- * for byte under a new name each. Every other page uses the home card above.
- * Each `alt` reads the card: its mark, then its words. A Learn article's own
- * card is in its file (`Article.shareCard`); an article without one takes the
- * /learn card.
+ * Every page's own card, by its address: the brand card above with the page's own words where the tagline sits,
+ * drawn by the brand kit from these same words and stored as a palette PNG in `public/og/pages/`. Platforms cache a
+ * card by its URL, so a redrawn card gets a new file name. Each `alt` reads the card: its name, then its words. The
+ * home page has none of its own: it shows the brand card.
  */
-const card = (name: string, alt: string): ShareImage =>
-  shareImage(`/og/zoorik-${name}-1200x630.png`, alt);
+/** A product's comparison pages, its alternatives page then its versus page: they share one card. */
+const comparisonsOf = (product: ProductId): `/${string}`[] => [
+  ...alternativesPages
+    .filter((page) => page.product === product)
+    .map((page) => page.route as `/${string}`),
+  ...versusPages.filter((page) => page.product === product).map(versusRoute),
+];
 
-export const pageCards = {
-  coral: card(
-    "coral",
-    "Coral. Kubernetes cost optimization. Kubernetes cost optimization on AKS and EKS.",
+const CARDS: readonly {
+  readonly file: string;
+  readonly words: string;
+  readonly paths: readonly `/${string}`[];
+}[] = [
+  { file: "coral", words: "Kubernetes cost optimization on AKS and EKS", paths: ["/coral"] },
+  { file: "amoeba", words: "Block storage cost optimization on Azure and AWS", paths: ["/amoeba"] },
+  { file: "assessment", words: "Free cloud cost assessment", paths: ["/assessment"] },
+  { file: "docs", words: "Product guides, FAQs and one-pagers", paths: ["/docs"] },
+  { file: "coral-guide", words: "Coral product guide", paths: ["/coral/guide"] },
+  { file: "coral-faq", words: "Coral FAQ", paths: ["/coral/faq"] },
+  { file: "amoeba-guide", words: "Amoeba product guide", paths: ["/amoeba/guide"] },
+  { file: "amoeba-faq", words: "Amoeba FAQ", paths: ["/amoeba/faq"] },
+  {
+    file: "docs-install-coral-with-helm",
+    words: "Install Coral with Helm",
+    paths: ["/docs/install-coral-with-helm"],
+  },
+  {
+    file: "docs-install-coral-with-terraform",
+    words: "Install Coral with Terraform + Helm",
+    paths: ["/docs/install-coral-with-terraform"],
+  },
+  {
+    file: "docs-contributing",
+    words: "Contributing to our open source",
+    paths: ["/docs/contributing"],
+  },
+  { file: "open-source", words: "Open source", paths: ["/open-source"] },
+  { file: "learn", words: "Cloud cost optimization guides", paths: ["/learn"] },
+  {
+    file: "cloud-cost-optimization-tools",
+    words: "Cloud cost optimization tools",
+    paths: [routes.cloudCostTools],
+  },
+  {
+    file: "kubernetes-cost-tools",
+    words: "Kubernetes cost tools compared",
+    paths: comparisonsOf("coral"),
+  },
+  {
+    file: "block-storage-tools",
+    words: "Block storage tools compared",
+    paths: comparisonsOf("amoeba"),
+  },
+  {
+    file: "value-lab",
+    words: "What Coral and Amoeba reduced on real cloud bills",
+    paths: ["/value-lab"],
+  },
+  {
+    file: "value-lab-coral-dev-cluster",
+    words: "How we reduced our own cluster’s machine bill by 58%",
+    paths: ["/value-lab/coral-dev-cluster"],
+  },
+  { file: "events", words: "Cloud cost, FinOps and Kubernetes events", paths: ["/events"] },
+  { file: "news", words: "Cloud cost, Kubernetes and FinOps updates", paths: ["/news"] },
+  { file: "community", words: "FinOps and cloud cost communities", paths: ["/community"] },
+  { file: "about", words: "Who builds Coral and Amoeba", paths: ["/about"] },
+  { file: "careers", words: "Work with us, remotely", paths: ["/careers"] },
+  { file: "brand-assets", words: "The Zoorik logo, colours and words", paths: ["/brand-assets"] },
+  { file: "referrals", words: "Referral program", paths: ["/referrals"] },
+  { file: "partners", words: "Partner program", paths: ["/partners"] },
+  { file: "design-partners", words: "Design partner program", paths: ["/design-partners"] },
+  { file: "marketplaces", words: "Marketplaces, reviews and installs", paths: ["/marketplaces"] },
+  { file: "privacy", words: "Privacy policy", paths: ["/privacy"] },
+  { file: "terms", words: "Terms of use", paths: ["/terms"] },
+  { file: "security", words: "Security and data handling", paths: ["/security"] },
+  { file: "login", words: "Sign in", paths: ["/login"] },
+  {
+    file: "learn-azure-disk-cost-optimization",
+    words: "Azure disk cost optimization",
+    paths: ["/learn/azure-disk-cost-optimization"],
+  },
+  {
+    file: "learn-change-eks-node-group-instance-type",
+    words: "How to change an EKS node group instance type",
+    paths: ["/learn/change-eks-node-group-instance-type"],
+  },
+  {
+    file: "learn-cluster-autoscaler-not-scaling-down",
+    words: "Cluster Autoscaler not scaling down on AKS and EKS",
+    paths: ["/learn/cluster-autoscaler-not-scaling-down"],
+  },
+  {
+    file: "learn-find-unattached-disks-azure",
+    words: "How to find unattached disks in Azure and clean up",
+    paths: ["/learn/find-unattached-disks-azure"],
+  },
+  {
+    file: "learn-how-to-reduce-cloud-costs",
+    words: "How to reduce cloud costs: what moves the bill",
+    paths: ["/learn/how-to-reduce-cloud-costs"],
+  },
+  {
+    file: "learn-hpa-vs-vpa-vs-cluster-autoscaler",
+    words: "HPA vs VPA vs Cluster Autoscaler, plus Karpenter",
+    paths: ["/learn/hpa-vs-vpa-vs-cluster-autoscaler"],
+  },
+  {
+    file: "learn-kubernetes-cost-estimation",
+    words: "Kubernetes cost estimation for AKS and EKS",
+    paths: ["/learn/kubernetes-cost-estimation"],
+  },
+  {
+    file: "learn-kubernetes-pod-right-sizing",
+    words: "Kubernetes pod rebalancing",
+    paths: ["/learn/kubernetes-pod-right-sizing"],
+  },
+  {
+    file: "learn-poor-architecture-cloud-bill",
+    words: "How poor architecture increases your cloud bill",
+    paths: ["/learn/poor-architecture-cloud-bill"],
+  },
+  {
+    file: "learn-reduce-kubernetes-cost",
+    words: "How to reduce Kubernetes cost: requests, then nodes",
+    paths: ["/learn/reduce-kubernetes-cost"],
+  },
+  {
+    file: "learn-shrink-azure-managed-disk",
+    words: "Can a managed disk shrink?",
+    paths: ["/learn/shrink-azure-managed-disk"],
+  },
+  { file: "learn-vpa-vs-hpa", words: "VPA vs HPA", paths: ["/learn/vpa-vs-hpa"] },
+  {
+    file: "learn-azure-vm-disk-usage",
+    words: "Azure VM disk usage: check used vs provisioned",
+    paths: ["/learn/azure-vm-disk-usage"],
+  },
+  {
+    file: "learn-check-ebs-volume-usage",
+    words: "How to check EBS volume usage: used vs paid space",
+    paths: ["/learn/check-ebs-volume-usage"],
+  },
+  {
+    file: "learn-keda-vs-karpenter",
+    words: "KEDA vs Karpenter: pods, nodes and pod requests",
+    paths: ["/learn/keda-vs-karpenter"],
+  },
+  {
+    file: "learn-kubernetes-allocatable-vs-capacity",
+    words: "Kubernetes allocatable vs capacity on AKS and EKS",
+    paths: ["/learn/kubernetes-allocatable-vs-capacity"],
+  },
+  {
+    file: "learn-limitrange-vs-resourcequota",
+    words: "LimitRange vs ResourceQuota: what caps requests",
+    paths: ["/learn/limitrange-vs-resourcequota"],
+  },
+  {
+    file: "learn-safe-to-evict-do-not-disrupt",
+    words: "Safe-to-evict and do-not-disrupt annotations",
+    paths: ["/learn/safe-to-evict-do-not-disrupt"],
+  },
+  /* The glossary's hub, then each term by its h1. */
+  {
+    file: "glossary",
+    words: "Cloud cost glossary",
+    paths: ["/learn/glossary"],
+  },
+  {
+    file: "glossary-amortized-cost",
+    words: "What is amortized cost in Azure and AWS?",
+    paths: ["/learn/glossary/amortized-cost"],
+  },
+  {
+    file: "glossary-aws-instance-families",
+    words: "What are AWS instance families?",
+    paths: ["/learn/glossary/aws-instance-families"],
+  },
+  {
+    file: "glossary-azure-cobalt",
+    words: "What is Azure Cobalt?",
+    paths: ["/learn/glossary/azure-cobalt"],
+  },
+  {
+    file: "glossary-azure-disk-sizes",
+    words: "What are Azure disk sizes (P10, P30, E10)?",
+    paths: ["/learn/glossary/azure-disk-sizes"],
+  },
+  {
+    file: "glossary-azure-hybrid-benefit",
+    words: "What is Azure Hybrid Benefit?",
+    paths: ["/learn/glossary/azure-hybrid-benefit"],
+  },
+  {
+    file: "glossary-azure-macc",
+    words: "What is Azure MACC?",
+    paths: ["/learn/glossary/azure-macc"],
+  },
+  {
+    file: "glossary-azure-managed-disk",
+    words: "What is an Azure managed disk?",
+    paths: ["/learn/glossary/azure-managed-disk"],
+  },
+  {
+    file: "glossary-azure-premium-ssd",
+    words: "What is Premium SSD in Azure?",
+    paths: ["/learn/glossary/azure-premium-ssd"],
+  },
+  {
+    file: "glossary-azure-standard-hdd",
+    words: "What is Azure Standard HDD?",
+    paths: ["/learn/glossary/azure-standard-hdd"],
+  },
+  {
+    file: "glossary-azure-temporary-disk",
+    words: "What is the Azure temporary disk?",
+    paths: ["/learn/glossary/azure-temporary-disk"],
+  },
+  {
+    file: "glossary-azure-ultra-disk",
+    words: "What is Ultra Disk in Azure?",
+    paths: ["/learn/glossary/azure-ultra-disk"],
+  },
+  {
+    file: "glossary-azure-vm-series",
+    words: "What is an Azure VM series?",
+    paths: ["/learn/glossary/azure-vm-series"],
+  },
+  {
+    file: "glossary-blended-vs-unblended-cost",
+    words: "Blended vs unblended cost: meaning and cost impact",
+    paths: ["/learn/glossary/blended-vs-unblended-cost"],
+  },
+  {
+    file: "glossary-block-storage",
+    words: "What is block storage?",
+    paths: ["/learn/glossary/block-storage"],
+  },
+  {
+    file: "glossary-burstable-instance",
+    words: "What is a burstable instance?",
+    paths: ["/learn/glossary/burstable-instance"],
+  },
+  {
+    file: "glossary-cloud-chargeback",
+    words: "What is chargeback in cloud computing?",
+    paths: ["/learn/glossary/cloud-chargeback"],
+  },
+  {
+    file: "glossary-cloud-cost-anomaly-detection",
+    words: "What is cloud cost anomaly detection?",
+    paths: ["/learn/glossary/cloud-cost-anomaly-detection"],
+  },
+  {
+    file: "glossary-cloud-cost-governance",
+    words: "What is cloud cost governance?",
+    paths: ["/learn/glossary/cloud-cost-governance"],
+  },
+  {
+    file: "glossary-cloud-tagging-strategy",
+    words: "What is a cloud tagging strategy?",
+    paths: ["/learn/glossary/cloud-tagging-strategy"],
+  },
+  {
+    file: "glossary-cloud-tco",
+    words: "What is cloud TCO (total cost of ownership)?",
+    paths: ["/learn/glossary/cloud-tco"],
+  },
+  {
+    file: "glossary-cloud-unit-economics",
+    words: "What is cloud unit economics?",
+    paths: ["/learn/glossary/cloud-unit-economics"],
+  },
+  {
+    file: "glossary-cost-allocation-tags",
+    words: "What are cost allocation tags?",
+    paths: ["/learn/glossary/cost-allocation-tags"],
+  },
+  {
+    file: "glossary-daemonset",
+    words: "What is a DaemonSet in Kubernetes?",
+    paths: ["/learn/glossary/daemonset"],
+  },
+  {
+    file: "glossary-df-vs-du",
+    words: "df vs du: meaning and cost impact",
+    paths: ["/learn/glossary/df-vs-du"],
+  },
+  {
+    file: "glossary-disk-latency",
+    words: "What is disk latency?",
+    paths: ["/learn/glossary/disk-latency"],
+  },
+  {
+    file: "glossary-disk-snapshot",
+    words: "What is a disk snapshot in Azure and AWS?",
+    paths: ["/learn/glossary/disk-snapshot"],
+  },
+  {
+    file: "glossary-disk-throughput",
+    words: "What is disk throughput?",
+    paths: ["/learn/glossary/disk-throughput"],
+  },
+  {
+    file: "glossary-ebs-gp3",
+    words: "What is gp3 in AWS?",
+    paths: ["/learn/glossary/ebs-gp3"],
+  },
+  {
+    file: "glossary-ebs-optimized-instance",
+    words: "What is an EBS-optimized instance?",
+    paths: ["/learn/glossary/ebs-optimized-instance"],
+  },
+  {
+    file: "glossary-ebs-volume",
+    words: "What is an EBS volume?",
+    paths: ["/learn/glossary/ebs-volume"],
+  },
+  {
+    file: "glossary-effective-savings-rate",
+    words: "What is effective savings rate (ESR)?",
+    paths: ["/learn/glossary/effective-savings-rate"],
+  },
+  {
+    file: "glossary-egress-cost",
+    words: "What is egress cost in the cloud?",
+    paths: ["/learn/glossary/egress-cost"],
+  },
+  {
+    file: "glossary-eks-auto-mode",
+    words: "What is EKS Auto Mode?",
+    paths: ["/learn/glossary/eks-auto-mode"],
+  },
+  {
+    file: "glossary-ephemeral-os-disk",
+    words: "What is an ephemeral OS disk?",
+    paths: ["/learn/glossary/ephemeral-os-disk"],
+  },
+  {
+    file: "glossary-finops",
+    words: "What is FinOps?",
+    paths: ["/learn/glossary/finops"],
+  },
+  {
+    file: "glossary-finops-maturity-model",
+    words: "What is the FinOps maturity model?",
+    paths: ["/learn/glossary/finops-maturity-model"],
+  },
+  {
+    file: "glossary-finops-personas",
+    words: "What are FinOps personas?",
+    paths: ["/learn/glossary/finops-personas"],
+  },
+  {
+    file: "glossary-horizontal-pod-autoscaler",
+    words: "What is HPA (Horizontal Pod Autoscaler)?",
+    paths: ["/learn/glossary/horizontal-pod-autoscaler"],
+  },
+  {
+    file: "glossary-instance-store",
+    words: "What is instance store in AWS?",
+    paths: ["/learn/glossary/instance-store"],
+  },
+  {
+    file: "glossary-iops",
+    words: "What is IOPS?",
+    paths: ["/learn/glossary/iops"],
+  },
+  {
+    file: "glossary-kubernetes-cluster-utilization",
+    words: "What is Kubernetes cluster utilization?",
+    paths: ["/learn/glossary/kubernetes-cluster-utilization"],
+  },
+  {
+    file: "glossary-kubernetes-cost-allocation",
+    words: "What is Kubernetes cost allocation?",
+    paths: ["/learn/glossary/kubernetes-cost-allocation"],
+  },
+  {
+    file: "glossary-kubernetes-cpu-throttling",
+    words: "What is CPU throttling in Kubernetes?",
+    paths: ["/learn/glossary/kubernetes-cpu-throttling"],
+  },
+  {
+    file: "glossary-kubernetes-headroom",
+    words: "What is headroom in Kubernetes?",
+    paths: ["/learn/glossary/kubernetes-headroom"],
+  },
+  {
+    file: "glossary-kubernetes-qos-class",
+    words: "What is a QoS class in Kubernetes?",
+    paths: ["/learn/glossary/kubernetes-qos-class"],
+  },
+  {
+    file: "glossary-kubernetes-resource-limits",
+    words: "What are resource limits in Kubernetes?",
+    paths: ["/learn/glossary/kubernetes-resource-limits"],
+  },
+  {
+    file: "glossary-kubernetes-resource-requests",
+    words: "What are resource requests in Kubernetes?",
+    paths: ["/learn/glossary/kubernetes-resource-requests"],
+  },
+  {
+    file: "glossary-max-pods-per-node",
+    words: "Max pods per node: meaning and cost impact",
+    paths: ["/learn/glossary/max-pods-per-node"],
+  },
+  {
+    file: "glossary-node-pool",
+    words: "What is a node pool in Kubernetes?",
+    paths: ["/learn/glossary/node-pool"],
+  },
+  {
+    file: "glossary-on-demand-instance",
+    words: "What is an on-demand instance?",
+    paths: ["/learn/glossary/on-demand-instance"],
+  },
+  {
+    file: "glossary-pod-disruption-budget",
+    words: "What is a Pod Disruption Budget (PDB)?",
+    paths: ["/learn/glossary/pod-disruption-budget"],
+  },
+  {
+    file: "glossary-provisioned-iops",
+    words: "What is provisioned IOPS?",
+    paths: ["/learn/glossary/provisioned-iops"],
+  },
+  {
+    file: "glossary-reserved-instance",
+    words: "What is a reserved instance?",
+    paths: ["/learn/glossary/reserved-instance"],
+  },
+  {
+    file: "glossary-rightsizing",
+    words: "What is rightsizing in cloud?",
+    paths: ["/learn/glossary/rightsizing"],
+  },
+  {
+    file: "glossary-savings-plan",
+    words: "What is a savings plan (AWS and Azure)?",
+    paths: ["/learn/glossary/savings-plan"],
+  },
+  {
+    file: "glossary-savings-plan-coverage-vs-utilization",
+    words: "What is savings plan coverage vs utilization?",
+    paths: ["/learn/glossary/savings-plan-coverage-vs-utilization"],
+  },
+  {
+    file: "glossary-showback",
+    words: "What is showback in FinOps?",
+    paths: ["/learn/glossary/showback"],
+  },
+  {
+    file: "glossary-spot-instance",
+    words: "What is a spot instance?",
+    paths: ["/learn/glossary/spot-instance"],
+  },
+  {
+    file: "glossary-thin-provisioning",
+    words: "What is thin provisioning?",
+    paths: ["/learn/glossary/thin-provisioning"],
+  },
+  {
+    file: "glossary-vertical-pod-autoscaler",
+    words: "What is VPA (Vertical Pod Autoscaler)?",
+    paths: ["/learn/glossary/vertical-pod-autoscaler"],
+  },
+];
+
+const sentence = (words: string): string => (/[.?!]$/.test(words) ? words : `${words}.`);
+
+export const pageCards: Readonly<Record<string, ShareImage>> = Object.fromEntries(
+  CARDS.flatMap(({ file, words, paths }) =>
+    paths.map((path) => [path, shareImage(`/og/pages/${file}.png`, `Zoorik. ${sentence(words)}`)]),
   ),
-  amoeba: card(
-    "amoeba",
-    "Amoeba. Block storage cost optimization. Block storage cost optimization on Azure and AWS.",
-  ),
-  assessment: card("assessment", "Zoorik. Free cloud cost assessment."),
-  learn: card("learn", "Zoorik. Kubernetes and block storage cost, explained."),
-} as const;
+);
+
+/** A page's card: its own; else, for a glossary term, the glossary's; for a Learn article, the /learn card; else the
+ *  brand card. */
+export const cardFor = (path: string): ShareImage =>
+  pageCards[path] ??
+  (path.startsWith("/learn/glossary/") ? pageCards["/learn/glossary"] : undefined) ??
+  (path.startsWith("/learn/") ? pageCards["/learn"] : undefined) ??
+  socialImage;
 
 type OpenGraph = NonNullable<Metadata["openGraph"]>;
 
@@ -85,7 +557,7 @@ export function pageOpenGraph(
 ): OpenGraph {
   return {
     ...baseOpenGraph,
-    ...(image === undefined ? {} : { images: [image] }),
+    images: [image ?? cardFor(path)],
     url: path,
     ...copy,
   };

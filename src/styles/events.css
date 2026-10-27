@@ -1,11 +1,12 @@
 /* Zoorik marketing: `/events`, ported from the mock's `<style>` block, whole, rule for rule and in its order: the
- * filters and their chips, the count and the empty state, the date tile, the topic's tag, the place, the description,
- * the Details and their rows, the event's link, the source line, the navy "Next up" panel, the month groups and the
- * cards, then the two narrow widths and reduced motion.
+ * search box and the two date menus, "More events", the filters and their chips, the count and the empty state, the
+ * date tile, the topic's tag, the place, the description, the Details and their rows, the event's link, the source
+ * line, "Next up" and its banner, the month groups, the cards and their banners, then the two narrow widths and
+ * reduced motion.
  *
  * ─── EVERY SELECTOR IS THE PAGE'S OWN ──────────────────────────────────────────
- * Each one names an `ev-` or `evc` class, which no other page draws, so a visit here cannot restyle another page
- * (the App Router keeps a visited route's sheet in the document). One mock rule is not ported: the page-wide
+ * Each one names an `ev-`, `evb-` or `evc` class, which no other page draws, so a visit here cannot restyle another
+ * page (the App Router keeps a visited route's sheet in the document). One mock rule is not ported: the page-wide
  * `[hidden]{display:none!important}`, which Tailwind's preflight already sets for every page.
  *
  * ─── THE MOCK'S `:root` AND BASE RULES ARE NOT COPIED ─────────────────────────
@@ -13,6 +14,19 @@
  * `.doc-body`). Where a preflight rule would change the mock's computed result, a "repo:" rule says so.
  *
  * Loaded only by `src/app/events/page.tsx`. */
+.ev-find{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 20px}
+.ev-search{display:flex;align-items:center;gap:10px;flex:1 1 320px;height:44px;padding:0 14px;border:1px solid var(--line-ctl,#868DAB);border-radius:var(--r-ctl);background:var(--bg)}
+.ev-search svg{width:16px;height:16px;flex:none;color:var(--muted)}
+.ev-search input{flex:1;min-width:0;height:100%;border:0;background:transparent;font:500 .9375rem/1 var(--sans);color:var(--text);outline:none}
+/* repo: Tailwind's preflight zeroes a field's padding and sets its own placeholder colour; the mock's search box keeps
+   the browser's own for both, so the two rules below hand them back to the browser */
+.ev-search input{padding:revert}
+.ev-search input::placeholder{color:revert;opacity:revert}
+.ev-search:focus-within,.ev-sel select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.ev-sel select{height:44px;padding:0 12px;border:1px solid var(--line-ctl,#868DAB);border-radius:var(--r-ctl);background:var(--bg);font:500 .9375rem/1 var(--sans);color:var(--text);cursor:pointer}
+.ev-morebtn{display:flex;justify-content:center;margin-top:32px}
+.ev-morebtn button{font:500 .9375rem/1 var(--sans);padding:13px 20px;border:1px solid var(--line-ctl,#868DAB);border-radius:var(--r-ctl);background:var(--bg);color:var(--text);cursor:pointer}
+@media(hover:hover){.ev-morebtn button:hover{background:color-mix(in srgb,var(--text) 4%,#fff)}}
 .ev-filters{display:flex;flex-wrap:wrap;align-items:center;gap:14px 32px;margin:0 0 40px;padding-bottom:24px;border-bottom:1px solid var(--line)}
 .ev-fg{display:flex;align-items:center;gap:12px;min-width:0}
 .ev-fl{font-size:var(--fs-micro);font-weight:500;color:var(--muted)}
@@ -48,24 +62,36 @@
 .ev-out:hover{text-decoration:underline}
 .ev-out:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
 .ev-src{margin-top:48px;font-size:var(--fs-micro);color:var(--muted)}
-.ev-next{position:relative;overflow:hidden;margin:0 0 56px;padding:40px 44px;border-radius:var(--r-shell);background:#050B3D;color:#FAF7F3}
-.ev-next::after{content:"";position:absolute;right:-120px;top:-160px;width:440px;height:440px;border-radius:50%;background:radial-gradient(closest-side,rgba(59,91,245,.35),transparent);pointer-events:none}
-.ev-next-in{position:relative;max-width:46rem}
-.ev-eyebrow{margin:0;font:500 .75rem/1 var(--code);letter-spacing:.08em;text-transform:uppercase;color:rgba(250,247,243,.7)}
-.ev-next h2{margin:12px 0 0;font-size:var(--fs-h2);font-weight:600;line-height:1.15;letter-spacing:-.025em;color:#FAF7F3}
-.ev-next-when{margin:10px 0 0;font-size:1rem;color:rgba(250,247,243,.86)}
-.ev-next-d{margin:12px 0 22px;font-size:.9375rem;line-height:1.6;color:rgba(250,247,243,.72)}
-.ev-out-lg{padding:12px 18px;border-radius:var(--r-ctl);background:#FAF7F3;color:#050B3D;font-size:.875rem}
-.ev-out-lg:hover{text-decoration:none;background:#fff}
+.ev-next{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);margin:0 0 56px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--bg);overflow:hidden}
+.ev-next-in{padding:clamp(28px,3.5vw,44px)}
+.ev-eyebrow{margin:0;font-size:var(--fs-micro);font-weight:500;color:var(--muted)}
+.ev-next h2{margin:10px 0 0;font-size:var(--fs-h2);font-weight:600;line-height:1.15;letter-spacing:-.025em;color:var(--text)}
+.ev-next-when{margin:10px 0 0;font-size:1rem;color:var(--text)}
+.ev-next-d{margin:12px 0 22px;font-size:.9375rem;line-height:1.6;color:var(--muted)}
+.ev-out-lg{padding:12px 18px;border-radius:var(--r-ctl);background:var(--text);color:#fff;font-size:.875rem}
+.ev-out-lg:hover{text-decoration:none;background:#000}
+.ev-next-ban{position:relative;min-height:240px;background:var(--surface-2);border-left:1px solid var(--line)}
+.ev-next-ban img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ev-next-ban.is-plain{display:flex;flex-direction:column;justify-content:flex-end;padding:28px}
 .evc-sec[id],.evc-sec{scroll-margin-top:calc(var(--nav-h) + 16px)}
 .evc-sec + .evc-sec{margin-top:48px}
 .evc-sec h2{margin:0 0 16px;font-size:1.25rem;font-weight:600;letter-spacing:-.015em}
 .evc-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
-.evc{display:flex;flex-direction:column;padding:20px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--bg);transition:border-color var(--d-fast) var(--ease),box-shadow var(--d-fast) var(--ease)}
+.evc{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:var(--r-card);background:var(--bg);overflow:hidden;transition:border-color var(--d-fast) var(--ease),box-shadow var(--d-fast) var(--ease)}
+.evc-ban{position:relative;aspect-ratio:2/1;background:var(--surface-2);border-bottom:1px solid var(--line)}
+.evc-ban img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.evc-ban.is-logo,.ev-next-ban.is-logo{background:#fff}
+.evc-ban.is-logo img,.ev-next-ban.is-logo img{inset:18px 24px;width:calc(100% - 48px);height:calc(100% - 36px);object-fit:contain}
+.evc-ban.is-plain{display:flex;flex-direction:column;justify-content:flex-end;padding:16px 20px}
+.evb-c{font-size:1.5rem;font-weight:600;line-height:1.15;letter-spacing:-.02em;color:var(--text)}
+.ev-next-ban .evb-c{font-size:2.25rem}
+.evb-s{margin-top:4px;font-size:.875rem;color:var(--muted)}
+.evc-ban .ev-date{position:absolute;left:14px;top:14px;min-width:56px;height:56px;background:#fff}
+.evc-b{display:flex;flex-direction:column;align-items:flex-start;padding:16px 20px 20px}
+.evc-b .ev-tag{margin-bottom:10px}
 .evc:hover{border-color:var(--card-hover);box-shadow:var(--shadow-2)}
-.evc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
 .evc h3{margin:0;font-size:1.0625rem;font-weight:600;line-height:1.35;letter-spacing:-.01em}
-.evc-foot{margin-top:16px;padding-top:14px;border-top:1px solid var(--line-soft)}
+.evc-foot{align-self:stretch;margin-top:16px;padding-top:14px;border-top:1px solid var(--line-soft)}
 @media(max-width:1000px){.evc-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){
   .ev-filters{gap:12px;margin-bottom:28px}
@@ -76,6 +102,7 @@
   .ev-count{margin:0}
   .ev-empty{margin-top:-8px}
   .evc-grid{grid-template-columns:minmax(0,1fr)}
-  .ev-next{padding:28px 22px}
+  .ev-next{grid-template-columns:minmax(0,1fr)}.ev-next-ban{min-height:180px;border-left:0;border-top:1px solid var(--line);order:-1}
+  .ev-sel{flex:1 1 40%}.ev-sel select{width:100%}
 }
 @media(prefers-reduced-motion:reduce){.ev-chev,.evc,.ev-chips button{transition:none}}

@@ -29,8 +29,7 @@ export interface ProductSectionContent {
     readonly label: string;
   };
   /** The text link after the button, to the product's own page: what the page
-   *  is about, by its search term and the product's name ("Kubernetes cost
-   *  optimization with Coral"). */
+   *  is about, by its category alone ("Kubernetes cost optimization"). */
   readonly more: string;
   /**
    * What the How it works figures are (from `savings.ts`),

@@ -3,8 +3,7 @@
  *
  * ─── ONE PLACE, BECAUSE THE WORDING IS A RULE ──────────────────────────────
  * Each product has a name and one exact descriptor, and the same two appear in
- * the header's Product guide and FAQ menus, the hero lockups, the Docs hub,
- * on `/login` and on `/assessment`:
+ * the header's Docs menu, the Docs hub, on `/login` and on `/assessment`:
  *
  *   Coral is "Kubernetes cost optimization on AKS and EKS".
  *   Amoeba is "Block storage cost optimization on Azure and AWS".

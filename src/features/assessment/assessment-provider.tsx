@@ -61,8 +61,8 @@ export function AssessmentProvider({ children }: { children: ReactNode }): React
   const [own, setOwn] = useState<ProductId | null>(null);
   const product = own ?? productFromQuery(query);
 
-  /* `html[data-ap]` stays the product the page is on after the first paint too, so the header, which sits outside
-     this provider, marks that product's row in its Assessment menu and drawer (site-nav.tsx). */
+  /* `html[data-ap]` stays the product the page is on after the first paint too, so the sheet keeps showing that
+     product's lines (`.ax-lines` in assessment.css). */
   useEffect(() => {
     if (arrived) document.documentElement.setAttribute("data-ap", product);
   }, [arrived, product]);

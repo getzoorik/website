@@ -15,7 +15,7 @@ import { routes } from "@/config/site";
 export const openSourceUpdated = "16 October 2026";
 
 /** /open-source prints no date: the day its content last changed, for the sitemap. Move it in the PR that changes it. */
-export const openSourceLastUpdated = "20 October 2026";
+export const openSourceLastUpdated = "21 October 2026";
 
 export type GuideBlock =
   | { readonly kind: "p"; readonly text: string }
@@ -36,7 +36,7 @@ export type GuideBlock =
 
 export interface OpenSourceGuide {
   readonly route: string;
-  /** The `<title>` (through the site's "%s · Zoorik" template) and the description. */
+  /** The `<title>` (through the site's "%s | Zoorik" template) and the description. */
   readonly meta: { readonly title: string; readonly description: string };
   readonly hero: { readonly title: string; readonly deck: string };
   /** The short answer under the byline, where the guide has one. */
@@ -399,7 +399,7 @@ export const openSourceGuides: Readonly<Record<OpenSourceGuideId, OpenSourceGuid
   contributing: {
     route: "/docs/contributing",
     meta: {
-      title: "Contributing to Zoorik’s open source",
+      title: "Contributing to our open source",
       description:
         "How to contribute to Zoorik's open-source repositories: pick an issue, run a repository locally, open a pull request, and what to expect from review.",
     },

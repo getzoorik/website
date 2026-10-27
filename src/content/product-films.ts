@@ -7,9 +7,8 @@ import type { ProductId } from "@/content/products";
  * ─── YOUTUBE ONLY ──────────────────────────────────────────────────────────
  * Each film is 37 MB, over Cloudflare's 25 MiB limit for a static file, so the
  * site can never serve one itself. Both are on YouTube, and each chapter opens
- * the film at its second. 🔴 A film whose `url` is null draws neither the film
- * band nor the hero's "Watch the 2-minute film", so a page never leads to a
- * film that is not there.
+ * the film at its second. 🔴 A film whose `url` is null draws no film band, so
+ * a page never leads to a film that is not there.
  *
  * The posters are the films' white YouTube thumbnails, byte for byte, in place
  * of the mock's dark frame.
@@ -26,7 +25,8 @@ export interface ProductFilm {
   readonly url: string | null;
   /** The band's h2; the product's name in it is kept out of translation. */
   readonly title: string;
-  /** "m:ss", on the poster's tag; its minutes name the film ("the 2-minute film"). */
+  /** "m:ss", in the line under the film ("Watch the 2:05 film on YouTube"); its
+   *  minutes name the film ("the 2-minute film"). */
   readonly length: string;
   /** 1920×1080, from `public/films/`. */
   readonly poster: string;
@@ -36,10 +36,9 @@ export interface ProductFilm {
 /** The channel the site already lists: the organisation's `sameAs` (`socialProfiles`). */
 export const youtubeChannel = "https://www.youtube.com/@getzoorik";
 
-/** The words both bands share, verbatim from the mock's film band and the hero's button. */
+/** The words both bands share, verbatim from the mock's film band. */
 export const filmWords = {
-  /** The hero's second button, and the poster's name, around the film's minutes. */
-  watch: (minutes: string) => `Watch the ${minutes}-minute film`,
+  /** The poster's name, around the film's minutes. */
   poster: (minutes: string, product: string) =>
     `Watch the ${minutes}-minute ${product} film on YouTube (opens in a new tab)`,
   /** Over a film that started muted: its sound on, in place. */
@@ -47,8 +46,11 @@ export const filmWords = {
   /** The player's title, once it takes the poster's place. */
   player: (minutes: string, product: string) =>
     `${product}: the ${minutes}-minute film, on YouTube`,
-  tag: "Watch on YouTube",
   chapters: "Chapters of the film",
+  /** The line under the film (owner, 23 Oct 2026): the film on YouTube at its
+   *  length, then the channel. */
+  youtube: (length: string) => `Watch the ${length} film on YouTube`,
+  between: " · ",
   more: "More films on",
   channel: "our YouTube channel",
 } as const;

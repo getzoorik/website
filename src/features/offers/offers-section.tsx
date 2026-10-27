@@ -1,10 +1,11 @@
 import type { CSSProperties } from "react";
 
 import { BrandMark } from "@/components/brand/brand-mark";
+import { PlatformMark } from "@/components/brand/platform-mark";
 import { ProductMark } from "@/components/brand/product-marks";
 import { Arrow } from "@/components/primitives/arrow";
 import { NamedText } from "@/components/primitives/named-text";
-import { offersContent, type OfferRow } from "@/content/offers";
+import { offersContent, type OfferRow, type OfferTag } from "@/content/offers";
 import { productOrder, products, type ProductId } from "@/content/products";
 import { savingsFigures, type SavingsKey } from "@/content/savings";
 
@@ -77,11 +78,44 @@ function Counter({
 }
 
 /**
- * One row of the scale: its mark and name
- * over its caption, its band, its figure. The band is soft from 0 up to the
- * range and firm across it, so "up to 50%" reads at a glance; it is
- * `aria-hidden`, since the figure already says it. `--i` is the row's place,
- * from which the sheet staggers the rows 260ms apart.
+ * What a range is a share of, as tags: the caption's words for a screen
+ * reader, and on screen the clouds' marks with their names, as the product
+ * sections draw them (`.chips-g > .chip`, pills). The tags are hidden from
+ * assistive tech, as the caption already says them. Each Azure mark names its
+ * gradients after its row and place, unique in the document.
+ */
+function Tags({
+  caption,
+  tags,
+  row,
+}: {
+  readonly caption: string;
+  readonly tags: readonly OfferTag[];
+  readonly row: SavingsKey;
+}): React.JSX.Element {
+  return (
+    <p className="ofx-cap ofx-tags">
+      <span className="sr-only">{caption}</span>
+      <span className="chips-g" aria-hidden="true">
+        {tags.map((tag, place) => (
+          <span className="chip" key={tag.text}>
+            {tag.cloud ? (
+              <PlatformMark platform={tag.cloud} idSuffix={`ofx-${row}-${place}`} />
+            ) : null}
+            {tag.text}
+          </span>
+        ))}
+      </span>
+    </p>
+  );
+}
+
+/**
+ * One row of the ranges, on one line: its mark and name, its tags, its band,
+ * its figure. The band is soft from 0 up to the range and firm across it, so
+ * "up to 50%" reads at a glance; it is `aria-hidden`, since the figure already
+ * says it. `--i` is the row's place, from which the sheet staggers the rows
+ * 260ms apart.
  *
  * Its name is an h3, where the mock sets a `<p>`: the home page's other cards
  * name themselves in h3s, so a screen reader can move from one to the next by
@@ -110,7 +144,7 @@ function Row({
             <NamedText text={row.title} name={NAMES} />
           </span>
         </h3>
-        <p className="ofx-cap">{caption}</p>
+        <Tags caption={caption} tags={row.tags} row={row.figure} />
       </div>
       <div className="ofx-track" aria-hidden="true">
         <i className="lo" style={vars({ "--a": String(low) })} />
@@ -125,15 +159,16 @@ function Row({
 
 /**
  * What we offer (`#offers`): on the left the title, the qualifier and the free
- * assessment as a navy card with its way in; on the right one 0 to 100% scale,
- * a row for each range.
+ * assessment as a flat navy card with its way in; on the right the ranges, a
+ * row for each, on one line.
  *
  * The navy card's icon is Zoorik's own mark, its rings turning opposite ways
  * as the logo's do in the nav, one colour, white
  * on the navy.
  *
- * Side by side, stacked to 1100px, and to 760px each row its name and figure
- * over its band (`home-offers.css`). A server component: the side and each row
+ * Side by side above 1100px, the ranges' panel as tall as the card beside it,
+ * top to top and foot to foot; stacked to 1100px, and to 760px each row its
+ * name, tags and figure over its band (`home-offers.css`). A server component: the side and each row
  * carry `.mo-r`, and `HomeMotion`, the pass's one observer, gives each `.is-in`
  * once it is in view; from that the side fades up, and each row fades up,
  * sweeps its band and rolls its figure. The rows' list carries
@@ -142,13 +177,12 @@ function Row({
  * after its turn plays at once.
  *
  * The rows are a list, so a screen reader hears "list, 3 items"; `role="list"`
- * is restated because Safari drops it under `list-style:none`. The axis is
- * hidden from it, as each figure and caption already say what it is a share
- * of. The free card's label and each row's name are h3s under the section's
- * h2, so each can be reached by heading.
+ * is restated because Safari drops it under `list-style:none`. The free
+ * card's label and each row's name are h3s under the section's h2, so each can
+ * be reached by heading.
  */
 export function OffersSection(): React.JSX.Element {
-  const { free, axis } = offersContent;
+  const { free } = offersContent;
   return (
     <section className="sec ofx ofx-b" id="offers" aria-labelledby="offers-h">
       <div className="wrap">
@@ -173,16 +207,6 @@ export function OffersSection(): React.JSX.Element {
             </div>
           </div>
           <div className="ofx-scale">
-            <div className="ofx-axis" aria-hidden="true">
-              <span className="ofx-axis-l">{axis.label}</span>
-              <div className="ofx-ticks">
-                {axis.ticks.map((tick) => (
-                  <span style={vars({ "--t": String(tick) })} key={tick}>
-                    {`${tick}%`}
-                  </span>
-                ))}
-              </div>
-            </div>
             <ul className="ofx-rows" role="list" data-mo-clock="">
               {offersContent.rows.map((row, index) => (
                 <Row row={row} index={index} key={row.figure} />

@@ -63,7 +63,7 @@ export type AmoebaFaqQuestionId = (typeof amoebaFaqQuestionIds)[number];
 export const amoebaFaqPage = {
   path: routes.amoebaFaq,
   meta: {
-    title: "Amoeba FAQ: Azure managed disk and EBS cost",
+    title: "Amoeba FAQ",
     description:
       "Answers on how Amoeba keeps data safe, what restarts and when, how pools expand and shrink, and how it runs on Azure managed disks and Amazon EBS.",
   },

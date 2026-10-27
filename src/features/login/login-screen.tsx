@@ -102,7 +102,7 @@ export function LoginScreen(): JSX.Element {
           </footer>
         </section>
         <aside className="panel" aria-label="Zoorik">
-          {/* The home hero's frame, which removes itself if it fails and leaves
+          {/* The rack frame, which removes itself if it fails and leaves
               the ground, the scrim, the mark and the line. */}
           <HeroPhoto
             src={heroImage.src}

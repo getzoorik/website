@@ -10,10 +10,10 @@ import { routes } from "@/config/site";
  * 🔴 NO HEADER, NO FOOTER, NO HERO, NO TURNING MARK. This tree is the root
  * layout's not-found boundary, so it ships in EVERY page's payload: the home
  * page's HTML carries "Page not found" today. Chrome here would be the bar, its
- * four menus, the drawer and the footer a second time on every page, for a
+ * menu, the drawer and the footer a second time on every page, for a
  * page almost nobody sees.
  *
- * Its title, "Page not found · Zoorik", is this file's metadata through the
+ * Its title, "Page not found | Zoorik", is this file's metadata through the
  * layout's template; without it, the 404 printed the home title.
  * Next prints exactly one <title> and applies it only when this tree renders;
  * the status stays 404. Its robots is noindex: without its own, the layout's

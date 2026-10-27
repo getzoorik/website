@@ -19,7 +19,9 @@ import { DownloadGlyph } from "@/features/documents/document-glyphs";
  * the bottom of the text, stacked under it below 981px. `/docs` and `/privacy`
  * draw the h1 and the deck only. No eyebrow, breadcrumb, date line or second
  * line in the h1, except on the case study, which the mock gives a kicker over
- * its h1 and a second, green line inside it (`.cs-hero`).
+ * its h1 and a second, green line inside it (`.cs-hero`), and on a glossary
+ * term, whose kicker is its trail back to Learn and the glossary, with no deck
+ * under its h1 (`.gl-hero`).
  */
 
 /** One file in the download block: its label ("PDF") and the registry entry it reads. */
@@ -30,7 +32,7 @@ export interface HeroDownload {
 
 /** The [Coral | Amoeba] switch: the same page for each product, and which one this is. */
 export interface HeroSwitch {
-  /** The header menu whose rows are these pages: "guide" or "faq". */
+  /** The row set in `navMenus` (site config) whose rows are these pages: "guide" or "faq"; the header no longer draws it. */
   readonly menu: "guide" | "faq";
   readonly current: ProductId;
 }
@@ -38,20 +40,23 @@ export interface HeroSwitch {
 export interface DocumentHeroProps {
   /** Plain text, or text whose product names are kept out of translation (`named()`). */
   readonly title: ReactNode;
-  readonly deck: ReactNode;
-  /** A small line over the h1: the case study's kind, product and date (`.cs-kick`). */
+  /** The line under the h1; a glossary term's page has none, its definition leads the column. */
+  readonly deck?: ReactNode;
+  /** A small line over the h1: the case study's kind, product and date, a glossary term's trail (`.cs-kick`). */
   readonly kicker?: ReactNode;
   /** A page's own class on the hero, beside `hero doc-hero` (the case study's `cs-hero`). */
   readonly className?: string;
   readonly productSwitch?: HeroSwitch;
   /** The files beside the text; none draws no block. */
   readonly downloads?: readonly HeroDownload[];
+  /** Anything else beside the text, in the files' place (Value Lab's "Saved so far"). */
+  readonly aside?: ReactNode;
 }
 
 /**
  * The product switch: "Choose a product", then plain page
  * links, Coral first, the current one white, each with what it works on. The line names the switch for screen readers.
- * Its links are the header menu's rows for the same page, so a page the header holds back (`amoebaDocs`) is held back
+ * Its links are the guide or FAQ rows in `navMenus`, so a page the site holds back (`amoebaDocs`) is held back
  * here too, by the same one flag: while the Amoeba guide and FAQ are held, the switch shows Coral alone.
  */
 function ProductSwitch({ menu, current }: HeroSwitch): React.JSX.Element {
@@ -115,13 +120,14 @@ export function DocumentHero({
   className,
   productSwitch,
   downloads = [],
+  aside,
 }: DocumentHeroProps): React.JSX.Element {
   const text = (
     <>
       {kicker ? <p className="cs-kick">{kicker}</p> : null}
       <h1>{title}</h1>
       {productSwitch ? <ProductSwitch {...productSwitch} /> : null}
-      <p className="doc-deck">{deck}</p>
+      {deck ? <p className="doc-deck">{deck}</p> : null}
     </>
   );
 
@@ -129,10 +135,10 @@ export function DocumentHero({
     <header className={className ? `hero doc-hero ${className}` : "hero doc-hero"} id="top">
       <TurningMark />
       <div className="wrap hero-in">
-        {downloads.length > 0 ? (
+        {downloads.length > 0 || aside ? (
           <div className="doc-hero-grid">
             <div>{text}</div>
-            <DownloadBlock downloads={downloads} />
+            {aside ?? <DownloadBlock downloads={downloads} />}
           </div>
         ) : (
           text

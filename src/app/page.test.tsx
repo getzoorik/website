@@ -2,10 +2,12 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 import { render } from "@testing-library/react";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { marketplaces } from "@/config/marketplaces";
 import { anchorAliases, calendarUrl, contactEmail } from "@/config/site";
 import { homeStructuredData } from "@/config/structured-data";
+import { byDesignCards } from "@/content/by-design";
 import { homeFilms } from "@/content/home-films";
 
 import HomePage from "./page";
@@ -22,9 +24,13 @@ import sitemap from "./sitemap";
  */
 let page: HTMLElement;
 
-/* Rendered afresh for each test: the shared setup unmounts after every one. */
+/* Rendered afresh for each test: the shared setup unmounts after every one. jsdom
+   implements no film playback, and the hero's film plays itself. */
 beforeEach(() => {
+  vi.spyOn(HTMLMediaElement.prototype, "play").mockResolvedValue(undefined);
+  vi.spyOn(HTMLMediaElement.prototype, "load").mockImplementation(() => {});
   page = render(<HomePage />).container;
+  return () => vi.restoreAllMocks();
 });
 
 const hrefs = (selector: string): string[] =>
@@ -50,21 +56,45 @@ describe("the home page", () => {
     expect(page.querySelector("#how")).toBeNull();
   });
 
+  it("links each product section's h2 to its page, its line keeping the product's name out of translation", () => {
+    for (const [id, href, line, name] of [
+      [
+        "coral",
+        "/coral",
+        "Stop paying for idle Kubernetes capacity. Coral rebalances workloads and removes the nodes you don’t need. No code changes.",
+        "Coral",
+      ],
+      [
+        "amoeba",
+        "/amoeba",
+        "Stop paying for empty disk space. Amoeba rightsizes Azure managed disks and Amazon EBS on Windows and Linux VMs, autonomously, without any downtime.",
+        "Amoeba",
+      ],
+    ] as const) {
+      const section = page.querySelector(`section#${id}`)!;
+      expect(section.querySelector("h2.st-h > a"), id).toHaveAttribute("href", href);
+      const body = section.querySelector(".st-body")!;
+      expect(body.textContent, id).toBe(line);
+      expect(body.querySelector('[translate="no"]'), id).toHaveTextContent(name);
+    }
+  });
+
   it("reads as one outline: the h1, a heading per section, the cards under the band and the offers", () => {
     const headings = [...page.querySelectorAll("main h1, main h2, main h3")].map(
       (h) => `${h.tagName.toLowerCase()} ${h.textContent}`,
     );
     expect(headings).toEqual([
       "h1 Zoorik Reduce cloud cost, autonomously.",
-      "h2 Stop paying for idle Kubernetes capacity",
-      "h2 Stop paying for empty disk space",
+      /* The SEO heading pass (23 Oct 2026): each product section's h2 is its category. */
+      "h2 Kubernetes cost optimization",
+      "h2 Block storage cost optimization",
       "h2 Cloud cost optimization, without the risk",
-      "h3 Cut cost",
-      "h3 Safe by design",
-      "h3 Reliable",
-      "h3 Full visibility",
+      "h3 Reduce cloud cost",
+      "h3 Drains nodes safely, one at a time",
+      "h3 No code changes, no downtime",
+      "h3 Full control and visibility",
       "h2 How we reduced our own cluster’s machine bill by 58%",
-      "h2 What we offer",
+      "h2 Cloud cost assessment",
       "h3 Free assessment",
       "h3 Coral",
       "h3 Amoeba",
@@ -94,8 +124,7 @@ describe("the home page", () => {
   it("lands every in-page anchor on something that is there", () => {
     const anchors = hrefs('a[href^="#"]').filter((href) => href !== "#");
     /* The skip link and both wordmarks. The bar and the footer lost their
-       in-page "How it works" and "Contact", and the hero's lockups go to the
-       products' own pages. */
+       in-page "How it works" and "Contact". */
     expect(anchors).toEqual(["#main", "#top", "#top"]);
 
     for (const href of new Set(anchors)) {
@@ -210,17 +239,17 @@ describe("the home page", () => {
   });
 
   it("follows each product's button with what its page is about, to the product's page", () => {
-    for (const [id, name, label] of [
-      ["amoeba", "Amoeba", "Block storage cost optimization with Amoeba"],
-      ["coral", "Coral", "Kubernetes cost optimization with Coral"],
+    for (const [id, label] of [
+      ["amoeba", "Block storage cost optimization"],
+      ["coral", "Kubernetes cost optimization"],
     ] as const) {
       const more = page.querySelectorAll<HTMLAnchorElement>(`#${id} .btns a.alink`);
       expect(more).toHaveLength(1);
       expect(more[0]).toHaveAttribute("href", `/${id}`);
-      /* Its own words (in place of "Learn more"), the name kept out of
-         translation. */
+      /* Its own words in place of "Learn more": the category alone (owner, 23
+         Oct 2026), the h2's own words. */
       expect(more[0]!.textContent).toBe(label);
-      expect(more[0]!.querySelector("span > [translate='no']")).toHaveTextContent(name);
+      expect(more[0]!.textContent).toBe(page.querySelector(`#${id} h2.st-h`)!.textContent);
       expect(more[0]!.querySelector(".sr-only")).toBeNull();
       /* After the button, in the same row, and ending on the same arrow. */
       expect(more[0]!.previousElementSibling?.className).toBe("btn-ink");
@@ -242,21 +271,20 @@ describe("the home page", () => {
     expect(row.querySelector("[data-i]")).toBe(row.querySelector("#contact"));
   });
 
-  it("puts the marketplace line between the button and the product tiles", () => {
-    const market = page.querySelector(".hero p.hero-mkt")!;
+  it("ends the hero on the marketplace line, after the one button, and draws no product tiles", () => {
+    const market = page.querySelector(".hero p.hx-mkt")!;
     expect(market.previousElementSibling).toHaveClass("hero-cta");
-    expect(market.nextElementSibling).toHaveClass("hero-prods");
-    expect(market.querySelector(".mkt-ic")).toHaveAttribute("aria-hidden", "true");
-    /* It names the product the listings are. */
-    expect(market.textContent).toContain("Coral is available in AWS Marketplace");
+    expect(market.nextElementSibling).toBeNull();
+    /* It names both products the stores list, each store a link to all of them there. */
+    expect(market.textContent).toBe(
+      "Coral and Amoeba are available in AWS Marketplace (opens in a new tab) and Microsoft Marketplace (opens in a new tab)",
+    );
+    expect(hrefs(".hero .hx-mkt a")).toEqual(marketplaces.map((m) => m.catalogue));
+    /* The lockups left the hero (owner, 23 Oct 2026: five things only). */
+    expect(page.querySelector(".hero-prods, .hp, .hero-mkt")).toBeNull();
   });
 
   it("names the two products exactly, wherever it names them", () => {
-    const lockups = [...page.querySelectorAll(".hero-prods .hp")].map((a) => a.textContent);
-    expect(lockups).toEqual([
-      "CoralKubernetes cost optimization on AKS\u00a0and\u00a0EKS",
-      "AmoebaBlock storage cost optimization on Azure\u00a0and\u00a0AWS",
-    ]);
     /* Each block opens on its product's lockup: the mark and the name, kept
        out of translation as one line. */
     for (const [id, name] of [
@@ -357,7 +385,7 @@ describe("the home page", () => {
     expect(offers).toHaveAttribute("aria-labelledby", "offers-h");
     /* The qualifier stands under the title, so no figure stands without it. */
     const side = offers.querySelector(".ofx-side")!;
-    expect(side.querySelector("h2#offers-h")).toHaveTextContent("What we offer");
+    expect(side.querySelector("h2#offers-h")).toHaveTextContent("Cloud cost assessment");
     expect(side.querySelector(".ofx-note")).toHaveTextContent("Estimated ranges, not a promise.");
     expect(side.querySelector(".ofx-free .ofx-free-n")).toHaveTextContent("Free");
     /* Each row's name is an h3, as the free card's label is (the outline above). */
@@ -371,7 +399,7 @@ describe("the home page", () => {
         li.querySelector(".od")!.textContent,
         li.querySelector(".od")!.getAttribute("role"),
         li.querySelector(".od")!.getAttribute("aria-label"),
-        li.querySelector(".ofx-cap")!.textContent,
+        li.querySelector(".ofx-cap > .sr-only")!.textContent,
       ]),
     ).toEqual([
       ["Coral", "40–50%", "img", "40 to 50 percent", "off AKS and EKS cost"],
@@ -384,6 +412,13 @@ describe("the home page", () => {
         "off your overall cloud bill",
       ],
     ]);
+    /* What each range is a share of, as tags; the caption above is their words for the ear. */
+    expect(
+      rows.map((li) => [...li.querySelectorAll(".ofx-cap .chip")].map((chip) => chip.textContent)),
+    ).toEqual([["AKS", "EKS"], ["Managed Disks", "EBS"], ["Overall cloud bill"]]);
+    /* No axis: the "Off the cost it optimizes" row and its ticks are gone. */
+    expect(offers.querySelector(".ofx-axis, .ofx-ticks")).toBeNull();
+    expect(offers.textContent).not.toMatch(/Off the cost it optimizes|100%/);
     /* One link, the assessment's; nothing names a price. */
     expect(hrefs("#offers a")).toEqual(["/assessment"]);
     expect(offers.textContent).not.toMatch(/\$|per month|pricing/i);
@@ -392,37 +427,42 @@ describe("the home page", () => {
     ).toEqual(["Coral", "Amoeba"]);
   });
 
-  it("closes the products on the By design band: four cards, a title, a drawing and a line", () => {
+  it("closes the products on the By design band: four drawings, each captioned by its title", () => {
     const band = page.querySelector("section#why")!;
     /* The page's one band, on the flat second surface. */
     expect(band).toHaveClass("sec", "sec-band");
     expect(band.querySelector(".kicker, .sec-head p")).toBeNull();
     const cards = [...band.querySelectorAll("article.pl")];
-    expect(cards.map((card) => card.querySelector("p")!.textContent)).toEqual([
+    /* The sentences left the screen and name the drawings, word for word. */
+    expect(cards.map((card) => card.querySelector("figure")!.getAttribute("aria-label"))).toEqual([
       "Pay for what your workloads use, not what was provisioned for the peak.",
       "Nodes drain one at a time. A disk leaves the pool only when it is empty.",
       "No code changes. Resizes happen while you keep serving.",
       "You decide what each product manages, and see every change it makes.",
     ]);
-    for (const card of cards) {
-      /* No icon chip: the title leads, then the drawing, then the line. */
-      expect([...card.children].map((el) => el.tagName.toLowerCase())).toEqual(["h3", "div", "p"]);
-      /* The drawing is a picture and says nothing; the line says it. */
-      const figure = card.querySelector(".pl-fig")!;
-      expect(figure).toHaveAttribute("aria-hidden", "true");
-      expect(figure.textContent).toBe("");
+    for (const [index, card] of cards.entries()) {
+      /* The drawing, then its title; no line under it. */
+      expect([...card.children].map((el) => el.tagName.toLowerCase())).toEqual(["figure", "h3"]);
+      expect(card.querySelector("h3")!.textContent).toBe(byDesignCards[index]!.title);
+      expect(card.querySelector("figure")).toHaveAttribute("role", "img");
+      expect(card.querySelector("figure > svg")).toHaveAttribute("aria-hidden", "true");
     }
-    expect(band.querySelectorAll(".pl-strip b")).toHaveLength(18);
-    expect(band.querySelectorAll(".pl-log svg")).toHaveLength(2);
+    expect(band.querySelector("p")).toBeNull();
   });
 
-  it("opens the hero on the photo, with no turning mark, and scopes its bone words to itself", () => {
+  it("opens the hero on the Gargantua film, with no turning mark, and scopes its bone words to itself", () => {
     /* No turning mark on the home hero alone; every other hero keeps its
        mark. `hero-home` is the one hook the site system's bone rules hang
        on. */
     const hero = page.querySelector("header.hero#top")!;
     expect(hero).toHaveClass("hero", "hero-home");
-    expect(hero.firstElementChild).toHaveClass("hero-photo");
+    expect(hero.firstElementChild!.tagName).toBe("VIDEO");
+    expect(hero.firstElementChild).toHaveClass("hero-film");
+    expect(hero.firstElementChild).not.toHaveClass("hero-photo");
+    expect(hero.firstElementChild!.getAttribute("poster")).toMatch(
+      /^https:\/\/media\.zoorik\.com\/hero-films\/hero-gargantua-poster-\d+\.jpg$/,
+    );
+    expect(hero.querySelector("img")).toBeNull();
     expect(page.querySelectorAll(".zk-art, .zk-glow")).toHaveLength(0);
     expect(page.querySelectorAll(".hero-home")).toHaveLength(1);
   });
@@ -446,19 +486,13 @@ describe("the navigation", () => {
   const texts = (selector: string) =>
     [...page.querySelectorAll(selector)].map((el) => el.textContent!.trim());
 
-  it("runs Coral, Amoeba, the four menus, Login, then Book a demo", () => {
-    /* A menu by its word: the link where the word is one (Assessment, FAQ and
-       Docs), else its button (Product guide). */
-    expect(
-      texts(
-        ".nav-links > a, .nav-links > .nv-dd > .nv-lbl, .nav-links > .nv-dd > .nv-btn:not(.nv-tog)",
-      ),
-    ).toEqual([
+  it("runs Coral, Amoeba, Assessment, the Docs menu, Login, then Book a demo", () => {
+    /* Docs, the one menu, by its word. Product guide and FAQ left the bar (owner,
+       23 Oct 2026: "Docs is the only menu"). */
+    expect(texts(".nav-links > a, .nav-links > .nv-dd > .nv-lbl")).toEqual([
       "Coral",
       "Amoeba",
       "Assessment",
-      "Product guide",
-      "FAQ",
       "Docs",
       "Login",
       "Book a demo (opens in a new tab)",
@@ -475,22 +509,23 @@ describe("the navigation", () => {
       (a) => a.textContent === "Assessment",
     );
 
-    /* The bar's word, which opens Coral's at home, and the footer's plain
-       link. The drawer's Assessment is a group's label. */
+    /* The bar's plain link, the drawer's and the footer's, each the page
+       itself, which switches product on its own. */
     expect(entries.map((a) => a.getAttribute("href"))).toEqual([
-      "/assessment?p=coral",
+      "/assessment",
+      "/assessment",
       "/assessment",
     ]);
     /* 🔴 `/assess/<name>` IS REDIRECTED AT THE EDGE to a script in another
        repo. A page there can never be served, and the link would hand a reader
-       a Python file. Every way in, the menu's rows and the drawer's chips
-       included, is the page itself, preset to a product or not. */
+       a Python file. Every way in, the bar's and the drawer's links included,
+       is the page itself, preset to a product or not. */
     for (const a of page.querySelectorAll<HTMLAnchorElement>(
       '.nav a[href^="/assess"], footer a[href^="/assess"]',
     )) {
       expect(a.getAttribute("href")).toMatch(/^\/assessment(\?p=(coral|amoeba))?$/);
     }
-    expect(page.querySelectorAll('.nav a[href^="/assessment?p="]')).toHaveLength(5);
+    expect(page.querySelectorAll('.nav a[href^="/assessment?p="]')).toHaveLength(0);
   });
 
   it("sends Coral and Amoeba to their own pages, from the bar, the drawer and the footer", () => {
@@ -505,9 +540,10 @@ describe("the navigation", () => {
     }
     /* At home nothing is current. */
     expect(page.querySelector('.nav [aria-current="page"], .nav .is-cur')).toBeNull();
-    /* The hero's lockups are the way into each product, so they go to its own
-       page; the sections below are one scroll away. */
-    expect(hrefs(".hero-prods a")).toEqual(["/coral", "/amoeba"]);
+    /* The hero holds no product links (its five things only); each section's
+       h2 and its link go to the product's own page. */
+    expect(hrefs(".hero a").filter((href) => href.startsWith("/"))).toEqual(["/assessment"]);
+    expect(hrefs("main h2.st-h a")).toEqual(["/coral", "/amoeba"]);
   });
 
   it("names the bar as the main navigation", () => {

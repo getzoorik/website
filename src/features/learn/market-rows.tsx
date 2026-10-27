@@ -16,8 +16,8 @@ import { named } from "@/features/legal/named";
 import { offSiteProps } from "@/lib/links";
 
 /**
- * A market list's pieces (on /compare's market map and the alternatives pages): the column heads, our product's navy
- * row, a tool's row, how it acts and its clouds. Every name and line is read from `learn-market.ts`; nothing here
+ * A market list's pieces (on the alternatives pages), and the market's tools by name: the column heads, our product's
+ * navy row, a tool's row, how it acts and its clouds. Every name and line is read from `learn-market.ts`; nothing here
  * spells one. Server components.
  */
 

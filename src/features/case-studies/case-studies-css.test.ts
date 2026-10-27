@@ -25,36 +25,24 @@ function selectors(css: string): string[] {
 }
 
 /**
- * `case-studies.css` is imported by `/case-studies` and the study, and the App
- * Router keeps a visited route's sheet in the document after navigating away.
- * So every rule here names one of the two pages' own classes: `cs-` (the
- * study) or `cx-` (the hub's library). A rule without one restyles whatever
- * page the reader goes to next.
+ * `case-studies.css` is imported by the study, and the App Router keeps a
+ * visited route's sheet in the document after navigating away. So every rule
+ * here names one of the study's own classes, `cs-`. A rule without one
+ * restyles whatever page the reader goes to next. (Value Lab, the hub, has its
+ * own sheet.)
  */
 describe("the case studies' sheet", () => {
   const css = readFileSync(SHEET, "utf8");
 
-  it("reaches only the case studies' own classes (`cs-`, `cx-`)", () => {
+  it("reaches only the case study's own classes (`cs-`)", () => {
     const found = selectors(css);
     expect(found.length).toBeGreaterThan(150);
-    /* The mock's `[hidden]{display:none!important}` is page-wide; here it is the cards' (`.cx-card[hidden]`),
-       and the study's numbered h2 rule names the number it holds, not every `.ar-frame` h2. */
-    const stray = found.filter((s) => !/\.(cs|cx)-[\w-]/.test(s));
+    /* The study's numbered h2 rule names the number it holds, not every `.ar-frame` h2. */
+    const stray = found.filter((s) => !/\.cs-[\w-]/.test(s));
     expect(
       stray,
-      `selector(s) in case-studies.css without one of the pages' own classes: ${stray.join(", ")}`,
+      `selector(s) in case-studies.css without one of the study's own classes: ${stray.join(", ")}`,
     ).toEqual([]);
-  });
-
-  it("hides only the cards the filter hides", () => {
-    expect(css).toMatch(/\.cx-card\[hidden\]\{display:none!important\}/);
-    expect(css).not.toMatch(/(^|[\s,}])\[hidden\]/);
-  });
-
-  it("keeps the library still under reduced motion", () => {
-    expect(css).toMatch(
-      /@media\(prefers-reduced-motion:reduce\)\{\.cx-card,\.cx-read svg,\.cx-next\{transition:none\}\}/,
-    );
   });
 
   it("leaves the shared tokens and the self-hosted faces alone", () => {

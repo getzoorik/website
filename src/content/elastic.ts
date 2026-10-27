@@ -15,13 +15,15 @@ import { workedExample } from "@/content/savings";
  */
 export const elasticContent: ProductSectionContent = {
   product: "amoeba",
-  headline: "Stop paying for empty disk space",
-  body: "Removes the volumes you don’t use and adds them back when you need them.",
+  /* The SEO heading pass (owner, 23 Oct 2026): the h2 names the category and links to /amoeba. */
+  headline: "Block storage cost optimization",
+  body: "Stop paying for empty disk space. Amoeba rightsizes Azure managed disks and Amazon EBS on Windows and Linux VMs, autonomously, without any downtime.",
   runsOn: { label: "Runs on", platforms: ["azure", "aws", "windows", "linux"] },
   cta: {
     href: `${routes.assessment}?p=amoeba`,
     label: "Estimate your saving",
   },
-  more: "Block storage cost optimization with Amoeba",
+  /* The category alone (owner, 23 Oct 2026), as Coral's. */
+  more: "Block storage cost optimization",
   caption: workedExample.amoeba,
 };

@@ -14,8 +14,8 @@ import type { ProductId } from "@/content/products";
  *      follows the same attribute through `[data-boot]` on its `nav`.
  *   3. The render after hydration reads the address itself and draws one copy of each line, in the same commit:
  *      nothing visibly changes.
- *   4. From then on `html[data-ap]` follows the page's product (`AssessmentProvider`), so the header can mark the
- *      product's row in its Assessment menu.
+ *   4. From then on `html[data-ap]` follows the page's product (`AssessmentProvider`), so the sheet keeps showing
+ *      that product's lines (`.ax-lines`).
  *
  * With scripting off, the attribute is never set and the sheet shows Coral: a complete page.
  */

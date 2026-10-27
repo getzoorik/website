@@ -15,6 +15,7 @@ import {
   type ArticleSource,
   type ArticleText,
   type LearnFigure,
+  type LearnSvgFigure,
 } from "@/content/learn/article";
 import { learnPillars } from "@/content/learn";
 import {
@@ -53,8 +54,9 @@ import { isOffSite, offSiteProps } from "@/lib/links";
  *
  * A guide's sections hold paragraphs, parts (h3), lists (a numbered one may
  * start past 1, and an item may hold a paragraph or a code well), tables, code
- * wells (`ArticleWell`, the only other script) and its own diagrams, each drawn
- * from its module as its figure file draws it. The cloud cost pillar's last
+ * wells (`ArticleWell`, the only other script), callouts, and its own diagrams
+ * and drawn figures, each from its module as its file draws it. Its cover, where
+ * it has one, stands under the byline. The cloud cost pillar's last
  * section lists every other article under its topic, read from the index.
  *
  * A link to another article is drawn only once that article is published: until
@@ -65,8 +67,12 @@ import { isOffSite, offSiteProps } from "@/lib/links";
  * chips' (which section is being read, on a phone).
  */
 
-/** How an article's text is set: its slug (for what it lists), and whether its inline code takes the guides' breaks. */
-interface Setting {
+/**
+ * How an article's text is set: its slug (for what it lists), and whether its inline code takes the guides' breaks.
+ * A glossary term's page sets its text the same way (`GlossaryPage`), with the blocks, text, sources and Related row
+ * drawn here.
+ */
+export interface Setting {
   readonly slug: string;
   readonly breaks: boolean;
 }
@@ -92,7 +98,7 @@ function LinkWords({
 
 /** A run of text: its product names kept out of translation, its links in the prose's own link style, a link to
  *  another site a new tab with its arrow. */
-function Text({
+export function Text({
   text,
   breaks,
 }: {
@@ -102,7 +108,12 @@ function Text({
   if (typeof text === "string") return named(text);
   return text.map((piece, index) => {
     if (typeof piece === "string") return <Fragment key={index}>{named(piece)}</Fragment>;
-    if ("b" in piece) return <b key={index}>{named(piece.b)}</b>;
+    if ("b" in piece)
+      return (
+        <b key={index}>
+          {typeof piece.b === "string" ? named(piece.b) : <Text text={piece.b} breaks={breaks} />}
+        </b>
+      );
     if ("a" in piece) {
       if (isOffSite(piece.href))
         return (
@@ -130,7 +141,7 @@ function plainText(text: ArticleText): string {
   return text
     .map((piece) => {
       if (typeof piece === "string") return piece;
-      if ("b" in piece) return piece.b;
+      if ("b" in piece) return plainText(piece.b);
       if ("code" in piece) return piece.code;
       return typeof piece.a === "string" ? piece.a : piece.a.code;
     })
@@ -227,6 +238,27 @@ function Diagram({ figure }: { readonly figure: LearnFigure }): React.JSX.Elemen
   );
 }
 
+/**
+ * A drawn figure: the SVG as written, in a box that scrolls sideways on a phone rather than shrink its words, then its
+ * caption.
+ */
+function SvgFigure({
+  figure,
+  breaks,
+}: {
+  readonly figure: LearnSvgFigure;
+  readonly breaks: boolean;
+}): React.JSX.Element {
+  return (
+    <figure className="ar-fig">
+      <div className="ar-fig-s" dangerouslySetInnerHTML={{ __html: figure.markup }} />
+      <figcaption>
+        <Text text={figure.caption} breaks={breaks} />
+      </figcaption>
+    </figure>
+  );
+}
+
 /** A heading's anchor: its words in lower case, joined by hyphens. */
 const headingId = (heading: string): string =>
   (heading.toLowerCase().match(/[a-z0-9]+/g) ?? []).join("-");
@@ -267,7 +299,7 @@ function EveryArticle({ slug }: { readonly slug: string }): React.JSX.Element {
   );
 }
 
-function Block({
+export function Block({
   block,
   set,
 }: {
@@ -301,6 +333,17 @@ function Block({
       return <ArticleWell lang={block.lang} code={block.code} />;
     case "diagram":
       return <Diagram figure={block.figure} />;
+    case "svg":
+      return <SvgFigure figure={block.figure} breaks={set.breaks} />;
+    case "callout":
+      return (
+        <aside className="doc-call ar-call">
+          <p className="doc-call-t">{block.label}</p>
+          <p>
+            <Text text={block.text} breaks={set.breaks} />
+          </p>
+        </aside>
+      );
     case "every":
       return <EveryArticle slug={set.slug} />;
     case "steps":
@@ -371,7 +414,7 @@ function Block({
  * One source, a new tab. Its title's last word holds the arrow beside it at a
  * line end (`.nw-nb`); an address with no title may part anywhere.
  */
-function Source({ source }: { readonly source: ArticleSource }): React.JSX.Element {
+export function Source({ source }: { readonly source: ArticleSource }): React.JSX.Element {
   const text = source.title ?? source.url.replace(/^https:\/\//, "").replace(/\/$/, "");
   const space = text.lastIndexOf(" ");
   return (
@@ -396,6 +439,44 @@ function Source({ source }: { readonly source: ArticleSource }): React.JSX.Eleme
       </a>
       {source.note ? named(source.note) : null}
     </>
+  );
+}
+
+/** "Sources: " and each source, a new tab, set apart by semicolons and closed by a full stop. */
+export function Sources({
+  sources,
+}: {
+  readonly sources: readonly ArticleSource[];
+}): React.JSX.Element {
+  return (
+    <p className="ar-src">
+      {articleWords.sources}
+      {sources.map((source, index) => (
+        <Fragment key={source.url}>
+          {index > 0 ? "; " : null}
+          <Source source={source} />
+        </Fragment>
+      ))}
+      .
+    </p>
+  );
+}
+
+/** The row under the frame that leads on to other pages: its heading, then its tiles three up (`LinkTile`). */
+export function RelatedRow({
+  title,
+  children,
+}: {
+  readonly title: string;
+  readonly children: ReactNode;
+}): React.JSX.Element {
+  return (
+    <section className="sec ar-rel" id="related" aria-labelledby="related-h">
+      <div className="wrap">
+        <h2 id="related-h">{title}</h2>
+        <div className="dt-grid">{children}</div>
+      </div>
+    </section>
   );
 }
 
@@ -446,6 +527,14 @@ export function ArticlePage({ article }: { readonly article: Article }): React.J
               {articleWords.by}
               <a href={routes.about}>{named("Zoorik")}</a>
             </p>
+            {article.cover ? (
+              <figure className="ar-cover">
+                {/* A plain <img>: the cover is one drawn file in public/learn-covers, and the sheet owns the box
+                    (`.ar-cover img`). It pictures what the h1 already says, so it is read as decoration. */}
+                {/* eslint-disable-next-line @next/next/no-img-element -- see above */}
+                <img src={article.cover} alt="" width={1200} height={630} decoding="async" />
+              </figure>
+            ) : null}
             {article.short ? (
               <p className="ar-short">
                 <b>{articleWords.short}</b> <Text text={article.short} breaks={set.breaks} />
@@ -484,41 +573,25 @@ export function ArticlePage({ article }: { readonly article: Article }): React.J
                   </p>
                 </aside>
               ) : null}
-              {sources.length > 0 ? (
-                <p className="ar-src">
-                  {articleWords.sources}
-                  {sources.map((source, index) => (
-                    <Fragment key={source.url}>
-                      {index > 0 ? "; " : null}
-                      <Source source={source} />
-                    </Fragment>
-                  ))}
-                  .
-                </p>
-              ) : null}
+              {sources.length > 0 ? <Sources sources={sources} /> : null}
             </>
           ) : undefined
         }
       />
 
-      <section className="sec ar-rel" id="related" aria-labelledby="related-h">
-        <div className="wrap">
-          <h2 id="related-h">{articleWords.related}</h2>
-          <div className="dt-grid">
-            {article.related.map((tile) => {
-              const link = titleLink({ text: tile.title, href: tile.href });
-              return (
-                <LinkTile
-                  key={tile.href}
-                  href={link.href}
-                  title={named(link.text)}
-                  line={named(tile.where)}
-                />
-              );
-            })}
-          </div>
-        </div>
-      </section>
+      <RelatedRow title={articleWords.related}>
+        {article.related.map((tile) => {
+          const link = titleLink({ text: tile.title, href: tile.href });
+          return (
+            <LinkTile
+              key={tile.href}
+              href={link.href}
+              title={named(link.text)}
+              line={named(tile.where)}
+            />
+          );
+        })}
+      </RelatedRow>
     </DocumentPage>
   );
 }

@@ -1,0 +1,43 @@
+/* Zoorik marketing: `/careers`, Our values (option A, 24 Oct 2026, as its third pass of 25 Oct leaves it).
+ *
+ * Ported from the proposal's builder, rule for rule, in its order: the picker from `make_careers.py` (CSS, "our
+ * values"). Every selector names a `cq-` class, which only this page draws. Each panel is the value's scene beside
+ * its name, its line and its behaviours; the scenes and their motion are careers-scenes.css's.
+ *
+ * The section is the page's flat band (`.sec.sec-band.cq-band`, as How we hire), whose rule is not this sheet's.
+ *
+ * What differs from the mock, and why: its rules for what no panel draws any more are left out, `.cq-ask` (the
+ * "We ask" question, gone on 25 Oct) and `.cq-scene .il` (the line drawing a value showed until its scene was
+ * drawn), and so is the phone's `.cq-panel{padding:24px}`, which the panel already has. */
+
+/* ══ THE PICKER ══ six letters, the chosen one in ink; no tint, no progress line */
+.cq-tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.cq-tab{display:flex;flex-direction:column;align-items:flex-start;gap:14px;min-height:116px;padding:16px;text-align:left;cursor:pointer;
+  border:1px solid var(--line);border-radius:var(--r-card);background:var(--surface);color:var(--muted);font:inherit;
+  transition:border-color .16s var(--ease),color .16s var(--ease)}
+@media (hover:hover){.cq-tab:hover{border-color:var(--line-ctl,#868DAB);color:var(--text)}}
+.cq-tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.cq-tab[aria-selected="true"]{border-color:var(--text);color:var(--text)}
+.cq-tl{font-size:2rem;font-weight:500;line-height:1;letter-spacing:-.03em}
+.cq-tn{font-size:.875rem;font-weight:500;line-height:1.3}
+/* the panel: the scene, then the value's name, its line and its behaviours */
+.cq-panel{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:40px;align-items:center;margin-top:10px;padding:24px;
+  border:1px solid var(--line);border-radius:var(--r-card);background:var(--surface)}
+.cq-panel[hidden]{display:none}
+.cq-panel:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.cq-panel.is-in{animation:cqIn .32s var(--ease) both}
+@keyframes cqIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.cq-pr h3{font-size:1.5rem;font-weight:600;line-height:1.15;letter-spacing:-.02em}
+.cq-mean{margin-top:12px;font-size:1.0625rem;color:var(--muted);max-width:42ch;text-wrap:pretty}
+.cq-beh{list-style:none;margin:20px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 24px;align-content:start}
+.cq-beh li{display:flex;align-items:baseline;gap:12px;font-size:1rem;font-weight:500;line-height:1.35}
+.cq-beh li::before{content:"";flex:none;width:6px;height:6px;border-radius:var(--r-hair);background:var(--muted);transform:translateY(-2px)}
+
+/* ══ NARROWER SCREENS ══ on a phone the scene sits on top */
+@media (max-width:1100px){.cq-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:900px){.cq-panel{grid-template-columns:minmax(0,1fr);gap:32px}}
+@media (max-width:640px){.cq-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.cq-tab{min-height:0}.cq-tl{font-size:1.625rem}
+  .cq-beh{grid-template-columns:minmax(0,1fr)}}
+
+/* ══ REDUCED MOTION ══ nothing moves by itself; the scenes hold their still frame (careers-scenes.css) */
+@media (prefers-reduced-motion:reduce){.cq-panel.is-in{animation:none}.cq-tab{transition:none}}

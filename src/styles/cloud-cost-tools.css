@@ -1,0 +1,48 @@
+/* Zoorik marketing: `/cloud-cost-optimization-library`, Cloud cost optimization tools.
+ *
+ * Ported from the mock's tools rules, rule for rule and in their order. The page is drawn on Learn's frame and carries
+ * Learn's sheet (the section's padding, the chips, the reset button) and /community's (`.cm-sl`, each kind's plain grey
+ * name), as the mock does: it imports `learn.css`, then `community.css`, then this. The tiles themselves are the site
+ * system's Read more tiles (`.dt*`).
+ *
+ * ─── EVERY SELECTOR IS THE PAGE'S OWN ──────────────────────────────────────────
+ * The App Router keeps a visited page's sheet in the document, so each selector names a `tl-` class, this page's own
+ * (`tools-css.test.ts`). Three mock rules change for that, each with a "repo:" note: how a tool acts and the note
+ * (the mock's `.mk-acts` and `.mk-note`, which the alternatives pages still draw their own way in learn.css), and the
+ * two by two of Compare Coral and Amoeba (the mock's page-wide `.dt-2x2`).
+ *
+ * Loaded only by `/cloud-cost-optimization-library` (`src/app/cloud-cost-optimization-library/page.tsx`). */
+
+/* the tools: /community's tiles; an initial in place of a logo (names only), a short line, then how it works and the
+   clouds it supports; a minimal filter of kind and cloud */
+.tl-f{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px 24px;margin-bottom:32px}
+.tl-f .lv-chips{margin-top:0}
+.tl-g + .tl-g{margin-top:36px}
+.tl .dt-a{grid-template-columns:28px minmax(0,1fr) 16px}
+.tl .dt-go{color:var(--accent)}
+.tl-mono{display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--line);border-radius:6px;background:var(--surface-2,#F6F7FB);font-size:.875rem;font-weight:600;color:var(--text)}
+.tl-ours{display:block;width:28px;height:28px}
+.tl .dt-l{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.tl-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin-top:12px}
+.tl-meta .mk-acts{font-size:var(--fs-micro)}
+.tl-cl{display:inline-flex;align-items:center;gap:8px;font-size:var(--fs-micro);color:var(--muted)}
+.tl-cl svg{display:block;width:15px;height:15px}
+.tl-cl svg.aws{width:24px;height:13px}
+.tl-none{margin-top:8px;color:var(--muted)}
+.tl[hidden],.tl-g[hidden]{display:none!important}
+/* how it acts: a dot before the words (green: acts on its own; amber: acts and recommends; ring: recommends)
+   repo: the mock's `.mk-acts` rules, written inside the tile; learn.css's own `.mk-acts` (the alternatives pages'
+   chip) reaches the tile too, so its padding, radius, background, border and weight are undone here */
+.tl-meta .mk-acts{display:inline-flex;align-items:center;gap:8px;padding:0;border:0;border-radius:0;background:none;font-weight:inherit;color:var(--text);white-space:nowrap}
+.tl-meta .mk-acts::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;box-sizing:border-box;border:1.5px solid var(--line-ctl,#868DAB)}
+.tl-meta .mk-auto::before{border-color:var(--good);background:var(--good)}
+.tl-meta .mk-mix::before{border-color:var(--warn);background:var(--warn)}
+.tl-meta .mk-rep::before{border-radius:1px;height:2px;border:0;background:var(--line-ctl,#868DAB)}
+/* repo: the mock's `.mk-note`, written under the tiles; learn.css's (the alternatives pages') is set apart. Its
+   `.mk-note a{color:var(--text)}` is not ported: the site system's `main p a:not([class])` wins over it in the mock,
+   so the address is the accent blue, as it is here */
+.tl-wrap .mk-note{margin-top:16px;font-size:var(--fs-micro);color:var(--muted)}
+/* Compare Coral and Amoeba: the Read more tiles, two by two
+   repo: the mock's page-wide `.dt-2x2`, on this page's `tl-2x2`; the product pages draw their own two by two */
+.dt-grid.tl-2x2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:760px){.dt-grid.tl-2x2{grid-template-columns:minmax(0,1fr)}}

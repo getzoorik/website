@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 
 import { describe, expect, it, vi } from "vitest";
 
-import { pageCards, socialImage, xHandle } from "@/config/social";
+import { cardFor, pageCards, socialImage, xHandle } from "@/config/social";
 import { articleCard, learnArticles } from "@/content/learn/published";
 import { footerSocialLinks } from "@/content/footer";
 
@@ -41,18 +41,18 @@ describe("social cards", () => {
   it("cards the home page with its title and its description", () => {
     /* The card repeats the page's head. */
     const home = pages["/"].openGraph as Record<string, unknown>;
-    expect(home.title).toBe("Zoorik: Kubernetes and block storage cost optimization");
+    expect(home.title).toBe("Zoorik | Kubernetes and block storage cost optimization");
     expect(home.description).toBe(pages["/"].description);
   });
 
   it("cards each product page with its full title and its description", () => {
     const amoeba = pages["/amoeba"].openGraph as Record<string, unknown>;
     const coral = pages["/coral"].openGraph as Record<string, unknown>;
-    expect(amoeba.title).toBe("Amoeba: Azure disk and Amazon EBS cost optimization · Zoorik");
+    expect(amoeba.title).toBe("Block storage cost optimization | Zoorik");
     expect(amoeba.description).toBe(
       "Amoeba rightsizes Azure managed disks and Amazon EBS volumes to the data you store, to reduce your cloud bill, autonomously, without any downtime.",
     );
-    expect(coral.title).toBe("Coral: Kubernetes cost optimization for AKS and EKS · Zoorik");
+    expect(coral.title).toBe("Kubernetes cost optimization | Zoorik");
     expect(coral.description).toBe(
       "Coral rebalances AKS and EKS clusters to reduce your cloud bill, autonomously, without any downtime. Works with HPA, Karpenter, NAP and Cluster Autoscaler.",
     );
@@ -78,16 +78,29 @@ describe("social cards", () => {
     }
   });
 
-  it("puts a page's own card on it, and the brand card everywhere else", () => {
+  it("gives every page in the sitemap its own card but the home page, which shows the brand card", async () => {
+    const { default: sitemap } = await import("./sitemap");
+    const paths = sitemap().map((entry) => new URL(entry.url).pathname);
+    expect(paths.filter((path) => path !== "/" && !pageCards[path])).toEqual([]);
+    expect(cardFor("/")).toBe(socialImage);
+    /* An article drawn no card of its own yet shows the /learn card. */
+    expect(cardFor("/learn/no-card-yet")).toBe(pageCards["/learn"]);
+    for (const [path, card] of Object.entries(pageCards)) {
+      expect(card.url, path).toMatch(/^\/og\/pages\/[a-z0-9-]+\.png$/);
+      expect(card.alt, path).toMatch(/^Zoorik\. .+[.?!]$/);
+    }
+  });
+
+  it("puts a page's own card on it, and the brand card on the home page", () => {
     /* A new card, a new name: platforms cache cards by URL. */
     expect(socialImage.url).toBe("/og/zoorik-reduce-cloud-cost-autonomously-1200x630.png");
     expect(socialImage.alt).toBe("Zoorik. Reduce cloud cost, autonomously.");
     const cardOf: Record<keyof typeof pages, unknown> = {
       "/": socialImage,
-      "/assessment": pageCards.assessment,
-      "/login": socialImage,
-      "/amoeba": pageCards.amoeba,
-      "/coral": pageCards.coral,
+      "/assessment": pageCards["/assessment"],
+      "/login": pageCards["/login"],
+      "/amoeba": pageCards["/amoeba"],
+      "/coral": pageCards["/coral"],
     };
     expect((layout.openGraph as Record<string, unknown>).images).toEqual([socialImage]);
     for (const [path, page] of Object.entries(pages)) {

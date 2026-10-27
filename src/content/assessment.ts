@@ -19,7 +19,7 @@ import type { ProductId } from "@/content/products";
  * The day /assessment's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /assessment's content moves this to that day in the same PR; never the build's date.
  */
-export const assessmentLastUpdated = "18 October 2026";
+export const assessmentLastUpdated = "21 October 2026";
 
 /** One run in What you get: the terminal's lines and the example report under it. */
 export interface AssessmentDemo {
@@ -104,7 +104,7 @@ export type HintPart =
 export const assessmentCopy = {
   /** The page's `<title>` (through the site's template) and description. */
   meta: {
-    title: "Free cloud cost assessment",
+    title: "Cloud cost assessment",
     description:
       "See how much you can reduce your cloud bill: a free, read-only assessment for Kubernetes (Coral) and block storage (Amoeba) on Azure and AWS. Run it in Cloud Shell or your terminal and get one PDF report. Nothing leaves your account.",
   },

@@ -12,8 +12,8 @@ import { offSiteProps } from "@/lib/links";
  *
  * The footer draws them under the badge with the lead-in "Available in"
  * (`foot-mb`); /about draws them under its own "Available on" heading, with no
- * lead-in, 48px tall (`ab-mb`). They name no product, since both products will be listed, so
- * each opens Coral's listing, the only one live (`marketplaces.ts`).
+ * lead-in, 48px tall (`ab-mb`). They name no product, so each opens Zoorik's
+ * own page in that store, which lists both products (`marketplaces.ts`).
  *
  * The marks are the ones the site already draws in "Built for Azure and AWS":
  * the AWS smile, the Azure "A". `idSuffix` keeps each copy's Azure gradient ids

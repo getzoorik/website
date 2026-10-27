@@ -10,7 +10,7 @@
  * The day /events's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /events's content moves this to that day in the same PR; never the build's date.
  */
-export const eventsLastUpdated = "19 October 2026";
+export const eventsLastUpdated = "21 October 2026";
 
 /** The topics, in the Topic filter's order: the list's `category`, and the name its tag and its chip print. */
 export const eventTopics = [
@@ -77,9 +77,9 @@ const months = [
 ] as const;
 
 export const eventsPage = {
-  /** The page's `<title>` (through the site's " · Zoorik" template) and description. */
+  /** The page's `<title>` (through the site's "%s | Zoorik" template) and description. */
   meta: {
-    title: "Cloud cost, FinOps and Kubernetes events",
+    title: "Events",
     description:
       "Conferences and community days on Kubernetes, FinOps, cloud cost and block storage, with dates, places and a link to each event's own page.",
   },
@@ -88,6 +88,15 @@ export const eventsPage = {
     /** Its last sentence names the day the list was last checked (`eventsListUpdated`). */
     deck: (updated: string) =>
       `Conferences and community days worth the trip, with dates, places and each event’s own page. Updated ${updated}.`,
+  },
+  /** The search box and the two date menus above the filters. */
+  find: {
+    search: "Search events",
+    placeholder: "Search events, cities or organizers",
+    year: "Year",
+    anyYear: "Any year",
+    month: "Month",
+    anyMonth: "Any month",
   },
   filters: {
     label: "Filter events",
@@ -99,12 +108,14 @@ export const eventsPage = {
       { id: "india", label: "India" },
       { id: "online", label: "Online" },
     ] satisfies readonly { id: EventPlace; label: string }[],
-    /** "1 event", "76 events": how many cards the filters leave. */
+    /** "1 event", "76 events": how many events the search and the filters match, in view or not. */
     count: (n: number) => `${n}${n === 1 ? " event" : " events"}`,
-    empty: "No events match these filters.",
+    empty: "No events match.",
     reset: "Show all events",
   },
   next: { eyebrow: "Next up" },
+  /** Under the first nine events while more are left: shows the rest. */
+  more: "More events",
   card: {
     details: "Details",
     /** The small link to the event's own page; a screen reader hears whose page, and that it opens a new tab. */
@@ -126,6 +137,8 @@ export const eventsPage = {
     online: "Online",
     unknown: "Place to be announced",
     andOnline: " and online",
+    /** The banner's city line for an event whose city is not announced yet. */
+    cityUnknown: "To be announced",
   },
   dates: {
     months,
@@ -1577,3 +1590,72 @@ export const events: readonly EventEntry[] = [
     tickets: "",
   },
 ];
+
+/**
+ * The events' own pictures, each taken from the event's own page, by the event's slug (its name in lower case, every
+ * run of other characters one hyphen): the file is `/event-banners/<slug>.webp`. A banner fills the top of its card;
+ * a logo sits whole on white. An event that is not here has no usable picture of its own, and the top of its card
+ * names its city instead. A refreshed list keeps an entry only while its event is in the list.
+ */
+export const eventBanners: Readonly<Record<string, "banner" | "logo">> = {
+  "kcd-uk-edinburgh-2026": "banner",
+  "all-things-open-2026": "banner",
+  "devopsdays-boston-2026": "logo",
+  "finops-weekly-summit-2026": "banner",
+  "kcd-nigeria-2026": "banner",
+  "oracle-ai-world-2026": "banner",
+  "hashiconf-at-ibm-techxchange-2026": "banner",
+  "containerdays-ai-context-singapore-2026": "banner",
+  "platformcon-live-day-sydney": "banner",
+  "kcd-budapest-2026": "banner",
+  "hyderabad-finops-meetup": "banner",
+  "platformcon-live-day-s-o-paulo": "banner",
+  "kubecon-cloudnativecon-north-america-2026": "banner",
+  "india-finops-community-call-building-finops-agents": "banner",
+  "rootconf-2026-annual-conference": "banner",
+  "microsoft-ignite-2026": "banner",
+  "kcd-porto-2026-with-devops-days-portugal": "banner",
+  "devopsdays-warsaw-2026": "banner",
+  "civo-navigate-india-2026": "banner",
+  "gurugram-finops-meetup": "banner",
+  "aws-re-invent-2026": "banner",
+  "devopscon-munich-2026": "banner",
+  "open-source-summit-japan-2026": "banner",
+  "gartner-it-infrastructure-operations-cloud-strategies-conference-2026": "banner",
+  "kcd-suisse-romande-2026": "banner",
+  "kcd-florida-2026-miami": "banner",
+  "devopsdays-tel-aviv-2026": "banner",
+  "kcd-panama-2027": "banner",
+  "conf42-finops-2027": "banner",
+  "tokenomicon-finops-x-london-2027": "banner",
+  "containerdays-london-2027": "banner",
+  "platformcon-live-day-san-francisco": "banner",
+  "cloud-native-rejekts-eu-2027": "banner",
+  "kubecon-cloudnativecon-europe-2027": "banner",
+  "kcd-beijing-2027": "logo",
+  "scale-24x": "banner",
+  "conf42-cloud-native-2027": "banner",
+  "srecon27-americas": "banner",
+  "kcd-washington-dc-2027": "banner",
+  "devopsdays-zurich-2027": "logo",
+  "kcd-hyderabad-2027": "banner",
+  "kcd-texas-2027": "logo",
+  "open-source-summit-north-america-2027": "banner",
+  "kcd-czech-slovak-2027": "banner",
+  "kcd-toronto-2027": "banner",
+  "cloud-native-days-france-2027": "banner",
+  "tokenomicon-finops-x-san-diego-2027": "banner",
+  "devopscon-london-2027": "banner",
+  "devopscon-berlin-2027": "banner",
+  "platformcon-live-day-london": "banner",
+  "platformcon-live-day-new-york": "banner",
+  "kcd-new-york-2027": "banner",
+  "kcd-san-francisco-bay-area-2027": "banner",
+  "fms-2027-the-future-of-memory-and-storage": "banner",
+  "devopsdays-chicago-2027": "logo",
+  "kubecon-cloudnativecon-japan-2027": "banner",
+  "open-source-summit-europe-2027": "banner",
+  "open-source-summit-korea-2027": "banner",
+  "fms-europe-2027-future-of-memory-and-storage-europe": "logo",
+  "kubecon-cloudnativecon-north-america-2027": "banner",
+};

@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 
-import { ArrowGlyph, DocGlyph } from "@/features/documents/document-glyphs";
+import { NewTabHint } from "@/components/primitives/new-tab-hint";
+import { ArrowGlyph, ArrowOutGlyph, DocGlyph } from "@/features/documents/document-glyphs";
+import { isOffSite, offSiteProps } from "@/lib/links";
 
 /**
  * A doc tile that is one link to a page (`article.dt > a.dt-a`, the site
@@ -9,6 +11,9 @@ import { ArrowGlyph, DocGlyph } from "@/features/documents/document-glyphs";
  * per product with the product's mark; an article's Related row draws three
  * with the document glyph, each line saying where the page lives ("Coral FAQ",
  * "Learn").
+ *
+ * A tile to another site (/community's communities) opens it in a new tab, with
+ * the arrow out and the hidden "(opens in a new tab)" after it.
  *
  * The documents' own tiles, with their PDFs and downloads, are `DocTile`; this
  * is the plain page link, whose title and line may name a product, so they are
@@ -38,9 +43,14 @@ export function LinkTile({ href, title, line, icon }: LinkTileProps): React.JSX.
       {href === null ? (
         <div className="dt-a">{inside}</div>
       ) : (
-        <a className="dt-a" href={href}>
+        <a className="dt-a" href={href} {...offSiteProps(href)}>
           {inside}
-          <ArrowGlyph className="dt-go" weight={2.2} />
+          {isOffSite(href) ? (
+            <ArrowOutGlyph className="dt-go" />
+          ) : (
+            <ArrowGlyph className="dt-go" weight={2.2} />
+          )}
+          <NewTabHint href={href} />
         </a>
       )}
     </article>

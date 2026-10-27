@@ -74,7 +74,7 @@ export type CoralGuideAnchor =
 
 export const coralGuide: GuideContent<CoralGuideAnchor> = {
   meta: {
-    title: "Coral product guide: AKS and EKS cost optimization",
+    title: "Coral product guide",
     description:
       "How to connect an AKS or EKS cluster to Coral, what it installs and changes, how it sizes pods and removes nodes, and how you stay in control.",
   },
@@ -803,10 +803,13 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
         },
       ],
       related: [
-        { text: "VPA vs HPA: rebalance first, then scale out", href: learnPath("vpa-vs-hpa") },
         {
-          text: "Coral and the native Kubernetes autoscalers",
-          href: learnPath("coral-and-native-autoscalers"),
+          text: "VPA vs HPA: when to use which, and why to rebalance first",
+          href: learnPath("vpa-vs-hpa"),
+        },
+        {
+          text: "HPA vs VPA vs Cluster Autoscaler: what each one scales",
+          href: learnPath("hpa-vs-vpa-vs-cluster-autoscaler"),
         },
       ],
     },

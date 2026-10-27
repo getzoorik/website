@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { describe, expect, it, vi } from "vitest";
 
 import { routes } from "@/config/site";
-import { socialImage } from "@/config/social";
+import { pageCards } from "@/config/social";
 import { pageStructuredData } from "@/config/structured-data";
 import {
   alternativesPages,
@@ -15,14 +15,16 @@ import { alternativesFacts, marketActs, marketGroups, versusFacts } from "@/cont
 import { products } from "@/content/products";
 
 /* The nav and the footer read the pathname. */
-const pathname = vi.hoisted(() => ({ current: "/compare/coral-alternatives" }));
+const pathname = vi.hoisted(() => ({
+  current: "/cloud-cost-optimization-library/coral-alternatives",
+}));
 vi.mock("next/navigation", async (original) => ({
   ...(await original<typeof import("next/navigation")>()),
   usePathname: () => pathname.current,
 }));
 
-import * as coralRoute from "@/app/compare/coral-alternatives/page";
-import * as amoebaRoute from "@/app/compare/amoeba-alternatives/page";
+import * as coralRoute from "@/app/cloud-cost-optimization-library/coral-alternatives/page";
+import * as amoebaRoute from "@/app/cloud-cost-optimization-library/amoeba-alternatives/page";
 
 import { marketTool } from "./market-rows";
 
@@ -44,8 +46,8 @@ const modules: Readonly<
 describe("the alternatives pages", () => {
   it("are one per product, Coral first", () => {
     expect(alternativesPages.map((entry) => [entry.route, entry.product])).toEqual([
-      ["/compare/coral-alternatives", "coral"],
-      ["/compare/amoeba-alternatives", "amoeba"],
+      ["/cloud-cost-optimization-library/coral-alternatives", "coral"],
+      ["/cloud-cost-optimization-library/amoeba-alternatives", "amoeba"],
     ]);
     expect(alternativesFacts.map((facts) => facts.product)).toEqual(["coral", "amoeba"]);
   });
@@ -62,21 +64,29 @@ describe.each(alternativesPages.map((entry) => [entry.route, entry] as const))(
       return render(<routeModule.default />).container;
     };
 
-    it("is titled, described and canonicalised as its mock, with the site's default card", () => {
+    it("is titled, described and canonicalised as its mock, with its own card", () => {
       expect(routeModule.metadata.title).toBe(entry.meta.title);
       expect(routeModule.metadata.description).toBe(entry.meta.description);
       expect(routeModule.metadata.alternates).toEqual({ canonical: route });
       expect(routeModule.metadata.openGraph).toMatchObject({
         url: route,
-        title: `${entry.meta.title} · Zoorik`,
-        images: [socialImage],
+        title: `${entry.meta.title} | Zoorik`,
+        /* the product's comparison card, the same as its versus page's */
+        images: [pageCards[route]],
+      });
+      expect(routeModule.metadata.openGraph).toMatchObject({
+        images: [
+          {
+            url: `/og/pages/${entry.product === "coral" ? "kubernetes-cost-tools" : "block-storage-tools"}.png`,
+          },
+        ],
       });
     });
 
     it("draws the hero, the structured data, then the two sections and the closing row", () => {
       const root = page();
       expect(text(root.querySelector(".vp-kick"))).toBe("Alternatives · checked 19 October 2026");
-      expect(text(root.querySelector("h1"))).toBe(entry.meta.title);
+      expect(text(root.querySelector("h1"))).toBe(entry.h1);
       expect(text(root.querySelector(".doc-deck"))).toBe(entry.meta.description);
       const blocks = root.querySelectorAll('script[type="application/ld+json"]');
       expect(blocks).toHaveLength(1);

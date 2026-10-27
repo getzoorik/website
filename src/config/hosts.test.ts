@@ -82,12 +82,46 @@ describe("the Docs hub's old address", () => {
   });
 });
 
-describe("the comparison pages' old addresses under /learn", () => {
-  it("301 each live versus page and both alternatives pages to /compare", async () => {
+describe("the case studies' hub's old address", () => {
+  it("301s /case-studies to Value Lab, and each study's old address to its own under Value Lab", async () => {
+    const hub = await respond("https://zoorik.com/case-studies");
+    expect(hub.status).toBe(301);
+    expect(getRedirectUrl(hub)).toBe("https://zoorik.com/value-lab");
+    const old = await respond("https://zoorik.com/case-studies/coral-dev-cluster");
+    expect(old.status).toBe(301);
+    expect(getRedirectUrl(old)).toBe("https://zoorik.com/value-lab/coral-dev-cluster");
+    const study = await respond("https://zoorik.com/value-lab/coral-dev-cluster");
+    expect(study.status).not.toBe(301);
+  });
+});
+
+describe("the comparison pages' old addresses under /compare", () => {
+  it("301s /compare to Cloud cost optimization tools, and each page under it to the same page under the hub", async () => {
+    const hub = await respond("https://zoorik.com/compare");
+    expect(hub.status).toBe(301);
+    expect(getRedirectUrl(hub)).toBe("https://zoorik.com/cloud-cost-optimization-library");
+    const pages = [...versusPages.map(versusRoute), ...alternativesPages.map((page) => page.route)];
+    expect(pages).toHaveLength(4);
+    for (const path of pages) {
+      expect(path.startsWith("/cloud-cost-optimization-library/"), path).toBe(true);
+      const old = await respond(
+        `https://zoorik.com${path.replace("/cloud-cost-optimization-library/", "/compare/")}`,
+      );
+      expect(old.status, path).toBe(301);
+      expect(getRedirectUrl(old), path).toBe(`https://zoorik.com${path}`);
+      const page = await respond(`https://zoorik.com${path}`);
+      expect(page.status, path).not.toBe(301);
+    }
+  });
+});
+
+describe("the comparison pages' older addresses under /learn", () => {
+  it("301 each live versus page and both alternatives pages straight to their pages under the hub", async () => {
     const moved = [
       ...versusPages.map((page) => [`/learn/compare/${page.slug}`, versusRoute(page)] as const),
       ...alternativesPages.map(
-        (page) => [page.route.replace("/compare/", "/learn/"), page.route] as const,
+        (page) =>
+          [page.route.replace("/cloud-cost-optimization-library/", "/learn/"), page.route] as const,
       ),
     ];
     expect(moved).toHaveLength(4);
@@ -98,9 +132,41 @@ describe("the comparison pages' old addresses under /learn", () => {
     }
   });
 
-  it("sends any other old versus address to /compare too, where an unknown slug answers 404", async () => {
+  it("sends any other old versus address under the hub too, where an unknown slug answers 404", async () => {
     const response = await respond("https://zoorik.com/learn/compare/no-such-page");
     expect(response.status).toBe(301);
-    expect(getRedirectUrl(response)).toBe("https://zoorik.com/compare/no-such-page");
+    expect(getRedirectUrl(response)).toBe(
+      "https://zoorik.com/cloud-cost-optimization-library/no-such-page",
+    );
+  });
+});
+
+describe("the retired autoscalers article", () => {
+  it("301s /learn/coral-and-native-autoscalers to HPA vs VPA vs Cluster Autoscaler, which is no redirect itself", async () => {
+    const old = await respond("https://zoorik.com/learn/coral-and-native-autoscalers");
+    expect(old.status).toBe(301);
+    expect(getRedirectUrl(old)).toBe("https://zoorik.com/learn/hpa-vs-vpa-vs-cluster-autoscaler");
+    const article = await respond("https://zoorik.com/learn/hpa-vs-vpa-vs-cluster-autoscaler");
+    expect(article.status).not.toBe(301);
+  });
+});
+
+describe("Cloud cost optimization tools' old address", () => {
+  it("301s /cloud-cost-optimization-tools and each page under it to the same page under /cloud-cost-optimization-library", async () => {
+    const hub = await respond("https://zoorik.com/cloud-cost-optimization-tools");
+    expect(hub.status).toBe(301);
+    expect(getRedirectUrl(hub)).toBe("https://zoorik.com/cloud-cost-optimization-library");
+    for (const path of [
+      ...alternativesPages.map((page) => page.route),
+      ...versusPages.map(versusRoute),
+    ]) {
+      const old = await respond(
+        `https://zoorik.com${path.replace("/cloud-cost-optimization-library/", "/cloud-cost-optimization-tools/")}`,
+      );
+      expect(old.status, path).toBe(301);
+      expect(getRedirectUrl(old), path).toBe(`https://zoorik.com${path}`);
+    }
+    const library = await respond("https://zoorik.com/cloud-cost-optimization-library");
+    expect(library.status).not.toBe(301);
   });
 });
