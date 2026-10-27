@@ -6,6 +6,7 @@ import { describe, expect, it, vi } from "vitest";
 import { substackPublication } from "@/config/entity";
 import { routes } from "@/config/site";
 import { socialProfiles } from "@/content/footer";
+import { nvidiaInceptionLegal } from "@/content/memberships";
 import { newsFromZoorik, newsLastUpdated, newsPage, newsRadar } from "@/content/news";
 
 /* The nav and the footer read the pathname. */
@@ -100,25 +101,32 @@ describe("/news", () => {
     expect(mark).toHaveAttribute("aria-hidden", "true");
     expect(mark).toHaveAttribute("viewBox", "0 0 512 512");
     const meta = latest!.querySelector("p.nw-meta")!;
-    expect(text(meta)).toBe("17 October 2026 · Assessment");
+    expect(text(meta)).toBe("27 October 2026 · Company");
     expect(meta.querySelector("time")).toHaveAttribute("datetime", item.date);
+    /* NVIDIA's own naming: "Program" in a title, "program" in a sentence, never "Inception" alone. */
     expect(text(latest!.querySelector("h2.as-h"))).toBe(
-      "Zoorik assessment 1.3: one free PDF report for Coral and Amoeba",
+      "Zoorik joins the NVIDIA Inception Program",
     );
     expect(text(latest!.querySelector("p:not(.nw-meta)"))).toBe(
-      "One command, npx -y zoorik assess coral or amoeba, now writes a single PDF with your estimated saving at list price.",
+      "Zoorik is now a member of the NVIDIA Inception program, NVIDIA’s program for startups.",
     );
     const button = latest!.querySelector("a.btn-ink")!;
-    expect(button).toHaveAttribute("href", routes.assessment);
+    /* To the programs on /about, which keeps its hash. */
+    expect(button).toHaveAttribute("href", `${routes.about}#programs`);
     expect(button).not.toHaveAttribute("target");
-    expect(text(button)).toBe("Run the free assessment");
+    expect(text(button)).toBe("About Zoorik");
     expect(button.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
-    /* The products' names are kept out of translation. */
-    expect([...latest!.querySelectorAll("h2 [translate='no']")].map(text)).toEqual([
-      "Zoorik",
-      "Coral",
-      "Amoeba",
-    ]);
+    /* Our name is kept out of translation. */
+    expect([...latest!.querySelectorAll("h2 [translate='no']")].map(text)).toEqual(["Zoorik"]);
+  });
+
+  it("prints NVIDIA's trademark line, exactly and once, small under the Radar's note", () => {
+    const lines = [...page().querySelectorAll("main p.nw-tm")];
+    expect(lines.map(text)).toEqual([nvidiaInceptionLegal]);
+    expect(lines[0]!.previousElementSibling).toHaveClass("nw-note");
+    expect(nvidiaInceptionLegal).toBe(
+      "© 2025 NVIDIA, the NVIDIA logo, and NVIDIA Inception are trademarks and/or registered trademarks of NVIDIA Corporation in the U.S. and other countries.",
+    );
   });
 
   it("draws the newsletter on the dark card: Medium's mark, subscribe on Medium, or on Substack", () => {
@@ -156,6 +164,14 @@ describe("/news", () => {
         tile.querySelector(".nw-m time")!.getAttribute("datetime"),
       ]),
     ).toEqual([
+      [
+        routes.assessment,
+        "zoorik",
+        "Zoorik assessment 1.3: one free PDF report for Coral and Amoeba",
+        "One command, npx -y zoorik assess coral or amoeba, now writes a single PDF with your estimated saving at list price.",
+        "17 Oct · Assessment",
+        "2026-10-17",
+      ],
       [
         routes.openSource,
         "mark kubernetes",

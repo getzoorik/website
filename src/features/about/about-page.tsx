@@ -23,8 +23,10 @@ import { NEW_TAB_HINT, isOffSite, offSiteProps } from "@/lib/links";
  *
  *   What we build   the line on what Zoorik does, then one tile per product
  *   How we build    the home page's four cards, a tick for each (on the band)
- *   Company         the facts, four to a row on a wide screen
- *   Milestones      four dated facts on a line, each with its page (on the
+ *   Company         the facts, four to a row on a wide screen, then the
+ *                   programs Zoorik is a member of: each program's badge,
+ *                   its line, and its trademark line in small print
+ *   Milestones      dated facts on a line, most with their page (on the
  *                   band)
  *   Find us         the two stores as buttons, the social row, where Zoorik
  *                   is published (Homebrew, Scoop, PyPI, Artifact Hub, the
@@ -165,6 +167,25 @@ export function AboutPage(): React.JSX.Element {
             </div>
           ))}
         </dl>
+        <div className="ab-prog" id={company.programs.id}>
+          <h3>{company.programs.title}</h3>
+          {company.programs.items.map((program) => (
+            <div className="ab-pg" key={program.name}>
+              <div className="ab-pr">
+                {/* eslint-disable-next-line @next/next/no-img-element -- the program's own badge, its file unchanged */}
+                <img
+                  src={program.badge.src}
+                  alt={program.name}
+                  width={program.badge.width}
+                  height={program.badge.height}
+                  loading="lazy"
+                />
+                <p>{named(program.line)}</p>
+              </div>
+              <p className="ab-tm">{program.legal}</p>
+            </div>
+          ))}
+        </div>
       </Section>
 
       <Section section={milestones.section} band>
