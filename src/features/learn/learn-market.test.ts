@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 
-import { learnFixes } from "@/content/learn";
 import { alternativesPages, versusPages } from "@/content/learn-compare";
 import {
   alternativesFacts,
@@ -12,9 +11,9 @@ import {
 import { marketOurs, marketTool } from "./market-rows";
 
 /**
- * The market data (`src/content/learn-market.ts`, checked 19 October 2026), which the comparison pages under
- * /compare print: only what the pages print, every claim about another tool with a source, the two live versus pages
- * and no more, and no SOC 2 row.
+ * The market data (`src/content/learn-market.ts`, checked 19 October 2026), which Cloud cost optimization tools and
+ * the comparison pages under /compare print: only what the pages print, every claim about another tool with a source,
+ * the two live versus pages and no more, and no SOC 2 row.
  */
 
 const URL_ONLY = /^https:\/\/[^\s;]+$/;
@@ -88,12 +87,7 @@ describe("the market data", () => {
   });
 
   it("says Coral rebalances, never that it right-sizes: that is Amoeba's verb", () => {
-    const coral = [
-      marketOurs("coral").line,
-      ...learnFixes.filter((fix) => fix.fits.startsWith("Coral")).map((fix) => fix.fits),
-    ];
-    expect(coral).toHaveLength(4);
-    for (const line of coral) expect(line).not.toMatch(/right-?siz/i);
+    expect(marketOurs("coral").line).not.toMatch(/right-?siz/i);
     expect(marketOurs("coral").line).toMatch(/^Rebalances workloads,/);
     expect(marketOurs("amoeba").line).toMatch(/^Rightsizes block storage/);
   });

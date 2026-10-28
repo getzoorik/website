@@ -5,10 +5,11 @@ import { cleanup, render } from "@testing-library/react";
 import { createElement, type ComponentType } from "react";
 import { describe, expect, it, vi } from "vitest";
 
-import { learnPath } from "@/config/site";
+import { glossaryPath, learnPath } from "@/config/site";
 import { authors } from "@/content/authors";
 import type { ArticleBlock } from "@/content/learn/article";
 import { articleFiles } from "@/content/learn/articles.generated";
+import { glossaryTerms } from "@/content/learn/glossary";
 import { articleAuthor, learnArticles } from "@/content/learn/published";
 import { versusPages, versusRoute } from "@/content/learn-compare";
 import { isoDay, printedDay } from "@/lib/content-date";
@@ -22,6 +23,7 @@ vi.mock("next/navigation", async (original) => ({
 }));
 
 import LearnArticle from "@/app/learn/[slug]/page";
+import GlossaryTermPage from "@/app/learn/glossary/[slug]/page";
 
 import { ArticleFigure } from "./article-figures";
 
@@ -36,13 +38,15 @@ const blocksOf = (slug: string): readonly ArticleBlock[] => {
   return [...(article.lead ?? []), ...article.sections.flatMap((section) => section.blocks)];
 };
 
-/** Every page route the app serves: each page.tsx folder, each article and each versus page. */
+/** Every page route the app serves: each page.tsx folder, each article, each glossary term and each versus page. */
 function routes(dir = "src/app", base = ""): string[] {
   return readdirSync(dir).flatMap((name) => {
     const path = join(dir, name);
     if (statSync(path).isDirectory()) return routes(path, `${base}/${name}`);
     if (name !== "page.tsx") return [];
     if (base === "/learn/[slug]") return learnArticles.map((article) => learnPath(article.slug));
+    if (base === "/learn/glossary/[slug]")
+      return glossaryTerms.map((term) => glossaryPath(term.slug));
     if (base === "/compare/[slug]") return versusPages.map(versusRoute);
     return [base === "" ? "/" : base];
   });
@@ -121,11 +125,20 @@ describe("the Learn index", () => {
           if (!rule.trim().startsWith("@")) expect(rule, name).toContain(`.${name}`);
         }
       });
-      if (article.shareCard) expect(existsSync(`public${article.shareCard.url}`)).toBe(true);
+      /* Its diagrams and drawn figures share one numbering, each in its own module. */
+      blocksOf(article.slug)
+        .filter((block) => block.kind === "diagram" || block.kind === "svg")
+        .forEach((_, index) =>
+          expect(
+            existsSync(`src/features/learn/figures/${article.slug}/${index + 1}.ts`),
+            `${article.slug}-${index + 1}`,
+          ).toBe(true),
+        );
+      if (article.cover) expect(existsSync(`public${article.cover}`), article.cover).toBe(true);
     }
   });
 
-  /* It renders every article and the pages that link into Learn. */
+  /* It renders every article and glossary term, and the pages that link into Learn. */
   it("draws no link to a page that does not exist, on Learn or the pages that link into it", async () => {
     const known = new Set(routes());
     const pages: [string, () => Promise<React.JSX.Element>][] = [
@@ -136,7 +149,23 @@ describe("the Learn index", () => {
             () => LearnArticle({ params: Promise.resolve({ slug: article.slug }) }),
           ] as [string, () => Promise<React.JSX.Element>],
       ),
-      ...["learn", "coral/guide", "coral/faq", "amoeba/guide", "amoeba/faq", "coral", "amoeba"].map(
+      ...glossaryTerms.map(
+        (term) =>
+          [
+            glossaryPath(term.slug),
+            () => GlossaryTermPage({ params: Promise.resolve({ slug: term.slug }) }),
+          ] as [string, () => Promise<React.JSX.Element>],
+      ),
+      ...[
+        "learn",
+        "learn/glossary",
+        "coral/guide",
+        "coral/faq",
+        "amoeba/guide",
+        "amoeba/faq",
+        "coral",
+        "amoeba",
+      ].map(
         (folder) =>
           [
             `/${folder}`,
@@ -161,5 +190,5 @@ describe("the Learn index", () => {
       cleanup();
     }
     expect(missing).toEqual([]);
-  }, 20_000);
+  }, 40_000);
 });

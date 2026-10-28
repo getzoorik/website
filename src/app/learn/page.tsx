@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 import { JsonLd } from "@/components/seo/json-ld";
-import { pageCards, pageOpenGraph } from "@/config/social";
 import { pageStructuredData } from "@/config/structured-data";
 import { learnPage } from "@/content/learn";
+import { documentMetadata } from "@/features/documents/document-page";
 import { LearnHub } from "@/features/learn/learn-hub";
 
 import "@/styles/learn.css";
@@ -13,13 +13,8 @@ import "@/styles/learn.css";
  * share card. Learn teaches only: the market map, the news and the community have their own pages, which the hub
  * links.
  */
-/* ITS TITLE IS ABSOLUTE, like /about's and /careers's: "Zoorik Learn: …" names the company already. */
-export const metadata: Metadata = {
-  title: { absolute: learnPage.meta.title },
-  description: learnPage.meta.description,
-  alternates: { canonical: learnPage.path },
-  openGraph: pageOpenGraph(learnPage.path, learnPage.meta, pageCards.learn),
-};
+/* Its title goes through the layout's template: "Cloud cost optimization guides | Zoorik"; the h1 stays "Zoorik Learn". */
+export const metadata: Metadata = documentMetadata(learnPage.path, learnPage.meta);
 
 export default function Learn(): React.JSX.Element {
   return (

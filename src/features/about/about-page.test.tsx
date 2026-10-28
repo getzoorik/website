@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+
 import { render, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
@@ -13,6 +15,7 @@ import { marketplaces } from "@/config/marketplaces";
 import { calendarUrl, contactEmail, routes } from "@/config/site";
 import { about, aboutLastUpdated } from "@/content/about";
 import { caseStudy } from "@/content/case-studies";
+import { nvidiaInceptionLegal } from "@/content/memberships";
 import { newsFromZoorik } from "@/content/news";
 
 /* The nav and the footer read the pathname. */
@@ -34,8 +37,8 @@ const page = () => render(<AboutRoute />).container;
 const main = () => page().querySelector("main")!;
 
 describe("/about's metadata", () => {
-  it("has an absolute title, the mock's description and its canonical", () => {
-    expect(metadata.title).toEqual({ absolute: "About Zoorik: who builds Coral and Amoeba" });
+  it("has its title through the template, the mock's description and its canonical", () => {
+    expect(metadata.title).toBe("About");
     expect(metadata.description).toBe(
       "Zoorik Private Limited builds Coral, Kubernetes cost optimization on AKS and EKS, and Amoeba, block storage cost optimization on Azure and AWS.",
     );
@@ -43,7 +46,7 @@ describe("/about's metadata", () => {
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/about",
-      title: "About Zoorik: who builds Coral and Amoeba",
+      title: "About | Zoorik",
     });
   });
 });
@@ -90,11 +93,13 @@ describe("/about", () => {
       "Figures you can check",
       "Outbound only",
       "Company",
+      "Programs",
       "Milestones",
       "Zoorik Private Limited is founded",
-      "Validation Lab: −58% on our own cluster",
+      "Value Lab: −58% on our own cluster",
       "Coral installs with Helm and Terraform",
       "Free assessment 1.3",
+      "Zoorik joins the NVIDIA Inception Program",
       "Find us",
       "Available on",
       "Follow us",
@@ -173,7 +178,31 @@ describe("/about", () => {
     expect(demo.querySelector("svg.ext")).not.toBeNull();
   });
 
-  it("lists four milestones on a line, each dated, the case study's read from the study", () => {
+  it("closes the facts with the programs: NVIDIA's own badge, the line, and NVIDIA's trademark line", () => {
+    const programs = main().querySelector("#company dl.ab-facts + div.ab-prog#programs")!;
+    expect(text(programs.querySelector(":scope > h3"))).toBe("Programs");
+    const badge = programs.querySelector(".ab-pg > .ab-pr > img")!;
+    /* The program's file, unchanged, named for a screen reader as NVIDIA names it in a title. */
+    expect(badge).toHaveAttribute("src", "/badges/nvidia-inception-program-badge.svg");
+    expect(badge).toHaveAttribute("alt", "NVIDIA Inception Program");
+    expect([badge.getAttribute("width"), badge.getAttribute("height")]).toEqual(["200", "86"]);
+    expect(text(programs.querySelector(".ab-pr > p"))).toBe(
+      "Zoorik is a member of the NVIDIA Inception program.",
+    );
+    expect(programs.querySelector(".ab-pr > p span[translate='no']")).toHaveTextContent("Zoorik");
+    expect(text(programs.querySelector(".ab-pg > p.ab-tm"))).toBe(nvidiaInceptionLegal);
+    /* No link: the badge says Zoorik is a member, and nothing more. */
+    expect(programs.querySelector("a")).toBeNull();
+  });
+
+  it("serves NVIDIA's badge as NVIDIA made it", () => {
+    const svg = readFileSync("public/badges/nvidia-inception-program-badge.svg", "utf8");
+    expect(svg).toContain('viewBox="0 0 500.4288 216"');
+    expect(svg).toContain("fill: #76b900;");
+    expect(svg).not.toMatch(/<script|<foreignObject|href=/i);
+  });
+
+  it("lists five milestones on a line, each dated, the case study's read from the study", () => {
     const items = [...main().querySelectorAll("#milestones ol.ab-ms > li")];
     expect(
       items.map((item) => [
@@ -192,7 +221,7 @@ describe("/about", () => {
       [
         "2026-10-12",
         "12 Oct 2026",
-        "Validation Lab: −58% on our own cluster",
+        "Value Lab: −58% on our own cluster",
         "Coral reduced our own AKS development cluster’s machine bill from $368.65 to $154.76 a month in eight days. Read the case study.",
       ],
       [
@@ -207,6 +236,12 @@ describe("/about", () => {
         "Free assessment 1.3",
         "One command on PyPI and npm writes one PDF report for Coral and Amoeba. Run it.",
       ],
+      [
+        "2026-10-27",
+        "27 Oct 2026",
+        "Zoorik joins the NVIDIA Inception Program",
+        "Zoorik is now a member of NVIDIA’s program for startups.",
+      ],
     ]);
     expect(
       items.map((item) => {
@@ -218,6 +253,7 @@ describe("/about", () => {
       ["Read the case study", routes.caseStudyCoralDevCluster, null],
       ["See open source", routes.openSource, null],
       ["Run it", routes.assessment, null],
+      null,
     ]);
     /* The names stay out of translation, in the titles and the lines alike. */
     expect(items[0]!.querySelector('h3 > span[translate="no"]')).toHaveTextContent("Zoorik");
@@ -242,10 +278,12 @@ describe("/about", () => {
   });
 
   it("reads the installs and assessment milestones from their announcements on /news, never typed twice", () => {
-    const [, , installs, assessment] = about.milestones.items;
+    const [, , installs, assessment, inception] = about.milestones.items;
     const announced = (href: string) => newsFromZoorik.find((item) => item.href === href)!;
     expect(installs!.date.iso).toBe(announced(routes.openSource).date);
     expect(assessment!.date.iso).toBe(announced(routes.assessment).date);
+    expect(inception!.date.iso).toBe(announced(`${routes.about}#programs`).date);
+    expect(inception!.title).toBe(announced(`${routes.about}#programs`).title);
     /* "Free assessment 1.3": the version is the announcement's, "Zoorik assessment 1.3: …". */
     expect(announced(routes.assessment).title).toContain(
       `${assessment!.title.replace("Free ", "")}: `,
@@ -260,15 +298,15 @@ describe("/about", () => {
     expect(about.what.lede).toMatch(/^Zoorik reduces cloud cost, autonomously\. /);
   });
 
-  it("moves its sitemap date to the day Milestones and Zoorik on the web landed", () => {
-    expect(aboutLastUpdated).toBe("19 October 2026");
+  it("moves its sitemap date to the day the NVIDIA Inception programs row came", () => {
+    expect(aboutLastUpdated).toBe("27 October 2026");
   });
 
   it("puts the two stores as buttons under Available on, naming no product", () => {
     const stores = main().querySelector("#find-us .ab-find > .pl:first-child")!;
     const buttons = [...stores.querySelectorAll(".mkt-btns.ab-mb > a.mkt-b")];
     expect(buttons.map((button) => button.getAttribute("href"))).toEqual(
-      marketplaces.map((marketplace) => marketplace.listings.coral),
+      marketplaces.map((marketplace) => marketplace.profile),
     );
     expect(buttons.map((button) => text(button))).toEqual([
       "AWS Marketplace (opens in a new tab)",

@@ -16,7 +16,8 @@ import "@/styles/events.css";
  * and prerendered at build like every page here; linked from the footer's Resources column, after Case studies.
  *
  * 🔴 THE BUILD'S DAY TRIMS THE LIST. Prerendering runs this once, at build: events that had ended by then are left
- * out of the page and its markup, and the reader's browser hides what has ended since (`EventsList`). Two blocks
+ * out of the page and its markup, and the reader's browser hides what has ended since (`EventsList`). The page
+ * shows the first nine events, and the rest come with "More events" or any search or filter. Two blocks
  * of structured data: the page's own, then its events (`eventsStructuredData`).
  */
 export const metadata: Metadata = documentMetadata(routes.events, eventsPage.meta);

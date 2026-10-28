@@ -1,96 +1,43 @@
-/* Zoorik marketing: `/news`, Zoorik News, ported from the mock's `<style>` block, whole, rule for rule and in its
- * order: the links under the hero, the sections and their heads, From Zoorik (the navy panel, the cards, their tags and
- * days), Zoorik Radar (the navy head, its art and the three stream columns), the newsletter row and its narrow width,
- * the follow row (which the newsletter row's links reuse), then the radar's sweep and the two narrow widths.
+/* Zoorik marketing: `/news`, Zoorik News.
+ *
+ * Ported from the mock's /news rules, rule for rule and in their order. Everything else the page draws is the site's
+ * own, in the site system: the utility hero, the closing row's pair (`.as-grid`, `.as-card`, `.as-cal`, `.btn-ink`,
+ * `.cta-go`, `.cta-fine`), the section head (`.sec-hrow`) and the Read more tiles (`.dt*`).
  *
  * ─── EVERY SELECTOR IS THE PAGE'S OWN ──────────────────────────────────────────
- * Each one names an `nw-`, `nz-` or `nr-` class, which no other page draws, so a visit here cannot restyle another
- * page (the App Router keeps a visited route's sheet in the document): never the bare `.nw` of product-page.css, nor
- * the articles' `nw-nb`, `nw-links` and `nw-tbl` (`news-css.test.ts`).
+ * The App Router keeps a visited page's sheet in the document, so each selector names an `nw-` class, /news's own
+ * (`news-css.test.ts`), and never one another sheet owns: product-page.css's bare `.nw`, /learn's `nw-list`, the
+ * articles' `nw-nb`, `nw-links` and `nw-tbl`. Where the mock's selector names none, a "repo:" note says how it is
+ * written here. The logo's rules name `.dt-ic` too, so they win over the tile's icon size in any order.
  *
- * ─── THE MOCK'S `:root` AND BASE RULES ARE NOT COPIED ─────────────────────────
- * Its tokens and base are the site's own (`tokens.css`, the site system, `documents.css` for the utility hero), and
- * `--sans` / `--code` stay next/font's. Where a site-wide rule would change the mock's computed result, a "repo:" rule
- * says so: the newsletter row's arrows (the site's `.ext` margin). The Radar titles' arrow keeps `.ext`'s `display:inline`,
- * which Tailwind's preflight would otherwise make a block, and `.nr-t svg` sets its margin over `.ext`'s.
- *
- * ─── MOTION ──────────────────────────────────────────────────────────────────
- * One, the mock's: the radar's sweep turns into place once as the page loads, declared only under
- * `prefers-reduced-motion: no-preference`, so a reader who asks for stillness gets none.
- *
- * Loaded only by `src/app/news/page.tsx`. */
-/* /news: Zoorik News, with Zoorik Radar inside */
-.nw-jump{display:flex;flex-wrap:wrap;gap:6px;margin-top:28px}
-.nw-jump a{padding:9px 14px;border:1px solid rgba(250,247,243,.24);border-radius:var(--r-pill);font-size:.875rem;font-weight:500;color:#FAF7F3;text-decoration:none;background:rgba(250,247,243,.06)}
-.nw-jump a:hover{background:rgba(250,247,243,.14)}
-.nw-sec{padding-block:clamp(40px,5vw,72px);scroll-margin-top:calc(var(--nav-h) + 8px)}
-.nw-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px 24px;flex-wrap:wrap;margin-bottom:24px}
-.nw-h h2{font-size:clamp(1.5rem,1.2rem + 1vw,2rem);font-weight:600;letter-spacing:-.025em}
-.nw-h p{color:var(--muted)}
-.nz-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px}
-.nz-feat{position:relative;overflow:hidden;display:flex;flex-direction:column;padding:clamp(28px,3.5vw,48px);border-radius:var(--r-shell);background:#050B3D;color:#FAF7F3}
-.nz-feat::after{content:"";position:absolute;right:-140px;top:-180px;width:480px;height:480px;border-radius:50%;background:radial-gradient(closest-side,rgba(59,91,245,.34),transparent);pointer-events:none}
-.nz-feat > *{position:relative;z-index:1}
-.nz-feat h3{margin-top:16px;font-size:clamp(1.5rem,1.2rem + 1vw,2.1rem);font-weight:600;line-height:1.15;letter-spacing:-.025em;color:#FAF7F3}
-.nz-feat .nz-line{margin-top:14px;font-size:1.0625rem;line-height:1.6;color:rgba(250,247,243,.78);max-width:46ch}
-.nz-cta{align-self:flex-start;display:inline-flex;align-items:center;gap:10px;margin-top:auto;padding:13px 20px;border-radius:var(--r-ctl);background:#FAF7F3;color:#050B3D;font-weight:500;text-decoration:none}
-.nz-feat .nz-cta{margin-top:28px}
-.nz-cta svg,.nz-link svg{width:16px;height:16px}
-.nz-side{display:grid;gap:16px}
-.nz-card{display:flex;flex-direction:column;padding:24px;border:1px solid var(--line);border-radius:var(--r-card);background:#fff}
-.nz-card h3{margin-top:12px;font-size:1.125rem;font-weight:600;line-height:1.35}
-.nz-card .nz-line{margin-top:8px;font-size:.9375rem;line-height:1.55;color:var(--muted)}
-.nz-link{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-weight:500;color:var(--accent);text-decoration:none}
-.nz-meta{display:flex;align-items:center;gap:10px;font:500 .75rem/1 var(--code);color:var(--muted)}
-.nz-feat .nz-meta{color:rgba(250,247,243,.66)}
-.nz-tag{padding:4px 9px;border-radius:var(--r-pill);background:var(--accent-wash);color:var(--accent);font:600 .6875rem/1 var(--sans)}
-.nz-feat .nz-tag{background:rgba(95,227,181,.16);color:#5FE3B5}
-.nr-head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:28px;align-items:center;margin-bottom:28px;padding:clamp(24px,3vw,36px);border-radius:var(--r-shell);background:#050B3D;color:#FAF7F3}
-.nr-art{width:120px;height:120px}
-.nr-sweep{transform-origin:60px 60px}
-.nr-eyebrow{font:500 .75rem/1 var(--code);letter-spacing:.08em;text-transform:uppercase;color:#5FE3B5}
-.nr-head h2{margin-top:10px;font-size:clamp(1.5rem,1.2rem + 1vw,2rem);font-weight:600;letter-spacing:-.025em;color:#FAF7F3}
-.nr-head p:not(.nr-eyebrow){margin-top:8px;color:rgba(250,247,243,.74);line-height:1.6;max-width:70ch}
-.nr-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
-.nr-col{border:1px solid var(--line);border-radius:var(--r-card);background:#fff;overflow:hidden;scroll-margin-top:calc(var(--nav-h) + 8px)}
-.nr-col header{padding:20px 22px;border-bottom:1px solid var(--line);background:var(--surface-2)}
-.nr-col h3{font-size:1.125rem;font-weight:600}
-.nr-col header p{margin-top:4px;font-size:.875rem;color:var(--muted);line-height:1.5}
-.nr-col ol{list-style:none;margin:0;padding:0}
-.nr-col li{padding:18px 22px;border-bottom:1px solid var(--line-soft)}
-.nr-col li:last-child{border-bottom:0}
-.nr-col time{display:block;font:500 .75rem/1 var(--code);color:var(--muted)}
-.nr-t{display:inline;margin-top:6px;font-weight:600;line-height:1.4;color:var(--text);text-decoration:none}
-.nr-t svg{width:12px;height:12px;margin-left:4px;color:var(--muted);vertical-align:-1px}
-.nr-t:hover{color:var(--accent)}
-.nr-col li > p{margin-top:6px;font-size:.875rem;line-height:1.55;color:var(--muted)}
-.nr-col small{display:block;margin-top:6px;font-size:.75rem;color:var(--muted)}
-.nw-sub{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:28px;align-items:center;padding:clamp(28px,3.5vw,48px);border-radius:var(--r-shell);background:#050B3D;color:#FAF7F3}
-.nw-sub::after{content:"";position:absolute;right:-140px;bottom:-200px;width:480px;height:480px;border-radius:50%;background:radial-gradient(closest-side,rgba(59,91,245,.34),transparent);pointer-events:none}
-.nw-sub > *{position:relative;z-index:1}
-.nw-sub h2{margin-top:10px;font-size:clamp(1.5rem,1.2rem + 1vw,2rem);font-weight:600;letter-spacing:-.025em;color:#FAF7F3}
-.nw-subc > p:not(.nr-eyebrow){margin-top:10px;color:rgba(250,247,243,.78);line-height:1.6;max-width:52ch}
-.nw-subacts{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:24px}
-.nw-subacts .nz-cta{margin-top:0}
-.nw-alt{display:inline-flex;align-items:center;gap:6px;color:rgba(250,247,243,.82);font-weight:500;text-decoration:none}
-.nw-alt svg{width:13px;height:13px}
-.nw-sub .nw-fl{flex-direction:column;align-items:flex-start}
-.nw-sub .nw-fl p{font-size:.875rem;color:rgba(250,247,243,.6)}
-.nw-sub .nw-fl a{border-color:rgba(250,247,243,.3);color:#FAF7F3}
-.nw-sub .nw-fl a:hover{border-color:#5FE3B5;color:#5FE3B5}
-@media(max-width:1000px){.nw-sub{grid-template-columns:minmax(0,1fr)}}
-.nw-follow{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:clamp(24px,3vw,36px);border:1px solid var(--line);border-radius:var(--r-card);background:#fff}
-.nw-follow h2{font-size:1.375rem;font-weight:600}
-.nw-follow p{margin-top:4px;color:var(--muted)}
-.nw-fl{display:flex;flex-wrap:wrap;gap:8px}
-.nw-sub .nw-fl{flex-direction:row;flex-wrap:wrap;align-items:center}
-.nw-sub .nw-fl p{width:100%}
-.nw-fl a{display:inline-flex;align-items:center;gap:6px;padding:10px 14px;border:1px solid var(--line);border-radius:var(--r-ctl);font-weight:500;color:var(--text);text-decoration:none}
-.nw-fl a:hover{border-color:var(--accent);color:var(--accent)}
-.nw-fl svg{width:13px;height:13px}
-/* repo: these arrows are the site's `ExternalArrow`, whose page-wide `.ext` adds a 2px left margin; the mock's
-   arrows have none, and each link's gap alone sets them off */
-.nz-cta .ext,.nw-alt .ext,.nw-fl .ext{margin-left:0}
-@media(prefers-reduced-motion:no-preference){.nr-sweep{animation:nr-sweep 2.4s var(--ease) 1 both}@keyframes nr-sweep{from{transform:rotate(-120deg);opacity:0}to{transform:rotate(0);opacity:1}}}
-@media(max-width:1000px){.nz-grid,.nr-cols{grid-template-columns:minmax(0,1fr)}}
-@media(max-width:760px){.nr-head{grid-template-columns:minmax(0,1fr)}.nr-art{width:84px;height:84px}}
+ * Nothing here moves. Loaded only by `src/app/news/page.tsx`. */
+
+/* /news: the site's own parts, as /community and Value Lab */
+/* repo: the mock writes `#latest .as-grid > *`; here the pair's two cards are named by the white one's class, with
+   one class more than the site system's `.as-card` and `.as-cal`. The pair's subgrid rows assume four parts each. */
+.as-card.nw-fc,.nw-fc + .as-cal{grid-row:auto;display:flex;flex-direction:column;align-items:flex-start}
+.nw-fc{position:relative}
+.nw-own{display:block;width:40px;height:40px;margin-bottom:20px;color:#fff;--zm-sq:#050B3D}
+.nw-own-l{color:var(--text)}
+.nw-flag{position:absolute;top:24px;right:24px;padding:5px 11px;border:1px solid var(--line);border-radius:var(--r-pill);font-size:.8125rem;font-weight:500;line-height:1;color:var(--text)}
+.nw-meta{margin:0 0 8px;font-size:var(--fs-small);color:var(--muted)}
+.nw-fc .nw-meta + .as-h{margin-top:0}
+.nw-sec{padding-block:clamp(40px,5vw,64px)}
+.nw-t .dt-a{grid-template-columns:28px minmax(0,1fr) 16px}
+.nw-t .dt-go{color:var(--accent)}
+.dt-ic.nw-logo{width:28px;height:28px;object-fit:contain}
+/* repo: the site's base caps an image at its box's width; the mock's logo files carry no cap, as its inline marks do */
+img.dt-ic.nw-logo{max-width:none}
+.dt-ic.nw-aws{height:16px;margin-top:6px}
+.nw-mono{display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--line);border-radius:6px;background:var(--surface-2,#F6F7FB);font-size:.875rem;font-weight:600;color:var(--text)}
+.nw-m{display:block;margin-top:8px;font-size:var(--fs-micro);color:var(--muted)}
+.nw-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:32px}
+.nw-chips button{font:500 .8125rem/1 var(--sans);padding:9px 13px;border:1px solid var(--line);border-radius:var(--r-pill);background:#fff;color:var(--text);cursor:pointer}
+.nw-chips button[aria-pressed="true"]{background:var(--text);border-color:var(--text);color:#fff}
+.nw-chips button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.nw-sl{margin-bottom:14px;font-size:var(--fs-small);font-weight:500;color:var(--muted)}
+.nw-g + .nw-g{margin-top:36px}
+.nw-g[hidden]{display:none!important}
+.nw-note{margin-top:28px;font-size:var(--fs-micro);color:var(--muted)}
+/* repo: an announcing company's trademark line (NVIDIA's), small, under the Radar's note */
+.nw-tm{margin-top:8px;font-size:var(--fs-micro);line-height:1.5;color:var(--muted)}

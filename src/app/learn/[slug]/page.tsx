@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { JsonLd } from "@/components/seo/json-ld";
 import { pageStructuredData } from "@/config/structured-data";
 import type { Article } from "@/content/learn/article";
-import { articleCard, articleRoute, findArticle, learnArticles } from "@/content/learn/published";
+import { articleRoute, findArticle, learnArticles } from "@/content/learn/published";
 import { documentMetadata } from "@/features/documents/document-page";
 import { ArticlePage } from "@/features/learn/article-page";
 
@@ -34,11 +34,10 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const article = await articleOf(params);
-  return documentMetadata(
-    articleRoute(article),
-    { title: article.title, description: article.meta },
-    articleCard(article),
-  );
+  return documentMetadata(articleRoute(article), {
+    title: article.title,
+    description: article.meta,
+  });
 }
 
 export default async function LearnArticle({

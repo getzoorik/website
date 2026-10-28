@@ -33,7 +33,7 @@ describe("the case study band", () => {
     expect(mark).toHaveAttribute("aria-hidden", "true");
     expect(mark).toHaveAttribute("data-mark", "kubernetes");
     expect(words!.tagName).toBe("SPAN");
-    expect(words!.textContent).toBe("Validation Lab · Coral");
+    expect(words!.textContent).toBe("Value Lab · Coral");
     expect(words!.querySelector("[translate='no']")).toHaveTextContent(/^Coral$/);
   });
 
@@ -59,7 +59,7 @@ describe("the case study band", () => {
     expect(links).toHaveLength(1);
     const [button] = links;
     expect(button).toHaveClass("btn", "btn-light");
-    expect(button).toHaveAttribute("href", "/case-studies/coral-dev-cluster");
+    expect(button).toHaveAttribute("href", "/value-lab/coral-dev-cluster");
     expect(button!.getAttribute("href")).toBe(caseStudy.route);
     expect(text(button!)).toBe("Read the case study");
     /* Same tab: no new-tab hint, the plain arrow. */

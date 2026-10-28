@@ -2,15 +2,17 @@ import { render } from "@testing-library/react";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { amoebaDocs, amoebaOnePager, calendarUrl, routes } from "@/config/site";
 import { amoebaPageContent } from "@/content/amoeba-page";
 import { coralPageContent } from "@/content/coral-page";
 import { documents } from "@/content/documents";
+import { elasticContent } from "@/content/elastic";
 import { findArticle, learnSlugOf } from "@/content/learn/published";
 import { socialProfiles } from "@/content/footer";
 import { howItWorksSteps } from "@/content/how-it-works";
+import { kubernetesContent } from "@/content/kubernetes";
 import type { ProductPageContent, ReadMoreTile } from "@/content/product-page";
 import { productFilms, youtubeChannel } from "@/content/product-films";
 import { documentFacts } from "@/features/documents/document-facts";
@@ -26,6 +28,12 @@ import { productPageStructuredData } from "./product-page-meta";
  */
 let pathname = "/";
 vi.mock("next/navigation", () => ({ usePathname: () => pathname }));
+
+/* jsdom implements no media playback: the hero's film would print "Not implemented" on every render. */
+beforeEach(() => {
+  vi.spyOn(HTMLMediaElement.prototype, "play").mockResolvedValue(undefined);
+  vi.spyOn(HTMLMediaElement.prototype, "load").mockImplementation(() => {});
+});
 
 const pages: readonly [string, ProductPageContent][] = [
   ["/coral", coralPageContent],
@@ -67,7 +75,7 @@ describe.each(pages)("the product page %s", (path, content) => {
       `read-${product}`,
       "assess",
     ]);
-    expect(page.querySelector("main > header")).toHaveClass("hero", "pp-hero");
+    expect(page.querySelector("main > header")).toHaveClass("hero", "pp-hero", "pp-min");
     expect([...page.querySelectorAll("main .sec-band")].map((el) => el.id)).toEqual(["how"]);
     /* The mock's <main> has no class. */
     expect(page.querySelector("main")!.className).toBe("");
@@ -91,38 +99,59 @@ describe.each(pages)("the product page %s", (path, content) => {
     expect(page.querySelector("main h4")).toBeNull();
   });
 
-  it("opens the hero on the turning mark, ahead of the photo, and draws no deck", () => {
+  it("fills the hero with the data grid film, then only its five items", () => {
     const page = renderPage(path, content);
-    const [glow, art, photo] = [...page.querySelector("header.pp-hero")!.children];
-    expect(glow).toHaveClass("zk-glow");
-    expect(art).toHaveClass("zk-art");
-    expect(photo).toHaveClass("hero-photo");
-    expect(photo).toHaveAttribute(
-      "alt",
-      "Server racks in a data centre, lit by blue status lights",
+    const hero = page.querySelector("header.pp-hero")!;
+    const [film, words] = [...hero.children];
+    expect(hero.children).toHaveLength(2);
+    /* The film lane's element: silent, looping, hidden from a screen reader and the tab order, on the poster
+       for this screen (1080 here), from media.zoorik.com. Never the photo's class, whose mirror would flip it. */
+    expect(film!.tagName).toBe("VIDEO");
+    expect(film).toHaveClass("hero-film");
+    expect(film).not.toHaveClass("hero-photo");
+    expect(film).toHaveAttribute("aria-hidden", "true");
+    expect(film).toHaveAttribute("tabindex", "-1");
+    expect(film).toHaveAttribute(
+      "poster",
+      "https://media.zoorik.com/hero-films/hero-datagrid-poster-1080.jpg",
     );
-    expect(photo).toHaveAttribute("aria-hidden", "true");
-    expect(page.querySelector(".pp-hero .hero-sub")).toBeNull();
+    expect((film as HTMLVideoElement).muted).toBe(true);
+    expect((film as HTMLVideoElement).loop).toBe(true);
+    expect(words).toHaveClass("wrap", "hero-in");
+    expect(
+      [...words!.children].map((child) => `${child.tagName.toLowerCase()}.${child.className}`),
+    ).toEqual(["p.pp-eye", "h1.", "p.hero-sub", "div.hero-cta", "p.hx-mkt"]);
+    /* Gone (owner, 23 Oct 2026): the turning mark and its glow, the badges, the tags, the range card, the
+       autoscalers' row. */
+    expect(
+      hero.querySelector(
+        ".zk-art, .zk-glow, .hero-photo, .hero-badge, ul.offer, .pp-figs, .hero-logos, .pf-watch",
+      ),
+    ).toBeNull();
   });
 
-  it("badges the hero: Built for Azure and AWS, then where the product runs", () => {
+  it("names the product small above the h1: its mark, then its name, out of translation", () => {
     const page = renderPage(path, content);
-    const badges = [...page.querySelectorAll(".hero-badges > p.az-badge.hero-badge")];
-    expect(badges.map((badge) => text(badge))).toEqual([
-      "Built for Azure and AWS",
-      product === "coral" ? "Supported on AKS and EKS" : "Supported on Windows and Linux",
-    ]);
-    const marks = (badge: Element) =>
-      [...badge.querySelectorAll("svg")].map((svg) => svg.getAttribute("data-mark"));
-    expect(marks(badges[0])).toEqual(["azure", "aws"]);
-    expect(marks(badges[1])).toEqual(product === "coral" ? ["kubernetes"] : ["windows", "linux"]);
-    for (const svg of badges.flatMap((badge) => [...badge.querySelectorAll("svg")])) {
-      expect(svg).toHaveAttribute("aria-hidden", "true");
-    }
+    const eye = page.querySelector(".pp-hero p.pp-eye")!;
+    expect(eye).toHaveAttribute("translate", "no");
+    expect(text(eye)).toBe(name);
+    const mark = eye.firstElementChild!;
+    expect(mark.tagName.toLowerCase()).toBe("svg");
+    expect(mark).toHaveAttribute("aria-hidden", "true");
+    expect(mark.nextElementSibling!.tagName).toBe("SPAN");
   });
 
-  it("has one hero button while the film has no address: Estimate your saving, same tab", () => {
-    const page = renderPage(path, withFilm(content, null));
+  it("says the home page's own line for the product under the h1", () => {
+    const page = renderPage(path, content);
+    const line = page.querySelector(".pp-hero p.hero-sub")!;
+    const home = product === "coral" ? kubernetesContent : elasticContent;
+    expect(content.hero.line).toBe(home.body);
+    expect(line.textContent).toBe(home.body);
+    expect(line.querySelector('[translate="no"]')).toHaveTextContent(name);
+  });
+
+  it("has one hero button, Estimate your saving, same tab, to its own assessment", () => {
+    const page = renderPage(path, content);
     const buttons = [...page.querySelectorAll(".pp-hero .hero-cta a")];
     expect(buttons).toHaveLength(1);
     expect(buttons[0]).toHaveClass("btn", "btn-light");
@@ -132,60 +161,40 @@ describe.each(pages)("the product page %s", (path, content) => {
     expect(buttons[0].querySelector("svg")).toHaveAttribute("aria-hidden", "true");
   });
 
-  it("tags the hero with the offerings, each a link to its row under What it does", () => {
+  it("ends the hero on the stores that list it, each its cloud's mark and its own listing", () => {
     const page = renderPage(path, content);
-    const list = page.querySelector(".pp-hero ul.offer")!;
-    expect(list).toHaveAttribute("role", "list");
-    expect(list).toHaveAttribute("aria-label", `What ${name} does`);
-
-    const tags = [...list.querySelectorAll("li > a")];
-    const rows = [...page.querySelectorAll("#what ul.flist > li")];
-    expect(tags.map((tag) => text(tag))).toEqual(rows.map((row) => text(row.querySelector("h3"))));
-    expect(tags.map((tag) => tag.getAttribute("href"))).toEqual(rows.map((row) => `#${row.id}`));
-    expect(tags.map((tag) => text(tag))).toEqual(content.offerings.map((o) => o.label));
-    /* The tag and its row draw the same icon. */
-    tags.forEach((tag, index) => {
-      expect(tag.querySelector("svg")!.innerHTML).toBe(
-        rows[index].querySelector(".flist-i svg")!.innerHTML,
-      );
-    });
-  });
-
-  it("splits the hero: its words on the left, the savings figures on the right", () => {
-    const page = renderPage(path, content);
-    const split = page.querySelector(".pp-hero > .wrap.hero-in.pf-split")!;
-    const [left, right] = [...split.children];
-    expect(left).toHaveClass("pf-hero-l");
-    expect(left!.querySelector("h1")).not.toBeNull();
-    expect(left!.lastElementChild).toHaveClass(product === "coral" ? "hero-logos" : "hero-cta");
-    expect(right).toHaveClass("pf-hero-r");
-    expect(right!.children).toHaveLength(1);
-    /* The glass card, which does not rise: the hero is there from the first frame. */
-    const figs = right!.firstElementChild!;
-    expect(figs.className).toBe("pp-figs pf-hero-figs");
-    expect(figs).not.toHaveAttribute("data-i");
-    /* The product's range, then both together, each under its label, then the
-       qualifier: no figure without it, and no link in the card. */
-    const figures = [...figs!.querySelectorAll(".pp-fig")].map((fig) => [
-      text(fig.querySelector(".pp-fig-l")),
-      text(fig.querySelector(".kf-n")),
-      fig.querySelector(".kf-n")!.getAttribute("aria-label"),
-      text(fig.querySelector(".kf-c")),
-    ]);
-    expect(figures).toEqual([
-      product === "coral"
-        ? ["Coral", "40–50%", "40 to 50 percent", "off AKS and EKS cost"]
-        : ["Amoeba", "50–60%", "50 to 60 percent", "off block storage cost"],
-      ["Coral and Amoeba together", "20–30%", "20 to 30 percent", "off your overall cloud bill"],
-    ]);
-    expect(text(figs!.querySelector(":scope > p.pp-figs-q"))).toBe(
-      "Estimated ranges, not a promise.",
+    const line = page.querySelector(".pp-hero .hero-cta + p.hx-mkt")!;
+    expect(text(line)).toBe(
+      `${name} is available in AWS Marketplace (opens in a new tab) and Microsoft Marketplace (opens in a new tab)`,
     );
-    expect(figs!.querySelector("a")).toBeNull();
-    expect(page.querySelectorAll(".pp-figs")).toHaveLength(1);
+    expect(line.firstElementChild).toHaveAttribute("translate", "no");
+    const links = [...line.querySelectorAll("a")];
+    expect(links.map((a) => a.getAttribute("href"))).toEqual(
+      product === "coral"
+        ? [
+            "https://aws.amazon.com/marketplace/pp/prodview-kx44lqme4vwys",
+            "https://marketplace.microsoft.com/en-us/product/zoorik.coral",
+          ]
+        : [
+            "https://aws.amazon.com/marketplace/pp/prodview-u52eig5hqarzy",
+            "https://marketplace.microsoft.com/en-us/product/zoorik.amoeba",
+          ],
+    );
+    for (const a of links) {
+      expect(a).toHaveAttribute("target", "_blank");
+      expect(a).toHaveAttribute("rel", "noopener noreferrer");
+      /* The mark first, and no arrow after the name, as the mock draws the line. */
+      expect(a.firstElementChild).toHaveAttribute("aria-hidden", "true");
+      expect(a.querySelector(".ext")).toBeNull();
+    }
+    expect(links.map((a) => a.firstElementChild!.getAttribute("data-mark"))).toEqual([
+      "aws",
+      "azure",
+    ]);
+    expect(links[0]!.firstElementChild).toHaveClass("aws");
   });
 
-  it("asks What is it?, in three paragraphs, with What it does on its right", () => {
+  it("asks What is it?: the lead, then the rest folded under More about it, with What it does on its right", () => {
     const page = renderPage(path, content);
     const section = page.querySelector(`section#about-${product}`)!;
     expect(section).toHaveClass("sec");
@@ -199,12 +208,26 @@ describe.each(pages)("the product page %s", (path, content) => {
     expect(does).toHaveAttribute("id", "what");
     expect(does).toHaveAttribute("data-i", "1");
     expect(text(copy!.querySelector(`h2#about-${product}-h`))).toBe(`What is ${name}?`);
-    const paragraphs = [...copy!.querySelectorAll(".pp-prose > p")];
-    expect(paragraphs.map((p) => p.textContent)).toEqual(content.about.paragraphs);
-    expect(paragraphs[0]!.textContent).toMatch(new RegExp(`^${name} is a `));
+    const prose = copy!.querySelector(".pp-prose")!;
+    const [lead, more] = [...prose.children];
+    expect(prose.children).toHaveLength(2);
+    expect(lead!.tagName).toBe("P");
+    expect(lead!.textContent).toBe(content.about.paragraphs[0]);
+    expect(lead!.textContent).toMatch(new RegExp(`^${name} is a `));
+    /* The other two stay in the page, folded: closed, behind a quiet opener. */
+    expect(more!.tagName).toBe("DETAILS");
+    expect(more).toHaveClass("pp-more");
+    expect(more).not.toHaveAttribute("open");
+    const summary = more!.querySelector(":scope > summary")!;
+    expect(text(summary)).toBe(`More about ${name}`);
+    expect(summary.querySelector('[translate="no"]')).toHaveTextContent(name);
+    expect([...more!.querySelectorAll(":scope > p")].map((p) => p.textContent)).toEqual(
+      content.about.paragraphs.slice(1),
+    );
+    expect(content.about.paragraphs).toHaveLength(3);
   });
 
-  it("lists What it does as icon rows, each with its line and progress line, and where it runs", () => {
+  it("lists What it does as rows, each its drawing, its title and its line, and where it runs", () => {
     const page = renderPage(path, content);
     /* The heading, "?" and all. */
     expect(text(page.querySelector("#what h2#what-h"))).toBe(`What ${name} does?`);
@@ -215,21 +238,32 @@ describe.each(pages)("the product page %s", (path, content) => {
     expect(rows.map((row) => [row.id, text(row.querySelector("h3"))])).toEqual(
       content.offerings.map((o) => [o.id, o.label]),
     );
-    /* Each row's line under its title, and the progress line the turning
-       fills, hidden from a screen reader. */
+    /* Each row's line under its title; no progress line (owner, 23 Oct 2026). */
     expect(
       rows.map((row) => text(row.querySelector(":scope > div > h3 + span.tour-line"))),
     ).toEqual(content.offerings.map((o) => o.line));
-    for (const row of rows) {
-      const progress = row.lastElementChild!;
-      expect(progress).toHaveClass("tour-prog");
-      expect(progress).toHaveAttribute("aria-hidden", "true");
-      expect([...progress.children].map((child) => child.tagName)).toEqual(["I"]);
-    }
+    expect(list.querySelector(".tour-prog")).toBeNull();
     expect(list.querySelector("p")).toBeNull();
-    for (const tile of rows.map((row) => row.querySelector(".flist-i"))) {
-      expect(tile).toHaveAttribute("aria-hidden", "true");
+    /* Each row's drawing in its 88×52 slot, hidden from a screen reader, and each its own. */
+    const slots = rows.map((row) => row.firstElementChild!);
+    for (const slot of slots) {
+      expect(slot).toHaveClass("flist-i", "mv");
+      expect(slot).toHaveAttribute("aria-hidden", "true");
+      const svg = slot.querySelector(":scope > svg.mv-svg")!;
+      expect(svg).toHaveAttribute("viewBox", "0 0 88 52");
+      expect(svg).toHaveAttribute("focusable", "false");
     }
+    expect(new Set(slots.map((slot) => slot.innerHTML)).size).toBe(rows.length);
+    /* What each one plays: Coral's cost line, recommendation lines, fitted pod and leaving node; Amoeba's filling
+       disks, saved tail and leaving disk. */
+    const players = [".mv-line", ".mv-rec", ".mv-pod-o", ".mv-fill.f1", ".mv-save", ".mv-gone"];
+    expect(
+      slots.map((slot) => players.find((player) => slot.querySelector(player) !== null)),
+    ).toEqual(
+      product === "coral"
+        ? [".mv-line", ".mv-rec", ".mv-pod-o", ".mv-gone"]
+        : [".mv-fill.f1", ".mv-save", ".mv-gone"],
+    );
     /* Runs on, under the rows, as on the home page's blocks. */
     const runs = list.nextElementSibling!;
     expect(runs).toHaveClass("chips");
@@ -291,21 +325,16 @@ describe.each(pages)("the product page %s", (path, content) => {
     expect(page.querySelector("#assess [data-i]")).toBe(page.querySelector("#contact"));
   });
 
-  it("marks its own product in the bar, whose Assessment menu opens the assessment on it", () => {
+  it("marks its own product in the bar, whose Assessment link is the plain page", () => {
     const page = renderPage(path, content);
     const current = [...page.querySelectorAll('nav a[aria-current="page"]')];
     expect(current.length).toBeGreaterThan(0);
     for (const a of current) expect(a).toHaveAttribute("href", path);
-    /* The bar's word opens Coral's, the default, here too; the menu's row and
-       the drawer's chip for this product open its own. */
-    const word = [...page.querySelectorAll("nav a.nv-lbl")].filter((a) => text(a) === "Assessment");
-    expect(word.map((a) => a.getAttribute("href"))).toEqual(["/assessment?p=coral"]);
-    const own = [...page.querySelectorAll(`nav a[href="/assessment?p=${product}"]`)].map((a) =>
-      a.closest(".nv-menu") ? `row ${text(a.querySelector("b"))}` : text(a),
-    );
-    expect(own).toEqual(
-      product === "coral" ? ["Assessment", `row ${name}`, name] : [`row ${name}`, name],
-    );
+    /* The bar's link and the drawer's lead to the assessment itself, here too;
+       the page switches to Amoeba on its own. */
+    const links = [...page.querySelectorAll("nav a")].filter((a) => text(a) === "Assessment");
+    expect(links.map((a) => a.getAttribute("href"))).toEqual(["/assessment", "/assessment"]);
+    expect(page.querySelectorAll(`nav a[href^="/assessment?p="]`)).toHaveLength(0);
   });
 
   it("lands every in-page anchor on something that is there", () => {
@@ -341,13 +370,18 @@ describe.each(pages)("the product page %s", (path, content) => {
     }
   });
 
-  it("uses only the site's words: optimization, never the old verbs or names", () => {
+  it("uses only the site's words: its own verb, reduce, and never the old names", () => {
     const page = renderPage(path, content);
     const main = page.querySelector("main")!.cloneNode(true) as HTMLElement;
-    /* The film's chapters, once the film is on YouTube, are the film's own
-       (YouTube's chapter names). */
-    for (const chapters of main.querySelectorAll(".pf-ch")) chapters.remove();
-    expect(main.textContent).not.toMatch(/rebalanc|rightsiz|right-siz/i);
+    /* Coral rebalances, Amoeba rightsizes: the home page's line says so in the hero. */
+    expect(text(main.querySelector(".hero-sub"))).toMatch(
+      product === "coral" ? /rebalances/ : /rightsizes/,
+    );
+    /* "reduce", never "cut" or "lower", in what the page itself prints (the How it works cards are the shared
+       step cards'). */
+    const own = main.cloneNode(true) as HTMLElement;
+    for (const card of own.querySelectorAll(".stepc")) card.remove();
+    expect(own.textContent).not.toMatch(/\b(cut|cuts|lower|lowers)\b/i);
     /* Built from pieces, so this file does not trip a source scan. */
     const forbidden = new RegExp(
       [
@@ -417,10 +451,11 @@ describe.each(pages)("the film on %s", (path, content) => {
     );
     const page = renderPage(path, content);
     expect(page.querySelector("section#film a.pf-film-p")).toHaveAttribute("href", film.url);
-    expect(page.querySelector(".pp-hero .pf-watch")).toHaveAttribute("href", "#film");
+    /* The hero leads to it no more: the band is right below (owner, 23 Oct 2026). */
+    expect(page.querySelector('.pp-hero a[href="#film"]')).toBeNull();
   });
 
-  it("draws no band, no button and no link to either while a film has no address", () => {
+  it("draws no band and no link to it while a film has no address", () => {
     const page = renderPage(path, withFilm(content, null));
     expect(page.querySelector("#film, .pf-film, .pf-watch")).toBeNull();
     expect(page.querySelector('a[href="#film"]')).toBeNull();
@@ -444,20 +479,7 @@ describe.each(pages)("the film on %s", (path, content) => {
     expect(band.querySelector("h2 [translate='no']")).toHaveTextContent(name);
   });
 
-  it("adds the hero's second button, down to the band", () => {
-    const page = renderPage(path, withFilm(content, url));
-    const buttons = [...page.querySelectorAll(".pp-hero .hero-cta > a")];
-    expect(buttons).toHaveLength(2);
-    const watch = buttons[1]!;
-    expect(watch.className).toBe("btn btn-wire pf-watch");
-    expect(watch).toHaveAttribute("href", "#film");
-    expect(watch).not.toHaveAttribute("target");
-    expect(text(watch)).toBe("Watch the 2-minute film");
-    expect(watch.firstElementChild!.tagName).toBe("svg");
-    expect(watch.firstElementChild).toHaveAttribute("aria-hidden", "true");
-  });
-
-  it("opens the film on YouTube from its poster, with its length on the tag", () => {
+  it("opens the film on YouTube from its poster, which carries no pill", () => {
     const page = renderPage(path, withFilm(content, url));
     const poster = page.querySelector<HTMLAnchorElement>("#film a.pf-film-p")!;
     expect(poster).toHaveAttribute("href", url);
@@ -474,10 +496,9 @@ describe.each(pages)("the film on %s", (path, content) => {
     expect(img).toHaveAttribute("height", "1080");
     expect(img).toHaveAttribute("loading", "lazy");
     expect(poster.querySelector(".pf-play")).toHaveAttribute("aria-hidden", "true");
-    const tag = poster.querySelector(".pf-film-tag")!;
-    expect(tag).toHaveAttribute("aria-hidden", "true");
-    expect(text(tag.querySelector("b"))).toBe(product === "coral" ? "2:05" : "2:12");
-    expect(text(tag)).toBe(`${film.length}Watch on YouTube`);
+    /* The length pill came off the film; its link is the line under it (below). */
+    expect(poster.querySelector(".pf-film-tag")).toBeNull();
+    expect([...poster.children].map((child) => child.tagName)).toEqual(["IMG", "SPAN"]);
   });
 
   it("lists the chapters, each opening the film at its second", () => {
@@ -526,11 +547,21 @@ describe.each(pages)("the film on %s", (path, content) => {
     expect(hrefs[1]).toBe(`${short}?t=${film.chapters[1]!.at}s`);
   });
 
-  it("ends on the channel the site already lists", () => {
+  it("ends on one quiet line: the film on YouTube at its length, then the channel the site already lists", () => {
     const page = renderPage(path, withFilm(content, url));
     const more = page.querySelector("#film p.pf-film-more")!;
-    expect(text(more)).toBe("More films on our YouTube channel");
-    const channel = more.querySelector("a")!;
+    const length = product === "coral" ? "2:05" : "2:12";
+    expect(film.length).toBe(length);
+    expect(text(more)).toBe(
+      `Watch the ${length} film on YouTube (opens in a new tab) · More films on our YouTube channel`,
+    );
+    const [watch, channel] = [...more.querySelectorAll("a")];
+    expect(watch).toHaveClass("pf-yt");
+    expect(watch).toHaveAttribute("href", url);
+    expect(watch).toHaveAttribute("target", "_blank");
+    expect(watch).toHaveAttribute("rel", "noopener");
+    expect(watch!.querySelector(".sr-only")).toHaveTextContent("(opens in a new tab)");
+    expect(channel).not.toHaveClass("pf-yt");
     expect(channel).toHaveAttribute("href", youtubeChannel);
     expect(channel).toHaveAttribute("target", "_blank");
     expect(youtubeChannel).toBe(
@@ -581,16 +612,7 @@ const learnTile = (content: ProductPageContent) => {
 };
 
 describe("the Coral page", () => {
-  it("puts the marketplace line, with its bag, between the button and the logos", () => {
-    const hero = renderPage("/coral", coralPageContent).querySelector(".pp-hero")!;
-    const market = hero.querySelector("p.hero-mkt")!;
-    expect(market.previousElementSibling).toHaveClass("hero-cta");
-    expect(market.nextElementSibling).toHaveClass("hero-logos");
-    expect(market.querySelector(".mkt-ic")).toHaveAttribute("aria-hidden", "true");
-    expect(market.querySelectorAll("a")).toHaveLength(2);
-  });
-
-  it("never shows Windows or Linux, and names the four autoscalers it works beside", () => {
+  it("never shows Windows or Linux, and no longer draws the autoscalers' row", () => {
     const page = renderPage("/coral", coralPageContent);
     const main = page.querySelector("main")!;
     /* Coral claims no Windows or Linux platform. Install your way names zoorikctl's systems (macOS, Linux, Windows):
@@ -598,34 +620,8 @@ describe("the Coral page", () => {
     const claims = main.cloneNode(true) as HTMLElement;
     claims.querySelector("#install")?.remove();
     expect(claims.textContent).not.toMatch(/Windows|Linux/);
-    expect(main.querySelector('[data-mark="windows"], [data-mark="linux"]')).toBeNull();
-
-    /* Exactly as the design draws it: Karpenter and KEDA with their logos,
-       NAP and the Cluster Autoscaler as names alone. */
-    const row = page.querySelector(".pp-hero .hero-logos > .vk-logos")!;
-    const label = row.querySelector(".vk-logos-l")!;
-    const list = row.querySelector("ul")!;
-    expect(text(label)).toBe("Compatible with your native");
-    expect(list).toHaveAttribute("role", "list");
-    expect(list).toHaveAttribute("aria-labelledby", label.id);
-    expect(
-      [...list.children].map((item) => [
-        item.tagName,
-        text(item),
-        item.querySelector("svg")?.getAttribute("class") ?? null,
-      ]),
-    ).toEqual([
-      ["LI", "Karpenter", "vk-mk vk-mk-karpenter"],
-      ["LI", "NAP", null],
-      ["LI", "Cluster Autoscaler", null],
-      ["LI", "KEDA", "vk-mk vk-mk-keda"],
-    ]);
-    for (const svg of list.querySelectorAll("svg")) {
-      expect(svg).toHaveAttribute("aria-hidden", "true");
-      expect(svg).toHaveAttribute("focusable", "false");
-    }
-    /* Never beside "partner" or "official". */
-    expect(row.textContent).not.toMatch(/partner|official/i);
+    expect(claims.querySelector('[data-mark="windows"], [data-mark="linux"]')).toBeNull();
+    expect(main.querySelector(".hero-logos, .vk-logos")).toBeNull();
   });
 
   it("ends on Read more: the guide, the FAQ, the one-pager and its article, two by two", () => {
@@ -689,17 +685,22 @@ describe("the Coral page", () => {
 });
 
 describe("the Amoeba page", () => {
-  it("runs on Windows and Linux and has no logo row: Amoeba works beside no autoscaler", () => {
+  it("runs on Windows and Linux, as its Runs on chips say", () => {
     const page = renderPage("/amoeba", amoebaPageContent);
+    expect(page.querySelector("#what .chip svg.tux")).toHaveAttribute("data-mark", "linux");
     expect(page.querySelector(".pp-hero .hero-logos, .pp-hero .hero-chips")).toBeNull();
-    expect(page.querySelector(".hero-badge svg.tux")).toHaveAttribute("data-mark", "linux");
   });
 
-  it("draws no marketplace line until Amoeba is listed: never Coral's listings", () => {
+  it("draws its marketplace line under the button: both stores, its own listings, never Coral's", () => {
     const page = renderPage("/amoeba", amoebaPageContent);
-    expect(page.querySelector(".pp-hero .hero-mkt")).toBeNull();
-    expect(page.querySelector(".pp-hero .hero-cta")!.nextElementSibling).toBeNull();
-    expect(page.querySelector('main a[href*="marketplace"]')).toBeNull();
+    const line = page.querySelector(".pp-hero .hero-cta + p.hx-mkt")!;
+    expect(text(line)).toMatch(/^Amoeba is available in /);
+    expect(
+      [...page.querySelectorAll('main a[href*="marketplace"]')].map((a) => a.getAttribute("href")),
+    ).toEqual([
+      "https://aws.amazon.com/marketplace/pp/prodview-u52eig5hqarzy",
+      "https://marketplace.microsoft.com/en-us/product/zoorik.amoeba",
+    ]);
   });
 
   it.runIf(!amoebaDocs && !amoebaOnePager)(

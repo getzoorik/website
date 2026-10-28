@@ -1,8 +1,9 @@
-/* Zoorik marketing: the header's four menus, the drawer's groups and the bar's one button.
+/* Zoorik marketing: the header's one menu (Docs), the drawer's group and the bar's one button.
  *
- * Ported VERBATIM from the mocks' header block, byte-identical in every mock that carries the
- * site's header, plus the Learn row and the current row's darker line. Values are copied, never
- * reinterpreted.
+ * Ported VERBATIM from the mocks' header block (`nav-kit`), byte-identical in every mock that
+ * carries the site's header, plus the Learn row and the current row's darker line. Values are
+ * copied, never reinterpreted. Every rule here is in the 23 Oct 2026 mocks of /, /coral and
+ * /amoeba, the two blocks at the foot included, which the site wrote first and the mocks took back.
  *
  * That is the version with the two header fixes:
  *  - `.nv-btn` has no colour transition, so the menu labels flip ink with the bar in one
@@ -10,10 +11,11 @@
  *  - `.nv-menu` sets `--z-focus:var(--accent)`, so a focused row in the white menu takes the
  *    accent ring even while the bar is over the dark hero (#8095F9 on white is 2.8:1).
  *
- * Two blocks at the foot are not in the mock, marked so: the current drawer chip's accent, which
- * a specificity tie in the port takes from the last chip in a row; and the word-and-chevron
- * control that Assessment, FAQ and Docs became. The port's own comments are the mock's too, so
- * "eight items plus three chevrons" predates Assessment's chevron: the bar now has four.
+ * The bar is Coral · Amoeba · Assessment · Docs ▾ · Login · Book a demo since 23 Oct 2026
+ * (owner: "Docs is the only menu"); Assessment is a plain link drawn as Login is (`.nav-opt`).
+ * The port's own comments are the mock's, so its heading still names the four menus of 5 Oct,
+ * "eight items plus three chevrons" the bar before that, and the rules the mock keeps for a
+ * lone `.nv-btn` (Product guide's, with its `span`) style nothing the bar draws today.
  *
  * 🔴 IMPORTED AFTER nav.css AND site-system.css, as the mocks carry it, and the order is
  * load-bearing: the narrower bar's gaps (`.nav-links{gap:…}` at 1240px and at 1140px) tie
@@ -106,32 +108,30 @@
 .nav-drop .nd-row a svg{width:15px;height:15px;flex:none}
 @media (prefers-reduced-motion:reduce){.nv-chev,.nv-go{transition:none}}
 
-/* ══ NOT IN THE MOCK: a current chip keeps its accent when it is the last in its row ══════════
+/* ══ A current chip keeps its accent when it is the last in its row (the site's first; the mocks since 15 Oct) ══
    🔴 A SPECIFICITY TIE IN THE PORT ABOVE. `.nav-drop .nd-row a:last-child` (0,3,1) restates the
    chip's --line border and --text ink, which the main sheet's `.nav-drop a:last-child` would
    otherwise strip from the last chip; it ties `.nav-drop .nd-row a[aria-current="page"]`
    (0,3,1) and comes later. So the LAST chip in a row, when it is the page you are on, keeps the
-   wash but loses its accent border and ink. In the mocks that is /docs's "All" and the Amoeba
-   guide's and FAQ's "Amoeba". With the Amoeba guide and FAQ held (`amoebaDocs` off), Coral is
-   the only chip in its row, so the tie would reach /coral/guide and /coral/faq too, where the
-   mocks draw the chip in the accent. The rule is one look for every current chip: an --accent
+   wash but loses its accent border and ink. With the Docs group the drawer's one row, that is
+   /open-source's "Open source" (it was /docs's "All" and the Amoeba guide's and FAQ's
+   "Amoeba" when the guide and FAQ had rows of their own). The rule is one look for every current chip: an --accent
    border, an --accent-wash ground and --accent text. One more class settles the tie that way,
    wherever the chip sits. It is a mock defect. */
 .nav-drop .nd-row a[aria-current="page"]:last-child{border-color:var(--accent);color:var(--accent)}
 
-/* ══ NOT IN THE MOCKS: Assessment, FAQ and Docs are a word and a chevron ══
-   The word is a link (`a.nv-lbl`, to Coral's page); the chevron is a button of its own
-   (`button.nv-btn.nv-tog`) that opens the menu. Product guide keeps the one `.nv-btn` above. At
-   rest the pair draws what that one button drew, to the pixel (measured against main at 1440,
-   1100 and 1001: FAQ, Docs and everything after them unmoved; Assessment gains the chevron the
-   other menus have, so it, Amoeba and Coral sit 17px further left, the chevron's 5 + 12):
+/* ══ Docs is a word and a chevron (the site's first; the mocks carry it too) ══
+   Written when Assessment, FAQ and Docs each were one; Docs alone is today.
+   The word is a link (`a.nv-lbl`, to Coral's group on the hub); the chevron is a button of its own
+   (`button.nv-btn.nv-tog`) that opens the menu. At rest the pair draws what the one `.nv-btn`
+   above drew, to the pixel (measured against main at 1440, 1100 and 1001 when it was written):
    - the word takes the bar's link rules (`.nav-links a:not(.btn)`), which set the same type and
      the same two inks as `.nv-btn`, and no colour transition, so it flips with the bar in one frame;
    - the chevron's button is 24 × 24, the least target WCAG 2.5.8 asks for, where the chevron alone
      is 12: 5px of it ahead of the chevron, which is the one button's 5px gap, and 7px behind,
      which the -7px margin hands back, so the control lays out as the one button did. Those 7px reach into
-     the gap after Assessment, FAQ or Docs, which is never under 12px (1140px down), and the
-     next item's box starts after it;
+     the gap after Docs, which is never under 12px (1140px down), and the next item's box starts
+     after it;
    - the pair lights as the one button did: the word takes the full ink while its menu is open or
      its chevron is hovered, the chevron while the word is hovered. The `:has()` rules stand alone,
      so an engine without `:has()` drops only them;

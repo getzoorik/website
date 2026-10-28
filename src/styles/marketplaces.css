@@ -1,52 +1,28 @@
 /* Zoorik marketing: `/marketplaces`, where to find Zoorik.
  *
- * Ported from the mock's block for this page, rule for rule and in its order. The mock carries the programs block too,
- * whose section padding (`.pv-sec`), links (`.pv-go`) and navy close (`.pv-close`, `.pv-cta`) this page draws, with the
- * shared block's two `.hero-cta .btn` rules: that is /referrals's and /partners's sheet (`programs.css`), so the page
- * imports it first and this after it, and its <main> is `.pv-main` as well, which those rules open on. Nothing here
- * overrides a `programs.css` rule.
+ * The page is drawn with the program pages' parts (the pair on the band, the section heads, the Read more tiles), whose
+ * rules are their sheet's (`program-pages.css`), loaded first. This sheet adds the page's own two: the listings as rows
+ * on the white card, each with its store's mark, and the two-to-a-row grid of Reviews.
  *
  * ─── EVERY SELECTOR IS THE PAGE'S OWN ──────────────────────────────────────────
  * The App Router keeps a visited page's sheet in the document, so every selector names an `mp-` class, which only this
  * page draws (`marketplaces-css.test.ts`).
  *
- * ─── THE MOCK'S `:root` AND BASE RULES ARE NOT COPIED ─────────────────────────
- * Its tokens and base are the site's own (`tokens.css`, the site system), and `--sans` / `--code` stay next/font's.
- * Where a site-wide rule changes the mock's computed result, a "repo:" rule says so: the new-tab arrows' margin.
- *
  * Loaded only by `/marketplaces` (`src/app/marketplaces/page.tsx`). */
 
-/* /marketplaces */
-.mp-buy{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.mp-store{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:10px;padding:clamp(26px,3.2vw,40px);border-radius:var(--r-shell);background:#050B3D;color:#FAF7F3;text-decoration:none}
-.mp-store::after{content:"";position:absolute;right:-120px;top:-160px;width:420px;height:420px;border-radius:50%;background:radial-gradient(closest-side,rgba(59,91,245,.34),transparent)}
-.mp-store > *{position:relative;z-index:1}
-.mp-k{font:500 .75rem/1 var(--code);letter-spacing:.08em;text-transform:uppercase;color:#5FE3B5}
-.mp-store b{font-size:1.75rem;font-weight:600;letter-spacing:-.025em}
-.mp-store > span:not(.mp-k):not(.mp-go):not(.sr-only){color:rgba(250,247,243,.78);line-height:1.6}
-.mp-go{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-weight:600;color:#FAF7F3}
-.mp-go svg{width:14px;height:14px}
-.mp-note{margin-top:16px;color:var(--muted)}
-.mp-note a{color:var(--accent)}
-.mp-rev{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
-.mp-rc{display:flex;flex-direction:column;gap:8px;padding:28px;border:1px solid var(--line);border-radius:var(--r-card);background:#fff}
-.mp-rc .mp-k{color:var(--accent)}
-.mp-rc h3{font-size:1.375rem;font-weight:600}
-.mp-rc p{color:var(--muted);line-height:1.6}
-.mp-acts{display:flex;flex-wrap:wrap;gap:20px;margin-top:auto;padding-top:10px}
-.mp-rc.is-soon{border-style:dashed}
-.mp-chip{align-self:flex-start;margin-top:auto;padding:6px 12px;border:1px dashed var(--card-hover);border-radius:var(--r-pill);font:500 .75rem/1 var(--code);color:var(--muted)}
-.mp-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.mp-logo{display:grid;place-items:center;width:48px;height:48px;margin-bottom:6px;border-radius:12px;background:#FAF7F3}
-.mp-logo svg{width:28px;height:28px}
-.mp-i{display:flex;flex-direction:column;gap:3px;padding:18px 20px;border:1px solid var(--line);border-radius:var(--r-card);background:#fff;color:var(--text);text-decoration:none}
-.mp-i:hover{border-color:var(--accent)}
-.mp-i b{display:inline-flex;align-items:center;gap:6px;font-weight:600}
-.mp-i b svg{width:12px;height:12px;color:var(--muted)}
-.mp-i small{font-size:.8125rem;color:var(--muted)}
-@media(max-width:1000px){.mp-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:760px){.mp-buy,.mp-rev,.mp-grid{grid-template-columns:minmax(0,1fr)}}
-
-/* repo: the new-tab arrows are the site's `ExternalArrow`, whose page-wide `.ext` adds a 2px left margin and keeps it
-   from shrinking; the mock's arrow has no margin, so it sits its gap from the word, and shrinks as a flex item does */
-.mp-go .ext,.mp-acts .ext,.mp-i .ext{margin-left:0;flex:0 1 auto}
+/* the listings: one row each, the store's mark, "<product> on <store>", the arrow out */
+.mp-list{list-style:none;margin:0;padding:0;width:100%;border-top:1px solid var(--line)}
+.mp-l{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:.9375rem;font-weight:500;color:var(--text);text-decoration:none}
+.mp-l > span:not(.sr-only){flex:1;min-width:0}
+.mp-l b{font-weight:600}
+.mp-m{flex:none;width:20px;height:20px}
+.mp-l .dt-go{flex:none;width:16px;height:16px;color:var(--accent);transition:transform var(--d-fast) var(--ease)}
+@media(hover:hover){.mp-l:hover > span{color:var(--accent)}.mp-l:hover .dt-go{transform:translate(2px,-2px)}}
+/* Reviews: two to a row */
+.dt-grid.mp-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:640px){.dt-grid.mp-2{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){.mp-l .dt-go{transition:none}.mp-l:hover .dt-go{transform:none}}
+/* a platform's logo file in the tile's icon slot: the base img{max-width:100%} would shrink it in its 28px column */
+img.dt-ic.mp-logo{max-width:none;object-fit:contain}
+/* GitHub's mark, a logo among logos, in its own black */
+.dt-ic.mp-ink{color:var(--text)}

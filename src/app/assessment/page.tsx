@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import type { JSX } from "react";
 
 import { JsonLd } from "@/components/seo/json-ld";
-import { routes } from "@/config/site";
-import { pageCards, pageOpenGraph } from "@/config/social";
+import { pageTitle, routes } from "@/config/site";
+import { pageOpenGraph } from "@/config/social";
 import { pageStructuredData } from "@/config/structured-data";
 import { assessmentCopy } from "@/content/assessment";
 import { AssessmentPage } from "@/features/assessment/assessment-page";
@@ -37,11 +37,7 @@ export const metadata: Metadata = {
   title,
   description,
   alternates: { canonical: routes.assessment },
-  openGraph: pageOpenGraph(
-    routes.assessment,
-    { title: `${title} · Zoorik`, description },
-    pageCards.assessment,
-  ),
+  openGraph: pageOpenGraph(routes.assessment, { title: pageTitle(title), description }),
 };
 
 export default function Assessment(): JSX.Element {

@@ -12,8 +12,8 @@ import { SiteNav } from "./site-nav";
 
 /**
  * The header: what it draws, what each page marks as current, where each
- * menu's word leads, and every way its four menus and its drawer open and
- * close. Each of these works in a browser and none of them shows in a
+ * link and the menu's word lead, and every way its Docs menu and its drawer
+ * open and close. Each of these works in a browser and none of them shows in a
  * screenshot, so a regression would look like working software until somebody
  * pressed Escape.
  */
@@ -64,7 +64,7 @@ beforeEach(() => {
 
 afterEach(() => {
   document.removeEventListener("click", stayOnPage);
-  /* What /assessment's first-paint script and switch set (`first-paint.ts`). */
+  /* What /assessment's first-paint script and switch set (`first-paint.ts`), which the bar no longer reads. */
   document.documentElement.removeAttribute("data-ap");
   vi.useRealTimers();
   vi.restoreAllMocks();
@@ -72,8 +72,8 @@ afterEach(() => {
 
 const text = (el: Element | null) => (el?.textContent ?? "").replace(/\s+/g, " ").trim();
 
-/** A menu's word: its link where the word is one (Assessment, FAQ, Docs), else its button. */
-const labelOf = (dd: Element) => text(dd.querySelector(".nv-lbl, .nv-btn"));
+/** A menu's word: its link. */
+const labelOf = (dd: Element) => text(dd.querySelector(".nv-lbl"));
 
 function renderNav(path = "/coral") {
   pathname.current = path;
@@ -82,15 +82,20 @@ function renderNav(path = "/coral") {
     [...view.container.querySelectorAll<HTMLElement>(".nv-dd")].find(
       (el) => labelOf(el) === label,
     )!;
-  /** The menu's button: the chevron, where the word is a link. */
+  /** The menu's button: the chevron after its word. */
   const button = (label: string) => dd(label).querySelector<HTMLButtonElement>("button.nv-btn")!;
   const word = (label: string) => dd(label).querySelector<HTMLAnchorElement>("a.nv-lbl")!;
   const card = (label: string) => dd(label).querySelector<HTMLElement>(".nv-menu")!;
-  return { ...view, dd, button, word, card };
+  /** One of the plain links in the bar, drawn alike: Assessment or Login. */
+  const link = (label: string) =>
+    [...view.container.querySelectorAll<HTMLAnchorElement>(".nav-links > a.nav-opt")].find(
+      (a) => text(a) === label,
+    )!;
+  return { ...view, dd, button, word, card, link };
 }
 
 describe("the bar", () => {
-  it("runs Coral, Amoeba, the four menus, Login, Book a demo, then the toggle", () => {
+  it("runs Coral, Amoeba, Assessment, the Docs menu, Login, Book a demo, then the toggle", () => {
     const { container } = renderNav("/");
     const items = [...container.querySelector(".nav-links")!.children].map((el) =>
       el.matches(".nv-dd") ? `${labelOf(el)} ▾` : text(el) || el.className,
@@ -98,14 +103,33 @@ describe("the bar", () => {
     expect(items).toEqual([
       "Coral",
       "Amoeba",
-      "Assessment ▾",
-      "Product guide ▾",
-      "FAQ ▾",
+      "Assessment",
       "Docs ▾",
       "Login",
       "Book a demo (opens in a new tab)",
       "nav-toggle",
     ]);
+  });
+
+  it("leaves Product guide and FAQ out, in the bar and the drawer: the Docs menu leads to them", () => {
+    /* Owner, 23 Oct 2026: "Docs is the only menu". */
+    for (const path of ["/", "/coral/guide", "/amoeba/faq"]) {
+      const { container, unmount } = renderNav(path);
+      const nav = container.querySelector("nav")!;
+      /* No link, button or drawer label of their name: Docs' rows say "Guide, FAQ and one-pager". */
+      const names = [...nav.querySelectorAll("a, button, .nd-h")].map(
+        (el) => el.getAttribute("aria-label") ?? text(el),
+      );
+      expect(names, path).not.toContain("Product guide");
+      expect(names, path).not.toContain("Product guide menu");
+      expect(names, path).not.toContain("FAQ");
+      expect(names, path).not.toContain("FAQ menu");
+      const hrefs = [...nav.querySelectorAll("a")].map((a) => a.getAttribute("href"));
+      for (const page of ["/coral/guide", "/coral/faq", "/amoeba/guide", "/amoeba/faq"]) {
+        expect(hrefs, path).not.toContain(page);
+      }
+      unmount();
+    }
   });
 
   it("draws each product with its mark and keeps the names out of translation", () => {
@@ -119,7 +143,7 @@ describe("the bar", () => {
   });
 
   it("keeps Login in the bar as the link the CSS shows down to 1001px", () => {
-    const login = renderNav("/").container.querySelector(".nav-links > a.nav-opt")!;
+    const login = renderNav("/").link("Login");
     expect(login).toHaveAttribute("href", "/login");
     expect(login).toHaveTextContent("Login");
   });
@@ -143,7 +167,7 @@ describe("the bar", () => {
     expect(away).toHaveAttribute("aria-label", "Zoorik home");
   });
 
-  it("renders every menu closed, each button controlling its own card", () => {
+  it("renders its one menu, Docs, closed, the button controlling its card", () => {
     const { container } = renderNav("/");
     const pairs = [...container.querySelectorAll(".nv-dd")].map((dd) => {
       const btn = dd.querySelector("button.nv-btn")!;
@@ -154,44 +178,45 @@ describe("the bar", () => {
       expect(card.hidden).toBe(true);
       return [btn.getAttribute("aria-controls"), card.id];
     });
-    expect(pairs).toEqual([
-      ["nvm-assessment", "nvm-assessment"],
-      ["nvm-guide", "nvm-guide"],
-      ["nvm-faq", "nvm-faq"],
-      ["nvm-docs", "nvm-docs"],
-    ]);
+    expect(pairs).toEqual([["nvm-docs", "nvm-docs"]]);
     /* A disclosure, not an application menu. */
     expect(container.querySelector('[role="menu"], [role="menuitem"]')).toBeNull();
   });
 });
 
 /**
- * Assessment, FAQ and Docs: the word is a link to Coral's page of that kind,
- * the default, on every page, and the chevron after it opens the menu, whose
- * rows lead to each product's. Product guide stays one button.
+ * Assessment is a plain link to the assessment, on every page, drawn as Login
+ * is; its page switches product itself. Docs is a word, a link to the hub's
+ * Coral group, and a chevron that opens its menu.
  */
-describe("the menus' words", () => {
-  it("makes Assessment, FAQ and Docs a link and a chevron, and leaves Product guide one button", () => {
+describe("the links and the menu's word", () => {
+  it("draws Assessment as a plain link, as Login is, and Docs as a link and a chevron", () => {
     const { container } = renderNav("/");
+    const plain = [...container.querySelectorAll(".nav-links > a.nav-opt")];
+    expect(plain.map((a) => [text(a), a.getAttribute("href")])).toEqual([
+      ["Assessment", "/assessment"],
+      ["Login", "/login"],
+    ]);
+    for (const a of plain) {
+      /* No chevron, no menu: one link each. */
+      expect(a.querySelector("svg")).toBeNull();
+      expect(a.closest(".nv-dd")).toBeNull();
+    }
+    /* Docs' word is the one `.nv-lbl`. */
+    expect([...container.querySelectorAll(".nav-links a.nv-lbl")].map((a) => text(a))).toEqual([
+      "Docs",
+    ]);
     const shapes = [...container.querySelectorAll(".nv-dd")].map((dd) => [
       labelOf(dd),
       [...dd.children].map((el) => `${el.tagName.toLowerCase()}.${[...el.classList].join(".")}`),
     ]);
-    expect(shapes).toEqual([
-      ["Assessment", ["a.nv-lbl", "button.nv-btn.nv-tog", "div.nv-menu"]],
-      ["Product guide", ["button.nv-btn", "div.nv-menu"]],
-      ["FAQ", ["a.nv-lbl", "button.nv-btn.nv-tog", "div.nv-menu"]],
-      ["Docs", ["a.nv-lbl", "button.nv-btn.nv-tog", "div.nv-menu"]],
-    ]);
-    for (const tog of container.querySelectorAll<HTMLButtonElement>(".nv-tog")) {
-      const label = labelOf(tog.closest(".nv-dd")!);
-      /* The chevron has no text of its own: its name says which menu it opens. */
-      expect(tog).toHaveAccessibleName(`${label} menu`);
-      expect(text(tog)).toBe("");
-      expect(tog).toHaveAttribute("type", "button");
-      expect(tog.querySelector("svg.nv-chev")).toHaveAttribute("aria-hidden", "true");
-    }
-    expect(container.querySelector(".nv-dd:not(.nv-split) a.nv-lbl")).toBeNull();
+    expect(shapes).toEqual([["Docs", ["a.nv-lbl", "button.nv-btn.nv-tog", "div.nv-menu"]]]);
+    const tog = container.querySelector<HTMLButtonElement>(".nv-tog")!;
+    /* The chevron has no text of its own: its name says which menu it opens. */
+    expect(tog).toHaveAccessibleName("Docs menu");
+    expect(text(tog)).toBe("");
+    expect(tog).toHaveAttribute("type", "button");
+    expect(tog.querySelector("svg.nv-chev")).toHaveAttribute("aria-hidden", "true");
   });
 
   /* Amoeba's own pages included: the rule has no exception. */
@@ -210,25 +235,35 @@ describe("the menus' words", () => {
     learnPath(learnArticles[0]!.slug),
     "/about",
     "/privacy",
-  ])("on %s, lead to Coral's pages", (path) => {
-    const { container } = renderNav(path);
-    expect(
-      [...container.querySelectorAll("a.nv-lbl")].map((a) => [text(a), a.getAttribute("href")]),
-    ).toEqual([
-      ["Assessment", "/assessment?p=coral"],
-      ["FAQ", "/coral/faq"],
-      ["Docs", "/docs#coral"],
-    ]);
-  });
+  ])(
+    "on %s, lead to the assessment and the hub's Coral group, in the bar and the drawer",
+    (path) => {
+      const { container } = renderNav(path);
+      expect(
+        [...container.querySelectorAll(".nav-links > a.nav-opt, .nav-links a.nv-lbl")].map((a) => [
+          text(a),
+          a.getAttribute("href"),
+        ]),
+      ).toEqual([
+        ["Assessment", "/assessment"],
+        ["Docs", "/docs#coral"],
+        ["Login", "/login"],
+      ]);
+      const drawer = [...container.querySelectorAll(".nav-drop .wrap > a")].find(
+        (a) => text(a) === "Assessment",
+      );
+      expect(drawer).toHaveAttribute("href", "/assessment");
+    },
+  );
 
-  it("lead to each menu's first row, Coral's, which no switch holds back", () => {
-    for (const menu of navMenus.filter((entry) => entry.labelLink)) {
+  it("lead to each row set's first row, Coral's, which no switch holds back", () => {
+    for (const menu of navMenus) {
       expect(menu.rows[0].product, menu.key).toBe("coral");
       expect(menuLabelHref(menu), menu.key).toBe(menu.rows[0].href);
     }
   });
 
-  it("carry the menu's current mark on both halves, and aria-current only on this very page", () => {
+  it("carry the section's current mark, and aria-current only on this very page", () => {
     /* /learn is in Docs, but `/docs#coral` is another page. */
     const learn = renderNav("/learn");
     expect(learn.word("Docs")).toHaveClass("is-cur");
@@ -240,16 +275,22 @@ describe("the menus' words", () => {
     expect(docs.word("Docs")).toHaveAttribute("aria-current", "page");
     expect(docs.button("Docs")).not.toHaveAttribute("aria-current");
     docs.unmount();
-    /* On Amoeba's FAQ the word leads away, to Coral's. */
+    /* A guide or an FAQ is in Docs, and no row of the menu is it. */
     const faq = renderNav("/amoeba/faq");
-    expect(faq.word("FAQ")).toHaveAttribute("href", "/coral/faq");
-    expect(faq.word("FAQ")).not.toHaveAttribute("aria-current");
+    expect(faq.word("Docs")).toHaveClass("is-cur");
+    expect(faq.button("Docs")).toHaveClass("is-cur");
+    expect(faq.word("Docs")).not.toHaveAttribute("aria-current");
+    faq.unmount();
+    /* On the assessment its link is this very page: it names no product. */
+    const assessment = renderNav("/assessment");
+    expect(assessment.link("Assessment")).toHaveAttribute("aria-current", "page");
+    expect(assessment.link("Assessment")).not.toHaveClass("is-cur");
   });
 
-  it("follow on a click without opening their menu", async () => {
+  it("follow Docs' word on a click without opening its menu", async () => {
     const { word, button } = renderNav("/");
-    await userEvent.click(word("FAQ"));
-    expect(button("FAQ")).toHaveAttribute("aria-expanded", "false");
+    await userEvent.click(word("Docs"));
+    expect(button("Docs")).toHaveAttribute("aria-expanded", "false");
   });
 });
 
@@ -261,25 +302,10 @@ describe("the menus' rows", () => {
       a.getAttribute("href"),
     ]);
 
-  it("list the products with the site's exact lines; Docs adds All docs, then Learn", () => {
-    const { card } = renderNav("/");
-    /* The assessment serves both products whatever the documents' switches say. */
-    expect(rows(card("Assessment"))).toEqual([
-      ["Coral", "Kubernetes cost optimization on AKS and EKS", "/assessment?p=coral"],
-      ["Amoeba", "Block storage cost optimization on Azure and AWS", "/assessment?p=amoeba"],
-    ]);
-    /* Amoeba's rows appear the day `amoebaDocs` publishes its guide and FAQ.
-       `text()` folds the lines' no-break spaces; the menu data pins them below. */
-    const amoeba = (path: string) =>
-      amoebaDocs ? [["Amoeba", "Block storage cost optimization on Azure and AWS", path]] : [];
-    expect(rows(card("Product guide"))).toEqual([
-      ["Coral", "Kubernetes cost optimization on AKS and EKS", "/coral/guide"],
-      ...amoeba("/amoeba/guide"),
-    ]);
-    expect(rows(card("FAQ"))).toEqual([
-      ["Coral", "Kubernetes cost optimization on AKS and EKS", "/coral/faq"],
-      ...amoeba("/amoeba/faq"),
-    ]);
+  it("list Docs' products, then All docs, Zoorik Learn and Open source, in the one card", () => {
+    const { card, container } = renderNav("/");
+    /* Docs is the only menu: Assessment's page switches product itself. */
+    expect(container.querySelectorAll(".nv-menu")).toHaveLength(1);
     /* No Amoeba row while all of Amoeba's documents are held: the hub has no
        `#amoeba` group for it to land on. */
     expect(rows(card("Docs"))).toEqual([
@@ -288,7 +314,7 @@ describe("the menus' rows", () => {
         ? [["Amoeba", "Guide, FAQ and one-pager", "/docs#amoeba"]]
         : []),
       ["All docs", "", "/docs"],
-      ["Learn", "Articles on Kubernetes and block storage cost", "/learn"],
+      ["Zoorik Learn", "Articles on Kubernetes and block storage cost", "/learn"],
       ["Open source", "What you can read, run and contribute to", "/open-source"],
     ]);
   });
@@ -308,9 +334,6 @@ describe("the menus' rows", () => {
     expect(book).toHaveClass("nv-mk", "nv-ic");
     expect(book).toHaveAttribute("aria-hidden", "true");
     expect(book).toHaveAttribute("stroke-width", "1.7");
-    /* Only Docs has it. */
-    expect(card("Product guide").querySelector(".nv-learn")).toBeNull();
-    expect(card("FAQ").querySelector(".nv-learn")).toBeNull();
   });
 
   it.skipIf(amoebaDocs)(
@@ -326,10 +349,15 @@ describe("the menus' rows", () => {
         [...grp.querySelectorAll(".nd-row a")].map((a) => a.textContent),
       ]);
       expect(groups).toEqual([
-        ["Assessment", ["Coral", "Amoeba"]],
-        ["Product guide", ["Coral"]],
-        ["FAQ", ["Coral"]],
-        ["Docs", ["Coral", "All", "Learn"]],
+        [
+          "Docs",
+          [
+            ...(amoebaOnePager ? ["Coral", "Amoeba"] : ["Coral"]),
+            "All",
+            "Zoorik Learn",
+            "Open source",
+          ],
+        ],
       ]);
     },
   );
@@ -343,9 +371,9 @@ describe("the menus' rows", () => {
     );
   });
 
-  it("would list Amoeba's guide and FAQ with Block storage's line the day they are released", () => {
-    /* The rows the flag holds back are the config's, not the component's: one
-       line turns them on, in the menus and the drawer at once. */
+  it("keep Amoeba's guide and FAQ rows, with Block storage's line, for the pages' own switch", () => {
+    /* The header draws no menu of them, but each guide and FAQ draws its
+       [Coral | Amoeba] switch from these rows, and the flag holds them back. */
     const amoebaRows = navMenus
       .filter((menu) => menu.key === "guide" || menu.key === "faq")
       .flatMap((menu) => menu.rows.filter((row) => row.product === "amoeba"));
@@ -385,9 +413,9 @@ describe("the menus' rows", () => {
 });
 
 /**
- * What each page marks as current: the bar link, the menu's `.is-cur`, the
- * row inside the menu and its drawer chip, the drawer row, and the menu word
- * that is this very page.
+ * What each page marks as current: the product link, Assessment or Login in
+ * the bar, Docs' `.is-cur`, the row inside the menu and its drawer chip, the
+ * drawer row, and the word that is this very page.
  */
 describe("the current page", () => {
   function stateOf(path: string) {
@@ -397,8 +425,8 @@ describe("the current page", () => {
       expect(found.length, `${path} ${selector}`).toBeLessThanOrEqual(1);
       return found[0];
     };
-    const bar = one('.nav-links > a[aria-current="page"]');
-    const button = one(".nv-btn.is-cur");
+    const bar = one('.nav-links > a:not(.nv-lbl)[aria-current="page"]');
+    const section = one("a.nv-lbl.is-cur");
     const row = one('.nv-menu a[aria-current="page"]');
     const chip = one('.nd-row a[aria-current="page"]');
     const drawerRow = one('.nav-drop .wrap > a[aria-current="page"]');
@@ -416,7 +444,7 @@ describe("the current page", () => {
     };
     return [
       text(bar ?? null),
-      menuOf(button),
+      text(section ?? null),
       row ? `${menuOf(row)} › ${text(row.querySelector("b"))}` : "",
       chip ? `${menuOf(chip)} › ${text(chip)}` : "",
       text(drawerRow ?? null),
@@ -428,14 +456,16 @@ describe("the current page", () => {
     ["/", "", "", "", "", "", ""],
     ["/coral", "Coral", "", "", "", "Coral", ""],
     ["/amoeba", "Amoeba", "", "", "", "Amoeba", ""],
-    /* As prerendered, before the page has read its product from the address:
-       the menu is current, none of its rows, and not the word, which names one. */
-    ["/assessment", "", "Assessment", "", "", "", ""],
-    ["/coral/guide", "", "Product guide", "Product guide › Coral", "Product guide › Coral", "", ""],
-    ["/coral/faq", "", "FAQ", "FAQ › Coral", "FAQ › Coral", "", "FAQ"],
+    /* The link names no product, so it is this very page as prerendered. */
+    ["/assessment", "Assessment", "", "", "", "Assessment", ""],
+    /* The guides and FAQs are in Docs, and no row of its menu is any of them. */
+    ["/coral/guide", "", "Docs", "", "", "", ""],
+    ["/coral/faq", "", "Docs", "", "", "", ""],
+    ["/amoeba/guide", "", "Docs", "", "", "", ""],
+    ["/amoeba/faq", "", "Docs", "", "", "", ""],
     ["/docs", "", "Docs", "Docs › All docs", "Docs › All", "", "Docs"],
     /* The Learn hub marks Docs and its own row; every article marks Docs alone. */
-    ["/learn", "", "Docs", "Docs › Learn", "Docs › Learn", "", ""],
+    ["/learn", "", "Docs", "Docs › Zoorik Learn", "Docs › Zoorik Learn", "", ""],
     ...learnArticles.map((article): string[] => [
       learnPath(article.slug),
       "",
@@ -445,6 +475,8 @@ describe("the current page", () => {
       "",
       "",
     ]),
+    ["/open-source", "", "Docs", "Docs › Open source", "Docs › Open source", "", ""],
+    ["/login", "Login", "", "", "", "Login", ""],
     ["/about", "", "", "", "", "", ""],
     ["/security", "", "", "", "", "", ""],
     ["/privacy", "", "", "", "", "", ""],
@@ -454,50 +486,23 @@ describe("the current page", () => {
     expect(stateOf(path)).toEqual([bar, button, row, chip, drawerRow, word]);
   });
 
-  it.each([
-    ["/amoeba/guide", "Product guide"],
-    ["/amoeba/faq", "FAQ"],
-  ])("on %s: its menu is current, and its own row once it is released", (path, menu) => {
-    /* While `amoebaDocs` is off the page 404s and has no row to mark; its menu
-       still reads right the day it is released. The word is Coral's page. */
-    const own = amoebaDocs ? `${menu} › Amoeba` : "";
-    expect(stateOf(path)).toEqual(["", menu, own, own, "", ""]);
-  });
-
-  it.each([
-    ["coral", "Assessment › Coral", "Assessment"],
-    ["amoeba", "Assessment › Amoeba", ""],
-  ])(
-    "on /assessment on %s: that product's row and chip, and the word only when it is this page",
-    (product, own, word) => {
-      /* Set by the page's first-paint script before the bar hydrates. */
+  it.each(["coral", "amoeba"])(
+    "marks Assessment as this very page on /assessment on %s, and holds it as the switch moves",
+    async (product) => {
+      /* Set by the page's first-paint script and its switch; the bar does not read it. */
       document.documentElement.setAttribute("data-ap", product);
-      expect(stateOf("/assessment")).toEqual(["", "Assessment", own, own, "", word]);
+      const { container } = renderNav("/assessment");
+      const marked = () =>
+        [...container.querySelectorAll('[aria-current="page"]')].map(
+          (a) => `${a.className || "drawer"} ${a.getAttribute("href")}`,
+        );
+      expect(marked()).toEqual(["nav-opt /assessment", "drawer /assessment"]);
+      await act(async () => {
+        document.documentElement.setAttribute("data-ap", product === "coral" ? "amoeba" : "coral");
+      });
+      expect(marked()).toEqual(["nav-opt /assessment", "drawer /assessment"]);
     },
   );
-
-  it("follows /assessment's switch to the other product", async () => {
-    document.documentElement.setAttribute("data-ap", "coral");
-    const { container } = renderNav("/assessment");
-    const marked = () =>
-      [...container.querySelectorAll('[aria-current="page"]')].map(
-        (a) => `${a.className || "chip"} ${a.getAttribute("href")}`,
-      );
-    expect(marked()).toEqual([
-      "nv-lbl is-cur /assessment?p=coral",
-      "nv-item /assessment?p=coral",
-      "chip /assessment?p=coral",
-    ]);
-    await act(async () => {
-      document.documentElement.setAttribute("data-ap", "amoeba");
-    });
-    expect(marked()).toEqual(["nv-item /assessment?p=amoeba", "chip /assessment?p=amoeba"]);
-  });
-
-  it("marks no product on another page whatever the attribute says", () => {
-    document.documentElement.setAttribute("data-ap", "amoeba");
-    expect(stateOf("/coral")).toEqual(["Coral", "", "", "", "Coral", ""]);
-  });
 
   it("never marks a menu button with aria-current: it is not a page", () => {
     for (const path of ["/assessment", "/coral/guide", "/coral/faq", "/docs"]) {
@@ -513,81 +518,75 @@ describe("a menu", () => {
     Reflect.deleteProperty(document.documentElement, "clientWidth");
   });
 
-  it("opens and closes on a click, one at a time", async () => {
+  it("opens and closes on a click", async () => {
     const { button, card } = renderNav();
 
     await userEvent.click(button("Docs"));
     expect(button("Docs")).toHaveAttribute("aria-expanded", "true");
     expect(card("Docs").hidden).toBe(false);
 
-    await userEvent.click(button("FAQ"));
-    expect(button("FAQ")).toHaveAttribute("aria-expanded", "true");
+    await userEvent.click(button("Docs"));
     expect(button("Docs")).toHaveAttribute("aria-expanded", "false");
     expect(card("Docs").hidden).toBe(true);
-
-    await userEvent.click(button("FAQ"));
-    expect(button("FAQ")).toHaveAttribute("aria-expanded", "false");
-    expect(card("FAQ").hidden).toBe(true);
   });
 
   it("opens on Enter without moving focus, and closes on Escape with focus back on its button", async () => {
     const { button, card } = renderNav();
-    button("Product guide").focus();
+    button("Docs").focus();
 
     await userEvent.keyboard("{Enter}");
-    expect(button("Product guide")).toHaveAttribute("aria-expanded", "true");
-    expect(button("Product guide")).toHaveFocus();
+    expect(button("Docs")).toHaveAttribute("aria-expanded", "true");
+    expect(button("Docs")).toHaveFocus();
 
     await userEvent.tab();
-    expect(card("Product guide").querySelector("a")).toHaveFocus();
+    expect(card("Docs").querySelector("a")).toHaveFocus();
     await userEvent.keyboard("{Escape}");
-    expect(button("Product guide")).toHaveAttribute("aria-expanded", "false");
-    expect(button("Product guide")).toHaveFocus();
+    expect(button("Docs")).toHaveAttribute("aria-expanded", "false");
+    expect(button("Docs")).toHaveFocus();
   });
 
-  it("puts its word, then its chevron, then its rows in the Tab order, and Escape back on the chevron", async () => {
-    const { word, button, card } = renderNav("/");
-    word("Assessment").focus();
+  it("puts Assessment, then its word, its chevron and its rows in the Tab order, and Escape back on the chevron", async () => {
+    const { link, word, button, card } = renderNav("/");
+    link("Assessment").focus();
 
     await userEvent.tab();
-    expect(button("Assessment")).toHaveFocus();
-    expect(button("Assessment")).toHaveAttribute("aria-expanded", "false");
+    expect(word("Docs")).toHaveFocus();
+    await userEvent.tab();
+    expect(button("Docs")).toHaveFocus();
+    expect(button("Docs")).toHaveAttribute("aria-expanded", "false");
     await userEvent.keyboard("{Enter}");
-    expect(button("Assessment")).toHaveAttribute("aria-expanded", "true");
-    expect(button("Assessment")).toHaveFocus();
+    expect(button("Docs")).toHaveAttribute("aria-expanded", "true");
+    expect(button("Docs")).toHaveFocus();
 
-    const rows = [...card("Assessment").querySelectorAll("a")];
-    expect(rows.map((a) => a.getAttribute("href"))).toEqual([
-      "/assessment?p=coral",
-      "/assessment?p=amoeba",
-    ]);
+    const rows = [...card("Docs").querySelectorAll("a")];
+    expect(rows[0]).toHaveAttribute("href", "/docs#coral");
     await userEvent.tab();
     expect(rows[0]).toHaveFocus();
     await userEvent.keyboard("{Escape}");
-    expect(button("Assessment")).toHaveAttribute("aria-expanded", "false");
-    expect(button("Assessment")).toHaveFocus();
+    expect(button("Docs")).toHaveAttribute("aria-expanded", "false");
+    expect(button("Docs")).toHaveFocus();
   });
 
-  it("passes from a closed menu's chevron to the next word, past its rows", async () => {
-    const { word, button } = renderNav("/");
-    word("FAQ").focus();
+  it("passes from a closed menu's chevron to Login, past its rows", async () => {
+    const { word, button, link } = renderNav("/");
+    word("Docs").focus();
     await userEvent.tab();
-    expect(button("FAQ")).toHaveFocus();
+    expect(button("Docs")).toHaveFocus();
     await userEvent.tab();
-    expect(word("Docs")).toHaveFocus();
+    expect(link("Login")).toHaveFocus();
   });
 
   it("stays open as Shift+Tab goes from its chevron back to its word", async () => {
     const { word, button } = renderNav();
-    button("FAQ").focus();
+    button("Docs").focus();
     await userEvent.keyboard("{Enter}");
     await userEvent.tab({ shift: true });
-    expect(word("FAQ")).toHaveFocus();
-    expect(button("FAQ")).toHaveAttribute("aria-expanded", "true");
+    expect(word("Docs")).toHaveFocus();
+    expect(button("Docs")).toHaveAttribute("aria-expanded", "true");
     /* Escape from the word hands focus to the chevron, the menu's button. */
     await userEvent.keyboard("{Escape}");
-    expect(button("FAQ")).toHaveAttribute("aria-expanded", "false");
-    expect(button("FAQ")).toHaveFocus();
+    expect(button("Docs")).toHaveAttribute("aria-expanded", "false");
+    expect(button("Docs")).toHaveFocus();
   });
 
   it("closes when its word is followed", async () => {
@@ -600,7 +599,7 @@ describe("a menu", () => {
   });
 
   it("lets Tab walk its rows, and closes as focus moves past the last one", async () => {
-    const { button, card, container } = renderNav();
+    const { button, card, link } = renderNav();
     button("Docs").focus();
     await userEvent.keyboard("{Enter}");
 
@@ -611,7 +610,7 @@ describe("a menu", () => {
     }
     await userEvent.tab();
     expect(button("Docs")).toHaveAttribute("aria-expanded", "false");
-    expect(container.querySelector(".nav-links > a.nav-opt")).toHaveFocus();
+    expect(link("Login")).toHaveFocus();
   });
 
   it("stays open as Shift+Tab goes back from its first row to its button", async () => {
@@ -643,23 +642,23 @@ describe("a menu", () => {
   });
 
   it("closes when one of its rows is followed, the page's own row included", async () => {
-    const { button, card } = renderNav("/coral/guide");
-    await userEvent.click(button("Product guide"));
-    const own = card("Product guide").querySelector<HTMLAnchorElement>('a[aria-current="page"]')!;
-    expect(own).toHaveAttribute("href", "/coral/guide");
+    const { button, card } = renderNav("/docs");
+    await userEvent.click(button("Docs"));
+    const own = card("Docs").querySelector<HTMLAnchorElement>('a[aria-current="page"]')!;
+    expect(own).toHaveAttribute("href", "/docs");
 
     await userEvent.click(own);
-    expect(button("Product guide")).toHaveAttribute("aria-expanded", "false");
-    expect(card("Product guide").hidden).toBe(true);
+    expect(button("Docs")).toHaveAttribute("aria-expanded", "false");
+    expect(card("Docs").hidden).toBe(true);
   });
 
   it("closes when the window is resized", async () => {
     const { button } = renderNav();
-    await userEvent.click(button("FAQ"));
+    await userEvent.click(button("Docs"));
     act(() => {
       window.dispatchEvent(new Event("resize"));
     });
-    expect(button("FAQ")).toHaveAttribute("aria-expanded", "false");
+    expect(button("Docs")).toHaveAttribute("aria-expanded", "false");
   });
 
   it("is shifted left by its overflow when it would run past the right edge", async () => {
@@ -697,31 +696,31 @@ describe("a menu under a mouse", () => {
 
   it("opens on hover over its word, which stays a link", () => {
     const { dd, button, word } = renderNav();
-    fireEvent.mouseEnter(dd("Assessment"));
-    expect(button("Assessment")).toHaveAttribute("aria-expanded", "true");
-    expect(word("Assessment")).toHaveAttribute("href", "/assessment?p=coral");
+    fireEvent.mouseEnter(dd("Docs"));
+    expect(button("Docs")).toHaveAttribute("aria-expanded", "true");
+    expect(word("Docs")).toHaveAttribute("href", "/docs#coral");
   });
 
   it("opens on hover and closes 180ms after the pointer leaves", () => {
     const { dd, button } = renderNav();
-    fireEvent.mouseEnter(dd("FAQ"));
-    expect(button("FAQ")).toHaveAttribute("aria-expanded", "true");
+    fireEvent.mouseEnter(dd("Docs"));
+    expect(button("Docs")).toHaveAttribute("aria-expanded", "true");
 
-    fireEvent.mouseLeave(dd("FAQ"));
+    fireEvent.mouseLeave(dd("Docs"));
     act(() => vi.advanceTimersByTime(100));
-    expect(button("FAQ")).toHaveAttribute("aria-expanded", "true");
+    expect(button("Docs")).toHaveAttribute("aria-expanded", "true");
     act(() => vi.advanceTimersByTime(150));
-    expect(button("FAQ")).toHaveAttribute("aria-expanded", "false");
+    expect(button("Docs")).toHaveAttribute("aria-expanded", "false");
   });
 
   it("stays open when the pointer comes back in time", () => {
     const { dd, button } = renderNav();
-    fireEvent.mouseEnter(dd("FAQ"));
-    fireEvent.mouseLeave(dd("FAQ"));
+    fireEvent.mouseEnter(dd("Docs"));
+    fireEvent.mouseLeave(dd("Docs"));
     act(() => vi.advanceTimersByTime(100));
-    fireEvent.mouseEnter(dd("FAQ"));
+    fireEvent.mouseEnter(dd("Docs"));
     act(() => vi.advanceTimersByTime(500));
-    expect(button("FAQ")).toHaveAttribute("aria-expanded", "true");
+    expect(button("Docs")).toHaveAttribute("aria-expanded", "true");
   });
 
   it("keeps a hover-opened menu on a click that follows at once, and closes on a later one", () => {
@@ -733,10 +732,12 @@ describe("a menu under a mouse", () => {
     fireEvent.click(button("Docs"));
     expect(button("Docs")).toHaveAttribute("aria-expanded", "false");
 
-    fireEvent.mouseEnter(dd("FAQ"));
+    fireEvent.mouseLeave(dd("Docs"));
+    act(() => vi.advanceTimersByTime(250));
+    fireEvent.mouseEnter(dd("Docs"));
     act(() => vi.advanceTimersByTime(450));
-    fireEvent.click(button("FAQ"));
-    expect(button("FAQ")).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(button("Docs"));
+    expect(button("Docs")).toHaveAttribute("aria-expanded", "false");
   });
 
   it("gives each hover-open its own 400ms, so an earlier one cannot cut it short", () => {
@@ -756,14 +757,17 @@ describe("a menu under a mouse", () => {
   it("closes a hover-opened menu on Escape wherever focus is, and leaves focus there", () => {
     /* WCAG 1.4.13: content a hover shows can be put away without moving the
        pointer. The mock's script heard Escape only inside the menu. */
-    const { dd, button, container } = renderNav();
-    const login = container.querySelector<HTMLAnchorElement>(".nav-links > a.nav-opt")!;
+    const { dd, button, link } = renderNav();
+    const login = link("Login");
     login.focus();
-    fireEvent.mouseEnter(dd("Assessment"));
-    expect(button("Assessment")).toHaveAttribute("aria-expanded", "true");
+    fireEvent.mouseEnter(dd("Docs"));
+    expect(button("Docs")).toHaveAttribute("aria-expanded", "true");
     fireEvent.keyDown(login, { key: "Escape" });
-    expect(button("Assessment")).toHaveAttribute("aria-expanded", "false");
+    expect(button("Docs")).toHaveAttribute("aria-expanded", "false");
     expect(login).toHaveFocus();
+
+    fireEvent.mouseLeave(dd("Docs"));
+    act(() => vi.advanceTimersByTime(250));
 
     fireEvent.mouseEnter(dd("Docs"));
     fireEvent.keyDown(document.body, { key: "Escape" });
@@ -772,16 +776,16 @@ describe("a menu under a mouse", () => {
 
   it("leaves a hover-opened menu alone on any other key", () => {
     const { dd, button } = renderNav();
-    fireEvent.mouseEnter(dd("FAQ"));
+    fireEvent.mouseEnter(dd("Docs"));
     fireEvent.keyDown(document.body, { key: "Tab" });
-    expect(button("FAQ")).toHaveAttribute("aria-expanded", "true");
+    expect(button("Docs")).toHaveAttribute("aria-expanded", "true");
   });
 
   it("does not open on hover where the pointer cannot hover", () => {
     media.delete(HOVER_QUERY);
     const { dd, button } = renderNav();
-    fireEvent.mouseEnter(dd("FAQ"));
-    expect(button("FAQ")).toHaveAttribute("aria-expanded", "false");
+    fireEvent.mouseEnter(dd("Docs"));
+    expect(button("Docs")).toHaveAttribute("aria-expanded", "false");
   });
 });
 
@@ -794,7 +798,7 @@ async function openDrawer(path = "/coral") {
 }
 
 describe("the drawer", () => {
-  it("lists the two product links, one group per menu, then Login: seven in all", () => {
+  it("lists the two product links, Assessment, the Docs group, then Login: five in all", () => {
     const { container } = renderNav("/");
     const drawer = container.querySelector(".nav-drop > .wrap")!;
     const items = [...drawer.children].map((el) =>
@@ -807,18 +811,17 @@ describe("the drawer", () => {
     expect(items).toEqual([
       "Coral",
       "Amoeba",
-      /* A group like the menus'. */
-      "Assessment: Coral, Amoeba",
-      amoebaDocs ? "Product guide: Coral, Amoeba" : "Product guide: Coral",
-      amoebaDocs ? "FAQ: Coral, Amoeba" : "FAQ: Coral",
+      "Assessment",
+      /* A group like the menu's. */
       amoebaDocs || amoebaOnePager
-        ? "Docs: Coral, Amoeba, All, Learn, Open source"
-        : "Docs: Coral, All, Learn, Open source",
+        ? "Docs: Coral, Amoeba, All, Zoorik Learn, Open source"
+        : "Docs: Coral, All, Zoorik Learn, Open source",
       "Login",
     ]);
     /* Group labels are labels, not headings. */
     expect(drawer.querySelector("h2, h3, h4")).toBeNull();
-    /* A product chip keeps its name out of translation; "All" and "Learn" are words. */
+    /* A product chip keeps its name out of translation on the chip; "All" is a word, and "Zoorik Learn" keeps
+       only its "Zoorik" out, in a span of its own. */
     for (const chip of drawer.querySelectorAll(".nd-row a")) {
       expect(chip.getAttribute("translate"), text(chip)).toBe(
         chip.querySelector("svg") ? "no" : null,

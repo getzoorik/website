@@ -4,7 +4,7 @@ import type { FaqSection } from "@/content/faq";
 /**
  * `/coral/faq`: every string the page prints, verbatim from the approved mock:
  * the first group "About Coral" (8 questions), then the client FAQ, 8 groups
- * and 32 questions in all, and the two cards as callouts atop their groups. The
+ * and 36 questions in all, and the two cards as callouts atop their groups. The
  * five answers that pointed at another question by its number restate the
  * point; the PDF keeps its own numbering.
  *
@@ -30,6 +30,7 @@ export const coralFaqQuestionIds = [
   "how-much-can-coral-save",
   "where-can-i-buy-coral",
   "is-the-recommendation-based-on-average",
+  "what-does-each-coral-policy-do",
   "how-much-history-is-needed-before",
   "cpu-is-100m-at-night-and",
   "a-workload-is-idle-for-6",
@@ -37,15 +38,18 @@ export const coralFaqQuestionIds = [
   "how-does-coral-learn-black-friday",
   "a-workload-needs-4-cpus-during",
   "how-does-coral-decide-a-change",
+  "how-does-a-change-reach-the",
   "is-there-a-warm-up-period",
   "memory-spikes-can-cause-oom-kills",
   "what-happens-if-an-optimized-pod",
   "if-optimization-causes-performance-degradation-how",
+  "does-coral-change-my-git-or",
   "how-are-databases-kafka-elasticsearch-redis",
   "can-optimization-happen-without-downtime-for",
   "if-the-hpa-wants-to-scale",
   "could-reducing-cpu-requests-make-the",
   "does-optimization-ever-modify-hpa-minreplicas",
+  "what-happens-when-demand-goes-past",
   "if-workload-optimization-reduces-requests-how",
   "how-do-you-make-sure-node",
   "how-much-spare-capacity-is-kept",
@@ -60,7 +64,7 @@ export type CoralFaqQuestionId = (typeof coralFaqQuestionIds)[number];
 export const coralFaqPage = {
   path: routes.coralFaq,
   meta: {
-    title: "Coral FAQ: AKS and EKS cost optimization",
+    title: "Coral FAQ",
     description:
       "Answers on how Coral sizes CPU and memory requests, keeps workloads safe, works with HPA, KEDA, Karpenter, NAP and Cluster Autoscaler on AKS and EKS.",
   },
@@ -69,12 +73,12 @@ export const coralFaqPage = {
     title: "Coral FAQ",
     deck: "Sizing, safety, HPA, nodes and autoscalers.",
   },
-  updated: "Updated 9 October 2026",
+  updated: "Updated 25 October 2026",
   /** The one download line after the last group: the FAQ's PDF, and no other. */
   download: { label: "FAQ PDF", document: "coral-faq" },
 } as const;
 
-/** The 8 groups and 32 questions, About Coral first, then the PDF's order. */
+/** The 8 groups and 36 questions, About Coral first, then the PDF's order. */
 export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
   {
     id: "about-coral",
@@ -151,8 +155,8 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
           [
             "Compared in full: ",
             {
-              href: learnPath("coral-and-native-autoscalers"),
-              text: "Coral and the native Kubernetes autoscalers",
+              href: learnPath("hpa-vs-vpa-vs-cluster-autoscaler"),
+              text: "HPA vs VPA vs Cluster Autoscaler",
             },
             ".",
           ],
@@ -207,6 +211,20 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
           ],
           "During a surge or CPU pressure, the CPU target is raised for a while, up to P99.",
           "You can change the target per workload or in a custom policy, up to P99.9 or max.",
+        ],
+      },
+      {
+        id: "what-does-each-coral-policy-do",
+        question: "What does each Coral policy do, and which one does a workload get?",
+        short: [
+          "A policy sets how Coral sizes a workload’s CPU and memory requests. Six come built in.",
+          [
+            { b: "CPU:" },
+            " Balanced uses the 80th percentile of the last 3 days plus 10%, Stability the 90th plus 15%, Cost savings the 70th plus 10%, and Burstable the 60th percentile of the last 8 days plus 25%.",
+          ],
+          [{ b: "Memory:" }, " the highest use of the last 8 days, plus 10 to 20%."],
+          "Resiliency sizes like Balanced and keeps limits equal to requests on Guaranteed pods. Read-only shows recommendations and never changes anything.",
+          "By default, StatefulSets get Resiliency, Jobs and CronJobs get Burstable, the cluster’s own add-ons get Read-only, and everything else gets Balanced. You can assign another policy to any of your workloads, or create your own.",
         ],
       },
       {
@@ -292,6 +310,29 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
         ],
       },
       {
+        id: "how-does-a-change-reach-the",
+        question:
+          "How does a change reach the pods of a Deployment, StatefulSet, DaemonSet or Job?",
+        short: [
+          "New pods always start at the new size. Running pods are resized in place where the node allows it (Kubernetes 1.33+).",
+          [
+            { b: "Deployment:" },
+            " otherwise pods are replaced one at a time, each after the last is Ready, within your PodDisruptionBudgets.",
+          ],
+          [
+            { b: "StatefulSet:" },
+            " one pod at a time, highest ordinal first, and never an extra pod.",
+          ],
+          [
+            { b: "DaemonSet:" },
+            " one node at a time. ",
+            { b: "Job and CronJob:" },
+            " a running job is left alone, and the next run gets the new size.",
+          ],
+          "Pods with no controller, and ReplicaSets on their own, aren’t resized.",
+        ],
+      },
+      {
         id: "is-there-a-warm-up-period",
         question: "Is there a warm-up period before automation?",
         short: [
@@ -305,7 +346,7 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
         id: "memory-spikes-can-cause-oom-kills",
         question: "Memory spikes can cause OOM kills. How much safety buffer is kept?",
         short: [
-          "Memory is set from the highest usage of the last 8\u00a0days, plus 10% (15 to 25% on some other policies).",
+          "Memory is set from the highest usage of the last 8\u00a0days, plus 10% (15 to 20% on some other policies).",
           "Coral never lowers a memory limit on regular pods, so a container with a limit is OOM-killed at the same point.",
           "A container with no memory limit can be evicted sooner if the node runs short of memory.",
           "If an OOM kill still happens, Coral raises that container’s memory straight away, by 20% per kill and at least 100\u00a0MiB.",
@@ -330,6 +371,16 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
           "A replacement pod that isn’t Ready within 10\u00a0minutes goes back to its original size (except in StatefulSets).",
           "Coral doesn’t read latency or error rates.",
           "To roll back by hand, turn automation off. New pods start at your manifest’s size; running pods keep theirs until they restart.",
+        ],
+      },
+      {
+        id: "does-coral-change-my-git-or",
+        question: "Does Coral change my Git or GitOps manifests?",
+        short: [
+          "No. Coral never edits Git or your workload’s template. It sets sizes on pods as they’re created, or resizes running pods in place, so Argo CD and Flux see no drift.",
+          "The one change Coral makes to a Deployment, a temporary second replica for a single-replica workload, is skipped when Argo CD or Flux own the replica count.",
+          "A CPU or memory limit in your manifest doesn’t cap Coral. Where it sits below the new request, the pod’s limit is raised: to 100× the request for CPU, and 1.5× (at least 128 MiB) for memory. Without a limit, Coral adds none unless the namespace requires one.",
+          "What does cap it: a maximum in a policy or in the workload’s Coral annotation (which can live in Git), the namespace’s LimitRange, and its ResourceQuota.",
         ],
       },
     ],
@@ -391,6 +442,16 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
           "On an HPA it takes over, Coral keeps minReplicas, only raises maxReplicas, and restores your values when it lets go.",
           "An HPA that Coral creates can scale a steady Deployment down to its minimum.",
           "It never changes min or max on HPAs from Helm, Argo CD, Flux, KEDA or kubectl apply.",
+        ],
+      },
+      {
+        id: "what-happens-when-demand-goes-past",
+        question: "What happens when demand goes past the maxReplicas set in Git?",
+        short: [
+          "Your maxReplicas stays. Coral never changes min or max on an HPA managed from Git.",
+          "When the HPA reaches its max, Coral records it and recalculates. For a CPU-based HPA, its sizing replays the last 3 days of load through your HPA’s settings, max included, so when the HPA can’t add pods, each pod gets more CPU instead.",
+          "Coral’s surge and CPU-pressure raises, held back while the HPA is still scaling, switch on once it is at its max.",
+          "Each raise still stays within your LimitRange and ResourceQuota.",
         ],
       },
     ],

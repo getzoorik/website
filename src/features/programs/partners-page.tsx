@@ -2,42 +2,54 @@ import type { ReactNode } from "react";
 
 import { AwsMark, AzureMark } from "@/components/brand/cloud-marks";
 import { ProductMark } from "@/components/brand/product-marks";
-import { SiteNav } from "@/components/layout/site-nav";
 import { Arrow } from "@/components/primitives/arrow";
-import { marketplaces, type MarketplaceId } from "@/config/marketplaces";
-import { agentChart, openSourceLinks } from "@/config/open-source";
-import { assessmentProducts } from "@/content/assessment";
-import { offersContent } from "@/content/offers";
-import { partnersPage, type PartnerCover } from "@/content/partners";
-import { productOrder } from "@/content/products";
-import { savingsFigures, savingsQualifier } from "@/content/savings";
-import { FooterSection } from "@/features/footer/footer-section";
+import { ExternalArrow } from "@/components/primitives/external-arrow";
+import { NewTabHint } from "@/components/primitives/new-tab-hint";
+import { marketplaceListing, storesListing } from "@/config/marketplaces";
+import { caseStudy } from "@/content/case-studies";
+import { partnersPage, type PartnerTileIcon } from "@/content/partners";
+import { savingsFigures } from "@/content/savings";
+import { EyeGlyph, ShieldGlyph } from "@/features/assessment/assessment-marks";
+import { ValueLabMark } from "@/features/case-studies/value-lab-mark";
+import { DocGlyph } from "@/features/documents/document-glyphs";
+import { DocumentPage } from "@/features/documents/document-page";
 import { named } from "@/features/legal/named";
+import { MailGlyph, PackageGlyph } from "@/features/programs/program-glyphs";
 import {
-  ProgramClose,
-  ProgramHero,
-  studyFigures,
-  Terminal,
-  vars,
+  AskCard,
+  OfferCard,
+  ProgramPair,
+  ProgramTiles,
+  programMailto,
 } from "@/features/programs/program-parts";
-import { ProgramsMotion } from "@/features/programs/programs-motion";
+import { offSiteProps } from "@/lib/links";
 
 /**
- * `/partners`, on /about's frame:
+ * `/partners`, coming soon, on the documents' frame:
  *
- *   hero                     Coming soon, Partner program, the line, a ready email and "What you can use today" (#today)
- *   What you bring           the navy panel: the home page's three estimated ranges on one 0 to 100% scale, the
- *                            qualifier, and the case study's −58%; the ranges grow once in view
- *   Who it is for            three cards, each under its drawn cover: a plan, a fleet, the two marketplaces
- *   What you can use today   the assessment's two commands, the Helm chart, the Terraform module, the marketplaces
- *                            (band), whose card links to /marketplaces: "Where to find us"
- *   close                    "Want to partner with us?" and a ready email
+ *   hero                       the title and one line
+ *   the pair                   on the band: what a partner brings on the white card ("Coming soon", the Zoorik mark,
+ *                              each product's estimated range on a 0 to 100% track, our own result), and a ready email
+ *                              on the navy one
+ *   Who it is for              three tiles, each with its glyph
+ *   What you can use today     three tiles, each one link: the assessment, the Helm chart, the Terraform modules
+ *   Where your customers buy   Coral's two store buttons, then All marketplaces
  *
- * No terms, no commission, no figure of our own making: the program has none yet, and every figure here is read from
- * its source. No closing assessment row (the mock ends on the close). One island moves the page (`ProgramsMotion`).
+ * No terms, no commission, no figure of our own making: the program has none yet, and the two ranges are the home
+ * page's (`savings.ts`). No closing assessment row (the mock ends on All marketplaces). The pair rises as it arrives;
+ * nothing else moves.
  */
 
-const { hero, offer, who, today, close } = partnersPage;
+const { hero, offer, ask, who, today, buy } = partnersPage;
+
+/** Each tile's glyph. */
+const TILE_ICONS: Readonly<Record<PartnerTileIcon, ReactNode>> = {
+  zoorik: <ValueLabMark className="dt-ic cp-ic" />,
+  shield: <ShieldGlyph className="dt-ic cp-ic" />,
+  eye: <EyeGlyph className="dt-ic cp-ic" />,
+  package: <PackageGlyph className="dt-ic cp-ic" />,
+  doc: <DocGlyph className="dt-ic cp-ic" />,
+};
 
 /**
  * A range's two ends, read from its printed form ("40–50%" is 40 and 50), so the band can never disagree with the
@@ -45,243 +57,102 @@ const { hero, offer, who, today, close } = partnersPage;
  */
 function rangeOf(range: string): { readonly low: number; readonly high: number } {
   const ends = /^(\d+)–(\d+)%$/.exec(range);
-  if (!ends) throw new Error(`/partners cannot draw the range "${range}" on its scale.`);
+  if (!ends) throw new Error(`/partners cannot draw the range "${range}" on its track.`);
   return { low: Number(ends[1]), high: Number(ends[2]) };
 }
 
-/** A marketplace's mark, as the mock's sprite draws it; the Azure mark's gradients take the surface's own ids. */
-const STORE_MARKS: Readonly<Record<MarketplaceId, (surface: string) => ReactNode>> = {
-  aws: () => <AwsMark className="pv-mk" />,
-  microsoft: (surface) => <AzureMark idSuffix={surface} className="pv-mk" />,
-};
-
-/** The two marketplaces as white chips on navy, each its mark and its store's own name. */
-function Stores({ surface }: { readonly surface: string }): React.JSX.Element {
+/**
+ * Each product's estimated range: its mark, its name, its band on a 0 to 100% track (a drawing, hidden from assistive
+ * tech), and its figure, said as it is meant ("40 to 50 percent"); then the qualifier.
+ */
+function Ranges(): React.JSX.Element {
   return (
     <>
-      {marketplaces.map((store) => (
-        <span key={store.id}>
-          {STORE_MARKS[store.id](`${surface}-${store.id}`)} {store.name}
-        </span>
-      ))}
+      <ul className="cp-rg">
+        {offer.ranges.map(({ product, name }) => {
+          const { range, spoken } = savingsFigures[product];
+          const { low, high } = rangeOf(range);
+          return (
+            <li key={product}>
+              <ProductMark product={product} className="cp-rgi" />
+              <span>{named(name)}</span>
+              <span className="cp-track" aria-hidden="true">
+                <i style={{ left: `${low}%`, width: `${high - low}%` }} />
+              </span>
+              <b role="img" aria-label={spoken}>
+                {range}
+              </b>
+            </li>
+          );
+        })}
+      </ul>
+      <p className="cp-fine">{offer.fine}</p>
     </>
   );
 }
 
+function Pair(): React.JSX.Element {
+  return (
+    <ProgramPair>
+      <OfferCard
+        flag={offer.flag}
+        mark={<ValueLabMark className="cp-own cp-own-l" />}
+        title={offer.title}
+        line={named(offer.line)}
+        extra={<Ranges />}
+        go={{ label: offer.go, href: caseStudy.route }}
+      />
+      <AskCard
+        mark={<MailGlyph className="cp-own" />}
+        title={ask.title}
+        line={ask.line}
+        go={{ label: ask.write.label, href: programMailto(ask.write.subject) }}
+      />
+    </ProgramPair>
+  );
+}
+
 /**
- * What you bring: the navy panel. Each row is a range from `savings.ts` (the home page's), its band placed on the
- * home page's axis (`offers.ts`), its figure said as it is meant ("40 to 50 percent"). The qualifier follows them, as
- * it follows every set of savings figures on the site.
+ * Coral's two store buttons, as the footer draws its own (mark, store name, the arrow out), each opening Coral's
+ * listing in that store, since the line beside them names Coral.
  */
-function Offer(): React.JSX.Element {
+function Stores(): React.JSX.Element {
   return (
-    <section className="sec pv-sec" id={offer.id} aria-labelledby={`${offer.id}-h`}>
-      <div className="wrap">
-        <div className="pv-panel pv-anim pv-offer">
-          <div className="pv-phead">
-            <p className="pv-eyebrow">{offer.eyebrow}</p>
-            <h2 id={`${offer.id}-h`}>{offer.title}</h2>
-            <p>{named(offer.lede)}</p>
-          </div>
-          <div className="pv-ranges">
-            <div className="pv-scale" aria-hidden="true">
-              {offersContent.axis.ticks.map((tick) => (
-                <span key={tick}>{`${tick}%`}</span>
-              ))}
-            </div>
-            {offer.rows.map((row, i) => {
-              const { range, spoken } = savingsFigures[row.figure];
-              const { low, high } = rangeOf(range);
-              return (
-                <div
-                  className="pv-rg"
-                  style={vars({ "--a": low, "--b": high, "--i": i })}
-                  key={row.figure}
-                >
-                  <div className="pv-rl">
-                    {row.figure === "both" ? (
-                      <span className="pv-both" aria-hidden="true">
-                        {productOrder.map((id) => (
-                          <ProductMark product={id} className="pv-wic" key={id} />
-                        ))}
-                      </span>
-                    ) : (
-                      <ProductMark product={row.figure} className="pv-wic" />
-                    )}
-                    <span>
-                      <b>{named(row.name)}</b>
-                      <small>{row.of}</small>
-                    </span>
-                  </div>
-                  <div className="pv-track">
-                    <i />
-                  </div>
-                  <b className="pv-rv" role="img" aria-label={spoken}>
-                    {range}
-                  </b>
-                </div>
-              );
-            })}
-          </div>
-          <div className="pv-ofoot">
-            <span>{savingsQualifier}</span>
-            <a href={studyFigures.href}>
-              {studyFigures.figure}
-              {offer.study} <Arrow />
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
+    <div className="mkt-btns cp-stores">
+      {storesListing("coral").map((store) => {
+        const href = marketplaceListing(store, "coral");
+        return (
+          <a className="mkt-b" key={store.id} href={href} {...offSiteProps(href)}>
+            {store.id === "aws" ? (
+              <AwsMark crop="badge" className="mkt-mk mkt-aws" />
+            ) : (
+              <AzureMark idSuffix="mkt-cp-buy" className="mkt-mk mkt-az" />
+            )}
+            <span>{store.name}</span>
+            <NewTabHint href={href} />
+            <ExternalArrow />
+          </a>
+        );
+      })}
+    </div>
   );
 }
 
-/** Where a fleet's machines are lit: five of twenty-one, a drawing, not a figure. */
-const FLEET_ON = new Set([2, 7, 9, 13, 18]);
-/** Where the plan's six machines sit, in percent of the cover (two of them lit by the sheet). */
-const PLAN = [
-  [18, 30],
-  [42, 22],
-  [66, 34],
-  [30, 62],
-  [56, 66],
-  [80, 58],
-] as const;
-
-/** Each card's cover, drawn on navy: a consultant's plan, a provider's fleet, the two marketplaces. */
-const COVERS: Readonly<Record<PartnerCover, () => React.JSX.Element>> = {
-  plan: () => (
-    <div className="pv-cv pv-cv-plan" aria-hidden="true">
-      {PLAN.map(([x, y]) => (
-        <i style={vars({ "--x": x, "--y": y })} key={`${x} ${y}`} />
-      ))}
-    </div>
-  ),
-  fleet: () => (
-    <div className="pv-cv pv-cv-fleet" aria-hidden="true">
-      {Array.from({ length: 21 }, (_, k) => (
-        <i className={FLEET_ON.has(k) ? "on" : undefined} key={k} />
-      ))}
-    </div>
-  ),
-  market: () => (
-    <div className="pv-cv pv-cv-mkt" aria-hidden="true">
-      <Stores surface="pv-cv" />
-    </div>
-  ),
-};
-
-function Who(): React.JSX.Element {
+/** Where your customers buy: one row, its words and Coral's two store buttons, then every marketplace. */
+function Buy(): React.JSX.Element {
   return (
-    <section className="sec" id={who.id} aria-labelledby={`${who.id}-h`}>
+    <section className="sec cp-sec cp-buy" aria-labelledby={buy.headingId}>
       <div className="wrap">
-        <div className="sec-head">
-          <h2 id={`${who.id}-h`}>{who.title}</h2>
+        <div className="cp-buyrow">
+          <div>
+            <h2 id={buy.headingId}>{buy.title}</h2>
+            <p>{named(buy.line)}</p>
+          </div>
+          <Stores />
         </div>
-        <div className="pv-wgrid">
-          {who.cards.map((card) => {
-            const Cover = COVERS[card.cover];
-            return (
-              <article className="pv-wcard" key={card.cover}>
-                <Cover />
-                <div className="pv-wb">
-                  <h3>{card.title}</h3>
-                  <p>{named(card.body)}</p>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/** One tool in What you can use today: its picture on the left, its name, line and way in on the right. */
-function Kit({
-  picture,
-  title,
-  body,
-  go,
-  href,
-  className = "pv-kit",
-}: {
-  readonly picture: ReactNode;
-  readonly title: string;
-  readonly body: ReactNode;
-  readonly go: string;
-  readonly href: string;
-  readonly className?: string;
-}): React.JSX.Element {
-  return (
-    <article className={className}>
-      {picture}
-      <div className="pv-kb">
-        <h3>{title}</h3>
-        <p>{body}</p>
-        <a className="pv-go dark" href={href}>
-          {go} <Arrow />
+        <a className="alink cp-all" href={buy.all.href}>
+          {buy.all.label} <Arrow />
         </a>
-      </div>
-    </article>
-  );
-}
-
-/** The AKS module's address on the Terraform Registry, as a module block's `source` names it. */
-const terraformSource = openSourceLinks.terraformAks.replace(
-  "https://registry.terraform.io/modules/",
-  "",
-);
-
-/**
- * What you can use today: the assessment's two commands (`assessment.ts`), the Helm install of the chart and the AKS
- * module block (`open-source.ts`), and the two marketplaces (`marketplaces.ts`).
- */
-function Today(): React.JSX.Element {
-  const { assessment, helm, terraform, marketplaces: stores } = today;
-  return (
-    <section className="sec sec-band" id={today.id} aria-labelledby={`${today.id}-h`}>
-      <div className="wrap">
-        <div className="sec-head">
-          <h2 id={`${today.id}-h`}>{today.title}</h2>
-          <p>{today.lede}</p>
-        </div>
-        <div className="pv-kits">
-          <Kit
-            {...assessment}
-            picture={
-              <Terminal
-                title={today.terminal}
-                lines={productOrder.map((id) => `$ ${assessmentProducts[id].run}`)}
-              />
-            }
-          />
-          <Kit
-            {...helm}
-            picture={
-              <Terminal title={today.terminal} lines={[`$ ${helm.command}`, `    ${agentChart}`]} />
-            }
-          />
-          <Kit
-            {...terraform}
-            picture={
-              <Terminal
-                title={terraform.file}
-                lines={[`module "${terraform.module}" {`, `  source = "${terraformSource}"`, "}"]}
-              />
-            }
-          />
-          <Kit
-            {...stores}
-            body={named(stores.body)}
-            className="pv-kit pv-kit-mkt"
-            picture={
-              <div className="pv-mkts">
-                <Stores surface="pv-kit" />
-              </div>
-            }
-          />
-        </div>
       </div>
     </section>
   );
@@ -289,20 +160,30 @@ function Today(): React.JSX.Element {
 
 export function PartnersPage(): React.JSX.Element {
   return (
-    <>
-      <a className="skip" href="#main">
-        Skip to content
-      </a>
-      <SiteNav />
-      <main id="main" tabIndex={-1} className="pv-main">
-        <ProgramHero {...hero} />
-        <Offer />
-        <Who />
-        <Today />
-        <ProgramClose {...close} />
-        <ProgramsMotion />
-      </main>
-      <FooterSection />
-    </>
+    <DocumentPage hero={{ title: hero.title, deck: hero.deck }} assessmentRow={false}>
+      <Pair />
+      <ProgramTiles
+        id={who.id}
+        title={who.title}
+        cols={3}
+        tiles={who.tiles.map((tile) => ({
+          icon: TILE_ICONS[tile.icon],
+          title: tile.title,
+          line: named(tile.line),
+        }))}
+      />
+      <ProgramTiles
+        id={today.id}
+        title={today.title}
+        cols={3}
+        tiles={today.tiles.map((tile) => ({
+          icon: TILE_ICONS[tile.icon],
+          title: tile.title,
+          line: tile.line,
+          href: tile.href,
+        }))}
+      />
+      <Buy />
+    </DocumentPage>
   );
 }

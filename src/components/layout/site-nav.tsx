@@ -7,16 +7,17 @@ import {
   useLayoutEffect,
   useRef,
   useState,
-  useSyncExternalStore,
   type FocusEvent as ReactFocusEvent,
   type MouseEvent as ReactMouseEvent,
 } from "react";
 import { BrandLogo } from "@/components/brand/brand-mark";
 import { ProductMark } from "@/components/brand/product-marks";
+import { NamedText } from "@/components/primitives/named-text";
 import { NewTabHint } from "@/components/primitives/new-tab-hint";
 
 import {
   menuLabelHref,
+  navAssessment,
   navLinks,
   navLogin,
   navMenus,
@@ -33,15 +34,17 @@ import { useNavSolid } from "@/hooks/use-nav-solid";
 import { offSiteProps } from "@/lib/links";
 
 /**
- * The top bar, its four menus and its mobile drawer.
+ * The top bar, its one menu and its mobile drawer.
  *
- * The bar: Coral · Amoeba · Assessment ▾ · Product guide ▾ · FAQ ▾ · Docs ▾ ·
- * Login · Book a demo. Each menu is a small white card under the bar with one
- * row per product; Docs adds a row to the whole hub, then the Learn row to the
- * articles. From 1000px down the links and menus give way to the toggle, and
- * the drawer lists the same things: the two product links, one group per menu
- * with the products as chips ("All" and "Learn" after them in Docs), then
- * Login.
+ * The bar: Coral · Amoeba · Assessment · Docs ▾ · Login · Book a demo (owner,
+ * 23 Oct 2026: "Docs is the only menu"). Assessment is a plain link to the
+ * assessment, which switches product on its own page. Docs is a small white
+ * card under the bar with one row per product, a row to the whole hub, then
+ * the Learn and Open source rows. Product guide and FAQ left the bar: Docs
+ * leads to them, through the hub. From 1000px down the links and the menu give
+ * way to the toggle, and the drawer lists the same things: the two product
+ * links, Assessment, the Docs group with the products as chips ("All", "Zoorik
+ * Learn" and "Open source" after them), then Login.
  *
  * ─── WHY THIS IS A CLIENT COMPONENT AND THE REST OF THE PAGE IS NOT ─────────
  * Only the menus and the drawer hold state. Everything else on this site renders
@@ -49,27 +52,22 @@ import { offSiteProps } from "@/lib/links";
  * component rather than markup inside the page.
  *
  * ─── EVERY PAGE KNOWS ITS PLACE AT BUILD ───────────────────────────────────
- * What is current — a bar link, a menu's `.is-cur`, a row inside a menu, a
+ * What is current — a bar link, the menu's `.is-cur`, a row inside the menu, a
  * drawer chip — comes from the pathname (`navState` in the site config). The
  * pathname is known when the page is prerendered, so the HTML already carries
- * the right marks and every route stays static. One mark waits for the browser:
- * /assessment serves both products from one file, so its own row in the
- * Assessment menu, and its drawer chip, follow `html[data-ap]`, the product the
- * page has read from its address and keeps in step with its switch. A menu
- * button never takes `aria-current`: it is not a page.
+ * the right marks and every route stays static. Assessment names no product,
+ * so on /assessment it is this very page whichever product the switch is on.
+ * A menu button never takes `aria-current`: it is not a page.
  *
- * ─── THREE OF THE MENUS ARE A WORD AND A CHEVRON ───────────────────────────
- * Assessment, FAQ and Docs: the word is a link, and the chevron after it is a
- * button of its own that opens the menu ("Assessment menu" to a screen reader).
- * The word lands on Coral's page, the default, on every page, Amoeba's own
- * included — `/assessment?p=coral`, `/coral/faq`, `/docs#coral`
- * (`menuLabelHref`) — and the rows in the menu lead to each product's. One
- * control could not do both: a button that navigated would leave a keyboard no
- * way into the menu, and a link that opened a menu would leave a touch reader
- * no way to the page. Product guide stays one button that only opens its menu.
- * The word takes `aria-current` only when it leads to this very page (its path
- * whatever its hash, and on /assessment the product the page is on: `isPage`);
- * `.is-cur` marks the menu the page is in, on the word and the chevron alike.
+ * ─── ONE PLAIN LINK, AND ONE WORD AND CHEVRON ──────────────────────────────
+ * Assessment is one link, to `/assessment`, drawn as Login is (`.nav-opt`).
+ * Docs is a word and a chevron: the word a link to `/docs#coral`
+ * (`menuLabelHref`), the chevron a button of its own that opens the menu
+ * ("Docs menu" to a screen reader). One control could not do both: a button
+ * that navigated would leave a keyboard no way into the menu, and a link that
+ * opened a menu would leave a touch reader no way to the page. The word takes
+ * `aria-current` only when it leads to this very page (its path whatever its
+ * hash: `isPage`); `.is-cur` marks the menu the page is in.
  *
  * ─── THE MENUS ARE DISCLOSURES, NOT `role="menu"` ──────────────────────────
  * A button and a list of links. A click, Enter or
@@ -124,41 +122,15 @@ const HOVER_GRACE_MS = 400;
 /** The least room a menu keeps from the viewport's right edge. */
 const EDGE = 16;
 
+/** The menus the bar draws: Docs alone. The guide and FAQ rows are the documents' switch's. */
+const barMenus = navMenus.filter((menu) => menu.dropdown);
+
 const ddId = (key: NavMenuKey) => `nvm-${key}`;
 
-/**
- * Whether a word's address is the page itself: the same path, whatever its hash
- * (`/docs#coral` on /docs), and, where it names a product (`?p=coral`), the
- * product the page is on, which only /assessment's own row knows (`navState`).
- * On Amoeba's assessment the word, which leads to Coral's, is not this page.
- */
-function isPage(href: string, pathname: string, state: NavState): boolean {
-  const [path, query = ""] = href.replace(/#.*$/, "").split("?");
-  if (path !== pathname.replace(/(.)\/$/, "$1")) return false;
-  const product = new URLSearchParams(query).get("p");
-  return product === null || state.here?.product === product;
+/** Whether a word's address is the page itself: the same path, whatever its hash (`/docs#coral` on /docs). */
+function isPage(href: string, pathname: string): boolean {
+  return href.replace(/#.*$/, "") === pathname.replace(/(.)\/$/, "$1");
 }
-
-/* The product /assessment is on: `html[data-ap]`, which its first-paint script
-   sets before the page paints and the page keeps in step with its switch
-   (`first-paint.ts`). Absent on every other page with this bar (/login sets it
-   too, and draws no bar). Read after hydration only, so
-   the prerendered bar and the render that hydrates it agree. */
-function watchAssessing(onChange: () => void): () => void {
-  const watcher = new MutationObserver(onChange);
-  watcher.observe(document.documentElement, { attributes: true, attributeFilter: ["data-ap"] });
-  return () => watcher.disconnect();
-}
-
-const isProductId = (value: string | null): value is ProductId =>
-  value !== null && Object.prototype.hasOwnProperty.call(products, value);
-
-function readAssessing(): ProductId | null {
-  const ap = document.documentElement.getAttribute("data-ap");
-  return isProductId(ap) ? ap : null;
-}
-
-const assessingOnServer = (): ProductId | null => null;
 
 /** The chevron after a menu's word. */
 function Chevron(): React.JSX.Element {
@@ -287,7 +259,9 @@ function MenuRows({ menu, state }: { menu: NavMenu; state: NavState }) {
         >
           <BookIcon />
           <span>
-            <b>{menu.learn.label}</b>
+            <b>
+              <NamedText text={menu.learn.label} name={site.name} />
+            </b>
             <small>{menu.learn.line}</small>
           </span>
         </a>
@@ -329,8 +303,7 @@ export function SiteNav() {
      bar on its own); treat that as the home page. */
   const pathname = usePathname() ?? "/";
   const home = pathname === "/";
-  const assessing = useSyncExternalStore(watchAssessing, readAssessing, assessingOnServer);
-  const state = navState(pathname, assessing);
+  const state = navState(pathname);
   /* The bar grounds itself once the hero is behind us. Without it the white
      wordmark and white links carry on over every white section below. */
   const solid = useNavSolid();
@@ -348,10 +321,10 @@ export function SiteNav() {
   };
 
   /* A menu never runs off the right edge: measured once it is shown, and shifted
-     left by exactly its overflow. It is in use (measured): with the
-     product lines the cards are 383px wide (Docs 355px), so Docs is shifted at
-     every bar width up to 1440 (53px at 1001, 14px at 1440) and FAQ below about
-     1200 (18px at 1001). Assessment and Product guide always fit. */
+     left by exactly its overflow. It is in use (measured, 23 Oct 2026, the mock's
+     own script doing the same): the Docs card is 355px wide, so it is shifted at
+     every bar width up to 1440 (53px at 1001, 30px at 1200, 14px at 1440) and
+     fits at 1920. */
   useLayoutEffect(() => {
     if (!menu) return;
     const card = document.getElementById(ddId(menu));
@@ -519,14 +492,21 @@ export function SiteNav() {
           {navLinks.map((link) => (
             <NavEntry key={link.key} link={link} state={state} />
           ))}
-          {navMenus.map((item) => {
-            const on = menu === item.key;
+          <a
+            className="nav-opt"
+            href={navAssessment.href}
+            aria-current={state.current === navAssessment.key ? "page" : undefined}
+          >
+            {navAssessment.label}
+          </a>
+          {barMenus.map((item) => {
             const cur = state.current === item.key;
+            const href = menuLabelHref(item);
+            const on = menu === item.key;
             const h = menuHandlers(item.key);
-            const href = item.labelLink ? menuLabelHref(item) : undefined;
             return (
               <div
-                className={href ? "nv-dd nv-split" : "nv-dd"}
+                className="nv-dd nv-split"
                 key={item.key}
                 ref={(el) => {
                   if (el) dds.current.set(item.key, el);
@@ -536,40 +516,25 @@ export function SiteNav() {
                 onMouseLeave={h.onMouseLeave}
                 onBlur={h.onBlur}
               >
-                {href ? (
-                  <>
-                    {/* The word, a link; then the chevron, the menu's button. */}
-                    <a
-                      className={cur ? "nv-lbl is-cur" : "nv-lbl"}
-                      href={href}
-                      aria-current={isPage(href, pathname, state) ? "page" : undefined}
-                      onClick={h.onLabelClick}
-                    >
-                      {item.label}
-                    </a>
-                    <button
-                      className={cur ? "nv-btn nv-tog is-cur" : "nv-btn nv-tog"}
-                      type="button"
-                      aria-label={`${item.label} menu`}
-                      aria-expanded={on}
-                      aria-controls={ddId(item.key)}
-                      onClick={h.onButtonClick}
-                    >
-                      <Chevron />
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    className={cur ? "nv-btn is-cur" : "nv-btn"}
-                    type="button"
-                    aria-expanded={on}
-                    aria-controls={ddId(item.key)}
-                    onClick={h.onButtonClick}
-                  >
-                    <span>{item.label}</span>
-                    <Chevron />
-                  </button>
-                )}
+                {/* The word, a link; then the chevron, the menu's button. */}
+                <a
+                  className={cur ? "nv-lbl is-cur" : "nv-lbl"}
+                  href={href}
+                  aria-current={isPage(href, pathname) ? "page" : undefined}
+                  onClick={h.onLabelClick}
+                >
+                  {item.label}
+                </a>
+                <button
+                  className={cur ? "nv-btn nv-tog is-cur" : "nv-btn nv-tog"}
+                  type="button"
+                  aria-label={`${item.label} menu`}
+                  aria-expanded={on}
+                  aria-controls={ddId(item.key)}
+                  onClick={h.onButtonClick}
+                >
+                  <Chevron />
+                </button>
                 {/* Rendered closed, `hidden`, so the prerendered page carries
                     every row for crawlers and no open card. */}
                 <div className="nv-menu" id={ddId(item.key)} hidden={!on} onClick={h.onMenuClick}>
@@ -620,7 +585,14 @@ export function SiteNav() {
           {navLinks.map((link) => (
             <NavEntry key={link.key} link={link} state={state} onFollow={closeDrawer} />
           ))}
-          {navMenus.map((item) => (
+          <a
+            href={navAssessment.href}
+            aria-current={state.current === navAssessment.key ? "page" : undefined}
+            onClick={closeDrawer}
+          >
+            {navAssessment.label}
+          </a>
+          {barMenus.map((item) => (
             <div className="nd-grp" key={item.key}>
               {/* A label, not a heading: the drawer is one list of places. */}
               <p className="nd-h">{item.label}</p>
@@ -652,7 +624,7 @@ export function SiteNav() {
                     aria-current={isHere(state, item.key, "learn") ? "page" : undefined}
                     onClick={closeDrawer}
                   >
-                    {item.learn.label}
+                    <NamedText text={item.learn.label} name={site.name} />
                   </a>
                 ) : null}
                 {item.open ? (

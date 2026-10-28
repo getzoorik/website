@@ -1,113 +1,268 @@
+import type { ReactNode } from "react";
+
+import { AwsMark, AzureMark } from "@/components/brand/cloud-marks";
+import { AmoebaMark, CoralMark } from "@/components/brand/product-marks";
 import { TurningMark } from "@/components/brand/turning-mark";
 import { SiteNav } from "@/components/layout/site-nav";
-import { Arrow } from "@/components/primitives/arrow";
 import { ExternalArrow } from "@/components/primitives/external-arrow";
 import { NewTabHint } from "@/components/primitives/new-tab-hint";
-import { newsFromZoorik, newsPage, newsRadar, type NewsAnnouncement } from "@/content/news";
+import { Reveal } from "@/components/primitives/reveal";
+import {
+  newsFromZoorik,
+  newsPage,
+  newsRadar,
+  type NewsAnnouncement,
+  type RadarItem,
+} from "@/content/news";
+import { products } from "@/content/products";
+import { ValueLabMark } from "@/features/case-studies/value-lab-mark";
+import { MediumMark } from "@/features/community/community-marks";
+import { ArrowGlyph, ArrowOutGlyph } from "@/features/documents/document-glyphs";
 import { FooterSection } from "@/features/footer/footer-section";
 import { named } from "@/features/legal/named";
-import { newsDay } from "@/features/news/news-facts";
-import { NewsRadar } from "@/features/news/news-radar";
-import { offSiteProps } from "@/lib/links";
+import { newsDay, newsShortDay, radarMark, type RadarLogo } from "@/features/news/news-facts";
+import { RadarStreams } from "@/features/news/radar-streams";
+import { isOffSite, offSiteProps } from "@/lib/links";
 
 /**
- * `/news`, Zoorik News, drawn on /learn's frame: the utility hero with the page's name, its deck and the links to
- * each part; From Zoorik, the newest announcement on the navy panel and the others beside it; Zoorik Radar on the
- * band, the week's head and its three streams; then the newsletter row. No closing assessment row: the mock draws
- * none, so the page ends on the newsletter and the footer.
+ * `/news`, Zoorik News, in the site's own parts:
  *
- * Drawn on the server, with no island: the mock has no script. Its one motion, the radar's sweep, is the sheet's
- * (news.css), as is the hero's turning mark (the site system); reduced motion stills both.
+ *   hero     the page's name and its deck
+ *   latest   the newest announcement on the white card, flagged "Latest", beside the newsletter on the dark one: the
+ *            closing row's pair, on the band
+ *   zoorik   From Zoorik: the other announcements, as Read more tiles, each with its product's mark or ours
+ *   radar    Zoorik Radar: its week, one row of chips for the three streams, each stream's items as tiles that open
+ *            their source in a new tab, each with the source's logo, then what the Radar reads, and under it, small,
+ *            the trademark line an announcement's company asks for (NVIDIA's, for NVIDIA Inception)
+ *
+ * Drawn on the server but for the chips (`RadarStreams`), which only hide streams, so the page reads whole without
+ * scripting. The pair rises as it arrives, as the closing row's does on home. No closing assessment row, and the
+ * follow links are the footer's.
  */
 
-/** An announcement's tag and day (`.nz-meta`). */
-function Meta({ item }: { readonly item: NewsAnnouncement }): React.JSX.Element {
+const { hero, latest, zoorik, radar } = newsPage;
+
+/** Where each logo file lives; the cloud marks are drawn in the page. */
+const LOGO_FILES: Record<Exclude<RadarLogo, "aws" | "azure">, string> = {
+  karpenter: "/community-logos/karpenter.svg",
+  "finops-foundation": "/community-logos/finops-foundation.svg",
+};
+
+/** An announcement's mark: its product's where the tag is a product, else the Zoorik mark, still. */
+function TagMark({
+  tag,
+  className,
+}: {
+  readonly tag: string;
+  readonly className: string;
+}): React.JSX.Element {
+  if (tag === products.coral.name) return <CoralMark className={className} />;
+  if (tag === products.amoeba.name) return <AmoebaMark className={className} />;
+  return <ValueLabMark className={className} />;
+}
+
+/** A Radar item's icon: its source's logo, 28px wide, or the source's monogram. */
+function SourceMark({
+  item,
+  mark,
+}: {
+  readonly item: RadarItem;
+  /** Unique on the page: the Azure mark's gradients are named by it. */
+  readonly mark: string;
+}): React.JSX.Element {
+  const pick = radarMark(item);
+  if ("monogram" in pick) {
+    return (
+      <span className="dt-ic nw-mono" aria-hidden="true">
+        {pick.monogram}
+      </span>
+    );
+  }
+  if (pick.logo === "aws") return <AwsMark className="dt-ic nw-logo nw-aws" />;
+  if (pick.logo === "azure") {
+    return <AzureMark className="dt-ic nw-logo nw-azure" idSuffix={mark} />;
+  }
   return (
-    <p className="nz-meta">
-      <span className="nz-tag">{named(item.tag)}</span>
-      <time dateTime={item.date}>{newsDay(item.date)}</time>
-    </p>
+    // eslint-disable-next-line @next/next/no-img-element -- a 28px logo file, drawn as the mock draws it
+    <img
+      className="dt-ic nw-logo"
+      src={LOGO_FILES[pick.logo]}
+      alt=""
+      width={28}
+      height={28}
+      loading="lazy"
+    />
   );
 }
 
 /**
- * From Zoorik: the newest announcement on the navy panel with its button, the others in a
- * column beside it with a plain link. Each link is a page of this site. The link's words are one span, so a product's
- * name kept out of translation (`named()`) never splits them into flex items of their own.
+ * A tile that is one link (the site system's `.dt*` rules, as `LinkTile` draws them): the icon, the title, the line
+ * where there is one, then the day and who it is from; the forward arrow to a page here, or the arrow out and the
+ * hidden "(opens in a new tab)" to another site.
  */
-function FromZoorik(): React.JSX.Element {
-  const [first, ...rest] = newsFromZoorik as [NewsAnnouncement, ...NewsAnnouncement[]];
-  return (
-    <div className="nz-grid">
-      <article className="nz-feat">
-        <Meta item={first} />
-        <h3>{named(first.title)}</h3>
-        <p className="nz-line">{named(first.line)}</p>
-        <a className="nz-cta" href={first.href}>
-          <span>{named(first.cta)}</span> <Arrow />
-        </a>
-      </article>
-      <div className="nz-side">
-        {rest.map((item) => (
-          <article className="nz-card" key={item.href}>
-            <Meta item={item} />
-            <h3>{named(item.title)}</h3>
-            <p className="nz-line">{named(item.line)}</p>
-            <a className="nz-link" href={item.href}>
-              <span>{named(item.cta)}</span> <Arrow />
-            </a>
-          </article>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/** An off-site link of the newsletter row: its words, the arrow, and what a screen reader hears. */
-function Out({
-  className,
-  link,
+function NewsTile({
+  href,
+  icon,
+  title,
+  line,
+  date,
+  from,
 }: {
-  readonly className?: string;
-  readonly link: { readonly label: string; readonly href: string };
+  readonly href: string;
+  readonly icon: ReactNode;
+  readonly title: ReactNode;
+  readonly line?: ReactNode;
+  readonly date: string;
+  readonly from: ReactNode;
 }): React.JSX.Element {
   return (
-    <a className={className} href={link.href} {...offSiteProps(link.href)}>
-      {link.label} <ExternalArrow />
-      <NewTabHint href={link.href} />
-    </a>
+    <article className="dt nw-t">
+      <a className="dt-a" href={href} {...offSiteProps(href)}>
+        {icon}
+        <span>
+          <span className="dt-t">{title}</span>
+          {line ? <span className="dt-l">{line}</span> : null}
+          <span className="nw-m">
+            <time dateTime={date}>{newsShortDay(date)}</time> · {from}
+          </span>
+        </span>
+        {isOffSite(href) ? (
+          <ArrowOutGlyph className="dt-go" />
+        ) : (
+          <ArrowGlyph className="dt-go" weight={2.2} />
+        )}
+        <NewTabHint href={href} />
+      </a>
+    </article>
   );
 }
 
-/**
- * The closing row: the navy panel, "Get Zoorik News by email" with the link to subscribe on
- * Medium and Substack beside it, then where else we post. Links only: no form, no third-party script.
- */
-function Newsletter(): React.JSX.Element {
-  const { newsletter } = newsPage;
+/** The latest announcement (white) and the newsletter (dark), on the band. */
+function Latest({ item }: { readonly item: NewsAnnouncement }): React.JSX.Element {
+  const { newsletter } = latest;
   return (
-    <div className="nw-sub">
-      <div className="nw-subc">
-        <p className="nr-eyebrow">{newsletter.eyebrow}</p>
-        <h2>{named(newsletter.title)}</h2>
-        <p>{named(newsletter.lede)}</p>
-        <div className="nw-subacts">
-          <Out className="nz-cta" link={newsletter.subscribe} />
-          <Out className="nw-alt" link={newsletter.alt} />
+    <section className="sec sec-band" id={latest.id} aria-label={latest.label}>
+      <div className="wrap">
+        <div className="as-grid">
+          <Reveal className="as-card as-mini nw-fc" order={0}>
+            <span className="nw-flag">{latest.flag}</span>
+            <TagMark tag={item.tag} className="nw-own nw-own-l" />
+            <p className="nw-meta">
+              <time dateTime={item.date}>{newsDay(item.date)}</time> · {named(item.tag)}
+            </p>
+            <h2 className="as-h">{named(item.title)}</h2>
+            <p>{named(item.line)}</p>
+            <a className="btn-ink" href={item.href}>
+              {named(item.cta)} <ArrowGlyph weight={2.2} />
+            </a>
+          </Reveal>
+          <Reveal className="as-cal" order={1}>
+            <MediumMark className="nw-own" />
+            <h2 className="as-h">{named(newsletter.title)}</h2>
+            <p>{named(newsletter.line)}</p>
+            <a
+              className="cta-go"
+              href={newsletter.subscribe.href}
+              {...offSiteProps(newsletter.subscribe.href)}
+            >
+              <span>
+                {newsletter.subscribe.label}
+                <NewTabHint href={newsletter.subscribe.href} />
+              </span>
+              <ExternalArrow />
+            </a>
+            <p className="cta-fine">
+              {newsletter.alt.before}
+              <a href={newsletter.alt.href} {...offSiteProps(newsletter.alt.href)}>
+                {newsletter.alt.label}
+                <NewTabHint href={newsletter.alt.href} />
+              </a>
+            </p>
+          </Reveal>
         </div>
       </div>
-      <div className="nw-fl">
-        <p>{newsletter.follow}</p>
-        {newsletter.links.map((link) => (
-          <Out link={link} key={link.label} />
+    </section>
+  );
+}
+
+/** From Zoorik: the announcements after the latest, each a page of this site. None, no section. */
+function FromZoorik({
+  items,
+}: {
+  readonly items: readonly NewsAnnouncement[];
+}): React.JSX.Element | null {
+  if (items.length === 0) return null;
+  return (
+    <section className="sec nw-sec" id={zoorik.id} aria-labelledby={`${zoorik.id}-h`}>
+      <div className="wrap">
+        <div className="sec-hrow">
+          <h2 id={`${zoorik.id}-h`}>{named(zoorik.title)}</h2>
+        </div>
+        <div className="dt-grid">
+          {items.map((item) => (
+            <NewsTile
+              key={item.href}
+              href={item.href}
+              icon={<TagMark tag={item.tag} className="dt-ic nw-logo" />}
+              title={named(item.title)}
+              line={named(item.line)}
+              date={item.date}
+              from={named(item.tag)}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* The trademark lines the announcements carry, each once: the page's last words, small. */
+const trademarks = [...new Set(newsFromZoorik.flatMap((item) => (item.legal ? [item.legal] : [])))];
+
+/** Zoorik Radar: its week, the stream chips and each stream's tiles, then what it reads, then the trademark lines. */
+function Radar(): React.JSX.Element {
+  return (
+    <section className="sec nw-sec" id={radar.id} aria-labelledby={`${radar.id}-h`}>
+      <div className="wrap">
+        <div className="sec-hrow">
+          <h2 id={`${radar.id}-h`}>{named(radar.title)}</h2>
+          <p>{radar.week(newsDay(newsRadar.week))}</p>
+        </div>
+        <RadarStreams
+          label={radar.chips.label}
+          all={radar.chips.all}
+          streams={newsRadar.streams.map((stream) => ({
+            id: stream.id,
+            label: stream.label,
+            body: (
+              <div className="dt-grid">
+                {stream.items.map((item, index) => (
+                  <NewsTile
+                    key={item.url}
+                    href={item.url}
+                    icon={<SourceMark item={item} mark={`nw-${stream.id}-${index}`} />}
+                    title={item.title}
+                    date={item.date}
+                    from={item.source}
+                  />
+                ))}
+              </div>
+            ),
+          }))}
+        />
+        <p className="nw-note">{radar.note(newsRadar.window)}</p>
+        {trademarks.map((line) => (
+          <p className="nw-tm" key={line}>
+            {line}
+          </p>
         ))}
       </div>
-    </div>
+    </section>
   );
 }
 
 export function NewsPage(): React.JSX.Element {
-  const { hero, jump, zoorik, radar } = newsPage;
+  const [first, ...rest] = newsFromZoorik as readonly [NewsAnnouncement, ...NewsAnnouncement[]];
   return (
     <>
       <a className="skip" href="#main">
@@ -120,40 +275,11 @@ export function NewsPage(): React.JSX.Element {
           <div className="wrap hero-in">
             <h1>{named(hero.title)}</h1>
             <p className="doc-deck">{hero.deck}</p>
-            {/* The links' words as one run of text each, as the mock writes them: split at the brand's name
-                (`named()`), a pill's measured width moves by a fraction of a pixel, and the pills after it with it. */}
-            <nav className="nw-jump" aria-label={jump}>
-              <a href={`#${zoorik.id}`}>{zoorik.title}</a>
-              {newsRadar.streams.map((stream) => (
-                <a href={`#${radar.id}-${stream.id}`} key={stream.id}>
-                  {stream.label}
-                </a>
-              ))}
-            </nav>
           </div>
         </header>
-
-        <section className="sec nw-sec" id={zoorik.id} aria-labelledby={`${zoorik.id}-h`}>
-          <div className="wrap">
-            <div className="nw-h">
-              <h2 id={`${zoorik.id}-h`}>{named(zoorik.title)}</h2>
-              <p>{zoorik.lede}</p>
-            </div>
-            <FromZoorik />
-          </div>
-        </section>
-
-        <section className="sec sec-band nw-sec" id={radar.id} aria-labelledby={`${radar.id}-h`}>
-          <div className="wrap">
-            <NewsRadar />
-          </div>
-        </section>
-
-        <section className="sec nw-sec">
-          <div className="wrap">
-            <Newsletter />
-          </div>
-        </section>
+        <Latest item={first} />
+        <FromZoorik items={rest} />
+        <Radar />
       </main>
       <FooterSection />
     </>

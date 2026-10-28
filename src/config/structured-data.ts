@@ -21,9 +21,17 @@ import {
   wikidataEntity,
 } from "@/config/entity";
 import { openSourceLinks } from "@/config/open-source";
-import { awsSellerProfile, liveListings } from "@/config/marketplaces";
-import { amoebaDocs, calendarUrl, contactEmail, homeUrl, routes, site } from "@/config/site";
-import { socialImage } from "@/config/social";
+import { liveListings, storeProfiles } from "@/config/marketplaces";
+import {
+  amoebaDocs,
+  calendarUrl,
+  contactEmail,
+  homeUrl,
+  pageTitle,
+  routes,
+  site,
+} from "@/config/site";
+import { cardFor } from "@/config/social";
 import { about, cin, registeredOffice } from "@/content/about";
 import { amoebaFaqPage } from "@/content/amoeba-faq";
 import { amoebaGuide } from "@/content/amoeba-guide";
@@ -45,14 +53,17 @@ import { footerColumns, socialProfiles } from "@/content/footer";
 import { learnPage } from "@/content/learn";
 import {
   alternativesPages,
-  compareHubPage,
+  cloudCostToolsPage,
   versusPages,
   versusRoute,
 } from "@/content/learn-compare";
 import { marketplacesPage } from "@/content/marketplaces";
+import { memberships } from "@/content/memberships";
 import { openSourceGuides, openSourcePage, type OpenSourceGuideId } from "@/content/open-source";
 import { partnersPage } from "@/content/partners";
 import type { Article } from "@/content/learn/article";
+import { glossaryPage, glossaryTerms, termName, termRoute } from "@/content/learn/glossary";
+import type { GlossaryTerm } from "@/content/learn/glossary-term";
 import { articleAuthor, articleCard, articleRoute, learnArticles } from "@/content/learn/published";
 import { privacy } from "@/content/privacy";
 import { referralsPage } from "@/content/referrals";
@@ -66,7 +77,8 @@ import { isoDay } from "@/lib/content-date";
  * The structured data search engines read: one JSON-LD graph per indexed page.
  * Every graph has the organisation, the site, the page itself and, below the
  * home page, its breadcrumb trail; the home and product pages add the apps, and
- * the articles and the study a TechArticle.
+ * the articles and the study a TechArticle; a glossary term its DefinedTerm, and
+ * the glossary's hub its DefinedTermSet.
  * Built only from constants the pages already print.
  *
  * 🔴 NO offers, price, aggregateRating OR review: pricing was removed on purpose
@@ -129,7 +141,9 @@ const guides: Readonly<Record<ProductId, string | null>> = {
  * profiles the footer's row does not show: Bluesky (@zoorik.com), GitLab,
  * Substack, Instagram, Artifact Hub, npm, Quay and Gravatar; then Hacker News,
  * dev.to, Mastodon and Wellfound; then the directories: F6S, Tracxn's company
- * and legal-entity pages, G2's seller page and SaaSBrowser.
+ * and legal-entity pages, G2's seller page and SaaSBrowser. It is `memberOf`
+ * each program /about lists under Programs (`memberships.ts`), as a
+ * ProgramMembership with the program's page and the company that runs it.
  * No founder and no founding date: /about names neither.
  */
 export const organization = {
@@ -159,7 +173,7 @@ export const organization = {
   knowsAbout: ["Cloud cost optimization", ...productOrder.map((id) => products[id].category)],
   sameAs: [
     ...socialProfiles.map((link) => link.href),
-    awsSellerProfile,
+    ...storeProfiles,
     crunchbaseProfile,
     wikidataEntity,
     openSourceLinks.pypiUser,
@@ -182,6 +196,17 @@ export const organization = {
     g2Seller,
     saasBrowserProfile,
   ],
+  memberOf: memberships.map((membership) => ({
+    "@type": "ProgramMembership",
+    programName: membership.name,
+    url: membership.url,
+    hostingOrganization: {
+      "@type": "Organization",
+      name: membership.host.name,
+      url: membership.host.url,
+      sameAs: membership.host.wikidata,
+    },
+  })),
 } as const;
 
 const website = {
@@ -196,7 +221,7 @@ const website = {
  * One product as an app: its page's app description, its offerings as the
  * feature list, its guide as its help, and `sameAs` only for the pages that
  * exist about it: its marketplace listings, then Coral's G2 page (Amoeba has
- * none yet, so it carries no `sameAs`).
+ * no G2 page yet).
  */
 export function softwareApplication(product: ProductId) {
   const content = pageContent[product];
@@ -264,10 +289,14 @@ interface PageEntry {
     /** The page's share card. */
     readonly image: { readonly url: string };
   };
+  /** A glossary term's page: the term, by its name, and its definition's first sentence. */
+  readonly term?: { readonly name: string; readonly description: string };
+  /** The glossary's hub: the set every term is in. */
+  readonly termSet?: true;
 }
 
 /** A page's printed `<title>`: through the layout's template. */
-const titled = (title: string): string => site.titleTemplate.replace("%s", title);
+const titled = pageTitle;
 
 /** A step named as the footer names its page ("Docs", "Coral guide", "Privacy"). */
 function step(path: string): Crumb {
@@ -346,6 +375,33 @@ function articleEntry(article: Article): PageEntry {
   };
 }
 
+/** The glossary's step in a term's trail: the hub, by the name its terms' trail gives it. */
+const glossaryStep: Crumb = { name: glossaryPage.crumb, path: routes.learnGlossary };
+
+/**
+ * A glossary term: Learn, the glossary, then the term by its h1; the product it names (none for a term about both);
+ * and the term itself, by its name and its definition's first sentence.
+ */
+function termEntry(term: GlossaryTerm): PageEntry {
+  return {
+    kind: "WebPage",
+    name: titled(term.title),
+    description: term.meta,
+    trail: [step(routes.learn), glossaryStep, { name: term.h1, path: termRoute(term) }],
+    ...(term.product === "both" ? {} : { about: term.product }),
+    term: { name: termName(term), description: term.card },
+  };
+}
+
+/** The glossary's set: its address and its name, as each term's page points at it and the hub draws it whole. */
+const termSetId = `${pageUrl(routes.learnGlossary)}#terms`;
+const termSetRef = {
+  "@type": "DefinedTermSet",
+  "@id": termSetId,
+  name: glossaryPage.hero.title,
+  url: pageUrl(routes.learnGlossary),
+} as const;
+
 const studyHeadline = `${caseStudy.hero.title} ${caseStudy.hero.titleGreen}`;
 const studyDate = isoDay(caseStudy.band.date);
 
@@ -385,10 +441,10 @@ const pages: Readonly<Record<string, PageEntry>> = {
         ),
       }
     : {}),
-  /* "Zoorik Learn: …" is absolute, as the page prints it (no " · Zoorik" after it). */
+  /* Zoorik Learn, the hub. */
   [routes.learn]: {
     kind: "CollectionPage",
-    name: learnPage.meta.title,
+    name: titled(learnPage.meta.title),
     description: learnPage.meta.description,
     trail: [step(routes.learn)],
   },
@@ -396,10 +452,22 @@ const pages: Readonly<Record<string, PageEntry>> = {
   ...Object.fromEntries(
     learnArticles.map((article) => [articleRoute(article), articleEntry(article)]),
   ),
-  /* The comparison pages: the hub at /compare, then each page under it by its title; about its product. */
-  [routes.compare]: documentEntry(routes.compare, compareHubPage.meta, [], {
+  /* The glossary's hub, under Learn, then every published term, from the glossary index. */
+  [routes.learnGlossary]: {
     kind: "CollectionPage",
-  }),
+    name: titled(glossaryPage.meta.title),
+    description: glossaryPage.meta.description,
+    trail: [step(routes.learn), glossaryStep],
+    termSet: true,
+  },
+  ...Object.fromEntries(glossaryTerms.map((term) => [termRoute(term), termEntry(term)])),
+  /* Cloud cost optimization tools, then each comparison page under it by its title; about its product. */
+  [routes.cloudCostTools]: {
+    kind: "CollectionPage",
+    name: titled(cloudCostToolsPage.meta.title),
+    description: cloudCostToolsPage.meta.description,
+    trail: [step(routes.cloudCostTools)],
+  },
   ...Object.fromEntries(
     [
       ...alternativesPages.map((page) => ({ ...page, path: page.route })),
@@ -410,7 +478,10 @@ const pages: Readonly<Record<string, PageEntry>> = {
         kind: "WebPage",
         name: titled(page.meta.title),
         description: page.meta.description,
-        trail: [step(routes.compare), { name: page.meta.title, path: page.path }],
+        trail: [
+          step(routes.cloudCostTools),
+          { name: "h1" in page ? page.h1 : page.meta.title, path: page.path },
+        ],
         about: page.product,
       } satisfies PageEntry,
     ]),
@@ -420,27 +491,31 @@ const pages: Readonly<Record<string, PageEntry>> = {
   [routes.docsInstallHelm]: osGuideEntry("helm"),
   [routes.docsInstallTerraform]: osGuideEntry("terraform"),
   [routes.docsContributing]: osGuideEntry("contributing"),
-  [routes.caseStudies]: documentEntry(routes.caseStudies, caseStudiesHub.meta, [], {
+  /* Value Lab, the case studies' hub. */
+  [routes.valueLab]: {
     kind: "CollectionPage",
-  }),
+    name: titled(caseStudiesHub.meta.title),
+    description: caseStudiesHub.meta.description,
+    trail: [step(routes.valueLab)],
+  },
   /* The study prints one date, "12 October 2026 · Published by Zoorik": published, and not changed since. */
   [routes.caseStudyCoralDevCluster]: {
     kind: "WebPage",
     name: titled(caseStudy.meta.title),
     description: caseStudy.meta.description,
-    trail: [step(routes.caseStudies), { name: studyHeadline, path: caseStudy.route }],
+    trail: [step(routes.valueLab), { name: studyHeadline, path: caseStudy.route }],
     about: "coral",
     article: {
       headline: studyHeadline,
       published: studyDate,
       modified: studyDate,
-      image: socialImage,
+      image: cardFor(routes.caseStudyCoralDevCluster),
     },
   },
-  /* Two more absolute titles, /about's and /careers's: no " · Zoorik" after them (/learn's is above). */
+  /* About, the organisation's own page. */
   [routes.about]: {
     kind: "AboutPage",
-    name: about.meta.title,
+    name: titled(about.meta.title),
     description: about.meta.description,
     trail: [step(routes.about)],
     about: "organization",
@@ -448,29 +523,33 @@ const pages: Readonly<Record<string, PageEntry>> = {
   /* A page about working at the organisation; no JobPosting, as it lists no open role. */
   [routes.careers]: {
     kind: "WebPage",
-    name: careers.meta.title,
+    name: titled(careers.meta.title),
     description: careers.meta.description,
     trail: [step(routes.careers)],
     about: "organization",
   },
   /* The events list; its events are the page's own Event markup (`@/features/events`). */
   [routes.events]: documentEntry(routes.events, eventsPage.meta, [], { kind: "CollectionPage" }),
-  /* Zoorik Community: absolute too. */
+  /* Zoorik Community. */
   [routes.community]: {
     kind: "WebPage",
-    name: communityPage.meta.title,
+    name: titled(communityPage.meta.title),
     description: communityPage.meta.description,
     trail: [step(routes.community)],
     about: "organization",
   },
   /* Where to find Zoorik. */
-  [routes.marketplaces]: documentEntry(routes.marketplaces, marketplacesPage.meta, [], {
+  [routes.marketplaces]: {
+    kind: "WebPage",
+    name: titled(marketplacesPage.meta.title),
+    description: marketplacesPage.meta.description,
+    trail: [step(routes.marketplaces)],
     about: "organization",
-  }),
-  /* Zoorik News: its title is absolute, as the page prints it (no " · Zoorik" after it). */
+  },
+  /* Zoorik News. */
   [routes.news]: {
     kind: "CollectionPage",
-    name: newsPage.meta.title,
+    name: titled(newsPage.meta.title),
     description: newsPage.meta.description,
     trail: [step(routes.news)],
     about: "organization",
@@ -493,7 +572,12 @@ const pages: Readonly<Record<string, PageEntry>> = {
   [routes.security]: documentEntry(routes.security, securityPage.meta, []),
 };
 
-/** One page's JSON-LD: the organisation, the site, the page, its trail, then its article or apps. */
+/** Each indexed page's printed title, by path: what the footer's "Ask about Zoorik on" questions name a page by. */
+export const pageTitles: Readonly<Record<string, string>> = Object.fromEntries(
+  Object.entries(pages).map(([path, page]) => [path, page.name]),
+);
+
+/** One page's JSON-LD: the organisation, the site, the page, its trail, then its article, term or set, or apps. */
 export function pageStructuredData(path: string) {
   const page = pages[path];
   if (!page) throw new Error(`structured data: no entry for ${path}`);
@@ -562,6 +646,37 @@ export function pageStructuredData(path: string) {
               publisher: ref(organizationId),
               ...(about ? { about } : {}),
               image: `${site.url}${page.article.image.url}`,
+            },
+          ]
+        : []),
+      /* A glossary term: its name and definition, in the glossary's set. */
+      ...(page.term
+        ? [
+            {
+              "@type": "DefinedTerm",
+              "@id": `${url}#term`,
+              name: page.term.name,
+              description: page.term.description,
+              url,
+              inDefinedTermSet: termSetRef,
+              mainEntityOfPage: ref(pageId),
+            },
+          ]
+        : []),
+      /* The glossary's hub: the set, and every published term in it by its name and address, so the set reads whole
+         on its own page. */
+      ...(page.termSet
+        ? [
+            {
+              ...termSetRef,
+              description: page.description,
+              hasDefinedTerm: glossaryTerms.map((term) => ({
+                "@type": "DefinedTerm",
+                "@id": `${pageUrl(termRoute(term))}#term`,
+                name: termName(term),
+                url: pageUrl(termRoute(term)),
+              })),
+              mainEntityOfPage: ref(pageId),
             },
           ]
         : []),

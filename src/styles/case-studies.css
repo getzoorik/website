@@ -1,15 +1,14 @@
-/* Zoorik marketing: the case studies, `/case-studies` and `/case-studies/coral-dev-cluster`.
+/* Zoorik marketing: the case study, `/value-lab/coral-dev-cluster` (the hub, /value-lab, has its own sheet).
  *
  * Ported from the mocks' case-studies block, whole, rule for rule and in its order: the hero's kicker and green line,
  * the numbered section names, the result band and its four figures, the figure cards, the cost steps, the machine
  * cards, the three cards, the steps of "What Coral did", what the apps reserve, the swap, the restart bars, the table
- * and the share removed, the download card and the fine print; then the library's own block (below). Imported by both
- * pages, so Next loads it after globals.css: where the mocks put the block, after the site system, the header's menus,
+ * and the share removed, the download card and the fine print. Imported by the study's page, so Next loads it after
+ * globals.css: where the mocks put the block, after the site system, the header's menus,
  * the documents' sheet and the new pages' block. One rule is written a class stronger than the mock's, so it still
  * beats the utility hero's measure, which documents.css reaches through `.hero-in` (below).
  *
- * The study's frame is the article frame (`.ar-frame`, the mocks' article frame block, doc-rows.css); the hub draws its
- * own cards (`cx-`). The hero, the download block, the type, the dots and the callout are the documents' kit
+ * The study's frame is the article frame (`.ar-frame`, the mocks' article frame block, doc-rows.css). The hero, the download block, the type, the dots and the callout are the documents' kit
  * (documents.css). */
 
 /* Case study: the published PDF on the web. The PDF's colours on the site's hairline cards: navy where the
@@ -196,56 +195,3 @@
   .cs-tb th,.cs-tb td{padding-left:8px}
   .cs-fh{flex-wrap:wrap}
 }
-
-/* ─── /case-studies: the library ──────────────────────────────────────────────────────────────────────────────────
-   Ported from the mock's library block, whole, rule for rule and in its order, after the study's block as the mock puts
-   it. One rule is scoped: the mock's page-wide `[hidden]` is written for the cards the filter hides
-   (`.cx-card[hidden]`), so this sheet hides nothing on another page. */
-.cx-sec{padding-top:clamp(40px,5vw,64px)}
-.cx-filter{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-bottom:28px;padding-bottom:22px;border-bottom:1px solid var(--line)}
-.cx-filter button{font:500 .8125rem/1 var(--sans);padding:9px 13px;border:1px solid var(--line);border-radius:var(--r-pill);background:#fff;color:var(--text);cursor:pointer}
-.cx-filter button[aria-pressed="true"]{background:var(--text);border-color:var(--text);color:#fff}
-.cx-filter button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.cx-count{margin-left:auto;font-size:var(--fs-micro);color:var(--muted)}
-.cx-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:16px;align-items:stretch}
-.cx-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden;background:#fff;transition:border-color var(--d-fast) var(--ease),box-shadow var(--d-fast) var(--ease)}
-.cx-card:hover{border-color:var(--card-hover);box-shadow:var(--shadow-2)}
-.cx-cover{position:relative;display:flex;flex-direction:column;justify-content:flex-end;gap:18px;padding:28px;background:#050B3D;color:#FAF7F3;text-decoration:none;overflow:hidden}
-.cx-cover::after{content:"";position:absolute;left:-120px;top:-160px;width:380px;height:380px;border-radius:50%;background:radial-gradient(closest-side,rgba(59,91,245,.35),transparent)}
-.cx-big{position:relative;font-size:clamp(3rem,2rem + 3vw,4.5rem);font-weight:600;letter-spacing:-.04em;line-height:1;color:#5FE3B5;font-variant-numeric:tabular-nums}
-.cx-bars{position:relative;display:grid;gap:10px}
-.cx-bars > span{display:grid;grid-template-columns:minmax(0,1fr) 70px;align-items:center;gap:10px}
-.cx-bars i{display:block;height:12px;border-radius:2px}
-.cx-b1 i{background:rgba(250,247,243,.32)}
-.cx-b2 i{background:#FAF7F3}
-.cx-bars em{font:500 .8125rem/1 var(--code);font-style:normal;color:rgba(250,247,243,.85)}
-.cx-cap{position:relative;font-size:.8125rem;color:rgba(250,247,243,.62)}
-.cx-cbody{display:flex;flex-direction:column;padding:28px}
-.cx-kick{margin:0;font:500 .75rem/1.4 var(--code);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.cx-cbody h3{margin-top:10px;font-size:1.375rem;font-weight:600;line-height:1.25;letter-spacing:-.02em}
-.cx-cbody h3 a{color:var(--text);text-decoration:none}
-.cx-cbody h3 a:hover{color:var(--accent)}
-.cx-line{margin-top:10px;color:var(--muted);line-height:1.6}
-.cx-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
-.cx-chips span{padding:5px 10px;border:1px solid var(--line);border-radius:var(--r-pill);font-size:.8125rem;font-weight:500;color:var(--text)}
-.cx-cfoot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:auto;padding-top:22px}
-.cx-read{display:inline-flex;align-items:center;gap:8px;font-weight:500;color:var(--accent);text-decoration:none}
-.cx-read svg{width:16px;height:16px;transition:transform var(--d-fast) var(--ease)}
-.cx-read:hover svg{transform:translateX(2px)}
-.cx-pdf{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid var(--line);border-radius:var(--r-ctl);font-size:.8125rem;font-weight:500;color:var(--text);text-decoration:none}
-.cx-pdf:hover{border-color:var(--accent);color:var(--accent)}
-.cx-pdf svg{width:14px;height:14px}
-.cx-next{display:flex;flex-direction:column;align-items:flex-start;padding:28px;border:1.5px dashed var(--card-hover);border-radius:var(--r-card);background:var(--surface-2);color:var(--text);text-decoration:none;transition:border-color var(--d-fast) var(--ease)}
-.cx-plus{display:grid;place-items:center;width:40px;height:40px;margin-bottom:18px;border-radius:var(--r-pill);background:#fff;border:1px solid var(--line);font-size:1.375rem;color:var(--accent)}
-.cx-next h3{font-size:1.25rem;font-weight:600}
-.cx-next p{margin-top:8px;color:var(--muted);line-height:1.6}
-.cx-next .cx-read{margin-top:auto;padding-top:20px}
-.cx-next:hover{border-color:var(--accent)}
-.cx-trust{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-.cx-trust div{padding:24px;border:1px solid var(--line);border-radius:var(--r-card);background:#fff}
-.cx-trust h3{font-size:var(--fs-h3)}
-.cx-trust p{margin-top:8px;color:var(--muted);line-height:1.6}
-.cx-card[hidden]{display:none!important}
-@media(max-width:1000px){.cx-grid{grid-template-columns:minmax(0,1fr)}}
-@media(max-width:760px){.cx-card{grid-template-columns:minmax(0,1fr)}.cx-trust{grid-template-columns:minmax(0,1fr)}.cx-count{margin-left:0;width:100%}}
-@media(prefers-reduced-motion:reduce){.cx-card,.cx-read svg,.cx-next{transition:none}}

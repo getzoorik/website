@@ -31,6 +31,7 @@ export type DocumentId =
   | "coral-guide"
   | "coral-faq"
   | "coral-one-pager"
+  | "amoeba-guide"
   | "amoeba-one-pager"
   | "coral-case-study"
   | "coral-assessment-example"
@@ -53,16 +54,17 @@ export interface PublishedDocument {
 }
 
 /**
- * The seven PDFs the site knows, each copied from its source, never from an earlier copy:
+ * The eight PDFs the site knows, each copied from its source, never from an earlier copy:
  *   coral-product-guide.pdf
  *   coral-faq.pdf
  *   coral-one-pager.pdf
- *   amoeba-one-pager.pdf (held)
+ *   amoeba-product-guide.pdf
+ *   amoeba-one-pager.pdf
  *   coral-case-study-dev-cluster.pdf
  *   coral-assessment-example.pdf
  *   amoeba-assessment-example.pdf
  *
- * 🔴 THERE IS NO EIGHTH. The internal FAQ for Zoorik's own team never ships:
+ * 🔴 THERE IS NO NINTH. The internal FAQ for Zoorik's own team never ships:
  * not as a file, an entry, a link or a fact (`src/app/internal-docs.test.ts`).
  */
 /**
@@ -70,7 +72,7 @@ export interface PublishedDocument {
  * `lastmod` only: the page does not print it. Whoever changes the hub's content
  * moves this to that day in the same PR; never the build's date.
  */
-export const docsHubLastUpdated = "16 October 2026";
+export const docsHubLastUpdated = "27 October 2026";
 
 export const documents: Readonly<Record<DocumentId, PublishedDocument>> = {
   "coral-guide": {
@@ -96,6 +98,14 @@ export const documents: Readonly<Record<DocumentId, PublishedDocument>> = {
     canonical: routes.coral,
     released: true,
     spokenName: "the Coral one-pager",
+  },
+  "amoeba-guide": {
+    id: "amoeba-guide",
+    product: "amoeba",
+    pdf: "/docs/amoeba-product-guide.pdf",
+    canonical: routes.amoebaGuide,
+    released: true,
+    spokenName: "the Amoeba product guide",
   },
   "amoeba-one-pager": {
     id: "amoeba-one-pager",
@@ -170,8 +180,14 @@ export interface DocTileEntry {
 /** The hub's missing-file words. */
 export const pdfToCome = "PDF to come";
 
-/** The one-pager's line on the hub, where its facts sit in the PDF row under it. */
-const ONE_PAGER_LINE = "Cost, safety, visibility and an example";
+/**
+ * Each one-pager's line on the hub, where its facts sit in the PDF row under it. Coral's has a
+ * worked example; Amoeba's has none, so its line names how it works instead.
+ */
+const ONE_PAGER_LINE: Readonly<Record<ProductId, string>> = {
+  coral: "Cost, safety, visibility and an example",
+  amoeba: "Cost, safety, visibility and how it works",
+};
 
 interface ShelfEntry extends DocTileEntry {
   /** Whether the tile is listed at all: its page is published, or its PDF is. */
@@ -197,7 +213,7 @@ const shelves: Readonly<Record<ProductId, readonly ShelfEntry[]>> = {
     },
     {
       title: "One-pager",
-      line: ONE_PAGER_LINE,
+      line: ONE_PAGER_LINE.coral,
       pdf: { label: "PDF", document: "coral-one-pager" },
       released: documents["coral-one-pager"].released,
     },
@@ -218,14 +234,14 @@ const shelves: Readonly<Record<ProductId, readonly ShelfEntry[]>> = {
     },
   ],
   amoeba: [
-    /* Their pages are drafts: no PDF exists yet, so the hub would say "PDF to come". */
     {
       title: "Product guide",
       line: "Onboard, what changes, staying in control",
       href: routes.amoebaGuide,
-      pdf: { label: "PDF" },
+      pdf: { label: "PDF", document: "amoeba-guide" },
       released: amoebaDocs,
     },
+    /* The FAQ has no PDF yet, so the hub says "PDF to come" under it. */
     {
       title: "FAQ",
       line: "Safety, downtime, expanding, agent and costs",
@@ -235,7 +251,7 @@ const shelves: Readonly<Record<ProductId, readonly ShelfEntry[]>> = {
     },
     {
       title: "One-pager",
-      line: ONE_PAGER_LINE,
+      line: ONE_PAGER_LINE.amoeba,
       pdf: { label: "PDF", document: "amoeba-one-pager" },
       released: documents["amoeba-one-pager"].released,
     },
@@ -268,7 +284,7 @@ export const docsHub = {
   /* "Product docs" in the title and the h1, where the mock says "Coral and
      Amoeba docs". */
   meta: {
-    title: "Product docs: guides, FAQs, one-pagers",
+    title: "Product docs",
     description:
       "Product guides, FAQs and one-pagers for Coral (AKS and EKS cost optimization) and Amoeba (Azure managed disks and Amazon EBS), online or as PDFs.",
   },

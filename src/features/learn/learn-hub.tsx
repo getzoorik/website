@@ -1,201 +1,178 @@
-import { Fragment } from "react";
-
-import { Arrow } from "@/components/primitives/arrow";
+import { NewTabHint } from "@/components/primitives/new-tab-hint";
+import { Reveal } from "@/components/primitives/reveal";
 import {
-  learnComparisons,
-  learnFixes,
-  learnGuides,
+  learnFilms,
+  learnFixRows,
+  learnMedium,
+  learnMore,
   learnPage,
-  learnProof,
   learnStart,
   learnSubjects,
-  type LearnCard,
-  type LearnSubject,
+  learnTiles,
+  type LearnRow,
 } from "@/content/learn";
+import { ArrowGlyph, ArrowOutGlyph, DocGlyph } from "@/features/documents/document-glyphs";
+import { LinkTile } from "@/features/documents/link-tile";
 import { named } from "@/features/legal/named";
-import { CardBody } from "@/features/learn/learn-cards";
-import {
-  FindableCard,
-  FindableSection,
-  FixPicker,
-  LearnFilters,
-  LearnSearch,
-  NothingMatches,
-  SubjectChips,
-  type Findable,
-} from "@/features/learn/learn-filters";
-import { MoreFromZoorik } from "@/features/learn/learn-more";
-import {
-  LearnFrame,
-  LearnSection,
-  LearnSectionBody,
-  sectionClass,
-} from "@/features/learn/learn-parts";
-import { WatchAndRead } from "@/features/learn/learn-watch";
+import { LearnArticleList } from "@/features/learn/learn-list";
+import { LearnFrame } from "@/features/learn/learn-parts";
+import { CheckGlyph } from "@/features/programs/program-glyphs";
+import { offSiteProps } from "@/lib/links";
 
 /**
- * `/learn`: the hero and its search; Start here, one guide per subject, with the subject chips; Find the right
- * fix; Compare, the native tools' comparisons; Guides; Watch and read, the two product films and the Medium panel
- * (`WatchAndRead`); More from Zoorik, one card each for /news, /compare and /community (`MoreFromZoorik`); the case
- * study; then the site's closing row. Learn teaches only: the market map and Coral and Amoeba against the market
- * are /compare's, so the hub names no tool of the market. Only published articles are shown (`learn.ts`), each read
- * from the Learn index.
+ * `/learn`, as the approved redesign draws it:
  *
- * Drawn on the server. The search, the chips and Find the right fix share one state (`LearnFilters`); nothing else has
- * script, as in the mock. The search and the subject narrow Start here, Compare and Guides, and leave the sections with
- * nothing findable alone (Find the right fix narrows its own questions), as the mock's script does. The mock has no
- * motion of its own but hover: the cards' lift and the films' zoom, which reduced motion stills (learn.css).
+ *   hero            the page's name and its line
+ *   band            Start here (the three subjects' guides) on the white card, beside Find the right fix (three causes
+ *                   of a high bill, each to its guide) on the navy one, as #assess's pair; each a list of rows
+ *   All articles    every other published article as a cover tile, in the order the site publishes by, with the
+ *                   subject chips and Show all (`LearnArticleList`, the page's only script)
+ *   Watch and read  the two product films and the Medium post, each a tile that opens it in a new tab
+ *   More from       Value Lab, Cloud cost optimization tools, Community, News and the glossary (/learn/glossary)
+ *
+ * No closing row: the redesign ends on More from Zoorik. The pair rises as it arrives; nothing else moves but hover.
  */
 
-const tag = (subject: LearnSubject): string =>
-  learnSubjects.find((entry) => entry.id === subject)!.label;
+/** A row of the band: its words, the article's h1 as its hover title, and the arrow. */
+function Rows({
+  rows,
+  dark = false,
+}: {
+  readonly rows: readonly LearnRow[];
+  readonly dark?: boolean;
+}) {
+  return (
+    <ul className={dark ? "lr-list lr-dark" : "lr-list"}>
+      {rows.map((row) => (
+        <li key={row.href}>
+          <a className="lr-l" href={row.href} title={row.title}>
+            <span>{named(row.name)}</span>
+            <ArrowGlyph className="dt-go" weight={2.2} />
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
-/** A card's words for the search, as the mock's `data-s`: its title, its line and its subject, in lower case. */
-const findable = (card: LearnCard): Findable => ({
-  subject: card.subject,
-  search: `${card.title} ${card.line} ${tag(card.subject)}`.toLowerCase(),
-});
+function Band(): React.JSX.Element {
+  const { band, start, fix } = learnPage;
+  return (
+    <section className="sec sec-band lr-pair" aria-label={band}>
+      <div className="wrap">
+        <div className="as-grid">
+          <Reveal className="as-card as-mini lr-c" order={0}>
+            <DocGlyph className="lr-own lr-own-l" />
+            <h2 className="as-h">{start.title}</h2>
+            <p>{start.line}</p>
+            <Rows rows={learnStart} />
+          </Reveal>
+          <Reveal className="as-cal lr-c" order={1}>
+            <CheckGlyph className="lr-own" />
+            <h2 className="as-h">{fix.title}</h2>
+            <p>{fix.line}</p>
+            <Rows rows={learnFixRows} dark />
+          </Reveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** The Medium mark, the post's thumbnail on its navy ground. */
+function MediumMark(): React.JSX.Element {
+  return (
+    <svg viewBox="0 0 24 24">
+      <ellipse cx="6.8" cy="12" rx="6.8" ry="6.9" />
+      <ellipse cx="17.4" cy="12" rx="3.4" ry="6.5" />
+      <ellipse cx="22.4" cy="12" rx="1.2" ry="5.8" />
+    </svg>
+  );
+}
+
+function Watch(): React.JSX.Element {
+  const { watch } = learnPage;
+  return (
+    <section className="sec lr-sec" id={watch.id} aria-labelledby={`${watch.id}-h`}>
+      <div className="wrap">
+        <div className="sec-hrow">
+          <h2 id={`${watch.id}-h`}>{watch.title}</h2>
+        </div>
+        <div className="dt-grid">
+          {learnFilms.map((film) => (
+            <article className="dt lr-t" key={film.product}>
+              <a className="dt-a" href={film.href} {...offSiteProps(film.href)}>
+                <span className="lr-th lr-film">
+                  {/* A plain <img>, as Watch and read's posters were: the thumbnail is a file in public/films, and
+                      the sheet owns the box (`.lr-th img`). */}
+                  {/* eslint-disable-next-line @next/next/no-img-element -- see above */}
+                  <img
+                    src={film.poster}
+                    alt=""
+                    width={1920}
+                    height={1080}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </span>
+                <span>
+                  <span className="dt-t">{named(film.title)}</span>
+                  <span className="lr-m">
+                    {film.length} · {watch.film}
+                  </span>
+                </span>
+                <ArrowOutGlyph className="dt-go" />
+                <NewTabHint href={film.href} />
+              </a>
+            </article>
+          ))}
+          <article className="dt lr-t">
+            <a className="dt-a" href={learnMedium.url} {...offSiteProps(learnMedium.url)}>
+              <span className="lr-th lr-md" aria-hidden="true">
+                <MediumMark />
+              </span>
+              <span>
+                <span className="dt-t">{learnMedium.title}</span>
+                <span className="lr-m">
+                  {watch.medium} · {learnMedium.date}
+                </span>
+              </span>
+              <ArrowOutGlyph className="dt-go" />
+              <NewTabHint href={learnMedium.url} />
+            </a>
+          </article>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function More(): React.JSX.Element {
+  const { more } = learnPage;
+  return (
+    <section className="sec lr-sec" id={more.id} aria-labelledby={`${more.id}-h`}>
+      <div className="wrap">
+        <div className="sec-hrow">
+          <h2 id={`${more.id}-h`}>{named(more.title)}</h2>
+        </div>
+        <div className="dt-grid lr-4">
+          {learnMore.map((tile) => (
+            <LinkTile key={tile.href} href={tile.href} title={named(tile.title)} line={tile.line} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export function LearnHub(): React.JSX.Element {
-  const { hero, search, subjects, start, fix, compare, guides, proof } = learnPage;
-  const startItems = learnStart.map(findable);
-  const compareItems = learnComparisons.map(findable);
-  const guideItems = learnGuides.map(findable);
-
+  const { hero } = learnPage;
   return (
-    <LearnFilters
-      items={[...startItems, ...compareItems, ...guideItems]}
-      fixes={learnFixes.map((entry) => entry.subject)}
-    >
-      <LearnFrame
-        hero={{
-          title: hero.title,
-          deck: hero.deck,
-          after: <LearnSearch label={search.label} placeholder={search.placeholder} />,
-        }}
-      >
-        <FindableSection id={start.id} className={sectionClass()} items={startItems} keep>
-          <div className="wrap">
-            <div className="lv-head lv-subj">
-              <div>
-                <h2 id={`${start.id}-h`}>{start.title}</h2>
-                <p>{start.lede}</p>
-              </div>
-              <SubjectChips label={subjects.label} all={subjects.all} subjects={learnSubjects} />
-            </div>
-            <div className="lv-grid3">
-              {learnStart.map((card, index) => (
-                <FindableCard href={card.href} item={startItems[index]!} key={card.href}>
-                  <CardBody
-                    subject={card.subject}
-                    tag={tag(card.subject)}
-                    k={index}
-                    vs={compare.vs}
-                    title={card.title}
-                    line={card.line}
-                    foot={<span className="lv-date">{card.date}</span>}
-                  />
-                </FindableCard>
-              ))}
-            </div>
-            <NothingMatches text={start.empty} reset={start.reset} />
-          </div>
-        </FindableSection>
-
-        <LearnSection id={fix.id} title={fix.title} lede={named(fix.lede)} band>
-          <div className="fx" data-s="fix">
-            <FixPicker
-              label={fix.question}
-              questions={learnFixes.map(({ subject, question }) => ({ subject, question }))}
-              panels={learnFixes.map((entry) => (
-                <Fragment key={entry.question}>
-                  <p className="fx-k">{fix.helps}</p>
-                  <h3>{entry.helps}</h3>
-                  <p className="fx-k">{fix.tools}</p>
-                  <div className="fx-tools">
-                    {entry.tools.map((tool) => (
-                      <span key={tool}>{tool}</span>
-                    ))}
-                  </div>
-                  <p className="fx-k">{named(fix.fits)}</p>
-                  <p className="fx-z">{named(entry.fits)}</p>
-                  {/* One span around the label: `named()` splits it at a product's name, and in this flex link each
-                      part would be its own item, with the gap between them. An article not yet published is named
-                      without a link or an arrow. */}
-                  {entry.read.href ? (
-                    <a className="fx-read" href={entry.read.href}>
-                      <span>{named(`${fix.read}${entry.read.title}`)}</span> <Arrow />
-                    </a>
-                  ) : (
-                    <p className="fx-read">
-                      <span>{named(`${fix.read}${entry.read.title}`)}</span>
-                    </p>
-                  )}
-                </Fragment>
-              ))}
-            />
-          </div>
-        </LearnSection>
-
-        <FindableSection id={compare.id} className={sectionClass(true)} items={compareItems}>
-          <LearnSectionBody id={compare.id} title={compare.title} lede={compare.lede}>
-            <div className="lv-grid3">
-              {learnComparisons.map((card, index) => (
-                <FindableCard href={card.href} item={compareItems[index]!} key={card.href}>
-                  <CardBody
-                    subject={card.subject}
-                    tag={tag(card.subject)}
-                    k={1 + index}
-                    versus={card.versus}
-                    vs={compare.vs}
-                    title={card.title}
-                    line={card.line}
-                    foot={<span className="lv-date">{card.date}</span>}
-                  />
-                </FindableCard>
-              ))}
-            </div>
-          </LearnSectionBody>
-        </FindableSection>
-
-        <FindableSection id={guides.id} className={sectionClass()} items={guideItems}>
-          <LearnSectionBody id={guides.id} title={guides.title} lede={guides.lede}>
-            <div className="lv-grid3">
-              {learnGuides.map((card, index) => (
-                <FindableCard href={card.href} item={guideItems[index]!} key={card.href}>
-                  <CardBody
-                    subject={card.subject}
-                    tag={tag(card.subject)}
-                    k={2 + index}
-                    vs={compare.vs}
-                    title={card.title}
-                    line={card.line}
-                    foot={<span className="lv-date">{card.date}</span>}
-                  />
-                </FindableCard>
-              ))}
-            </div>
-          </LearnSectionBody>
-        </FindableSection>
-
-        <WatchAndRead />
-
-        <MoreFromZoorik />
-
-        <LearnSection id={proof.id} title={proof.title} lede={proof.lede} band>
-          <a className="lv-proof" href={learnProof.href}>
-            <span className="lv-pk">{named(learnProof.kicker)}</span>
-            <span className="lv-pbig">{learnProof.figure}</span>
-            <span className="lv-pt">
-              <b>{learnProof.title}</b>
-              <small>{named(learnProof.line)}</small>
-            </span>
-            <span className="fx-read light">
-              {learnProof.read} <Arrow />
-            </span>
-          </a>
-        </LearnSection>
-      </LearnFrame>
-    </LearnFilters>
+    <LearnFrame hero={{ title: named(hero.title), deck: hero.deck }} closing={false}>
+      <Band />
+      <LearnArticleList tiles={learnTiles} subjects={learnSubjects} words={learnPage.articles} />
+      <Watch />
+      <More />
+    </LearnFrame>
   );
 }

@@ -1,41 +1,31 @@
-import { learnPath, routes } from "@/config/site";
-import { caseStudiesHub } from "@/content/case-studies";
-import { socialProfiles } from "@/content/footer";
+import { routes } from "@/config/site";
+import { caseStudiesHub, caseStudy } from "@/content/case-studies";
+import { communityPage } from "@/content/community";
 import type { Article } from "@/content/learn/article";
-import {
-  articleAuthor,
-  articleRoute,
-  findArticle,
-  learnArticles,
-  titleLink,
-} from "@/content/learn/published";
-import { marketGroups } from "@/content/learn-market";
-import { newsPage, newsRadar } from "@/content/news";
+import { glossaryPage } from "@/content/learn/glossary";
+import { articleAuthor, articleRoute, findArticle, learnArticles } from "@/content/learn/published";
+import { newsPage } from "@/content/news";
+import { productFilms } from "@/content/product-films";
 import type { ProductId } from "@/content/products";
 import { shortDay } from "@/lib/content-date";
 
 /**
- * `/learn`, the hub: every string it prints, verbatim from the approved mock. Ordered by how the reader thinks: Start
- * here, Find the right fix, Compare, Guides, Watch and read, More from Zoorik, then the case study. Always the three
- * subjects, Cloud cost, Kubernetes and Block storage. Learn teaches only: the market map and the comparisons against
- * the market are /compare's, the news /news's and the community /community's, and the hub links each from More from
- * Zoorik, so /learn names no tool of the market.
+ * `/learn`, the hub: every string it prints, verbatim from the approved mock. The
+ * page's name and its line; on the band, Start here (the three subjects' guides) beside Find the right fix (three
+ * causes of a high bill, each to its guide); All articles, in the order the site publishes by; Watch and read; More
+ * from Zoorik. Always the three subjects, Cloud cost, Kubernetes and Block storage.
  *
  * ─── ONLY WHAT IS PUBLISHED ─────────────────────────────────────────────────
- * A card here is an article of the Learn index (`@/content/learn/published`), and reads that article's own h1, card
- * line, date and author, so the hub and the article never disagree, and a new article file is a new card with no
- * change here. Start here holds each subject's pillar once it is published, and a published guide of the subject
- * until then; Compare holds the comparisons, Guides the rest. Watch and read holds only what is out: the two product
- * films and the one live Medium post.
+ * Every row and tile is an article of the Learn index (`@/content/learn/published`), read from the article's own file,
+ * so the hub and the article never disagree. An article the band names that is not published is left out of the band,
+ * and a new article file is a new tile with no change here. An article on the band is not repeated in All articles.
  *
- * ─── WHERE THE REST COMES FROM ──────────────────────────────────────────────
- * The films are `product-films.ts`'s, the channels the footer's profiles (`socialProfiles`), the case study
- * `case-studies.ts`'s, the week's headline `news.ts`'s and the tools' count and groups `learn-market.ts`'s, so a weekly
- * refresh of /news or a new check of the market moves the cards too. /community reads the events Learn follows
- * (`learnEvents`) and the wider community (`learnCommunities`) from here.
+ * ─── THE ORDER ──────────────────────────────────────────────────────────────
+ * All articles follows the priority list (`learnPriority`): rank 1 first. An article the list does not rank
+ * follows, A–Z by slug.
  */
 
-/** The three subjects, in the hub's order: the chips, the cards' tags and each card's `data-p`. */
+/** The three subjects, in the hub's order: the chips, the tiles' eyebrows and each tile's `data-p`. */
 export type LearnSubject = "cloud" | "k8s" | "storage";
 
 export const learnSubjects: readonly { readonly id: LearnSubject; readonly label: string }[] = [
@@ -44,425 +34,326 @@ export const learnSubjects: readonly { readonly id: LearnSubject; readonly label
   { id: "storage", label: "Block storage" },
 ];
 
-/**
- * Each product's subject: where its comparison cards on /compare file (Coral's under Kubernetes, Amoeba's under Block
- * storage).
- */
-export const learnProductSubject: Readonly<Record<ProductId, LearnSubject>> = {
-  coral: "k8s",
-  amoeba: "storage",
-};
-
 export const learnPage = {
   path: routes.learn,
   meta: {
-    /** "Zoorik Learn": the page's and the share card's title as is, never followed by " · Zoorik",
-     *  which would name the company twice. The h1 stays "Learn cloud cost optimization"; the menus still say "Learn". */
-    title: "Zoorik Learn: cloud cost optimization guides",
+    /** The `<title>`'s own words, before " | Zoorik". The h1 is "Zoorik Learn"; the header's Docs menu names the
+     *  hub "Zoorik Learn" and the footer "Learn". */
+    title: "Cloud cost optimization guides",
     description:
       "Guides and comparisons for Kubernetes, block storage and the whole cloud bill on Azure and AWS, from where the money goes to the right fix.",
   },
   hero: {
-    title: "Learn cloud cost optimization",
-    deck: "Guides, comparisons and what changed this week, for Kubernetes, block storage and the whole cloud bill on Azure and AWS.",
+    title: "Zoorik Learn",
+    deck: "Guides to reduce cloud cost on Kubernetes, block storage and the whole bill, on Azure and AWS.",
   },
   /**
    * The day the hub's own content last changed, for the sitemap; it is not printed. A new article moves the hub's
    * sitemap day on its own (`sitemap.ts`), so this moves only when the hub itself changes.
    */
-  updated: "Updated 20 October 2026",
-  /** The search in the hero: its name for a screen reader, and what the empty field says. */
-  search: {
-    label: "Search Learn",
-    placeholder: "Search guides, comparisons, tools and news",
+  updated: "Updated 26 October 2026",
+  /** The band's name for a screen reader: the two cards have no section heading of their own. */
+  band: "Start here, and find the right fix",
+  start: { title: "Start here", line: "Three guides that cover the whole bill." },
+  fix: { title: "Find the right fix", line: "Three causes of a high bill, and the fix for each." },
+  articles: {
+    id: "articles",
+    title: "All articles",
+    /** After the count, beside the head: "6 more". */
+    more: "more",
+    subjects: { label: "Subject", all: "All" },
+    /** The button under the first tiles, around the count: "Show all 60 articles". */
+    showAll: { before: "Show all ", after: " articles" },
+    /** The tiles shown before Show all. */
+    shown: 12,
   },
-  /** The subject chips, beside Start here's head. */
-  subjects: { label: "Subject", all: "All" },
-  start: {
-    id: "start",
-    title: "Start here",
-    lede: "One guide per subject: where the money goes and what moves it most.",
-    /** When the search and the subject leave nothing: the line and its button, which shows everything again. */
-    empty: "Nothing matches.",
-    reset: "Show everything",
-  },
-  fix: {
-    id: "fix",
-    title: "Find the right fix",
-    lede: "Pick what is costing you. See what helps, the native tools, and where Zoorik fits.",
-    /** The list of questions: its name and its heading. */
-    question: "What is costing you?",
-    helps: "What helps",
-    tools: "The native tools",
-    fits: "Where Zoorik fits",
-    read: "Read: ",
-  },
-  compare: {
-    id: "compare",
-    title: "Compare",
-    lede: "Native tools and approaches, side by side.",
-    /** Between the two names on a comparison's cover. */
-    vs: "vs",
-  },
-  guides: {
-    id: "guides",
-    title: "Guides and best practices",
-    lede: "Plain explainers, each with its sources.",
-  },
-  /**
-   * Watch and read: the two product films, each opening on YouTube, then the Medium
-   * panel, with the live post and the follow links.
-   */
   watch: {
     id: "watch",
     title: "Watch and read",
-    lede: "Two-minute films on YouTube, and longer reads on Medium.",
-    /** The small line over each film's title, and its link's words. */
-    film: { kicker: "YouTube", go: "Watch on YouTube" },
-    /** The navy panel: its small line, the post's link words and the two follow links' words. */
-    medium: {
-      kicker: "On Medium",
-      go: "Read on Medium",
-      follow: "Follow on Medium",
-      subscribe: "Subscribe on YouTube",
-    },
+    /** After a film's length, and before the post's day. */
+    film: "on YouTube",
+    medium: "On Medium",
   },
-  /** More from Zoorik: its h2, which has no lede, and each card's link words. */
-  more: {
-    id: "more",
-    title: "More from Zoorik",
-    open: "Open",
-  },
-  /** On a real cluster, on the band. */
-  proof: {
-    id: "proof",
-    title: "On a real cluster",
-    lede: "What the practices add up to, measured.",
-  },
+  more: { id: "more", title: "More from Zoorik" },
 } as const;
 
-/** One card of the hub: a published article, as its own page writes it. */
-export interface LearnCard {
+/** Each subject's pillar, the guide Start here lists, in the hub's order. */
+export const learnPillars: readonly { readonly subject: LearnSubject; readonly pillar: string }[] =
+  [
+    { subject: "cloud", pillar: "how-to-reduce-cloud-costs" },
+    { subject: "k8s", pillar: "reduce-kubernetes-cost" },
+    { subject: "storage", pillar: "azure-disk-cost-optimization" },
+  ];
+
+/** Find the right fix: what is costing the reader, and the guide that fixes it. */
+export const learnFixes: readonly { readonly problem: string; readonly slug: string }[] = [
+  { problem: "Machines sit half empty", slug: "cluster-autoscaler-not-scaling-down" },
+  { problem: "Disks are bigger than their data", slug: "shrink-azure-managed-disk" },
+  { problem: "You can’t see where the money goes", slug: "kubernetes-cost-estimation" },
+];
+
+/** The order the site publishes by, rank 1 first. */
+export const learnPriority: readonly string[] = [
+  "how-to-reduce-cloud-costs",
+  "reduce-kubernetes-cost",
+  "azure-disk-cost-optimization",
+  "shrink-azure-managed-disk",
+  "kubernetes-cost-estimation",
+  "kubernetes-pod-right-sizing",
+  "cluster-autoscaler-not-scaling-down",
+  "change-eks-node-group-instance-type",
+  "find-unattached-disks-azure",
+  "azure-vm-disk-usage",
+  "check-ebs-volume-usage",
+  "hpa-vs-vpa-vs-cluster-autoscaler",
+  "keda-vs-karpenter",
+  "kubernetes-allocatable-vs-capacity",
+  "limitrange-vs-resourcequota",
+  "safe-to-evict-do-not-disrupt",
+  "btrfs-multiple-disks",
+  "btrfs-unallocated-space",
+  "shrink-xfs-filesystem",
+  "azure-disk-snapshot-cost",
+  "kubernetes-drain-node-without-downtime",
+  "azure-vm-disk-space-alert",
+  "increase-ebs-volume-size",
+  "btrfs-device-remove",
+  "pod-affinity-vs-node-affinity",
+  "aks-cost-analysis",
+  "aks-vs-eks-cost",
+  "shrink-ebs-volume",
+  "cluster-autoscaler-overprovisioning",
+  "pod-disruption-budget-best-practices",
+  "change-aks-node-pool-vm-size",
+  "oomkilled-exit-code-137",
+  "resize-pvc-kubernetes",
+  "azure-disk-expand-without-downtime",
+  "resize2fs-shrink-ext4",
+  "remove-disk-from-lvm",
+  "vpa-vs-hpa",
+  "keda-vs-hpa-vs-vpa",
+  "premium-ssd-v2-vs-premium-ssd",
+  "cordon-vs-drain",
+  "premium-ssd-vs-standard-ssd-azure",
+  "combine-ebs-volumes",
+  "io2-vs-gp3",
+  "btrfs-vs-lvm",
+  "kubernetes-overprovisioning",
+  "karpenter-consolidation",
+  "what-is-karpenter",
+  "what-is-keda",
+  "kubernetes-bin-packing",
+  "kubernetes-descheduler",
+  "kubernetes-node-size-best-practices",
+  "in-place-pod-resize",
+  "aks-storage-classes",
+  "azure-disk-iops-vs-throughput",
+  "azure-disk-performance-tiers",
+  "compute-optimizer-ebs",
+  "karpenter-cost-optimization",
+  "ebs-snapshot-cost",
+  "karpenter-vs-cluster-autoscaler",
+  "azure-disk-lrs-vs-zrs",
+  "gp2-vs-gp3",
+  "aks-node-auto-provisioning",
+  "topology-spread-constraints",
+  "ebs-elastic-volumes",
+  "is-btrfs-stable",
+];
+
+/**
+ * The heading a row or a tile shows: the article's short name; an article not listed shows its h1
+ * before the colon. The full h1 is the link's hover title.
+ */
+const learnNames: Readonly<Record<string, string>> = {
+  "how-to-reduce-cloud-costs": "How to reduce cloud costs",
+  "reduce-kubernetes-cost": "How to reduce Kubernetes cost",
+  "azure-disk-cost-optimization": "Azure disk cost optimization",
+  "shrink-azure-managed-disk": "Reduce Azure disk size: can a managed disk shrink?",
+  "kubernetes-cost-estimation": "Kubernetes cost estimation for AKS and EKS",
+  "kubernetes-pod-right-sizing": "Kubernetes pod right sizing",
+  "cluster-autoscaler-not-scaling-down": "Cluster Autoscaler not scaling down",
+  "change-eks-node-group-instance-type": "Change an EKS node group instance type",
+  "find-unattached-disks-azure": "Find unattached disks in Azure",
+  "azure-vm-disk-usage": "Azure VM disk usage: used vs provisioned",
+  "check-ebs-volume-usage": "Check EBS volume usage: used vs paid",
+  "hpa-vs-vpa-vs-cluster-autoscaler": "HPA vs VPA vs Cluster Autoscaler",
+  "keda-vs-karpenter": "KEDA vs Karpenter",
+  "kubernetes-allocatable-vs-capacity": "Kubernetes allocatable vs capacity",
+  "limitrange-vs-resourcequota": "LimitRange vs ResourceQuota",
+  "safe-to-evict-do-not-disrupt": "Safe-to-evict and do-not-disrupt",
+  "btrfs-multiple-disks": "btrfs on multiple disks (btrfs pool)",
+  "btrfs-unallocated-space": "btrfs unallocated vs free space",
+  "shrink-xfs-filesystem": "Shrink an XFS filesystem",
+  "azure-disk-snapshot-cost": "Azure disk snapshot cost",
+  "kubernetes-drain-node-without-downtime": "Drain a node without downtime",
+  "azure-vm-disk-space-alert": "Azure VM disk space alert",
+  "increase-ebs-volume-size": "Increase EBS volume size without downtime",
+  "btrfs-device-remove": "btrfs device remove",
+  "pod-affinity-vs-node-affinity": "Pod affinity vs node affinity",
+  "aks-cost-analysis": "AKS cost analysis",
+  "aks-vs-eks-cost": "AKS vs EKS cost",
+  "shrink-ebs-volume": "Shrink an EBS volume",
+  "cluster-autoscaler-overprovisioning": "Cluster Autoscaler overprovisioning",
+  "pod-disruption-budget-best-practices": "Pod disruption budget best practices",
+  "change-aks-node-pool-vm-size": "Change an AKS node pool VM size",
+  "oomkilled-exit-code-137": "OOMKilled exit code 137",
+  "resize-pvc-kubernetes": "Resize a PVC",
+  "azure-disk-expand-without-downtime": "Azure disk expand without downtime",
+  "resize2fs-shrink-ext4": "resize2fs shrink ext4",
+  "remove-disk-from-lvm": "Remove a disk from LVM",
+  "vpa-vs-hpa": "VPA vs HPA",
+  "keda-vs-hpa-vs-vpa": "KEDA vs HPA vs VPA",
+  "premium-ssd-v2-vs-premium-ssd": "Premium SSD v2 vs Premium SSD",
+  "cordon-vs-drain": "Cordon vs drain",
+  "premium-ssd-vs-standard-ssd-azure": "Premium SSD vs Standard SSD",
+  "combine-ebs-volumes": "Combine EBS volumes",
+  "io2-vs-gp3": "io2 vs gp3",
+  "btrfs-vs-lvm": "btrfs vs LVM",
+  "kubernetes-overprovisioning": "Kubernetes overprovisioning",
+  "karpenter-consolidation": "Karpenter consolidation",
+  "what-is-karpenter": "What is Karpenter?",
+  "what-is-keda": "What is KEDA?",
+  "kubernetes-bin-packing": "Kubernetes bin packing",
+  "kubernetes-descheduler": "Kubernetes descheduler",
+  "kubernetes-node-size-best-practices": "Node size best practices",
+  "in-place-pod-resize": "In-place pod resize",
+  "aks-storage-classes": "AKS storage classes",
+  "azure-disk-iops-vs-throughput": "Azure disk IOPS vs throughput",
+  "azure-disk-performance-tiers": "Azure disk performance tiers",
+  "compute-optimizer-ebs": "AWS Compute Optimizer for EBS",
+  "karpenter-cost-optimization": "Karpenter cost optimization",
+  "ebs-snapshot-cost": "EBS snapshot cost",
+  "karpenter-vs-cluster-autoscaler": "Karpenter vs Cluster Autoscaler",
+  "azure-disk-lrs-vs-zrs": "Azure disk LRS vs ZRS",
+  "gp2-vs-gp3": "gp2 vs gp3",
+  "aks-node-auto-provisioning": "AKS node auto-provisioning (NAP)",
+  "topology-spread-constraints": "Topology spread constraints",
+  "ebs-elastic-volumes": "EBS Elastic Volumes",
+  "is-btrfs-stable": "Is btrfs stable?",
+};
+
+/** A row of the band: where it goes, the words it shows and the article's h1, its hover title. */
+export interface LearnRow {
   readonly href: string;
-  readonly subject: LearnSubject;
-  /** The article's h1. */
+  readonly name: string;
   readonly title: string;
-  /** Its card line. */
-  readonly line: string;
-  /** Its published day as a card prints it, "9 Oct", with its author where it has one: "14 Oct · By Vineet". */
-  readonly date: string;
-  /** A comparison's cover: the two sides it compares, drawn in place of the subject's motif. */
-  readonly versus?: readonly [string, string];
+}
+
+/** A tile of All articles: an article as its cover shows it. */
+export interface LearnTile extends LearnRow {
+  readonly subject: LearnSubject;
+  /** Its published day as the tile prints it, "21 Oct", with its author where it has one: "21 Oct · By Udit Sharma". */
+  readonly meta: string;
+  /** Its drawn cover, whose art the tile shows on its right. */
+  readonly cover: `/learn-covers/${string}.webp`;
 }
 
 /** The subject an article is filed under, by its hub group's name. */
 const subjectOf = (article: Article): LearnSubject =>
   learnSubjects.find((subject) => subject.label === article.hub)!.id;
 
-/** A published article as a hub card: its title, line, date and author are the article's own. */
-const cardOf = (article: Article): LearnCard => {
+const nameOf = (article: Article): string =>
+  learnNames[article.slug] ?? article.h1.split(":")[0]!.trim();
+
+const rowOf = (article: Article): LearnRow => ({
+  href: articleRoute(article),
+  name: nameOf(article),
+  title: article.h1,
+});
+
+const tileOf = (article: Article): LearnTile => {
   const author = articleAuthor(article);
   return {
-    href: articleRoute(article),
+    ...rowOf(article),
     subject: subjectOf(article),
-    title: article.h1,
-    line: article.card,
-    date: `${shortDay(article.published)}${author ? ` · By ${author.name}` : ""}`,
-    ...(article.versus ? { versus: article.versus } : {}),
+    meta: `${shortDay(article.published)}${author ? ` · By ${author.name}` : ""}`,
+    cover: `/learn-covers/zoorik-learn-${article.slug}-1200x630.webp`,
   };
 };
 
-/**
- * Each subject's pillar, the guide Start here leads with once it is published, and the published guide it shows
- * until then. A pillar is shown in Start here only.
- */
-export const learnPillars: readonly {
-  readonly subject: LearnSubject;
-  readonly pillar: string;
-  readonly until: string;
-}[] = [
-  { subject: "cloud", pillar: "how-to-reduce-cloud-costs", until: "poor-architecture-cloud-bill" },
-  { subject: "k8s", pillar: "reduce-kubernetes-cost", until: "vpa-vs-hpa" },
-  {
-    subject: "storage",
-    pillar: "azure-disk-cost-optimization",
-    until: "shrink-azure-managed-disk",
-  },
-];
+const published = (slugs: readonly string[]): readonly Article[] =>
+  slugs.flatMap((slug) => {
+    const article = findArticle(slug);
+    return article ? [article] : [];
+  });
 
-const pillars = new Set(learnPillars.map((entry) => entry.pillar));
+/** Start here: each subject's pillar, once published. */
+export const learnStart: readonly LearnRow[] = published(
+  learnPillars.map((entry) => entry.pillar),
+).map(rowOf);
 
-/**
- * The articles of Learn's first nine days, which lead Compare and Guides; the rest follow. Each part is A–Z by slug,
- * as the index is.
- */
-export const learnFirst: ReadonlySet<string> = new Set([
-  "azure-disk-cost-optimization",
-  "azure-vm-disk-usage",
-  "btrfs-multiple-disks",
-  "btrfs-unallocated-space",
-  "change-eks-node-group-instance-type",
-  "check-ebs-volume-usage",
-  "cluster-autoscaler-not-scaling-down",
-  "find-unattached-disks-azure",
-  "how-to-reduce-cloud-costs",
-  "hpa-vs-vpa-vs-cluster-autoscaler",
-  "keda-vs-karpenter",
-  "kubernetes-allocatable-vs-capacity",
-  "kubernetes-cost-estimation",
-  "kubernetes-pod-right-sizing",
-  "limitrange-vs-resourcequota",
-  "safe-to-evict-do-not-disrupt",
-  "shrink-azure-managed-disk",
-  "shrink-xfs-filesystem",
-]);
-
-/** The guide that closes Guides, after every other. */
-export const learnGuidesLast = "poor-architecture-cloud-bill";
-
-/** The hub's order: the first nine days' articles, then the rest, each A–Z by slug (the index's order). */
-const hubOrder = (articles: readonly Article[]): readonly Article[] => [
-  ...articles.filter((article) => learnFirst.has(article.slug)),
-  ...articles.filter((article) => !learnFirst.has(article.slug)),
-];
-
-/** Start here: one guide per subject, its pillar once published and its stand-in until then; none while neither is. */
-export const learnStart: readonly LearnCard[] = learnPillars.flatMap(({ pillar, until }) => {
-  const article = findArticle(pillar) ?? findArticle(until);
-  return article ? [cardOf(article)] : [];
+/** Find the right fix: each cause, with its guide's address and h1, once the guide is published. */
+export const learnFixRows: readonly LearnRow[] = learnFixes.flatMap((fix) => {
+  const article = findArticle(fix.slug);
+  return article ? [{ ...rowOf(article), name: fix.problem }] : [];
 });
 
-const listed = hubOrder(learnArticles.filter((article) => !pillars.has(article.slug)));
+const onBand = new Set([
+  ...learnPillars.map((entry) => entry.pillar),
+  ...learnFixes.map((fix) => fix.slug),
+]);
 
-/** Compare: the published comparisons of the native tools (the market's are /compare's). */
-export const learnComparisons: readonly LearnCard[] = listed
-  .filter((article) => article.versus)
-  .map(cardOf);
-
-/** Guides and best practices: every other published article. */
-export const learnGuides: readonly LearnCard[] = [
-  ...listed.filter((article) => !article.versus && article.slug !== learnGuidesLast),
-  ...listed.filter((article) => !article.versus && article.slug === learnGuidesLast),
-].map(cardOf);
-
-/**
- * Where a fix's "Read:" line goes: an article, named by its h1 once it is published and drawn as its own words with
- * no link until then (`titleLink`), or the free assessment.
- */
-const read = (slug: string, title: string) => {
-  const link = titleLink({ text: title, href: learnPath(slug) });
-  return { title: link.text, href: link.href };
+const rank = (slug: string): number => {
+  const at = learnPriority.indexOf(slug);
+  return at < 0 ? learnPriority.length : at;
 };
 
-/** Find the right fix: what hurts, what helps, the native tools, where Zoorik fits, and what to read. */
-export const learnFixes: readonly {
-  readonly subject: LearnSubject;
-  readonly question: string;
-  readonly helps: string;
-  readonly tools: readonly string[];
-  readonly fits: string;
-  /** What to read: its words, and its address (null while the article is not published). */
-  readonly read: { readonly title: string; readonly href: string | null };
-}[] = [
-  {
-    subject: "k8s",
-    question: "Machines sit half empty",
-    helps: "Pack the pods tighter and remove the machines the cluster no longer needs.",
-    tools: ["Cluster Autoscaler", "Karpenter", "AKS node auto provisioning"],
-    fits: "Coral rebalances workloads onto fewer, cheaper machines and removes the spare ones, within each app’s safety limits.",
-    read: read("kubernetes-bin-packing", "Kubernetes bin packing: fewer nodes for the same pods"),
-  },
-  {
-    subject: "k8s",
-    question: "Pods reserve more than they use",
-    helps: "Set each pod’s requests from what it really uses.",
-    tools: ["Vertical Pod Autoscaler"],
-    fits: "Coral rebalances requests to what apps use, and raises them when an app needs more.",
-    read: read(
-      "kubernetes-pod-right-sizing",
-      "Kubernetes pod right sizing: set requests from real use",
-    ),
-  },
-  {
-    subject: "k8s",
-    question: "Load spikes, then sits idle",
-    helps: "Scale the number of pods with demand, from metrics or events.",
-    tools: ["Horizontal Pod Autoscaler", "KEDA"],
-    fits: "Coral works alongside them: it sizes each pod, they decide how many.",
-    read: read("keda-vs-hpa-vs-vpa", "KEDA vs HPA vs VPA: where event-driven scaling fits"),
-  },
-  {
-    subject: "storage",
-    question: "Disks are bigger than their data",
-    helps: "Bring each disk back to the space its data needs.",
-    tools: ["Azure: no in-place shrink", "Amazon EBS: volumes only grow"],
-    fits: "Amoeba rightsizes block storage, Azure managed disks and Amazon EBS, autonomously, without any downtime.",
-    read: read(
-      "azure-disk-cost-optimization",
-      "Azure disk cost optimization: stop paying for empty space",
-    ),
-  },
-  {
-    subject: "cloud",
-    question: "You can’t see where the money goes",
-    helps: "See the bill by cluster, node pool and disk before you change anything.",
-    tools: ["Azure Cost Management", "AWS Cost Explorer", "OpenCost"],
-    fits: "The free assessment reads your clusters or disks and writes one PDF with your estimated saving at list price.",
-    read: { title: "The free assessment", href: routes.assessment },
-  },
-  {
-    subject: "cloud",
-    question: "The architecture itself costs too much",
-    helps: "Fix the design decisions that make every environment expensive.",
-    tools: ["Architecture review", "Right environment sizes"],
-    fits: "Start with the article; Coral and Amoeba reduce what remains.",
-    read: read(
-      "poor-architecture-cloud-bill",
-      "How Poor Infrastructure Architecture Quietly Increases Your Cloud Bill",
-    ),
-  },
-];
+/** All articles: every published article not on the band, by the priority list, then A–Z by slug. */
+export const learnTiles: readonly LearnTile[] = learnArticles
+  .filter((article) => !onBand.has(article.slug))
+  .sort((a, b) => rank(a.slug) - rank(b.slug) || a.slug.localeCompare(b.slug, "en"))
+  .map(tileOf);
 
-/**
- * On a real cluster: the case study's card, every word and figure read from the study (`caseStudiesHub.studies`):
- * what it is ("Validation Lab · Coral on AKS", its card's kicker without the month), its big figure, its title, its
- * card's line without the line's subject, and the card's own "Read the case study".
- */
-const study = caseStudiesHub.studies[0]!;
+/** Watch and read: each product's film on YouTube (a film not on YouTube yet is left out), then the Medium post. */
+export const learnFilms = (["coral", "amoeba"] as const satisfies readonly ProductId[]).flatMap(
+  (product) => {
+    const film = productFilms[product];
+    return film.url
+      ? [{ product, href: film.url, title: film.title, length: film.length, poster: film.poster }]
+      : [];
+  },
+);
 
-export const learnProof = {
-  href: study.href,
-  kicker: study.kicker.split(" · ").slice(0, 2).join(" · "),
-  figure: study.figure,
-  title: study.title,
-  line: study.line.slice(study.line.indexOf(": ") + 2),
-  read: caseStudiesHub.card.read,
-} as const;
-
-/** A profile of the footer's list, by its platform. */
-const profile = (platform: (typeof socialProfiles)[number]["platform"]): string =>
-  socialProfiles.find((entry) => entry.platform === platform)!.href;
-
-/**
- * Watch and read's films: each product's film (`product-films.ts`: its title, length, poster and address) with the
- * line under it, which says what the film shows. A film not on YouTube yet (`url` null) is left out, as the product
- * pages leave out its band.
- */
-export const learnFilmLines: Readonly<Record<ProductId, string>> = {
-  coral: "How Coral rebalances Kubernetes on AKS and EKS.",
-  amoeba: "How Amoeba rightsizes block storage on Azure and AWS.",
-};
-
-/**
- * Watch and read's Medium panel: the one live post, in its own title and subtitle and on its day, then the two follow
- * links, to the publication and the YouTube channel (the footer's profiles). The post's address is the one Medium
- * serves; the mock's is cut short after its id's first four characters.
- */
+/** The one live Medium post, in its own title and on its day. Its address is the one Medium serves. */
 export const learnMedium = {
-  post: {
-    date: "12 Oct 2026",
-    title: "Why your Kubernetes cluster pays for capacity it doesn’t use",
-    line: "Pods often reserve more CPU and memory than they use, and you pay for the nodes that hold them.",
-    url: "https://medium.com/zoorik/why-your-kubernetes-cluster-pays-for-capacity-it-doesnt-use-66863320dca3",
-  },
-  follow: profile("medium"),
-  subscribe: profile("youtube"),
+  date: "12 Oct 2026",
+  title: "Why your Kubernetes cluster pays for capacity it doesn’t use",
+  url: "https://medium.com/zoorik/why-your-kubernetes-cluster-pays-for-capacity-it-doesnt-use-66863320dca3",
 } as const;
 
-/* "four groups": a count of groups in words. */
-const inWords = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
-
 /**
- * The short name of each group of the market map, as the Cloud cost optimization tools card lists them, by the
- * group's id in `learn-market.ts`.
- */
-export const learnMarketGroupNames: Readonly<Record<string, string>> = {
-  k8s: "Kubernetes",
-  storage: "Block storage",
-  finops: "FinOps",
-  native: "Cloud providers",
-};
-
-const toolCount = marketGroups.reduce((sum, group) => sum + group.tools.length, 0);
-
-/**
- * More from Zoorik: one card each for /news, /compare and /community, each its name, its line and one more line.
- * Zoorik News's is the week's first headline of the Radar's first stream (`newsRadar`), as the mock picks it; the
- * tools' is the market map's count and groups, in its order (`marketGroups`).
+ * More from Zoorik: Value Lab, Cloud cost optimization tools, Community, News and the glossary, each its name and one
+ * line. Value Lab's figure is the study's own (`caseStudy.band`), and the pages' names are their own h1s.
  */
 export const learnMore: readonly {
   readonly href: string;
   readonly title: string;
   readonly line: string;
-  readonly extra: string;
 }[] = [
   {
-    href: routes.news,
-    title: newsPage.hero.title,
-    line: "What we ship, and Zoorik Radar: what changed this week in cloud, Kubernetes and FinOps.",
-    extra: `This week: ${newsRadar.streams[0].items[0]!.title}`,
+    href: routes.valueLab,
+    title: caseStudiesHub.hero.title,
+    line: `${caseStudy.band.stats[0].value} on our own cluster’s monthly machine bill.`,
   },
   {
-    href: routes.compare,
+    href: routes.cloudCostTools,
     title: "Cloud cost optimization tools",
-    line: `${toolCount} tools by name in ${inWords[marketGroups.length]} groups: what each does, how it acts and where it runs.`,
-    extra: marketGroups.map((group) => learnMarketGroupNames[group.id]).join(" · "),
+    line: "The tools that reduce the bill, and how each works.",
   },
   {
     href: routes.community,
-    title: "Community",
-    line: "r/zoorik on Reddit, the events worth going to, and where to ask.",
-    extra: "Join r/zoorik",
-  },
-];
-
-/**
- * The events Learn follows, read by /community (its Events): the three big ones, by name (the event's name before its
- * year), read from `events.ts` with /events's rules: only events not yet ended, with their days known, by date, the
- * first `count`.
- */
-export const learnEvents: { readonly names: readonly string[]; readonly count: number } = {
-  names: ["KubeCon + CloudNativeCon North America", "Microsoft Ignite", "AWS re:Invent"],
-  count: 3,
-};
-
-/**
- * Where people who pay these bills meet, read by /community (its wider community): each community's own page, opened
- * in a new tab.
- */
-export const learnCommunities: readonly {
-  readonly name: string;
-  readonly line: string;
-  readonly url: `https://${string}`;
-}[] = [
-  {
-    name: "Kubernetes Slack",
-    line: "The project’s own chat, with a channel for each group, autoscaling included.",
-    url: "https://slack.k8s.io/",
+    title: communityPage.hero.title,
+    line: "r/zoorik and the communities that matter.",
   },
   {
-    name: "CNCF Slack",
-    line: "Chat for every CNCF project and community group.",
-    url: "https://slack.cncf.io/",
+    href: routes.news,
+    title: newsPage.hero.title,
+    line: "What we ship, and what changed this week.",
   },
   {
-    name: "FinOps Foundation community",
-    line: "Practitioner calls, chapters and meetups, India included.",
-    url: "https://www.finops.org/community/",
-  },
-  {
-    name: "Kubernetes Community Days",
-    line: "Local, community-run Kubernetes days around the world.",
-    url: "https://www.cncf.io/kcds/",
-  },
-  {
-    name: "r/kubernetes · r/FinOps",
-    line: "Where engineers ask what their bill is doing.",
-    url: "https://www.reddit.com/r/kubernetes/",
-  },
-  {
-    name: "r/AZURE · r/aws",
-    line: "Questions on disks, prices and quotas, answered by people who run them.",
-    url: "https://www.reddit.com/r/AZURE/",
+    href: routes.learnGlossary,
+    title: glossaryPage.hero.title,
+    line: glossaryPage.line,
   },
 ];

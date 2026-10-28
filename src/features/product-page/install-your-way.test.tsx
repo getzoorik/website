@@ -41,6 +41,55 @@ describe("Install your way", () => {
     ]);
   });
 
+  it("marks each card with its channel and sets each command in the assessment's terminal", () => {
+    const { container } = render(<InstallYourWay />);
+    const cards = [...container.querySelectorAll(".iw-card")];
+    /* The channel's mark before its name, hidden from a screen reader: the name carries it. */
+    expect(
+      cards.map((card) => {
+        const mark = card.querySelector(".iw-h > svg.iw-logo")!;
+        expect(mark).toHaveAttribute("aria-hidden", "true");
+        expect(mark.nextElementSibling!.tagName).toBe("H3");
+        return mark.getAttribute("class");
+      }),
+    ).toEqual(["iw-logo zk", "iw-logo helm", "iw-logo tf"]);
+    /* Each terminal: the bar with its three square dots, then the well; the line under it after the terminal. */
+    for (const card of cards) {
+      const term = card.querySelector(".iw-line + .iw-term")!;
+      const [bar, well] = [...term.children];
+      expect(term.children).toHaveLength(2);
+      expect(bar).toHaveClass("iw-bar");
+      expect(well).toHaveClass("iw-well");
+      const dots = bar!.querySelector(":scope > .iw-dots")!;
+      expect(dots).toHaveAttribute("aria-hidden", "true");
+      expect(dots.querySelectorAll("i")).toHaveLength(3);
+      /* Then the "Or:" or note line; Linux, the system jsdom may report, has no "Or:". */
+      expect(term.nextElementSibling!.matches(".iw-alt, .iw-links")).toBe(true);
+    }
+    /* zoorikctl's bar holds the system switch, each system with its mark; the others name what the terminal holds,
+       and say nothing to a screen reader. */
+    const [zoorikctl, helm, terraform] = cards.map((card) => card.querySelector(".iw-bar")!);
+    const radios = [...zoorikctl!.querySelectorAll(':scope > .iw-os[role="radiogroup"] > button')];
+    expect(radios.map((radio) => text(radio))).toEqual(["macOS", "Linux", "Windows"]);
+    for (const radio of radios) {
+      expect(radio.firstElementChild).toHaveClass("iw-os-m");
+      expect(radio.firstElementChild).toHaveAttribute("aria-hidden", "true");
+    }
+    expect(
+      radios.slice(1).map((radio) => radio.firstElementChild!.getAttribute("data-mark")),
+    ).toEqual(["linux", "windows"]);
+    expect(zoorikctl).not.toHaveAttribute("aria-hidden");
+    expect([helm, terraform].map((bar) => text(bar!.querySelector(".iw-file")))).toEqual([
+      "Terminal",
+      "main.tf",
+    ]);
+    for (const bar of [helm!, terraform!]) expect(bar).toHaveAttribute("aria-hidden", "true");
+    /* The copy buttons sit in the wells: zoorikctl's and Helm's. */
+    expect(
+      cards.map((card) => card.querySelectorAll(".iw-term .iw-well > .iw-copy").length),
+    ).toEqual([1, 1, 0]);
+  });
+
   it("shows Helm's whole install line, five lines with one prompt, and says how to get a console account", async () => {
     const writeText = vi.fn(() => Promise.resolve());
     Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });

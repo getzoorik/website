@@ -1,230 +1,157 @@
 import type { ReactNode } from "react";
 
 import { AwsMark, AzureMark } from "@/components/brand/cloud-marks";
-import { TurningMark } from "@/components/brand/turning-mark";
-import { SiteNav } from "@/components/layout/site-nav";
-import { ExternalArrow } from "@/components/primitives/external-arrow";
+import { ChannelIcon } from "@/components/primitives/install-buttons";
 import { NewTabHint } from "@/components/primitives/new-tab-hint";
+import { Reveal } from "@/components/primitives/reveal";
 import { storesListing, type MarketplaceId } from "@/config/marketplaces";
-import { routes } from "@/config/site";
-import { marketplacesPage, type MarketplacesLink } from "@/content/marketplaces";
-import { products } from "@/content/products";
-import { FooterSection } from "@/features/footer/footer-section";
+import type { ChannelId } from "@/config/open-source";
+import {
+  marketplacesPage,
+  type MarketplacesIcon,
+  type MarketplacesLink,
+} from "@/content/marketplaces";
+import { productOrder, products } from "@/content/products";
+import { ArrowOutGlyph } from "@/features/documents/document-glyphs";
+import { DocumentPage } from "@/features/documents/document-page";
+import { LinkTile } from "@/features/documents/link-tile";
 import { named } from "@/features/legal/named";
-import { ProgramClose, programMailto } from "@/features/programs/program-parts";
+import { MailGlyph, PackageGlyph } from "@/features/programs/program-glyphs";
+import {
+  AskCard,
+  ProgramPair,
+  ProgramSection,
+  programMailto,
+} from "@/features/programs/program-parts";
 import { offSiteProps } from "@/lib/links";
 
 /**
- * `/marketplaces`, where to find Zoorik, on /about's frame with the programs' close:
+ * `/marketplaces`, where to find Zoorik, as the program pages draw theirs (the documents' frame):
  *
- *   hero                 the page's name, its deck, and two buttons down the page (the stores, the reviews)
- *   Cloud marketplaces   a navy card for each store that lists Coral, then the line for Amoeba, which none lists yet
- *   Reviews              G2's two links; Gartner Peer Insights, coming soon, with no link (band)
- *   Install from         the six registries Zoorik publishes on
- *   Find us on the web   the company's profiles (band)
- *   close                "Want to buy through your marketplace?" and a ready email
+ *   hero                 the page's name and its line
+ *   the pair             on the band: every listing as a row on the white card, "<product> on <store>" with the store's
+ *                        mark, Coral's first; a private offer on the navy one, a ready email to the founders
+ *   Reviews              G2's two pages, two to a row
+ *   Install from         the six registries Zoorik publishes on, each with its own icon
+ *   Find us on the web   the company's profiles
  *
- * Only real listings link, every one read from config, and no rating or review count is printed. Drawn on the server,
- * with no island and no motion but the links' hover: the mock has no script. No closing assessment row: the mock ends
- * on the close.
+ * Only real listings link, every one read from config, each in a new tab, and no rating or review count is printed.
+ * What does not apply is not drawn. No closing assessment row (the mock ends on Find us on the web). The pair rises
+ * as it arrives; nothing else moves but hover.
  */
 
-const { hero, buy, reviews, install, web, close } = marketplacesPage;
+const { hero, band, reviews, install, web } = marketplacesPage;
 
-/** Each store's mark on its card, as the mock's sprite draws it (`i-p-aws`, `i-p-azure`), sized by `.mp-logo svg`. */
-const STORE_MARKS: Readonly<Record<MarketplaceId, ReactNode>> = {
-  aws: <AwsMark />,
-  microsoft: <AzureMark idSuffix="mp" />,
+/** Each store's mark on its row, as the mock's sprite draws it (`i-p-aws`, `i-p-azure`), sized by `.mp-m`. */
+const STORE_MARKS: Readonly<Record<MarketplaceId, (key: string) => ReactNode>> = {
+  aws: () => <AwsMark className="mp-m" />,
+  microsoft: (key) => <AzureMark className="mp-m" idSuffix={key} />,
 };
 
-/** An off-site link: its words, the arrow, and what a screen reader hears. */
-function Out({
-  className,
-  href,
-  children,
-}: {
-  readonly className: string;
-  readonly href: string;
-  readonly children: ReactNode;
-}): React.JSX.Element {
-  return (
-    <a className={className} href={href} {...offSiteProps(href)}>
-      {children} <ExternalArrow />
-      <NewTabHint href={href} />
-    </a>
-  );
-}
-
 /**
- * /about's utility hero (the dark band, its glow and the turning mark) with the page's name, its deck and two buttons
- * down the page, as the mock draws it, with no label over the h1.
+ * A tile's icon, at the tile icon's size: the channel's own icon, or the platform's logo file. The logo is a plain
+ * <img>, as /community's are: a small file in public/, its name said by the tile's title beside it.
  */
-function Hero(): React.JSX.Element {
+function TileIcon({ icon }: { readonly icon: MarketplacesIcon }): React.JSX.Element {
+  if (icon.startsWith("/"))
+    return (
+      // eslint-disable-next-line @next/next/no-img-element -- a 28px logo file, drawn as the mock draws it
+      <img
+        className="dt-ic cp-ic mp-logo"
+        src={icon}
+        alt=""
+        width={28}
+        height={28}
+        loading="lazy"
+      />
+    );
+  /* GitHub's mark is a logo too, so it takes its own black (ink), not the icons' accent. */
   return (
-    <header className="hero doc-hero" id="top">
-      <TurningMark />
-      <div className="wrap hero-in">
-        <h1>{named(hero.title)}</h1>
-        <p className="doc-deck">{named(hero.deck)}</p>
-        <div className="hero-cta">
-          <a className="btn btn-light" href={`#${buy.id}`}>
-            {hero.buy}
-          </a>
-          <a className="btn btn-wire" href={`#${reviews.id}`}>
-            {hero.reviews}
-          </a>
-        </div>
-      </div>
-    </header>
+    <ChannelIcon
+      channel={icon as ChannelId}
+      className={icon === "github" ? "dt-ic cp-ic mp-ink" : "dt-ic cp-ic"}
+    />
   );
 }
 
-/** A section's head: its h2 and, where it has one, its lede. */
-function Head({
-  id,
-  title,
-  lede,
-}: {
-  readonly id: string;
-  readonly title: string;
-  readonly lede?: string;
-}): React.JSX.Element {
+/** The white card: its mark, title and line, then every listing as a row, each in a new tab. First to rise. */
+function Listings(): React.JSX.Element {
+  const { buy } = band;
   return (
-    <div className="sec-head">
-      <h2 id={`${id}-h`}>{title}</h2>
-      {lede ? <p>{lede}</p> : null}
-    </div>
-  );
-}
-
-/**
- * Cloud marketplaces: a navy card for each store that lists Coral (`marketplaces.ts`), the whole card its listing in a
- * new tab, then, while no store lists Amoeba, the line that says so, with /amoeba and a ready email.
- */
-function Buy(): React.JSX.Element {
-  const { notYet } = buy;
-  return (
-    <section className="sec pv-sec" id={buy.id} aria-labelledby={`${buy.id}-h`}>
-      <div className="wrap">
-        <Head id={buy.id} title={buy.title} lede={buy.lede} />
-        <div className="mp-buy">
-          {storesListing("coral").map((store) => {
-            const href = store.listings.coral;
+    <Reveal className="as-card as-mini cp-w mp-c" order={0}>
+      <PackageGlyph className="cp-own cp-own-l" />
+      <h2 className="as-h">{buy.title}</h2>
+      <p>{buy.line}</p>
+      <ul className="mp-list">
+        {productOrder.flatMap((product) =>
+          storesListing(product).map((store) => {
+            const href = store.listings[product]!;
             return (
-              <a className="mp-store" key={store.id} href={href} {...offSiteProps(href)}>
-                <span className="mp-logo">{STORE_MARKS[store.id]}</span>
-                <span className="mp-k">{store.name}</span>
-                <b>{named(products.coral.name)}</b>
-                <span>{buy.stores[store.id]}</span>
-                <span className="mp-go">
-                  {buy.go} <ExternalArrow />
-                </span>
-                <NewTabHint href={href} />
-              </a>
+              <li key={`${product}-${store.id}`}>
+                <a className="mp-l" href={href} {...offSiteProps(href)}>
+                  {STORE_MARKS[store.id](`mp-${product}`)}
+                  <span>
+                    <b>{named(products[product].name)}</b>
+                    {buy.on}
+                    {store.name}
+                  </span>
+                  <ArrowOutGlyph className="dt-go" />
+                  <NewTabHint href={href} />
+                </a>
+              </li>
             );
-          })}
-        </div>
-        {storesListing("amoeba").length === 0 ? (
-          <p className="mp-note">
-            {named(notYet.lead)}
-            <a href={routes.amoeba}>{named(notYet.see)}</a>
-            {notYet.or}
-            <a href={programMailto(notYet.subject)}>{notYet.write}</a>
-            {notYet.end}
-          </p>
-        ) : null}
-      </div>
-    </section>
+          }),
+        )}
+      </ul>
+    </Reveal>
   );
 }
 
-/**
- * Reviews: G2 (Coral's reviews and Zoorik's seller page, each in a new tab), and Gartner Peer Insights, whose listing
- * is not live: its card says so, dashed, and links nowhere. The seller link's words are one span, so the name kept
- * from translation does not split them into flex items of their own, as the mock sets it.
- */
-function Reviews(): React.JSX.Element {
-  const { g2, soon } = reviews;
-  return (
-    <section className="sec sec-band" id={reviews.id} aria-labelledby={`${reviews.id}-h`}>
-      <div className="wrap">
-        <Head id={reviews.id} title={reviews.title} lede={reviews.lede} />
-        <div className="mp-rev">
-          <article className="mp-rc">
-            <span className="mp-k">{g2.kicker}</span>
-            <h3>{named(g2.title)}</h3>
-            <p>{named(g2.line)}</p>
-            <div className="mp-acts">
-              <Out className="pv-go dark" href={g2.read.href}>
-                {g2.read.label}
-              </Out>
-              <Out className="pv-go dark" href={g2.seller.href}>
-                <span>{named(g2.seller.label)}</span>
-              </Out>
-            </div>
-          </article>
-          <article className="mp-rc is-soon">
-            <span className="mp-k">{soon.kicker}</span>
-            <h3>{soon.title}</h3>
-            <p>{named(soon.line)}</p>
-            <span className="mp-chip">{soon.chip}</span>
-          </article>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/** Install from and Find us on the web: a grid of places, each its name and the arrow, then what is there. */
+/** A section of tiles, each another site's page in a new tab. */
 function Places({
   id,
   title,
-  lede,
   links,
-  band = false,
+  className,
 }: {
   readonly id: string;
   readonly title: string;
-  readonly lede?: string;
   readonly links: readonly MarketplacesLink[];
-  readonly band?: boolean;
+  readonly className: string;
 }): React.JSX.Element {
   return (
-    <section className={band ? "sec sec-band" : "sec"} id={id} aria-labelledby={`${id}-h`}>
-      <div className="wrap">
-        <Head id={id} title={title} lede={lede} />
-        <div className="mp-grid">
-          {links.map((link) => (
-            <a className="mp-i" key={link.name} href={link.href} {...offSiteProps(link.href)}>
-              <b>
-                {link.name} <ExternalArrow />
-              </b>
-              <small>{named(link.line)}</small>
-              <NewTabHint href={link.href} />
-            </a>
-          ))}
-        </div>
+    <ProgramSection id={id} title={title}>
+      <div className={`dt-grid ${className}`}>
+        {links.map((link) => (
+          <LinkTile
+            key={link.href}
+            href={link.href}
+            icon={<TileIcon icon={link.icon} />}
+            title={named(link.name)}
+            line={named(link.line)}
+          />
+        ))}
       </div>
-    </section>
+    </ProgramSection>
   );
 }
 
 export function MarketplacesPage(): React.JSX.Element {
+  const { offer } = band;
   return (
-    <>
-      <a className="skip" href="#main">
-        Skip to content
-      </a>
-      <SiteNav />
-      <main id="main" tabIndex={-1} className="pv-main mp-main">
-        <Hero />
-        <Buy />
-        <Reviews />
-        <Places {...install} />
-        <Places {...web} band />
-        <ProgramClose {...close} />
-      </main>
-      <FooterSection />
-    </>
+    <DocumentPage hero={{ title: named(hero.title), deck: named(hero.deck) }} assessmentRow={false}>
+      <ProgramPair>
+        <Listings />
+        <AskCard
+          mark={<MailGlyph className="cp-own" />}
+          title={offer.title}
+          line={offer.line}
+          go={{ label: offer.write.label, href: programMailto(offer.write.subject) }}
+        />
+      </ProgramPair>
+      <Places {...reviews} className="mp-2" />
+      <Places {...install} className="cp-3" />
+      <Places {...web} className="cp-3" />
+    </DocumentPage>
   );
 }

@@ -7,7 +7,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import sitemap from "@/app/sitemap";
 import { crunchbaseProfile, wikidataEntity } from "@/config/entity";
-import { awsSellerProfile } from "@/config/marketplaces";
+import { storeProfiles } from "@/config/marketplaces";
 import { calendarUrl, contactEmail, learnPath, routes, site } from "@/config/site";
 import { about, cin, registeredOffice } from "@/content/about";
 import { amoebaPageContent } from "@/content/amoeba-page";
@@ -16,6 +16,7 @@ import { versusPages, versusRoute } from "@/content/learn-compare";
 import { coralPageContent } from "@/content/coral-page";
 import { authors } from "@/content/authors";
 import { socialProfiles } from "@/content/footer";
+import { glossaryPage, glossaryTerms, termName, termRoute } from "@/content/learn/glossary";
 import { articleAuthor, articleCard, articleRoute, learnArticles } from "@/content/learn/published";
 import { products } from "@/content/products";
 
@@ -60,7 +61,7 @@ interface PageModule {
  */
 function versusModule(slug: string): () => Promise<PageModule> {
   return async () => {
-    const page = await import("@/app/compare/[slug]/page");
+    const page = await import("@/app/cloud-cost-optimization-library/[slug]/page");
     const params = Promise.resolve({ slug });
     const [metadata, element] = await Promise.all([
       page.generateMetadata({ params }),
@@ -74,6 +75,19 @@ function versusModule(slug: string): () => Promise<PageModule> {
 function articleModule(slug: string): () => Promise<PageModule> {
   return async () => {
     const page = await import("@/app/learn/[slug]/page");
+    const params = Promise.resolve({ slug });
+    const [metadata, element] = await Promise.all([
+      page.generateMetadata({ params }),
+      page.default({ params }),
+    ]);
+    return { metadata, default: () => element };
+  };
+}
+
+/** A glossary term is one dynamic route (`/learn/glossary/[slug]`) too: its module, resolved for one slug. */
+function termModule(slug: string): () => Promise<PageModule> {
+  return async () => {
+    const page = await import("@/app/learn/glossary/[slug]/page");
     const params = Promise.resolve({ slug });
     const [metadata, element] = await Promise.all([
       page.generateMetadata({ params }),
@@ -98,8 +112,10 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   ...Object.fromEntries(
     learnArticles.map((article) => [articleRoute(article), articleModule(article.slug)]),
   ),
-  "/case-studies": () => import("@/app/case-studies/page"),
-  "/case-studies/coral-dev-cluster": () => import("@/app/case-studies/coral-dev-cluster/page"),
+  "/learn/glossary": () => import("@/app/learn/glossary/page"),
+  ...Object.fromEntries(glossaryTerms.map((term) => [termRoute(term), termModule(term.slug)])),
+  "/value-lab": () => import("@/app/value-lab/page"),
+  "/value-lab/coral-dev-cluster": () => import("@/app/value-lab/coral-dev-cluster/page"),
   "/about": () => import("@/app/about/page"),
   "/careers": () => import("@/app/careers/page"),
   "/events": () => import("@/app/events/page"),
@@ -108,9 +124,11 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/partners": () => import("@/app/partners/page"),
   "/referrals": () => import("@/app/referrals/page"),
   "/design-partners": () => import("@/app/design-partners/page"),
-  "/compare": () => import("@/app/compare/page"),
-  "/compare/coral-alternatives": () => import("@/app/compare/coral-alternatives/page"),
-  "/compare/amoeba-alternatives": () => import("@/app/compare/amoeba-alternatives/page"),
+  "/cloud-cost-optimization-library": () => import("@/app/cloud-cost-optimization-library/page"),
+  "/cloud-cost-optimization-library/coral-alternatives": () =>
+    import("@/app/cloud-cost-optimization-library/coral-alternatives/page"),
+  "/cloud-cost-optimization-library/amoeba-alternatives": () =>
+    import("@/app/cloud-cost-optimization-library/amoeba-alternatives/page"),
   "/community": () => import("@/app/community/page"),
   "/marketplaces": () => import("@/app/marketplaces/page"),
   ...Object.fromEntries(versusPages.map((page) => [versusRoute(page), versusModule(page.slug)])),
@@ -155,7 +173,7 @@ describe("the home page's structured data", () => {
     expect(amoeba.description).toBe(amoebaPageContent.meta.appDescription);
     /* What "What is Amoeba?" says. */
     expect(amoeba.description).toBe(
-      "Block storage cost optimization for VMs on Azure and AWS. Amoeba moves a VM’s data disks onto one pool sized to the data plus 20%, then expands and shrinks that pool online, one disk at a time.",
+      "Block storage cost optimization for VMs on Azure and AWS. Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. Then it rightsizes that pool, one disk at a time.",
     );
     const [whatIs] = amoebaPageContent.about.paragraphs;
     expect(whatIs).toContain("block storage cost optimization platform for VMs on Azure and AWS");
@@ -189,13 +207,16 @@ describe("the home page's structured data", () => {
     expect(amoeba.softwareHelp).toMatchObject({ url: "https://zoorik.com/amoeba/guide" });
   });
 
-  it("links only the pages that exist about each product: Coral's two listings and its G2 page, none for Amoeba yet", () => {
+  it("links only the pages that exist about each product: Coral's two listings and its G2 page, Amoeba's two listings", () => {
     expect(coral.sameAs).toEqual([
       "https://aws.amazon.com/marketplace/pp/prodview-kx44lqme4vwys",
       "https://marketplace.microsoft.com/en-us/product/zoorik.coral",
       "https://www.g2.com/products/zoorik-coral/reviews",
     ]);
-    expect(amoeba).not.toHaveProperty("sameAs");
+    expect(amoeba.sameAs).toEqual([
+      "https://aws.amazon.com/marketplace/pp/prodview-u52eig5hqarzy",
+      "https://marketplace.microsoft.com/en-us/product/zoorik.amoeba",
+    ]);
   });
 
   it("points each product at its own page, published by the organisation", () => {
@@ -221,12 +242,12 @@ describe("the home page's structured data", () => {
       url: calendarUrl,
     });
     expect(calendarUrl).toBe("https://cal.com/zoorik/talk");
-    /* All six profiles, though the footer's row shows five, then the AWS seller page, the
+    /* All six profiles, though the footer's row shows five, then Zoorik's page in each store, the
        Crunchbase profile and the Wikidata entry, then the PyPI user and the Terraform Registry
        namespace, then the profiles the footer's row does not show, then the directories. */
     expect(org.sameAs).toEqual([
       ...socialProfiles.map((link) => link.href),
-      awsSellerProfile,
+      ...storeProfiles,
       crunchbaseProfile,
       wikidataEntity,
       "https://pypi.org/user/zoorik/",
@@ -249,9 +270,10 @@ describe("the home page's structured data", () => {
       "https://www.g2.com/sellers/zoorik",
       "https://saasbrowser.com/en/saas/1707340/zoorik",
     ]);
-    expect(awsSellerProfile).toBe(
+    expect(storeProfiles).toEqual([
       "https://aws.amazon.com/marketplace/seller-profile?id=seller-mtaavozrqchlk",
-    );
+      "https://marketplace.microsoft.com/en-us/partners/04f64eb0-8878-4f14-9578-bc5d104737e7/overview",
+    ]);
     expect(crunchbaseProfile).toBe("https://www.crunchbase.com/organization/zoorik");
     expect(wikidataEntity).toBe("https://www.wikidata.org/wiki/Q141717592");
     expect(org.description).toBe(
@@ -266,6 +288,20 @@ describe("the home page's structured data", () => {
     const png = readFileSync(`public${brandLogo.path}`);
     expect(png.readUInt32BE(16)).toBe(brandLogo.width);
     expect(png.readUInt32BE(20)).toBe(brandLogo.height);
+    /* The program /about lists under Programs, run by NVIDIA (its Wikidata entry). */
+    expect(org.memberOf).toEqual([
+      {
+        "@type": "ProgramMembership",
+        programName: "NVIDIA Inception Program",
+        url: "https://www.nvidia.com/en-us/startups/",
+        hostingOrganization: {
+          "@type": "Organization",
+          name: "NVIDIA",
+          url: "https://www.nvidia.com/",
+          sameAs: "https://www.wikidata.org/wiki/Q182477",
+        },
+      },
+    ]);
     expect(org).not.toHaveProperty("founder");
     expect(org).not.toHaveProperty("foundingDate");
   });
@@ -307,7 +343,7 @@ describe("the home page's structured data", () => {
 
 describe("every indexed page's structured data", () => {
   it("renders on every page in the sitemap as one block that parses to the page's graph", async () => {
-    expect(listed).toHaveLength(34 + learnArticles.length);
+    expect(listed).toHaveLength(35 + learnArticles.length + glossaryTerms.length);
     for (const { path } of listed) {
       pathname.current = path;
       const { default: Page } = await pageModule(path);
@@ -333,9 +369,9 @@ describe("every indexed page's structured data", () => {
       }
       cleanup();
     }
-    /* It renders every listed page, /events's 76 cards and /learn's hub among them: past vitest's 5s once the suite runs in
-       parallel. */
-  }, 20_000);
+    /* It renders every listed page, /events's 76 cards, /learn's hub and the glossary's 61 pages among them: past
+       vitest's 5s once the suite runs in parallel. */
+  }, 40_000);
 
   it("names each page by its printed title, description and address, and trails it from the home page", async () => {
     for (const { path, url } of listed) {
@@ -376,7 +412,7 @@ describe("every indexed page's structured data", () => {
     }
   });
 
-  it("trails a guide or FAQ through Docs, an article through Learn, the study through Case studies", () => {
+  it("trails a guide or FAQ through Docs, an article through Learn, the study through Value Lab", () => {
     const names = (path: string) =>
       (ofType(graphOf(path), "BreadcrumbList")[0]!.itemListElement as readonly Node[]).map(
         (step) => step.name,
@@ -386,9 +422,14 @@ describe("every indexed page's structured data", () => {
     for (const article of learnArticles) {
       expect(names(articleRoute(article)), article.slug).toEqual(["Zoorik", "Learn", article.h1]);
     }
+    /* The glossary's hub under Learn, and each term under the hub, by the name its trail over the h1 gives it. */
+    expect(names(routes.learnGlossary)).toEqual(["Zoorik", "Learn", "Glossary"]);
+    for (const term of glossaryTerms) {
+      expect(names(termRoute(term)), term.slug).toEqual(["Zoorik", "Learn", "Glossary", term.h1]);
+    }
     expect(names(routes.caseStudyCoralDevCluster)).toEqual([
       "Zoorik",
-      "Case studies",
+      "Value Lab",
       "How we reduced our own cluster’s machine bill by 58%",
     ]);
     expect(names(routes.privacy)).toEqual(["Zoorik", "Privacy"]);
@@ -399,12 +440,12 @@ describe("every indexed page's structured data", () => {
     expect(names(routes.referrals)).toEqual(["Zoorik", "Referrals"]);
     expect(names(routes.designPartners)).toEqual(["Zoorik", "Design partners"]);
     expect(names(routes.news)).toEqual(["Zoorik", "News"]);
-    expect(names(routes.compare)).toEqual(["Zoorik", "Compare"]);
+    expect(names(routes.cloudCostTools)).toEqual(["Zoorik", "Cloud cost optimization tools"]);
     expect(names(routes.community)).toEqual(["Zoorik", "Community"]);
     expect(names(routes.marketplaces)).toEqual(["Zoorik", "Marketplaces"]);
     expect(names(routes.compareCoralAlternatives)).toEqual([
       "Zoorik",
-      "Compare",
+      "Cloud cost optimization tools",
       "Coral alternatives: Kubernetes cost tools compared",
     ]);
   });
@@ -412,7 +453,17 @@ describe("every indexed page's structured data", () => {
   it("types the hubs as collections and /about as the organisation's page", () => {
     for (const { path } of listed) {
       const kind = graphOf(path)[2]!["@type"];
-      if (["/docs", "/learn", "/case-studies", "/events", "/news", "/compare"].includes(path))
+      if (
+        [
+          "/docs",
+          "/learn",
+          "/learn/glossary",
+          "/value-lab",
+          "/events",
+          "/news",
+          "/cloud-cost-optimization-library",
+        ].includes(path)
+      )
         expect(kind, path).toBe("CollectionPage");
       else if (path === "/about") expect(kind).toBe("AboutPage");
       else expect(kind, path).toBe("WebPage");
@@ -452,7 +503,22 @@ describe("every indexed page's structured data", () => {
           : { "@id": `https://zoorik.com/${article.product}#software` },
       );
     }
-    for (const path of ["/", routes.assessment, routes.docs, routes.learn, routes.privacy]) {
+    /* A glossary term too, by the product its page names. */
+    for (const term of glossaryTerms) {
+      expect(about(termRoute(term)), term.slug).toEqual(
+        term.product === "both"
+          ? undefined
+          : { "@id": `https://zoorik.com/${term.product}#software` },
+      );
+    }
+    for (const path of [
+      "/",
+      routes.assessment,
+      routes.docs,
+      routes.learn,
+      routes.learnGlossary,
+      routes.privacy,
+    ]) {
       expect(about(path), path).toBeUndefined();
     }
   });
@@ -539,6 +605,62 @@ describe("every indexed page's structured data", () => {
     } finally {
       vi.doUnmock("@/content/learn/articles.generated");
       vi.resetModules();
+    }
+  });
+
+  it("makes each glossary term a DefinedTerm in the glossary's set, and the glossary's hub that set", () => {
+    const hubUrl = "https://zoorik.com/learn/glossary";
+    const set = {
+      "@type": "DefinedTermSet",
+      "@id": `${hubUrl}#terms`,
+      name: "Cloud cost glossary",
+      url: hubUrl,
+    };
+    expect(glossaryPage.hero.title).toBe(set.name);
+    for (const term of glossaryTerms) {
+      const url = `https://zoorik.com${termRoute(term)}`;
+      const nodes = graphOf(termRoute(term));
+      expect(ofType(nodes, "DefinedTermSet"), term.slug).toHaveLength(0);
+      const [node, ...more] = ofType(nodes, "DefinedTerm");
+      expect(more, term.slug).toHaveLength(0);
+      expect(node, term.slug).toEqual({
+        "@type": "DefinedTerm",
+        "@id": `${url}#term`,
+        name: termName(term),
+        description: term.card,
+        url,
+        inDefinedTermSet: set,
+        mainEntityOfPage: { "@id": `${url}#webpage` },
+      });
+      /* Its name is the term's words without the other names in brackets at its end ("Data transfer (egress) cost"
+         keeps the bracket inside its name), and its description the definition's opening. */
+      expect(node!.name, term.slug).not.toMatch(/\)\s*$/);
+      expect(node!.description, term.slug).toMatch(/[.?!]$/);
+    }
+    const hub = graphOf(routes.learnGlossary);
+    expect(hub.map((node) => node["@type"])).toEqual([
+      "Organization",
+      "WebSite",
+      "CollectionPage",
+      "BreadcrumbList",
+      "DefinedTermSet",
+    ]);
+    expect(ofType(hub, "DefinedTermSet")[0]).toEqual({
+      ...set,
+      description: glossaryPage.meta.description,
+      hasDefinedTerm: glossaryTerms.map((term) => ({
+        "@type": "DefinedTerm",
+        "@id": `https://zoorik.com${termRoute(term)}#term`,
+        name: termName(term),
+        url: `https://zoorik.com${termRoute(term)}`,
+      })),
+      mainEntityOfPage: { "@id": `${hubUrl}#webpage` },
+    });
+    /* No other page carries a term or a set. */
+    for (const { path } of listed) {
+      if (path === routes.learnGlossary || path.startsWith(`${routes.learnGlossary}/`)) continue;
+      expect(ofType(graphOf(path), "DefinedTerm"), path).toHaveLength(0);
+      expect(ofType(graphOf(path), "DefinedTermSet"), path).toHaveLength(0);
     }
   });
 

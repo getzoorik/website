@@ -28,29 +28,32 @@ function selectors(sheet: string): string[] {
 describe("the marketplaces sheet", () => {
   it("names one of the page's own `mp-` classes in every selector", () => {
     const found = selectors(css);
-    expect(found.length).toBeGreaterThan(30);
+    expect(found.length).toBeGreaterThan(0);
     const stray = found.filter((s) => !/\.mp-[\w-]+/.test(s));
     expect(
       stray,
       `selector(s) in marketplaces.css without an mp- class: ${stray.join(", ")}`,
     ).toEqual([]);
     /* The first rule inside a media query counts too. */
-    expect(found).toContain(".mp-grid");
-    expect(found).toContain(".mp-buy");
+    expect(found).toContain(".mp-list");
+    expect(found).toContain(".dt-grid.mp-2");
   });
 
-  it("restyles none of the programs' classes, whose sheet the page loads first", () => {
-    /* `.pv-go`, `.pv-close` and the rest are programs.css's: this sheet only reaches them inside an mp- class. */
-    expect(selectors(css).filter((s) => /^\.pv-/.test(s))).toEqual([]);
+  it("restyles none of the program pages' classes, whose sheet the page loads first", () => {
+    /* `.cp-w`, `.cp-own` and the rest are program-pages.css's: this sheet only reaches them inside an mp- class. */
+    expect(selectors(css).filter((s) => /^\.cp-/.test(s))).toEqual([]);
   });
 
-  it("takes the site's arrow's margin off where the mock's arrows have none, and lets it shrink as theirs do", () => {
-    expect(css).toContain(".mp-go .ext,.mp-acts .ext,.mp-i .ext{margin-left:0;flex:0 1 auto}");
-  });
-
-  it("moves nothing: no animation, and no transition of its own", () => {
+  it("moves only a row's arrow on hover, and stills it under reduced motion", () => {
     const rules = css.replace(/\/\*[\s\S]*?\*\//g, "");
-    expect(rules).not.toMatch(/animation|transition|@keyframes/);
+    expect(rules).not.toMatch(/animation|@keyframes/);
+    expect(rules.match(/transition:[^;}]+/g)).toEqual([
+      "transition:transform var(--d-fast) var(--ease)",
+      "transition:none",
+    ]);
+    expect(rules).toContain(
+      "@media(prefers-reduced-motion:reduce){.mp-l .dt-go{transition:none}.mp-l:hover .dt-go{transform:none}}",
+    );
   });
 
   it("leaves the shared tokens, the fonts and the page-wide [hidden] rule alone", () => {

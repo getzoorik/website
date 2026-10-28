@@ -1,0 +1,124 @@
+import type { GlossaryTerm } from "@/content/learn/glossary-term";
+import { figure as figure1 } from "@/features/learn/figures/glossary/finops-maturity-model/1";
+
+export const term: GlossaryTerm = {
+  slug: "finops-maturity-model",
+  term: "FinOps maturity model (crawl, walk, run)",
+  title: "What is the FinOps maturity model?",
+  meta: "The FinOps maturity model rates each FinOps capability crawl, walk or run. See what each stage looks like, how to rate your team, and why run isn’t required.",
+  h1: "What is the FinOps maturity model?",
+  card: "The FinOps maturity model rates how far your team has come in each FinOps capability.",
+  group: "finops-pricing",
+  product: "both",
+  published: "2026-10-26",
+  updated: "2026-10-26",
+  definition: [
+    {
+      kind: "p",
+      text: [
+        "The FinOps maturity model rates how far your team has come in each ",
+        { a: "FinOps", href: "/learn/glossary/finops" },
+        " capability. A capability is one area of FinOps work, such as budgeting or forecasting. Crawl, walk and run are its three stages.",
+      ],
+    },
+  ],
+  sections: [
+    {
+      id: "finops-maturity-stages-crawl-walk-run",
+      title: "FinOps maturity stages: crawl, walk, run",
+      blocks: [
+        {
+          kind: "p",
+          text: "This is the FinOps Foundation maturity model, part of its FinOps Framework. Microsoft’s training describes each stage:",
+        },
+        {
+          kind: "ul",
+          items: [
+            "At crawl, there’s very little reporting or tooling. Basic processes exist, but not all major teams follow them.",
+            "At walk, the organization follows the process. Automation or processes cover most needs.",
+            "At run, all teams follow it, and the hard cases are handled. Automation is the preferred approach.",
+          ],
+        },
+        { kind: "svg", figure: figure1 },
+        {
+          kind: "p",
+          text: "FinOps doesn’t require every organization to reach run. The right stage depends on your goals and the value you want.",
+        },
+      ],
+    },
+    {
+      id: "an-example-a-first-round",
+      title: "An example: a first round",
+      blocks: [
+        {
+          kind: "p",
+          text: "Microsoft advises rating each capability on its own, so your FinOps maturity levels can differ. For a first round, it suggests three to five capabilities.",
+        },
+        {
+          kind: "p",
+          text: "Say your picks include reporting and budgeting. You rate reporting at walk and budgeting at crawl. You plan steps to move budgeting up, then rate again in 3 to 6\u00a0months.",
+        },
+      ],
+    },
+    {
+      id: "why-it-matters-for-your-cloud-cost",
+      title: "Why it matters for your cloud cost",
+      blocks: [
+        {
+          kind: "ul",
+          items: [
+            "At crawl, some major teams don’t follow the process yet, so their spend gets fewer checks.",
+            "Start the FinOps crawl, walk, run rating with the capabilities that matter most to your business.",
+            [
+              "A stage alone doesn’t ",
+              { a: "reduce your cloud cost", href: "/learn/how-to-reduce-cloud-costs" },
+              ". Changing what you use, or the rate you pay, does.",
+            ],
+            [
+              "The ",
+              { a: "free assessment", href: "/assessment" },
+              " works out what your clusters and disks could save.",
+            ],
+          ],
+        },
+      ],
+    },
+  ],
+  related: [
+    { title: "FinOps", line: "The practice the model rates.", href: "/learn/glossary/finops" },
+    {
+      title: "FinOps personas",
+      line: "The roles that take part.",
+      href: "/learn/glossary/finops-personas",
+    },
+    {
+      title: "Cloud cost governance",
+      line: "The policy and governance capability.",
+      href: "/learn/glossary/cloud-cost-governance",
+    },
+    {
+      title: "Cloud cost anomaly detection",
+      line: "Anomaly management, a suggested starting capability.",
+      href: "/learn/glossary/cloud-cost-anomaly-detection",
+    },
+  ],
+  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  sources: [
+    {
+      publisher: "Microsoft Learn",
+      title: "“FinOps Framework overview”",
+      url: "https://learn.microsoft.com/en-us/cloud-computing/finops/framework/finops-framework",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“FinOps Maturity Model”",
+      url: "https://learn.microsoft.com/en-us/training/modules/get-started-with-finops/6-finops-maturity-model",
+      note: " (Get started with FinOps)",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“Tutorial: Conduct a FinOps iteration”",
+      url: "https://learn.microsoft.com/en-us/cloud-computing/finops/conduct-iteration",
+    },
+  ],
+};

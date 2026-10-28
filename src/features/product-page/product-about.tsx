@@ -4,7 +4,7 @@ import { Reveal } from "@/components/primitives/reveal";
 import { site } from "@/config/site";
 import type { ProductPageContent } from "@/content/product-page";
 import { productOrder, products } from "@/content/products";
-import { OfferingIcon } from "@/features/product-page/offering-icon";
+import { OfferingDrawing } from "@/features/product-page/offering-drawing";
 import { OfferingTour } from "@/features/product-page/offering-tour";
 
 /** Every name running text can carry, each kept out of translation. */
@@ -14,14 +14,19 @@ const NAMES = [site.name, ...productOrder.map((id) => products[id].name)];
  * What is <product>? (`#about-coral`, `#about-amoeba`), with What <product>
  * does on its right.
  *
- * Left, the heading asks the question and three paragraphs say what the product
- * is, who it is for and what you see with it. Right (`div.pf-does#what`), the
- * twin heading on the same line, the offering rows and the Runs on chips. Each
- * row is its icon tile, its title and its line, and keeps its id, so the hero's
- * tag for it lands here; the row's `scroll-margin-top` (104px, the site
- * system's `.flist li[id]`) parks it under the bar. The rows take turns while
- * the column is in view (`OfferingTour`, the one client part); every row's line
- * is always drawn, so nothing moves when the row being read changes.
+ * Left, the heading asks the question and the lead paragraph says what the
+ * product is. The other two (who it is for, what you see with it) sit behind a
+ * quiet "More about <product>" (`details.pp-more`): folded, but in the page, for
+ * search and for a screen reader (owner, 23 Oct 2026).
+ *
+ * Right (`div.pf-does#what`), the twin heading on the same line, the offering
+ * rows and the Runs on chips. Each row is its 88×52 drawing (`OfferingDrawing`),
+ * its title and its line, and keeps its id, so a link to it lands here; the
+ * row's `scroll-margin-top` (104px, the site system's `.flist li[id]`) parks it
+ * under the bar. The rows take turns while the column is in view
+ * (`OfferingTour`, the one client part), and the row being read plays its
+ * drawing; every row's line is always drawn, so nothing moves when the row
+ * being read changes.
  *
  * Two columns from 1100px, the rows spread over the text's height so both
  * columns end together; stacked below, the rows after the text. The two columns
@@ -31,6 +36,7 @@ export function ProductAbout({ content }: { content: ProductPageContent }): Reac
   const { about, offerings, product, what } = content;
   const headingId = `about-${product}-h`;
   const name = products[product].name;
+  const [lead, ...more] = about.paragraphs;
 
   return (
     <section className="sec" id={`about-${product}`} aria-labelledby={headingId}>
@@ -40,11 +46,23 @@ export function ProductAbout({ content }: { content: ProductPageContent }): Reac
             <NamedText text={about.title} name={name} />
           </h2>
           <div className="pp-prose">
-            {about.paragraphs.map((paragraph) => (
-              <p key={paragraph}>
-                <NamedText text={paragraph} name={NAMES} />
-              </p>
-            ))}
+            <p>
+              <NamedText text={lead} name={NAMES} />
+            </p>
+            {more.length > 0 ? (
+              <details className="pp-more">
+                <summary>
+                  <span>
+                    <NamedText text={about.more} name={name} />
+                  </span>
+                </summary>
+                {more.map((paragraph) => (
+                  <p key={paragraph}>
+                    <NamedText text={paragraph} name={NAMES} />
+                  </p>
+                ))}
+              </details>
+            ) : null}
           </div>
         </Reveal>
         <Reveal className="pf-does" order={1} id="what">
@@ -54,16 +72,13 @@ export function ProductAbout({ content }: { content: ProductPageContent }): Reac
           <OfferingTour>
             {offerings.map((offering) => (
               <li id={offering.id} className="has-i" key={offering.id}>
-                <span className="flist-i" aria-hidden="true">
-                  <OfferingIcon icon={offering.icon} />
+                <span className="flist-i mv" aria-hidden="true">
+                  <OfferingDrawing drawing={offering.drawing} />
                 </span>
                 <div>
                   <h3>{offering.label}</h3>
                   <span className="tour-line">{offering.line}</span>
                 </div>
-                <span className="tour-prog" aria-hidden="true">
-                  <i />
-                </span>
               </li>
             ))}
           </OfferingTour>

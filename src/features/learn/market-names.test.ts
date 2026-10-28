@@ -5,7 +5,8 @@ import { cleanup, render } from "@testing-library/react";
 import { createElement, type ComponentType } from "react";
 import { describe, expect, it, vi } from "vitest";
 
-import { learnPath } from "@/config/site";
+import { glossaryPath, learnPath } from "@/config/site";
+import { glossaryTerms } from "@/content/learn/glossary";
 import { learnArticles } from "@/content/learn/published";
 import { marketGroups, versusFacts } from "@/content/learn-market";
 
@@ -18,10 +19,10 @@ vi.mock("next/navigation", async (original) => ({
 
 /**
  * Competitors are named in one place: the market data (`src/content/learn-market.ts`), plus the
- * versus pages' titles in `src/content/learn-compare.ts`, and the pages that print them, the comparison pages under
- * /compare, read them from there. Every other file in src/ (pages, components, code identifiers, file and folder
- * names, CSS, comments, other tests) stays name-free, and so does every page outside /compare. This reads every
- * competitor's name from the data and looks for it everywhere else.
+ * versus pages' titles in `src/content/learn-compare.ts`, and the pages that print them, Cloud cost optimization tools
+ * and the comparison pages under it, read them from there. Every other file in src/ (pages, components, code
+ * identifiers, file and folder names, CSS, comments, other tests) stays name-free, and so does every other page. This
+ * reads every competitor's name from the data and looks for it everywhere else.
  *
  * A competitor is a tool of the market that is neither open source nor the clouds' own: so not the "Cloud providers’
  * own tools" group, and not a tool filed under "Open source", "Azure" or "AWS" (Karpenter, KEDA, Azure Advisor and the
@@ -35,10 +36,10 @@ vi.mock("next/navigation", async (original) => ({
 const ALLOWED = [
   "src/content/learn-market.ts",
   "src/content/learn-compare.ts",
-  /* The tests of the features that draw the comparison pages, which read the names from the data: Learn's (the market
-     rows, the versus and alternatives pages, this file among them) and the /compare hub's. */
+  /* The tests of the features that draw the pages that name them, which read the names from the data: Learn's (the
+     market rows, the versus and alternatives pages, this file among them) and Cloud cost optimization tools'. */
   /^src\/features\/learn\/.+\.test\.tsx?$/,
-  /^src\/features\/compare\/.+\.test\.tsx?$/,
+  /^src\/features\/cloud-cost-tools\/.+\.test\.tsx?$/,
 ];
 
 /* An owner of three letters or fewer is looked for only through its products' names, with and without it: on its own
@@ -135,7 +136,7 @@ describe("competitors' names", () => {
     expect(names).toEqual(expect.arrayContaining(versusFacts.map((facts) => facts.name)));
   });
 
-  it("appear in no file in src/ but the market data, the versus pages' titles and the comparison pages' tests", () => {
+  it("appear in no file in src/ but the market data, the versus pages' titles and the naming pages' tests", () => {
     const paths = files("src");
     expect(paths.length).toBeGreaterThan(200);
     const matchers = names.map(matcher);
@@ -169,8 +170,8 @@ describe("competitors' names", () => {
     const run = parts(name!);
     const camel = run.map((part, i) => (i === 0 ? part : part[0]!.toUpperCase() + part.slice(1)));
     for (const spelling of [
-      `/compare/coral-vs-${run.join("-")}`,
-      `src/app/compare/coral-vs-${run.join("-")}/page.tsx`,
+      `/cloud-cost-optimization-library/coral-vs-${run.join("-")}`,
+      `src/app/cloud-cost-optimization-library/coral-vs-${run.join("-")}/page.tsx`,
       `const ${camel.join("")}Rows = [];`,
       `const ${run.join("")}Rows = [];`,
       `${run.join("_").toUpperCase()}_URL`,
@@ -198,12 +199,16 @@ describe("competitors' names", () => {
   };
 
   /* It renders every page of the site, so it has the time `structured-data.test.ts` allows its own pass over them. */
-  it("are printed by the pages under /compare only: every other page renders none", async () => {
-    /* Every page of the site, by its file; the comparison pages (/compare, its versus pages and its alternatives pages)
-       are the ones allowed to name competitors. */
+  it("are printed by Cloud cost optimization tools and the pages under it only: every other page renders none", async () => {
+    /* Every page of the site, by its file; Cloud cost optimization tools and the comparison pages (the versus pages
+       and the alternatives pages, under it) are the ones allowed to name competitors. */
+    const hubPage = "src/app/cloud-cost-optimization-library/page.tsx";
     const pages = files("src/app").filter((path) => path.endsWith("/page.tsx"));
     expect(pages.length).toBeGreaterThan(30);
-    const others = pages.filter((path) => !path.startsWith("src/app/compare/"));
+    expect(pages).toContain(hubPage);
+    const others = pages.filter(
+      (path) => !path.startsWith("src/app/cloud-cost-optimization-library/") && path !== hubPage,
+    );
     expect(pages.length - others.length).toBe(4);
     expect(others).toContain("src/app/learn/page.tsx");
     const load = async (path: string) =>
@@ -211,12 +216,15 @@ describe("competitors' names", () => {
         .default;
     const matchers = names.map((name) => [name, found(name)] as const);
     const offenders: string[] = [];
-    /* Each page, at its address; the one dynamic route outside /compare, /learn/[slug], once per article. */
+    /* Each page, at its address; the two dynamic routes among them, /learn/[slug] once per article and
+       /learn/glossary/[slug] once per term. */
     const article = "src/app/learn/[slug]/page.tsx";
+    const term = "src/app/learn/glossary/[slug]/page.tsx";
     expect(others).toContain(article);
+    expect(others).toContain(term);
     const drawn: [string, () => Promise<React.ReactElement>][] = [
       ...others
-        .filter((path) => path !== article)
+        .filter((path) => path !== article && path !== term)
         .map(
           (path) =>
             [
@@ -234,6 +242,16 @@ describe("competitors' names", () => {
             },
           ] as [string, () => Promise<React.ReactElement>],
       ),
+      ...glossaryTerms.map(
+        (entry) =>
+          [
+            glossaryPath(entry.slug),
+            async () => {
+              const page = (await import("@/app/learn/glossary/[slug]/page")).default;
+              return page({ params: Promise.resolve({ slug: entry.slug }) });
+            },
+          ] as [string, () => Promise<React.ReactElement>],
+      ),
     ];
     for (const [route, draw] of drawn) {
       pathname.current = route;
@@ -244,11 +262,11 @@ describe("competitors' names", () => {
     }
     expect(offenders).toEqual([]);
     /* And the hub names them: the check would see a name on a page. */
-    pathname.current = "/compare";
-    const hub = printed(render(createElement(await load("src/app/compare/page.tsx"))).container);
+    pathname.current = "/cloud-cost-optimization-library";
+    const hub = printed(render(createElement(await load(hubPage))).container);
     expect(versusFacts.every((facts) => found(facts.name).test(hub))).toBe(true);
     cleanup();
-  }, 20_000);
+  }, 40_000);
 
   it("look for a short owner through its products, with and without it", () => {
     const owned = competitors

@@ -7,12 +7,13 @@ import { useEffect, useRef, type ReactNode } from "react";
  * mock's script): the list, around rows the server renders.
  *
  * While at least half of What <product> does is in view, each row is read for
- * `DWELL_MS`, its progress line filling, then the next; after the last, the
- * first. A click, Enter or Space holds the row chosen, and the arrows move the
- * hold; a pointer resting on a row for `HOVER_MS` shows it and pauses the turn
- * until it leaves; a link to a row (`#id`: the hero's tags) holds that row.
- * Under reduced motion nothing turns: the first row is shown, and a click, a
- * key or a tag still choose.
+ * `DWELL_MS`, then the next; after the last, the first. The row being read
+ * plays its drawing in that time (product-tour.css, on `aria-selected`); no
+ * tint and no progress line mark it (owner, 23 Oct 2026). A click, Enter or
+ * Space holds the row chosen, and the arrows move the hold; a pointer resting
+ * on a row for `HOVER_MS` shows it and pauses the turn until it leaves; a link
+ * to a row (`#id`) holds that row. Under reduced motion nothing turns: the
+ * first row is shown, and a click, a key or a link still choose.
  *
  * ─── WITHOUT SCRIPTING, A PLAIN LIST ───────────────────────────────────────
  * Every row and its line are server-rendered and always drawn, so nothing moves
@@ -21,10 +22,10 @@ import { useEffect, useRef, type ReactNode } from "react";
  * the turning on top.
  *
  * ─── THE DOM, NOT STATE ────────────────────────────────────────────────────
- * The progress line is written every frame, and a row's selection is three
- * attributes on a server-rendered element, so this keeps the mock's own shape:
- * one effect, the rows read from the list, the attributes written in place. No
- * React state changes, so React never re-renders the rows under it.
+ * The clock runs every frame, and a row's selection is three attributes on a
+ * server-rendered element, so this keeps the mock's own shape: one effect, the
+ * rows read from the list, the attributes written in place. No React state
+ * changes, so React never re-renders the rows under it.
  */
 
 /** How long each row is read, in ms. */
@@ -55,19 +56,12 @@ export function OfferingTour({ children }: { readonly children: ReactNode }): Re
     let jump: ReturnType<typeof setTimeout> | undefined;
     let frame = 0;
 
-    const bar = (index: number, progress: number) => {
-      const value = Math.max(0, Math.min(1, progress));
-      if (index === cur) fill = value;
-      const line = rows[index]!.querySelector<HTMLElement>(".tour-prog i");
-      if (line) line.style.transform = `scaleX(${value})`;
-    };
-
     const show = (index: number) => {
       cur = index;
+      fill = 0;
       rows.forEach((row, k) => {
         row.setAttribute("aria-selected", k === index ? "true" : "false");
         row.tabIndex = k === index ? 0 : -1;
-        bar(k, 0);
       });
       t0 = performance.now();
     };
@@ -133,7 +127,7 @@ export function OfferingTour({ children }: { readonly children: ReactNode }): Re
     list.setAttribute("aria-orientation", "vertical");
 
     const onHashChange = () => pick(decodeURIComponent(window.location.hash.slice(1)));
-    /* The site's in-page links keep the hash out of the address bar, so a tag's
+    /* The site's in-page links keep the hash out of the address bar, so a link's
        click is read here, after the jump it starts. */
     const onClick = (event: MouseEvent) => {
       const target = event.target;
@@ -149,12 +143,11 @@ export function OfferingTour({ children }: { readonly children: ReactNode }): Re
 
     let io: IntersectionObserver | undefined;
     if (!reduced) {
-      /* Out of view or under the pointer, the row's progress stands still. */
+      /* Out of view or under the pointer, the row's time stands still. */
       const tick = (now: number) => {
         if (seen && !held && !over) {
-          const progress = (now - t0) / DWELL_MS;
-          bar(cur, progress);
-          if (progress >= 1) show((cur + 1) % rows.length);
+          fill = Math.min(1, (now - t0) / DWELL_MS);
+          if (fill >= 1) show((cur + 1) % rows.length);
         } else if (!seen || over) t0 = now - fill * DWELL_MS;
         frame = requestAnimationFrame(tick);
       };

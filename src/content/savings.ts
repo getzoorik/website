@@ -7,8 +7,7 @@ import type { ProductId } from "@/content/products";
  * 🔴 A FIGURE IS NEVER PRINTED WITHOUT ITS QUALIFIER, never on a share card and
  * never in the same card as a worked example. Each range is said aloud the way
  * it is meant ("40 to 50 percent"), since a screen reader would read the en
- * dash as nothing. Drawn in the How it works key-figure style (`.kf`), en dash,
- * no spaces.
+ * dash as nothing. Written with an en dash, no spaces.
  */
 
 export type SavingsKey = ProductId | "both";

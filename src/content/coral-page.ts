@@ -11,26 +11,25 @@ import type { ProductPageContent } from "@/content/product-page";
  * The product tour adds each row's line, the "?" on What Coral does and the
  * film (`product-films.ts`).
  *
- * The Runs on chips and the line under the How it works cards are read from
- * `kubernetes.ts`, and the cards from `how-it-works.ts`, rather than copied: a
- * second copy would be a second claim free to drift. The savings figures on the
- * hero's right are the three ranges read from `savings.ts`; nothing here is a
- * new figure.
+ * The hero's line (the home page's own line for Coral), the Runs on chips and
+ * the line under the How it works cards are read from `kubernetes.ts`, and the
+ * cards from `how-it-works.ts`, rather than copied: a second copy would be a
+ * second claim free to drift. Nothing here is a new figure.
  *
  * Coral is "Kubernetes cost optimization" on AKS and EKS. It is never shown as
  * running on Windows or Linux.
  */
 /**
- * The day /coral's content last changed (the product tour and its film), for the sitemap's
+ * The day /coral's content last changed (its title), for the sitemap's
  * `lastmod` only: the page does not print it. Whoever changes /coral's content
  * moves this to that day in the same PR; never the build's date.
  */
-export const coralPageLastUpdated = "17 October 2026";
+export const coralPageLastUpdated = "23 October 2026";
 
 export const coralPageContent: ProductPageContent = {
   product: "coral",
   meta: {
-    title: "Coral: Kubernetes cost optimization for AKS and EKS",
+    title: "Kubernetes cost optimization",
     description:
       "Coral rebalances AKS and EKS clusters to reduce your cloud bill, autonomously, without any downtime. Works with HPA, Karpenter, NAP and Cluster Autoscaler.",
     appDescription:
@@ -38,56 +37,46 @@ export const coralPageContent: ProductPageContent = {
   },
   hero: {
     title: "Kubernetes cost optimization",
-    supportedOn: { label: "Supported on", platforms: "AKS and EKS" },
-    /* Exactly as the mock draws it: Karpenter and KEDA with their logos, NAP
-       and the Cluster Autoscaler as names, with no mark and no empty slot. */
-    compatibleWith: {
-      label: "Compatible with your native",
-      items: [
-        { name: "Karpenter", logo: "karpenter" },
-        { name: "NAP" },
-        { name: "Cluster Autoscaler" },
-        { name: "KEDA", logo: "keda" },
-      ],
-    },
+    line: kubernetesContent.body,
     cta: { label: assessContent.assessment.cta.label, href: assessmentHref("coral") },
   },
   about: {
     title: "What is Coral?",
     paragraphs: [
       "Coral is a Kubernetes cost optimization platform for Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS). It continuously finds and removes the capacity your clusters don’t need, while your workloads keep serving. It sizes each container’s CPU and memory requests to what it really uses, and empties spare nodes one at a time so your autoscaler can remove them.",
-      "Coral helps platform and engineering teams cut AKS and EKS cost with no application code changes. It monitors every workload and node, recommends right sizes and spare nodes with the saving, and applies them safely: pods resize in place or restart one at a time within their PodDisruptionBudgets, and nodes drain one at a time. Coral works alongside native Kubernetes autoscaling: the Horizontal Pod Autoscaler, KEDA, Karpenter, Node Auto Provisioning (NAP) and the Cluster Autoscaler.",
+      /* "reduce", where the mock still has "cut": the site's verb (owner's wording rule). */
+      "Coral helps platform and engineering teams reduce AKS and EKS cost with no application code changes. It monitors every workload and node, recommends right sizes and spare nodes with the saving, and applies them safely: pods resize in place or restart one at a time within their PodDisruptionBudgets, and nodes drain one at a time. Coral works alongside native Kubernetes autoscaling: the Horizontal Pod Autoscaler, KEDA, Karpenter, Node Auto Provisioning (NAP) and the Cluster Autoscaler.",
       "With Coral, you see where your Kubernetes spend goes, which capacity sits unused, and what each change saves at your cloud’s list price. Pod sizing starts when you switch on “Automatically optimize” for a policy or a workload. Node optimization is on from install, and you choose the node pools it works on.",
     ],
+    more: "More about Coral",
   },
   offerings: [
     {
       id: "monitoring",
       label: "Monitoring",
-      icon: "monitor",
+      drawing: "cost",
       line: "Cost tracked always, every action logged.",
     },
     {
       id: "recommendations",
       label: "Recommendations",
-      icon: "reco",
+      drawing: "requests",
       line: "Right sizes, spare nodes and the saving.",
     },
     {
       id: "workload-optimization",
       label: "Workload optimization",
-      icon: "workload",
+      drawing: "fit",
       line: "CPU and memory requests sized to real use.",
     },
     {
       id: "node-optimization",
       label: "Node optimization",
-      icon: "node",
+      drawing: "drain",
       line: "Spare nodes drained one at a time; never creates machines.",
     },
   ],
   what: {
-    title: "What Coral does",
     heading: "What Coral does?",
     runsOn: kubernetesContent.runsOn,
   },
@@ -117,9 +106,9 @@ export const coralPageContent: ProductPageContent = {
       /* Its /learn article. */
       {
         kind: "page",
-        title: "Coral and the native autoscalers",
-        line: "VPA, HPA, KEDA, NAP and Karpenter compared",
-        href: learnPath("coral-and-native-autoscalers"),
+        title: "HPA vs VPA vs Cluster Autoscaler",
+        line: "What each one scales, plus Karpenter",
+        href: learnPath("hpa-vs-vpa-vs-cluster-autoscaler"),
       },
     ],
   },

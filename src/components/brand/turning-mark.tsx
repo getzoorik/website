@@ -12,9 +12,8 @@ import {
  *
  * One source for every surface that draws it: every hero but the home page's
  * (the two product pages, the docs hub, the guides, the FAQs, /assessment,
- * /privacy and /terms; the home hero has none) and the /login panel; and, as
- * its art alone (`TurningMarkArt`), /careers's dark close. Two siblings, in the
- * mock's order: the glow `div`, then the art `svg`. A hero renders them as its
+ * /privacy and /terms; the home hero has none) and the /login panel. Two
+ * siblings, in the mock's order: the glow `div`, then the art `svg`. A hero renders them as its
  * first two children, ahead of the photo, so they sit over the photo (z −2) and
  * its scrim (z −1) and under the copy (`.hero > .wrap`, z 1).
  *
@@ -68,11 +67,8 @@ export interface TurningMarkProps {
   readonly glowClassName?: string;
 }
 
-/**
- * The mark's art alone, with no glow: the hero's `svg`, and on /careers the
- * mark that turns in the dark closing card (`cr-jart`).
- */
-export function TurningMarkArt({ className }: { readonly className: string }): React.JSX.Element {
+/** The mark's art alone, with no glow: the hero's `svg`. */
+function TurningMarkArt({ className }: { readonly className: string }): React.JSX.Element {
   return (
     <svg className={className} aria-hidden="true" focusable="false" viewBox="0 0 512 512">
       {ring(MARK_OUTER, ".26")}

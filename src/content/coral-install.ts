@@ -5,8 +5,9 @@ import { agentChart, openSourceLinks } from "@/config/open-source";
 export type InstallOsKey = "mac" | "linux" | "windows";
 
 /**
- * /coral's "Install your way" (`#install`): zoorikctl, Helm and Terraform as three equal cards. The commands are the
- * zoorikctl README's and the chart's; every string is the mock's.
+ * /coral's "Install your way" (`#install`): zoorikctl, Helm and Terraform as three equal cards, each command in the
+ * assessment's terminal (owner, 23 Oct 2026). The commands are the zoorikctl README's and the chart's; every string is
+ * the mock's. A terminal's bar names what is in it: zoorikctl's holds the system switch instead.
  */
 
 export interface InstallOs {
@@ -65,6 +66,7 @@ export const coralInstall = {
   helm: {
     name: "Helm",
     line: "For teams on Helm, Argo CD or Flux.",
+    file: "Terminal",
     /* The whole install line: the chart on a line of its own, so nothing scrolls; a
        line longer than the card wraps with a hanging indent. Copy copies these five lines. */
     lines: [
@@ -90,6 +92,7 @@ export const coralInstall = {
   terraform: {
     name: "Terraform",
     line: "Cloud permissions as code.",
+    file: "main.tf",
     lines: [
       "# AKS",
       'source = "getzoorik/zoorik-coral/azurerm"',

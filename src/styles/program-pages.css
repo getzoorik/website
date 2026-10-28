@@ -1,0 +1,102 @@
+/* Zoorik marketing: `/design-partners`, `/referrals` and `/partners`, the three program pages.
+ *
+ * Ported from the mock's block for these pages, rule for rule and in its order, with the Copy button's rules from the
+ * mock's shared block (its `.bk-copy`, here `.cp-copy`) where the block's `.cp-cmd` rule overrides them. Everything else
+ * the pages draw is the site's own: the utility hero (documents.css, the site system), the closing row's pair
+ * (`.as-grid`, `.as-card`, `.as-cal`, `.btn-ink`, `.cta-go`), the Read more tiles (`.dt*`), the store buttons
+ * (`.mkt-*`) and `.alink`. Imported by each of the three pages, so Next loads it after globals.css: where the mock
+ * carries the block, after the site system.
+ *
+ * ─── EVERY SELECTOR IS THESE PAGES' OWN ───────────────────────────────────────
+ * The App Router keeps a visited page's sheet in the document, so each selector names a `cp-` class, which only these
+ * three pages draw (`program-pages-css.test.ts`).
+ *
+ * The mock's `:root`, reset and base are not copied: they are the site's own (`tokens.css`, the site system), and
+ * `--sans` / `--code` stay next/font's. Nothing here moves: the pair's rise is the site's (`.rise`, motion.css).
+ *
+ * Changes from the mock, each marked "repo:" where it stands. Left out: the mock's `.cp-num` rule, which no page
+ * draws, and the `cp-rgi-l` class on the ranges' marks, which no rule reads.
+ */
+
+/* the pair on the band: the white card's quiet pill and the two cards' marks */
+.cp-pair .as-grid > *{grid-row:auto;display:flex;flex-direction:column;align-items:flex-start}
+.cp-w{position:relative}
+.cp-flag{position:absolute;top:24px;right:24px;padding:5px 11px;border:1px solid var(--line);border-radius:var(--r-pill);font-size:.8125rem;font-weight:500;line-height:1;color:var(--text)}
+.cp-own{display:block;width:40px;height:40px;margin-bottom:20px;color:#fff;--zm-sq:#050B3D}
+.cp-own-l{color:var(--accent)}
+.cp-w .btn-ink,.cp-d .cta-go{margin-top:auto;padding-top:0}
+.cp-w p,.cp-d p{margin-bottom:28px}
+.cp-ask{list-style:none;margin:-12px 0 28px;padding:0;display:grid;gap:10px}
+.cp-ask li{display:flex;gap:10px;font-size:.9375rem;line-height:1.5;color:rgba(255,255,255,.82)}
+.cp-ask svg{flex:none;width:16px;height:16px;margin-top:3px;color:#12A97A}
+.cp-rg{list-style:none;margin:-12px 0 6px;padding:0;display:grid;gap:8px;width:100%;max-width:360px}
+.cp-rg li{display:flex;align-items:center;gap:10px;font-size:.9375rem}
+.cp-rg li b{margin-left:auto;font-weight:600;font-variant-numeric:tabular-nums}
+.cp-rgi{display:block;width:20px;height:20px}
+.cp-fine{margin:0 0 28px!important;font-size:var(--fs-micro);color:var(--muted)}
+/* the sections under the pair, and their Read more tiles */
+.cp-sec{padding-block:clamp(40px,5vw,64px)}
+.cp-sec + .cp-sec{padding-top:0}
+/* repo: the tiles are the site's own (`LinkTile`), whose article takes no class of the page's, so the mock's two
+   `.cp-t` rules open on the tiles' section; the specificity is the mock's */
+.cp-sec .dt-a{grid-template-columns:28px minmax(0,1fr) 16px}
+.cp-sec .dt-go{color:var(--accent)}
+.dt-ic.cp-ic{width:28px;height:28px}
+.dt-grid.cp-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+/* each page its own element: the design partners' ten slots, their steps on one line, the referrals' commands to
+   share and their cards joined by arrows, the partners' ranges and where customers buy */
+.cp-slots{display:grid;grid-template-columns:repeat(10,18px);gap:6px;margin-bottom:22px}
+.cp-slots i{display:block;width:18px;height:18px;border:1.5px solid var(--accent);border-radius:5px}
+.cp-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px}
+.cp-steps li{position:relative;padding-top:52px}
+.cp-steps li::before{content:"";position:absolute;top:17px;left:36px;right:-24px;border-top:1.5px solid var(--line)}
+.cp-steps li:last-child::before{display:none}
+.cp-sn{position:absolute;top:0;left:0;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--text);color:#fff;font-size:.9375rem;font-weight:600}
+.cp-steps h3{font-size:1rem;font-weight:600;line-height:1.35}
+.cp-steps p{margin-top:6px;font-size:var(--fs-small);line-height:1.5;color:var(--muted)}
+.cp-share{display:grid;gap:8px;width:100%;margin:-8px 0 28px}
+/* repo: the mock's grid sizes its one column to the longer command, so below about 400px the line runs past the
+   card and the page scrolls sideways (11px at 390, 41px at 360); a column that may shrink keeps it inside, and the
+   command ends in the ellipsis the mock's own `.cp-cmd code` rule draws */
+.cp-share{grid-template-columns:minmax(0,1fr)}
+.cp-cmd{display:flex;align-items:center;gap:10px;padding:8px 8px 8px 14px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--surface-2,#F6F7FB)}
+.cp-cmd code{flex:1;min-width:0;font:500 .875rem/1.4 var(--code);color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cp-cmd code i{font-style:normal;color:var(--muted)}
+/* repo: the prompt stays out of a selection, so a command selected by hand (or by the button when the clipboard is
+   closed to the page) pastes without its "$ " */
+.cp-cmd code i{-webkit-user-select:none;user-select:none}
+/* the Copy button: the mock's shared block's `.bk-copy` rules, then this block's own */
+.cp-copy{display:inline-flex;align-items:center;gap:6px;margin-top:16px;padding:7px 10px;border:1px solid var(--line);border-radius:var(--r-ctl);background:#fff;font:500 .8125rem/1 var(--sans);color:var(--text);cursor:pointer;white-space:nowrap}
+.cp-copy svg{width:14px;height:14px}
+/* repo: the tick replaces the copy squares while the button says "Copied", as on every copy button of the site */
+.cp-copy .cp-c2{display:none}
+.cp-copy[data-done] .cp-c1{display:none}
+.cp-copy[data-done] .cp-c2{display:block}
+.cp-copy:hover{border-color:var(--accent);color:var(--accent)}
+.cp-copy[data-done]{border-color:var(--good);color:var(--good)}
+.cp-copy:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.cp-cmd .cp-copy{margin-top:0}
+.cp-chain{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr) 40px minmax(0,1fr) 40px minmax(0,1fr);align-items:stretch}
+/* repo: a list holds only items, so each arrow is an item of its own (`.cp-ar`), which the cards' rule leaves out */
+.cp-chain li:not(.cp-ar){padding:22px 24px;border:1px solid var(--line);border-radius:var(--r-card);background:#fff}
+.cp-who{display:inline-block;margin-bottom:12px;padding:4px 10px;border-radius:var(--r-pill);background:var(--surface-2,#F6F7FB);font-size:.8125rem;font-weight:500;color:var(--text)}
+.cp-chain h3{font-size:1rem;font-weight:600}
+.cp-chain p{margin-top:6px;font-size:var(--fs-small);line-height:1.5;color:var(--muted)}
+.cp-ar{display:grid;place-items:center;color:var(--accent)}
+.cp-ar svg{width:20px;height:20px}
+.cp-track{position:relative;flex:1;height:6px;margin:0 6px;border-radius:3px;background:var(--line)}
+.cp-track i{position:absolute;top:0;bottom:0;border-radius:3px;background:var(--accent)}
+.cp-rg{max-width:440px}
+.cp-rg li span:not(.cp-track){white-space:nowrap}
+.cp-buy{padding-top:0}
+.cp-buyrow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px 40px;padding:28px;border:1px solid var(--line);border-radius:var(--r-card);background:#fff}
+.cp-buyrow h2{font-size:var(--fs-h3);font-weight:600}
+.cp-buyrow p{margin-top:6px;max-width:46ch;color:var(--muted)}
+.cp-all{display:inline-flex;align-items:center;gap:8px;margin-top:16px;font-weight:500}
+.cp-all svg{width:14px;height:14px}
+@media(max-width:1000px){.cp-steps{grid-template-columns:repeat(2,minmax(0,1fr))}.cp-steps li:nth-child(2)::before{display:none}
+  .cp-chain{grid-template-columns:minmax(0,1fr);gap:0}.cp-ar{height:40px;transform:rotate(90deg)}}
+@media(max-width:640px){.cp-steps{grid-template-columns:minmax(0,1fr)}.cp-steps li::before{display:none}}
+@media(max-width:1100px){.dt-grid.cp-4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:1000px){.dt-grid.cp-3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.dt-grid.cp-4,.dt-grid.cp-3{grid-template-columns:minmax(0,1fr)}}

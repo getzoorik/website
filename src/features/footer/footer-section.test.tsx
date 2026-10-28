@@ -6,6 +6,8 @@ const pathname = vi.hoisted(() => ({ current: "/" }));
 vi.mock("next/navigation", () => ({ usePathname: () => pathname.current }));
 
 import { amoebaDocs } from "@/config/site";
+import { pageTitles } from "@/config/structured-data";
+import { askHome } from "@/content/footer";
 import { FooterSection } from "@/features/footer/footer-section";
 
 /**
@@ -58,13 +60,16 @@ describe("the footer's brand column", () => {
     }
   });
 
-  it("puts Available in and the two marketplaces as buttons under the badge, to Coral's listings", () => {
+  it("puts Available in and the two marketplaces as buttons under the badge, to Zoorik's page in each store", () => {
     const brand = footerOf().querySelector(".foot-brand")!;
     const market = brand.querySelector(":scope > div.mkt-btns.foot-mb")!;
     expect(market.previousElementSibling).toHaveClass("foot-badge");
-    /* The registries' row follows, then the social row. */
+    /* The registries' row follows, then "Ask about Zoorik on", then the social row. */
     expect(market.nextElementSibling).toHaveClass("foot-ib");
-    expect(market.nextElementSibling!.nextElementSibling).toHaveClass("foot-social");
+    expect(market.nextElementSibling!.nextElementSibling).toHaveClass("foot-ask");
+    expect(market.nextElementSibling!.nextElementSibling!.nextElementSibling).toHaveClass(
+      "foot-social",
+    );
     /* The lead-in, then one button per store: the mark, the name, the hint, the arrow. */
     expect(market.firstElementChild).toHaveClass("mkt-on");
     expect(market.firstElementChild).toHaveTextContent("Available in");
@@ -72,11 +77,11 @@ describe("the footer's brand column", () => {
     expect(buttons.map((a) => [text(a), a.getAttribute("href")])).toEqual([
       [
         "AWS Marketplace (opens in a new tab)",
-        "https://aws.amazon.com/marketplace/pp/prodview-kx44lqme4vwys",
+        "https://aws.amazon.com/marketplace/seller-profile?id=seller-mtaavozrqchlk",
       ],
       [
         "Microsoft Marketplace (opens in a new tab)",
-        "https://marketplace.microsoft.com/en-us/product/zoorik.coral",
+        "https://marketplace.microsoft.com/en-us/partners/04f64eb0-8878-4f14-9578-bc5d104737e7/overview",
       ],
     ]);
     for (const a of buttons) {
@@ -91,14 +96,51 @@ describe("the footer's brand column", () => {
     ).toEqual(["aws", "azure"]);
   });
 
-  it("closes the brand column on the legal name and city, one muted line", () => {
+  it("closes the brand column on the social row", () => {
     const brand = footerOf().querySelector(".foot-brand")!;
-    const company = brand.lastElementChild!;
-    expect(company.tagName).toBe("P");
-    expect(company).toHaveClass("foot-co");
-    expect(company.previousElementSibling).toHaveClass("foot-social");
-    expect(company.textContent).toBe("Zoorik Private Limited · Bangalore, India");
-    expect(company.querySelector('[translate="no"]')).toHaveTextContent("Zoorik");
+    expect(brand.lastElementChild).toHaveClass("foot-social");
+    expect(brand.querySelector(".foot-co")).toBeNull();
+  });
+
+  it("asks about Zoorik on four assistants, each opening a new tab with home's question typed in", () => {
+    const ask = footerOf().querySelector(".foot-brand > div.mkt-btns.foot-ask")!;
+    expect(ask.firstElementChild).toHaveClass("mkt-on");
+    expect(text(ask.firstElementChild)).toBe("Ask about Zoorik on");
+    expect(ask.firstElementChild!.querySelector('[translate="no"]')).toHaveTextContent("Zoorik");
+    const buttons = [...ask.querySelectorAll<HTMLAnchorElement>("a.mkt-b")];
+    expect(buttons.map((a) => [text(a), a.getAttribute("href")!.split("?q=")[0]])).toEqual([
+      ["ChatGPT (opens in a new tab)", "https://chatgpt.com/"],
+      ["Claude (opens in a new tab)", "https://claude.ai/new"],
+      ["Perplexity (opens in a new tab)", "https://www.perplexity.ai/search"],
+      ["Grok (opens in a new tab)", "https://grok.com/"],
+    ]);
+    for (const a of buttons) {
+      expect(a).toHaveAttribute("target", "_blank");
+      expect(a).toHaveAttribute("rel", "noopener noreferrer");
+      expect(a.firstElementChild).toHaveClass("mkt-mk", "mkt-ai");
+      expect(a.firstElementChild).toHaveAttribute("aria-hidden", "true");
+      expect(a.lastElementChild).toHaveClass("ext");
+      expect(decodeURIComponent(a.getAttribute("href")!.split("?q=")[1]!)).toBe(askHome);
+    }
+  });
+
+  it("asks each page's own question: the product pages by name, any other page by its title and address", () => {
+    const question = (path: string) =>
+      decodeURIComponent(
+        footerOf(path).querySelector(".foot-ask a")!.getAttribute("href")!.split("?q=")[1]!,
+      );
+    expect(question("/coral")).toBe(
+      "What is Coral by Zoorik (https://zoorik.com/coral), and how does it reduce Kubernetes cost on AKS and EKS?",
+    );
+    expect(question("/amoeba")).toBe(
+      "What is Amoeba by Zoorik (https://zoorik.com/amoeba), and how does it reduce block storage cost on Azure and AWS?",
+    );
+    const title = pageTitles["/careers"]!.replace(" | Zoorik", "");
+    expect(question("/careers")).toBe(
+      `Summarize "${title}" from Zoorik (https://zoorik.com/careers), and how Zoorik helps reduce cloud cost.`,
+    );
+    /* A page with no printed title (the 404, /login) asks home's question. */
+    expect(question("/no-such-page")).toBe(askHome);
   });
 
   it("gives the badge's and the button's Azure gradients ids of their own", () => {
@@ -204,10 +246,10 @@ describe("the footer's columns", () => {
         heading: ["P", "Resources"],
         links: [
           ["Learn", "/learn"],
-          ["Case studies", "/case-studies"],
+          ["Value Lab", "/value-lab"],
           ["Events", "/events"],
           ["News", "/news"],
-          ["Compare", "/compare"],
+          ["Cloud cost optimization tools", "/cloud-cost-optimization-library"],
           ["Community", "/community"],
           ["Docs", "/docs"],
           ["Open source", "/open-source"],
@@ -254,16 +296,22 @@ describe("the footer's columns", () => {
     }
   });
 
-  it("put Privacy then Terms last in Company, and nothing beside the copyright line", () => {
+  it("put Privacy then Terms last in Company, and the legal name and the copyright line in the bar", () => {
     const company = columns()[2]!.links;
     expect(company.slice(-2)).toEqual([
       ["Privacy", "/privacy"],
       ["Terms", "/terms"],
     ]);
+    /* The legal name and city at the bar's left end, © and the wordmark at its right (owner, 23 Oct 2026). */
     const bar = footerOf().querySelector(".foot-bar")!;
-    expect(bar.children).toHaveLength(1);
-    expect(bar.firstElementChild!.tagName).toBe("SMALL");
-    expect(bar.textContent).toBe("© 2026 Zoorik");
+    expect(bar.children).toHaveLength(2);
+    const [legalName, copyright] = [...bar.children];
+    expect(legalName!.tagName).toBe("P");
+    expect(legalName).toHaveClass("foot-co");
+    expect(legalName!.textContent).toBe("Zoorik Private Limited · Bangalore, India");
+    expect(legalName!.querySelector('[translate="no"]')).toHaveTextContent("Zoorik");
+    expect(copyright!.tagName).toBe("SMALL");
+    expect(copyright!.textContent).toBe("© 2026 Zoorik");
     expect(bar.querySelector("a")).toBeNull();
   });
 

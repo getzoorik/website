@@ -1,4 +1,6 @@
 import { act, fireEvent, render } from "@testing-library/react";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { productFilms } from "@/content/product-films";
@@ -14,10 +16,8 @@ const player = () => (
   <FilmPlayer
     url={url}
     poster={film.poster}
-    length={film.length}
     posterLabel="Watch the 2-minute Coral film on YouTube (opens in a new tab)"
     playerTitle="Coral: the 2-minute film, on YouTube"
-    tag="Watch on YouTube"
     soundLabel="Turn on sound"
     chaptersLabel="Chapters of the film"
     chapters={film.chapters}
@@ -206,21 +206,6 @@ describe("the film on the page", () => {
     expect(notPrevented).toBe(true);
     expect(container.querySelector("iframe")).toBeNull();
   });
-
-  it("starts with sound when the hero's Watch the 2-minute film is pressed", () => {
-    observe();
-    reducedMotion(true);
-    const { container } = render(
-      <>
-        <a href="#film" className="pf-watch">
-          Watch the 2-minute film
-        </a>
-        {player()}
-      </>,
-    );
-    fireEvent.click(container.querySelector(".pf-watch")!);
-    expect(container.querySelector("iframe")).toHaveAttribute("src", embed(0, false));
-  });
 });
 
 describe("leaving the film", () => {
@@ -294,5 +279,21 @@ describe("leaving the film", () => {
     });
     expect(paused(spy)).toBe(1);
     Object.defineProperty(document, "visibilityState", { value: "visible", configurable: true });
+  });
+});
+
+/* jsdom applies no cascade, so the corners are read from the sheet. */
+describe("the film's buttons", () => {
+  it("are controls, so 3px (the 23 Oct corners): the play button and Turn on sound", () => {
+    const sheet = readFileSync(join("src", "styles", "product-tour.css"), "utf8").replace(
+      /\/\*[\s\S]*?\*\//g,
+      "",
+    );
+    for (const button of [".pf-play", ".pf-sound"]) {
+      const corners = [...sheet.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+        .filter(([, selectors]) => selectors!.split(",").some((s) => s.trim() === button))
+        .flatMap(([, , body]) => [...body!.matchAll(/border-radius:([^;}]+)/g)].map(([, v]) => v));
+      expect(corners, button).toEqual(["var(--r-ctl)"]);
+    }
   });
 });

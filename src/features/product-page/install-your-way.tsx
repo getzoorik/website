@@ -2,24 +2,73 @@
 
 import { Fragment, useRef, useState, useSyncExternalStore, type KeyboardEvent } from "react";
 
+import { LinuxMark, WindowsMark } from "@/components/brand/cloud-marks";
 import { Arrow } from "@/components/primitives/arrow";
 import { ExternalArrow } from "@/components/primitives/external-arrow";
 import { NewTabHint } from "@/components/primitives/new-tab-hint";
 import { coralInstall, type InstallLink, type InstallOsKey } from "@/content/coral-install";
 import { CommandLines } from "@/features/documents/doc-command-well";
+import {
+  AppleMark,
+  HelmMark,
+  TerraformMark,
+  ZoorikctlMark,
+} from "@/features/product-page/install-marks";
 import { useCopyCommand } from "@/hooks/use-copy-command";
 import { isOffSite, offSiteProps } from "@/lib/links";
 
 /**
  * /coral's "Install your way", after How it works and before Read more: the h2 with "Open source" at the right, then
- * three equal cards (one row from 981px), each its name, one line, its command well and its links pinned to the foot so
- * the three foot rows line up.
+ * three equal cards (one row from 981px), each its mark and name, one line, its command in a terminal and its links
+ * pinned to the foot so the three foot rows line up.
+ *
+ * Each terminal is the assessment page's (owner, 23 Oct 2026): a #121629 panel under a bar with three square dots, and
+ * in the bar zoorikctl's system switch, each system with its mark, or what the terminal holds ("Terminal", "main.tf").
+ * Corners 4px and the dots square: blocks are pointy.
  *
  * zoorikctl's card opens on the visitor's own system, as the guides' switch does (the user agent, read once in the
  * browser; macOS while prerendering). Nothing is stored. The switch is a radio group: Arrow keys move and wrap, Home and
- * End go to the ends. A well's copy button is a 44px icon column; it turns to a tick for 1.6s with the name "Copied",
- * and with no clipboard the command is selected instead (`useCopyCommand`).
+ * End go to the ends; a system changes the command, its copy and the "Or:" line. A well's copy button is the white
+ * square at the terminal's top right; it turns to a tick for 1.6s with the name "Copied", and with no clipboard the
+ * command is selected instead (`useCopyCommand`).
  */
+
+/** Each system's mark in zoorikctl's switch: Apple's, then the site's own Tux and Windows. */
+const osMark: Record<InstallOsKey, () => React.JSX.Element> = {
+  mac: () => <AppleMark className="iw-os-m" />,
+  linux: () => <LinuxMark className="iw-os-m" />,
+  windows: () => <WindowsMark className="iw-os-m" />,
+};
+
+/** The terminal's three dots, square. */
+function Dots(): React.JSX.Element {
+  return (
+    <span className="iw-dots" aria-hidden="true">
+      <i />
+      <i />
+      <i />
+    </span>
+  );
+}
+
+/** A terminal whose bar names what it holds: decorative, so hidden from a screen reader. */
+function NamedTerminal({
+  file,
+  children,
+}: {
+  readonly file: string;
+  readonly children: React.ReactNode;
+}): React.JSX.Element {
+  return (
+    <div className="iw-term">
+      <div className="iw-bar" aria-hidden="true">
+        <Dots />
+        <span className="iw-file">{file}</span>
+      </div>
+      {children}
+    </div>
+  );
+}
 
 function systemOs(): InstallOsKey {
   const agent = navigator as Navigator & {
@@ -93,25 +142,34 @@ function CardLinks({ links }: { readonly links: readonly InstallLink[] }): React
 const HANG_PIECE = /(-{1,2}[A-Za-z][\w-]*|[A-Za-z]\w*(?:-\w+)+|\/(?!\/)|=|\.(?=\w))/;
 
 function HangText({ text }: { readonly text: string }): React.JSX.Element {
-  return (
-    <>
-      {text.split(HANG_PIECE).map((part, index) => {
-        if (index % 2 === 0) return part ? <Fragment key={index}>{part}</Fragment> : null;
-        if (part === "/" || part === "=" || part === ".")
-          return (
-            <Fragment key={index}>
-              {part}
-              <wbr />
-            </Fragment>
-          );
-        return (
-          <span className="nb" key={index}>
-            {part}
-          </span>
-        );
-      })}
-    </>
-  );
+  /* The text up to each soft break is one text node, the break's "/", "=" or "." with it, as the mock writes
+     "oci://<wbr>ghcr.<wbr>io/<wbr>…": the same runs, so the same glyph positions. */
+  const parts: React.ReactNode[] = [];
+  let run = "";
+  text.split(HANG_PIECE).forEach((part, index) => {
+    if (index % 2 === 0) {
+      run += part;
+      return;
+    }
+    if (part === "/" || part === "=" || part === ".") {
+      parts.push(
+        <Fragment key={index}>
+          {run + part}
+          <wbr />
+        </Fragment>,
+      );
+    } else {
+      if (run) parts.push(<Fragment key={`${index}-t`}>{run}</Fragment>);
+      parts.push(
+        <span className="nb" key={index}>
+          {part}
+        </span>,
+      );
+    }
+    run = "";
+  });
+  if (run) parts.push(<Fragment key="end">{run}</Fragment>);
+  return <>{parts}</>;
 }
 
 /**
@@ -133,8 +191,8 @@ function HangLines({
         return (
           <span className="iw-ln" key={index}>
             {continued ? null : <i aria-hidden="true">{prompt}</i>}
-            {"\u00a0".repeat(lead)}
-            <HangText text={line.slice(lead)} />
+            {/* The indent in the same text as what follows it, as the mock writes "  oci://". */}
+            <HangText text={"\u00a0".repeat(lead) + line.slice(lead)} />
           </span>
         );
       })}
@@ -221,39 +279,47 @@ function ZoorikctlCard(): React.JSX.Element {
   return (
     <article className="iw-card">
       <div className="iw-h">
+        <ZoorikctlMark className="iw-logo zk" />
         <h3 translate="no">{card.name}</h3>
         <span className="iw-tag">{card.tag}</span>
       </div>
       <p className="iw-line">{card.line}</p>
-      <div className="iw-os" role="radiogroup" aria-label="Operating system">
-        {card.systems.map((option, index) => {
-          const on = option.os === current.os;
-          return (
-            <button
-              type="button"
-              role="radio"
-              aria-checked={on ? "true" : "false"}
-              tabIndex={on ? 0 : -1}
-              data-os={option.os}
-              key={option.os}
-              ref={(node) => {
-                buttons.current[index] = node;
-              }}
-              onClick={() => pick(index, false)}
-              onKeyDown={(event) => onKeyDown(event, index)}
-            >
-              {option.name}
-            </button>
-          );
-        })}
+      <div className="iw-term">
+        <div className="iw-bar">
+          <Dots />
+          <div className="iw-os" role="radiogroup" aria-label="Operating system">
+            {card.systems.map((option, index) => {
+              const on = option.os === current.os;
+              const Mark = osMark[option.os];
+              return (
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked={on ? "true" : "false"}
+                  tabIndex={on ? 0 : -1}
+                  data-os={option.os}
+                  key={option.os}
+                  ref={(node) => {
+                    buttons.current[index] = node;
+                  }}
+                  onClick={() => pick(index, false)}
+                  onKeyDown={(event) => onKeyDown(event, index)}
+                >
+                  <Mark />
+                  {option.name}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        {/* A new system is a new well: its copy state starts again. */}
+        <Well
+          key={current.os}
+          lines={current.lines}
+          prompt={current.prompt}
+          label={`Copy the ${current.name} command`}
+        />
       </div>
-      {/* A new system is a new well: its copy state starts again. */}
-      <Well
-        key={current.os}
-        lines={current.lines}
-        prompt={current.prompt}
-        label={`Copy the ${current.name} command`}
-      />
       {"alternative" in current && current.alternative ? (
         <p className="iw-alt">
           Or: <code>{current.alternative}</code>
@@ -280,10 +346,13 @@ export function InstallYourWay(): React.JSX.Element {
           <ZoorikctlCard />
           <article className="iw-card">
             <div className="iw-h">
+              <HelmMark className="iw-logo helm" />
               <h3>{helm.name}</h3>
             </div>
             <p className="iw-line">{helm.line}</p>
-            <Well lines={helm.lines} prompt="$ " label="Copy the Helm command" hang />
+            <NamedTerminal file={helm.file}>
+              <Well lines={helm.lines} prompt="$ " label="Copy the Helm command" hang />
+            </NamedTerminal>
             <p className="iw-alt">
               <span translate="no">{helm.earlyAccess.name}</span>
               {helm.earlyAccess.before}
@@ -298,20 +367,24 @@ export function InstallYourWay(): React.JSX.Element {
           </article>
           <article className="iw-card">
             <div className="iw-h">
+              <TerraformMark className="iw-logo tf" />
               <h3>{terraform.name}</h3>
             </div>
             <p className="iw-line">{terraform.line}</p>
-            {/* No prompt and no copy: the module's source lines, the comments muted. */}
-            <div className="iw-well">
-              <pre>
-                {terraform.lines.map((line, index) => (
-                  <span key={index}>
-                    {index > 0 ? "\n" : null}
-                    {line.startsWith("#") ? <i>{line}</i> : line}
-                  </span>
-                ))}
-              </pre>
-            </div>
+            <NamedTerminal file={terraform.file}>
+              {/* No prompt and no copy: the module's source lines, the comments muted; on a phone the panel scrolls
+                  rather than breaking a path. */}
+              <div className="iw-well">
+                <pre>
+                  {terraform.lines.map((line, index) => (
+                    <span key={index}>
+                      {index > 0 ? "\n" : null}
+                      {line.startsWith("#") ? <i>{line}</i> : line}
+                    </span>
+                  ))}
+                </pre>
+              </div>
+            </NamedTerminal>
             <p className="iw-alt">{terraform.note}</p>
             <CardLinks links={terraform.links} />
           </article>

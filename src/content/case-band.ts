@@ -25,8 +25,8 @@ const say = (step: CaseStudyCostStep, index: number): string => {
 };
 
 export const caseBand = {
-  /** "Validation Lab · Coral", beside Coral's mark (our own cluster is labelled a lab result; client studies will read "Customer"); the name is kept out of translation. */
-  eyebrow: "Validation Lab · Coral",
+  /** "Value Lab · Coral", beside Coral's mark (our own cluster is labelled a lab result; client studies will read "Customer"); the name is kept out of translation. */
+  eyebrow: "Value Lab · Coral",
   /** The study's own headline, its second half on a line of its own in the good green. */
   title: caseStudy.hero.title,
   titleGreen: caseStudy.hero.titleGreen,

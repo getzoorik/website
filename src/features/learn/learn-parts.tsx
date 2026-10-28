@@ -33,10 +33,11 @@ export function OutGlyph(): React.JSX.Element {
 
 export interface LearnHeroProps {
   /** The small line over the h1 (`.vp-kick`) on a comparison page: what the page is and the day its facts were
-   *  checked. The hub has none. */
-  readonly kicker?: string;
+   *  checked; on the glossary's hub, its link back to /learn. The hub has none. */
+  readonly kicker?: ReactNode;
   readonly title: ReactNode;
-  readonly deck: ReactNode;
+  /** The line under the h1; the hub has none, so its search follows the h1. */
+  readonly deck?: ReactNode;
   /** What follows the deck: the hub's search. */
   readonly after?: ReactNode;
 }
@@ -53,7 +54,7 @@ export function LearnHero({ kicker, title, deck, after }: LearnHeroProps): React
       <div className="wrap hero-in">
         {kicker ? <p className="vp-kick">{kicker}</p> : null}
         <h1>{title}</h1>
-        <p className="doc-deck">{deck}</p>
+        {deck ? <p className="doc-deck">{deck}</p> : null}
         {after}
       </div>
     </header>
@@ -63,13 +64,15 @@ export function LearnHero({ kicker, title, deck, after }: LearnHeroProps): React
 /**
  * A Learn page: the skip link, the nav, one `<main>` holding the hero, the page's sections and
  * the site's closing assessment row, then the footer. The row names both products and opens the assessment for either,
- * as the mocks draw it, and nothing in it rises (`reveal={false}`).
+ * as the mocks draw it, and nothing in it rises (`reveal={false}`). The hub has no closing row (`closing={false}`).
  */
 export function LearnFrame({
   hero,
+  closing = true,
   children,
 }: {
   readonly hero: LearnHeroProps;
+  readonly closing?: boolean;
   readonly children: ReactNode;
 }): React.JSX.Element {
   return (
@@ -81,7 +84,7 @@ export function LearnFrame({
       <main id="main" tabIndex={-1}>
         <LearnHero {...hero} />
         {children}
-        <AssessSection reveal={false} />
+        {closing ? <AssessSection reveal={false} /> : null}
       </main>
       <FooterSection />
     </>
