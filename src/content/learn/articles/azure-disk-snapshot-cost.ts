@@ -5,9 +5,9 @@ import { figure as figure2 } from "@/features/learn/figures/azure-disk-snapshot-
 export const article: Article = {
   slug: "azure-disk-snapshot-cost",
   title: "Azure disk snapshot cost: incremental vs full",
-  meta: "Azure disk snapshot cost explained: full snapshots charge for all used data each time, incremental ones for the changes. October 2026 rates and a size check.",
+  meta: "Azure disk snapshot cost explained: full snapshots hold all used data each time, incremental ones only the changes. October 2026 rates and a size check.",
   h1: "Azure disk snapshot cost: incremental vs full snapshots",
-  deck: "What you pay for in a managed disk snapshot, why incremental ones cost less, and how to find the ones you still pay for.",
+  deck: "What you pay for in a managed disk snapshot, why incremental ones cost less, and how to find forgotten ones.",
   card: "What full and incremental snapshots cost, with October 2026 rates and a way to check what each one holds.",
   product: "amoeba",
   hub: "Block storage",
@@ -15,8 +15,9 @@ export const article: Article = {
   published: "2026-10-28",
   updated: "2026-10-28",
   author: "pulkit",
+  cover: "/learn-covers/zoorik-learn-azure-disk-snapshot-cost-1200x630.webp",
   short:
-    "Azure disk snapshot cost is the snapshot’s used size multiplied by a per-GB monthly rate, charged separately from the disk. Each full snapshot charges for all the data on the disk. An incremental snapshot charges for that data once, then only the changes, and always sits on Standard HDD storage. In East US in October 2026, Standard storage snapshots list at $0.05 per GB per month. You pay for every snapshot until you delete it.",
+    "Azure disk snapshot cost is the snapshot’s used size times a per-GB monthly rate, on top of the disk, until you delete the snapshot. Each full snapshot holds all the disk’s data, but an incremental chain holds it once, then only changes. Incremental ones always sit on Standard HDD: $0.05 per GB per month in East US, October 2026.",
   sections: [
     {
       id: "azure-disk-snapshot-cost-follows-the-data",
@@ -28,7 +29,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The snapshot charges only for the 50\u00a0GiB of data it holds, a tenth of the disk’s size. That charge is separate from the disk’s, and comes on top of it.",
+          text: "You pay only for the 50\u00a0GiB of data the snapshot holds, a tenth of the disk’s size. That charge is separate from the disk’s, and comes on top of it.",
         },
         { kind: "svg", figure: figure1 },
         {
@@ -86,6 +87,11 @@ export const article: Article = {
           text: "Full snapshots can sit on Standard HDD or Premium SSD storage. Microsoft recommends standard storage for snapshots, because premium snapshots cost more.",
         },
         {
+          kind: "h3",
+          id: "seven-daily-snapshots-full-vs-incremental",
+          title: "Seven daily snapshots, full vs incremental",
+        },
+        {
           kind: "callout",
           label: "Worked example",
           text: "A disk holds 200\u00a0GB of data, and about 5\u00a0GB of it changes each day. You take one snapshot a day and keep the last seven.",
@@ -118,8 +124,9 @@ export const article: Article = {
         {
           kind: "code",
           lang: "bash",
-          code: "az snapshot create --resource-group <resource-group> --name <snapshot-name> --source <disk-id> --incremental true",
+          code: "az snapshot create --resource-group <resource-group> \\\n  --name <snapshot-name> --source <disk-id> \\\n  --incremental true",
         },
+        { kind: "h3", id: "extra-rules-and-limits", title: "Extra rules and limits" },
         {
           kind: "callout",
           label: "For engineers",
@@ -137,14 +144,19 @@ export const article: Article = {
           kind: "p",
           text: "In East US in October 2026, the Retail Prices API lists that fee at $0.40 per provisioned TB for both disk types. Microsoft isn’t charging for the instant access storage through January 2027.",
         },
+        { kind: "p", text: "Incremental snapshots have limits:" },
         {
-          kind: "p",
-          text: "Incremental snapshots have limits. You can keep up to 500 per disk at any one time and create up to seven per disk every five minutes. They can’t move to another subscription or resource group, though you can copy them to another resource group or region.",
+          kind: "ul",
+          items: [
+            "You can keep up to 500 per disk at any one time.",
+            "You can create up to seven per disk every five minutes.",
+            "They can’t move to another subscription or resource group, though you can copy them to another resource group or region.",
+          ],
         },
         {
           kind: "callout",
           label: "Watch out",
-          text: "A chain can restart. Changing a disk’s type or size can give its snapshots a new family. The first snapshot in a new family is a full copy of the disk. So after a resize, the next snapshot can charge for the whole used size again.",
+          text: "A chain can restart. Changing a disk’s type or size can start a new chain, called a new family. Its first snapshot is a full copy, so after a resize you can pay for the whole used size again.",
         },
       ],
     },
@@ -275,7 +287,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "By default it keeps 2\u00a0days of snapshots with the Standard policy, and 7\u00a0days with the Enhanced policy. You can set 1 to 5\u00a0days and 1 to 30\u00a0days respectively.",
+          text: "By default, the Standard policy keeps 2\u00a0days of snapshots, and you can set 1 to 5. The Enhanced policy keeps 7\u00a0days by default, and you can set 1 to 30.",
         },
         {
           kind: "p",

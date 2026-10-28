@@ -6,7 +6,7 @@ import { figure as figure3 } from "@/features/learn/figures/btrfs-unallocated-sp
 export const article: Article = {
   slug: "btrfs-unallocated-space",
   title: "btrfs unallocated space vs free space, explained",
-  meta: "btrfs unallocated space is raw space no chunk holds yet. How it differs from free space, why ENOSPC hits while df shows room, and how balance gives it back.",
+  meta: "btrfs unallocated space is raw space no chunk holds yet. How it differs from free space, why writes fail while df shows room, and how balance gives it back.",
   h1: "btrfs unallocated space vs free space, explained",
   deck: "Why btrfs can run out of space while df shows room, and how balance turns allocated space back into unallocated.",
   card: "Unallocated vs free space in btrfs: read filesystem usage, explain ENOSPC with room left, and fix it.",
@@ -16,8 +16,9 @@ export const article: Article = {
   published: "2026-10-28",
   updated: "2026-10-28",
   author: "sourabh",
+  cover: "/learn-covers/zoorik-learn-btrfs-unallocated-space-1200x630.webp",
   short: [
-    "btrfs unallocated space is raw device space that btrfs hasn’t yet handed to any chunk. Free space is unallocated space plus the room left inside data chunks. Data chunks can’t hold metadata. So when unallocated space reaches zero and metadata chunks fill, writes can fail with “No space left on device” while data chunks have room. A filtered ",
+    "btrfs unallocated space is raw device space no chunk holds yet, and free space also counts the room inside data chunks. Data chunks can’t hold metadata, so once nothing is unallocated and metadata fills, writes can fail with “No space left on device” despite that room. A filtered ",
     { code: "btrfs balance" },
     " packs data chunks and returns whole chunks to unallocated.",
   ],
@@ -45,7 +46,7 @@ export const article: Article = {
             [{ b: "Data." }, " File data only, typically 1\u00a0GiB per block group."],
             [
               { b: "Metadata." },
-              " The filesystem’s internal metadata in B-trees, where a file small enough to fit the inline limit can sit too. Metadata block groups are typically 256\u00a0MiB on a filesystem under 50\u00a0GiB and 1\u00a0GiB above that.",
+              " The filesystem’s internal records, kept in search trees (B-trees), where a very small file can also sit inline. Metadata block groups are typically 256\u00a0MiB on a filesystem under 50\u00a0GiB and 1\u00a0GiB above that.",
             ],
             [
               { b: "System." },
@@ -180,7 +181,7 @@ export const article: Article = {
         { kind: "svg", figure: figure2 },
         {
           kind: "p",
-          text: "Once metadata runs out, the filesystem can’t track new data extents, inline files, reflinks or xattrs, though deletion still works.",
+          text: "Once metadata runs out, btrfs can’t record where new data sits, or store small inline files, reflinked copies or extended attributes (xattrs). Deletion still works.",
         },
         {
           kind: "p",
@@ -192,7 +193,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "It recommends mixed mode under 1\u00a0GiB, softly under 5\u00a0GiB, and it can only be set when you create the filesystem.",
+          text: "It recommends mixed mode under 1\u00a0GiB and suggests it, more loosely, under 5\u00a0GiB. You can set it only when you create the filesystem.",
         },
         { kind: "h3", id: "how-to-tell-the-cases-apart", title: "How to tell the cases apart" },
         {
@@ -265,7 +266,7 @@ export const article: Article = {
           text: [
             "The documentation’s example starts higher, on data block groups about 85% full on average (64.44 / 75.81 = 0.85). A pass with ",
             { code: "-dusage=50" },
-            " relocates 2 of 97 block groups and brings the data total from 75.81\u00a0GiB to 74.03\u00a0GiB.",
+            " relocates 2 block groups and brings the data total from 75.81\u00a0GiB to 74.03\u00a0GiB.",
           ],
         },
         {
@@ -273,8 +274,12 @@ export const article: Article = {
           text: [
             "Raising the filter to ",
             { code: "-dusage=85" },
-            " relocates 13 of 95 and takes it to 68.03\u00a0GiB. That frees about 6\u00a0GiB for new data or metadata block groups. Data used barely moves, to 64.43\u00a0GiB. Across both passes, 75.81 − 68.03 = 7.78\u00a0GiB goes back to unallocated.",
+            " relocates 13 block groups and takes it to 68.03\u00a0GiB. That frees about 6\u00a0GiB for new data or metadata block groups.",
           ],
+        },
+        {
+          kind: "p",
+          text: "Data used barely moves, to 64.43\u00a0GiB. Across both passes, 75.81 − 68.03 = 7.78\u00a0GiB goes back to unallocated.",
         },
         { kind: "svg", figure: figure3 },
         {
@@ -321,6 +326,7 @@ export const article: Article = {
           ],
         },
         { kind: "code", lang: "bash", code: "sudo btrfs filesystem show /mnt/data" },
+        { kind: "h3", id: "four-ways-to-make-work-space", title: "Four ways to make work space" },
         { kind: "p", text: "When it’s too little, work through these in order:" },
         {
           kind: "ol",
@@ -329,7 +335,7 @@ export const article: Article = {
               { b: "Clear empty block groups." },
               " Run ",
               { code: "-dusage=0" },
-              ". It cleans up completely unused block groups without needing work space. The docs suggest it when balance returns ENOSPC on a filesystem that isn’t too full. If btrfs has already removed them itself, the pass finds none.",
+              ", which cleans up completely unused block groups without needing work space. The docs suggest it when balance returns ENOSPC on a filesystem that isn’t too full. If btrfs has already removed them itself, the pass finds none.",
             ],
             [
               { b: "Delete what you can." },
@@ -343,9 +349,9 @@ export const article: Article = {
               { a: "Azure managed disk", href: "/learn/azure-disk-expand-without-downtime" },
               " and ",
               { a: "Amazon EBS", href: "/learn/increase-ebs-volume-size" },
-              " guides explain. Grow the partition too, if there is one. Then resize the filesystem on that device by its devid from ",
+              " guides explain. Grow the partition too, if there is one. Then resize the filesystem on that device by its device ID (devid) from ",
               { code: "btrfs filesystem show" },
-              ". If you leave the devid out, the command resizes devid 1.",
+              ", since without it the command resizes devid 1.",
             ],
           ],
         },
