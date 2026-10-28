@@ -218,6 +218,16 @@ const CARDS: readonly {
     words: "btrfs on multiple disks: how a btrfs pool works",
     paths: ["/learn/btrfs-multiple-disks"],
   },
+  {
+    file: "learn-btrfs-unallocated-space",
+    words: "btrfs unallocated space vs free space, explained",
+    paths: ["/learn/btrfs-unallocated-space"],
+  },
+  {
+    file: "learn-azure-disk-snapshot-cost",
+    words: "Azure disk snapshot cost: incremental vs full",
+    paths: ["/learn/azure-disk-snapshot-cost"],
+  },
   /* The glossary's hub, then each term by its h1. */
   {
     file: "glossary",

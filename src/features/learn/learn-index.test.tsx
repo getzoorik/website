@@ -134,7 +134,13 @@ describe("the Learn index", () => {
             `${article.slug}-${index + 1}`,
           ).toBe(true),
         );
-      if (article.cover) expect(existsSync(`public${article.cover}`), article.cover).toBe(true);
+      /* Every article carries its drawn cover, shown under its byline and on its /learn tile (21 Oct 2026). The
+         generator sets `cover` only when the file exists as it runs, so an article built before its cover lands
+         would ship without one. */
+      expect(article.cover, article.slug).toBe(
+        `/learn-covers/zoorik-learn-${article.slug}-1200x630.webp`,
+      );
+      expect(existsSync(`public${article.cover}`), article.cover).toBe(true);
     }
   });
 
