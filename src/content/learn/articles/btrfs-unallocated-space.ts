@@ -1,5 +1,7 @@
 import type { Article } from "@/content/learn/article";
 import { figure as figure1 } from "@/features/learn/figures/btrfs-unallocated-space/1";
+import { figure as figure2 } from "@/features/learn/figures/btrfs-unallocated-space/2";
+import { figure as figure3 } from "@/features/learn/figures/btrfs-unallocated-space/3";
 
 export const article: Article = {
   slug: "btrfs-unallocated-space",
@@ -15,73 +17,126 @@ export const article: Article = {
   updated: "2026-10-28",
   author: "sourabh",
   short: [
-    "btrfs unallocated space is raw device space that btrfs hasn’t yet handed to any chunk. Free space adds the room left inside chunks already allocated to data. Data chunks can’t hold metadata, so once unallocated space reaches zero and the metadata chunks fill, writes can fail with “No space left on device” while data chunks still have room. A filtered ",
+    "btrfs unallocated space is raw device space that btrfs hasn’t yet handed to any chunk. Free space is unallocated space plus the room left inside data chunks. Data chunks can’t hold metadata. So when unallocated space reaches zero and metadata chunks fill, writes can fail with “No space left on device” while data chunks have room. A filtered ",
     { code: "btrfs balance" },
     " packs data chunks and returns whole chunks to unallocated.",
   ],
   sections: [
     {
-      id: "what-btrfs-unallocated-space-is",
-      title: "What btrfs unallocated space is",
+      id: "btrfs-unallocated-space-is-room-no-chunk",
+      title: "btrfs unallocated space is room no chunk has claimed yet",
       blocks: [
         {
           kind: "p",
-          text: "btrfs hands out a device’s raw space in two stages. First the chunk allocator claims a large range, a chunk, for one type of content, and only then does the filesystem place file data or metadata inside it. The docs sometimes use block group for the same unit. Chunks are allocated as they’re needed, which the troubleshooting page calls dynamic chunk allocation.",
+          text: "Picture a btrfs data disk that refuses writes for lack of space while gigabytes still sit free inside it. That free room has been set aside for file data, and the write needs room for metadata.",
         },
         {
           kind: "p",
-          text: "There are three types. Data block groups store file data and nothing else. Metadata block groups store the filesystem’s internal metadata in B-trees, and a file small enough to fit the inline limit can sit there too. System block groups, a few megabytes in size, map the physical devices onto the filesystem’s logical space. A data block group is typically 1\u00a0GiB, while a metadata block group is typically 256\u00a0MiB on a filesystem under 50\u00a0GiB and 1\u00a0GiB above that.",
+          text: "btrfs hands out a device’s raw space in two stages. First the chunk allocator claims a large range, called a chunk, for one type of content. Only then does the filesystem place file data or metadata inside it.",
         },
         {
           kind: "p",
-          text: "Unallocated space is whatever no block group has claimed yet. It belongs to no type, so it can still become data or metadata. Space goes back to unallocated only when a whole block group is empty, and since kernel 3.18 btrfs deletes an empty block group by itself. A partly used block group keeps its full size, and its free part can take only more of the same type. In the balance documentation’s example, data block groups total 75.81\u00a0GiB with 64.44\u00a0GiB used: about 11\u00a0GiB of room that metadata can’t touch.",
+          text: "The docs also call a chunk a block group, and this guide says block group from here on. Allocation is dynamic: btrfs creates a block group only when it’s needed.",
+        },
+        { kind: "p", text: "There are three types:" },
+        {
+          kind: "ul",
+          items: [
+            [{ b: "Data." }, " File data only, typically 1\u00a0GiB per block group."],
+            [
+              { b: "Metadata." },
+              " The filesystem’s internal metadata in B-trees, where a file small enough to fit the inline limit can sit too. Metadata block groups are typically 256\u00a0MiB on a filesystem under 50\u00a0GiB and 1\u00a0GiB above that.",
+            ],
+            [
+              { b: "System." },
+              " Block groups a few megabytes in size that map the physical devices onto the filesystem’s logical space.",
+            ],
+          ],
+        },
+        {
+          kind: "p",
+          text: "Unallocated space is whatever no block group has claimed yet. It belongs to no type, so it can still become data or metadata.",
+        },
+        {
+          kind: "p",
+          text: "Space goes back to unallocated only when a whole block group is empty. Since kernel 3.18, btrfs deletes an empty block group by itself.",
+        },
+        {
+          kind: "p",
+          text: "A partly used block group keeps its full size, and its free part can take only more of the same type. In the balance documentation’s example, data block groups total 75.81\u00a0GiB, with 64.44\u00a0GiB used. So 75.81 − 64.44 = 11.37\u00a0GiB inside them is room that only file data can use.",
+        },
+        {
+          kind: "p",
+          text: "On a cloud VM, unallocated space still costs money. Azure charges for a managed disk’s provisioned capacity, so you pay for space btrfs never allocated too.",
         },
       ],
     },
     {
-      id: "how-to-read-btrfs-filesystem-usage",
-      title: "How to read btrfs filesystem usage",
+      id: "how-to-read-unallocated-vs-free-space",
+      title: "How to read unallocated vs free space in btrfs filesystem usage",
       blocks: [
         {
           kind: "p",
           text: [
             { code: "btrfs filesystem usage" },
-            " shows both kinds of space in one report. Run it as root, since a regular user sees only the summary.",
+            " shows both kinds of space in one report. Only root sees its breakdown by block group type, so run it with sudo.",
           ],
         },
         { kind: "code", lang: "bash", code: "sudo btrfs filesystem usage /mnt/data" },
-        {
-          kind: "p",
-          text: "The btrfs documentation’s own example is a single 1.82\u00a0TiB device:",
-        },
+        { kind: "p", text: "The btrfs documentation’s example is a single 1.82\u00a0TiB device:" },
         {
           kind: "code",
           lang: "text",
           code: "Overall:\n    Device size:                   1.82TiB\n    Device allocated:              1.17TiB\n    Device unallocated:          669.99GiB\n    Device missing:                  0.00B\n    Device slack:                  1.00GiB\n    Used:                          1.14TiB\n    Free (estimated):            692.57GiB      (min: 692.57GiB)\n    Free (statfs, df)            692.57GiB\n    Data ratio:                       1.00\n    Metadata ratio:                   1.00\n    Global reserve:              512.00MiB      (used: 0.00B)\n    Multiple profiles:                  no\n\nData,single: Size:1.15TiB, Used:1.13TiB (98.26%)\n   /dev/sdb        1.15TiB\n\nMetadata,single: Size:12.00GiB, Used:6.45GiB (53.75%)\n   /dev/sdb       12.00GiB\n\nSystem,single: Size:32.00MiB, Used:144.00KiB (0.44%)\n   /dev/sdb       32.00MiB\n\nUnallocated:\n   /dev/sdb      669.99GiB",
         },
+        { kind: "p", text: "Two lines in that report answer the question:" },
         {
-          kind: "p",
-          text: "The btrfs unallocated vs free question comes down to two lines. Device unallocated is the space no block group has claimed, 669.99\u00a0GiB here. Free (estimated) is the space still usable for data, and it counts the room inside data block groups as well as the unallocated space. The 22.58\u00a0GiB difference is roughly the gap between the data block groups’ 1.15\u00a0TiB size and the 1.13\u00a0TiB they use.",
+          kind: "ul",
+          items: [
+            [{ b: "Device unallocated" }, " is the space no block group has claimed."],
+            [
+              { b: "Free (estimated)" },
+              " counts what’s still usable for data: the room inside data block groups plus the unallocated space.",
+            ],
+          ],
         },
         {
           kind: "p",
-          text: "Free (statfs, df) is what df prints as Avail. It’s worked out another way and may not match the estimate, for example with more than one profile. Neither figure counts the 5.55\u00a0GiB left inside the metadata block groups, 12.00\u00a0GiB in size with 6.45\u00a0GiB used, since that space is kept for metadata.",
+          text: "Free (statfs, df) is what df prints as Avail. It comes from the statfs system call and may not match the estimate, for example with more than one profile.",
         },
-        { kind: "diagram", figure: figure1 },
+        {
+          kind: "callout",
+          label: "Worked example",
+          text: "Here Device unallocated reads 669.99\u00a0GiB and both free lines read 692.57\u00a0GiB. That 692.57 − 669.99 = 22.58\u00a0GiB difference is roughly what’s left inside the data block groups. It’s the gap between their 1.15\u00a0TiB size and the 1.13\u00a0TiB they use.",
+        },
         {
           kind: "p",
-          text: "Device slack is device space the filesystem doesn’t occupy, so when you grow the device under btrfs, the new space shows there until you resize the filesystem. Global reserve is a slice of metadata kept for emergencies such as deleting files on a full filesystem, usually no more than 512\u00a0MiB.",
+          text: "The metadata block groups keep 12.00 − 6.45 = 5.55\u00a0GiB free, and neither free figure counts it. That space is kept for metadata.",
+        },
+        { kind: "svg", figure: figure1 },
+        {
+          kind: "p",
+          text: "Device slack is device space the filesystem doesn’t occupy. When you grow the device under btrfs, the new space shows there until you resize the filesystem.",
+        },
+        {
+          kind: "p",
+          text: "Global reserve is a slice of metadata kept for emergencies such as deleting files on a full filesystem, usually no more than 512\u00a0MiB.",
         },
         {
           kind: "p",
           text: [
             "The ",
             { code: "btrfs filesystem usage" },
-            " Unallocated section breaks the figure down per device. Across several disks that matters, because raid1 keeps its two copies on two different devices, so a new raid1 block group needs unallocated space on two of them. ",
+            " Unallocated section breaks the figure down per device. That matters across several disks, because raid1 keeps its two copies on two different devices. So a new raid1 block group needs unallocated space on two of them.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
             { a: "The guide to btrfs on multiple disks", href: "/learn/btrfs-multiple-disks" },
             " explains the profiles. The older ",
             { code: "btrfs filesystem df" },
-            " prints only the per-type lines, and its man page says ",
+            " prints only the per-type lines, and ",
             { code: "btrfs filesystem usage" },
             " is meant to replace it.",
           ],
@@ -94,53 +149,90 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "The “No space left on device” error (ENOSPC) has several causes and no single fix, the troubleshooting page says. Two come from chunk allocation.",
+          text: "The “No space left on device” error (ENOSPC) has several causes and no single fix. Two come from how block groups are allocated, and the first is the plain case, where df is right.",
+        },
+        {
+          kind: "h3",
+          id: "when-the-data-block-groups-are-full",
+          title: "When the data block groups are full",
         },
         {
           kind: "p",
           text: [
-            "Sometimes data runs out. The troubleshooting page fills a 4.0G filesystem with one file, after which df reports 0 available. ",
+            "Fill a 4.0G filesystem with one file, as the troubleshooting page does, and df then reports 0 available. ",
             { code: "btrfs filesystem df" },
-            " shows data at total=1.98GiB, used=1.98GiB, while metadata has total=1.00GiB with 2.22MiB used. The metadata chunks have room that can’t hold that file’s data, so df is right to call the filesystem full.",
+            " shows data at total=1.98GiB, used=1.98GiB, while metadata has total=1.00GiB with 2.22MiB used. Metadata still has room, but none of it can take file data.",
           ],
+        },
+        {
+          kind: "h3",
+          id: "when-metadata-fills-with-nothing-unallocated",
+          title: "When metadata fills with nothing unallocated",
         },
         {
           kind: "p",
-          text: "The other case is the one behind df showing room. Device unallocated reaches zero while the data block groups still have free space, so df’s Avail stays above zero. Then the metadata block groups fill, and with nothing unallocated btrfs can’t create another one, so writes fail with ENOSPC. Since Linux 4.5, df then reports Avail as 0, though Used stays below Size. According to the troubleshooting page, a filesystem whose metadata is exhausted can’t track new data extents, inline files, reflinks or xattrs. Deletion still works.",
+          text: "This is the case behind df showing room. Device unallocated reaches zero while the data block groups still have free space. Then the metadata block groups fill, and with nothing unallocated, btrfs can’t create another one, so writes fail with ENOSPC.",
         },
         {
           kind: "p",
-          text: [
-            "To tell them apart, read three lines of ",
-            { code: "btrfs filesystem usage" },
-            " together:",
-          ],
+          text: "Before Linux 4.5, df kept showing Avail above zero here. Since 4.5 it reports Avail as 0, and the room shows only as Used below Size.",
         },
+        { kind: "svg", figure: figure2 },
         {
-          kind: "ul",
-          items: [
-            "Device unallocated near zero: nothing left to allocate.",
-            "Data Used close to Data Size: the data block groups are full.",
-            "Metadata Used plus the global reserve equal to Metadata Size: metadata is exhausted, by the man page’s test GlobalReserve/total + Metadata/used = Metadata/total.",
-          ],
+          kind: "p",
+          text: "Once metadata runs out, the filesystem can’t track new data extents, inline files, reflinks or xattrs, though deletion still works.",
         },
         {
           kind: "p",
           text: [
             "The split between types is why mkfs.btrfs offers ",
             { code: "--mixed" },
-            ", which keeps data and metadata in the same block groups. Its man page warns that separate block groups reserve space one type can’t use “and can lead to ENOSPC state.” It recommends mixed mode under 1\u00a0GiB, softly under 5\u00a0GiB, and it can only be set when you create the filesystem.",
+            ", which keeps data and metadata in the same block groups. Its man page warns that separate block groups reserve space one type can’t use “and can lead to ENOSPC state.”",
+          ],
+        },
+        {
+          kind: "p",
+          text: "It recommends mixed mode under 1\u00a0GiB, softly under 5\u00a0GiB, and it can only be set when you create the filesystem.",
+        },
+        { kind: "h3", id: "how-to-tell-the-cases-apart", title: "How to tell the cases apart" },
+        {
+          kind: "p",
+          text: ["Read ", { code: "btrfs filesystem usage" }, " and act on what it shows:"],
+        },
+        {
+          kind: "table",
+          columns: [
+            { label: "What you see", width: "48%" },
+            { label: "What it means", width: "14%" },
+            { label: "What to do", width: "38%" },
+          ],
+          rows: [
+            [
+              "Device unallocated near zero, and Data Used close to Data Size",
+              "The data block groups are full",
+              "Delete data or grow the device (steps 2 and 3 of the balance ENOSPC section below). A data balance finds nothing to pack",
+            ],
+            [
+              "Device unallocated near zero, room left in data, and Metadata Used plus Global reserve equal to Metadata Size (the man page’s test: GlobalReserve/total + Metadata/used = Metadata/total)",
+              "Metadata is exhausted",
+              "Run the filtered balance in the next section",
+            ],
+            [
+              [{ code: "btrfs balance" }, " itself fails with ENOSPC"],
+              "Balance has no work space",
+              "Work through the steps in the balance ENOSPC section below, in order",
+            ],
           ],
         },
       ],
     },
     {
-      id: "how-balance-gives-chunks-back-to-unallocated",
-      title: "How balance gives chunks back to unallocated space",
+      id: "a-filtered-balance-packs-data-block-groups",
+      title: "A filtered balance packs data block groups and returns their space to unallocated",
       blocks: [
         {
           kind: "p",
-          text: "Balance relocates block groups. It usually creates a new block group, moves the old one’s contents there and then removes the old one. With the usage filter it touches only block groups below a fill level you choose, which is how you pack half-empty data block groups and hand whole chunks back to unallocated.",
+          text: "Balance relocates block groups. It usually creates a new block group, moves the old one’s contents there and then removes the old one. With the usage filter it touches only block groups below a fill level you choose.",
         },
         {
           kind: "code",
@@ -151,35 +243,59 @@ export const article: Article = {
           kind: "p",
           text: [
             { code: "-d" },
-            " limits balance to data block groups, and ",
+            " limits balance to data block groups. ",
             { code: "usage=N" },
-            " picks those at most N percent used, written straight after the option with no space, as in ",
+            " picks those at most N percent used. Write it straight after the option with no space, as in ",
             { code: "-dusage=10" },
-            ". Start small: lightly used block groups have the least data to move. Raise the value only while unallocated space is still short.",
+            ".",
           ],
         },
         {
           kind: "p",
           text: [
-            "The balance documentation shows the effect on the example from earlier, 75.81\u00a0GiB of data block groups holding 64.44\u00a0GiB. ",
+            "Start small, at ",
+            { code: "-dusage=0" },
+            " and then ",
+            { code: "-dusage=10" },
+            ", since lightly used block groups have the least data to move. Raise the value only while Device unallocated stays near zero.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "The documentation’s example starts higher, on data block groups about 85% full on average (64.44 / 75.81 = 0.85). A pass with ",
             { code: "-dusage=50" },
-            " relocates 2 of 97 chunks and brings the total to 74.03\u00a0GiB. A second run with ",
-            { code: "-dusage=85" },
-            " relocates 13 of 95 chunks and takes it to 68.03\u00a0GiB, freeing about 6\u00a0GiB for new data or metadata block groups.",
+            " relocates 2 of 97 block groups and brings the data total from 75.81\u00a0GiB to 74.03\u00a0GiB.",
           ],
         },
         {
           kind: "p",
-          text: "Leave metadata block groups alone unless their used and total figures are far apart. Running out of metadata is the more severe problem, the same page says, so metadata needn’t be packed tightly.",
+          text: [
+            "Raising the filter to ",
+            { code: "-dusage=85" },
+            " relocates 13 of 95 and takes it to 68.03\u00a0GiB. That frees about 6\u00a0GiB for new data or metadata block groups. Data used barely moves, to 64.43\u00a0GiB. Across both passes, 75.81 − 68.03 = 7.78\u00a0GiB goes back to unallocated.",
+          ],
+        },
+        { kind: "svg", figure: figure3 },
+        {
+          kind: "p",
+          text: "Leave metadata block groups alone unless their used and total figures are far apart. Running out of metadata is the more severe problem, so metadata needn’t be packed tightly.",
         },
         {
           kind: "p",
-          text: [
-            "Balance is expensive: the docs call it very IO intensive and possibly quite CPU intensive. It runs only on a mounted filesystem, ",
-            { code: "btrfs balance cancel" },
-            " stops it, and an interrupted balance resumes at the next mount unless you mount with ",
-            { code: "skip_balance" },
-            ". Without filters it moves everything, so btrfs-progs warns you and waits a few seconds first.",
+          text: "Balance is expensive: the docs call it very IO intensive and possibly quite CPU intensive. Also:",
+        },
+        {
+          kind: "ul",
+          items: [
+            "It runs only on a mounted filesystem.",
+            [{ code: "btrfs balance cancel" }, " stops it."],
+            [
+              "An interrupted balance resumes at the next mount, unless you mount with ",
+              { code: "skip_balance" },
+              ".",
+            ],
+            "Without filters it moves everything, so btrfs-progs warns you and waits a few seconds first.",
           ],
         },
       ],
@@ -190,7 +306,11 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Balance has an ENOSPC of its own, which the docs say isn’t the same as free space running out. To relocate a block group, balance first needs work space: device space with no block group on it. A fully allocated filesystem has none, so balance can fail while much of the allocated space sits empty.",
+          text: "Balance has an ENOSPC of its own, and it isn’t the same as free space running out. To relocate a block group, balance first needs work space: device space with no block group on it.",
+        },
+        {
+          kind: "p",
+          text: "A fully allocated filesystem has none. Balance can then fail while much of the allocated space sits empty.",
         },
         {
           kind: "p",
@@ -206,44 +326,59 @@ export const article: Article = {
           kind: "ol",
           items: [
             [
-              "Run ",
+              { b: "Clear empty block groups." },
+              " Run ",
               { code: "-dusage=0" },
-              " first. It cleans up completely unused block groups without needing work space, and the docs suggest it when balance returns ENOSPC on a filesystem that isn’t too full.",
+              ". It cleans up completely unused block groups without needing work space. The docs suggest it when balance returns ENOSPC on a filesystem that isn’t too full. If btrfs has already removed them itself, the pass finds none.",
             ],
             [
-              "Delete what you can, then retry ",
+              { b: "Delete what you can." },
+              " Then retry ",
               { code: "-dusage=10" },
               ". Deletion works even with metadata exhausted, and removing data can leave whole block groups empty, which btrfs then frees on its own.",
             ],
             [
-              "Grow the device. On a cloud VM, expand the disk first, as the ",
+              { b: "Grow the device." },
+              " On a cloud VM, expand the disk first, as the ",
               { a: "Azure managed disk", href: "/learn/azure-disk-expand-without-downtime" },
               " and ",
               { a: "Amazon EBS", href: "/learn/increase-ebs-volume-size" },
-              " guides explain, and grow the partition if there is one. Then resize the filesystem on that device by its devid from ",
+              " guides explain. Grow the partition too, if there is one. Then resize the filesystem on that device by its devid from ",
               { code: "btrfs filesystem show" },
-              ", since the command resizes devid 1 when you leave it out.",
-            ],
-            [
-              "Add a device for the length of the balance. ",
-              { code: "btrfs device add" },
-              " is instant and doesn’t touch existing data, and the new device brings unallocated space, so balance gets its work space. With raid1, grow or add two devices.",
+              ". If you leave the devid out, the command resizes devid 1.",
             ],
           ],
         },
         { kind: "code", lang: "bash", code: "sudo btrfs filesystem resize <devid>:max /mnt/data" },
+        {
+          kind: "ol",
+          start: 4,
+          items: [
+            [
+              { b: "Add a device for the length of the balance." },
+              " ",
+              { code: "btrfs device add" },
+              " is instant and doesn’t touch existing data. The new device brings unallocated space, so balance gets its work space. With raid1, grow or add two devices.",
+            ],
+          ],
+        },
         {
           kind: "code",
           lang: "bash",
           code: "sudo btrfs device add /dev/<extra-disk> /mnt/data\nsudo btrfs balance start -dusage=10 /mnt/data",
         },
         {
+          kind: "callout",
+          label: "Watch out",
+          text: "Taking the extra device out again moves all of its data back onto the others. That can take a long time. It fails if the profile needs more devices than would remain, as raid1 does going from two devices to one.",
+        },
+        {
           kind: "p",
           text: [
-            "Taking the extra device out again moves all of its data back onto the others. That can take long, and it fails if the profile needs more devices than would remain, as raid1 does going from two devices to one. Detach and delete the cloud disk only once ",
+            "Detach and delete the cloud disk only once ",
             { code: "btrfs filesystem show" },
-            " no longer lists it, and ",
-            { a: "the guide to removing a device", href: "/learn/btrfs-device-remove" },
+            " no longer lists it. ",
+            { a: "The guide to removing a device", href: "/learn/btrfs-device-remove" },
             " has the whole procedure.",
           ],
         },
@@ -261,7 +396,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "On a cloud VM, unallocated space still costs money. Azure bills a managed disk for its provisioned capacity, so space btrfs never allocated is billed too. Nor can the disk shrink to fit: Microsoft says shrinking an existing disk “isn’t supported and might result in data loss,” as ",
+            "A managed disk can’t shrink to fit its data. Microsoft says shrinking an existing disk “isn’t supported and might result in data loss,” as ",
             { a: "the managed disk shrink guide", href: "/learn/shrink-azure-managed-disk" },
             " explains. Across several disks, you give space back by emptying one disk, taking it out of the filesystem and deleting it.",
           ],
@@ -270,35 +405,35 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            ", Zoorik’s block storage optimization for Azure and AWS, builds this layout: one btrfs pool per VM, started on at least 2 data disks of equal size, each data mount a subvolume at its old path. Amoeba sizes the pool from the highest use of the last 7\u00a0days, so it sits inside its target band with room for the largest recent 15-minute rise and at least 10\u00a0GiB free. These rules keep it short of full:",
+            " optimizes block storage. It works on the data disks of running VMs: Azure managed disks and Amazon EBS volumes, on Windows and Linux VMs. It never touches the OS disk or root volume.",
           ],
         },
         {
           kind: "ul",
           items: [
             [
-              { b: "The band." },
-              " Amoeba holds each pool inside a target band, 80% to 90% full by default.",
+              { b: "The pool." },
+              " Amoeba moves a VM’s data disks onto one btrfs pool, sized to your data, with room to grow. Each data mount becomes a subvolume at its old path.",
             ],
             [
-              { b: "The floor." },
-              " When free space falls below 5% of the pool or 10\u00a0GiB, whichever is larger, or the last 10\u00a0minutes’ fill rate would reach that within 30\u00a0minutes, Amoeba expands at once.",
+              { b: "Growing." },
+              " Amoeba grows the pool while it stays mounted, before it fills, and sooner when data arrives fast. It also watches unallocated space. When too little is left for new metadata, it adds room to the pool.",
             ],
             [
-              { b: "The drain." },
-              " A shrink takes one disk at a time. The agent moves its data onto the others with ",
+              { b: "Shrinking." },
+              " When your data goes down and stays down, Amoeba shrinks the pool one disk at a time. It moves that disk’s data onto the others with ",
               { code: "btrfs device remove" },
-              ", and Amoeba detaches and deletes the empty disk, with no snapshot.",
+              ", then detaches the empty disk and deletes it. So you pay for close to what you use.",
             ],
             [
-              { b: "The stops." },
-              " Amoeba never detaches and deletes a disk while the pool is at or above the band’s top edge, or while an urgent expand runs.",
+              { b: "Safe shrinks." },
+              " Amoeba never takes a disk out while the pool is nearly full, or while it’s growing the pool.",
             ],
           ],
         },
         {
           kind: "p",
-          text: "Shrinks start only after the move is done and a full 7\u00a0days of data have been collected.",
+          text: "On Linux, the VM needs a recent kernel with btrfs. Every service that keeps a data mount open must run under systemd. The VM also needs a few free disk slots for the pool.",
         },
       ],
     },
