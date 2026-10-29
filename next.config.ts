@@ -126,10 +126,45 @@ const nextConfig: NextConfig = {
     ]);
     const moved = [
       { source: "/resources", destination: "/docs", permanent: true },
-      /* The case studies live under Value Lab: the hub, and each study under it. `:slug` is never empty, so OpenNext
-         substitutes it (the root's empty match is the only case it does not). */
+      /* The case studies' hub is Value Lab, and each study is at the site's root (owner, 29 Oct 2026): the old
+         addresses, the hub's and each study's, go straight there, never through a second redirect. The Coral study was
+         the only one ever under /case-studies. */
       { source: "/case-studies", destination: "/value-lab", statusCode: 301 },
-      { source: "/case-studies/:slug", destination: "/value-lab/:slug", statusCode: 301 },
+      {
+        source: "/case-studies/coral-dev-cluster",
+        destination: "/coral-value-lab",
+        statusCode: 301,
+      },
+      { source: "/value-lab/coral-dev-cluster", destination: "/coral-value-lab", statusCode: 301 },
+      { source: "/value-lab/amoeba-lab-vms", destination: "/amoeba-value-lab", statusCode: 301 },
+      /* The four troubleshooting pages under /docs are two now, one per product at the site's root: each old page
+         goes to its product's. */
+      {
+        source: "/docs/coral-not-connecting-to-cluster",
+        destination: "/coral-troubleshooting",
+        statusCode: 301,
+      },
+      {
+        source: "/docs/coral-not-removing-nodes",
+        destination: "/coral-troubleshooting",
+        statusCode: 301,
+      },
+      {
+        source: "/docs/amoeba-not-showing-my-vm",
+        destination: "/amoeba-troubleshooting",
+        statusCode: 301,
+      },
+      {
+        source: "/docs/amoeba-not-rightsizing-disks",
+        destination: "/amoeba-troubleshooting",
+        statusCode: 301,
+      },
+      /* The research papers' first address. */
+      {
+        source: "/research-cloud-cost-optimization",
+        destination: "/cloud-cost-optimization-research-papers",
+        statusCode: 301,
+      },
       /* Cloud cost optimization tools and the comparison pages under it live at /cloud-cost-optimization-library: its
          old address and each page under it move there. */
       {

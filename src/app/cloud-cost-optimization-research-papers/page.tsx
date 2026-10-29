@@ -12,7 +12,7 @@ import "@/styles/community.css";
 import "@/styles/research.css";
 
 /**
- * `/research-cloud-cost-optimization`: research papers on cloud cost optimization, by subject. Indexed, listed in the
+ * `/cloud-cost-optimization-research-papers`: research papers on cloud cost optimization, by subject. Indexed, listed in the
  * sitemap, and prerendered at build like every page here. It is drawn on /community's frame and carries Learn's and
  * /community's sheets, as the mock does, then its own.
  */

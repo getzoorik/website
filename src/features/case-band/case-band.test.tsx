@@ -59,7 +59,7 @@ describe("the case study band", () => {
     expect(links).toHaveLength(1);
     const [button] = links;
     expect(button).toHaveClass("btn", "btn-light");
-    expect(button).toHaveAttribute("href", "/value-lab/coral-dev-cluster");
+    expect(button).toHaveAttribute("href", "/coral-value-lab");
     expect(button!.getAttribute("href")).toBe(caseStudy.route);
     expect(text(button!)).toBe("Read the case study");
     /* Same tab: no new-tab hint, the plain arrow. */

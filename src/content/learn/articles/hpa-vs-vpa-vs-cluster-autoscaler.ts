@@ -399,7 +399,7 @@ export const article: Article = {
             "On our own AKS development cluster, Coral removed one of two 4-CPU workers, then rebalanced the remaining worker onto a cheaper machine of the same size. Eight days after we connected it, the cluster cost $154.76 a month instead of $368.65. The details are in ",
             {
               a: "How we reduced our own cluster’s machine bill by 58%",
-              href: "/value-lab/coral-dev-cluster",
+              href: "/coral-value-lab",
             },
             ", and ",
             { a: "Coral’s FAQ", href: "/coral/faq#how-does-coral-interact-with-cluster" },

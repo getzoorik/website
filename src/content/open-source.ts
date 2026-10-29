@@ -36,7 +36,7 @@ export type GuideBlock =
     };
 
 /**
- * A guide in the docs guide frame (`OsGuidePage`): the three guides here, and the four troubleshooting pages
+ * A guide in the docs guide frame (`OsGuidePage`): the three guides here, and the two troubleshooting pages
  * (`troubleshooting.ts`), which add their own product and date.
  */
 export interface OpenSourceGuide {

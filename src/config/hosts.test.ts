@@ -82,16 +82,62 @@ describe("the Docs hub's old address", () => {
   });
 });
 
-describe("the case studies' hub's old address", () => {
-  it("301s /case-studies to Value Lab, and each study's old address to its own under Value Lab", async () => {
-    const hub = await respond("https://zoorik.com/case-studies");
-    expect(hub.status).toBe(301);
-    expect(getRedirectUrl(hub)).toBe("https://zoorik.com/value-lab");
-    const old = await respond("https://zoorik.com/case-studies/coral-dev-cluster");
-    expect(old.status).toBe(301);
-    expect(getRedirectUrl(old)).toBe("https://zoorik.com/value-lab/coral-dev-cluster");
-    const study = await respond("https://zoorik.com/value-lab/coral-dev-cluster");
-    expect(study.status).not.toBe(301);
+/** Each old address, and the page it now 301s to. */
+async function expectMoved(moves: readonly (readonly [string, string])[]) {
+  for (const [from, to] of moves) {
+    const old = await respond(`https://zoorik.com${from}`);
+    expect(old.status, from).toBe(301);
+    expect(getRedirectUrl(old), from).toBe(`https://zoorik.com${to}`);
+    expect((await respond(`https://zoorik.com${to}`)).status, to).toBe(200);
+  }
+}
+
+describe("the case studies' old addresses", () => {
+  it("301s /case-studies to Value Lab, which stays where it is, and each study's old address straight to its own at the root", async () => {
+    await expectMoved([
+      ["/case-studies", "/value-lab"],
+      ["/case-studies/coral-dev-cluster", "/coral-value-lab"],
+      ["/value-lab/coral-dev-cluster", "/coral-value-lab"],
+      ["/value-lab/amoeba-lab-vms", "/amoeba-value-lab"],
+    ]);
+  });
+
+  it("moves no other address under /case-studies or /value-lab", async () => {
+    expect((await respond("https://zoorik.com/case-studies/no-such-study")).status).toBe(200);
+    expect((await respond("https://zoorik.com/value-lab/no-such-study")).status).toBe(200);
+  });
+});
+
+describe("the troubleshooting pages' old addresses under /docs", () => {
+  it("301s each of the four old pages to its product's troubleshooting page", async () => {
+    await expectMoved([
+      ["/docs/coral-not-connecting-to-cluster", "/coral-troubleshooting"],
+      ["/docs/coral-not-removing-nodes", "/coral-troubleshooting"],
+      ["/docs/amoeba-not-showing-my-vm", "/amoeba-troubleshooting"],
+      ["/docs/amoeba-not-rightsizing-disks", "/amoeba-troubleshooting"],
+    ]);
+  });
+});
+
+describe("the research papers' first address", () => {
+  it("301s /research-cloud-cost-optimization to /cloud-cost-optimization-research-papers", async () => {
+    await expectMoved([
+      ["/research-cloud-cost-optimization", "/cloud-cost-optimization-research-papers"],
+    ]);
+  });
+});
+
+describe("every moved page", () => {
+  it("is reached in one hop: no redirect lands on another redirect", async () => {
+    /* The literal moves; a rule with a parameter is checked by its own describe above. */
+    const rules = ((await nextConfig.redirects?.()) ?? []).filter(
+      (rule) => !rule.has && !/[:*(]/.test(rule.destination),
+    );
+    expect(rules.length).toBeGreaterThan(0);
+    for (const rule of rules) {
+      const landing = await respond(`https://zoorik.com${rule.destination}`);
+      expect(landing.status, `${rule.source} → ${rule.destination}`).toBe(200);
+    }
   });
 });
 

@@ -8,7 +8,7 @@ import { OsCommandWell } from "@/features/open-source/os-command-well";
 import { OsText } from "@/features/open-source/os-text";
 
 /**
- * The guides under /docs, in the article frame: the three install and contributing guides and the four
+ * The guides in the article frame: the three install and contributing guides under /docs and the two
  * troubleshooting pages. Each section's name beside its text, nothing folded.
  * The top line is "Updated 16 October 2026 · Published by Zoorik" (the guide's own date where it has one), then the
  * short answer where there is one. Command

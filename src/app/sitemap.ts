@@ -114,7 +114,7 @@ const contentDates: Partial<Record<string, string>> = {
   [openSourceGuides.helm.route]: openSourceUpdated,
   [openSourceGuides.terraform.route]: openSourceUpdated,
   [openSourceGuides.contributing.route]: openSourceUpdated,
-  /* The four troubleshooting pages print "Updated 29 October 2026". */
+  /* The two troubleshooting pages print "Updated 29 October 2026". */
   ...Object.fromEntries(
     Object.values(troubleshootingGuides).map(
       (guide) => [guide.route, guide.updated ?? troubleshootingUpdated] as const,
@@ -151,9 +151,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     routes.docsInstallHelm,
     routes.docsInstallTerraform,
     routes.docsContributing,
-    routes.docsCoralNotConnecting,
-    routes.docsCoralNotRemovingNodes,
-    ...(amoebaDocs ? [routes.docsAmoebaNotShowingVm, routes.docsAmoebaNotRightsizing] : []),
+    routes.coralTroubleshooting,
+    ...(amoebaDocs ? [routes.amoebaTroubleshooting] : []),
     routes.openSource,
     routes.learn,
     ...learnArticles.map(articleRoute),

@@ -82,24 +82,14 @@ const CARDS: readonly {
     paths: ["/docs/contributing"],
   },
   {
-    file: "docs-coral-not-connecting-to-cluster",
-    words: "Coral is not connecting to my cluster",
-    paths: [routes.docsCoralNotConnecting],
+    file: "coral-troubleshooting",
+    words: "Coral troubleshooting",
+    paths: [routes.coralTroubleshooting],
   },
   {
-    file: "docs-coral-not-removing-nodes",
-    words: "Why Coral is not removing a node",
-    paths: [routes.docsCoralNotRemovingNodes],
-  },
-  {
-    file: "docs-amoeba-not-showing-my-vm",
-    words: "Amoeba is not showing my VM",
-    paths: [routes.docsAmoebaNotShowingVm],
-  },
-  {
-    file: "docs-amoeba-not-rightsizing-disks",
-    words: "Why Amoeba has not rightsized my disks yet",
-    paths: [routes.docsAmoebaNotRightsizing],
+    file: "amoeba-troubleshooting",
+    words: "Amoeba troubleshooting",
+    paths: [routes.amoebaTroubleshooting],
   },
   { file: "open-source", words: "Open source", paths: ["/open-source"] },
   { file: "learn", words: "Cloud cost optimization guides", paths: ["/learn"] },
@@ -126,7 +116,7 @@ const CARDS: readonly {
   {
     file: "value-lab-coral-dev-cluster",
     words: "How we reduced our own cluster’s machine bill by 58%",
-    paths: ["/value-lab/coral-dev-cluster"],
+    paths: [routes.caseStudyCoralDevCluster],
   },
   {
     file: "value-lab-amoeba-lab-vms",

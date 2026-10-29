@@ -2,43 +2,45 @@ import { routes } from "@/config/site";
 import type { OpenSourceGuide } from "@/content/open-source";
 
 /**
- * The four troubleshooting pages under /docs: two for Coral, two for Amoeba. Each is a check list in the docs guide
- * frame (`OsGuidePage`, the install guides' frame): the short answer under the byline, one section per check, then
- * "Still stuck?" and the foot links. Generated once from the checked drafts in
- * `docs/website-seo/new-pages-2026-10-29/troubleshooting/` through the mock's own parser, so every string is the
- * mock's. Text is the guides' markup-lite: `code`, **bold** and [text](href).
+ * The two troubleshooting pages, one per product: /coral-troubleshooting and /amoeba-troubleshooting. Each is a check
+ * list in the docs guide frame (`OsGuidePage`, the install guides' frame): one section per topic, opening on the
+ * topic's short answer with each check under it as an h3, then "Still stuck?" and the foot links. The topics were
+ * generated once from the checked drafts in `docs/website-seo/new-pages-2026-10-29/troubleshooting/` through the
+ * mock's own parser, so every string is the mock's. Text is the guides' markup-lite: `code`, **bold** and [text](href).
  *
  * 🔴 PRODUCT LEVEL, CLIENT SOURCES ONLY. Every check traces to a line in the client-facing guides, FAQs and install
  * guides (the drafts' `ledger.md`), never to an internal document: no thresholds, no internal timings, no phase
  * names, no slot counts. Re-read those sources before changing a line.
  */
 
-/** The four pages' printed date ("Updated 29 October 2026"), which the sitemap gives them too. */
+/** The two pages' printed date ("Updated 29 October 2026"), which the sitemap gives them too. */
 export const troubleshootingUpdated = "29 October 2026";
 
-export type TroubleshootingId =
-  "coralNotConnecting" | "coralNotRemovingNodes" | "amoebaNotShowingVm" | "amoebaNotRightsizing";
+export type TroubleshootingId = "coral" | "amoeba";
 
 export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourceGuide>> = {
-  coralNotConnecting: {
-    route: routes.docsCoralNotConnecting,
+  coral: {
+    route: routes.coralTroubleshooting,
     product: "coral",
     updated: troubleshootingUpdated,
     meta: {
-      title: "Coral is not connecting to my cluster",
+      title: "Coral troubleshooting",
       description:
-        "Coral is not connecting to your AKS or EKS cluster? Check the cluster, your access, the connect token, the network and the first report, in that order.",
+        "Coral is not connecting to your AKS or EKS cluster, or not removing a node? The checks to run in order, what each one means and what to do.",
     },
     hero: {
-      title: "Coral is not connecting to my cluster: what to check",
-      deck: "The checks to run, in order, when a cluster does not connect or shows no figures.",
+      title: "Coral troubleshooting",
+      deck: "What to check, in order, when a cluster doesn’t connect or a node isn’t removed.",
     },
-    short:
-      "**Short answer.** To connect, you need a supported cluster, the right access, a new connect command, and a cluster that can reach Zoorik. Check them in the order below. Once the agent registers, the cluster appears on Overview, and its figures follow within minutes.",
     sections: [
       {
-        title: "Check the cluster is supported",
+        title: "Coral is not connecting to my cluster",
         blocks: [
+          {
+            kind: "p",
+            text: "**Short answer.** To connect, you need a supported cluster, the right access, a new connect command, and a cluster that can reach Zoorik. Check them in the order below. Once the agent registers, the cluster appears on Overview, and its figures follow within minutes.",
+          },
+          { kind: "h3", text: "Check the cluster is supported" },
           {
             kind: "p",
             text: "**Look at:** the cluster’s cloud, its Kubernetes version and its nodes.",
@@ -51,11 +53,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "p",
             text: "**What to do:** Make sure the cluster meets these before you connect it. A cluster that shows as “Local” still connects, but its figures have no cloud prices.",
           },
-        ],
-      },
-      {
-        title: "Check the command points at the right cluster",
-        blocks: [
+          { kind: "h3", text: "Check the command points at the right cluster" },
           { kind: "p", text: "**Look at:** the kubeconfig context the connect command uses." },
           {
             kind: "p",
@@ -65,11 +63,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "p",
             text: "**What to do:** Add `--kube-context <name>` to the command to pick the cluster. Run it as a user with cluster-admin.",
           },
-        ],
-      },
-      {
-        title: "Check the connect command is new",
-        blocks: [
+          { kind: "h3", text: "Check the connect command is new" },
           {
             kind: "p",
             text: "**Look at:** when you copied the command, and whether you ran it before.",
@@ -94,11 +88,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "cmd",
             text: "kubectl --context <context> -n zoorik-agent rollout restart deployment/zoorik-agent",
           },
-        ],
-      },
-      {
-        title: "Check your cloud tools and permissions",
-        blocks: [
+          { kind: "h3", text: "Check your cloud tools and permissions" },
           {
             kind: "p",
             text: "**Look at:** your cloud’s command-line tool, and your permissions in your cloud account.",
@@ -133,11 +123,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "p",
             text: "**What to do:** Sign in, or ask for these permissions, then run the command again. To see what connect will change first, add `--dry-run`. It prints every cloud command and everything the agent setup installs, and changes nothing.",
           },
-        ],
-      },
-      {
-        title: "Check the network",
-        blocks: [
+          { kind: "h3", text: "Check the network" },
           { kind: "p", text: "**Look at:** what the cluster can reach on the internet." },
           {
             kind: "p",
@@ -155,11 +141,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "p",
             text: "**What to do:** Allow these, then wait for the agent’s first report.",
           },
-        ],
-      },
-      {
-        title: "Check what connect set up in your cloud",
-        blocks: [
+          { kind: "h3", text: "Check what connect set up in your cloud" },
           {
             kind: "p",
             text: "**Look at:** your answer when zoorikctl asked about the cloud changes.",
@@ -178,11 +160,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           { kind: "cmd", text: "zoorikctl cluster grant-node-deletion" },
           { kind: "p", text: "To set up an autoscaler later, run `zoorikctl cluster prepare`." },
-        ],
-      },
-      {
-        title: "Wait for the first report",
-        blocks: [
+          { kind: "h3", text: "Wait for the first report" },
           { kind: "p", text: "**Look at:** Overview, and the cluster’s own pages." },
           {
             kind: "p",
@@ -192,11 +170,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "p",
             text: "**What to do:** Keep the page open: it updates by itself. Until data arrives, figures read “Calculating” or “Fetching prices”, never a guess. If the page keeps waiting, check the network again.",
           },
-        ],
-      },
-      {
-        title: "Check your Helm install",
-        blocks: [
+          { kind: "h3", text: "Check your Helm install" },
           { kind: "p", text: "**Look at:** your `helm install` command and its values." },
           {
             kind: "p",
@@ -239,11 +213,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             ],
             widths: ["30%", "36%", "34%"],
           },
-        ],
-      },
-      {
-        title: "If the cluster shows “Not reporting”",
-        blocks: [
+          { kind: "h3", text: "If the cluster shows “Not reporting”" },
           { kind: "p", text: "**Look at:** the cluster’s entry in the console." },
           {
             kind: "p",
@@ -253,11 +223,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "p",
             text: "**What to do:** If you disconnected it, connect it again with a new command from “Connect cluster”. If you didn’t, email us.",
           },
-        ],
-      },
-      {
-        title: "If the Agent release card says “Re-run connect”",
-        blocks: [
+          { kind: "h3", text: "If the Agent release card says “Re-run connect”" },
           { kind: "p", text: "**Look at:** the “Agent release” card on the cluster’s Dashboard." },
           {
             kind: "p",
@@ -270,49 +236,13 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
         ],
       },
       {
-        title: "Still stuck?",
+        title: "Coral is not removing a node",
         blocks: [
           {
             kind: "p",
-            text: "The [Coral product guide](/coral/guide) and the [Coral FAQ](/coral/faq) have the full detail.",
+            text: "**Short answer.** As Coral rebalances your cluster, it empties nodes you don’t need, and your autoscaler removes them. A node often stays because a switch is off, a pod can’t move safely, there’s no room elsewhere, or the pool is at its minimum. Node list → “What’s holding them” shows the reason for each held node.",
           },
-          {
-            kind: "p",
-            text: "Email founders@zoorik.com, or [pick a time to talk](https://cal.com/zoorik/talk). Tell us what you ran and what the console shows. Remove tokens, keys and other secrets from anything you send.",
-          },
-        ],
-      },
-    ],
-    related: [
-      { text: "Coral product guide: Before you start", href: "/coral/guide#before-you-start" },
-      { text: "Coral product guide: Connect a cluster", href: "/coral/guide#connect-a-cluster" },
-      {
-        text: "Coral FAQ: What does connecting a cluster change?",
-        href: "/coral/faq#what-does-connecting-a-cluster-change",
-      },
-      { text: "Install Coral with Helm", href: "/docs/install-coral-with-helm" },
-      { text: "Why Coral is not removing a node", href: "/docs/coral-not-removing-nodes" },
-    ],
-  },
-  coralNotRemovingNodes: {
-    route: routes.docsCoralNotRemovingNodes,
-    product: "coral",
-    updated: troubleshootingUpdated,
-    meta: {
-      title: "Why Coral is not removing a node",
-      description:
-        "A node you expected Coral to empty is still there? Check the switches, what holds the node, the pool minimum, your autoscaler and cordons.",
-    },
-    hero: {
-      title: "Why Coral is not removing a node",
-      deck: "The checks to run when a node you expected to go is still in the cluster.",
-    },
-    short:
-      "**Short answer.** As Coral rebalances your cluster, it empties nodes you don’t need, and your autoscaler removes them. A node often stays because a switch is off, a pod can’t move safely, there’s no room elsewhere, or the pool is at its minimum. Node list → “What’s holding them” shows the reason for each held node.",
-    sections: [
-      {
-        title: "Check Node optimization and the Evictor are on",
-        blocks: [
+          { kind: "h3", text: "Check Node optimization and the Evictor are on" },
           { kind: "p", text: "**Look at:** Settings, and the Evictor’s “Advanced settings”." },
           {
             kind: "p",
@@ -326,11 +256,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "p",
             text: "**What to do:** Switch Node optimization on. When you are ready for the Evictor to move pods, switch it on and untick “Dry run”.",
           },
-        ],
-      },
-      {
-        title: "Check the node’s pool is enabled",
-        blocks: [
+          { kind: "h3", text: "Check the node’s pool is enabled" },
           {
             kind: "p",
             text: "**Look at:** the pool’s “Enabled” switch in Configuration → Node pools.",
@@ -340,11 +266,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             text: "**What it means:** When it is off, Coral leaves that pool’s nodes alone.",
           },
           { kind: "p", text: "**What to do:** Switch the pool on if Coral may empty its nodes." },
-        ],
-      },
-      {
-        title: "Check what is holding the node",
-        blocks: [
+          { kind: "h3", text: "Check what is holding the node" },
           {
             kind: "p",
             text: "**Look at:** Node list → “What’s holding them”. Its “Nodes held” figure counts the nodes Coral can’t empty.",
@@ -393,11 +315,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "p",
             text: "Which autoscaler reads which marker is in [Safe-to-evict and do-not-disrupt](/learn/safe-to-evict-do-not-disrupt).",
           },
-        ],
-      },
-      {
-        title: "Check the other nodes have room",
-        blocks: [
+          { kind: "h3", text: "Check the other nodes have room" },
           {
             kind: "p",
             text: "**Look at:** the room on the cluster’s other Ready nodes, and the Optimization constraints page.",
@@ -410,11 +328,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "p",
             text: "**What to do:** If the other nodes have no room, the node is still needed. If placement rules hold a pod here, open Optimization constraints. It lists workload setups that make optimization risky, such as topology spread, with the fix for each.",
           },
-        ],
-      },
-      {
-        title: "Check the pool is above its minimum",
-        blocks: [
+          { kind: "h3", text: "Check the pool is above its minimum" },
           {
             kind: "p",
             text: "**Look at:** how many nodes the pool has, and your autoscaler’s minimum for it.",
@@ -435,11 +349,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
               "If Terraform manages your node pools, each apply undoes what the agent changes. Tell Terraform to ignore those fields in your own code, as [Your own node pool code](/docs/install-coral-with-terraform#your-own-node-pool-code) shows.",
             ],
           },
-        ],
-      },
-      {
-        title: "Check who removes the empty node",
-        blocks: [
+          { kind: "h3", text: "Check who removes the empty node" },
           {
             kind: "p",
             text: "**Look at:** a node Coral has emptied that is still in the cluster.",
@@ -469,11 +379,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "p",
             text: "If you installed with Helm, [Install Coral with Terraform + Helm](/docs/install-coral-with-terraform) creates the same permission as code.",
           },
-        ],
-      },
-      {
-        title: "Check the node is not cordoned",
-        blocks: [
+          { kind: "h3", text: "Check the node is not cordoned" },
           { kind: "p", text: "**Look at:** the node’s state, and any cluster upgrade under way." },
           {
             kind: "p",
@@ -483,11 +389,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "p",
             text: "**What to do:** If you cordoned the node yourself, Coral leaves it to you. Uncordon it if Coral may empty it. During an upgrade window, we recommend pausing Node optimization and the Evictor.",
           },
-        ],
-      },
-      {
-        title: "Check the drain finished",
-        blocks: [
+          { kind: "h3", text: "Check the drain finished" },
           {
             kind: "p",
             text: "**Look at:** the Event log, which lists everything Coral did or saw, newest first.",
@@ -507,16 +409,23 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
         blocks: [
           {
             kind: "p",
-            text: "The [Coral product guide](/coral/guide#node-optimization) and the [Coral FAQ](/coral/faq) have the full detail.",
+            text: "The [Coral product guide](/coral/guide) and the [Coral FAQ](/coral/faq) have the full detail.",
           },
           {
             kind: "p",
-            text: "Email founders@zoorik.com, or [pick a time to talk](https://cal.com/zoorik/talk). Tell us what Node list and the Event log show for the node. Remove tokens, keys and other secrets from anything you send.",
+            text: "Email founders@zoorik.com, or [pick a time to talk](https://cal.com/zoorik/talk). Tell us what you ran and what the console shows, and for a node, what Node list and the Event log show. Remove tokens, keys and other secrets from anything you send.",
           },
         ],
       },
     ],
     related: [
+      { text: "Coral product guide: Before you start", href: "/coral/guide#before-you-start" },
+      { text: "Coral product guide: Connect a cluster", href: "/coral/guide#connect-a-cluster" },
+      {
+        text: "Coral FAQ: What does connecting a cluster change?",
+        href: "/coral/faq#what-does-connecting-a-cluster-change",
+      },
+      { text: "Install Coral with Helm", href: "/docs/install-coral-with-helm" },
       { text: "Coral product guide: Node optimization", href: "/coral/guide#node-optimization" },
       { text: "Coral product guide: Nodes held", href: "/coral/guide#nodes-held" },
       { text: "Coral product guide: Stay in control", href: "/coral/guide#stay-in-control" },
@@ -533,31 +442,30 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
         href: "/learn/safe-to-evict-do-not-disrupt",
       },
       { text: "Install Coral with Terraform + Helm", href: "/docs/install-coral-with-terraform" },
-      {
-        text: "Coral is not connecting to my cluster",
-        href: "/docs/coral-not-connecting-to-cluster",
-      },
     ],
   },
-  amoebaNotShowingVm: {
-    route: routes.docsAmoebaNotShowingVm,
+  amoeba: {
+    route: routes.amoebaTroubleshooting,
     product: "amoeba",
     updated: troubleshootingUpdated,
     meta: {
-      title: "Amoeba is not showing my VM",
+      title: "Amoeba troubleshooting",
       description:
-        "A VM is missing from Amoeba’s onboarding list, or shows no figures? Check the connection, the VM, its data disks and the agent, with what to do for each.",
+        "Amoeba is not showing your VM, or has not rightsized its disks yet? The checks to run in order, what each one means and what to do.",
     },
     hero: {
-      title: "Amoeba is not showing my VM: what to check",
-      deck: "The checks to run when a VM is missing from the onboarding list, or shows no figures yet.",
+      title: "Amoeba troubleshooting",
+      deck: "What to check, in order, when a VM is missing or its disks haven’t been rightsized yet.",
     },
-    short:
-      "**Short answer.** Amoeba lists only running VMs with at least one data disk, from the subscriptions Zoorik can read. A VM that can’t be onboarded is counted in one line under the list, with the reason. Once you onboard a VM, its used space and savings appear after its agent reports.",
     sections: [
       {
-        title: "Read the line under the list",
+        title: "Amoeba is not showing my VM",
         blocks: [
+          {
+            kind: "p",
+            text: "**Short answer.** Amoeba lists only running VMs with at least one data disk, from the subscriptions Zoorik can read. A VM that can’t be onboarded is counted in one line under the list, with the reason. Once you onboard a VM, its used space and savings appear after its agent reports.",
+          },
+          { kind: "h3", text: "Read the line under the list" },
           { kind: "p", text: "**Look at:** “Onboard VMs”, and the line under the list." },
           {
             kind: "p",
@@ -567,11 +475,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "p",
             text: "**What to do:** Fix the reason shown, then open “Onboard VMs” again. The checks below explain what each requirement means.",
           },
-        ],
-      },
-      {
-        title: "Check the cloud connection",
-        blocks: [
+          { kind: "h3", text: "Check the cloud connection" },
           { kind: "p", text: "**Look at:** the connection’s state in the console." },
           { kind: "p", text: "**What it means:**" },
           {
@@ -600,11 +504,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
               "For “Access lost”: check the role is still assigned to Zoorik’s app on that subscription. If it isn’t, run the connect script again. Zoorik checks access again regularly.",
             ],
           },
-        ],
-      },
-      {
-        title: "Check the VM’s subscription is included",
-        blocks: [
+          { kind: "h3", text: "Check the VM’s subscription is included" },
           {
             kind: "p",
             text: "**Look at:** the subscriptions you named when you ran the connect script.",
@@ -617,11 +517,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "p",
             text: "**What to do:** Run the script for the VM’s subscription too. Then click “Verify” again: it picks up the subscriptions you added since.",
           },
-        ],
-      },
-      {
-        title: "Check the VM is running and has a data disk",
-        blocks: [
+          { kind: "h3", text: "Check the VM is running and has a data disk" },
           {
             kind: "p",
             text: "**Look at:** the VM in Azure: whether it is running, and its disks.",
@@ -634,22 +530,14 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "p",
             text: "**What to do:** Start a stopped VM, then open “Onboard VMs” again. A VM with only an OS disk has nothing for Amoeba to move.",
           },
-        ],
-      },
-      {
-        title: "Give the list a moment",
-        blocks: [
+          { kind: "h3", text: "Give the list a moment" },
           { kind: "p", text: "**Look at:** a VM you just created, started or changed." },
           {
             kind: "p",
             text: "**What it means:** The list comes from Azure Resource Graph, which can take a little while to catch up with changes.",
           },
           { kind: "p", text: "**What to do:** Open “Onboard VMs” again a little later." },
-        ],
-      },
-      {
-        title: "On AWS, check the instance",
-        blocks: [
+          { kind: "h3", text: "On AWS, check the instance" },
           { kind: "p", text: "**Look at:** the EC2 instance, and how the account is connected." },
           {
             kind: "p",
@@ -659,11 +547,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "p",
             text: "**What to do:** Connect the instance to Systems Manager, and check its type and volumes. If the account isn’t connected yet, run the script in AWS CloudShell that creates the role.",
           },
-        ],
-      },
-      {
-        title: "Check the agent has reported",
-        blocks: [
+          { kind: "h3", text: "Check the agent has reported" },
           { kind: "p", text: "**Look at:** the VM’s agent on Overview, and its figures." },
           {
             kind: "p",
@@ -673,11 +557,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "p",
             text: "**What to do:** Wait for the first report. Each VM must be able to reach Zoorik, for the agent’s reports and commands, and the sites the agent downloads from.",
           },
-        ],
-      },
-      {
-        title: "If the install failed or the agent stopped",
-        blocks: [
+          { kind: "h3", text: "If the install failed or the agent stopped" },
           { kind: "p", text: "**Look at:** “Needs you” on Overview, and the VM’s Settings page." },
           { kind: "p", text: "**What it means:**" },
           {
@@ -697,55 +577,13 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
         ],
       },
       {
-        title: "Still stuck?",
+        title: "Amoeba has not rightsized my disks yet",
         blocks: [
           {
             kind: "p",
-            text: "The [Amoeba product guide](/amoeba/guide) and the [Amoeba FAQ](/amoeba/faq) have the full detail.",
+            text: "**Short answer.** Amoeba rightsizes a VM’s disks in two stages. First it moves the data onto one btrfs pool sized to your data, then it grows and shrinks the pool with your data. The checks below cover what holds each stage back, in order.",
           },
-          {
-            kind: "p",
-            text: "Email founders@zoorik.com, or [pick a time to talk](https://cal.com/zoorik/talk). Tell us what “Onboard VMs” and the VM’s agent show. Remove tokens, keys and other secrets from anything you send.",
-          },
-        ],
-      },
-    ],
-    related: [
-      { text: "Amoeba product guide: Before you start", href: "/amoeba/guide#before-you-start" },
-      {
-        text: "Amoeba product guide: Which VMs are listed",
-        href: "/amoeba/guide#which-vms-are-listed",
-      },
-      { text: "Amoeba product guide: Connection states", href: "/amoeba/guide#connection-states" },
-      {
-        text: "Amoeba FAQ: What happens if the agent stops reporting?",
-        href: "/amoeba/faq#what-happens-if-the-agent-stops",
-      },
-      {
-        text: "Why Amoeba has not rightsized my disks yet",
-        href: "/docs/amoeba-not-rightsizing-disks",
-      },
-    ],
-  },
-  amoebaNotRightsizing: {
-    route: routes.docsAmoebaNotRightsizing,
-    product: "amoeba",
-    updated: troubleshootingUpdated,
-    meta: {
-      title: "Why Amoeba has not rightsized my disks yet",
-      description:
-        "Onboarded a VM, but its disks have not moved or shrunk? Check the agent, a paused move, the Linux needs and the shrink setting, with what to do for each.",
-    },
-    hero: {
-      title: "Why Amoeba has not rightsized my disks yet",
-      deck: "The checks to run when a VM is onboarded, but its data has not moved onto a pool or the pool has not shrunk.",
-    },
-    short:
-      "**Short answer.** Amoeba rightsizes a VM’s disks in two stages. First it moves the data onto one btrfs pool sized to your data, then it grows and shrinks the pool with your data. The checks below cover what holds each stage back, in order.",
-    sections: [
-      {
-        title: "Check the agent is reporting",
-        blocks: [
+          { kind: "h3", text: "Check the agent is reporting" },
           { kind: "p", text: "**Look at:** the VM’s status and its agent on Overview." },
           {
             kind: "p",
@@ -753,13 +591,9 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "**What to do:** If the agent hasn’t reported, or reads “Disconnected”, see [Amoeba is not showing my VM](/docs/amoeba-not-showing-my-vm).",
+            text: "**What to do:** If the agent hasn’t reported, or reads “Disconnected”, see [Amoeba is not showing my VM](#amoeba-is-not-showing-my-vm).",
           },
-        ],
-      },
-      {
-        title: "Check whether Amoeba declined the VM",
-        blocks: [
+          { kind: "h3", text: "Check whether Amoeba declined the VM" },
           {
             kind: "p",
             text: "**Look at:** the VM’s status, and the Disks page, which shows how many data-disk slots are in use.",
@@ -772,11 +606,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "p",
             text: "**What to do:** Make room for the pool’s disks. For a VM that uses Azure Disk Encryption, email us.",
           },
-        ],
-      },
-      {
-        title: "Check whether the move paused",
-        blocks: [
+          { kind: "h3", text: "Check whether the move paused" },
           { kind: "p", text: "**Look at:** Pool → Migration, and “Needs you” on Overview." },
           {
             kind: "p",
@@ -787,11 +617,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "p",
             text: "**What to do:** Fix the reason shown. “Resume” appears when the move can run again: click it. If Amoeba can’t tell whether the switch worked, the move waits for you to click “Resume”.",
           },
-        ],
-      },
-      {
-        title: "Check the Linux requirements",
-        blocks: [
+          { kind: "h3", text: "Check the Linux requirements" },
           {
             kind: "p",
             text: "**Look at:** on a Linux VM, its kernel, its packages and its services.",
@@ -811,11 +637,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "p",
             text: "**What to do:** Install the missing packages, and run each service that uses a data mount under systemd. Then click “Resume” if the move paused.",
           },
-        ],
-      },
-      {
-        title: "Check the shrink setting",
-        blocks: [
+          { kind: "h3", text: "Check the shrink setting" },
           {
             kind: "p",
             text: "**Look at:** “When Zoorik shrinks” in Settings → Shrinking, and the Operations page.",
@@ -828,11 +650,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "p",
             text: "**What to do:** Click “Start shrink” on Operations. Or set “When Zoorik shrinks” to “Auto”, and click “Save”.",
           },
-        ],
-      },
-      {
-        title: "Give it time after the move",
-        blocks: [
+          { kind: "h3", text: "Give it time after the move" },
           {
             kind: "p",
             text: "**Look at:** when the move finished, and how your data has changed since.",
@@ -845,11 +663,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "p",
             text: "**What to do:** Nothing. Operations logs each expand and shrink, with its outcome and reason.",
           },
-        ],
-      },
-      {
-        title: "Read why a shrink can’t run",
-        blocks: [
+          { kind: "h3", text: "Read why a shrink can’t run" },
           {
             kind: "p",
             text: "**Look at:** Operations. In “Manual”, a shrink that fails a check reads “Can’t shrink now”, with the reason.",
@@ -901,12 +715,22 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "Email founders@zoorik.com, or [pick a time to talk](https://cal.com/zoorik/talk). Tell us what Pool → Migration and Operations show. Remove tokens, keys and other secrets from anything you send.",
+            text: "Email founders@zoorik.com, or [pick a time to talk](https://cal.com/zoorik/talk). Tell us what “Onboard VMs”, the VM’s agent, Pool → Migration and Operations show. Remove tokens, keys and other secrets from anything you send.",
           },
         ],
       },
     ],
     related: [
+      { text: "Amoeba product guide: Before you start", href: "/amoeba/guide#before-you-start" },
+      {
+        text: "Amoeba product guide: Which VMs are listed",
+        href: "/amoeba/guide#which-vms-are-listed",
+      },
+      { text: "Amoeba product guide: Connection states", href: "/amoeba/guide#connection-states" },
+      {
+        text: "Amoeba FAQ: What happens if the agent stops reporting?",
+        href: "/amoeba/faq#what-happens-if-the-agent-stops",
+      },
       {
         text: "Amoeba product guide: Moving a VM onto its pool",
         href: "/amoeba/guide#moving-a-vm-onto-its-pool",
@@ -920,7 +744,6 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
         text: "Amoeba FAQ: Which Linux distributions does Amoeba support?",
         href: "/amoeba/faq#which-linux-distributions-does-amoeba-support",
       },
-      { text: "Amoeba is not showing my VM", href: "/docs/amoeba-not-showing-my-vm" },
     ],
   },
 };

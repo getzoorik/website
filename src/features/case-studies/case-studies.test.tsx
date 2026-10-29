@@ -9,8 +9,8 @@ const pathname = vi.hoisted(() => ({ current: "/value-lab" }));
 vi.mock("next/navigation", () => ({ usePathname: () => pathname.current }));
 
 import ValueLabRoute, { metadata as hubMeta } from "@/app/value-lab/page";
-import CaseStudyRoute, { metadata as studyMeta } from "@/app/value-lab/coral-dev-cluster/page";
-import AmoebaStudyRoute, { metadata as amoebaMeta } from "@/app/value-lab/amoeba-lab-vms/page";
+import CaseStudyRoute, { metadata as studyMeta } from "@/app/coral-value-lab/page";
+import AmoebaStudyRoute, { metadata as amoebaMeta } from "@/app/amoeba-value-lab/page";
 
 /**
  * Value Lab and its case study: the metadata, the hub (what the studies saved
@@ -30,11 +30,11 @@ const hub = () => {
   return render(<ValueLabRoute />).container;
 };
 const study = () => {
-  pathname.current = "/value-lab/coral-dev-cluster";
+  pathname.current = "/coral-value-lab";
   return render(<CaseStudyRoute />).container;
 };
 const amoeba = () => {
-  pathname.current = "/value-lab/amoeba-lab-vms";
+  pathname.current = "/amoeba-value-lab";
   return render(<AmoebaStudyRoute />).container;
 };
 
@@ -60,9 +60,9 @@ describe("the case studies' metadata", () => {
     expect(studyMeta.description).toBe(
       "Before we ask anyone to trust Coral with their cluster, we run it on ours. Eight days after we connected it, our AKS development cluster cost $154.76 a month instead of $368.65.",
     );
-    expect(studyMeta.alternates).toEqual({ canonical: "/value-lab/coral-dev-cluster" });
+    expect(studyMeta.alternates).toEqual({ canonical: "/coral-value-lab" });
     expect(studyMeta.openGraph).toMatchObject({
-      url: "/value-lab/coral-dev-cluster",
+      url: "/coral-value-lab",
       title: "How We Reduced AKS Cluster Costs by 58% | Zoorik",
       images: [
         {
@@ -80,9 +80,9 @@ describe("the case studies' metadata", () => {
     expect(amoebaMeta.description).toBe(
       "Before we ask anyone to trust Amoeba with their VMs, we run it on ours. On an Azure lab VM, its btrfs pool went from 96 GiB to 72 GiB, with 0 lost mounts.",
     );
-    expect(amoebaMeta.alternates).toEqual({ canonical: "/value-lab/amoeba-lab-vms" });
+    expect(amoebaMeta.alternates).toEqual({ canonical: "/amoeba-value-lab" });
     expect(amoebaMeta.openGraph).toMatchObject({
-      url: "/value-lab/amoeba-lab-vms",
+      url: "/amoeba-value-lab",
       title: "How Amoeba Rightsized a Lab VM’s btrfs Pool by 25% | Zoorik",
       images: [
         {
@@ -168,7 +168,7 @@ describe("/value-lab", () => {
     ]);
     expect(text(bars.querySelector(".vl-per"))).toBe("a month");
     const read = featured!.querySelector("a.btn-ink")!;
-    expect(read).toHaveAttribute("href", "/value-lab/coral-dev-cluster");
+    expect(read).toHaveAttribute("href", "/coral-value-lab");
     expect(text(read)).toBe("Read the case study");
     expect(text(next!.querySelector("h2.as-h"))).toBe("Want to be next?");
     expect(text(next!.querySelector("p"))).toBe(
@@ -196,9 +196,9 @@ describe("/value-lab", () => {
       ["72 GiB", "0.750", "With Amoeba"],
     ]);
     expect(text(newest!.querySelector(".vl-per"))).toBe("btrfs pool");
-    expect(newest!.querySelector("a.btn-ink")).toHaveAttribute("href", "/value-lab/amoeba-lab-vms");
+    expect(newest!.querySelector("a.btn-ink")).toHaveAttribute("href", "/amoeba-value-lab");
     /* Saved so far stays the Coral study's alone, as the mock draws it. */
-    expect(caseStudiesHub.studies.map((one) => one.href)).toEqual(["/value-lab/coral-dev-cluster"]);
+    expect(caseStudiesHub.studies.map((one) => one.href)).toEqual(["/coral-value-lab"]);
   });
 
   it("lists no client study until the first one exists, and ends on the closing row for Coral", () => {
@@ -215,7 +215,7 @@ describe("/value-lab", () => {
   });
 });
 
-describe("/value-lab/coral-dev-cluster", () => {
+describe("/coral-value-lab", () => {
   it("opens on the PDF's kicker, headline and opening, with its download beside them", () => {
     const hero = study().querySelector("main > header.hero.doc-hero.cs-hero#top")!;
     expect(text(hero.querySelector(".cs-kick"))).toBe(
@@ -397,7 +397,7 @@ describe("/value-lab/coral-dev-cluster", () => {
   });
 });
 
-describe("/value-lab/amoeba-lab-vms", () => {
+describe("/amoeba-value-lab", () => {
   it("opens on the kicker, the headline with its green line and the opening, with no download", () => {
     const hero = amoeba().querySelector("main > header.hero.doc-hero.cs-hero#top")!;
     expect(text(hero.querySelector(".cs-kick"))).toBe(

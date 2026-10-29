@@ -525,7 +525,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "Smaller requests reduce the bill only when a node goes. On our own AKS development cluster, Coral removed a spare worker and rebalanced the requests of 14 apps by 12 October 2026. The CPU the apps reserve went from 0.78 to 0.43\u00a0cores, 45% less, and memory from 6.4 to 5.4\u00a0GiB, 16% less. Then Coral swapped the remaining worker for a cheaper machine of the same size. Eight days after we connected it, ",
-            { a: "the machine bill", href: "/value-lab/coral-dev-cluster" },
+            { a: "the machine bill", href: "/coral-value-lab" },
             " was $154.76 a month instead of $368.65, 58% less.",
           ],
         },

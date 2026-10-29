@@ -334,8 +334,8 @@ function documentEntry(
 }
 
 /**
- * A guide under /docs, an install or contributing guide or a troubleshooting page: the Docs step, then the guide by
- * its h1; about its product (Coral, unless it names another), or about neither (`about: null`, Contributing).
+ * A guide in the docs frame, an install or contributing guide or a troubleshooting page: the Docs step, then the
+ * guide by its h1; about its product (Coral, unless it names another), or about neither (`about: null`, Contributing).
  */
 function osGuideEntry(
   guide: OpenSourceGuide,
@@ -500,14 +500,10 @@ const pages: Readonly<Record<string, PageEntry>> = {
   [routes.docsInstallHelm]: osGuideEntry(openSourceGuides.helm),
   [routes.docsInstallTerraform]: osGuideEntry(openSourceGuides.terraform),
   [routes.docsContributing]: osGuideEntry(openSourceGuides.contributing, null),
-  /* The troubleshooting pages under /docs, each about its product; Amoeba's held with its guide and FAQ. */
-  [routes.docsCoralNotConnecting]: osGuideEntry(troubleshootingGuides.coralNotConnecting),
-  [routes.docsCoralNotRemovingNodes]: osGuideEntry(troubleshootingGuides.coralNotRemovingNodes),
+  /* The two troubleshooting pages, each under Docs and about its product; Amoeba's held with its guide and FAQ. */
+  [routes.coralTroubleshooting]: osGuideEntry(troubleshootingGuides.coral),
   ...(amoebaDocs
-    ? {
-        [routes.docsAmoebaNotShowingVm]: osGuideEntry(troubleshootingGuides.amoebaNotShowingVm),
-        [routes.docsAmoebaNotRightsizing]: osGuideEntry(troubleshootingGuides.amoebaNotRightsizing),
-      }
+    ? { [routes.amoebaTroubleshooting]: osGuideEntry(troubleshootingGuides.amoeba) }
     : {}),
   /* The research papers: a page of the site's own, under Zoorik alone. */
   [routes.research]: {

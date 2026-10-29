@@ -395,7 +395,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "On our own AKS development cluster, Coral removed a spare worker, rebalanced the requests of 14 apps and swapped the remaining worker for a cheaper machine of the same size. Eight days after we connected it, ",
-            { a: "the machine bill", href: "/value-lab/coral-dev-cluster" },
+            { a: "the machine bill", href: "/coral-value-lab" },
             " was $154.76 a month instead of $368.65, 58% less.",
           ],
         },

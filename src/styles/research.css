@@ -1,4 +1,4 @@
-/* Zoorik marketing: `/research-cloud-cost-optimization`, research papers on cloud cost optimization.
+/* Zoorik marketing: `/cloud-cost-optimization-research-papers`, research papers on cloud cost optimization.
  *
  * Ported from the mock's research block, rule for rule and in its order. The page is drawn on /community's frame and
  * carries Learn's and /community's sheets, as the mock does: it imports `learn.css` and `community.css` first, then
@@ -9,10 +9,12 @@
  * The App Router keeps a visited page's sheet in the document, so each selector starts at the page's own section,
  * `#papers` (`research-css.test.ts`): the Docs hub's groups and tiles elsewhere keep their own rows.
  *
- * Loaded only by `/research-cloud-cost-optimization` (`src/app/research-cloud-cost-optimization/page.tsx`). */
+ * Loaded only by `/cloud-cost-optimization-research-papers`
+ * (`src/app/cloud-cost-optimization-research-papers/page.tsx`). */
 
-/* /research-cloud-cost-optimization (29 Oct 2026): the Docs hub's groups (name, line, hairline) holding /community's
-   Read more tiles two by two; under each paper's name, who wrote it and where, then our note in the reading colour */
+/* /cloud-cost-optimization-research-papers (29 Oct 2026): the Docs hub's groups (name, line, hairline) holding
+   /community's Read more tiles two by two; under each paper's name, who wrote it and where, then our note in the
+   reading colour */
 #papers .res-group + .res-group{margin-top:clamp(40px,4.5vw,64px)}
 #papers .res-group .dt-grid{grid-template-rows:none}
 #papers .res-group .dt{display:flex;grid-row:auto}

@@ -10,17 +10,20 @@ import { OsGuidePage } from "@/features/open-source/os-guide-page";
 import "@/styles/article.css";
 import "@/styles/open-source.css";
 
-/** `/docs/coral-not-removing-nodes`: "Why Coral is not removing a node", a troubleshooting page in the guides' article frame. */
+/**
+ * `/coral-troubleshooting`: "Coral troubleshooting", Coral's troubleshooting page in the guides' article frame: a cluster
+ * that is not connecting, then a node that is not removed, then Still stuck?.
+ */
 export const metadata: Metadata = documentMetadata(
-  routes.docsCoralNotRemovingNodes,
-  troubleshootingGuides.coralNotRemovingNodes.meta,
+  routes.coralTroubleshooting,
+  troubleshootingGuides.coral.meta,
 );
 
-export default function CoralNotRemovingNodes(): React.JSX.Element {
+export default function CoralTroubleshooting(): React.JSX.Element {
   return (
     <>
-      <JsonLd data={pageStructuredData(routes.docsCoralNotRemovingNodes)} />
-      <OsGuidePage guide={troubleshootingGuides.coralNotRemovingNodes} />
+      <JsonLd data={pageStructuredData(routes.coralTroubleshooting)} />
+      <OsGuidePage guide={troubleshootingGuides.coral} />
     </>
   );
 }

@@ -12,23 +12,23 @@ import "@/styles/article.css";
 import "@/styles/open-source.css";
 
 /**
- * `/docs/amoeba-not-rightsizing-disks`: "Why Amoeba has not rightsized my disks yet", a troubleshooting page in the guides' article frame, ending on
- * Amoeba's closing row.
+ * `/amoeba-troubleshooting`: "Amoeba troubleshooting", Amoeba's troubleshooting page in the guides' article frame: a VM
+ * that is not showing, then disks that are not rightsized yet, then Still stuck?, ending on Amoeba's closing row.
  *
  * 🔴 HELD WHILE `amoebaDocs` IS OFF, with the Amoeba guide and FAQ it links to: the route calls `notFound()`, the hub
  * lists no tile for it and the sitemap leaves it out.
  */
 export const metadata: Metadata = documentMetadata(
-  routes.docsAmoebaNotRightsizing,
-  troubleshootingGuides.amoebaNotRightsizing.meta,
+  routes.amoebaTroubleshooting,
+  troubleshootingGuides.amoeba.meta,
 );
 
-export default function AmoebaNotRightsizing(): React.JSX.Element {
+export default function AmoebaTroubleshooting(): React.JSX.Element {
   if (!amoebaDocs) notFound();
   return (
     <>
-      <JsonLd data={pageStructuredData(routes.docsAmoebaNotRightsizing)} />
-      <OsGuidePage guide={troubleshootingGuides.amoebaNotRightsizing} />
+      <JsonLd data={pageStructuredData(routes.amoebaTroubleshooting)} />
+      <OsGuidePage guide={troubleshootingGuides.amoeba} />
     </>
   );
 }

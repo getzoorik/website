@@ -115,9 +115,10 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/learn/glossary": () => import("@/app/learn/glossary/page"),
   ...Object.fromEntries(glossaryTerms.map((term) => [termRoute(term), termModule(term.slug)])),
   "/value-lab": () => import("@/app/value-lab/page"),
-  "/value-lab/coral-dev-cluster": () => import("@/app/value-lab/coral-dev-cluster/page"),
-  "/value-lab/amoeba-lab-vms": () => import("@/app/value-lab/amoeba-lab-vms/page"),
-  "/research-cloud-cost-optimization": () => import("@/app/research-cloud-cost-optimization/page"),
+  "/coral-value-lab": () => import("@/app/coral-value-lab/page"),
+  "/amoeba-value-lab": () => import("@/app/amoeba-value-lab/page"),
+  "/cloud-cost-optimization-research-papers": () =>
+    import("@/app/cloud-cost-optimization-research-papers/page"),
   "/about": () => import("@/app/about/page"),
   "/careers": () => import("@/app/careers/page"),
   "/events": () => import("@/app/events/page"),
@@ -142,12 +143,8 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/docs/install-coral-with-terraform": () =>
     import("@/app/docs/install-coral-with-terraform/page"),
   "/docs/contributing": () => import("@/app/docs/contributing/page"),
-  "/docs/coral-not-connecting-to-cluster": () =>
-    import("@/app/docs/coral-not-connecting-to-cluster/page"),
-  "/docs/coral-not-removing-nodes": () => import("@/app/docs/coral-not-removing-nodes/page"),
-  "/docs/amoeba-not-showing-my-vm": () => import("@/app/docs/amoeba-not-showing-my-vm/page"),
-  "/docs/amoeba-not-rightsizing-disks": () =>
-    import("@/app/docs/amoeba-not-rightsizing-disks/page"),
+  "/coral-troubleshooting": () => import("@/app/coral-troubleshooting/page"),
+  "/amoeba-troubleshooting": () => import("@/app/amoeba-troubleshooting/page"),
 };
 const pageModule = (path: string): Promise<PageModule> => {
   const load = pageModules[path];
@@ -351,7 +348,7 @@ describe("the home page's structured data", () => {
 
 describe("every indexed page's structured data", () => {
   it("renders on every page in the sitemap as one block that parses to the page's graph", async () => {
-    expect(listed).toHaveLength(41 + learnArticles.length + glossaryTerms.length);
+    expect(listed).toHaveLength(39 + learnArticles.length + glossaryTerms.length);
     for (const { path } of listed) {
       pathname.current = path;
       const { default: Page } = await pageModule(path);
@@ -446,25 +443,11 @@ describe("every indexed page's structured data", () => {
       "How Amoeba rightsized our own lab VM’s btrfs pool by 25%",
     ]);
     /* The troubleshooting pages under Docs, each by its h1; the research papers under Zoorik alone. */
-    expect(names(routes.docsCoralNotConnecting)).toEqual([
+    expect(names(routes.coralTroubleshooting)).toEqual(["Zoorik", "Docs", "Coral troubleshooting"]);
+    expect(names(routes.amoebaTroubleshooting)).toEqual([
       "Zoorik",
       "Docs",
-      "Coral is not connecting to my cluster: what to check",
-    ]);
-    expect(names(routes.docsCoralNotRemovingNodes)).toEqual([
-      "Zoorik",
-      "Docs",
-      "Why Coral is not removing a node",
-    ]);
-    expect(names(routes.docsAmoebaNotShowingVm)).toEqual([
-      "Zoorik",
-      "Docs",
-      "Amoeba is not showing my VM: what to check",
-    ]);
-    expect(names(routes.docsAmoebaNotRightsizing)).toEqual([
-      "Zoorik",
-      "Docs",
-      "Why Amoeba has not rightsized my disks yet",
+      "Amoeba troubleshooting",
     ]);
     expect(names(routes.research)).toEqual(["Zoorik", "Cloud cost optimization research"]);
     expect(names(routes.privacy)).toEqual(["Zoorik", "Privacy"]);
@@ -497,7 +480,7 @@ describe("every indexed page's structured data", () => {
           "/events",
           "/news",
           "/cloud-cost-optimization-library",
-          "/research-cloud-cost-optimization",
+          "/cloud-cost-optimization-research-papers",
         ].includes(path)
       )
         expect(kind, path).toBe("CollectionPage");
@@ -528,8 +511,7 @@ describe("every indexed page's structured data", () => {
     for (const path of [
       routes.caseStudyCoralDevCluster,
       routes.docsInstallHelm,
-      routes.docsCoralNotConnecting,
-      routes.docsCoralNotRemovingNodes,
+      routes.coralTroubleshooting,
     ]) {
       expect(about(path), path).toEqual({ "@id": "https://zoorik.com/coral#software" });
     }
@@ -538,8 +520,7 @@ describe("every indexed page's structured data", () => {
       routes.amoebaGuide,
       routes.amoebaFaq,
       routes.caseStudyAmoebaLabVms,
-      routes.docsAmoebaNotShowingVm,
-      routes.docsAmoebaNotRightsizing,
+      routes.amoebaTroubleshooting,
     ]) {
       expect(about(path), path).toEqual({ "@id": "https://zoorik.com/amoeba#software" });
     }

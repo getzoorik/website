@@ -486,7 +486,7 @@ export const article: Article = {
             "On our own AKS development cluster, node optimization removed one 4-CPU worker: $147.46 a month of the $213.89 monthly saving in ",
             {
               a: "How we reduced our own cluster’s machine bill by 58%",
-              href: "/value-lab/coral-dev-cluster",
+              href: "/coral-value-lab",
             },
             ".",
           ],

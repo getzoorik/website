@@ -619,7 +619,7 @@ describe("/learn/poor-architecture-cloud-bill, against its draft", () => {
         "/learn/shrink-azure-managed-disk",
       ],
       ["Coral", "/coral"],
-      ["the machine bill", "/value-lab/coral-dev-cluster"],
+      ["the machine bill", "/coral-value-lab"],
     ]);
   });
 

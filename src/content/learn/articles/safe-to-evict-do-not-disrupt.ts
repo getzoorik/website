@@ -504,7 +504,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "On our own AKS development cluster, Coral removed a spare 4-CPU worker, taking the machine bill from $368.65 to $221.19 a month. Then it swapped the remaining worker for a cheaper machine of the same size. Each time, single-copy apps restarted once. Eight days after we connected Coral, ",
-            { a: "the bill", href: "/value-lab/coral-dev-cluster" },
+            { a: "the bill", href: "/coral-value-lab" },
             " was $154.76 a month, 58% less.",
           ],
         },

@@ -54,15 +54,9 @@ describe("sitemap.xml", () => {
       `${site.url}/docs/install-coral-with-helm`,
       `${site.url}/docs/install-coral-with-terraform`,
       `${site.url}/docs/contributing`,
-      `${site.url}/docs/coral-not-connecting-to-cluster`,
-      `${site.url}/docs/coral-not-removing-nodes`,
-      /* Amoeba's two are held with its guide and FAQ. */
-      ...(amoebaDocs
-        ? [
-            `${site.url}/docs/amoeba-not-showing-my-vm`,
-            `${site.url}/docs/amoeba-not-rightsizing-disks`,
-          ]
-        : []),
+      `${site.url}/coral-troubleshooting`,
+      /* Amoeba's is held with its guide and FAQ. */
+      ...(amoebaDocs ? [`${site.url}/amoeba-troubleshooting`] : []),
       `${site.url}/open-source`,
       `${site.url}/learn`,
       /* Every article in the Learn index, A–Z by slug. */
@@ -76,9 +70,9 @@ describe("sitemap.xml", () => {
       /* The live versus pages, read from their data: no test spells a competitor's name. */
       ...versusPages.map((page) => `${site.url}${versusRoute(page)}`),
       `${site.url}/value-lab`,
-      `${site.url}/value-lab/coral-dev-cluster`,
-      `${site.url}/value-lab/amoeba-lab-vms`,
-      `${site.url}/research-cloud-cost-optimization`,
+      `${site.url}/coral-value-lab`,
+      `${site.url}/amoeba-value-lab`,
+      `${site.url}/cloud-cost-optimization-research-papers`,
       `${site.url}/events`,
       `${site.url}/news`,
       `${site.url}/community`,
@@ -106,7 +100,7 @@ describe("sitemap.xml", () => {
       "/amoeba": "2026-10-23",
       "/assessment": "2026-10-21",
       "/marketplaces": "2026-10-21",
-      /* The four troubleshooting tiles (29 Oct 2026). */
+      /* The troubleshooting tiles (29 Oct 2026). */
       "/docs": "2026-10-29",
       "/coral/guide": updated,
       /* The four questions of 25 Oct 2026. */
@@ -117,15 +111,9 @@ describe("sitemap.xml", () => {
       "/docs/install-coral-with-helm": "2026-10-16",
       "/docs/install-coral-with-terraform": "2026-10-16",
       "/docs/contributing": "2026-10-16",
-      /* The troubleshooting pages print "Updated 29 October 2026". */
-      "/docs/coral-not-connecting-to-cluster": "2026-10-29",
-      "/docs/coral-not-removing-nodes": "2026-10-29",
-      ...(amoebaDocs
-        ? {
-            "/docs/amoeba-not-showing-my-vm": "2026-10-29",
-            "/docs/amoeba-not-rightsizing-disks": "2026-10-29",
-          }
-        : {}),
+      /* The two troubleshooting pages print "Updated 29 October 2026". */
+      "/coral-troubleshooting": "2026-10-29",
+      ...(amoebaDocs ? { "/amoeba-troubleshooting": "2026-10-29" } : {}),
       "/open-source": "2026-10-21",
       /* The hub: its own day or its newest article's, whichever is later. Each article: the day it last changed. */
       "/learn": learnArticles.reduce(
@@ -150,10 +138,10 @@ describe("sitemap.xml", () => {
       ...Object.fromEntries(versusPages.map((page) => [versusRoute(page), "2026-10-19"])),
       /* Value Lab: the Amoeba study's card beside the Coral one (29 Oct 2026). Each study: the day it prints. */
       "/value-lab": "2026-10-29",
-      "/value-lab/coral-dev-cluster": "2026-10-12",
-      "/value-lab/amoeba-lab-vms": "2026-10-19",
+      "/coral-value-lab": "2026-10-12",
+      "/amoeba-value-lab": "2026-10-19",
       /* The research papers print no day: the day their content last changed. */
-      "/research-cloud-cost-optimization": "2026-10-29",
+      "/cloud-cost-optimization-research-papers": "2026-10-29",
       "/events": "2026-10-21",
       /* Zoorik News: the week of its latest Radar. */
       "/news": "2026-10-19",
@@ -184,7 +172,7 @@ describe("sitemap.xml", () => {
        without one is never told to recrawl. */
     const entries = sitemap();
     expect(entries).toHaveLength(
-      (amoebaDocs ? 41 : 37) + learnArticles.length + glossaryTerms.length,
+      (amoebaDocs ? 39 : 36) + learnArticles.length + glossaryTerms.length,
     );
     /* Today is `LEARN_TODAY` when set (articles dated ahead, checked as of the day they go live), else the latest
        calendar day anywhere on Earth (UTC+14), so a date set to today in any time zone is not "the future". */
@@ -215,12 +203,7 @@ describe("sitemap.xml", () => {
     /* A held page answers 404 (`amoebaDocs`). */
     const held: string[] = amoebaDocs
       ? []
-      : [
-          routes.amoebaGuide,
-          routes.amoebaFaq,
-          routes.docsAmoebaNotShowingVm,
-          routes.docsAmoebaNotRightsizing,
-        ];
+      : [routes.amoebaGuide, routes.amoebaFaq, routes.amoebaTroubleshooting];
     /* A dynamic route stands for the pages it prerenders: /cloud-cost-optimization-library/[slug] for the live versus pages, /learn/[slug]
        for every article in the Learn index, /learn/glossary/[slug] for every term in the glossary index. */
     const pages = (route: string) =>

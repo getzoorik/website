@@ -232,18 +232,11 @@ const shelves: Readonly<Record<ProductId, readonly ShelfEntry[]>> = {
       released: true,
       hubOnly: true,
     },
-    /* The two troubleshooting pages: page tiles with no PDF row, on the hub only, after the install guides. */
+    /* The troubleshooting page: a page tile with no PDF row, on the hub only, after the install guides. */
     {
-      title: "Cluster not connecting",
-      line: "When a cluster doesn’t connect or shows no figures",
-      href: routes.docsCoralNotConnecting,
-      released: true,
-      hubOnly: true,
-    },
-    {
-      title: "Node not removed",
-      line: "Why a node stays, and the fix for each reason",
-      href: routes.docsCoralNotRemovingNodes,
+      title: "Troubleshooting",
+      line: "When a cluster doesn’t connect or a node isn’t removed",
+      href: routes.coralTroubleshooting,
       released: true,
       hubOnly: true,
     },
@@ -270,18 +263,11 @@ const shelves: Readonly<Record<ProductId, readonly ShelfEntry[]>> = {
       pdf: { label: "PDF", document: "amoeba-one-pager" },
       released: documents["amoeba-one-pager"].released,
     },
-    /* The two troubleshooting pages, on the hub only, after the one-pager; held with the guide and FAQ they link to. */
+    /* The troubleshooting page, on the hub only, after the one-pager; held with the guide and FAQ it links to. */
     {
-      title: "VM not showing",
-      line: "When a VM is missing or shows no figures",
-      href: routes.docsAmoebaNotShowingVm,
-      released: amoebaDocs,
-      hubOnly: true,
-    },
-    {
-      title: "Disks not rightsized yet",
-      line: "Why a move pauses or a shrink waits",
-      href: routes.docsAmoebaNotRightsizing,
+      title: "Troubleshooting",
+      line: "When a VM is missing or its disks aren’t rightsized",
+      href: routes.amoebaTroubleshooting,
       released: amoebaDocs,
       hubOnly: true,
     },

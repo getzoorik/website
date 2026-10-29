@@ -24,7 +24,7 @@ import { named } from "@/features/legal/named";
 import { share } from "@/lib/share";
 
 /**
- * `/value-lab/coral-dev-cluster`: the published PDF on the web.
+ * `/coral-value-lab`: the published PDF on the web.
  *
  * It opens with the result: the study, built from the PDF, with the download,
  * the four figures in one line, the cost chart in The result and the numbered
