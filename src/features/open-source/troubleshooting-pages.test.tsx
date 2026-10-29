@@ -174,6 +174,15 @@ describe("the troubleshooting pages", () => {
     expect(links.at(-1)).toHaveAttribute("href", "/docs/coral-not-connecting-to-cluster");
   });
 
+  it("Why Coral is not removing a node: only hostPath data holds a node, as the Learn article it links says", () => {
+    const root = draw(pages[1]);
+    const reasons = [
+      ...root.querySelectorAll("section#check-what-is-holding-the-node table.doc-tbl tbody tr"),
+    ].map((row) => text(row.querySelector("th, td")));
+    expect(reasons).toContain("Data on the node’s own disk (hostPath).");
+    expect(reasons.join(" ")).not.toMatch(/emptyDir/);
+  });
+
   it("Amoeba's two pages: their checks in order, ending on Still stuck?", () => {
     expect(sections(draw(pages[2])).map(([id]) => id)).toEqual([
       "read-the-line-under-the-list",

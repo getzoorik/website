@@ -366,7 +366,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
                 "Add a PodDisruptionBudget that allows at least one disruption.",
               ],
               [
-                "Data on the node’s own disk (emptyDir or hostPath).",
+                "Data on the node’s own disk (hostPath).",
                 "Move the data to a persistent volume, or mark the pod safe to evict.",
               ],
               ["Nothing would recreate the pod.", "Run it under a Deployment or StatefulSet."],
