@@ -33,3 +33,5 @@
 .vl-col small{font-size:var(--fs-micro);color:var(--muted);white-space:nowrap}
 .vl-flag{position:absolute;top:24px;right:24px;padding:5px 11px;border:1px solid var(--line);border-radius:var(--r-pill);font-size:.8125rem;font-weight:500;line-height:1;color:var(--text)}
 @media(max-width:640px){.vl-bars{position:static;margin-top:24px}.vl-fc .as-h,.vl-fc p{max-width:none}}
+/* the Amoeba study beside the Coral study (29 Oct 2026); Want to be next moves to its own row under the pair */
+.as-grid.vl-next{margin-top:16px}

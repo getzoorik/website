@@ -41,7 +41,7 @@ import { brandAssetsPage } from "@/content/brand-assets";
 import { careers } from "@/content/careers";
 import { communityPage } from "@/content/community";
 import { designPartnersPage } from "@/content/design-partners";
-import { caseStudiesHub, caseStudy } from "@/content/case-studies";
+import { amoebaStudy, caseStudiesHub, caseStudy } from "@/content/case-studies";
 import { coralFaqPage } from "@/content/coral-faq";
 import { coralGuide } from "@/content/coral-guide";
 import { coralPageContent } from "@/content/coral-page";
@@ -410,6 +410,8 @@ const termSetRef = {
 
 const studyHeadline = `${caseStudy.hero.title} ${caseStudy.hero.titleGreen}`;
 const studyDate = isoDay(caseStudy.band.date);
+const amoebaStudyHeadline = `${amoebaStudy.hero.title} ${amoebaStudy.hero.titleGreen}`;
+const amoebaStudyDate = isoDay(amoebaStudy.band.date);
 
 /** Every indexed page, by its route: the sitemap's list. */
 const pages: Readonly<Record<string, PageEntry>> = {
@@ -525,6 +527,20 @@ const pages: Readonly<Record<string, PageEntry>> = {
       published: studyDate,
       modified: studyDate,
       image: cardFor(routes.caseStudyCoralDevCluster),
+    },
+  },
+  /* The Amoeba study prints one date, "19 October 2026 · Published by Zoorik": published, and not changed since. */
+  [routes.caseStudyAmoebaLabVms]: {
+    kind: "WebPage",
+    name: titled(amoebaStudy.meta.title),
+    description: amoebaStudy.meta.description,
+    trail: [step(routes.valueLab), { name: amoebaStudyHeadline, path: amoebaStudy.route }],
+    about: "amoeba",
+    article: {
+      headline: amoebaStudyHeadline,
+      published: amoebaStudyDate,
+      modified: amoebaStudyDate,
+      image: cardFor(routes.caseStudyAmoebaLabVms),
     },
   },
   /* About, the organisation's own page. */

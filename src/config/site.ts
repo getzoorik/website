@@ -139,6 +139,8 @@ export const routes = {
      Linked from the footer's Resources column. */
   valueLab: "/value-lab",
   caseStudyCoralDevCluster: "/value-lab/coral-dev-cluster",
+  /* Amoeba on our own Azure lab VMs: the second study, beside the first on the hub. */
+  caseStudyAmoebaLabVms: "/value-lab/amoeba-lab-vms",
   /* Events: real conferences and community days, from the radar's checked list.
      In the footer's Resources column, after Value Lab. */
   events: "/events",
@@ -240,8 +242,9 @@ export const hashKeepingRoutes: readonly string[] = [
   routes.about,
   /* /careers is built on /about's frame and carries `data-keep-hash` too. */
   routes.careers,
-  /* The case study keeps its hash as the articles do; the hub, like /learn, does not. */
+  /* The case studies keep their hash as the articles do; the hub, like /learn, does not. */
   routes.caseStudyCoralDevCluster,
+  routes.caseStudyAmoebaLabVms,
   /* The three install and contributing guides and the four troubleshooting pages are built in the article frame and
      keep theirs too. */
   routes.docsInstallHelm,

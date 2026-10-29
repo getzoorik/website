@@ -10,7 +10,7 @@ import { brandAssetsLastUpdated } from "@/content/brand-assets";
 import { careersLastUpdated } from "@/content/careers";
 import { communityLastUpdated } from "@/content/community";
 import { designPartnersLastUpdated } from "@/content/design-partners";
-import { caseStudiesHubLastUpdated, caseStudy } from "@/content/case-studies";
+import { amoebaStudy, caseStudiesHubLastUpdated, caseStudy } from "@/content/case-studies";
 import { coralFaqPage } from "@/content/coral-faq";
 import { coralGuide } from "@/content/coral-guide";
 import { coralPageLastUpdated } from "@/content/coral-page";
@@ -94,6 +94,7 @@ const contentDates: Partial<Record<string, string>> = {
   ),
   [routes.valueLab]: caseStudiesHubLastUpdated,
   [routes.caseStudyCoralDevCluster]: caseStudy.band.date,
+  [routes.caseStudyAmoebaLabVms]: amoebaStudy.band.date,
   [routes.events]: eventsLastUpdated,
   [routes.news]: newsLastUpdated,
   [routes.community]: communityLastUpdated,
@@ -160,6 +161,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...versusPages.map(versusRoute),
     routes.valueLab,
     routes.caseStudyCoralDevCluster,
+    routes.caseStudyAmoebaLabVms,
     routes.events,
     routes.news,
     routes.community,

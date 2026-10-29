@@ -128,6 +128,11 @@ const CARDS: readonly {
     words: "How we reduced our own cluster’s machine bill by 58%",
     paths: ["/value-lab/coral-dev-cluster"],
   },
+  {
+    file: "value-lab-amoeba-lab-vms",
+    words: "How Amoeba rightsized our own lab VM’s btrfs pool by 25%",
+    paths: [routes.caseStudyAmoebaLabVms],
+  },
   { file: "events", words: "Cloud cost, FinOps and Kubernetes events", paths: ["/events"] },
   { file: "news", words: "Cloud cost, Kubernetes and FinOps updates", paths: ["/news"] },
   { file: "community", words: "FinOps and cloud cost communities", paths: ["/community"] },

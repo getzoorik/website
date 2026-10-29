@@ -116,6 +116,7 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   ...Object.fromEntries(glossaryTerms.map((term) => [termRoute(term), termModule(term.slug)])),
   "/value-lab": () => import("@/app/value-lab/page"),
   "/value-lab/coral-dev-cluster": () => import("@/app/value-lab/coral-dev-cluster/page"),
+  "/value-lab/amoeba-lab-vms": () => import("@/app/value-lab/amoeba-lab-vms/page"),
   "/about": () => import("@/app/about/page"),
   "/careers": () => import("@/app/careers/page"),
   "/events": () => import("@/app/events/page"),
@@ -349,7 +350,7 @@ describe("the home page's structured data", () => {
 
 describe("every indexed page's structured data", () => {
   it("renders on every page in the sitemap as one block that parses to the page's graph", async () => {
-    expect(listed).toHaveLength(39 + learnArticles.length + glossaryTerms.length);
+    expect(listed).toHaveLength(40 + learnArticles.length + glossaryTerms.length);
     for (const { path } of listed) {
       pathname.current = path;
       const { default: Page } = await pageModule(path);
@@ -437,6 +438,11 @@ describe("every indexed page's structured data", () => {
       "Zoorik",
       "Value Lab",
       "How we reduced our own cluster’s machine bill by 58%",
+    ]);
+    expect(names(routes.caseStudyAmoebaLabVms)).toEqual([
+      "Zoorik",
+      "Value Lab",
+      "How Amoeba rightsized our own lab VM’s btrfs pool by 25%",
     ]);
     /* The troubleshooting pages under Docs, each by its h1. */
     expect(names(routes.docsCoralNotConnecting)).toEqual([
@@ -528,6 +534,7 @@ describe("every indexed page's structured data", () => {
       routes.amoeba,
       routes.amoebaGuide,
       routes.amoebaFaq,
+      routes.caseStudyAmoebaLabVms,
       routes.docsAmoebaNotShowingVm,
       routes.docsAmoebaNotRightsizing,
     ]) {
@@ -566,7 +573,11 @@ describe("every indexed page's structured data", () => {
     const articles = new Map<string, (typeof learnArticles)[number]>(
       learnArticles.map((article) => [articleRoute(article), article]),
     );
-    const articlePaths = [...articles.keys(), routes.caseStudyCoralDevCluster] as string[];
+    const articlePaths = [
+      ...articles.keys(),
+      routes.caseStudyCoralDevCluster,
+      routes.caseStudyAmoebaLabVms,
+    ] as string[];
     for (const { path, url, lastModified } of listed) {
       const found = ofType(graphOf(path), "TechArticle");
       if (!articlePaths.includes(path)) {
@@ -611,6 +622,13 @@ describe("every indexed page's structured data", () => {
     const [study] = ofType(graphOf(routes.caseStudyCoralDevCluster), "TechArticle");
     expect(study).toMatchObject({ datePublished: "2026-10-12", dateModified: "2026-10-12" });
     expect(caseStudy.band.date).toBe("12 October 2026");
+    const [amoeba] = ofType(graphOf(routes.caseStudyAmoebaLabVms), "TechArticle");
+    expect(amoeba).toMatchObject({
+      headline: "How Amoeba rightsized our own lab VM’s btrfs pool by 25%",
+      datePublished: "2026-10-19",
+      dateModified: "2026-10-19",
+      image: "https://zoorik.com/og/pages/value-lab-amoeba-lab-vms.png",
+    });
     expect(orgRef).toEqual({ "@id": "https://zoorik.com/#organization" });
   });
 
