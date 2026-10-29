@@ -142,7 +142,8 @@ describe("the research papers' first address", () => {
 
 describe("every moved page", () => {
   it("is reached in one hop: no redirect lands on another redirect", async () => {
-    /* The literal moves; a rule with a parameter is checked by its own describe above. */
+    /* The literal moves. A rule with a parameter is checked by its own describe below, and the host rules by the
+       alias hosts' describe at the top. */
     const rules = ((await nextConfig.redirects?.()) ?? []).filter(
       (rule) => !rule.has && !/[:*(]/.test(rule.destination),
     );

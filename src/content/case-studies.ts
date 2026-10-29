@@ -14,8 +14,9 @@ import { platformLabel, products, type ProductId } from "@/content/products";
  * generic ("Backend service A"), as in the PDF. Every figure is as the run
  * recorded it, at Azure pay-as-you-go list prices, 730 hours a month.
  *
- * Its place on the site is one line under Learn in the footer's Resources
- * column; the header has none.
+ * Each study is a line in the footer's Resources column, after Research
+ * papers ("Coral Value Lab", "Amoeba Value Lab"); the hub has none, and
+ * /learn's More from Zoorik and the sitemap lead to it. The header has none.
  *
  * Product names are written plainly; the pages keep each one out of
  * translation (`named()`) wherever the mocks mark it, and leave it alone where

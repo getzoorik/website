@@ -13,7 +13,7 @@ import "@/styles/events.css";
 
 /**
  * `/events`: events on cloud cost, FinOps, Kubernetes, open source and block storage. Indexed, listed in the sitemap,
- * and prerendered at build like every page here; linked from the footer's Resources column, after Case studies.
+ * and prerendered at build like every page here; linked from the footer's Resources column, after Amoeba Value Lab.
  *
  * 🔴 THE BUILD'S DAY TRIMS THE LIST. Prerendering runs this once, at build: events that had ended by then are left
  * out of the page and its markup, and the reader's browser hides what has ended since (`EventsList`). The page
