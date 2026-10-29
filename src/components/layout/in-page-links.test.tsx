@@ -261,7 +261,7 @@ describe("in-page links on the long documents", () => {
      `data-keep-hash`): a reader shares the section they are on, so the address
      carries it. */
   function guide() {
-    pathname.current = "/coral/guide";
+    pathname.current = "/coral-guide";
     return render(
       <>
         <InPageLinks />
@@ -274,18 +274,18 @@ describe("in-page links on the long documents", () => {
   }
 
   it("scroll to the section and keep its hash in the address", async () => {
-    window.history.replaceState(null, "", "/coral/guide");
+    window.history.replaceState(null, "", "/coral-guide");
     const { getByRole, container } = guide();
     await userEvent.click(getByRole("link", { name: "Stay in control" }));
 
     expect(scrollSpy).toHaveBeenCalledOnce();
-    expect(window.location.pathname).toBe("/coral/guide");
+    expect(window.location.pathname).toBe("/coral-guide");
     expect(window.location.hash).toBe("#stay-in-control");
     expect(document.activeElement).toBe(container.querySelector("#stay-in-control"));
   });
 
   it("leave a deep link's hash in place, without scrolling again", () => {
-    window.history.replaceState(null, "", "/coral/guide#stay-in-control");
+    window.history.replaceState(null, "", "/coral-guide#stay-in-control");
     guide();
 
     expect(window.location.hash).toBe("#stay-in-control");
@@ -296,10 +296,10 @@ describe("in-page links on the long documents", () => {
     for (const [path, kept] of [
       ...learnArticles.map((article) => [learnPath(article.slug), true] as const),
       ["/learn", false],
-      ["/coral/faq", true],
-      ["/coral/faq/", true],
-      ["/amoeba/guide", true],
-      ["/amoeba/faq", true],
+      ["/coral-faq", true],
+      ["/coral-faq/", true],
+      ["/amoeba-guide", true],
+      ["/amoeba-faq", true],
       ["/privacy", true],
       ["/terms", true],
       ["/", false],

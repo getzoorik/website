@@ -366,7 +366,7 @@ export const article: Article = {
             [
               { b: "Unclaimed capacity." },
               " The Node list shows every node’s monthly price, the capacity no pod has claimed, and the nodes Coral can’t empty, each with its reason and fix (see ",
-              { a: "nodes held", href: "/coral/guide#nodes-held" },
+              { a: "nodes held", href: "/coral-guide#nodes-held" },
               ").",
             ],
             [
@@ -459,7 +459,7 @@ export const article: Article = {
     {
       title: "How sizes are worked out",
       where: "Coral product guide",
-      href: "/coral/guide#how-sizes-are-worked-out",
+      href: "/coral-guide#how-sizes-are-worked-out",
     },
     {
       title: "How we reduced our own cluster’s machine bill by 58%",

@@ -374,7 +374,7 @@ export const article: Article = {
               " With automation on and the Optimization type “Both”, Coral creates an HPA, with ",
               { code: "minReplicas" },
               " of 2 or more, for an ",
-              { a: "eligible", href: "/coral/guide#hpas-and-vpas" },
+              { a: "eligible", href: "/coral-guide#hpas-and-vpas" },
               " Deployment or Argo Rollout that has none. On a hand-made HPA it takes over, it keeps your ",
               { code: "minReplicas" },
               " and only raises ",
@@ -461,7 +461,7 @@ export const article: Article = {
       where: "Learn",
       href: "/learn/keda-vs-hpa-vs-vpa",
     },
-    { title: "Working with HPA", where: "Coral FAQ", href: "/coral/faq#working-with-hpa" },
-    { title: "HPAs and VPAs", where: "Coral product guide", href: "/coral/guide#hpas-and-vpas" },
+    { title: "Working with HPA", where: "Coral FAQ", href: "/coral-faq#working-with-hpa" },
+    { title: "HPAs and VPAs", where: "Coral product guide", href: "/coral-guide#hpas-and-vpas" },
   ],
 };

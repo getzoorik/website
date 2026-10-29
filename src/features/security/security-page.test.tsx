@@ -140,7 +140,7 @@ describe("/security", () => {
     );
     expect(links.map((a) => [text(a), a.getAttribute("href")])).toEqual([
       ["founders@zoorik.com", "mailto:founders@zoorik.com"],
-      ["What connect asks to change", "/coral/guide#what-connect-asks-to-change"],
+      ["What connect asks to change", "/coral-guide#what-connect-asks-to-change"],
       ["Every retention period", "/privacy#retention"],
       ["privacy policy", "/privacy#sharing"],
       ["founders@zoorik.com", "mailto:founders@zoorik.com"],

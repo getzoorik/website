@@ -9,13 +9,13 @@ import { Faq } from "@/features/documents/faq";
 /* The nav and the footer read the pathname; the route's `notFound()` stays real. */
 vi.mock("next/navigation", async (original) => ({
   ...(await original<typeof import("next/navigation")>()),
-  usePathname: () => "/amoeba/faq",
+  usePathname: () => "/amoeba-faq",
 }));
 
-import AmoebaFaqPage from "@/app/amoeba/faq/page";
+import AmoebaFaqPage from "@/app/amoeba-faq/page";
 
 /**
- * `/amoeba/faq`: the ids shared links depend on, the first group "About
+ * `/amoeba-faq`: the ids shared links depend on, the first group "About
  * Amoeba", the groups and their two callouts, the 29 questions that open in
  * place with their short answers, the four facts still to come, and what the
  * page never carries. The body is rendered on its own, as it renders whatever
@@ -237,7 +237,7 @@ describe("the body", () => {
     });
 
     it("opens in place without touching the address", async () => {
-      window.history.replaceState(null, "", "/amoeba/faq");
+      window.history.replaceState(null, "", "/amoeba-faq");
       const question = page.querySelector("details.fq") as HTMLDetailsElement;
       await userEvent.click(question.querySelector("summary")!);
       expect(question.open).toBe(true);
@@ -341,7 +341,7 @@ describe("the route", () => {
         ...(await original<typeof import("@/config/site")>()),
         amoebaDocs: true,
       }));
-      Published = (await import("@/app/amoeba/faq/page")).default;
+      Published = (await import("@/app/amoeba-faq/page")).default;
     });
 
     beforeEach(() => {

@@ -2,7 +2,7 @@ import { routes } from "@/config/site";
 import type { FaqSection } from "@/content/faq";
 
 /**
- * `/amoeba/faq`: every string the page prints, verbatim from the approved mock:
+ * `/amoeba-faq`: every string the page prints, verbatim from the approved mock:
  * 8 groups ("About Amoeba" first), 29 questions, their short answers, and the
  * two callouts atop their groups. On 27 October 2026 its Amoeba answers were
  * rewritten at product level (docs PRODUCT-LEVEL-AMOEBA.md): what Amoeba does,

@@ -10,7 +10,7 @@ import { DownloadGlyph } from "@/features/documents/document-glyphs";
 import { DocCallout, DocCode } from "@/features/documents/prose";
 
 /**
- * The body of an FAQ page, `/coral/faq` and `/amoeba/faq`: a page of questions
+ * The body of an FAQ page, `/coral-faq` and `/amoeba-faq`: a page of questions
  * that open in place, all closed on load,
  * in the numbered rows' frame (`DocRows`).
  *

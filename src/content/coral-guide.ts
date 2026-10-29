@@ -2,7 +2,7 @@ import { learnPath, routes } from "@/config/site";
 import type { GuideContent } from "@/content/guide";
 
 /**
- * `/coral/guide`: every string the Coral product guide prints, verbatim from the
+ * `/coral-guide`: every string the Coral product guide prints, verbatim from the
  * approved mock. A paraphrase here is a different claim.
  *
  * Laid out like the FAQ: eleven groups, 32 numbered rows, nothing removed. A

@@ -165,10 +165,10 @@ describe("the Learn index", () => {
       ...[
         "learn",
         "learn/glossary",
-        "coral/guide",
-        "coral/faq",
-        "amoeba/guide",
-        "amoeba/faq",
+        "coral-guide",
+        "coral-faq",
+        "amoeba-guide",
+        "amoeba-faq",
         "coral",
         "amoeba",
       ].map(

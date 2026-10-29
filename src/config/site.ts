@@ -103,13 +103,15 @@ export const routes = {
      `<name>.py` in the public assessment repo, which is how the one-line
      commands the page prints are served. A page there could never be reached. */
   assessment: "/assessment",
-  /* The documents: the hub, then each product's guide and FAQ. The Amoeba two
-     are built but held while `amoebaDocs` is off. */
+  /* The documents: the hub, then each product's guide and FAQ, each at the
+     site's root, nothing nested (owner, 29 Oct 2026); their old addresses under
+     each product redirect here. The Amoeba two are built but held while
+     `amoebaDocs` is off. */
   docs: "/docs",
-  coralGuide: "/coral/guide",
-  coralFaq: "/coral/faq",
-  amoebaGuide: "/amoeba/guide",
-  amoebaFaq: "/amoeba/faq",
+  coralGuide: "/coral-guide",
+  coralFaq: "/coral-faq",
+  amoebaGuide: "/amoeba-guide",
+  amoebaFaq: "/amoeba-faq",
   login: "/login",
   /* The two legal pages. Deep-linked by section from the consoles, the
      Marketplace listing and replies to rights requests, and /terms cites

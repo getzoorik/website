@@ -7,7 +7,7 @@ import { useEffect } from "react";
  * subsections are closed `<details>` on load, and this opens the one a reader
  * is sent to. A script with no markup of its own: the page renders it once.
  *
- *  - An address that names one (`/coral/faq#nodes-held`) opens it on load and,
+ *  - An address that names one (`/coral-faq#nodes-held`) opens it on load and,
  *    two frames later, lands it under the bar. Nothing else opens.
  *  - An in-page link into one ("question 16", "Per-workload settings") opens it
  *    (the others stay as they are), scrolls to it (smooth; at once under

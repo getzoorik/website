@@ -119,6 +119,19 @@ describe("the troubleshooting pages' old addresses under /docs", () => {
   });
 });
 
+describe("the guides' and FAQs' old addresses under each product", () => {
+  it("301s each product's guide and FAQ to its own address at the root, keeping the product page where it is", async () => {
+    await expectMoved([
+      ["/coral/guide", "/coral-guide"],
+      ["/coral/faq", "/coral-faq"],
+      ["/amoeba/guide", "/amoeba-guide"],
+      ["/amoeba/faq", "/amoeba-faq"],
+    ]);
+    expect((await respond("https://zoorik.com/coral")).status).toBe(200);
+    expect((await respond("https://zoorik.com/amoeba")).status).toBe(200);
+  });
+});
+
 describe("the research papers' first address", () => {
   it("301s /research-cloud-cost-optimization to /cloud-cost-optimization-research-papers", async () => {
     await expectMoved([

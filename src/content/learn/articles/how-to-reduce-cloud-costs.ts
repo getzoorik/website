@@ -265,7 +265,7 @@ export const article: Article = {
             ", Coral removed a spare 4-CPU worker on its own, rebalanced the requests of 14 apps, and swapped the remaining worker for a cheaper machine of the same size. Eight days after we connected it, the cluster’s machines cost $154.76 a month instead of $368.65 at Azure list prices, 58% less. None of its single-copy apps qualified for a warm handover, so during the swap each restarted once and was back up within 5 to 82\u00a0seconds. Coral prices each saving at list price and ",
             {
               a: "leaves discounts, reservations and savings plans out",
-              href: "/coral/faq#how-is-the-saving-worked-out",
+              href: "/coral-faq#how-is-the-saving-worked-out",
             },
             ", so check its figures against your own rates before you size a commitment.",
           ],
@@ -367,7 +367,7 @@ export const article: Article = {
     {
       title: "How is the saving worked out?",
       where: "Coral FAQ",
-      href: "/coral/faq#how-is-the-saving-worked-out",
+      href: "/coral-faq#how-is-the-saving-worked-out",
     },
   ],
 };

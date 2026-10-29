@@ -2,7 +2,7 @@ import { learnPath, routes } from "@/config/site";
 import type { FaqSection } from "@/content/faq";
 
 /**
- * `/coral/faq`: every string the page prints, verbatim from the approved mock:
+ * `/coral-faq`: every string the page prints, verbatim from the approved mock:
  * the first group "About Coral" (8 questions), then the client FAQ, 8 groups
  * and 36 questions in all, and the two cards as callouts atop their groups. The
  * five answers that pointed at another question by its number restate the

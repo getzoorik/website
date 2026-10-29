@@ -19,7 +19,7 @@ import { offSiteProps } from "@/lib/links";
 
 /**
  * `/privacy`: the privacy policy, drawn from `src/content/privacy.ts` with the
- * documents section's kit, as `/coral/guide` is.
+ * documents section's kit, as `/coral-guide` is.
  *
  * The dark hero with the title and deck only, then the contents rail beside the
  * reading column: the date line, the opening paragraph, the short version's

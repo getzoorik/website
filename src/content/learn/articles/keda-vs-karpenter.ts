@@ -481,8 +481,8 @@ export const article: Article = {
     {
       title: "Do I need Coral with Karpenter or NAP?",
       where: "Coral FAQ",
-      href: "/coral/faq#do-i-need-coral-with-karpenter",
+      href: "/coral-faq#do-i-need-coral-with-karpenter",
     },
-    { title: "HPAs and VPAs", where: "Coral product guide", href: "/coral/guide#hpas-and-vpas" },
+    { title: "HPAs and VPAs", where: "Coral product guide", href: "/coral-guide#hpas-and-vpas" },
   ],
 };

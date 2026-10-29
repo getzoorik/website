@@ -465,7 +465,7 @@ export const article: Article = {
     {
       title: "In your Azure subscription",
       where: "Amoeba product guide",
-      href: "/amoeba/guide#in-your-azure-subscription",
+      href: "/amoeba-guide#in-your-azure-subscription",
     },
   ],
 };

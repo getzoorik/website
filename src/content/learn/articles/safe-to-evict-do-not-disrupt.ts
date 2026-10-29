@@ -495,7 +495,7 @@ export const article: Article = {
             [
               { b: "Short restarts." },
               " When Coral removes a node, a pod whose replacement can’t start first gets a short restart, and marking it do-not-disrupt prevents that, at the price of keeping its node. For databases, the ",
-              { a: "Coral FAQ", href: "/coral/faq#how-are-databases-kafka-elasticsearch-redis" },
+              { a: "Coral FAQ", href: "/coral-faq#how-are-databases-kafka-elasticsearch-redis" },
               " suggests the Read-only policy and do-not-disrupt for a careful start.",
             ],
           ],
@@ -573,6 +573,6 @@ export const article: Article = {
       where: "Learn",
       href: "/learn/karpenter-consolidation",
     },
-    { title: "Nodes held", where: "Coral product guide", href: "/coral/guide#nodes-held" },
+    { title: "Nodes held", where: "Coral product guide", href: "/coral-guide#nodes-held" },
   ],
 };

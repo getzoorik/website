@@ -536,7 +536,7 @@ export const article: Article = {
     {
       title: "What does the agent send to Zoorik?",
       where: "Amoeba FAQ",
-      href: "/amoeba/faq#what-does-the-agent-send-to",
+      href: "/amoeba-faq#what-does-the-agent-send-to",
     },
   ],
 };

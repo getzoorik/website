@@ -7,17 +7,17 @@ import { learnSlugOf, titleLink } from "@/content/learn/published";
 import { documentFacts } from "@/features/documents/document-facts";
 
 /* The nav and the footer read the pathname. */
-const pathname = vi.hoisted(() => ({ current: "/amoeba/guide" }));
+const pathname = vi.hoisted(() => ({ current: "/amoeba-guide" }));
 vi.mock("next/navigation", async (original) => ({
   ...(await original<typeof import("next/navigation")>()),
   usePathname: () => pathname.current,
 }));
 
-import AmoebaGuidePage, { metadata } from "@/app/amoeba/guide/page";
+import AmoebaGuidePage, { metadata } from "@/app/amoeba-guide/page";
 import { AmoebaGuide } from "@/features/amoeba-guide/amoeba-guide";
 
 /**
- * `/amoeba/guide` (laid out like the FAQ, as the Coral guide is): the page's
+ * `/amoeba-guide` (laid out like the FAQ, as the Coral guide is): the page's
  * own contract on top of the
  * documents kit, which `documents.test.tsx` covers: the groups and their
  * numbered rows, the ids a link made before the rows still lands on, the hero
@@ -31,7 +31,7 @@ import { AmoebaGuide } from "@/features/amoeba-guide/amoeba-guide";
  */
 
 beforeEach(() => {
-  pathname.current = "/amoeba/guide";
+  pathname.current = "/amoeba-guide";
 });
 
 const text = (el: Element | null): string => (el?.textContent ?? "").replace(/[\s ]+/g, " ").trim();
@@ -119,7 +119,7 @@ const PLACEHOLDERS = [
   ["what-the-role-allows", "when Amoeba reapplies a VM"],
 ];
 
-describe("/amoeba/guide groups and rows", () => {
+describe("/amoeba-guide groups and rows", () => {
   it("draws the 11 sections as groups, each labelled by its h2, with its lede over its rows", () => {
     const container = page();
     const groups = [...container.querySelectorAll("article.gd-main > section.fq-sec")];
@@ -252,7 +252,7 @@ describe("/amoeba/guide groups and rows", () => {
   });
 });
 
-describe("/amoeba/guide page", () => {
+describe("/amoeba-guide page", () => {
   it("has one h1 and the deck", () => {
     const container = page();
     expect(container.querySelectorAll("h1")).toHaveLength(1);
@@ -442,10 +442,10 @@ describe("the [Coral | Amoeba] switch", () => {
     ).toEqual(
       amoebaDocs
         ? [
-            ["Coral Kubernetes", "/coral/guide", null],
-            ["Amoeba Block storage", "/amoeba/guide", "page"],
+            ["Coral Kubernetes", "/coral-guide", null],
+            ["Amoeba Block storage", "/amoeba-guide", "page"],
           ]
-        : [["Coral Kubernetes", "/coral/guide", null]],
+        : [["Coral Kubernetes", "/coral-guide", null]],
     );
   });
 
@@ -478,24 +478,24 @@ describe("the [Coral | Amoeba] switch", () => {
     expect(
       links.map((a) => [text(a), a.getAttribute("href"), a.getAttribute("aria-current")]),
     ).toEqual([
-      ["Coral Kubernetes", "/coral/guide", null],
-      ["Amoeba Block storage", "/amoeba/guide", "page"],
+      ["Coral Kubernetes", "/coral-guide", null],
+      ["Amoeba Block storage", "/amoeba-guide", "page"],
     ]);
     vi.doUnmock("@/config/site");
   });
 });
 
-describe("the /amoeba/guide route", () => {
+describe("the /amoeba-guide route", () => {
   it("titles, describes and canonicalises the page", () => {
     expect(metadata.title).toBe("Amoeba product guide");
     expect(metadata.description).toBe(
       "Onboard a VM to Amoeba on Azure or AWS. See how its data moves onto one btrfs pool, how that pool grows and shrinks, and how you stay in control.",
     );
-    expect(metadata.alternates).toEqual({ canonical: "/amoeba/guide" });
+    expect(metadata.alternates).toEqual({ canonical: "/amoeba-guide" });
     expect(metadata).not.toHaveProperty("robots");
     const og = metadata.openGraph as Record<string, unknown>;
     expect(og.title).toBe("Amoeba product guide | Zoorik");
-    expect(og.url).toBe("/amoeba/guide");
+    expect(og.url).toBe("/amoeba-guide");
   });
 
   it.runIf(!amoebaDocs)("answers 404 while the Amoeba guide is held", () => {

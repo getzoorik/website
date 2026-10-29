@@ -44,7 +44,8 @@
 //
 // In both modes a link to an address that moved, in the text or a Related line, is written to where its page lives now:
 // a study's old /case-studies/<study> or /value-lab/<study> (which the article drafts still write) to its own address at
-// the site's root, a troubleshooting page under /docs to its product's troubleshooting page (`MOVED`).
+// the site's root, a troubleshooting page under /docs to its product's troubleshooting page, a product's guide or FAQ
+// under the product to its own address at the root (`MOVED`).
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -151,6 +152,10 @@ const MOVED = new Map([
   ["/docs/amoeba-not-showing-my-vm", "/amoeba-troubleshooting"],
   ["/docs/amoeba-not-rightsizing-disks", "/amoeba-troubleshooting"],
   ["/research-cloud-cost-optimization", "/cloud-cost-optimization-research-papers"],
+  ["/coral/guide", "/coral-guide"],
+  ["/coral/faq", "/coral-faq"],
+  ["/amoeba/guide", "/amoeba-guide"],
+  ["/amoeba/faq", "/amoeba-faq"],
 ]);
 
 /** A link's address as the site serves it (`MOVED`). */
@@ -488,7 +493,7 @@ function where(href) {
     path === "/amoeba-troubleshooting"
   )
     return "Docs";
-  const m = /^\/(coral|amoeba)(\/(guide|faq))?$/.exec(path);
+  const m = /^\/(coral|amoeba)(-(guide|faq))?$/.exec(path);
   if (m) {
     const name = m[1][0].toUpperCase() + m[1].slice(1);
     if (m[3] === "guide") return `${name} product guide`;

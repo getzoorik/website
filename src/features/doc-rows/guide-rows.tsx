@@ -11,8 +11,8 @@ import { DocumentPage } from "@/features/documents/document-page";
 import { DocCallout, DocCode, DocSteps, DocSubhead, DocTable } from "@/features/documents/prose";
 
 /**
- * A product guide on the web, laid out like the FAQ, shared by `/coral/guide`
- * and `/amoeba/guide`:
+ * A product guide on the web, laid out like the FAQ, shared by `/coral-guide`
+ * and `/amoeba-guide`:
  *
  *   the utility hero (h1, the [Coral | Amoeba] switch, the deck, the PDF when
  *   there is one); over the groups, the Updated line and the summary list; then

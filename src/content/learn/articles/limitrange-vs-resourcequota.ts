@@ -496,7 +496,7 @@ export const article: Article = {
               " Every change respects your minimums, LimitRanges and quotas, and routine changes under 10% are skipped (",
               {
                 a: "how Coral decides a change is safe",
-                href: "/coral/faq#how-does-coral-decide-a-change",
+                href: "/coral-faq#how-does-coral-decide-a-change",
               },
               "). Coral never changes your manifest. It sizes pods as they start, and resizes running pods in place on 1.33+ nodes where possible, or else restarts them one at a time.",
             ],
@@ -515,7 +515,7 @@ export const article: Article = {
             [
               { b: "Quotas and refusals." },
               " The agent’s inventory, sent every 5\u00a0minutes, covers nodes, namespaces, workloads with their requests, limits and labels, autoscalers, PodDisruptionBudgets and quotas. The only event text sent is the message when a pod can’t be created because of a quota, a limit range or an admission policy (",
-              { a: "what never leaves", href: "/coral/guide#what-never-leaves" },
+              { a: "what never leaves", href: "/coral-guide#what-never-leaves" },
               ").",
             ],
             [{ b: "Opt-in." }, " Pod sizing waits until you switch on “Automatically optimize”."],
@@ -602,12 +602,12 @@ export const article: Article = {
     {
       title: "How does Coral decide a change is safe to apply automatically?",
       where: "Coral FAQ",
-      href: "/coral/faq#how-does-coral-decide-a-change",
+      href: "/coral-faq#how-does-coral-decide-a-change",
     },
     {
       title: "What never leaves",
       where: "Coral product guide",
-      href: "/coral/guide#what-never-leaves",
+      href: "/coral-guide#what-never-leaves",
     },
   ],
 };

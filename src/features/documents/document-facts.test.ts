@@ -75,10 +75,10 @@ describe("the published documents", () => {
   });
 
   it("send the guide's PDF to the guide, the FAQ's to the FAQ and each one-pager to its product", () => {
-    expect(documents["coral-guide"].canonical).toBe("/coral/guide");
-    expect(documents["coral-faq"].canonical).toBe("/coral/faq");
+    expect(documents["coral-guide"].canonical).toBe("/coral-guide");
+    expect(documents["coral-faq"].canonical).toBe("/coral-faq");
     expect(documents["coral-one-pager"].canonical).toBe("/coral");
-    expect(documents["amoeba-guide"].canonical).toBe("/amoeba/guide");
+    expect(documents["amoeba-guide"].canonical).toBe("/amoeba-guide");
     expect(documents["amoeba-one-pager"].canonical).toBe("/amoeba");
   });
 });

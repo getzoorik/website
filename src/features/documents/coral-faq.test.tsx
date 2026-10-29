@@ -8,12 +8,12 @@ import { learnSlugOf, titleLink } from "@/content/learn/published";
 import { documentFacts } from "@/features/documents/document-facts";
 
 /* The nav and the footer read the pathname. */
-vi.mock("next/navigation", () => ({ usePathname: () => "/coral/faq" }));
+vi.mock("next/navigation", () => ({ usePathname: () => "/coral-faq" }));
 
-import CoralFaqPage from "@/app/coral/faq/page";
+import CoralFaqPage from "@/app/coral-faq/page";
 
 /**
- * `/coral/faq` as a whole: the ids other pages and shared links depend on,
+ * `/coral-faq` as a whole: the ids other pages and shared links depend on,
  * the first group "About Coral", the groups and their two callouts, the
  * questions that open in place with their numerals and short answers, the
  * Updated line, the phone's group chips and the one download line. Its
@@ -125,9 +125,9 @@ describe("the page", () => {
     expect(
       links.map((a) => [text(a), a.getAttribute("href"), a.getAttribute("aria-current")]),
     ).toEqual([
-      ["Coral Kubernetes", "/coral/faq", "page"],
+      ["Coral Kubernetes", "/coral-faq", "page"],
       /* Amoeba's item appears the day `amoebaDocs` publishes its faq. */
-      ...(amoebaDocs ? [["Amoeba Block storage", "/amoeba/faq", null]] : []),
+      ...(amoebaDocs ? [["Amoeba Block storage", "/amoeba-faq", null]] : []),
     ]);
     expect(text(page.querySelector(".doc-deck"))).toBe(
       "Sizing, safety, HPA, nodes and autoscalers.",
@@ -240,7 +240,7 @@ describe("each question", () => {
       [
         "what-leaves-my-cluster",
         "What leaves your cluster",
-        "/coral/guide#what-leaves-your-cluster",
+        "/coral-guide#what-leaves-your-cluster",
       ],
       /* "Compared in full": the Learn article by its h1, a link once it is published. */
       ...(compared.href ? [["do-i-need-coral-with-karpenter", compared.text, compared.href]] : []),
@@ -264,7 +264,7 @@ describe("each question", () => {
   });
 
   it("opens in place without touching the address", async () => {
-    window.history.replaceState(null, "", "/coral/faq");
+    window.history.replaceState(null, "", "/coral-faq");
     const question = page.querySelector("details.fq") as HTMLDetailsElement;
     await userEvent.click(question.querySelector("summary")!);
     expect(question.open).toBe(true);

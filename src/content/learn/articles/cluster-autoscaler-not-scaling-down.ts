@@ -472,7 +472,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "In Coral, Node list → “What’s holding them” names each ",
-            { a: "held node", href: "/coral/guide#nodes-held" },
+            { a: "held node", href: "/coral-guide#nodes-held" },
             " with its reason and fix.",
           ],
         },
@@ -560,11 +560,11 @@ export const article: Article = {
       where: "Learn",
       href: "/learn/pod-disruption-budget-best-practices",
     },
-    { title: "Nodes held", where: "Coral product guide", href: "/coral/guide#nodes-held" },
+    { title: "Nodes held", where: "Coral product guide", href: "/coral-guide#nodes-held" },
     {
       title: "How does Coral interact with Cluster Autoscaler or Karpenter decisions?",
       where: "Coral FAQ",
-      href: "/coral/faq#how-does-coral-interact-with-cluster",
+      href: "/coral-faq#how-does-coral-interact-with-cluster",
     },
   ],
 };

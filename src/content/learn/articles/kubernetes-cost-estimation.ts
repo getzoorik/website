@@ -372,7 +372,7 @@ export const article: Article = {
     {
       title: "How is the saving worked out?",
       where: "Coral FAQ",
-      href: "/coral/faq#how-is-the-saving-worked-out",
+      href: "/coral-faq#how-is-the-saving-worked-out",
     },
     {
       title: "How we reduced our own cluster’s machine bill by 58%",

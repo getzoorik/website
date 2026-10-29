@@ -9,7 +9,7 @@ import { DocumentPage, documentMetadata } from "@/features/documents/document-pa
 import { Faq } from "@/features/documents/faq";
 
 /**
- * `/amoeba/faq`: the Amoeba FAQ on the web, the questions and their short
+ * `/amoeba-faq`: the Amoeba FAQ on the web, the questions and their short
  * answers, on the Coral FAQ's layout. Prerendered at build like every page
  * here. No download line, because no Amoeba FAQ PDF exists, and no FAQPage
  * structured data.

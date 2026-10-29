@@ -180,10 +180,10 @@ const closingProduct = (article: Article) =>
 
 /** Where each page a Related tile links to keeps its anchors. */
 const ANCHOR_SOURCES: Record<string, string> = {
-  "/coral/faq": "src/content/coral-faq.ts",
-  "/coral/guide": "src/content/coral-guide.ts",
-  "/amoeba/faq": "src/content/amoeba-faq.ts",
-  "/amoeba/guide": "src/content/amoeba-guide.ts",
+  "/coral-faq": "src/content/coral-faq.ts",
+  "/coral-guide": "src/content/coral-guide.ts",
+  "/amoeba-faq": "src/content/amoeba-faq.ts",
+  "/amoeba-guide": "src/content/amoeba-guide.ts",
 };
 
 describe("/learn/[slug]", () => {

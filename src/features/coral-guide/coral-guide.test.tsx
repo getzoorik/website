@@ -7,13 +7,13 @@ import { learnSlugOf, titleLink } from "@/content/learn/published";
 import { documentFacts } from "@/features/documents/document-facts";
 
 /* The nav and the footer read the pathname. */
-const pathname = vi.hoisted(() => ({ current: "/coral/guide" }));
+const pathname = vi.hoisted(() => ({ current: "/coral-guide" }));
 vi.mock("next/navigation", () => ({ usePathname: () => pathname.current }));
 
-import CoralGuidePage from "@/app/coral/guide/page";
+import CoralGuidePage from "@/app/coral-guide/page";
 
 /**
- * `/coral/guide` (laid out like the FAQ): the page's own contract on top of
+ * `/coral-guide` (laid out like the FAQ): the page's own contract on top of
  * the documents kit, which
  * `documents.test.tsx` covers: the groups and their numbered rows, the ids a
  * link made before the rows still lands on, the hero, the Updated line and the
@@ -23,7 +23,7 @@ import CoralGuidePage from "@/app/coral/guide/page";
  */
 
 beforeEach(() => {
-  pathname.current = "/coral/guide";
+  pathname.current = "/coral-guide";
   /* A Mac. jsdom's own agent reads "(darwin)", which the mock's rule takes for Windows. */
   vi.spyOn(navigator, "userAgent", "get").mockReturnValue(
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
@@ -111,7 +111,7 @@ const ROWS: Record<string, readonly (readonly [string, string])[]> = {
 };
 const ROW_IDS = Object.values(ROWS).flatMap((rows) => rows.map(([id]) => id));
 
-describe("/coral/guide groups and rows", () => {
+describe("/coral-guide groups and rows", () => {
   it("draws the 11 sections as groups, each labelled by its h2 and named in the phone's chips", () => {
     const container = page();
     const groups = [...container.querySelectorAll("article.gd-main > section.fq-sec")];
@@ -209,7 +209,7 @@ describe("/coral/guide groups and rows", () => {
   });
 });
 
-describe("/coral/guide page", () => {
+describe("/coral-guide page", () => {
   it("has one h1, the switch and the deck, a skip link and a main", () => {
     const container = page();
     expect(container.querySelectorAll("h1")).toHaveLength(1);
@@ -222,9 +222,9 @@ describe("/coral/guide page", () => {
     expect(
       links.map((a) => [text(a), a.getAttribute("href"), a.getAttribute("aria-current")]),
     ).toEqual([
-      ["Coral Kubernetes", "/coral/guide", "page"],
+      ["Coral Kubernetes", "/coral-guide", "page"],
       /* Amoeba's item appears the day `amoebaDocs` publishes its guide. */
-      ...(amoebaDocs ? [["Amoeba Block storage", "/amoeba/guide", null]] : []),
+      ...(amoebaDocs ? [["Amoeba Block storage", "/amoeba-guide", null]] : []),
     ]);
     expect(text(container.querySelector(".doc-deck"))).toBe(
       "How to connect a cluster, what Coral changes, and how you stay in control.",

@@ -8,7 +8,7 @@ import { CoralGuide } from "@/features/coral-guide/coral-guide";
 import { documentMetadata } from "@/features/documents/document-page";
 
 /**
- * `/coral/guide`: the Coral product guide. Indexed, and prerendered at build
+ * `/coral-guide`: the Coral product guide. Indexed, and prerendered at build
  * like every page here; the PDF's download facts are read from the file then.
  */
 export const metadata: Metadata = documentMetadata(routes.coralGuide, coralGuide.meta);

@@ -8,7 +8,7 @@ import { amoebaDocs } from "@/config/site";
 import { documentFacts } from "@/features/documents/document-facts";
 
 /* The nav and the footer read the pathname. */
-const pathname = vi.hoisted(() => ({ current: "/coral/guide" }));
+const pathname = vi.hoisted(() => ({ current: "/coral-guide" }));
 vi.mock("next/navigation", () => ({ usePathname: () => pathname.current }));
 
 import { DocCommandWell } from "@/features/documents/doc-command-well";
@@ -36,7 +36,7 @@ import {
  */
 
 beforeEach(() => {
-  pathname.current = "/coral/guide";
+  pathname.current = "/coral-guide";
 });
 
 afterEach(() => {
@@ -94,9 +94,9 @@ describe("the document hero", () => {
     const nav = within(hero()).getByRole("navigation", { name: "Choose a product" });
     const links = within(nav).getAllByRole("link");
     expect(links.map((a) => [text(a), a.getAttribute("href")])).toEqual([
-      ["Coral Kubernetes", "/coral/guide"],
+      ["Coral Kubernetes", "/coral-guide"],
       /* Amoeba's item appears the day `amoebaDocs` publishes its guide. */
-      ...(amoebaDocs ? [["Amoeba Block storage", "/amoeba/guide"]] : []),
+      ...(amoebaDocs ? [["Amoeba Block storage", "/amoeba-guide"]] : []),
     ]);
     expect(links[0]).toHaveAttribute("aria-current", "page");
     /* The name is kept out of translation; the category is translated. */
@@ -249,7 +249,7 @@ describe("the document body", () => {
         </DocumentBody>
       </main>,
     );
-    window.history.replaceState(null, "", "/coral/guide#stay-in-control");
+    window.history.replaceState(null, "", "/coral-guide#stay-in-control");
     const scrollTo = vi.spyOn(window, "scrollTo").mockImplementation(() => {});
     const top = within(container.querySelector(".doc-rail") as HTMLElement).getByRole("link", {
       name: "Back to top",
@@ -259,7 +259,7 @@ describe("the document body", () => {
     await userEvent.click(top);
     expect(scrollTo).toHaveBeenCalledWith(expect.objectContaining({ top: 0 }));
     expect(window.location.hash).toBe("");
-    expect(window.location.pathname).toBe("/coral/guide");
+    expect(window.location.pathname).toBe("/coral-guide");
     expect(document.activeElement).toBe(container.querySelector("#main"));
   });
 });
@@ -315,7 +315,7 @@ describe("the rows that open in place", () => {
   });
 
   it("opens the fold a link leads into, keeps the one it came from open, and writes the hash", async () => {
-    window.history.replaceState(null, "", "/coral/guide");
+    window.history.replaceState(null, "", "/coral-guide");
     const container = folds();
     const from = container.querySelector("#how-a-workload-gets-its-policy") as HTMLDetailsElement;
     from.open = true;
@@ -348,7 +348,7 @@ describe("the rows that open in place", () => {
   });
 
   it("opens the fold an address names on arrival, and nothing else", () => {
-    window.history.replaceState(null, "", "/coral/guide#per-workload-settings");
+    window.history.replaceState(null, "", "/coral-guide#per-workload-settings");
     const container = folds();
     const open = [...container.querySelectorAll("details[open]")].map((d) => d.id);
     expect(open).toEqual(["per-workload-settings"]);
@@ -356,7 +356,7 @@ describe("the rows that open in place", () => {
 
   it("opens the fold a hash change names", () => {
     const container = folds();
-    window.history.replaceState(null, "", "/coral/guide#how-a-workload-gets-its-policy");
+    window.history.replaceState(null, "", "/coral-guide#how-a-workload-gets-its-policy");
     act(() => void window.dispatchEvent(new HashChangeEvent("hashchange")));
     expect(
       (container.querySelector("#how-a-workload-gets-its-policy") as HTMLDetailsElement).open,
@@ -726,7 +726,7 @@ describe("the install's OS switch", () => {
 
 describe("a document page's chrome", () => {
   it("marks Docs current and opens the assessment on its product, in the nav and the closing row", () => {
-    pathname.current = "/coral/guide";
+    pathname.current = "/coral-guide";
     const { container } = render(
       <DocumentPage hero={{ title: "Product guide", deck: "Deck." }} product="coral">
         <p>Body</p>

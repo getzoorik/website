@@ -402,7 +402,7 @@ export const article: Article = {
               href: "/coral-value-lab",
             },
             ", and ",
-            { a: "Coral’s FAQ", href: "/coral/faq#how-does-coral-interact-with-cluster" },
+            { a: "Coral’s FAQ", href: "/coral-faq#how-does-coral-interact-with-cluster" },
             " answers how it works with each node autoscaler.",
           ],
         },
@@ -483,7 +483,7 @@ export const article: Article = {
     {
       title: "Do I need Coral with Karpenter or NAP?",
       where: "Coral FAQ",
-      href: "/coral/faq#do-i-need-coral-with-karpenter",
+      href: "/coral-faq#do-i-need-coral-with-karpenter",
     },
   ],
 };

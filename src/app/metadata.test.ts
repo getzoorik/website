@@ -12,9 +12,9 @@ const { metadata: login, viewport: loginViewport } = await import("./login/page"
 const { metadata: amoeba } = await import("./amoeba/page");
 const { metadata: coral } = await import("./coral/page");
 const { metadata: docs } = await import("./docs/page");
-const { metadata: coralGuide } = await import("./coral/guide/page");
-const { metadata: coralFaq } = await import("./coral/faq/page");
-const { metadata: amoebaFaq } = await import("./amoeba/faq/page");
+const { metadata: coralGuide } = await import("./coral-guide/page");
+const { metadata: coralFaq } = await import("./coral-faq/page");
+const { metadata: amoebaFaq } = await import("./amoeba-faq/page");
 const { metadata: privacy } = await import("./privacy/page");
 const { metadata: terms } = await import("./terms/page");
 const { metadata: security } = await import("./security/page");
@@ -110,10 +110,10 @@ describe("the documents section's metadata", () => {
     expect(coralGuide.description).toBe(
       "How to connect an AKS or EKS cluster to Coral, what it installs and changes, how it sizes pods and removes nodes, and how you stay in control.",
     );
-    expect(coralGuide.alternates).toEqual({ canonical: "/coral/guide" });
+    expect(coralGuide.alternates).toEqual({ canonical: "/coral-guide" });
     expect(coralGuide).not.toHaveProperty("robots");
     expect(coralGuide.openGraph).toMatchObject({
-      url: "/coral/guide",
+      url: "/coral-guide",
       title: "Coral product guide | Zoorik",
     });
   });
@@ -123,10 +123,10 @@ describe("the documents section's metadata", () => {
     expect(coralFaq.description).toBe(
       "Answers on how Coral sizes CPU and memory requests, keeps workloads safe, works with HPA, KEDA, Karpenter, NAP and Cluster Autoscaler on AKS and EKS.",
     );
-    expect(coralFaq.alternates).toEqual({ canonical: "/coral/faq" });
+    expect(coralFaq.alternates).toEqual({ canonical: "/coral-faq" });
     expect(coralFaq).not.toHaveProperty("robots");
     expect(coralFaq.openGraph).toMatchObject({
-      url: "/coral/faq",
+      url: "/coral-faq",
       title: "Coral FAQ | Zoorik",
     });
   });
@@ -136,9 +136,9 @@ describe("the documents section's metadata", () => {
       "Answers on how Amoeba keeps data safe, what restarts and when, how pools expand and shrink, and how it runs on Azure managed disks and Amazon EBS.";
     expect(amoebaFaq.title).toBe("Amoeba FAQ");
     expect(amoebaFaq.description).toBe(description);
-    expect(amoebaFaq.alternates).toEqual({ canonical: "/amoeba/faq" });
+    expect(amoebaFaq.alternates).toEqual({ canonical: "/amoeba-faq" });
     expect(amoebaFaq.openGraph).toMatchObject({
-      url: "/amoeba/faq",
+      url: "/amoeba-faq",
       title: "Amoeba FAQ | Zoorik",
       description,
     });

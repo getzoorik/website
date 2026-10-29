@@ -438,7 +438,7 @@ export const article: Article = {
       title:
         "If workload optimization reduces requests, how soon are nodes consolidated and removed?",
       where: "Coral FAQ",
-      href: "/coral/faq#if-workload-optimization-reduces-requests-how",
+      href: "/coral-faq#if-workload-optimization-reduces-requests-how",
     },
     {
       title: "How we reduced our own cluster’s machine bill by 58%",

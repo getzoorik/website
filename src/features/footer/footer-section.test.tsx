@@ -253,12 +253,12 @@ describe("the footer's columns", () => {
           ["Community", "/community"],
           ["Docs", "/docs"],
           ["Open source", "/open-source"],
-          ["Coral guide", "/coral/guide"],
-          ["Coral FAQ", "/coral/faq"],
+          ["Coral guide", "/coral-guide"],
+          ["Coral FAQ", "/coral-faq"],
           ...(amoebaDocs
             ? [
-                ["Amoeba guide", "/amoeba/guide"],
-                ["Amoeba FAQ", "/amoeba/faq"],
+                ["Amoeba guide", "/amoeba-guide"],
+                ["Amoeba FAQ", "/amoeba-faq"],
               ]
             : []),
         ],
@@ -291,7 +291,7 @@ describe("the footer's columns", () => {
 
   it("are the same on every page: the plain assessment, and each product's guide and FAQ", () => {
     /* No `?p=` from a product's pages. */
-    for (const path of ["/coral", "/amoeba", "/amoeba/guide", "/docs", "/learn", "/privacy"]) {
+    for (const path of ["/coral", "/amoeba", "/amoeba-guide", "/docs", "/learn", "/privacy"]) {
       expect(columns(path), path).toEqual(columns("/"));
     }
   });

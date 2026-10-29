@@ -159,6 +159,11 @@ const nextConfig: NextConfig = {
         destination: "/amoeba-troubleshooting",
         statusCode: 301,
       },
+      /* Each product's guide and FAQ, at the site's root since 29 Oct 2026. */
+      { source: "/coral/guide", destination: "/coral-guide", statusCode: 301 },
+      { source: "/coral/faq", destination: "/coral-faq", statusCode: 301 },
+      { source: "/amoeba/guide", destination: "/amoeba-guide", statusCode: 301 },
+      { source: "/amoeba/faq", destination: "/amoeba-faq", statusCode: 301 },
       /* The research papers' first address. */
       {
         source: "/research-cloud-cost-optimization",

@@ -409,7 +409,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
         blocks: [
           {
             kind: "p",
-            text: "The [Coral product guide](/coral/guide) and the [Coral FAQ](/coral/faq) have the full detail.",
+            text: "The [Coral product guide](/coral-guide) and the [Coral FAQ](/coral-faq) have the full detail.",
           },
           {
             kind: "p",
@@ -419,19 +419,19 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
       },
     ],
     related: [
-      { text: "Coral product guide: Before you start", href: "/coral/guide#before-you-start" },
-      { text: "Coral product guide: Connect a cluster", href: "/coral/guide#connect-a-cluster" },
+      { text: "Coral product guide: Before you start", href: "/coral-guide#before-you-start" },
+      { text: "Coral product guide: Connect a cluster", href: "/coral-guide#connect-a-cluster" },
       {
         text: "Coral FAQ: What does connecting a cluster change?",
-        href: "/coral/faq#what-does-connecting-a-cluster-change",
+        href: "/coral-faq#what-does-connecting-a-cluster-change",
       },
       { text: "Install Coral with Helm", href: "/docs/install-coral-with-helm" },
-      { text: "Coral product guide: Node optimization", href: "/coral/guide#node-optimization" },
-      { text: "Coral product guide: Nodes held", href: "/coral/guide#nodes-held" },
-      { text: "Coral product guide: Stay in control", href: "/coral/guide#stay-in-control" },
+      { text: "Coral product guide: Node optimization", href: "/coral-guide#node-optimization" },
+      { text: "Coral product guide: Nodes held", href: "/coral-guide#nodes-held" },
+      { text: "Coral product guide: Stay in control", href: "/coral-guide#stay-in-control" },
       {
         text: "Coral FAQ: How do you make sure node consolidation doesn’t cause scheduling failures later?",
-        href: "/coral/faq#how-do-you-make-sure-node",
+        href: "/coral-faq#how-do-you-make-sure-node",
       },
       {
         text: "Cluster Autoscaler not scaling down: what keeps nodes running",
@@ -711,7 +711,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
         blocks: [
           {
             kind: "p",
-            text: "The [Amoeba product guide](/amoeba/guide) and the [Amoeba FAQ](/amoeba/faq) have the full detail.",
+            text: "The [Amoeba product guide](/amoeba-guide) and the [Amoeba FAQ](/amoeba-faq) have the full detail.",
           },
           {
             kind: "p",
@@ -721,28 +721,28 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
       },
     ],
     related: [
-      { text: "Amoeba product guide: Before you start", href: "/amoeba/guide#before-you-start" },
+      { text: "Amoeba product guide: Before you start", href: "/amoeba-guide#before-you-start" },
       {
         text: "Amoeba product guide: Which VMs are listed",
-        href: "/amoeba/guide#which-vms-are-listed",
+        href: "/amoeba-guide#which-vms-are-listed",
       },
-      { text: "Amoeba product guide: Connection states", href: "/amoeba/guide#connection-states" },
+      { text: "Amoeba product guide: Connection states", href: "/amoeba-guide#connection-states" },
       {
         text: "Amoeba FAQ: What happens if the agent stops reporting?",
-        href: "/amoeba/faq#what-happens-if-the-agent-stops",
+        href: "/amoeba-faq#what-happens-if-the-agent-stops",
       },
       {
         text: "Amoeba product guide: Moving a VM onto its pool",
-        href: "/amoeba/guide#moving-a-vm-onto-its-pool",
+        href: "/amoeba-guide#moving-a-vm-onto-its-pool",
       },
       {
         text: "Amoeba product guide: What stops a shrink",
-        href: "/amoeba/guide#what-stops-a-shrink",
+        href: "/amoeba-guide#what-stops-a-shrink",
       },
-      { text: "Amoeba product guide: Stay in control", href: "/amoeba/guide#stay-in-control" },
+      { text: "Amoeba product guide: Stay in control", href: "/amoeba-guide#stay-in-control" },
       {
         text: "Amoeba FAQ: Which Linux distributions does Amoeba support?",
-        href: "/amoeba/faq#which-linux-distributions-does-amoeba-support",
+        href: "/amoeba-faq#which-linux-distributions-does-amoeba-support",
       },
     ],
   },

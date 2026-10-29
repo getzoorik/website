@@ -112,8 +112,8 @@ describe("/docs", () => {
         tile.querySelector("a.dt-a")?.getAttribute("href") ?? null,
       ]),
     ).toEqual([
-      ["Product guide", "Connect, what changes, staying in control", "/coral/guide"],
-      ["FAQ", "Sizing, safety, HPA, nodes and autoscalers", "/coral/faq"],
+      ["Product guide", "Connect, what changes, staying in control", "/coral-guide"],
+      ["FAQ", "Sizing, safety, HPA, nodes and autoscalers", "/coral-faq"],
       ["One-pager", "Cost, safety, visibility and an example", null],
       [
         "Install with Helm",
@@ -224,8 +224,8 @@ describe("/docs", () => {
     expect(container.querySelector(".res-type, .res-card, .res-open, img")).toBeNull();
     const hrefs = [...container.querySelectorAll("a")].map((a) => a.getAttribute("href"));
     if (!amoebaDocs) {
-      expect(hrefs).not.toContain("/amoeba/guide");
-      expect(hrefs).not.toContain("/amoeba/faq");
+      expect(hrefs).not.toContain("/amoeba-guide");
+      expect(hrefs).not.toContain("/amoeba-faq");
     }
     if (!amoebaOnePager) expect(hrefs).not.toContain("/docs/amoeba-one-pager.pdf");
   });
@@ -320,7 +320,7 @@ describe("the doc tile", () => {
         entry={{
           title: "Product guide",
           line: "Onboard, what changes, staying in control",
-          href: "/amoeba/guide",
+          href: "/amoeba-guide",
           pdf: { label: "PDF" },
         }}
         withPdf
@@ -334,7 +334,7 @@ describe("the doc tile", () => {
   it("in the Read more row: a page tile with no PDF row", () => {
     const { container } = render(<DocTile entry={guide} withPdf={false} />);
     expect(container.querySelector(".dt-pdf")).toBeNull();
-    expect(container.querySelector("a.dt-a")).toHaveAttribute("href", "/coral/guide");
+    expect(container.querySelector("a.dt-a")).toHaveAttribute("href", "/coral-guide");
   });
 
   it("in the Read more row: the one-pager is a download whose line is its facts", () => {
@@ -387,8 +387,8 @@ describe("the hub under each hold of the Amoeba documents", () => {
   it("guide and FAQ released, one-pager held: their two tiles, the guide's PDF and none yet for the FAQ", async () => {
     const groups = await hubWith({ amoebaDocs: true, amoebaOnePager: false });
     expect(amoebaTiles(groups)).toEqual([
-      ["Product guide", "/amoeba/guide", "amoeba-guide"],
-      ["FAQ", "/amoeba/faq", null],
+      ["Product guide", "/amoeba-guide", "amoeba-guide"],
+      ["FAQ", "/amoeba-faq", null],
       ["Troubleshooting", "/amoeba-troubleshooting", null],
     ]);
   });
@@ -404,8 +404,8 @@ describe("the hub under each hold of the Amoeba documents", () => {
     expect(groups[1]!.line).toBe("Block storage cost optimization on Azure\u00a0and\u00a0AWS");
     expect(groups[1]!.pageLink).toEqual({ label: "Product page", href: "/amoeba" });
     expect(amoebaTiles(groups)).toEqual([
-      ["Product guide", "/amoeba/guide", "amoeba-guide"],
-      ["FAQ", "/amoeba/faq", null],
+      ["Product guide", "/amoeba-guide", "amoeba-guide"],
+      ["FAQ", "/amoeba-faq", null],
       ["One-pager", null, "amoeba-one-pager"],
       ["Troubleshooting", "/amoeba-troubleshooting", null],
     ]);

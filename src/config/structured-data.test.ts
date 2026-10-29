@@ -104,10 +104,10 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/amoeba": () => import("@/app/amoeba/page"),
   "/assessment": () => import("@/app/assessment/page"),
   "/docs": () => import("@/app/docs/page"),
-  "/coral/guide": () => import("@/app/coral/guide/page"),
-  "/coral/faq": () => import("@/app/coral/faq/page"),
-  "/amoeba/guide": () => import("@/app/amoeba/guide/page"),
-  "/amoeba/faq": () => import("@/app/amoeba/faq/page"),
+  "/coral-guide": () => import("@/app/coral-guide/page"),
+  "/coral-faq": () => import("@/app/coral-faq/page"),
+  "/amoeba-guide": () => import("@/app/amoeba-guide/page"),
+  "/amoeba-faq": () => import("@/app/amoeba-faq/page"),
   "/learn": () => import("@/app/learn/page"),
   ...Object.fromEntries(
     learnArticles.map((article) => [articleRoute(article), articleModule(article.slug)]),
@@ -208,8 +208,8 @@ describe("the home page's structured data", () => {
   it("names each product with Zoorik's name, and points it at its guide", () => {
     expect(coral.alternateName).toBe("Zoorik Coral");
     expect(amoeba.alternateName).toBe("Zoorik Amoeba");
-    expect(coral.softwareHelp).toMatchObject({ url: "https://zoorik.com/coral/guide" });
-    expect(amoeba.softwareHelp).toMatchObject({ url: "https://zoorik.com/amoeba/guide" });
+    expect(coral.softwareHelp).toMatchObject({ url: "https://zoorik.com/coral-guide" });
+    expect(amoeba.softwareHelp).toMatchObject({ url: "https://zoorik.com/amoeba-guide" });
   });
 
   it("links only the pages that exist about each product: Coral's two listings and its G2 page, Amoeba's two listings", () => {

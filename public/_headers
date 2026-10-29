@@ -66,16 +66,16 @@
 
 # Each PDF names the page that is its web version, so search engines index the page, not the file.
 /docs/coral-product-guide.pdf
-  Link: <https://zoorik.com/coral/guide>; rel="canonical"
+  Link: <https://zoorik.com/coral-guide>; rel="canonical"
 
 /docs/coral-faq.pdf
-  Link: <https://zoorik.com/coral/faq>; rel="canonical"
+  Link: <https://zoorik.com/coral-faq>; rel="canonical"
 
 /docs/coral-one-pager.pdf
   Link: <https://zoorik.com/coral>; rel="canonical"
 
 /docs/amoeba-product-guide.pdf
-  Link: <https://zoorik.com/amoeba/guide>; rel="canonical"
+  Link: <https://zoorik.com/amoeba-guide>; rel="canonical"
 
 /docs/amoeba-one-pager.pdf
   Link: <https://zoorik.com/amoeba>; rel="canonical"

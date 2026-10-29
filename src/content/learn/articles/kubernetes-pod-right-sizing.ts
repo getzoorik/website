@@ -414,7 +414,7 @@ export const article: Article = {
     {
       title: "How sizes are worked out",
       where: "Coral product guide",
-      href: "/coral/guide#how-sizes-are-worked-out",
+      href: "/coral-guide#how-sizes-are-worked-out",
     },
   ],
 };

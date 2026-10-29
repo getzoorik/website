@@ -48,9 +48,9 @@ describe("sitemap.xml", () => {
       `${site.url}/assessment`,
       `${site.url}/marketplaces`,
       `${site.url}/docs`,
-      `${site.url}/coral/guide`,
-      `${site.url}/coral/faq`,
-      ...(amoebaDocs ? [`${site.url}/amoeba/guide`, `${site.url}/amoeba/faq`] : []),
+      `${site.url}/coral-guide`,
+      `${site.url}/coral-faq`,
+      ...(amoebaDocs ? [`${site.url}/amoeba-guide`, `${site.url}/amoeba-faq`] : []),
       `${site.url}/docs/install-coral-with-helm`,
       `${site.url}/docs/install-coral-with-terraform`,
       `${site.url}/docs/contributing`,
@@ -102,11 +102,11 @@ describe("sitemap.xml", () => {
       "/marketplaces": "2026-10-21",
       /* The troubleshooting tiles (29 Oct 2026). */
       "/docs": "2026-10-29",
-      "/coral/guide": updated,
+      "/coral-guide": updated,
       /* The four questions of 25 Oct 2026. */
-      "/coral/faq": "2026-10-25",
+      "/coral-faq": "2026-10-25",
       /* The Amoeba guide and FAQ, rewritten at product level on 27 Oct 2026. */
-      ...(amoebaDocs ? { "/amoeba/guide": "2026-10-27", "/amoeba/faq": "2026-10-27" } : {}),
+      ...(amoebaDocs ? { "/amoeba-guide": "2026-10-27", "/amoeba-faq": "2026-10-27" } : {}),
       /* The three guides print "Updated 16 October 2026"; /open-source gives its content file's date. */
       "/docs/install-coral-with-helm": "2026-10-16",
       "/docs/install-coral-with-terraform": "2026-10-16",
