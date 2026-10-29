@@ -172,6 +172,8 @@ export const routes = {
   docsCoralNotRemovingNodes: "/docs/coral-not-removing-nodes",
   docsAmoebaNotShowingVm: "/docs/amoeba-not-showing-my-vm",
   docsAmoebaNotRightsizing: "/docs/amoeba-not-rightsizing-disks",
+  /* Research papers on cloud cost optimization, by subject. At the site's root, in no menu and no footer column yet. */
+  research: "/research-cloud-cost-optimization",
 } as const;
 
 /** Where the comparison pages live: under Cloud cost optimization tools. /compare and its old pages redirect there. */

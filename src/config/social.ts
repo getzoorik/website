@@ -136,6 +136,11 @@ const CARDS: readonly {
   { file: "events", words: "Cloud cost, FinOps and Kubernetes events", paths: ["/events"] },
   { file: "news", words: "Cloud cost, Kubernetes and FinOps updates", paths: ["/news"] },
   { file: "community", words: "FinOps and cloud cost communities", paths: ["/community"] },
+  {
+    file: "research-cloud-cost-optimization",
+    words: "Cloud cost optimization research",
+    paths: [routes.research],
+  },
   { file: "about", words: "Who builds Coral and Amoeba", paths: ["/about"] },
   { file: "careers", words: "Work with us, remotely", paths: ["/careers"] },
   { file: "brand-assets", words: "The Zoorik logo, colours and words", paths: ["/brand-assets"] },

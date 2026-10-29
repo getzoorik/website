@@ -33,6 +33,7 @@ import { glossaryPage, glossaryTerms, termRoute } from "@/content/learn/glossary
 import { articleRoute, learnArticles } from "@/content/learn/published";
 import { privacy } from "@/content/privacy";
 import { referralsLastUpdated } from "@/content/referrals";
+import { researchLastUpdated } from "@/content/research";
 import { securityPage } from "@/content/security";
 import { termsCopy } from "@/content/terms";
 import { troubleshootingGuides, troubleshootingUpdated } from "@/content/troubleshooting";
@@ -119,6 +120,8 @@ const contentDates: Partial<Record<string, string>> = {
       (guide) => [guide.route, guide.updated ?? troubleshootingUpdated] as const,
     ),
   ),
+  /* The research page prints no day: its content file's. */
+  [routes.research]: researchLastUpdated,
 };
 
 /**
@@ -127,7 +130,7 @@ const contentDates: Partial<Record<string, string>> = {
  * Amoeba's once `amoebaDocs` publishes them, the install and contributing
  * guides and the troubleshooting pages), Learn and every article in the
  * Learn index (A–Z by slug), the glossary and every term in its index (A–Z by
- * slug), the case studies, /events, /about, /careers,
+ * slug), the case studies, the research papers, /events, /about, /careers,
  * /brand-assets, /partners, /referrals, the privacy policy, the terms, and
  * security and data handling.
  * A held page answers 404, so it is never listed.
@@ -162,6 +165,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     routes.valueLab,
     routes.caseStudyCoralDevCluster,
     routes.caseStudyAmoebaLabVms,
+    routes.research,
     routes.events,
     routes.news,
     routes.community,

@@ -67,6 +67,7 @@ import type { GlossaryTerm } from "@/content/learn/glossary-term";
 import { articleAuthor, articleCard, articleRoute, learnArticles } from "@/content/learn/published";
 import { privacy } from "@/content/privacy";
 import { referralsPage } from "@/content/referrals";
+import { researchPage } from "@/content/research";
 import type { ProductPageContent } from "@/content/product-page";
 import { platformLabel, productOrder, products, type ProductId } from "@/content/products";
 import { securityPage } from "@/content/security";
@@ -508,6 +509,13 @@ const pages: Readonly<Record<string, PageEntry>> = {
         [routes.docsAmoebaNotRightsizing]: osGuideEntry(troubleshootingGuides.amoebaNotRightsizing),
       }
     : {}),
+  /* The research papers: a page of the site's own, under Zoorik alone. */
+  [routes.research]: {
+    kind: "CollectionPage",
+    name: titled(researchPage.meta.title),
+    description: researchPage.meta.description,
+    trail: [{ name: researchPage.hero.title, path: routes.research }],
+  },
   /* Value Lab, the case studies' hub. */
   [routes.valueLab]: {
     kind: "CollectionPage",

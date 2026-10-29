@@ -40,7 +40,7 @@ function importGraph(file: string, seen = new Set<string>()): Set<string> {
 }
 
 describe("sitemap.xml", () => {
-  it("lists the home page, the product pages, the assessment, the documents, the install and contributing guides, the troubleshooting pages, open source, Learn and every article in its index, the glossary and every term in its index, Cloud cost optimization tools and the comparison pages, Value Lab and the two case studies, /events, /about, /careers, /brand-assets, /referrals, /partners, /design-partners, the privacy policy, the terms and security, absolute, and nothing else", () => {
+  it("lists the home page, the product pages, the assessment, the documents, the install and contributing guides, the troubleshooting pages, open source, Learn and every article in its index, the glossary and every term in its index, Cloud cost optimization tools and the comparison pages, Value Lab and the two case studies, the research papers, /events, /about, /careers, /brand-assets, /referrals, /partners, /design-partners, the privacy policy, the terms and security, absolute, and nothing else", () => {
     expect(sitemap().map((entry) => entry.url)).toEqual([
       `${site.url}/`,
       `${site.url}/coral`,
@@ -78,6 +78,7 @@ describe("sitemap.xml", () => {
       `${site.url}/value-lab`,
       `${site.url}/value-lab/coral-dev-cluster`,
       `${site.url}/value-lab/amoeba-lab-vms`,
+      `${site.url}/research-cloud-cost-optimization`,
       `${site.url}/events`,
       `${site.url}/news`,
       `${site.url}/community`,
@@ -151,6 +152,8 @@ describe("sitemap.xml", () => {
       "/value-lab": "2026-10-29",
       "/value-lab/coral-dev-cluster": "2026-10-12",
       "/value-lab/amoeba-lab-vms": "2026-10-19",
+      /* The research papers print no day: the day their content last changed. */
+      "/research-cloud-cost-optimization": "2026-10-29",
       "/events": "2026-10-21",
       /* Zoorik News: the week of its latest Radar. */
       "/news": "2026-10-19",
@@ -181,7 +184,7 @@ describe("sitemap.xml", () => {
        without one is never told to recrawl. */
     const entries = sitemap();
     expect(entries).toHaveLength(
-      (amoebaDocs ? 40 : 36) + learnArticles.length + glossaryTerms.length,
+      (amoebaDocs ? 41 : 37) + learnArticles.length + glossaryTerms.length,
     );
     /* Today is `LEARN_TODAY` when set (articles dated ahead, checked as of the day they go live), else the latest
        calendar day anywhere on Earth (UTC+14), so a date set to today in any time zone is not "the future". */

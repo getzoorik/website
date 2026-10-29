@@ -117,6 +117,7 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/value-lab": () => import("@/app/value-lab/page"),
   "/value-lab/coral-dev-cluster": () => import("@/app/value-lab/coral-dev-cluster/page"),
   "/value-lab/amoeba-lab-vms": () => import("@/app/value-lab/amoeba-lab-vms/page"),
+  "/research-cloud-cost-optimization": () => import("@/app/research-cloud-cost-optimization/page"),
   "/about": () => import("@/app/about/page"),
   "/careers": () => import("@/app/careers/page"),
   "/events": () => import("@/app/events/page"),
@@ -350,7 +351,7 @@ describe("the home page's structured data", () => {
 
 describe("every indexed page's structured data", () => {
   it("renders on every page in the sitemap as one block that parses to the page's graph", async () => {
-    expect(listed).toHaveLength(40 + learnArticles.length + glossaryTerms.length);
+    expect(listed).toHaveLength(41 + learnArticles.length + glossaryTerms.length);
     for (const { path } of listed) {
       pathname.current = path;
       const { default: Page } = await pageModule(path);
@@ -444,7 +445,7 @@ describe("every indexed page's structured data", () => {
       "Value Lab",
       "How Amoeba rightsized our own lab VM’s btrfs pool by 25%",
     ]);
-    /* The troubleshooting pages under Docs, each by its h1. */
+    /* The troubleshooting pages under Docs, each by its h1; the research papers under Zoorik alone. */
     expect(names(routes.docsCoralNotConnecting)).toEqual([
       "Zoorik",
       "Docs",
@@ -465,6 +466,7 @@ describe("every indexed page's structured data", () => {
       "Docs",
       "Why Amoeba has not rightsized my disks yet",
     ]);
+    expect(names(routes.research)).toEqual(["Zoorik", "Cloud cost optimization research"]);
     expect(names(routes.privacy)).toEqual(["Zoorik", "Privacy"]);
     expect(names(routes.careers)).toEqual(["Zoorik", "Careers"]);
     expect(names(routes.events)).toEqual(["Zoorik", "Events"]);
@@ -495,6 +497,7 @@ describe("every indexed page's structured data", () => {
           "/events",
           "/news",
           "/cloud-cost-optimization-library",
+          "/research-cloud-cost-optimization",
         ].includes(path)
       )
         expect(kind, path).toBe("CollectionPage");
@@ -564,6 +567,7 @@ describe("every indexed page's structured data", () => {
       routes.learnGlossary,
       routes.privacy,
       routes.docsContributing,
+      routes.research,
     ]) {
       expect(about(path), path).toBeUndefined();
     }
