@@ -55,7 +55,7 @@ export const researchPage = {
         {
           title: "Large-scale cluster management at Google with Borg",
           by: "Abhishek Verma et al. · ACM EuroSys, 2015",
-          note: "Google’s cluster manager runs a huge mix of jobs on shared machines and packs them tightly to keep utilization high. Many of its ideas carried over into Kubernetes.",
+          note: "Google’s cluster manager runs a huge mix of jobs on shared machines and packs them tightly so the machines stay busy. Many of its ideas carried over into Kubernetes.",
           href: "https://doi.org/10.1145/2741948.2741964",
         },
         {
@@ -67,19 +67,19 @@ export const researchPage = {
         {
           title: "Multi-resource packing for cluster schedulers",
           by: "Robert Grandl et al. · ACM SIGCOMM, 2014",
-          note: "Most schedulers hand out only CPU and memory, and do nothing to avoid fragmentation. Tetris packs tasks by CPU, memory, disk and network together, and jobs finish faster on the same cluster.",
+          note: "Most schedulers share out only CPU and memory, and leave scattered gaps of unused capacity. Tetris packs tasks by CPU, memory, disk and network together, and jobs finish faster on the same cluster.",
           href: "https://doi.org/10.1145/2619239.2626334",
         },
         {
           title: "Protean: VM Allocation Service at Scale",
           by: "Ori Hadary et al. · USENIX OSDI, 2020",
-          note: "How Microsoft Azure picks the server for each new VM across very large zones. Rule-based placement keeps utilization high while still meeting each customer’s needs.",
+          note: "How Microsoft Azure picks the server for each new VM across very large zones. Its rule-based placement keeps servers busy while still meeting each customer’s needs.",
           href: "https://www.usenix.org/conference/osdi20/presentation/hadary",
         },
         {
           title: "Kubernetes Scheduling: Taxonomy, Ongoing Issues and Challenges",
           by: "Carmen Carrión · ACM Computing Surveys, 2023",
-          note: "A survey of research on the Kubernetes scheduler, sorted into a clear taxonomy. It is a good map of what has been tried for better resource use and where the gaps are.",
+          note: "A survey of research on the Kubernetes scheduler, sorted into clear groups. It is a good map of what has been tried for better resource use and where the gaps are.",
           href: "https://doi.org/10.1145/3539606",
         },
         {
@@ -117,14 +117,14 @@ export const researchPage = {
         {
           title: "Quasar: resource-efficient and QoS-aware cluster management",
           by: "Christina Delimitrou and Christos Kozyrakis · ACM ASPLOS, 2014",
-          note: "Most cloud clusters run at low utilization, partly because users guess their resource needs. Quasar asks for a performance target instead and picks the resources itself.",
+          note: "Most cloud clusters leave much of their capacity idle, partly because users guess their resource needs. Quasar asks for a performance target instead and picks the resources itself.",
           href: "https://doi.org/10.1145/2541940.2541941",
         },
         {
           title:
             "Take it to the limit: peak prediction-driven resource overcommitment in datacenters",
           by: "Noman Bashir et al. · ACM EuroSys, 2021",
-          note: "Asks how far a machine can be safely overcommitted if you predict its peak usage. In Google’s data centers these policies gave machines 10 to 16% more usable CPU capacity than no overcommitment.",
+          note: "Asks how far a machine can be safely overbooked if you can predict its peak use. In Google’s data centers, these policies gave machines 10 to 16% more usable CPU than no overbooking.",
           href: "https://doi.org/10.1145/3447786.3456259",
         },
         {
@@ -169,7 +169,7 @@ export const researchPage = {
         {
           title: "Providing SLOs for Resource-Harvesting VMs in Cloud Platforms",
           by: "Pradeep Ambati et al. · USENIX OSDI, 2020",
-          note: "Azure has plenty of unallocated capacity, but the amount changes over time. Harvest VMs grow and shrink with it. With the paper’s scheduling framework, they matched the computing power of regular VMs and reduced cost by 91%.",
+          note: "Azure has plenty of unused capacity, but the amount changes over time. Harvest VMs grow and shrink with it. With the paper’s scheduling framework, they matched the computing power of regular VMs and reduced cost by 91%.",
           href: "https://www.usenix.org/conference/osdi20/presentation/ambati",
         },
         {

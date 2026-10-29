@@ -143,8 +143,8 @@ describe("the troubleshooting pages", () => {
     expect(sections(root)).toEqual([
       ["check-the-cluster-is-supported", "Check the cluster is supported"],
       ["check-the-command-points-at-the-right", "Check the command points at the right cluster"],
-      ["check-the-connect-command-is-fresh", "Check the connect command is fresh"],
-      ["check-your-cloud-tools-and-rights", "Check your cloud tools and rights"],
+      ["check-the-connect-command-is-new", "Check the connect command is new"],
+      ["check-your-cloud-tools-and-permissions", "Check your cloud tools and permissions"],
       ["check-the-network", "Check the network"],
       ["check-what-connect-set-up-in-your", "Check what connect set up in your cloud"],
       ["wait-for-the-first-report", "Wait for the first report"],

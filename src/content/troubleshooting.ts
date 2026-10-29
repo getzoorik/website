@@ -34,7 +34,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
       deck: "The checks to run, in order, when a cluster does not connect or shows no figures.",
     },
     short:
-      "**Short answer.** Connecting needs a supported cluster, the right access, a fresh connect command and outbound network access. Check them in the order below. Once the agent registers, the cluster appears on Overview, and its figures follow within minutes.",
+      "**Short answer.** To connect, you need a supported cluster, the right access, a new connect command, and a cluster that can reach Zoorik. Check them in the order below. Once the agent registers, the cluster appears on Overview, and its figures follow within minutes.",
     sections: [
       {
         title: "Check the cluster is supported",
@@ -49,7 +49,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "**What to do:** Check the cluster meets these before you connect it. A cluster that shows as “Local” still connects, but its figures have no cloud prices.",
+            text: "**What to do:** Make sure the cluster meets these before you connect it. A cluster that shows as “Local” still connects, but its figures have no cloud prices.",
           },
         ],
       },
@@ -59,7 +59,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           { kind: "p", text: "**Look at:** the kubeconfig context the connect command uses." },
           {
             kind: "p",
-            text: "**What it means:** Connect needs cluster-admin on the cluster, through a kubeconfig context.",
+            text: "**What it means:** To connect, you need cluster-admin on the cluster, through a kubeconfig context.",
           },
           {
             kind: "p",
@@ -68,7 +68,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
         ],
       },
       {
-        title: "Check the connect command is fresh",
+        title: "Check the connect command is new",
         blocks: [
           {
             kind: "p",
@@ -76,7 +76,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "**What it means:** The command carries a connect token. The token works once, and only for a limited time after it is issued.",
+            text: "**What it means:** The command carries a connect token. The token works only once, and only for a short time after you get it.",
           },
           {
             kind: "p",
@@ -97,19 +97,19 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
         ],
       },
       {
-        title: "Check your cloud tools and rights",
+        title: "Check your cloud tools and permissions",
         blocks: [
           {
             kind: "p",
-            text: "**Look at:** your cloud’s command-line tool, and your rights in the cloud.",
+            text: "**Look at:** your cloud’s command-line tool, and your permissions in your cloud account.",
           },
           {
             kind: "p",
-            text: "**What it means:** zoorikctl lists every cloud change and asks once. To connect, you need:",
+            text: "**What it means:** zoorikctl lists every change it will make in your cloud and asks you once. To connect, you need:",
           },
           {
             kind: "table",
-            head: ["Cluster", "Tool", "Rights"],
+            head: ["Cluster", "Tool", "Permissions"],
             rows: [
               [
                 "AKS",
@@ -119,7 +119,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
               [
                 "EKS",
                 "The AWS CLI (`aws`), signed in",
-                "The rights to create IAM roles and EKS Pod Identity associations",
+                "Permission to create IAM roles and EKS Pod Identity associations",
               ],
               [
                 "EKS, when connect installs Karpenter",
@@ -131,17 +131,17 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "**What to do:** Sign in, or get these rights, then run the command again. To see what connect will change first, add `--dry-run`. It prints every cloud command and every object the agent setup installs, without changing anything.",
+            text: "**What to do:** Sign in, or ask for these permissions, then run the command again. To see what connect will change first, add `--dry-run`. It prints every cloud command and everything the agent setup installs, and changes nothing.",
           },
         ],
       },
       {
         title: "Check the network",
         blocks: [
-          { kind: "p", text: "**Look at:** the cluster’s outbound access." },
+          { kind: "p", text: "**Look at:** what the cluster can reach on the internet." },
           {
             kind: "p",
-            text: "**What it means:** The agent opens every connection to Zoorik itself, over HTTPS. It accepts none from outside the cluster. The cluster needs outbound HTTPS to:",
+            text: "**What it means:** The agent always starts the connection to Zoorik itself, over HTTPS. Nothing outside the cluster connects in. So the cluster must be able to reach these over HTTPS:",
           },
           {
             kind: "ul",
@@ -166,11 +166,11 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "**What it means:** If you decline, the agent still installs. Pools run by an autoscaler are optimized as usual. Fixed-size pools wait for the permission to remove nodes.",
+            text: "**What it means:** If you said no, the agent still installs. Pools that an autoscaler runs are optimized as usual. Fixed-size pools wait until you give the permission to remove nodes.",
           },
           {
             kind: "p",
-            text: "On AKS, connect turns on NAP only if the cluster has no autoscaler. NAP needs Azure CNI, not kubenet. With kubenet and no autoscaler, nothing adds nodes until an autoscaler exists.",
+            text: "On AKS, connect turns on NAP only if the cluster has no autoscaler. NAP needs Azure CNI networking and doesn’t work with kubenet. On kubenet with no autoscaler, nothing adds nodes until you set one up.",
           },
           {
             kind: "p",
@@ -190,7 +190,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "**What to do:** Keep the page open: it updates by itself. Until data exists, figures read “Calculating” or “Fetching prices”, never a guess. If the page keeps waiting, check the network again.",
+            text: "**What to do:** Keep the page open: it updates by itself. Until data arrives, figures read “Calculating” or “Fetching prices”, never a guess. If the page keeps waiting, check the network again.",
           },
         ],
       },
@@ -213,13 +213,13 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
               ],
               [
                 "The cluster was connected with zoorikctl before",
-                "Objects zoorikctl applied carry no Helm ownership, so `helm install` refuses them.",
+                "Helm doesn’t own the objects zoorikctl created, so `helm install` won’t take them over.",
                 "Run `zoorikctl cluster disconnect` first. Then install the chart with a new connect token.",
               ],
               [
                 "`controlPlaneUrl` has a path or a trailing slash",
-                "It must be the origin only, as the console names it.",
-                "Set it to the origin alone.",
+                "It must be the base address only, exactly as the console shows it.",
+                "Remove the path and the trailing slash.",
               ],
               [
                 "You set `connectToken.existingSecret`",
@@ -251,7 +251,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "**What to do:** If you disconnected it, connect it again with a new command from “Connect cluster”. If you didn’t, write to us.",
+            text: "**What to do:** If you disconnected it, connect it again with a new command from “Connect cluster”. If you didn’t, email us.",
           },
         ],
       },
@@ -261,11 +261,11 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           { kind: "p", text: "**Look at:** the “Agent release” card on the cluster’s Dashboard." },
           {
             kind: "p",
-            text: "**What it means:** The agent updates itself to each Zoorik release. It can’t widen its own permissions, so a release that needs more shows “Re-run connect”. An agent that Argo CD, Flux or Helm manages doesn’t update itself.",
+            text: "**What it means:** The agent updates itself to each Zoorik release. It can’t give itself new permissions, so a release that needs more shows “Re-run connect”. An agent that Argo CD, Flux or Helm manages doesn’t update itself.",
           },
           {
             kind: "p",
-            text: "**What to do:** Run the connect command again. With Helm, `helm upgrade` to a newer chart version moves the agent.",
+            text: "**What to do:** Run the connect command again. With Helm, `helm upgrade` to a newer chart version updates the agent.",
           },
         ],
       },
@@ -278,7 +278,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "Write to founders@zoorik.com, or [pick a time to talk](https://cal.com/zoorik/talk). Tell us what you ran and what the console shows. Remove tokens, keys and other secrets from anything you send.",
+            text: "Email founders@zoorik.com, or [pick a time to talk](https://cal.com/zoorik/talk). Tell us what you ran and what the console shows. Remove tokens, keys and other secrets from anything you send.",
           },
         ],
       },
@@ -320,7 +320,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "The Evictor moves pods off lightly used nodes, and has its own switch in Settings → General. In “Dry run”, it only lists the nodes it would empty in the Event log.",
+            text: "The Evictor moves pods off lightly used nodes, and has its own switch in Settings → General. In “Dry run”, it only writes the nodes it would empty to the Event log.",
           },
           {
             kind: "p",
@@ -432,7 +432,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "ul",
             items: [
               "If you set `lower_minimums = false`, set it back to `true`, the default, to let the agent reduce the minimum.",
-              "If Terraform manages your node pools, each apply undoes what the agent changes. Ignore those fields in your own code, as [Your own node pool code](/docs/install-coral-with-terraform#your-own-node-pool-code) shows.",
+              "If Terraform manages your node pools, each apply undoes what the agent changes. Tell Terraform to ignore those fields in your own code, as [Your own node pool code](/docs/install-coral-with-terraform#your-own-node-pool-code) shows.",
             ],
           },
         ],
@@ -477,7 +477,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           { kind: "p", text: "**Look at:** the node’s state, and any cluster upgrade under way." },
           {
             kind: "p",
-            text: "**What it means:** Coral skips cordoned, NotReady and deleting nodes. It never drains a node someone else cordoned. During a cluster upgrade, it keeps working but steps around the upgrade.",
+            text: "**What it means:** Coral skips cordoned, NotReady and deleting nodes. It never drains a node someone else cordoned. During a cluster upgrade, it keeps working but stays out of the upgrade’s way.",
           },
           {
             kind: "p",
@@ -511,7 +511,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "Write to founders@zoorik.com, or [pick a time to talk](https://cal.com/zoorik/talk). Tell us what Node list and the Event log show for the node. Remove tokens, keys and other secrets from anything you send.",
+            text: "Email founders@zoorik.com, or [pick a time to talk](https://cal.com/zoorik/talk). Tell us what Node list and the Event log show for the node. Remove tokens, keys and other secrets from anything you send.",
           },
         ],
       },
@@ -580,12 +580,12 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             rows: [
               [
                 "Verifying",
-                "Zoorik can’t read a subscription yet. The console says why: the app isn’t added to the directory, the role isn’t assigned, or the directory wasn’t found.",
+                "Zoorik can’t read a subscription yet. The console says why: Zoorik’s app isn’t in your directory yet, the role isn’t assigned, or the directory wasn’t found.",
               ],
               ["Connected", "Zoorik reads your subscriptions through the role."],
               [
                 "Access lost",
-                "Zoorik lost read access to a subscription. Figures from Azure keep their last value, dated, and onboarding waits.",
+                "Zoorik lost read access to a subscription. Figures from Azure keep their last value, with its date, and onboarding waits.",
               ],
             ],
             widths: ["24%", "76%"],
@@ -595,7 +595,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "ul",
             items: [
               "For “Verifying”: run the connect script the console shows in Azure Cloud Shell, with your own Azure sign-in. Then click “Verify”.",
-              "The script adds Zoorik’s app to your directory, creates the role “Zoorik Storage Operator”, and assigns it on each subscription you name. You need the rights to do all three.",
+              "The script adds Zoorik’s app to your directory, creates the role “Zoorik Storage Operator”, and assigns it on each subscription you name. You need permission to do all three.",
               "If the directory wasn’t found, check the directory (tenant) ID you entered in “Connect Azure”.",
               "For “Access lost”: check the role is still assigned to Zoorik’s app on that subscription. If it isn’t, run the connect script again. Zoorik checks access again regularly.",
             ],
@@ -615,7 +615,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "**What to do:** Run the script for the VM’s subscription too. Then click “Verify” again: it adds the subscriptions you granted since.",
+            text: "**What to do:** Run the script for the VM’s subscription too. Then click “Verify” again: it picks up the subscriptions you added since.",
           },
         ],
       },
@@ -642,7 +642,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           { kind: "p", text: "**Look at:** a VM you just created, started or changed." },
           {
             kind: "p",
-            text: "**What it means:** The list comes from Azure Resource Graph, and it can be a little behind Azure.",
+            text: "**What it means:** The list comes from Azure Resource Graph, which can take a little while to catch up with changes.",
           },
           { kind: "p", text: "**What to do:** Open “Onboard VMs” again a little later." },
         ],
@@ -671,7 +671,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "**What to do:** Wait for the first report. Each VM needs outbound access to Zoorik, for the agent’s reports and command channels, and to the hosts it downloads from.",
+            text: "**What to do:** Wait for the first report. Each VM must be able to reach Zoorik, for the agent’s reports and commands, and the sites the agent downloads from.",
           },
         ],
       },
@@ -692,7 +692,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "**What to do:** Click “Reinstall” in Settings → Agent. It starts a new install straight away, or when the current step of the move ends. It is offered while the VM is running.",
+            text: "**What to do:** Click “Reinstall” in Settings → Agent. It starts a new install straight away, or when the current step of the move ends. It’s available while the VM is running.",
           },
         ],
       },
@@ -705,7 +705,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "Write to founders@zoorik.com, or [pick a time to talk](https://cal.com/zoorik/talk). Tell us what “Onboard VMs” and the VM’s agent show. Remove tokens, keys and other secrets from anything you send.",
+            text: "Email founders@zoorik.com, or [pick a time to talk](https://cal.com/zoorik/talk). Tell us what “Onboard VMs” and the VM’s agent show. Remove tokens, keys and other secrets from anything you send.",
           },
         ],
       },
@@ -766,11 +766,11 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "**What it means:** During the move, the pool’s disks attach beside the old disks, so the VM needs a few free disk slots. A VM Amoeba declines, for example one with too few slots, shows why and stays on its own disks. VMs that use Azure Disk Encryption are not moved as they are.",
+            text: "**What it means:** During the move, the pool’s disks attach beside the old disks, so the VM needs a few free disk slots. A VM Amoeba declines, for example one with too few slots, shows why and stays on its own disks. Amoeba doesn’t move a VM that uses Azure Disk Encryption as it is.",
           },
           {
             kind: "p",
-            text: "**What to do:** Make room for the pool’s disks. For a VM that uses Azure Disk Encryption, write to us.",
+            text: "**What to do:** Make room for the pool’s disks. For a VM that uses Azure Disk Encryption, email us.",
           },
         ],
       },
@@ -780,12 +780,12 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           { kind: "p", text: "**Look at:** Pool → Migration, and “Needs you” on Overview." },
           {
             kind: "p",
-            text: "**What it means:** The move pauses when a step can’t go on safely. For example, the VM can’t take a pool, a copy fails, or the outcome of the switch can’t be known. A disk error found after the switch also pauses it.",
+            text: "**What it means:** The move pauses when a step can’t go on safely. For example, the VM can’t take a pool, a copy fails, or Amoeba can’t tell whether the switch worked. A disk error found after the switch also pauses it.",
           },
           { kind: "p", text: "Pool → Migration shows where it paused and why." },
           {
             kind: "p",
-            text: "**What to do:** Fix the reason shown. “Resume” appears when the move can run again: click it. If the switch’s outcome can’t be known, the move waits for you to click “Resume”.",
+            text: "**What to do:** Fix the reason shown. “Resume” appears when the move can run again: click it. If Amoeba can’t tell whether the switch worked, the move waits for you to click “Resume”.",
           },
         ],
       },
@@ -803,7 +803,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
               "The kernel must be recent and support btrfs, built in or as a module. Amoeba loads the module if it isn’t loaded. If the kernel has no btrfs, the move pauses.",
               "The agent needs rsync, btrfs-progs and psmisc. The installer doesn’t add them.",
               "Every process that keeps a data mount open must run as a systemd service. Otherwise the switch can’t finish.",
-              "The agent needs cgroup v2 for its disk-load readings. Without it, the copy doesn’t slow down for your load.",
+              "The agent needs cgroup v2 to read disk load. Without it, the copy can’t slow down when your apps are busy.",
               "Amoeba checks the running kernel, never the OS name.",
             ],
           },
@@ -839,7 +839,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "**What it means:** A shrink waits until the move is done and Amoeba has seen enough of your use. It runs when your data goes down and stays down. Meanwhile, the pool still grows before it fills.",
+            text: "**What it means:** A shrink waits until the move is done and Amoeba has watched your data for long enough. It runs when your data goes down and stays down. Meanwhile, the pool still grows before it fills.",
           },
           {
             kind: "p",
@@ -873,7 +873,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
               ],
               [
                 "Amoeba is waiting for disk-load readings from the agent.",
-                "Check the agent is reporting. On Linux, the agent needs cgroup v2 for its disk-load readings.",
+                "Check the agent is reporting. On Linux, the agent needs cgroup v2 to read disk load.",
               ],
               [
                 "The VM’s kernel is too old, or doesn’t support btrfs.",
@@ -881,11 +881,11 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
               ],
               [
                 "The pool reports disk errors.",
-                "Write to us. Amoeba never shrinks a pool that reports disk errors.",
+                "Email us. Amoeba never shrinks a pool that reports disk errors.",
               ],
               [
                 "The VM size isn’t in Azure’s size list for its region yet.",
-                "Write to us if it stays.",
+                "Email us if it stays.",
               ],
             ],
             widths: ["50%", "50%"],
@@ -901,7 +901,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "Write to founders@zoorik.com, or [pick a time to talk](https://cal.com/zoorik/talk). Tell us what Pool → Migration and Operations show. Remove tokens, keys and other secrets from anything you send.",
+            text: "Email founders@zoorik.com, or [pick a time to talk](https://cal.com/zoorik/talk). Tell us what Pool → Migration and Operations show. Remove tokens, keys and other secrets from anything you send.",
           },
         ],
       },

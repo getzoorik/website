@@ -591,7 +591,7 @@ export const amoebaStudy = {
     /** The shrink's disks: each card is named by its badge, the disk's size in the price's place. */
     shrinkDisks: {
       label:
-        "Lab VM A: the 64 GiB disk stays; the 32 GiB disk is removed after 16.06 GiB moved off it; an 8 GiB disk is added. 96 GiB becomes 72 GiB.",
+        "Lab VM A: the 64 GiB disk stays. The 32 GiB disk is removed after 16.06 GiB moved off it. An 8 GiB disk is added. 96 GiB becomes 72 GiB.",
       disks: [
         { badge: "Stays", name: "Disk", disks: [64], size: "64 GiB", tone: "keep" },
         {
@@ -720,7 +720,7 @@ export const amoebaStudy = {
       line: "24 of 96 GiB, holding the same 60.07 GiB of data",
     },
   },
-  fine: "Zoorik’s own lab VMs on Azure, on 19 October 2026. The figures show Amoeba as it ran that day. Each VM ran Linux and a test app of ours, not a customer’s workload. In our lab, Amoeba read a shorter history of each VM’s data than it does for a client. So its timing differed, and it sized each pool more tightly. A pool’s size is the total of its disks. Money is Amoeba’s own figure at Azure list prices. Results depend on each VM’s data.",
+  fine: "Zoorik’s own lab VMs on Azure, on 19 October 2026. The figures show Amoeba as it ran that day. Each VM ran Linux and a test app of ours, not a customer’s workload. In our lab, Amoeba read a shorter history of each VM’s data than it does for a customer. So its timing differed, and it sized each pool more tightly. A pool’s size is the total of its disks. Money is Amoeba’s own figure at Azure list prices. Results depend on each VM’s data.",
 } as const;
 
 /** One figure on a study card's cover: the value its bar is drawn to, and how it is printed. */
