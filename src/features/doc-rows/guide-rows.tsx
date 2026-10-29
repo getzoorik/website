@@ -1,6 +1,12 @@
 import { Fragment, type ReactNode } from "react";
 
-import type { GuideBlock, GuideContent, GuideInline, GuideText } from "@/content/guide";
+import type {
+  GuideBlock,
+  GuideContent,
+  GuideInline,
+  GuideListItem,
+  GuideText,
+} from "@/content/guide";
 import type { ProductId } from "@/content/products";
 import { DocRelated, DocRow, DocRows, DocUpdated } from "@/features/doc-rows/doc-rows";
 import { DocCommandWell } from "@/features/documents/doc-command-well";
@@ -64,6 +70,12 @@ function guideText<Id extends string>(text: GuideText<Id>): ReactNode {
   return typeof text === "string" ? text : text.map(piece);
 }
 
+function isListItem<Id extends string>(
+  entry: GuideText<Id> | GuideListItem<Id>,
+): entry is GuideListItem<Id> {
+  return typeof entry !== "string" && "body" in entry;
+}
+
 /**
  * A command well. A plain command is the kit's well (one line scrolls
  * sideways); a line that holds a placeholder is drawn here, server-side, and
@@ -109,9 +121,16 @@ function block<Id extends string>(item: GuideBlock<Id>, key: number): ReactNode 
     case "ol":
       return (
         <ol key={key}>
-          {item.items.map((entry, index) => (
-            <li key={index}>{guideText(entry)}</li>
-          ))}
+          {item.items.map((entry, index) =>
+            isListItem(entry) ? (
+              <li key={index}>
+                {guideText(entry.text)}
+                {blocks(entry.body)}
+              </li>
+            ) : (
+              <li key={index}>{guideText(entry)}</li>
+            ),
+          )}
         </ol>
       );
     case "subhead":

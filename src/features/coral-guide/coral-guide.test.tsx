@@ -252,7 +252,7 @@ describe("/coral-guide page", () => {
     const container = page();
     const top = container.querySelector("article.gd-main > .fq-upd")!;
     expect(top).toBe(container.querySelector("article.gd-main")!.firstElementChild);
-    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 9 October 2026");
+    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 30 October 2026");
     const list = top.querySelector("dl.doc-sum")!;
     expect([...list.querySelectorAll("dt")].map(text)).toEqual([
       "Product page",
@@ -328,6 +328,24 @@ describe("/coral-guide page", () => {
       (code) => code.textContent === "zoorikctl cluster grant-node-deletion",
     )!;
     expect([...grant.querySelectorAll(".nb")].map(text)).toEqual(["grant-node-deletion"]);
+  });
+
+  it("draws “Custom policies” as four steps, the settings and the rules listed under theirs", () => {
+    const body = page().querySelector("#custom-policies .doc-prose")!;
+    const steps = [...body.querySelectorAll(":scope > ol > li")];
+    expect(steps).toHaveLength(4);
+    expect(steps.map((step) => step.querySelector("b")?.textContent)).toEqual([
+      "Scaling policies",
+      "Settings.",
+      "Assignment rules.",
+      "Review",
+    ]);
+    expect(steps[1].querySelectorAll(":scope > ul > li")).toHaveLength(7);
+    expect(steps[2].querySelectorAll(":scope > ul > li")).toHaveLength(4);
+    expect(text(steps[2].querySelector(":scope > ul + p"))).toBe(
+      "A workload only needs to match one rule. The preview shows which workloads match.",
+    );
+    expect(text(body.querySelector(":scope > ol + aside .doc-call-t"))).toBe("Good to know");
   });
 
   it("draws the console table's groups as h3 subheads over continuation tables", () => {

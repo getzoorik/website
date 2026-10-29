@@ -100,9 +100,10 @@ describe("sitemap.xml", () => {
       "/amoeba": "2026-10-23",
       "/assessment": "2026-10-21",
       "/marketplaces": "2026-10-21",
-      /* The troubleshooting tiles (29 Oct 2026). */
-      "/docs": "2026-10-29",
-      "/coral-guide": updated,
+      /* The guide PDF's new page count (30 Oct 2026). */
+      "/docs": "2026-10-30",
+      /* The Custom policies steps of 30 Oct 2026. */
+      "/coral-guide": "2026-10-30",
       /* The four questions of 25 Oct 2026. */
       "/coral-faq": "2026-10-25",
       /* The Amoeba guide and FAQ, rewritten at product level on 27 Oct 2026. */

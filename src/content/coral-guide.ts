@@ -83,7 +83,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
     deck: "How to connect a cluster, what Coral changes, and how you stay in control.",
     downloads: [{ label: "PDF", document: "coral-guide" }],
   },
-  updated: "Updated 9 October 2026",
+  updated: "Updated 30 October 2026",
   /* The product page first, then the PDF cover's three cards; the fine line is
      the last term's second paragraph, without the PDF's "This guide describes
      Coral as released in October 2026." */
@@ -686,11 +686,94 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
           title: "Custom policies",
           body: [
             {
-              kind: "ul",
+              kind: "ol",
               items: [
-                "“Create scaling policy” starts from balanced. You can change the percentile (up to P99.9 or max), headroom, look-back (3 hours to 8 days), minimums and maximums, limits, startup CPU and rollout.",
-                "Assign it by namespace names (patterns such as prod-.*), namespace labels, workload kinds or workload labels.",
-                "Custom policies are checked top to bottom, and the first match wins.",
+                [
+                  "Go to ",
+                  { b: "Scaling policies" },
+                  " and click ",
+                  { b: "Create scaling policy" },
+                  ". It starts as a copy of balanced.",
+                ],
+                {
+                  text: [{ b: "Settings." }, " Give it a name, then set:"],
+                  body: [
+                    {
+                      kind: "ul",
+                      items: [
+                        [
+                          { b: "Automatically optimize." },
+                          " On: Coral resizes the workloads that get this policy. Off: Coral only shows recommendations and changes nothing.",
+                        ],
+                        [
+                          { b: "Optimization type." },
+                          " Vertical changes pod sizes only. Both also manages HPAs.",
+                        ],
+                        [
+                          { b: "CPU." },
+                          " Pick how busy a moment to size for. P80 means the app used this much or less 80% of the time. Go higher, up to P99.9 or max, for more room. Go lower to save more. Also set the extra room on top, and how far back Coral looks (3 hours to 8 days).",
+                        ],
+                        [
+                          { b: "Memory." },
+                          " By default, sized from the most the app has used, plus extra room.",
+                        ],
+                        [{ b: "Minimums and maximums, limits, startup CPU and rollout." }],
+                        [
+                          { b: "Guaranteed pods." },
+                          " Keeps them Guaranteed by changing requests and limits together.",
+                        ],
+                        [
+                          { b: "HPA converter." },
+                          " If your own HPA scales on a percentage of CPU, Coral changes its target to a fixed amount. Making pods smaller then doesn’t make the HPA add pods.",
+                        ],
+                      ],
+                    },
+                  ],
+                },
+                {
+                  text: [
+                    { b: "Assignment rules." },
+                    " Add one or more rules. A workload matches a rule only if it fits everything you filled in:",
+                  ],
+                  body: [
+                    {
+                      kind: "ul",
+                      items: [
+                        [
+                          { b: "Namespaces:" },
+                          " names or patterns that match the whole name, for example ",
+                          { code: "prod-.*" },
+                        ],
+                        [{ b: "Namespace labels" }],
+                        [{ b: "Workload kinds:" }, " tick none for any kind"],
+                        [{ b: "Workload labels" }],
+                      ],
+                    },
+                    {
+                      kind: "p",
+                      text: "A workload only needs to match one rule. The preview shows which workloads match.",
+                    },
+                  ],
+                },
+                [
+                  { b: "Review" },
+                  ", then create. Matching workloads move to the policy within the hour.",
+                ],
+              ],
+            },
+            {
+              kind: "callout",
+              title: "Good to know",
+              body: [
+                {
+                  kind: "ul",
+                  items: [
+                    "Coral checks custom policies from top to bottom and uses the first one that matches. You can change the order later.",
+                    "If you picked a policy for a workload, or named one in its annotation, it keeps that policy. Rules don’t change it.",
+                    "To make Coral leave some workloads alone, create a policy with Automatically optimize off and a rule that matches them.",
+                    "With a new workload, Coral makes it smaller step by step while it learns, and only as far as its data allows. If a workload needs more, Coral gives it more straight away.",
+                  ],
+                },
               ],
             },
           ],

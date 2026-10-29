@@ -62,10 +62,19 @@ export interface GuideCallout<Id extends string> {
   readonly body: readonly GuideBlock<Id>[];
 }
 
+/**
+ * A numbered item with more under its first line: a list, then a line of its
+ * own (the Coral guide's "Custom policies" steps).
+ */
+export interface GuideListItem<Id extends string> {
+  readonly text: GuideText<Id>;
+  readonly body: readonly GuideBlock<Id>[];
+}
+
 export type GuideBlock<Id extends string> =
   | { readonly kind: "p"; readonly text: GuideText<Id> }
   | { readonly kind: "ul"; readonly items: readonly GuideText<Id>[] }
-  | { readonly kind: "ol"; readonly items: readonly GuideText<Id>[] }
+  | { readonly kind: "ol"; readonly items: readonly (GuideText<Id> | GuideListItem<Id>)[] }
   /** A group subhead between continuation tables: `h3.doc-sub`, with no id. */
   | { readonly kind: "subhead"; readonly title: string }
   | {
