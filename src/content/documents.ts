@@ -72,7 +72,7 @@ export interface PublishedDocument {
  * `lastmod` only: the page does not print it. Whoever changes the hub's content
  * moves this to that day in the same PR; never the build's date.
  */
-export const docsHubLastUpdated = "27 October 2026";
+export const docsHubLastUpdated = "29 October 2026";
 
 export const documents: Readonly<Record<DocumentId, PublishedDocument>> = {
   "coral-guide": {
@@ -232,6 +232,21 @@ const shelves: Readonly<Record<ProductId, readonly ShelfEntry[]>> = {
       released: true,
       hubOnly: true,
     },
+    /* The two troubleshooting pages: page tiles with no PDF row, on the hub only, after the install guides. */
+    {
+      title: "Cluster not connecting",
+      line: "When a cluster doesn’t connect or shows no figures",
+      href: routes.docsCoralNotConnecting,
+      released: true,
+      hubOnly: true,
+    },
+    {
+      title: "Node not removed",
+      line: "Why a node stays, and the fix for each reason",
+      href: routes.docsCoralNotRemovingNodes,
+      released: true,
+      hubOnly: true,
+    },
   ],
   amoeba: [
     {
@@ -254,6 +269,21 @@ const shelves: Readonly<Record<ProductId, readonly ShelfEntry[]>> = {
       line: ONE_PAGER_LINE.amoeba,
       pdf: { label: "PDF", document: "amoeba-one-pager" },
       released: documents["amoeba-one-pager"].released,
+    },
+    /* The two troubleshooting pages, on the hub only, after the one-pager; held with the guide and FAQ they link to. */
+    {
+      title: "VM not showing",
+      line: "When a VM is missing or shows no figures",
+      href: routes.docsAmoebaNotShowingVm,
+      released: amoebaDocs,
+      hubOnly: true,
+    },
+    {
+      title: "Disks not rightsized yet",
+      line: "Why a move pauses or a shrink waits",
+      href: routes.docsAmoebaNotRightsizing,
+      released: amoebaDocs,
+      hubOnly: true,
     },
   ],
 };

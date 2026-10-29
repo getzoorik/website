@@ -35,6 +35,7 @@ import { privacy } from "@/content/privacy";
 import { referralsLastUpdated } from "@/content/referrals";
 import { securityPage } from "@/content/security";
 import { termsCopy } from "@/content/terms";
+import { troubleshootingGuides, troubleshootingUpdated } from "@/content/troubleshooting";
 import { isoDay } from "@/lib/content-date";
 
 /**
@@ -111,12 +112,19 @@ const contentDates: Partial<Record<string, string>> = {
   [openSourceGuides.helm.route]: openSourceUpdated,
   [openSourceGuides.terraform.route]: openSourceUpdated,
   [openSourceGuides.contributing.route]: openSourceUpdated,
+  /* The four troubleshooting pages print "Updated 29 October 2026". */
+  ...Object.fromEntries(
+    Object.values(troubleshootingGuides).map(
+      (guide) => [guide.route, guide.updated ?? troubleshootingUpdated] as const,
+    ),
+  ),
 };
 
 /**
  * Every indexed page: home first, then the two products (Coral first), the
  * assessment, the documents section (the hub, then Coral's guide and FAQ, then
- * Amoeba's once `amoebaDocs` publishes them), Learn and every article in the
+ * Amoeba's once `amoebaDocs` publishes them, the install and contributing
+ * guides and the troubleshooting pages), Learn and every article in the
  * Learn index (A–Z by slug), the glossary and every term in its index (A–Z by
  * slug), the case studies, /events, /about, /careers,
  * /brand-assets, /partners, /referrals, the privacy policy, the terms, and
@@ -139,6 +147,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     routes.docsInstallHelm,
     routes.docsInstallTerraform,
     routes.docsContributing,
+    routes.docsCoralNotConnecting,
+    routes.docsCoralNotRemovingNodes,
+    ...(amoebaDocs ? [routes.docsAmoebaNotShowingVm, routes.docsAmoebaNotRightsizing] : []),
     routes.openSource,
     routes.learn,
     ...learnArticles.map(articleRoute),
