@@ -1,4 +1,5 @@
 import { routes } from "@/config/site";
+import type { ProductId } from "@/content/products";
 
 /**
  * /open-source and the three guides under /docs. Generated once from the mocks' data, so every string is the mock's.
@@ -34,8 +35,16 @@ export type GuideBlock =
       readonly widths: readonly string[];
     };
 
+/**
+ * A guide in the docs guide frame (`OsGuidePage`): the three guides here, and the four troubleshooting pages
+ * (`troubleshooting.ts`), which add their own product and date.
+ */
 export interface OpenSourceGuide {
   readonly route: string;
+  /** The product the guide is about: the closing row's and the structured data's. Coral when none is given. */
+  readonly product?: ProductId;
+  /** The printed date ("Updated 29 October 2026"), which the sitemap gives it too; `openSourceUpdated` when none. */
+  readonly updated?: string;
   /** The `<title>` (through the site's "%s | Zoorik" template) and the description. */
   readonly meta: { readonly title: string; readonly description: string };
   readonly hero: { readonly title: string; readonly deck: string };

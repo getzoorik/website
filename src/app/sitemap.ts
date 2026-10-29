@@ -10,7 +10,7 @@ import { brandAssetsLastUpdated } from "@/content/brand-assets";
 import { careersLastUpdated } from "@/content/careers";
 import { communityLastUpdated } from "@/content/community";
 import { designPartnersLastUpdated } from "@/content/design-partners";
-import { caseStudiesHubLastUpdated, caseStudy } from "@/content/case-studies";
+import { amoebaStudy, caseStudiesHubLastUpdated, caseStudy } from "@/content/case-studies";
 import { coralFaqPage } from "@/content/coral-faq";
 import { coralGuide } from "@/content/coral-guide";
 import { coralPageLastUpdated } from "@/content/coral-page";
@@ -33,8 +33,10 @@ import { glossaryPage, glossaryTerms, termRoute } from "@/content/learn/glossary
 import { articleRoute, learnArticles } from "@/content/learn/published";
 import { privacy } from "@/content/privacy";
 import { referralsLastUpdated } from "@/content/referrals";
+import { researchLastUpdated } from "@/content/research";
 import { securityPage } from "@/content/security";
 import { termsCopy } from "@/content/terms";
+import { troubleshootingGuides, troubleshootingUpdated } from "@/content/troubleshooting";
 import { isoDay } from "@/lib/content-date";
 
 /**
@@ -93,6 +95,7 @@ const contentDates: Partial<Record<string, string>> = {
   ),
   [routes.valueLab]: caseStudiesHubLastUpdated,
   [routes.caseStudyCoralDevCluster]: caseStudy.band.date,
+  [routes.caseStudyAmoebaLabVms]: amoebaStudy.band.date,
   [routes.events]: eventsLastUpdated,
   [routes.news]: newsLastUpdated,
   [routes.community]: communityLastUpdated,
@@ -111,14 +114,23 @@ const contentDates: Partial<Record<string, string>> = {
   [openSourceGuides.helm.route]: openSourceUpdated,
   [openSourceGuides.terraform.route]: openSourceUpdated,
   [openSourceGuides.contributing.route]: openSourceUpdated,
+  /* The four troubleshooting pages print "Updated 29 October 2026". */
+  ...Object.fromEntries(
+    Object.values(troubleshootingGuides).map(
+      (guide) => [guide.route, guide.updated ?? troubleshootingUpdated] as const,
+    ),
+  ),
+  /* The research page prints no day: its content file's. */
+  [routes.research]: researchLastUpdated,
 };
 
 /**
  * Every indexed page: home first, then the two products (Coral first), the
  * assessment, the documents section (the hub, then Coral's guide and FAQ, then
- * Amoeba's once `amoebaDocs` publishes them), Learn and every article in the
+ * Amoeba's once `amoebaDocs` publishes them, the install and contributing
+ * guides and the troubleshooting pages), Learn and every article in the
  * Learn index (A–Z by slug), the glossary and every term in its index (A–Z by
- * slug), the case studies, /events, /about, /careers,
+ * slug), the case studies, the research papers, /events, /about, /careers,
  * /brand-assets, /partners, /referrals, the privacy policy, the terms, and
  * security and data handling.
  * A held page answers 404, so it is never listed.
@@ -139,6 +151,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     routes.docsInstallHelm,
     routes.docsInstallTerraform,
     routes.docsContributing,
+    routes.docsCoralNotConnecting,
+    routes.docsCoralNotRemovingNodes,
+    ...(amoebaDocs ? [routes.docsAmoebaNotShowingVm, routes.docsAmoebaNotRightsizing] : []),
     routes.openSource,
     routes.learn,
     ...learnArticles.map(articleRoute),
@@ -149,6 +164,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...versusPages.map(versusRoute),
     routes.valueLab,
     routes.caseStudyCoralDevCluster,
+    routes.caseStudyAmoebaLabVms,
+    routes.research,
     routes.events,
     routes.news,
     routes.community,

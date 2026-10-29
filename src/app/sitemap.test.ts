@@ -40,7 +40,7 @@ function importGraph(file: string, seen = new Set<string>()): Set<string> {
 }
 
 describe("sitemap.xml", () => {
-  it("lists the home page, the product pages, the assessment, the documents, the install and contributing guides, open source, Learn and every article in its index, the glossary and every term in its index, Cloud cost optimization tools and the comparison pages, Value Lab and the case study, /events, /about, /careers, /brand-assets, /referrals, /partners, /design-partners, the privacy policy, the terms and security, absolute, and nothing else", () => {
+  it("lists the home page, the product pages, the assessment, the documents, the install and contributing guides, the troubleshooting pages, open source, Learn and every article in its index, the glossary and every term in its index, Cloud cost optimization tools and the comparison pages, Value Lab and the two case studies, the research papers, /events, /about, /careers, /brand-assets, /referrals, /partners, /design-partners, the privacy policy, the terms and security, absolute, and nothing else", () => {
     expect(sitemap().map((entry) => entry.url)).toEqual([
       `${site.url}/`,
       `${site.url}/coral`,
@@ -54,6 +54,15 @@ describe("sitemap.xml", () => {
       `${site.url}/docs/install-coral-with-helm`,
       `${site.url}/docs/install-coral-with-terraform`,
       `${site.url}/docs/contributing`,
+      `${site.url}/docs/coral-not-connecting-to-cluster`,
+      `${site.url}/docs/coral-not-removing-nodes`,
+      /* Amoeba's two are held with its guide and FAQ. */
+      ...(amoebaDocs
+        ? [
+            `${site.url}/docs/amoeba-not-showing-my-vm`,
+            `${site.url}/docs/amoeba-not-rightsizing-disks`,
+          ]
+        : []),
       `${site.url}/open-source`,
       `${site.url}/learn`,
       /* Every article in the Learn index, A–Z by slug. */
@@ -68,6 +77,8 @@ describe("sitemap.xml", () => {
       ...versusPages.map((page) => `${site.url}${versusRoute(page)}`),
       `${site.url}/value-lab`,
       `${site.url}/value-lab/coral-dev-cluster`,
+      `${site.url}/value-lab/amoeba-lab-vms`,
+      `${site.url}/research-cloud-cost-optimization`,
       `${site.url}/events`,
       `${site.url}/news`,
       `${site.url}/community`,
@@ -95,7 +106,8 @@ describe("sitemap.xml", () => {
       "/amoeba": "2026-10-23",
       "/assessment": "2026-10-21",
       "/marketplaces": "2026-10-21",
-      "/docs": "2026-10-27",
+      /* The four troubleshooting tiles (29 Oct 2026). */
+      "/docs": "2026-10-29",
       "/coral/guide": updated,
       /* The four questions of 25 Oct 2026. */
       "/coral/faq": "2026-10-25",
@@ -105,6 +117,15 @@ describe("sitemap.xml", () => {
       "/docs/install-coral-with-helm": "2026-10-16",
       "/docs/install-coral-with-terraform": "2026-10-16",
       "/docs/contributing": "2026-10-16",
+      /* The troubleshooting pages print "Updated 29 October 2026". */
+      "/docs/coral-not-connecting-to-cluster": "2026-10-29",
+      "/docs/coral-not-removing-nodes": "2026-10-29",
+      ...(amoebaDocs
+        ? {
+            "/docs/amoeba-not-showing-my-vm": "2026-10-29",
+            "/docs/amoeba-not-rightsizing-disks": "2026-10-29",
+          }
+        : {}),
       "/open-source": "2026-10-21",
       /* The hub: its own day or its newest article's, whichever is later. Each article: the day it last changed. */
       "/learn": learnArticles.reduce(
@@ -127,8 +148,12 @@ describe("sitemap.xml", () => {
       "/cloud-cost-optimization-library/coral-alternatives": "2026-10-19",
       "/cloud-cost-optimization-library/amoeba-alternatives": "2026-10-19",
       ...Object.fromEntries(versusPages.map((page) => [versusRoute(page), "2026-10-19"])),
-      "/value-lab": "2026-10-21",
+      /* Value Lab: the Amoeba study's card beside the Coral one (29 Oct 2026). Each study: the day it prints. */
+      "/value-lab": "2026-10-29",
       "/value-lab/coral-dev-cluster": "2026-10-12",
+      "/value-lab/amoeba-lab-vms": "2026-10-19",
+      /* The research papers print no day: the day their content last changed. */
+      "/research-cloud-cost-optimization": "2026-10-29",
       "/events": "2026-10-21",
       /* Zoorik News: the week of its latest Radar. */
       "/news": "2026-10-19",
@@ -159,7 +184,7 @@ describe("sitemap.xml", () => {
        without one is never told to recrawl. */
     const entries = sitemap();
     expect(entries).toHaveLength(
-      (amoebaDocs ? 35 : 33) + learnArticles.length + glossaryTerms.length,
+      (amoebaDocs ? 41 : 37) + learnArticles.length + glossaryTerms.length,
     );
     /* Today is `LEARN_TODAY` when set (articles dated ahead, checked as of the day they go live), else the latest
        calendar day anywhere on Earth (UTC+14), so a date set to today in any time zone is not "the future". */
@@ -188,7 +213,14 @@ describe("sitemap.xml", () => {
   it("covers every page that is not noindex, and none that is held", () => {
     const listed = sitemap().map((entry) => new URL(entry.url).pathname);
     /* A held page answers 404 (`amoebaDocs`). */
-    const held: string[] = amoebaDocs ? [] : [routes.amoebaGuide, routes.amoebaFaq];
+    const held: string[] = amoebaDocs
+      ? []
+      : [
+          routes.amoebaGuide,
+          routes.amoebaFaq,
+          routes.docsAmoebaNotShowingVm,
+          routes.docsAmoebaNotRightsizing,
+        ];
     /* A dynamic route stands for the pages it prerenders: /cloud-cost-optimization-library/[slug] for the live versus pages, /learn/[slug]
        for every article in the Learn index, /learn/glossary/[slug] for every term in the glossary index. */
     const pages = (route: string) =>

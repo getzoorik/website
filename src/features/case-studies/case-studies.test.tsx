@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
-import { caseStudiesHub, caseStudy } from "@/content/case-studies";
+import { amoebaStudy, caseStudiesHub, caseStudy } from "@/content/case-studies";
 import { documents } from "@/content/documents";
 
 /* The nav and the footer read the pathname. */
@@ -10,6 +10,7 @@ vi.mock("next/navigation", () => ({ usePathname: () => pathname.current }));
 
 import ValueLabRoute, { metadata as hubMeta } from "@/app/value-lab/page";
 import CaseStudyRoute, { metadata as studyMeta } from "@/app/value-lab/coral-dev-cluster/page";
+import AmoebaStudyRoute, { metadata as amoebaMeta } from "@/app/value-lab/amoeba-lab-vms/page";
 
 /**
  * Value Lab and its case study: the metadata, the hub (what the studies saved
@@ -31,6 +32,10 @@ const hub = () => {
 const study = () => {
   pathname.current = "/value-lab/coral-dev-cluster";
   return render(<CaseStudyRoute />).container;
+};
+const amoeba = () => {
+  pathname.current = "/value-lab/amoeba-lab-vms";
+  return render(<AmoebaStudyRoute />).container;
 };
 
 const PDF = "/docs/coral-case-study-dev-cluster.pdf";
@@ -65,6 +70,24 @@ describe("the case studies' metadata", () => {
           width: 1200,
           height: 630,
           alt: "Zoorik. How we reduced our own cluster’s machine bill by 58%.",
+        },
+      ],
+    });
+  });
+
+  it("titles, describes and canonicalises the Amoeba study in the draft's words, with its own card", () => {
+    expect(amoebaMeta.title).toBe("How Amoeba Rightsized a Lab VM’s btrfs Pool by 25%");
+    expect(amoebaMeta.description).toBe(
+      "Before we ask anyone to trust Amoeba with their VMs, we run it on ours. On an Azure lab VM, its btrfs pool went from 96 GiB to 72 GiB, with 0 lost mounts.",
+    );
+    expect(amoebaMeta.alternates).toEqual({ canonical: "/value-lab/amoeba-lab-vms" });
+    expect(amoebaMeta.openGraph).toMatchObject({
+      url: "/value-lab/amoeba-lab-vms",
+      title: "How Amoeba Rightsized a Lab VM’s btrfs Pool by 25% | Zoorik",
+      images: [
+        {
+          url: "/og/pages/value-lab-amoeba-lab-vms.png",
+          alt: "Zoorik. How Amoeba rightsized our own lab VM’s btrfs pool by 25%.",
         },
       ],
     });
@@ -113,10 +136,15 @@ describe("/value-lab", () => {
     expect(caseStudy.band.stats[1].value).toBe("$213.89");
   });
 
-  it("puts the featured study and Want to be next? side by side on the band, rising as they arrive", () => {
+  it("puts the two studies side by side on the band and Want to be next? on a row under them, rising as they arrive", () => {
     const section = hub().querySelector("main > section#studies.sec.sec-band")!;
     expect(section).toHaveAttribute("aria-label", "Value Lab studies");
-    const [featured, next] = [...section.querySelectorAll(".as-grid > div")];
+    const [pair, row] = [...section.querySelectorAll(".wrap > .as-grid")];
+    expect(row).toHaveClass("as-grid", "vl-next");
+    const [featured, newest] = [...pair!.children];
+    expect(pair!.children).toHaveLength(2);
+    const next = row!.firstElementChild;
+    expect(row!.children).toHaveLength(1);
     expect(featured).toHaveClass("as-card", "as-mini", "vl-fc", "rise");
     expect(next).toHaveClass("as-cal", "rise");
     expect(text(featured!.querySelector(".vl-flag"))).toBe("Featured");
@@ -149,6 +177,28 @@ describe("/value-lab", () => {
     const go = next!.querySelector("a.cta-go")!;
     expect(go).toHaveAttribute("href", "/assessment");
     expect(text(go)).toBe("Run the free assessment");
+    /* The Amoeba study beside it: its pool before and with Amoeba, on one scale. */
+    expect(newest).toHaveClass("as-card", "as-mini", "vl-fc", "rise");
+    expect(text(newest!.querySelector(".vl-flag"))).toBe("New");
+    expect(newest!.querySelector("svg.vl-own")).toHaveAttribute("viewBox", "0 0 512 512");
+    expect(text(newest!.querySelector("h2.as-h"))).toBe("Our own Azure lab VM");
+    expect(text(newest!.querySelector("p"))).toBe(
+      "Amoeba rightsized its btrfs pool by 25%, with 0 lost mounts.",
+    );
+    expect(
+      [...newest!.querySelectorAll(".vl-bars .vl-col")].map((col) => [
+        col.querySelector("b")!.textContent,
+        (col.querySelector("i") as HTMLElement).style.getPropertyValue("--h"),
+        text(col.querySelector("small")),
+      ]),
+    ).toEqual([
+      ["96 GiB", "1", "Before"],
+      ["72 GiB", "0.750", "With Amoeba"],
+    ]);
+    expect(text(newest!.querySelector(".vl-per"))).toBe("btrfs pool");
+    expect(newest!.querySelector("a.btn-ink")).toHaveAttribute("href", "/value-lab/amoeba-lab-vms");
+    /* Saved so far stays the Coral study's alone, as the mock draws it. */
+    expect(caseStudiesHub.studies.map((one) => one.href)).toEqual(["/value-lab/coral-dev-cluster"]);
   });
 
   it("lists no client study until the first one exists, and ends on the closing row for Coral", () => {
@@ -347,10 +397,211 @@ describe("/value-lab/coral-dev-cluster", () => {
   });
 });
 
-describe("both pages", () => {
+describe("/value-lab/amoeba-lab-vms", () => {
+  it("opens on the kicker, the headline with its green line and the opening, with no download", () => {
+    const hero = amoeba().querySelector("main > header.hero.doc-hero.cs-hero#top")!;
+    expect(text(hero.querySelector(".cs-kick"))).toBe(
+      "Value Lab · Amoeba on Azure VMs · October 2026",
+    );
+    const h1 = hero.querySelector("h1")!;
+    expect(text(h1)).toBe("How Amoeba rightsized our own lab VM’s btrfs pool by 25%");
+    expect(text(h1.querySelector(".cs-g"))).toBe("btrfs pool by 25%");
+    expect(h1.querySelector("[translate='no']")).toHaveTextContent("Amoeba");
+    expect(hero.querySelector(".doc-deck b")!.textContent).toBe("96 GiB to 72 GiB");
+    expect(hero.querySelector(".doc-hero-grid, .dl, a[download]")).toBeNull();
+  });
+
+  it("puts the result first: the date and publisher, the four figures in one line, what Amoeba is", () => {
+    const band = amoeba().querySelector("main > section.cs-band")!;
+    expect(band).toHaveAttribute("aria-label", "The result");
+    expect(text(band.querySelector("p.doc-updated"))).toBe("19 October 2026 · Published by Zoorik");
+    expect(
+      [...band.querySelectorAll(".cs-stats > p.cs-stat")].map((stat) => [
+        text(stat.querySelector(".cs-v")),
+        text(stat.querySelector(".cs-k")),
+        stat.querySelector(".cs-v")!.classList.contains("is-good"),
+      ]),
+    ).toEqual([
+      ["−25%", "the size of Lab VM A’s btrfs pool", true],
+      ["96 → 72 GiB", "the same 60.07 GiB of data, on a smaller pool", false],
+      ["0", "lost mounts, and 0 errors from our test app", true],
+      ["8 min 14 s", "from our click to the smaller pool", false],
+    ]);
+    expect(text(band.querySelector(".doc-call p"))).toMatch(
+      /^Amoeba is Zoorik’s block storage optimization for Windows and Linux VMs on Azure and AWS\./,
+    );
+  });
+
+  it("numbers its six sections, each name beside its text, the product's name kept out of translation", () => {
+    const container = amoeba();
+    const sections = [...container.querySelectorAll("article.ar-frame > section.fq-sec")];
+    expect(sections.map((section) => [section.id, text(section.querySelector("h2"))])).toEqual([
+      ["the-starting-point", "1The starting point"],
+      ["connecting-amoeba", "2Connecting Amoeba"],
+      ["what-amoeba-did", "3What Amoeba did"],
+      ["how-the-apps-and-data-came-through", "4How the apps and data came through"],
+      ["how-they-stayed-safe", "5How they stayed safe"],
+      ["the-result", "6The result"],
+    ]);
+    expect(container.querySelector("#connecting-amoeba h2 [translate='no']")).toHaveTextContent(
+      "Amoeba",
+    );
+    /* A chip is plain text. */
+    expect(
+      [...container.querySelectorAll("nav.fq-chips a")].map((a) => [
+        a.getAttribute("href"),
+        a.innerHTML,
+      ])[1],
+    ).toEqual(["#connecting-amoeba", "Connecting Amoeba"]);
+  });
+
+  it("draws the VMs and their disks as cards, one square per 8 GiB, a run per disk", () => {
+    const start = amoeba().querySelector("#the-starting-point")!;
+    const row = start.querySelector(".cs-mrow.is-2")!;
+    expect(row).toHaveAttribute("role", "img");
+    expect(row.getAttribute("aria-label")).toBe(amoebaStudy.start.label);
+    const cards = [...row.querySelectorAll(":scope > .cs-mc")];
+    expect(cards.map((card) => card.className)).toEqual(["cs-mc is-keep", "cs-mc is-old"]);
+    expect(
+      cards.map((card) =>
+        [...card.querySelectorAll(".cs-cores.is-disks > span")].map((run) => run.children.length),
+      ),
+    ).toEqual([
+      [8, 4],
+      [4, 4],
+    ]);
+    expect(cards.map((card) => text(card.querySelector(".cs-mp")))).toEqual(["96 GiB", "64 GiB"]);
+    expect([...start.querySelectorAll(".cs-sum > *")].map(text)).toEqual([
+      "On 19 October 2026, as each VM’s step began",
+      "2 lab VMs on Azure · 1 on a btrfs pool, 1 new",
+    ]);
+  });
+
+  it("tells what Amoeba did in two dated steps: the move onto a pool, then a shrink on our click", () => {
+    const did = amoeba().querySelector("#what-amoeba-did")!;
+    expect([...did.querySelectorAll(".cs-chap > h3")].map((h3) => [h3.id, text(h3)])).toEqual([
+      ["move-onto-a-pool", "The move onto a pool: two folders, while the app kept writing"],
+      ["shrink-on-a-click", "A shrink on our click: 96 GiB down to 72 GiB"],
+    ]);
+    expect([...did.querySelectorAll(".cs-pill")].map(text)).toEqual([
+      "2 folders moved · 0 failed writes at the switch",
+      "−24 GiB of disk",
+    ]);
+    const swap = did.querySelector(".cs-swap")!;
+    expect(swap).toHaveAttribute("role", "img");
+    const [before, after] = [...swap.querySelectorAll(".cs-mc")];
+    expect(before!.querySelector(".cs-mp")).toBeNull();
+    expect(after!.querySelector(".cs-cores, .cs-mp")).toBeNull();
+    expect(text(after!.querySelector(".cs-mnote"))).toBe(
+      "Old disks: a safety snapshot each, then deleted",
+    );
+    const shrink = did.querySelector(".cs-stage:last-child .cs-mrow")!;
+    expect([...shrink.querySelectorAll(".cs-badge")].map(text)).toEqual([
+      "Stays",
+      "Removed",
+      "Added",
+    ]);
+    expect(
+      [...shrink.querySelectorAll(".cs-mc")].map((card) => card.querySelectorAll("i").length),
+    ).toEqual([8, 4, 1]);
+  });
+
+  it("charts what the test app felt, longest at 78%, the slowest write at each row's end, then what we checked", () => {
+    const through = amoeba().querySelector("#how-the-apps-and-data-came-through")!;
+    const bars = through.querySelector(".cs-hb.is-ms")!;
+    expect(bars.getAttribute("aria-label")).toBe(amoebaStudy.through.felt.alt);
+    expect(
+      [...bars.querySelectorAll<HTMLElement>(".cs-hr")].map((row) => [
+        row.querySelector<HTMLElement>("i")!.style.width,
+        text(row.querySelector("b")),
+        text(row.querySelector("small")),
+      ]),
+    ).toEqual([
+      ["50.1%", "18 ms", "slowest 198 ms"],
+      ["72.4%", "26 ms", "slowest 270 ms"],
+      ["78%", "28 ms", "slowest 2,420 ms"],
+      ["55.7%", "20 ms", "slowest 68 ms"],
+    ]);
+    const table = through.querySelector("table.cs-tb.is-wrap.is-left")!;
+    expect(
+      [...table.querySelectorAll<HTMLTableRowElement>("tbody tr")].map((tr) =>
+        [...tr.cells].map((cell) => [text(cell), cell.className]),
+      ),
+    ).toEqual([
+      [
+        ["Test app", ""],
+        ["0 errors", "cs-g"],
+        ["No write failed", "cs-g"],
+      ],
+      [
+        ["Folders found mounted", ""],
+        ["5,677 of 5,677 checks before the shrink, and 118 of 118 during it", "cs-g"],
+        ["Every check", "cs-g"],
+      ],
+      [
+        ["Test files whose checksum matched", ""],
+        ["not checked", "is-muted"],
+        ["Every one, before and after the switch", "cs-g"],
+      ],
+    ]);
+  });
+
+  it("opens The result on the pool's steps, one scale, then the table and the share removed", () => {
+    const result = amoeba().querySelector("#the-result")!;
+    const steps = result.querySelector(".cs-wf.is-3")!;
+    const pct = (value: string) => Number.parseFloat(value);
+    expect(
+      [...steps.querySelectorAll<HTMLElement>(".cs-bar")].map((bar) => [
+        bar.className,
+        pct(bar.style.bottom),
+        pct(bar.style.height),
+        text(bar),
+      ]),
+    ).toEqual([
+      ["cs-bar is-start", 0, 100, "96 GiB"],
+      ["cs-bar is-drop", 75, 25, "−24 GiB"],
+      ["cs-bar is-end", 0, 75, "72 GiB"],
+    ]);
+    const table = result.querySelector(".cs-two table.cs-tb.is-fit")!;
+    expect([...table.querySelectorAll("thead th")].map(text)).toEqual([
+      "Lab VM",
+      "Before",
+      "After",
+      "Difference",
+      "Each month",
+    ]);
+    expect(
+      [...table.querySelectorAll<HTMLTableRowElement>("tbody tr")].map((tr) =>
+        [...tr.cells].map(text),
+      ),
+    ).toEqual([["Lab VM A, Manual", "96 GiB", "72 GiB", "24 GiB less", "$3.60 less"]]);
+    expect(text(result.querySelector(".cs-two .cs-cap"))).toBe(
+      "Each month: Amoeba’s own figure, at the Azure list prices it reads.",
+    );
+    const donut = result.querySelector("svg.cs-donut")!;
+    expect(donut).toHaveAttribute("aria-label", "25% less");
+    expect(donut.querySelectorAll("circle")[1]).toHaveAttribute("stroke-dasharray", "87.96 351.86");
+  });
+
+  it("ends on the fine print, offers no PDF, and closes on the closing row for Amoeba", () => {
+    const container = amoeba();
+    expect(container.querySelector("a[download], a.cs-dl")).toBeNull();
+    const foot = container.querySelector("article.ar-frame > .fq-upd.ar-foot:last-child")!;
+    expect(text(foot)).toMatch(/^Zoorik’s own lab VMs on Azure, on 19 October 2026\./);
+    expect(text(foot)).toMatch(/Results depend on each VM’s data\.$/);
+    const row = container.querySelector("section#assess")!;
+    expect(row.querySelector("a.btn-ink")).toHaveAttribute("href", "/assessment?p=amoeba");
+    expect(text(row.querySelector("#contact p"))).toBe(
+      "Thirty minutes with the people who build Amoeba.",
+    );
+  });
+});
+
+describe("all three pages", () => {
   it.each([
     ["the hub", hub],
     ["the study", study],
+    ["the Amoeba study", amoeba],
   ])(
     "%s ships no placeholder, and is reached from the footer's Resources column, never the header",
     (_, page) => {

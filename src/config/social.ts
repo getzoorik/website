@@ -81,6 +81,26 @@ const CARDS: readonly {
     words: "Contributing to our open source",
     paths: ["/docs/contributing"],
   },
+  {
+    file: "docs-coral-not-connecting-to-cluster",
+    words: "Coral is not connecting to my cluster",
+    paths: [routes.docsCoralNotConnecting],
+  },
+  {
+    file: "docs-coral-not-removing-nodes",
+    words: "Why Coral is not removing a node",
+    paths: [routes.docsCoralNotRemovingNodes],
+  },
+  {
+    file: "docs-amoeba-not-showing-my-vm",
+    words: "Amoeba is not showing my VM",
+    paths: [routes.docsAmoebaNotShowingVm],
+  },
+  {
+    file: "docs-amoeba-not-rightsizing-disks",
+    words: "Why Amoeba has not rightsized my disks yet",
+    paths: [routes.docsAmoebaNotRightsizing],
+  },
   { file: "open-source", words: "Open source", paths: ["/open-source"] },
   { file: "learn", words: "Cloud cost optimization guides", paths: ["/learn"] },
   {
@@ -108,9 +128,19 @@ const CARDS: readonly {
     words: "How we reduced our own cluster’s machine bill by 58%",
     paths: ["/value-lab/coral-dev-cluster"],
   },
+  {
+    file: "value-lab-amoeba-lab-vms",
+    words: "How Amoeba rightsized our own lab VM’s btrfs pool by 25%",
+    paths: [routes.caseStudyAmoebaLabVms],
+  },
   { file: "events", words: "Cloud cost, FinOps and Kubernetes events", paths: ["/events"] },
   { file: "news", words: "Cloud cost, Kubernetes and FinOps updates", paths: ["/news"] },
   { file: "community", words: "FinOps and cloud cost communities", paths: ["/community"] },
+  {
+    file: "research-cloud-cost-optimization",
+    words: "Cloud cost optimization research",
+    paths: [routes.research],
+  },
   { file: "about", words: "Who builds Coral and Amoeba", paths: ["/about"] },
   { file: "careers", words: "Work with us, remotely", paths: ["/careers"] },
   { file: "brand-assets", words: "The Zoorik logo, colours and words", paths: ["/brand-assets"] },

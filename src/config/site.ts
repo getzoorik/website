@@ -139,6 +139,8 @@ export const routes = {
      Linked from the footer's Resources column. */
   valueLab: "/value-lab",
   caseStudyCoralDevCluster: "/value-lab/coral-dev-cluster",
+  /* Amoeba on our own Azure lab VMs: the second study, beside the first on the hub. */
+  caseStudyAmoebaLabVms: "/value-lab/amoeba-lab-vms",
   /* Events: real conferences and community days, from the radar's checked list.
      In the footer's Resources column, after Value Lab. */
   events: "/events",
@@ -164,6 +166,14 @@ export const routes = {
   docsInstallHelm: "/docs/install-coral-with-helm",
   docsInstallTerraform: "/docs/install-coral-with-terraform",
   docsContributing: "/docs/contributing",
+  /* The four troubleshooting pages under /docs, in the guides' frame: two per product, listed on the hub at the end of
+     each product's group. */
+  docsCoralNotConnecting: "/docs/coral-not-connecting-to-cluster",
+  docsCoralNotRemovingNodes: "/docs/coral-not-removing-nodes",
+  docsAmoebaNotShowingVm: "/docs/amoeba-not-showing-my-vm",
+  docsAmoebaNotRightsizing: "/docs/amoeba-not-rightsizing-disks",
+  /* Research papers on cloud cost optimization, by subject. At the site's root, in no menu and no footer column yet. */
+  research: "/research-cloud-cost-optimization",
 } as const;
 
 /** Where the comparison pages live: under Cloud cost optimization tools. /compare and its old pages redirect there. */
@@ -234,12 +244,18 @@ export const hashKeepingRoutes: readonly string[] = [
   routes.about,
   /* /careers is built on /about's frame and carries `data-keep-hash` too. */
   routes.careers,
-  /* The case study keeps its hash as the articles do; the hub, like /learn, does not. */
+  /* The case studies keep their hash as the articles do; the hub, like /learn, does not. */
   routes.caseStudyCoralDevCluster,
-  /* The three install and contributing guides are built in the article frame and keep theirs too. */
+  routes.caseStudyAmoebaLabVms,
+  /* The three install and contributing guides and the four troubleshooting pages are built in the article frame and
+     keep theirs too. */
   routes.docsInstallHelm,
   routes.docsInstallTerraform,
   routes.docsContributing,
+  routes.docsCoralNotConnecting,
+  routes.docsCoralNotRemovingNodes,
+  routes.docsAmoebaNotShowingVm,
+  routes.docsAmoebaNotRightsizing,
   routes.coralGuide,
   routes.coralFaq,
   routes.amoebaGuide,
@@ -476,6 +492,11 @@ const NAV_STATES: ReadonlyMap<string, NavState> = new Map<string, NavState>([
   [routes.docsInstallHelm, { current: "docs" }],
   [routes.docsInstallTerraform, { current: "docs" }],
   [routes.docsContributing, { current: "docs" }],
+  /* The four troubleshooting pages mark Docs only, as the guides do. */
+  [routes.docsCoralNotConnecting, { current: "docs" }],
+  [routes.docsCoralNotRemovingNodes, { current: "docs" }],
+  [routes.docsAmoebaNotShowingVm, { current: "docs" }],
+  [routes.docsAmoebaNotRightsizing, { current: "docs" }],
 ]);
 
 /** A Learn article or glossary term marks the Docs menu alone, whichever it is; /about marks nothing. */

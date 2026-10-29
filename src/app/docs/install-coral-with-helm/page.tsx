@@ -20,7 +20,7 @@ export default function InstallCoralWithHelm(): React.JSX.Element {
   return (
     <>
       <JsonLd data={pageStructuredData(routes.docsInstallHelm)} />
-      <OsGuidePage id="helm" />
+      <OsGuidePage guide={openSourceGuides.helm} />
     </>
   );
 }

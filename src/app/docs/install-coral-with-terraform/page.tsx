@@ -20,7 +20,7 @@ export default function InstallCoralWithTerraform(): React.JSX.Element {
   return (
     <>
       <JsonLd data={pageStructuredData(routes.docsInstallTerraform)} />
-      <OsGuidePage id="terraform" />
+      <OsGuidePage guide={openSourceGuides.terraform} />
     </>
   );
 }

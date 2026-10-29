@@ -12,8 +12,9 @@ import { isOffSite, offSiteProps } from "@/lib/links";
  * with the document glyph, each line saying where the page lives ("Coral FAQ",
  * "Learn").
  *
- * A tile to another site (/community's communities) opens it in a new tab, with
- * the arrow out and the hidden "(opens in a new tab)" after it.
+ * A tile to another site (/community's communities, the research papers) opens it in a new tab, with
+ * the arrow out and the hidden "(opens in a new tab)" after it. A research paper's tile has a second line under the
+ * first: who wrote it and where, then our note (`more`).
  *
  * The documents' own tiles, with their PDFs and downloads, are `DocTile`; this
  * is the plain page link, whose title and line may name a product, so they are
@@ -24,17 +25,20 @@ export interface LinkTileProps {
   readonly href: string | null;
   readonly title: ReactNode;
   readonly line: ReactNode;
+  /** A second line under it, in its own `dt-l` (a research paper's note). */
+  readonly more?: ReactNode;
   /** The tile's icon, classed `dt-ic`; the document glyph when none is given. */
   readonly icon?: ReactNode;
 }
 
-export function LinkTile({ href, title, line, icon }: LinkTileProps): React.JSX.Element {
+export function LinkTile({ href, title, line, more, icon }: LinkTileProps): React.JSX.Element {
   const inside = (
     <>
       {icon ?? <DocGlyph className="dt-ic" />}
       <span>
         <span className="dt-t">{title}</span>
         <span className="dt-l">{line}</span>
+        {more ? <span className="dt-l">{more}</span> : null}
       </span>
     </>
   );

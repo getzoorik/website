@@ -20,7 +20,7 @@ export default function Contributing(): React.JSX.Element {
   return (
     <>
       <JsonLd data={pageStructuredData(routes.docsContributing)} />
-      <OsGuidePage id="contributing" />
+      <OsGuidePage guide={openSourceGuides.contributing} />
     </>
   );
 }

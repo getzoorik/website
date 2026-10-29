@@ -41,7 +41,7 @@ import { brandAssetsPage } from "@/content/brand-assets";
 import { careers } from "@/content/careers";
 import { communityPage } from "@/content/community";
 import { designPartnersPage } from "@/content/design-partners";
-import { caseStudiesHub, caseStudy } from "@/content/case-studies";
+import { amoebaStudy, caseStudiesHub, caseStudy } from "@/content/case-studies";
 import { coralFaqPage } from "@/content/coral-faq";
 import { coralGuide } from "@/content/coral-guide";
 import { coralPageContent } from "@/content/coral-page";
@@ -59,7 +59,7 @@ import {
 } from "@/content/learn-compare";
 import { marketplacesPage } from "@/content/marketplaces";
 import { memberships } from "@/content/memberships";
-import { openSourceGuides, openSourcePage, type OpenSourceGuideId } from "@/content/open-source";
+import { openSourceGuides, openSourcePage, type OpenSourceGuide } from "@/content/open-source";
 import { partnersPage } from "@/content/partners";
 import type { Article } from "@/content/learn/article";
 import { glossaryPage, glossaryTerms, termName, termRoute } from "@/content/learn/glossary";
@@ -67,10 +67,12 @@ import type { GlossaryTerm } from "@/content/learn/glossary-term";
 import { articleAuthor, articleCard, articleRoute, learnArticles } from "@/content/learn/published";
 import { privacy } from "@/content/privacy";
 import { referralsPage } from "@/content/referrals";
+import { researchPage } from "@/content/research";
 import type { ProductPageContent } from "@/content/product-page";
 import { platformLabel, productOrder, products, type ProductId } from "@/content/products";
 import { securityPage } from "@/content/security";
 import { termsCopy } from "@/content/terms";
+import { troubleshootingGuides } from "@/content/troubleshooting";
 import { isoDay } from "@/lib/content-date";
 
 /**
@@ -331,15 +333,20 @@ function documentEntry(
   };
 }
 
-/** An install or contributing guide under /docs: the Docs step, then the guide by its h1. */
-function osGuideEntry(id: OpenSourceGuideId): PageEntry {
-  const guide = openSourceGuides[id];
+/**
+ * A guide under /docs, an install or contributing guide or a troubleshooting page: the Docs step, then the guide by
+ * its h1; about its product (Coral, unless it names another), or about neither (`about: null`, Contributing).
+ */
+function osGuideEntry(
+  guide: OpenSourceGuide,
+  about: ProductId | null = guide.product ?? "coral",
+): PageEntry {
   return {
     kind: "WebPage",
     name: titled(guide.meta.title),
     description: guide.meta.description,
     trail: [step(routes.docs), { name: guide.hero.title, path: guide.route }],
-    ...(id === "contributing" ? {} : { about: "coral" as const }),
+    ...(about ? { about } : {}),
   };
 }
 
@@ -404,6 +411,8 @@ const termSetRef = {
 
 const studyHeadline = `${caseStudy.hero.title} ${caseStudy.hero.titleGreen}`;
 const studyDate = isoDay(caseStudy.band.date);
+const amoebaStudyHeadline = `${amoebaStudy.hero.title} ${amoebaStudy.hero.titleGreen}`;
+const amoebaStudyDate = isoDay(amoebaStudy.band.date);
 
 /** Every indexed page, by its route: the sitemap's list. */
 const pages: Readonly<Record<string, PageEntry>> = {
@@ -488,9 +497,25 @@ const pages: Readonly<Record<string, PageEntry>> = {
   ),
   /* Open source and its guides. */
   [routes.openSource]: documentEntry(routes.openSource, openSourcePage.meta, []),
-  [routes.docsInstallHelm]: osGuideEntry("helm"),
-  [routes.docsInstallTerraform]: osGuideEntry("terraform"),
-  [routes.docsContributing]: osGuideEntry("contributing"),
+  [routes.docsInstallHelm]: osGuideEntry(openSourceGuides.helm),
+  [routes.docsInstallTerraform]: osGuideEntry(openSourceGuides.terraform),
+  [routes.docsContributing]: osGuideEntry(openSourceGuides.contributing, null),
+  /* The troubleshooting pages under /docs, each about its product; Amoeba's held with its guide and FAQ. */
+  [routes.docsCoralNotConnecting]: osGuideEntry(troubleshootingGuides.coralNotConnecting),
+  [routes.docsCoralNotRemovingNodes]: osGuideEntry(troubleshootingGuides.coralNotRemovingNodes),
+  ...(amoebaDocs
+    ? {
+        [routes.docsAmoebaNotShowingVm]: osGuideEntry(troubleshootingGuides.amoebaNotShowingVm),
+        [routes.docsAmoebaNotRightsizing]: osGuideEntry(troubleshootingGuides.amoebaNotRightsizing),
+      }
+    : {}),
+  /* The research papers: a page of the site's own, under Zoorik alone. */
+  [routes.research]: {
+    kind: "CollectionPage",
+    name: titled(researchPage.meta.title),
+    description: researchPage.meta.description,
+    trail: [{ name: researchPage.hero.title, path: routes.research }],
+  },
   /* Value Lab, the case studies' hub. */
   [routes.valueLab]: {
     kind: "CollectionPage",
@@ -510,6 +535,20 @@ const pages: Readonly<Record<string, PageEntry>> = {
       published: studyDate,
       modified: studyDate,
       image: cardFor(routes.caseStudyCoralDevCluster),
+    },
+  },
+  /* The Amoeba study prints one date, "19 October 2026 · Published by Zoorik": published, and not changed since. */
+  [routes.caseStudyAmoebaLabVms]: {
+    kind: "WebPage",
+    name: titled(amoebaStudy.meta.title),
+    description: amoebaStudy.meta.description,
+    trail: [step(routes.valueLab), { name: amoebaStudyHeadline, path: amoebaStudy.route }],
+    about: "amoeba",
+    article: {
+      headline: amoebaStudyHeadline,
+      published: amoebaStudyDate,
+      modified: amoebaStudyDate,
+      image: cardFor(routes.caseStudyAmoebaLabVms),
     },
   },
   /* About, the organisation's own page. */

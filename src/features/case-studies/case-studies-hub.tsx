@@ -1,6 +1,6 @@
 import { Arrow } from "@/components/primitives/arrow";
 import { Reveal } from "@/components/primitives/reveal";
-import { caseStudiesHub } from "@/content/case-studies";
+import { caseStudiesHub, type ValueLabCard } from "@/content/case-studies";
 import { DocumentPage } from "@/features/documents/document-page";
 import { named } from "@/features/legal/named";
 import { isoDay } from "@/lib/content-date";
@@ -13,16 +13,16 @@ import { ValueLabMark } from "./value-lab-mark";
  *
  *   hero          the page's name and its line, and beside them what the studies saved so far, as of the newest
  *                 study's day, its dot pulsing and its figure counting up once (`SavedSoFar`)
- *   studies       on the band, the closing row's pair: the featured study on the white card (the mark, its bill before
- *                 and with Coral as two bars on one scale, "Read the case study"), and "Want to be next?" on the navy
- *                 one (the free assessment)
+ *   studies       on the band, the closing row's pair: each study on a white card (the mark, its figure before and
+ *                 after as two bars on one scale, "Read the case study"), the featured Coral study then the Amoeba
+ *                 one; under the pair, on a row of its own, "Want to be next?" on the navy card (the free assessment)
  *   closing row   for Coral
  *
  * No client study is listed until the first one exists. The pair rises as it arrives, as on /community; the dot's
  * pulse and the count stop under reduced motion.
  */
 
-const { hero, total, featured, next } = caseStudiesHub;
+const { hero, total, cards, next } = caseStudiesHub;
 
 /** "Saved so far", beside the hero's words in the files' place (`.dl`). */
 function Total(): React.JSX.Element {
@@ -41,9 +41,9 @@ function Total(): React.JSX.Element {
   );
 }
 
-/** The featured study's two bars, on the bill before's scale: the second's height is the bill after's share of it. */
-function Bars(): React.JSX.Element {
-  const { before, after } = featured;
+/** A study's two bars, on the figure before's scale: the second's height is the figure after's share of it. */
+function Bars({ card }: { readonly card: ValueLabCard }): React.JSX.Element {
+  const { before, after } = card;
   return (
     <div className="vl-bars" aria-hidden="true">
       <span className="vl-col">
@@ -59,7 +59,7 @@ function Bars(): React.JSX.Element {
         />
         <small>{named(after.name)}</small>
       </span>
-      <small className="vl-per">{featured.per}</small>
+      <small className="vl-per">{card.per}</small>
     </div>
   );
 }
@@ -87,17 +87,22 @@ function Studies(): React.JSX.Element {
     <section className="sec sec-band" id="studies" aria-label={caseStudiesHub.label}>
       <div className="wrap">
         <div className="as-grid">
-          <Reveal className="as-card as-mini vl-fc" order={0}>
-            <span className="vl-flag">{featured.flag}</span>
-            <ValueLabMark className="vl-own" />
-            <h2 className="as-h">{featured.title}</h2>
-            <p>{named(featured.line)}</p>
-            <Bars />
-            <a className="btn-ink" href={featured.href}>
-              {caseStudiesHub.card.read} <Arrow />
-            </a>
-          </Reveal>
-          <Reveal className="as-cal" order={1}>
+          {cards.map((card, index) => (
+            <Reveal className="as-card as-mini vl-fc" order={index} key={card.href}>
+              <span className="vl-flag">{card.flag}</span>
+              <ValueLabMark className="vl-own" />
+              <h2 className="as-h">{card.title}</h2>
+              <p>{named(card.line)}</p>
+              <Bars card={card} />
+              <a className="btn-ink" href={card.href}>
+                {caseStudiesHub.card.read} <Arrow />
+              </a>
+            </Reveal>
+          ))}
+        </div>
+        {/* "Want to be next?" on a row of its own under the pair, rising after it. */}
+        <div className="as-grid vl-next">
+          <Reveal className="as-cal" order={cards.length}>
             <NextMark />
             <h2 className="as-h">{next.title}</h2>
             <p>{next.body}</p>

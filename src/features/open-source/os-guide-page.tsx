@@ -1,11 +1,6 @@
 import { Arrow } from "@/components/primitives/arrow";
 import { routes } from "@/config/site";
-import {
-  openSourceGuides,
-  openSourceUpdated,
-  type GuideBlock,
-  type OpenSourceGuideId,
-} from "@/content/open-source";
+import { openSourceUpdated, type GuideBlock, type OpenSourceGuide } from "@/content/open-source";
 import { DocRows } from "@/features/doc-rows/doc-rows";
 import { DocumentPage } from "@/features/documents/document-page";
 import { named } from "@/features/legal/named";
@@ -13,19 +8,28 @@ import { OsCommandWell } from "@/features/open-source/os-command-well";
 import { OsText } from "@/features/open-source/os-text";
 
 /**
- * The three guides under /docs, in the article frame: each section's name beside its text, nothing folded.
- * The top line is "Updated 16 October 2026 · Published by Zoorik", then the short answer where there is one. Command
+ * The guides under /docs, in the article frame: the three install and contributing guides and the four
+ * troubleshooting pages. Each section's name beside its text, nothing folded.
+ * The top line is "Updated 16 October 2026 · Published by Zoorik" (the guide's own date where it has one), then the
+ * short answer where there is one. Command
  * wells have "$ " on a command's first line only, and a Copy button; values, YAML and HCL blocks scroll sideways with
  * no prompt and no copy; tables stack on phones as the docs tables do. The foot is the related links, then the
- * closing row on Coral.
+ * closing row on the guide's product (Coral unless it names another).
  */
 
-/** A section's address: its name, lower-cased, words joined by hyphens. */
-const slug = (title: string): string =>
-  title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
+/**
+ * A section's address, as the mocks' `slug()` makes it: its first seven words, lower-cased and joined by hyphens,
+ * apostrophes dropped ("Read why a shrink can’t run" is `read-why-a-shrink-cant-run`).
+ */
+export const sectionSlug = (title: string): string =>
+  (
+    title
+      .toLowerCase()
+      .replace(/['’]/g, "")
+      .match(/[a-z0-9]+/g) ?? []
+  )
+    .slice(0, 7)
+    .join("-");
 
 function Block({ block }: { readonly block: GuideBlock }) {
   switch (block.kind) {
@@ -104,19 +108,19 @@ function Block({ block }: { readonly block: GuideBlock }) {
   }
 }
 
-export function OsGuidePage({ id }: { readonly id: OpenSourceGuideId }): React.JSX.Element {
-  const guide = openSourceGuides[id];
+export function OsGuidePage({ guide }: { readonly guide: OpenSourceGuide }): React.JSX.Element {
   return (
     <DocumentPage
       hero={{ title: named(guide.hero.title), deck: named(guide.hero.deck) }}
-      product="coral"
+      product={guide.product ?? "coral"}
     >
       <DocRows
         frame="article"
         top={
           <>
             <p className="doc-updated">
-              Updated {openSourceUpdated} · Published by <a href={routes.about}>Zoorik</a>
+              Updated {guide.updated ?? openSourceUpdated} · Published by{" "}
+              <a href={routes.about}>Zoorik</a>
             </p>
             {guide.short ? (
               <p className="ar-short">
@@ -126,11 +130,12 @@ export function OsGuidePage({ id }: { readonly id: OpenSourceGuideId }): React.J
           </>
         }
         groups={guide.sections.map((section) => {
-          const sectionId = slug(section.title);
+          const sectionId = sectionSlug(section.title);
           return {
             id: sectionId,
             title: named(section.title),
-            chip: named(section.title),
+            /* A chip is plain text, as the mocks draw it: a name's span inside a chip loses the space before it. */
+            chip: section.title,
             body: section.blocks.map((block, index) => <Block block={block} key={index} />),
           };
         })}
@@ -138,7 +143,8 @@ export function OsGuidePage({ id }: { readonly id: OpenSourceGuideId }): React.J
           <p className="nw-links">
             {guide.related.map((link) => (
               <a className="alink" href={link.href} key={link.href}>
-                {named(link.text)}
+                {/* An .alink is a flex row: its words go in one span, so a name's span takes no gap of its own. */}
+                <span>{named(link.text)}</span>
                 <Arrow />
               </a>
             ))}

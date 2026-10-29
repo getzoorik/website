@@ -85,11 +85,11 @@ const SYSTEM = "$73.73";
 const WORKER = "$147.46";
 
 /**
- * The day the /case-studies hub's content last changed (its title, "Value Lab | Zoorik"), for the sitemap's
+ * The day the /value-lab hub's content last changed (the Amoeba study's card, 29 Oct 2026), for the sitemap's
  * `lastmod` only: the page does not print it. Whoever changes the hub's content
  * moves this to that day in the same PR; never the build's date.
  */
-export const caseStudiesHubLastUpdated = "21 October 2026";
+export const caseStudiesHubLastUpdated = "29 October 2026";
 
 export const caseStudy = {
   route: routes.caseStudyCoralDevCluster,
@@ -397,6 +397,332 @@ export const caseStudy = {
   fine: "Zoorik’s own development cluster on Azure Kubernetes Service, 4 to 12 October 2026. Costs are Azure pay-as-you-go list prices for the cluster’s machines at 730 hours a month. App figures cover the cluster’s own apps. Results depend on each cluster’s apps and machines.",
 } as const;
 
+/* ─── The second study: Amoeba on our own Azure lab VMs ───────────────────── */
+
+/**
+ * One disk card, the Coral study's machine card drawn in GiB: its badge, its name, what it is, its disks as runs of
+ * squares (one square per 8 GiB, a run per disk), its size where the price goes, and a note.
+ */
+export interface CaseStudyDiskCard {
+  readonly badge: string;
+  readonly name: string;
+  readonly kind?: string;
+  /** Each disk's size in GiB, one run of squares each; none draws no squares (the pool the folders moved to). */
+  readonly disks: readonly number[];
+  /** The size, in the price's place ("96 GiB"); none draws none. */
+  readonly size?: string;
+  readonly tone: "keep" | "old" | "gone" | "new";
+  readonly note?: string;
+}
+
+/** One cell of a study's table: its words, and the good green or the muted grey. */
+export interface CaseStudyCell {
+  readonly text: string;
+  readonly tone?: "good" | "muted";
+}
+
+/** One stage of "What the test app felt": its name, the time 99 in 100 writes took, and the slowest, in ms. */
+export interface CaseStudyStage {
+  readonly name: string;
+  readonly p99: number;
+  readonly slowest: number;
+}
+
+/** The Amoeba study's six sections, numbered as the Coral study's are; their ids are the page's addresses. */
+export type AmoebaStudySectionId =
+  | "the-starting-point"
+  | "connecting-amoeba"
+  | "what-amoeba-did"
+  | "how-the-apps-and-data-came-through"
+  | "how-they-stayed-safe"
+  | "the-result";
+
+/** One square of a disk run stands for this many GiB (the draft's F1). */
+export const GIB_PER_SQUARE = 8;
+
+/**
+ * `/value-lab/amoeba-lab-vms`: Amoeba on two of our own lab VMs on Azure, 19 October 2026. Every string is the
+ * checked draft's (`docs/website-seo/new-pages-2026-10-29/value-lab-amoeba/study.md`), every figure traced in its
+ * ledger; the mock checks each string against the draft on every build.
+ *
+ * 🔴 NOTHING THAT NAMES A VM. The study names no VM, disk, resource, ID, subscription, region, size code, version or
+ * time of day: the VMs are "Lab VM A" and "Lab VM B", the folders "folders". No PDF, and no link to any internal
+ * document. Money is Amoeba's own figure at Azure list prices.
+ */
+export const amoebaStudy = {
+  route: routes.caseStudyAmoebaLabVms,
+  meta: {
+    title: "How Amoeba Rightsized a Lab VM’s btrfs Pool by 25%",
+    description:
+      "Before we ask anyone to trust Amoeba with their VMs, we run it on ours. On an Azure lab VM, its btrfs pool went from 96 GiB to 72 GiB, with 0 lost mounts.",
+  },
+  hero: {
+    kicker: "Value Lab · Amoeba on Azure VMs · October 2026",
+    /** The h1, its second half on a line of its own in the good green. */
+    title: "How Amoeba rightsized our own lab VM’s",
+    titleGreen: "btrfs pool by 25%",
+    deck: [
+      "Before we ask anyone to trust Amoeba with their VMs, we run it on ours. In October 2026 we ran Amoeba on our own lab VMs on Azure. On one of them, Amoeba took a disk out of the btrfs pool while our test app ran. The pool went from ",
+      { b: "96 GiB to 72 GiB" },
+      ". Every folder stayed mounted, and our test app logged 0 errors.",
+    ] satisfies CaseStudyText,
+  },
+  /** The result, under the hero: the date and who publishes it, the four figures in one line, what Amoeba is. */
+  band: {
+    label: "The result",
+    date: "19 October 2026",
+    by: " · Published by ",
+    publisher: { text: "Zoorik", href: routes.about },
+    stats: [
+      { value: "−25%", label: "the size of Lab VM A’s btrfs pool", good: true },
+      { value: "96 → 72 GiB", label: "the same 60.07 GiB of data, on a smaller pool", good: false },
+      { value: "0", label: "lost mounts, and 0 errors from our test app", good: true },
+      { value: "8 min 14 s", label: "from our click to the smaller pool", good: false },
+    ],
+    about: [
+      { b: "Amoeba" },
+      " is Zoorik’s block storage optimization for Windows and Linux VMs on Azure and AWS. It moves a VM’s data disks onto one btrfs pool sized to the data, with room to grow. Then it rightsizes that pool, one disk at a time, while it stays mounted.",
+    ] satisfies CaseStudyText,
+  },
+  sections: [
+    { id: "the-starting-point", title: "The starting point" },
+    { id: "connecting-amoeba", title: "Connecting Amoeba" },
+    { id: "what-amoeba-did", title: "What Amoeba did" },
+    { id: "how-the-apps-and-data-came-through", title: "How the apps and data came through" },
+    { id: "how-they-stayed-safe", title: "How they stayed safe" },
+    { id: "the-result", title: "The result" },
+  ] satisfies readonly { id: AmoebaStudySectionId; title: string }[],
+  start: {
+    text: "Our lab is a set of VMs on Azure that we run ourselves. This study follows two of them on 19 October 2026. Each one runs a test app of ours that keeps writing to its data folders.",
+    label:
+      "Lab VM A: a btrfs pool of 64 and 32 GiB disks, 96 GiB, holding 60.07 GiB, on Manual. Lab VM B: new, two 32 GiB disks, about 10 GiB of data on each.",
+    vms: [
+      {
+        badge: "Manual",
+        name: "Lab VM A",
+        kind: "Data on a btrfs pool",
+        disks: [64, 32],
+        size: "96 GiB",
+        tone: "keep",
+        note: "60.07 GiB of data",
+      },
+      {
+        badge: "New",
+        name: "Lab VM B",
+        kind: "Two disks, not yet onboarded",
+        disks: [32, 32],
+        size: "64 GiB",
+        tone: "old",
+        note: "About 10 GiB of data on each disk",
+      },
+    ] satisfies readonly CaseStudyDiskCard[] as readonly CaseStudyDiskCard[],
+    /** The line under the VMs, its two halves at either end. */
+    when: "On 19 October 2026, as each VM’s step began",
+    total: "2 lab VMs on Azure · 1 on a btrfs pool, 1 new",
+  },
+  connect: {
+    text: [
+      "Lab VM B was new. One click in the Amoeba console onboarded it. Amoeba installed its agent on the VM by itself. The agent was running in under a minute and a half. From then on, Amoeba watched the VM’s data. Then it started the move on its own.",
+      "Lab VM A was onboarded before 19 October.",
+    ],
+    features: [
+      {
+        icon: "rb",
+        title: "Move onto a pool",
+        text: "Copies a VM’s data onto one btrfs pool while its apps run, then switches each folder to the pool.",
+      },
+      {
+        icon: "node",
+        title: "Shrink, one disk at a time",
+        text: "When the data goes down, moves it off one disk, then removes that disk. The pool stays mounted.",
+      },
+      {
+        icon: "wl",
+        title: "Auto or Manual",
+        text: "Per VM, shrinks start on their own or wait for your click.",
+      },
+    ] satisfies readonly { icon: CaseStudyIcon; title: string; text: string }[],
+  },
+  /** "What Amoeba did": two steps, each its head, its text, its picture and a pill. */
+  did: {
+    move: {
+      id: "move-onto-a-pool",
+      icon: "rb",
+      title: "The move onto a pool: two folders, while the app kept writing",
+      date: "19 Oct",
+      text: [
+        "On Lab VM B, Amoeba built a btrfs pool beside the two old disks. It copied both folders onto the pool while our test app kept writing. Then it copied what had changed and switched both folders to the pool. ",
+        { b: "Not one write failed" },
+        " at the switch, and writing never paused for more than 1.5 seconds. We then let Amoeba release the old disks. It took a safety snapshot of each, then deleted them.",
+      ],
+      pill: "2 folders moved · 0 failed writes at the switch",
+    } satisfies CaseStudyStep,
+    swap: {
+      label:
+        "Lab VM B: both folders moved from two 32 GiB old disks onto a btrfs pool; each old disk was snapshotted, then deleted.",
+      before: {
+        badge: "Before",
+        name: "Old disks",
+        kind: "2 × 32 GiB, both folders",
+        disks: [32, 32],
+        tone: "old",
+      } satisfies CaseStudyDiskCard as CaseStudyDiskCard,
+      after: {
+        badge: "After",
+        name: "btrfs pool",
+        kind: "both folders",
+        disks: [],
+        tone: "new",
+        note: "Old disks: a safety snapshot each, then deleted",
+      } satisfies CaseStudyDiskCard as CaseStudyDiskCard,
+    },
+    shrink: {
+      id: "shrink-on-a-click",
+      icon: "node",
+      title: "A shrink on our click: 96 GiB down to 72 GiB",
+      date: "19 Oct",
+      text: [
+        "Lab VM A is set to Manual, so its shrinks wait for us. First, Amoeba packed the pool’s data more tightly. That freed 5.00 GiB inside the pool. No disk was added or removed, so it cost nothing more. Later, Amoeba planned a shrink and waited for our click. Then it added an 8 GiB disk and moved 16.06 GiB off the 32 GiB disk in 2 minutes 55 seconds. It removed that disk and deleted it. ",
+        { b: "8 minutes 14 seconds" },
+        " from our click to done.",
+      ],
+      pill: "−24 GiB of disk",
+    } satisfies CaseStudyStep,
+    /** The shrink's disks: each card is named by its badge, the disk's size in the price's place. */
+    shrinkDisks: {
+      label:
+        "Lab VM A: the 64 GiB disk stays. The 32 GiB disk is removed after 16.06 GiB moved off it. An 8 GiB disk is added. 96 GiB becomes 72 GiB.",
+      disks: [
+        { badge: "Stays", name: "Disk", disks: [64], size: "64 GiB", tone: "keep" },
+        {
+          badge: "Removed",
+          name: "Disk",
+          disks: [32],
+          size: "32 GiB",
+          tone: "gone",
+          note: "16.06 GiB moved off",
+        },
+        { badge: "Added", name: "Disk", disks: [8], size: "8 GiB", tone: "new" },
+      ] satisfies readonly CaseStudyDiskCard[] as readonly CaseStudyDiskCard[],
+    },
+  },
+  through: {
+    text: "The move onto a pool is the big step for an app: its folders switch from the old disks to the pool. Here is how long our test app’s writes took on Lab VM B, before and through that move. The app wrote to both folders every second. Each write was saved to disk before it counted.",
+    felt: {
+      caption: "What the test app felt on Lab VM B",
+      unit: "milliseconds: 99 in 100 writes, and the slowest",
+      alt: "What the test app felt on Lab VM B, in milliseconds, for 99 in 100 writes and for the slowest write: Before the move, while Amoeba watched, 18 and 198; Copying the first folder, 26 and 270; Copying the second folder, during our 1.5 GiB burst, 28 and 2,420; The last copy and the switch onto the pool, 20 and 68.",
+      /** Each stage's bar is the time 99 in 100 writes took, the longest at 78% of the row; the slowest write after it. */
+      stages: [
+        { name: "Before the move, while Amoeba watched", p99: 18, slowest: 198 },
+        { name: "Copying the first folder", p99: 26, slowest: 270 },
+        { name: "Copying the second folder, during our 1.5 GiB burst", p99: 28, slowest: 2420 },
+        { name: "The last copy and the switch onto the pool", p99: 20, slowest: 68 },
+      ] satisfies readonly CaseStudyStage[] as readonly CaseStudyStage[],
+      up: "At the switch: 0 failed writes, no pause over 1.5 seconds and 0 lost mounts.",
+    },
+    checked: {
+      caption: "What we checked",
+      /** The rows' column, named for a screen reader only. */
+      measure: "Check",
+      columns: ["Lab VM A", "Lab VM B, through the move"],
+      rows: [
+        {
+          name: "Test app",
+          cells: [
+            { text: "0 errors", tone: "good" },
+            { text: "No write failed", tone: "good" },
+          ],
+        },
+        {
+          name: "Folders found mounted",
+          cells: [
+            {
+              text: "5,677 of 5,677 checks before the shrink, and 118 of 118 during it",
+              tone: "good",
+            },
+            { text: "Every check", tone: "good" },
+          ],
+        },
+        {
+          name: "Test files whose checksum matched",
+          cells: [
+            { text: "not checked", tone: "muted" },
+            { text: "Every one, before and after the switch", tone: "good" },
+          ],
+        },
+      ] satisfies readonly { name: string; cells: readonly CaseStudyCell[] }[],
+    },
+    means: [
+      { b: "What this means:" },
+      " through the copy and the switch, 99 in 100 writes took 28 ms or less. The slowest write, 2,420 ms, came in the stage where we added our own 1.5 GiB burst. In every other stage shown, no write took longer than 270 ms. A service that keeps the data open, like a database, gets a short restart at the switch. Our test app was not restarted. Lab VM A’s test app keeps no timings, so its speed during the shrink was not measured.",
+    ] satisfies CaseStudyText,
+  },
+  safe: [
+    {
+      title: "Snapshot first",
+      text: "After the move, Amoeba took a safety snapshot of each old disk before it deleted that disk.",
+    },
+    {
+      title: "Data off first",
+      text: "The 32 GiB disk left Lab VM A’s pool only after its 16.06 GiB of data had moved to the other disks. The folders stayed mounted throughout.",
+    },
+    {
+      title: "Manual waits for you",
+      text: "Lab VM A is on Manual. Amoeba planned its shrink, then waited for our click before it added or removed a disk.",
+    },
+  ],
+  result: {
+    pool: {
+      caption: "Lab VM A’s btrfs pool",
+      unit: "GiB",
+      alt: "Lab VM A’s btrfs pool: 96 GiB before; minus 24 GiB from the shrink on 19 Oct; 72 GiB after.",
+      /** The scale's top: the pool before the shrink. */
+      top: 96,
+      steps: [
+        { kind: "start", from: 0, amount: 96, label: "96 GiB", name: "Before", date: "19 Oct" },
+        {
+          kind: "drop",
+          from: 72,
+          amount: 24,
+          label: "−24 GiB",
+          name: "The shrink",
+          date: "19 Oct",
+        },
+        { kind: "end", from: 0, amount: 72, label: "72 GiB", name: "After", date: "19 Oct" },
+      ] satisfies readonly CaseStudyCostStep[] as readonly CaseStudyCostStep[],
+    },
+    table: {
+      caption: "Before and after",
+      columns: ["Lab VM", "Before", "After", "Difference", "Each month"],
+      rows: [
+        {
+          name: "Lab VM A, Manual",
+          cells: [
+            { text: "96 GiB" },
+            { text: "72 GiB" },
+            { text: "24 GiB less", tone: "good" },
+            { text: "$3.60 less", tone: "good" },
+          ],
+        },
+      ] satisfies readonly { name: string; cells: readonly CaseStudyCell[] }[],
+      /** Under the table: where the money figure comes from. */
+      cap: "Each month: Amoeba’s own figure, at the Azure list prices it reads.",
+    },
+    share: {
+      caption: "Share of Lab VM A’s pool removed",
+      alt: "25% less",
+      value: "25%",
+      word: "less",
+      /** The ring's green arc: what the shrink removed of the pool before it. */
+      removed: 24,
+      of: 96,
+      line: "24 of 96 GiB, holding the same 60.07 GiB of data",
+    },
+  },
+  fine: "Zoorik’s own lab VMs on Azure, on 19 October 2026. The figures show Amoeba as it ran that day. Each VM ran Linux and a test app of ours, not a customer’s workload. In our lab, Amoeba read a shorter history of each VM’s data than it does for a customer. So its timing differed, and it sized each pool more tightly. A pool’s size is the total of its disks. Money is Amoeba’s own figure at Azure list prices. Results depend on each VM’s data.",
+} as const;
+
 /** One figure on a study card's cover: the value its bar is drawn to, and how it is printed. */
 export interface CaseStudyCoverFigure {
   readonly value: number;
@@ -470,6 +796,22 @@ const savedMonthly = studies.reduce(
   0,
 );
 
+/** A study's card on the hub's band: its flag, the mark, its name and line, its two bars on one scale, its link. */
+export interface ValueLabCard {
+  readonly flag: string;
+  readonly title: string;
+  readonly line: string;
+  readonly before: CaseStudyCoverFigure & { readonly name: string };
+  readonly after: CaseStudyCoverFigure & { readonly name: string };
+  /** Under the bars: what they measure ("a month", "btrfs pool"). */
+  readonly per: string;
+  readonly href: string;
+}
+
+const amoebaPool = amoebaStudy.result.pool;
+const amoebaBefore = amoebaPool.steps[0]!;
+const amoebaAfter = amoebaPool.steps[amoebaPool.steps.length - 1]!;
+
 export const caseStudiesHub = {
   route: routes.valueLab,
   /** The `<title>`'s own words, before " | Zoorik", and the description. */
@@ -492,19 +834,35 @@ export const caseStudiesHub = {
     line: `About ${perYear(savedMonthly)} a year, across ${studies.length} case ${studies.length === 1 ? "study" : "studies"}, at list prices.`,
   },
   studies,
-  /** The pair on the band, named for a screen reader: the featured study and "Want to be next?". */
+  /** The band, named for a screen reader: the studies' cards and "Want to be next?". */
   label: "Value Lab studies",
-  /** The featured study: our own cluster, its bill before and with Coral, on one scale. */
-  featured: {
-    flag: "Featured",
-    title: "Our own AKS cluster",
-    /* "58%" is the study's own "−58%" (`band.stats[0]`). */
-    line: `We reduced its monthly machine bill by ${caseStudy.band.stats[0].value.replace("−", "")} with Coral.`,
-    before: { ...studies[0]!.before, name: "Before" },
-    after: { ...studies[0]!.after, name: "With Coral" },
-    per: "a month",
-    href: caseStudy.route,
-  },
+  /**
+   * The studies' cards, side by side on the band: the featured one, our own cluster, its bill before and with Coral
+   * on one scale; then the newest, our own lab VM, its btrfs pool before and with Amoeba. "Want to be next?" takes
+   * its own row under the pair. Only the first study counts towards "Saved so far", as the mock draws it.
+   */
+  cards: [
+    {
+      flag: "Featured",
+      title: "Our own AKS cluster",
+      /* "58%" is the study's own "−58%" (`band.stats[0]`). */
+      line: `We reduced its monthly machine bill by ${caseStudy.band.stats[0].value.replace("−", "")} with Coral.`,
+      before: { ...studies[0]!.before, name: "Before" },
+      after: { ...studies[0]!.after, name: "With Coral" },
+      per: "a month",
+      href: caseStudy.route,
+    },
+    {
+      flag: "New",
+      title: "Our own Azure lab VM",
+      /* "25%" is the study's own "−25%" (`band.stats[0]`); "0 lost mounts" its third figure. */
+      line: `Amoeba rightsized its btrfs pool by ${amoebaStudy.band.stats[0].value.replace("−", "")}, with ${amoebaStudy.band.stats[2].value} lost mounts.`,
+      before: { value: amoebaBefore.amount, label: amoebaBefore.label, name: "Before" },
+      after: { value: amoebaAfter.amount, label: amoebaAfter.label, name: "With Amoeba" },
+      per: "btrfs pool",
+      href: amoebaStudy.route,
+    },
+  ] satisfies readonly ValueLabCard[] as readonly ValueLabCard[],
   /** Each study's way in. */
   card: { read: "Read the case study" },
   /** The navy card beside it: the free assessment. */

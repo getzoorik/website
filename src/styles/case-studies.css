@@ -195,3 +195,22 @@
   .cs-tb th,.cs-tb td{padding-left:8px}
   .cs-fh{flex-wrap:wrap}
 }
+/* the Amoeba study (29 Oct 2026): the Coral study's own parts, drawn in GiB. A disk is a run of squares, one square per
+   8 GiB; a run wraps as a whole on a narrow card. Two cards share a row, three steps share the cost-steps scale, and the
+   app-speed bars keep the slowest write at the row's end, muted. Tables whose words run long may wrap. */
+.cs-mrow.is-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cs-cores.is-disks{flex-wrap:wrap;gap:4px 10px}
+.cs-cores.is-disks > span{display:flex;flex-wrap:wrap;gap:4px}
+.cs-wf.is-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.doc-prose .cs-hb.is-ms .cs-hr{grid-template-columns:200px minmax(0,1fr) auto}
+.cs-hb.is-ms .cs-hr > small{font-size:.8125rem;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.cs-tb.is-wrap th,.cs-tb.is-wrap td,.cs-tb.is-fit tbody th{white-space:normal}
+.cs-tb.is-left th,.cs-tb.is-left td{text-align:left}
+.cs-tb td.is-muted{color:var(--muted)}
+.cs-fig .cs-tb + .cs-cap{margin-top:14px}
+@media (max-width:600px){.cs-cores.is-disks{gap:3px 6px}.cs-cores.is-disks > span{gap:3px}}
+@media (max-width:560px){
+  .cs-tb.is-fit th,.cs-tb.is-fit td{white-space:normal}
+  /* on a phone each stage reads as the Coral bars do, name over bar, and the slowest write sits under its bar */
+  .doc-prose .cs-hb.is-ms .cs-hr{grid-template-columns:minmax(0,1fr)}
+}
