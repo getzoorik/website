@@ -17,8 +17,8 @@ import AmoebaStudyRoute, { metadata as amoebaMeta } from "@/app/amoeba-value-lab
  * so far, the featured study beside "Want to be next?", the closing row), the
  * study's hero and download, the result band, the six numbered sections in
  * /security's frame, the drawings, the closing row for Coral, no placeholder,
- * and their one place on the site: the footer's Resources column, never the
- * header. Their
+ * and where the site links them: each study in the footer's Resources column,
+ * never the header. Their
  * sitemap entries are in `src/app/sitemap.test.ts`; the PDF's file and header
  * in `src/features/documents/document-facts.test.ts`.
  */
@@ -603,18 +603,24 @@ describe("all three pages", () => {
     ["the study", study],
     ["the Amoeba study", amoeba],
   ])(
-    "%s ships no placeholder, and is reached from the footer's Resources column, never the header",
+    "%s ships no placeholder; the footer's Resources column links each study after Research papers, never the header",
     (_, page) => {
       const container = page();
       expect(container.innerHTML).not.toMatch(/\[OWNER|ph-chip|To come/);
-      const outside = [...container.querySelectorAll("a[href='/value-lab']")].filter(
-        (a) => !a.closest("main"),
-      );
-      expect(outside).toHaveLength(1);
-      const link = outside[0]!;
-      expect(link.closest("footer")).not.toBeNull();
-      expect(text(link)).toBe("Value Lab");
-      expect(text(link.previousElementSibling)).toBe("Learn");
+      /* Outside the page itself, only the footer leads to the studies, and none to the hub: /learn's More from Zoorik
+         and the sitemap do. */
+      const outside = [
+        ...container.querySelectorAll(
+          "a[href='/value-lab'], a[href='/coral-value-lab'], a[href='/amoeba-value-lab']",
+        ),
+      ].filter((a) => !a.closest("main"));
+      expect(outside.map((a) => [text(a), a.getAttribute("href")])).toEqual([
+        ["Coral Value Lab", "/coral-value-lab"],
+        ["Amoeba Value Lab", "/amoeba-value-lab"],
+      ]);
+      for (const link of outside) expect(link.closest("footer")).not.toBeNull();
+      expect(text(outside[0]!.previousElementSibling)).toBe("Research papers");
+      expect(outside[0]!.nextElementSibling).toBe(outside[1]);
       expect(container.querySelector(".nav [aria-current], .nav .is-cur")).toBeNull();
     },
   );

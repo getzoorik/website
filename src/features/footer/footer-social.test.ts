@@ -35,6 +35,8 @@ describe("the footer's social links", () => {
       reddit: "reddit.com",
       medium: "medium.com",
       github: "github.com",
+      bluesky: "bsky.app",
+      substack: "substack.com",
     };
     for (const link of socialProfiles) {
       expect(link.href, link.platform).toContain(host[link.platform]!);

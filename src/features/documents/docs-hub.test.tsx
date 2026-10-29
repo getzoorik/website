@@ -282,9 +282,10 @@ describe("/docs", () => {
     expect([...group.querySelectorAll("a")].map((a) => a.getAttribute("href"))).toEqual(
       menu.map((a) => a.getAttribute("href")),
     );
-    /* The footer's Resources column, after Learn, Case studies, Events, News, Cloud cost optimization tools and Community. */
+    /* The footer's Resources column, after Learn, Research papers, the two Value Lab studies, Events, News, Cloud cost
+       optimization tools and Community. */
     const resources = [...container.querySelectorAll(".foot-col")][1]!;
-    const docsLink = resources.querySelectorAll("a")[6]!;
+    const docsLink = resources.querySelectorAll("a")[8]!;
     expect(docsLink).toHaveAttribute("href", "/docs");
     expect(docsLink).toHaveTextContent("Docs");
   });

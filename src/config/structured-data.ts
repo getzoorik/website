@@ -49,7 +49,7 @@ import { docsHub } from "@/content/documents";
 import { elasticContent } from "@/content/elastic";
 import { eventsPage } from "@/content/events";
 import { newsPage } from "@/content/news";
-import { footerColumns, socialProfiles } from "@/content/footer";
+import { footerColumns, socialProfiles, type FooterSocialPlatform } from "@/content/footer";
 import { learnPage } from "@/content/learn";
 import {
   alternativesPages,
@@ -131,17 +131,22 @@ const guides: Readonly<Record<ProductId, string | null>> = {
   amoeba: amoebaDocs ? routes.amoebaGuide : null,
 };
 
+/** The footer's profiles `sameAs` lists in their own places further down, among the other profiles: each once. */
+const LATER_PROFILES: readonly FooterSocialPlatform[] = ["bluesky", "substack"];
+
 /**
  * Zoorik, with the facts /about prints (`about.ts`): the registered office, the
  * CIN, the address and the calendar to reach it by, and the logo. Its
- * description is the site's, and `sameAs` every social profile (the footer's
- * row shows five of the six), the AWS Marketplace seller page, the Crunchbase
- * profile and the Wikidata entry (`entity.ts`), which names zoorik.com as the
- * official website, so a search engine can tell this Zoorik from the others;
- * then the two places Zoorik publishes under its own name: the PyPI user that
- * owns the `zoorik` package, and the Terraform Registry namespace; then the
- * profiles the footer's row does not show: Bluesky (@zoorik.com), GitLab,
- * Substack, Instagram, Artifact Hub, npm, Quay and Gravatar; then Hacker News,
+ * description is the site's, and `sameAs` the footer's social profiles but
+ * Bluesky and Substack (its row shows five of these six), the AWS Marketplace
+ * seller page, the Crunchbase profile and the Wikidata entry (`entity.ts`),
+ * which names zoorik.com as the official website, so a search engine can tell
+ * this Zoorik from the others; then the two places Zoorik publishes under its
+ * own name: the PyPI user that owns the `zoorik` package, and the Terraform
+ * Registry namespace; then Bluesky (@zoorik.com), GitLab, Substack, Instagram,
+ * Artifact Hub, npm, Quay and Gravatar, Bluesky and Substack keeping their
+ * places here though the footer's profiles and its row hold them too
+ * (`LATER_PROFILES`); then Hacker News,
  * dev.to, Mastodon and Wellfound; then the directories: F6S, Tracxn's company
  * and legal-entity pages, G2's seller page and SaaSBrowser. It is `memberOf`
  * each program /about lists under Programs (`memberships.ts`), as a
@@ -174,7 +179,9 @@ export const organization = {
   contactPoint: { "@type": "ContactPoint", email: contactEmail, url: calendarUrl },
   knowsAbout: ["Cloud cost optimization", ...productOrder.map((id) => products[id].category)],
   sameAs: [
-    ...socialProfiles.map((link) => link.href),
+    ...socialProfiles
+      .filter((link) => !LATER_PROFILES.includes(link.platform))
+      .map((link) => link.href),
     ...storeProfiles,
     crunchbaseProfile,
     wikidataEntity,
@@ -382,6 +389,9 @@ function articleEntry(article: Article): PageEntry {
   };
 }
 
+/** Value Lab's step in a study's trail: the hub, by its own name. The footer links each study, not the hub. */
+const valueLabStep: Crumb = { name: caseStudiesHub.meta.title, path: routes.valueLab };
+
 /** The glossary's step in a term's trail: the hub, by the name its terms' trail gives it. */
 const glossaryStep: Crumb = { name: glossaryPage.crumb, path: routes.learnGlossary };
 
@@ -517,14 +527,14 @@ const pages: Readonly<Record<string, PageEntry>> = {
     kind: "CollectionPage",
     name: titled(caseStudiesHub.meta.title),
     description: caseStudiesHub.meta.description,
-    trail: [step(routes.valueLab)],
+    trail: [valueLabStep],
   },
   /* The study prints one date, "12 October 2026 · Published by Zoorik": published, and not changed since. */
   [routes.caseStudyCoralDevCluster]: {
     kind: "WebPage",
     name: titled(caseStudy.meta.title),
     description: caseStudy.meta.description,
-    trail: [step(routes.valueLab), { name: studyHeadline, path: caseStudy.route }],
+    trail: [valueLabStep, { name: studyHeadline, path: caseStudy.route }],
     about: "coral",
     article: {
       headline: studyHeadline,
@@ -538,7 +548,7 @@ const pages: Readonly<Record<string, PageEntry>> = {
     kind: "WebPage",
     name: titled(amoebaStudy.meta.title),
     description: amoebaStudy.meta.description,
-    trail: [step(routes.valueLab), { name: amoebaStudyHeadline, path: amoebaStudy.route }],
+    trail: [valueLabStep, { name: amoebaStudyHeadline, path: amoebaStudy.route }],
     about: "amoeba",
     article: {
       headline: amoebaStudyHeadline,

@@ -137,15 +137,17 @@ export const routes = {
   compareCoralAlternatives: "/cloud-cost-optimization-library/coral-alternatives",
   compareAmoebaAlternatives: "/cloud-cost-optimization-library/amoeba-alternatives",
   /* Value Lab by Zoorik: the case studies' hub, with what the studies saved so far and the featured study. The old
-     /case-studies address redirects here. Linked from the footer's Resources column. */
+     /case-studies address redirects here. Not in the footer, which links each study: /learn's More from Zoorik and the
+     sitemap lead here. */
   valueLab: "/value-lab",
-  /* Each study at the site's root, nothing nested (owner, 29 Oct 2026); the hub lists both. Their old addresses under
-     /value-lab, and the Coral study's under /case-studies, redirect here. */
+  /* Each study at the site's root, nothing nested (owner, 29 Oct 2026); the hub lists both, and the footer's
+     Resources column links each, after Research papers. Their old addresses under /value-lab, and the Coral study's
+     under /case-studies, redirect here. */
   caseStudyCoralDevCluster: "/coral-value-lab",
   /* Amoeba on our own Azure lab VMs: the second study, beside the first on the hub. */
   caseStudyAmoebaLabVms: "/amoeba-value-lab",
   /* Events: real conferences and community days, from the radar's checked list.
-     In the footer's Resources column, after Value Lab. */
+     In the footer's Resources column, after Amoeba Value Lab. */
   events: "/events",
   /* Zoorik News, at its own address rather than under /learn: our announcements, then Zoorik Radar, the week's
      changes. In the footer's Resources column, after Events. */
@@ -170,11 +172,12 @@ export const routes = {
   docsInstallTerraform: "/docs/install-coral-with-terraform",
   docsContributing: "/docs/contributing",
   /* The two troubleshooting pages, one per product, at the site's root and in the guides' frame, each listed on the
-     hub at the end of its product's group. The four pages they replace, under /docs, redirect to them. */
+     hub at the end of its product's group and in the footer's Resources column after its product's FAQ. The four
+     pages they replace, under /docs, redirect to them. */
   coralTroubleshooting: "/coral-troubleshooting",
   amoebaTroubleshooting: "/amoeba-troubleshooting",
-  /* Research papers on cloud cost optimization, by subject. At the site's root, in no menu and no footer column yet.
-     Its first address redirects here. */
+  /* Research papers on cloud cost optimization, by subject. At the site's root, in no menu; in the footer's Resources
+     column after Learn. Its first address redirects here. */
   research: "/cloud-cost-optimization-research-papers",
 } as const;
 

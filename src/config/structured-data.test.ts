@@ -247,11 +247,17 @@ describe("the home page's structured data", () => {
       url: calendarUrl,
     });
     expect(calendarUrl).toBe("https://cal.com/zoorik/talk");
-    /* All six profiles, though the footer's row shows five, then Zoorik's page in each store, the
+    /* The footer's profiles but Bluesky and Substack, then Zoorik's page in each store, the
        Crunchbase profile and the Wikidata entry, then the PyPI user and the Terraform Registry
-       namespace, then the profiles the footer's row does not show, then the directories. */
+       namespace, then the other profiles, Bluesky and Substack in their places among them, then the
+       directories. */
     expect(org.sameAs).toEqual([
-      ...socialProfiles.map((link) => link.href),
+      "https://www.linkedin.com/company/zoorik",
+      "https://www.youtube.com/@getzoorik",
+      "https://x.com/getzoorik",
+      "https://www.reddit.com/r/zoorik",
+      "https://medium.com/zoorik",
+      "https://github.com/getzoorik",
       ...storeProfiles,
       crunchbaseProfile,
       wikidataEntity,
@@ -275,6 +281,10 @@ describe("the home page's structured data", () => {
       "https://www.g2.com/sellers/zoorik",
       "https://saasbrowser.com/en/saas/1707340/zoorik",
     ]);
+    /* Each address once, every one of the footer's profiles among them. */
+    const sameAs = org.sameAs as readonly string[];
+    expect(new Set(sameAs).size).toBe(sameAs.length);
+    for (const link of socialProfiles) expect(sameAs, link.platform).toContain(link.href);
     expect(storeProfiles).toEqual([
       "https://aws.amazon.com/marketplace/seller-profile?id=seller-mtaavozrqchlk",
       "https://marketplace.microsoft.com/en-us/partners/04f64eb0-8878-4f14-9578-bc5d104737e7/overview",

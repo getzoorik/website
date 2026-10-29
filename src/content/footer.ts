@@ -1,3 +1,4 @@
+import { blueskyProfile, substackPublication } from "@/config/entity";
 import { amoebaDocs, calendarUrl, contactEmail, routes, site } from "@/config/site";
 import type { ProductId } from "@/content/products";
 
@@ -30,7 +31,8 @@ export interface FooterColumn {
   readonly links: readonly FooterLink[];
 }
 
-export type FooterSocialPlatform = "linkedin" | "youtube" | "x" | "reddit" | "medium" | "github";
+export type FooterSocialPlatform =
+  "linkedin" | "youtube" | "x" | "reddit" | "medium" | "github" | "bluesky" | "substack";
 
 export interface FooterSocialLink {
   readonly platform: FooterSocialPlatform;
@@ -80,7 +82,8 @@ export const builtFor = {
 
 /**
  * Every profile Zoorik has, in the structured data's order. The
- * organisation's `sameAs` lists all six.
+ * organisation's `sameAs` lists all eight: the first six first, and Bluesky and
+ * Substack in their own places further down, among the other profiles.
  */
 export const socialProfiles: readonly FooterSocialLink[] = [
   {
@@ -113,15 +116,25 @@ export const socialProfiles: readonly FooterSocialLink[] = [
     href: "https://github.com/getzoorik",
     label: "Zoorik on GitHub",
   },
+  { platform: "bluesky", href: blueskyProfile, label: "Zoorik on Bluesky" },
+  { platform: "substack", href: substackPublication, label: "Zoorik on Substack" },
 ];
 
 /**
- * The footer's social row: LinkedIn, X, Reddit, Medium, GitHub. The mock's row
- * holds Reddit and YouTube back until they carry something; Reddit is in its
- * place from the full list, and YouTube still waits. Each tile opens a new tab
- * and says so in its name.
+ * The footer's social row, seven tiles: LinkedIn, X, Bluesky, Substack, Reddit,
+ * Medium, GitHub (owner, 29 Oct 2026). The mock's row held Reddit and YouTube
+ * back until they carry something; Reddit is in its place from the full list,
+ * and YouTube still waits. Each tile opens a new tab and says so in its name.
  */
-const ROW: readonly FooterSocialPlatform[] = ["linkedin", "x", "reddit", "medium", "github"];
+const ROW: readonly FooterSocialPlatform[] = [
+  "linkedin",
+  "x",
+  "bluesky",
+  "substack",
+  "reddit",
+  "medium",
+  "github",
+];
 
 export const footerSocialLinks: readonly FooterSocialLink[] = ROW.map((platform) =>
   socialProfiles.find((profile) => profile.platform === platform)!,
@@ -186,7 +199,9 @@ export function askQuestion(path: string, title: string | undefined): string {
  *
  * The same on every page. Assessment is the plain `/assessment`, never with a
  * `?p=`. Three columns after the brand: Products; Resources, the articles, the
- * case studies, the hub and each product's guide and FAQ; Company.
+ * research papers, each product's case study, the hubs and each product's
+ * guide, FAQ and troubleshooting; Company. Every page they lead to is at the
+ * site's root, nothing nested (owner, 29 Oct 2026).
  *
  * Privacy and Terms are last in Company, in that order.
  */
@@ -205,8 +220,11 @@ export const footerColumns: readonly FooterColumn[] = [
     heading: "Resources",
     links: [
       { label: "Learn", href: routes.learn },
-      /* One line under Learn: the case studies' hub, Value Lab, and its only place in the site's links. */
-      { label: "Value Lab", href: routes.valueLab },
+      /* The research papers, then each product's Value Lab study (owner, 29 Oct 2026). The studies' hub, /value-lab,
+         has no line of its own: /learn's More from Zoorik and the sitemap lead to it. */
+      { label: "Research papers", href: routes.research },
+      { label: "Coral Value Lab", href: routes.caseStudyCoralDevCluster, named: "coral" },
+      { label: "Amoeba Value Lab", href: routes.caseStudyAmoebaLabVms, named: "amoeba" },
       /* Events, after the case studies as the mock draws it. */
       { label: "Events", href: routes.events },
       /* Zoorik News, after Events. */
@@ -217,13 +235,20 @@ export const footerColumns: readonly FooterColumn[] = [
       { label: "Docs", href: routes.docs },
       /* What is open source and how to contribute, right after Docs. */
       { label: "Open source", href: routes.openSource },
+      /* Each product's guide, FAQ and troubleshooting. */
       { label: "Coral guide", href: routes.coralGuide, named: "coral" },
       { label: "Coral FAQ", href: routes.coralFaq, named: "coral" },
+      { label: "Coral troubleshooting", href: routes.coralTroubleshooting, named: "coral" },
       /* Held with the pages while `amoebaDocs` is off: nothing may lead to them. */
       ...(amoebaDocs
         ? ([
             { label: "Amoeba guide", href: routes.amoebaGuide, named: "amoeba" },
             { label: "Amoeba FAQ", href: routes.amoebaFaq, named: "amoeba" },
+            {
+              label: "Amoeba troubleshooting",
+              href: routes.amoebaTroubleshooting,
+              named: "amoeba",
+            },
           ] as const)
         : []),
     ],

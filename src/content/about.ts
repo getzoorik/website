@@ -93,7 +93,7 @@ export const cin = "U62011KA2026PTC228102";
  * page does not print it. Whoever changes /about's content moves this to that
  * day in the same PR; never the build's date.
  */
-export const aboutLastUpdated = "27 October 2026";
+export const aboutLastUpdated = "29 October 2026";
 
 /** The year Zoorik Private Limited was incorporated: the Company facts' and the first milestone's. */
 const incorporated = "2026";
@@ -250,10 +250,12 @@ export const about = {
     /** The third card, across the width: the footer's "Install from" channels and GitHub (`aboutChannels`). */
     published: "Published on",
     /** The social row, in the footer's order and from its list (the same row as the footer's),
-     *  Reddit included. */
+     *  Reddit, Bluesky and Substack included. */
     social: [
       "linkedin",
       "x",
+      "bluesky",
+      "substack",
       "reddit",
       "medium",
       "github",

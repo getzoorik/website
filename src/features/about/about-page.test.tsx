@@ -15,6 +15,7 @@ import { marketplaces } from "@/config/marketplaces";
 import { calendarUrl, contactEmail, routes } from "@/config/site";
 import { about, aboutLastUpdated } from "@/content/about";
 import { caseStudy } from "@/content/case-studies";
+import { footerSocialLinks } from "@/content/footer";
 import { nvidiaInceptionLegal } from "@/content/memberships";
 import { newsFromZoorik } from "@/content/news";
 
@@ -298,8 +299,8 @@ describe("/about", () => {
     expect(about.what.lede).toMatch(/^Zoorik reduces cloud cost, autonomously\. /);
   });
 
-  it("moves its sitemap date to the day the NVIDIA Inception programs row came", () => {
-    expect(aboutLastUpdated).toBe("27 October 2026");
+  it("moves its sitemap date to the day Bluesky and Substack joined the social row", () => {
+    expect(aboutLastUpdated).toBe("29 October 2026");
   });
 
   it("puts the two stores as buttons under Available on, naming no product", () => {
@@ -319,7 +320,7 @@ describe("/about", () => {
     expect(stores.textContent).not.toMatch(/Coral|Amoeba/);
   });
 
-  it("follows us on five profiles, each a new tab named aloud, then Learn and Medium", () => {
+  it("follows us on the footer's seven profiles, each a new tab named aloud, then Learn and Medium", () => {
     const follow = main().querySelector("#find-us .ab-find > .pl:nth-child(2)")!;
     const tiles = within(follow as HTMLElement)
       .getAllByRole("link")
@@ -327,10 +328,16 @@ describe("/about", () => {
     expect(tiles.map((tile) => tile.getAttribute("aria-label"))).toEqual([
       "Zoorik on LinkedIn (opens in a new tab)",
       "Zoorik on X (opens in a new tab)",
+      "Zoorik on Bluesky (opens in a new tab)",
+      "Zoorik on Substack (opens in a new tab)",
       "Zoorik on Reddit (opens in a new tab)",
       "Zoorik on Medium (opens in a new tab)",
       "Zoorik on GitHub (opens in a new tab)",
     ]);
+    /* The same row as the footer's, in its order. */
+    expect(tiles.map((tile) => tile.getAttribute("href"))).toEqual(
+      footerSocialLinks.map((link) => link.href),
+    );
     const note = follow.querySelector(":scope > p")!;
     expect(text(note)).toBe(
       "New articles go out on Learn and our Medium publication (opens in a new tab).",
