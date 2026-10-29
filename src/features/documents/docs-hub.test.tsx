@@ -103,7 +103,7 @@ describe("/docs", () => {
     expect(link.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
   });
 
-  it("lists Coral's documents in the mock's words: two pages, the one-pager's head, the two install guides, then the two troubleshooting pages", () => {
+  it("lists Coral's documents in the mock's words: two pages, the one-pager's head, the two install guides, then troubleshooting", () => {
     const tiles = [...page().querySelectorAll("#coral .dt-grid > article.dt")];
     expect(
       tiles.map((tile) => [
@@ -112,8 +112,8 @@ describe("/docs", () => {
         tile.querySelector("a.dt-a")?.getAttribute("href") ?? null,
       ]),
     ).toEqual([
-      ["Product guide", "Connect, what changes, staying in control", "/coral/guide"],
-      ["FAQ", "Sizing, safety, HPA, nodes and autoscalers", "/coral/faq"],
+      ["Product guide", "Connect, what changes, staying in control", "/coral-guide"],
+      ["FAQ", "Sizing, safety, HPA, nodes and autoscalers", "/coral-faq"],
       ["One-pager", "Cost, safety, visibility and an example", null],
       [
         "Install with Helm",
@@ -126,17 +126,12 @@ describe("/docs", () => {
         "/docs/install-coral-with-terraform",
       ],
       [
-        "Cluster not connecting",
-        "When a cluster doesn’t connect or shows no figures",
-        "/docs/coral-not-connecting-to-cluster",
-      ],
-      [
-        "Node not removed",
-        "Why a node stays, and the fix for each reason",
-        "/docs/coral-not-removing-nodes",
+        "Troubleshooting",
+        "When a cluster doesn’t connect or a node isn’t removed",
+        "/coral-troubleshooting",
       ],
     ]);
-    /* The install guides and the troubleshooting pages are pages with no PDF row. */
+    /* The install guides and the troubleshooting page are pages with no PDF row. */
     for (const tile of tiles.slice(3)) expect(tile.querySelector(".dt-pdf")).toBeNull();
     /* A page ends on the forward arrow; the one-pager has no page, so no link and no end mark. */
     expect(tiles[0]!.querySelector("a.dt-a > svg.dt-go:not(.is-down)")).not.toBeNull();
@@ -185,8 +180,7 @@ describe("/docs", () => {
         "Onboard, what changes, staying in control",
         "Safety, downtime, expanding, agent and costs",
         "Cost, safety, visibility and how it works",
-        "When a VM is missing or shows no figures",
-        "Why a move pauses or a shrink waits",
+        "When a VM is missing or its disks aren’t rightsized",
       ]);
       const rows = [...page().querySelectorAll("#amoeba .dt-pdf")];
       expect(rows).toHaveLength(3);
@@ -230,8 +224,8 @@ describe("/docs", () => {
     expect(container.querySelector(".res-type, .res-card, .res-open, img")).toBeNull();
     const hrefs = [...container.querySelectorAll("a")].map((a) => a.getAttribute("href"));
     if (!amoebaDocs) {
-      expect(hrefs).not.toContain("/amoeba/guide");
-      expect(hrefs).not.toContain("/amoeba/faq");
+      expect(hrefs).not.toContain("/amoeba-guide");
+      expect(hrefs).not.toContain("/amoeba-faq");
     }
     if (!amoebaOnePager) expect(hrefs).not.toContain("/docs/amoeba-one-pager.pdf");
   });
@@ -288,9 +282,10 @@ describe("/docs", () => {
     expect([...group.querySelectorAll("a")].map((a) => a.getAttribute("href"))).toEqual(
       menu.map((a) => a.getAttribute("href")),
     );
-    /* The footer's Resources column, after Learn, Case studies, Events, News, Cloud cost optimization tools and Community. */
+    /* The footer's Resources column, after Learn, Research papers, the two Value Lab studies, Events, News, Cloud cost
+       optimization tools and Community. */
     const resources = [...container.querySelectorAll(".foot-col")][1]!;
-    const docsLink = resources.querySelectorAll("a")[6]!;
+    const docsLink = resources.querySelectorAll("a")[8]!;
     expect(docsLink).toHaveAttribute("href", "/docs");
     expect(docsLink).toHaveTextContent("Docs");
   });
@@ -326,7 +321,7 @@ describe("the doc tile", () => {
         entry={{
           title: "Product guide",
           line: "Onboard, what changes, staying in control",
-          href: "/amoeba/guide",
+          href: "/amoeba-guide",
           pdf: { label: "PDF" },
         }}
         withPdf
@@ -340,7 +335,7 @@ describe("the doc tile", () => {
   it("in the Read more row: a page tile with no PDF row", () => {
     const { container } = render(<DocTile entry={guide} withPdf={false} />);
     expect(container.querySelector(".dt-pdf")).toBeNull();
-    expect(container.querySelector("a.dt-a")).toHaveAttribute("href", "/coral/guide");
+    expect(container.querySelector("a.dt-a")).toHaveAttribute("href", "/coral-guide");
   });
 
   it("in the Read more row: the one-pager is a download whose line is its facts", () => {
@@ -393,10 +388,9 @@ describe("the hub under each hold of the Amoeba documents", () => {
   it("guide and FAQ released, one-pager held: their two tiles, the guide's PDF and none yet for the FAQ", async () => {
     const groups = await hubWith({ amoebaDocs: true, amoebaOnePager: false });
     expect(amoebaTiles(groups)).toEqual([
-      ["Product guide", "/amoeba/guide", "amoeba-guide"],
-      ["FAQ", "/amoeba/faq", null],
-      ["VM not showing", "/docs/amoeba-not-showing-my-vm", null],
-      ["Disks not rightsized yet", "/docs/amoeba-not-rightsizing-disks", null],
+      ["Product guide", "/amoeba-guide", "amoeba-guide"],
+      ["FAQ", "/amoeba-faq", null],
+      ["Troubleshooting", "/amoeba-troubleshooting", null],
     ]);
   });
 
@@ -405,17 +399,16 @@ describe("the hub under each hold of the Amoeba documents", () => {
     expect(amoebaTiles(groups)).toEqual([["One-pager", null, "amoeba-one-pager"]]);
   });
 
-  it("nothing held: the mock's three tiles and the two troubleshooting pages, after Coral's group", async () => {
+  it("nothing held: the mock's three tiles and the troubleshooting page, after Coral's group", async () => {
     const groups = await hubWith({ amoebaDocs: true, amoebaOnePager: true });
     expect(groups.map((group) => group.product)).toEqual(["coral", "amoeba"]);
     expect(groups[1]!.line).toBe("Block storage cost optimization on Azure\u00a0and\u00a0AWS");
     expect(groups[1]!.pageLink).toEqual({ label: "Product page", href: "/amoeba" });
     expect(amoebaTiles(groups)).toEqual([
-      ["Product guide", "/amoeba/guide", "amoeba-guide"],
-      ["FAQ", "/amoeba/faq", null],
+      ["Product guide", "/amoeba-guide", "amoeba-guide"],
+      ["FAQ", "/amoeba-faq", null],
       ["One-pager", null, "amoeba-one-pager"],
-      ["VM not showing", "/docs/amoeba-not-showing-my-vm", null],
-      ["Disks not rightsized yet", "/docs/amoeba-not-rightsizing-disks", null],
+      ["Troubleshooting", "/amoeba-troubleshooting", null],
     ]);
   });
 });

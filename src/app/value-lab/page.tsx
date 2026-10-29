@@ -11,9 +11,10 @@ import "@/styles/value-lab.css";
 
 /**
  * `/value-lab`: Value Lab by Zoorik, the case studies' hub. Indexed, listed in
- * the sitemap, and prerendered at build like every page here; linked from the
- * footer's Resources column, after Learn. The header has none. Its old
- * address, /case-studies, redirects here (next.config.ts).
+ * the sitemap, and prerendered at build like every page here. Not in the
+ * footer, which links each study; /learn's More from Zoorik leads here. The
+ * header has none. Its old address, /case-studies, redirects here
+ * (next.config.ts).
  */
 /* Its title goes through the layout's template: "Value Lab | Zoorik". */
 export const metadata: Metadata = documentMetadata(routes.valueLab, caseStudiesHub.meta);

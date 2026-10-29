@@ -174,14 +174,34 @@ describe("the footer's brand column", () => {
 describe("the footer's social row", () => {
   const tiles = () => [...footerOf().querySelectorAll<HTMLAnchorElement>(".foot-social > a.soc")];
 
-  it("has five tiles, Reddit in its place; YouTube waits until it carries something", () => {
-    expect(tiles().map((a) => a.getAttribute("aria-label"))).toEqual([
-      "Zoorik on LinkedIn (opens in a new tab)",
-      "Zoorik on X (opens in a new tab)",
-      "Zoorik on Reddit (opens in a new tab)",
-      "Zoorik on Medium (opens in a new tab)",
-      "Zoorik on GitHub (opens in a new tab)",
+  it("has seven tiles, Bluesky and Substack after X; YouTube waits until it carries something", () => {
+    expect(tiles().map((a) => [a.getAttribute("aria-label"), a.getAttribute("href")])).toEqual([
+      ["Zoorik on LinkedIn (opens in a new tab)", "https://www.linkedin.com/company/zoorik"],
+      ["Zoorik on X (opens in a new tab)", "https://x.com/getzoorik"],
+      ["Zoorik on Bluesky (opens in a new tab)", "https://bsky.app/profile/zoorik.com"],
+      ["Zoorik on Substack (opens in a new tab)", "https://zoorik.substack.com"],
+      ["Zoorik on Reddit (opens in a new tab)", "https://www.reddit.com/r/zoorik"],
+      ["Zoorik on Medium (opens in a new tab)", "https://medium.com/zoorik"],
+      ["Zoorik on GitHub (opens in a new tab)", "https://github.com/getzoorik"],
     ]);
+  });
+
+  it("draws each glyph on the 24-unit grid in the tile's own ink, Bluesky's and Substack's as one path each", () => {
+    for (const a of tiles()) {
+      const svg = a.querySelector("svg")!;
+      expect(svg, a.getAttribute("aria-label")!).toHaveAttribute("viewBox", "0 0 24 24");
+      expect(
+        svg.querySelector("path, circle, ellipse"),
+        a.getAttribute("aria-label")!,
+      ).not.toBeNull();
+    }
+    const [, , bluesky, substack] = tiles().map((a) => a.querySelector("svg")!);
+    for (const svg of [bluesky!, substack!]) {
+      expect(svg).toHaveAttribute("fill", "currentColor");
+      expect(svg.querySelectorAll("path")).toHaveLength(1);
+    }
+    expect(bluesky!.querySelector("path")!.getAttribute("d")).toMatch(/^M12 10\.8c/);
+    expect(substack!.querySelector("path")!.getAttribute("d")).toMatch(/^M22\.539 8\.242H1\.46/);
   });
 
   it("opens each in a new tab that cannot reach back, behind a hidden glyph", () => {
@@ -246,19 +266,23 @@ describe("the footer's columns", () => {
         heading: ["P", "Resources"],
         links: [
           ["Learn", "/learn"],
-          ["Value Lab", "/value-lab"],
+          ["Research papers", "/cloud-cost-optimization-research-papers"],
+          ["Coral Value Lab", "/coral-value-lab"],
+          ["Amoeba Value Lab", "/amoeba-value-lab"],
           ["Events", "/events"],
           ["News", "/news"],
           ["Cloud cost optimization tools", "/cloud-cost-optimization-library"],
           ["Community", "/community"],
           ["Docs", "/docs"],
           ["Open source", "/open-source"],
-          ["Coral guide", "/coral/guide"],
-          ["Coral FAQ", "/coral/faq"],
+          ["Coral guide", "/coral-guide"],
+          ["Coral FAQ", "/coral-faq"],
+          ["Coral troubleshooting", "/coral-troubleshooting"],
           ...(amoebaDocs
             ? [
-                ["Amoeba guide", "/amoeba/guide"],
-                ["Amoeba FAQ", "/amoeba/faq"],
+                ["Amoeba guide", "/amoeba-guide"],
+                ["Amoeba FAQ", "/amoeba-faq"],
+                ["Amoeba troubleshooting", "/amoeba-troubleshooting"],
               ]
             : []),
         ],
@@ -291,7 +315,7 @@ describe("the footer's columns", () => {
 
   it("are the same on every page: the plain assessment, and each product's guide and FAQ", () => {
     /* No `?p=` from a product's pages. */
-    for (const path of ["/coral", "/amoeba", "/amoeba/guide", "/docs", "/learn", "/privacy"]) {
+    for (const path of ["/coral", "/amoeba", "/amoeba-guide", "/docs", "/learn", "/privacy"]) {
       expect(columns(path), path).toEqual(columns("/"));
     }
   });
@@ -321,9 +345,15 @@ describe("the footer's columns", () => {
     expect(products.map((a) => a.textContent)).toEqual(["Coral", "Amoeba"]);
     /* "Coral guide": the label is one span, the name in it untranslated. */
     const named = [...footer.querySelectorAll(".foot-col a > span > span[translate='no']")];
-    expect(named.map((el) => el.textContent)).toEqual(
-      amoebaDocs ? ["Coral", "Coral", "Amoeba", "Amoeba"] : ["Coral", "Coral"],
-    );
+    expect(named.map((el) => el.textContent)).toEqual([
+      /* The two Value Lab studies, then each product's guide, FAQ and troubleshooting. */
+      "Coral",
+      "Amoeba",
+      "Coral",
+      "Coral",
+      "Coral",
+      ...(amoebaDocs ? ["Amoeba", "Amoeba", "Amoeba"] : []),
+    ]);
     expect(footer.querySelector(".foot-bar [translate='no']")).toHaveTextContent("Zoorik");
     expect(footer.querySelector(".brand [translate='no']")).toHaveTextContent("Zoorik");
   });
@@ -342,6 +372,14 @@ describe("the footer's columns", () => {
     expect(demo.lastElementChild).toHaveAttribute("aria-hidden", "true");
     /* Only that one carries the arrow: a page of this site and the mailto stay put. */
     expect(footer.querySelectorAll(".foot-col .ext")).toHaveLength(1);
+  });
+
+  it("lead only to pages at the site's root, nothing nested (owner, 29 Oct 2026)", () => {
+    const own = columns()
+      .flatMap((column) => column.links.map(([, href]) => href!))
+      .filter((href) => href.startsWith("/"));
+    expect(own.length).toBeGreaterThan(0);
+    for (const href of own) expect(href, href).toMatch(/^\/[a-z0-9-]+$/);
   });
 
   it("go nowhere never: no bare # anywhere in the footer", () => {

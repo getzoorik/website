@@ -409,7 +409,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "On our own AKS development cluster, Coral removed a spare worker and swapped the remaining worker for a cheaper machine of the same size. The CPU the apps reserve went from 0.78 to 0.43\u00a0cores. Eight days after we connected Coral, ",
-            { a: "the machine bill", href: "/value-lab/coral-dev-cluster" },
+            { a: "the machine bill", href: "/coral-value-lab" },
             " was $154.76 a month instead of $368.65, 58% less.",
           ],
         },
@@ -481,8 +481,8 @@ export const article: Article = {
     {
       title: "Do I need Coral with Karpenter or NAP?",
       where: "Coral FAQ",
-      href: "/coral/faq#do-i-need-coral-with-karpenter",
+      href: "/coral-faq#do-i-need-coral-with-karpenter",
     },
-    { title: "HPAs and VPAs", where: "Coral product guide", href: "/coral/guide#hpas-and-vpas" },
+    { title: "HPAs and VPAs", where: "Coral product guide", href: "/coral-guide#hpas-and-vpas" },
   ],
 };

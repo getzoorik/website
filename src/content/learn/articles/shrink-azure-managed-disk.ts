@@ -420,12 +420,12 @@ export const article: Article = {
     {
       title: "Do my applications need changes?",
       where: "Amoeba FAQ",
-      href: "/amoeba/faq#do-my-applications-need-changes",
+      href: "/amoeba-faq#do-my-applications-need-changes",
     },
     {
       title: "Can a shrink lose data?",
       where: "Amoeba FAQ",
-      href: "/amoeba/faq#can-a-shrink-lose-data",
+      href: "/amoeba-faq#can-a-shrink-lose-data",
     },
     {
       title: "Azure disk cost optimization: stop paying for empty space",

@@ -19,7 +19,7 @@ import { DocumentPage } from "@/features/documents/document-page";
 import { named } from "@/features/legal/named";
 
 /**
- * `/value-lab/amoeba-lab-vms`: Amoeba on our own Azure lab VMs, the second Value Lab study, drawn with the Coral
+ * `/amoeba-value-lab`: Amoeba on our own Azure lab VMs, the second Value Lab study, drawn with the Coral
  * study's parts in GiB (`case-study-parts.tsx`):
  *
  *   the hero        the kicker, the headline with its green line, the opening; no download (there is no PDF)

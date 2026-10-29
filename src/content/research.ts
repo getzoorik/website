@@ -1,8 +1,8 @@
 import { routes } from "@/config/site";
 
 /**
- * `/research-cloud-cost-optimization`: research papers on cloud cost optimization, by subject, each with who wrote it
- * and where, and a short note in our own words. Generated once from the checked draft
+ * `/cloud-cost-optimization-research-papers`: research papers on cloud cost optimization, by subject, each with who
+ * wrote it and where, and a short note in our own words. Generated once from the checked draft
  * (`docs/website-seo/new-pages-2026-10-29/research/page.md` and `papers.json`, each link re-checked in `verify.md`)
  * through the mock's own typesetting, so every string is the mock's: curly apostrophes, and a figure kept with its
  * unit ("50 ms").

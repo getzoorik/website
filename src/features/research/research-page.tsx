@@ -4,7 +4,7 @@ import { named } from "@/features/legal/named";
 import { LearnFrame } from "@/features/learn/learn-parts";
 
 /**
- * `/research-cloud-cost-optimization`, on /community's frame (Learn's):
+ * `/cloud-cost-optimization-research-papers`, on /community's frame (Learn's):
  *
  *   hero          the page's name and its deck
  *   papers        one group per subject, drawn as the Docs hub draws a group (its name, its line, the hairline), its

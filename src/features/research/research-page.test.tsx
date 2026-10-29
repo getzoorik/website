@@ -4,26 +4,27 @@ import { describe, expect, it, vi } from "vitest";
 /* The nav and the footer read the pathname. */
 vi.mock("next/navigation", async (original) => ({
   ...(await original<typeof import("next/navigation")>()),
-  usePathname: () => "/research-cloud-cost-optimization",
+  usePathname: () => "/cloud-cost-optimization-research-papers",
 }));
 
-import Research, { metadata } from "@/app/research-cloud-cost-optimization/page";
+import Research, { metadata } from "@/app/cloud-cost-optimization-research-papers/page";
 import { researchPage } from "@/content/research";
 
 /**
- * `/research-cloud-cost-optimization`: the metadata and card, the hero, one group per subject as the Docs hub draws
- * one, each paper a Read more tile to the publisher's page in a new tab, then the note and the closing row.
+ * `/cloud-cost-optimization-research-papers`: the metadata and card (its first address's, kept), the hero, one group per
+ * subject as the Docs hub draws one, each paper a Read more tile to the publisher's page in a new tab, then the note
+ * and the closing row.
  */
 
 const text = (el: Element | null): string => (el?.textContent ?? "").replace(/[\s ]+/g, " ").trim();
 
-describe("/research-cloud-cost-optimization", () => {
+describe("/cloud-cost-optimization-research-papers", () => {
   it("is titled, described and canonicalised as its mock, with its own card", () => {
     expect(metadata.title).toBe("Cloud cost optimization research");
     expect(String(metadata.description).length).toBeLessThanOrEqual(160);
-    expect(metadata.alternates).toEqual({ canonical: "/research-cloud-cost-optimization" });
+    expect(metadata.alternates).toEqual({ canonical: "/cloud-cost-optimization-research-papers" });
     expect(metadata.openGraph).toMatchObject({
-      url: "/research-cloud-cost-optimization",
+      url: "/cloud-cost-optimization-research-papers",
       title: "Cloud cost optimization research | Zoorik",
       images: [
         {

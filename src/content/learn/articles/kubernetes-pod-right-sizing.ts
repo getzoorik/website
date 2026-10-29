@@ -331,7 +331,7 @@ export const article: Article = {
             "On our own AKS development cluster, Coral had rebalanced the requests of 14 apps by 12 October 2026. CPU reserved by the cluster’s own apps went from 0.78 to 0.43\u00a0cores, 45% less, and memory from 6.4 to 5.4\u00a0GiB, 16% less. ",
             {
               a: "How we reduced our own cluster’s machine bill by 58%",
-              href: "/value-lab/coral-dev-cluster",
+              href: "/coral-value-lab",
             },
             " has the full run.",
           ],
@@ -414,7 +414,7 @@ export const article: Article = {
     {
       title: "How sizes are worked out",
       where: "Coral product guide",
-      href: "/coral/guide#how-sizes-are-worked-out",
+      href: "/coral-guide#how-sizes-are-worked-out",
     },
   ],
 };

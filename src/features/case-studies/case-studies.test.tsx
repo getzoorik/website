@@ -9,16 +9,16 @@ const pathname = vi.hoisted(() => ({ current: "/value-lab" }));
 vi.mock("next/navigation", () => ({ usePathname: () => pathname.current }));
 
 import ValueLabRoute, { metadata as hubMeta } from "@/app/value-lab/page";
-import CaseStudyRoute, { metadata as studyMeta } from "@/app/value-lab/coral-dev-cluster/page";
-import AmoebaStudyRoute, { metadata as amoebaMeta } from "@/app/value-lab/amoeba-lab-vms/page";
+import CaseStudyRoute, { metadata as studyMeta } from "@/app/coral-value-lab/page";
+import AmoebaStudyRoute, { metadata as amoebaMeta } from "@/app/amoeba-value-lab/page";
 
 /**
  * Value Lab and its case study: the metadata, the hub (what the studies saved
  * so far, the featured study beside "Want to be next?", the closing row), the
  * study's hero and download, the result band, the six numbered sections in
  * /security's frame, the drawings, the closing row for Coral, no placeholder,
- * and their one place on the site: the footer's Resources column, never the
- * header. Their
+ * and where the site links them: each study in the footer's Resources column,
+ * never the header. Their
  * sitemap entries are in `src/app/sitemap.test.ts`; the PDF's file and header
  * in `src/features/documents/document-facts.test.ts`.
  */
@@ -30,11 +30,11 @@ const hub = () => {
   return render(<ValueLabRoute />).container;
 };
 const study = () => {
-  pathname.current = "/value-lab/coral-dev-cluster";
+  pathname.current = "/coral-value-lab";
   return render(<CaseStudyRoute />).container;
 };
 const amoeba = () => {
-  pathname.current = "/value-lab/amoeba-lab-vms";
+  pathname.current = "/amoeba-value-lab";
   return render(<AmoebaStudyRoute />).container;
 };
 
@@ -60,9 +60,9 @@ describe("the case studies' metadata", () => {
     expect(studyMeta.description).toBe(
       "Before we ask anyone to trust Coral with their cluster, we run it on ours. Eight days after we connected it, our AKS development cluster cost $154.76 a month instead of $368.65.",
     );
-    expect(studyMeta.alternates).toEqual({ canonical: "/value-lab/coral-dev-cluster" });
+    expect(studyMeta.alternates).toEqual({ canonical: "/coral-value-lab" });
     expect(studyMeta.openGraph).toMatchObject({
-      url: "/value-lab/coral-dev-cluster",
+      url: "/coral-value-lab",
       title: "How We Reduced AKS Cluster Costs by 58% | Zoorik",
       images: [
         {
@@ -80,9 +80,9 @@ describe("the case studies' metadata", () => {
     expect(amoebaMeta.description).toBe(
       "Before we ask anyone to trust Amoeba with their VMs, we run it on ours. On an Azure lab VM, its btrfs pool went from 96 GiB to 72 GiB, with 0 lost mounts.",
     );
-    expect(amoebaMeta.alternates).toEqual({ canonical: "/value-lab/amoeba-lab-vms" });
+    expect(amoebaMeta.alternates).toEqual({ canonical: "/amoeba-value-lab" });
     expect(amoebaMeta.openGraph).toMatchObject({
-      url: "/value-lab/amoeba-lab-vms",
+      url: "/amoeba-value-lab",
       title: "How Amoeba Rightsized a Lab VM’s btrfs Pool by 25% | Zoorik",
       images: [
         {
@@ -168,7 +168,7 @@ describe("/value-lab", () => {
     ]);
     expect(text(bars.querySelector(".vl-per"))).toBe("a month");
     const read = featured!.querySelector("a.btn-ink")!;
-    expect(read).toHaveAttribute("href", "/value-lab/coral-dev-cluster");
+    expect(read).toHaveAttribute("href", "/coral-value-lab");
     expect(text(read)).toBe("Read the case study");
     expect(text(next!.querySelector("h2.as-h"))).toBe("Want to be next?");
     expect(text(next!.querySelector("p"))).toBe(
@@ -196,9 +196,9 @@ describe("/value-lab", () => {
       ["72 GiB", "0.750", "With Amoeba"],
     ]);
     expect(text(newest!.querySelector(".vl-per"))).toBe("btrfs pool");
-    expect(newest!.querySelector("a.btn-ink")).toHaveAttribute("href", "/value-lab/amoeba-lab-vms");
+    expect(newest!.querySelector("a.btn-ink")).toHaveAttribute("href", "/amoeba-value-lab");
     /* Saved so far stays the Coral study's alone, as the mock draws it. */
-    expect(caseStudiesHub.studies.map((one) => one.href)).toEqual(["/value-lab/coral-dev-cluster"]);
+    expect(caseStudiesHub.studies.map((one) => one.href)).toEqual(["/coral-value-lab"]);
   });
 
   it("lists no client study until the first one exists, and ends on the closing row for Coral", () => {
@@ -215,7 +215,7 @@ describe("/value-lab", () => {
   });
 });
 
-describe("/value-lab/coral-dev-cluster", () => {
+describe("/coral-value-lab", () => {
   it("opens on the PDF's kicker, headline and opening, with its download beside them", () => {
     const hero = study().querySelector("main > header.hero.doc-hero.cs-hero#top")!;
     expect(text(hero.querySelector(".cs-kick"))).toBe(
@@ -397,7 +397,7 @@ describe("/value-lab/coral-dev-cluster", () => {
   });
 });
 
-describe("/value-lab/amoeba-lab-vms", () => {
+describe("/amoeba-value-lab", () => {
   it("opens on the kicker, the headline with its green line and the opening, with no download", () => {
     const hero = amoeba().querySelector("main > header.hero.doc-hero.cs-hero#top")!;
     expect(text(hero.querySelector(".cs-kick"))).toBe(
@@ -603,18 +603,24 @@ describe("all three pages", () => {
     ["the study", study],
     ["the Amoeba study", amoeba],
   ])(
-    "%s ships no placeholder, and is reached from the footer's Resources column, never the header",
+    "%s ships no placeholder; the footer's Resources column links each study after Research papers, never the header",
     (_, page) => {
       const container = page();
       expect(container.innerHTML).not.toMatch(/\[OWNER|ph-chip|To come/);
-      const outside = [...container.querySelectorAll("a[href='/value-lab']")].filter(
-        (a) => !a.closest("main"),
-      );
-      expect(outside).toHaveLength(1);
-      const link = outside[0]!;
-      expect(link.closest("footer")).not.toBeNull();
-      expect(text(link)).toBe("Value Lab");
-      expect(text(link.previousElementSibling)).toBe("Learn");
+      /* Outside the page itself, only the footer leads to the studies, and none to the hub: /learn's More from Zoorik
+         and the sitemap do. */
+      const outside = [
+        ...container.querySelectorAll(
+          "a[href='/value-lab'], a[href='/coral-value-lab'], a[href='/amoeba-value-lab']",
+        ),
+      ].filter((a) => !a.closest("main"));
+      expect(outside.map((a) => [text(a), a.getAttribute("href")])).toEqual([
+        ["Coral Value Lab", "/coral-value-lab"],
+        ["Amoeba Value Lab", "/amoeba-value-lab"],
+      ]);
+      for (const link of outside) expect(link.closest("footer")).not.toBeNull();
+      expect(text(outside[0]!.previousElementSibling)).toBe("Research papers");
+      expect(outside[0]!.nextElementSibling).toBe(outside[1]);
       expect(container.querySelector(".nav [aria-current], .nav .is-cur")).toBeNull();
     },
   );

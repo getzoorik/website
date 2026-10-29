@@ -113,7 +113,7 @@ describe("the bar", () => {
 
   it("leaves Product guide and FAQ out, in the bar and the drawer: the Docs menu leads to them", () => {
     /* Owner, 23 Oct 2026: "Docs is the only menu". */
-    for (const path of ["/", "/coral/guide", "/amoeba/faq"]) {
+    for (const path of ["/", "/coral-guide", "/amoeba-faq"]) {
       const { container, unmount } = renderNav(path);
       const nav = container.querySelector("nav")!;
       /* No link, button or drawer label of their name: Docs' rows say "Guide, FAQ and one-pager". */
@@ -125,7 +125,7 @@ describe("the bar", () => {
       expect(names, path).not.toContain("FAQ");
       expect(names, path).not.toContain("FAQ menu");
       const hrefs = [...nav.querySelectorAll("a")].map((a) => a.getAttribute("href"));
-      for (const page of ["/coral/guide", "/coral/faq", "/amoeba/guide", "/amoeba/faq"]) {
+      for (const page of ["/coral-guide", "/coral-faq", "/amoeba-guide", "/amoeba-faq"]) {
         expect(hrefs, path).not.toContain(page);
       }
       unmount();
@@ -223,11 +223,11 @@ describe("the links and the menu's word", () => {
   it.each([
     "/",
     "/coral",
-    "/coral/guide",
-    "/coral/faq",
+    "/coral-guide",
+    "/coral-faq",
     "/amoeba",
-    "/amoeba/guide",
-    "/amoeba/faq",
+    "/amoeba-guide",
+    "/amoeba-faq",
     "/assessment",
     "/docs",
     "/learn",
@@ -276,7 +276,7 @@ describe("the links and the menu's word", () => {
     expect(docs.button("Docs")).not.toHaveAttribute("aria-current");
     docs.unmount();
     /* A guide or an FAQ is in Docs, and no row of the menu is it. */
-    const faq = renderNav("/amoeba/faq");
+    const faq = renderNav("/amoeba-faq");
     expect(faq.word("Docs")).toHaveClass("is-cur");
     expect(faq.button("Docs")).toHaveClass("is-cur");
     expect(faq.word("Docs")).not.toHaveAttribute("aria-current");
@@ -342,8 +342,8 @@ describe("the menus' rows", () => {
       /* The held state: `amoebaDocs` is off. */
       const { container } = renderNav("/");
       const hrefs = [...container.querySelectorAll("a")].map((a) => a.getAttribute("href"));
-      expect(hrefs).not.toContain("/amoeba/guide");
-      expect(hrefs).not.toContain("/amoeba/faq");
+      expect(hrefs).not.toContain("/amoeba-guide");
+      expect(hrefs).not.toContain("/amoeba-faq");
       const groups = [...container.querySelectorAll(".nd-grp")].map((grp) => [
         text(grp.querySelector(".nd-h")),
         [...grp.querySelectorAll(".nd-row a")].map((a) => a.textContent),
@@ -382,12 +382,12 @@ describe("the menus' rows", () => {
         ? [
             {
               product: "amoeba",
-              href: "/amoeba/guide",
+              href: "/amoeba-guide",
               line: "Block storage cost optimization on Azure\u00a0and\u00a0AWS",
             },
             {
               product: "amoeba",
-              href: "/amoeba/faq",
+              href: "/amoeba-faq",
               line: "Block storage cost optimization on Azure\u00a0and\u00a0AWS",
             },
           ]
@@ -459,10 +459,10 @@ describe("the current page", () => {
     /* The link names no product, so it is this very page as prerendered. */
     ["/assessment", "Assessment", "", "", "", "Assessment", ""],
     /* The guides and FAQs are in Docs, and no row of its menu is any of them. */
-    ["/coral/guide", "", "Docs", "", "", "", ""],
-    ["/coral/faq", "", "Docs", "", "", "", ""],
-    ["/amoeba/guide", "", "Docs", "", "", "", ""],
-    ["/amoeba/faq", "", "Docs", "", "", "", ""],
+    ["/coral-guide", "", "Docs", "", "", "", ""],
+    ["/coral-faq", "", "Docs", "", "", "", ""],
+    ["/amoeba-guide", "", "Docs", "", "", "", ""],
+    ["/amoeba-faq", "", "Docs", "", "", "", ""],
     ["/docs", "", "Docs", "Docs › All docs", "Docs › All", "", "Docs"],
     /* The Learn hub marks Docs and its own row; every article marks Docs alone. */
     ["/learn", "", "Docs", "Docs › Zoorik Learn", "Docs › Zoorik Learn", "", ""],
@@ -505,7 +505,7 @@ describe("the current page", () => {
   );
 
   it("never marks a menu button with aria-current: it is not a page", () => {
-    for (const path of ["/assessment", "/coral/guide", "/coral/faq", "/docs"]) {
+    for (const path of ["/assessment", "/coral-guide", "/coral-faq", "/docs"]) {
       const { container } = renderNav(path);
       expect(container.querySelector(".nv-btn[aria-current]"), path).toBeNull();
     }

@@ -9,7 +9,7 @@ import { AmoebaGuide } from "@/features/amoeba-guide/amoeba-guide";
 import { documentMetadata } from "@/features/documents/document-page";
 
 /**
- * `/amoeba/guide`: the Amoeba product guide (a draft). Prerendered at build
+ * `/amoeba-guide`: the Amoeba product guide (a draft). Prerendered at build
  * like every page here.
  *
  * 🔴 HELD WHILE `amoebaDocs` IS OFF: the route calls

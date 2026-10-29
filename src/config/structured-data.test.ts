@@ -104,10 +104,10 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/amoeba": () => import("@/app/amoeba/page"),
   "/assessment": () => import("@/app/assessment/page"),
   "/docs": () => import("@/app/docs/page"),
-  "/coral/guide": () => import("@/app/coral/guide/page"),
-  "/coral/faq": () => import("@/app/coral/faq/page"),
-  "/amoeba/guide": () => import("@/app/amoeba/guide/page"),
-  "/amoeba/faq": () => import("@/app/amoeba/faq/page"),
+  "/coral-guide": () => import("@/app/coral-guide/page"),
+  "/coral-faq": () => import("@/app/coral-faq/page"),
+  "/amoeba-guide": () => import("@/app/amoeba-guide/page"),
+  "/amoeba-faq": () => import("@/app/amoeba-faq/page"),
   "/learn": () => import("@/app/learn/page"),
   ...Object.fromEntries(
     learnArticles.map((article) => [articleRoute(article), articleModule(article.slug)]),
@@ -115,9 +115,10 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/learn/glossary": () => import("@/app/learn/glossary/page"),
   ...Object.fromEntries(glossaryTerms.map((term) => [termRoute(term), termModule(term.slug)])),
   "/value-lab": () => import("@/app/value-lab/page"),
-  "/value-lab/coral-dev-cluster": () => import("@/app/value-lab/coral-dev-cluster/page"),
-  "/value-lab/amoeba-lab-vms": () => import("@/app/value-lab/amoeba-lab-vms/page"),
-  "/research-cloud-cost-optimization": () => import("@/app/research-cloud-cost-optimization/page"),
+  "/coral-value-lab": () => import("@/app/coral-value-lab/page"),
+  "/amoeba-value-lab": () => import("@/app/amoeba-value-lab/page"),
+  "/cloud-cost-optimization-research-papers": () =>
+    import("@/app/cloud-cost-optimization-research-papers/page"),
   "/about": () => import("@/app/about/page"),
   "/careers": () => import("@/app/careers/page"),
   "/events": () => import("@/app/events/page"),
@@ -142,12 +143,8 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/docs/install-coral-with-terraform": () =>
     import("@/app/docs/install-coral-with-terraform/page"),
   "/docs/contributing": () => import("@/app/docs/contributing/page"),
-  "/docs/coral-not-connecting-to-cluster": () =>
-    import("@/app/docs/coral-not-connecting-to-cluster/page"),
-  "/docs/coral-not-removing-nodes": () => import("@/app/docs/coral-not-removing-nodes/page"),
-  "/docs/amoeba-not-showing-my-vm": () => import("@/app/docs/amoeba-not-showing-my-vm/page"),
-  "/docs/amoeba-not-rightsizing-disks": () =>
-    import("@/app/docs/amoeba-not-rightsizing-disks/page"),
+  "/coral-troubleshooting": () => import("@/app/coral-troubleshooting/page"),
+  "/amoeba-troubleshooting": () => import("@/app/amoeba-troubleshooting/page"),
 };
 const pageModule = (path: string): Promise<PageModule> => {
   const load = pageModules[path];
@@ -211,8 +208,8 @@ describe("the home page's structured data", () => {
   it("names each product with Zoorik's name, and points it at its guide", () => {
     expect(coral.alternateName).toBe("Zoorik Coral");
     expect(amoeba.alternateName).toBe("Zoorik Amoeba");
-    expect(coral.softwareHelp).toMatchObject({ url: "https://zoorik.com/coral/guide" });
-    expect(amoeba.softwareHelp).toMatchObject({ url: "https://zoorik.com/amoeba/guide" });
+    expect(coral.softwareHelp).toMatchObject({ url: "https://zoorik.com/coral-guide" });
+    expect(amoeba.softwareHelp).toMatchObject({ url: "https://zoorik.com/amoeba-guide" });
   });
 
   it("links only the pages that exist about each product: Coral's two listings and its G2 page, Amoeba's two listings", () => {
@@ -250,11 +247,17 @@ describe("the home page's structured data", () => {
       url: calendarUrl,
     });
     expect(calendarUrl).toBe("https://cal.com/zoorik/talk");
-    /* All six profiles, though the footer's row shows five, then Zoorik's page in each store, the
+    /* The footer's profiles but Bluesky and Substack, then Zoorik's page in each store, the
        Crunchbase profile and the Wikidata entry, then the PyPI user and the Terraform Registry
-       namespace, then the profiles the footer's row does not show, then the directories. */
+       namespace, then the other profiles, Bluesky and Substack in their places among them, then the
+       directories. */
     expect(org.sameAs).toEqual([
-      ...socialProfiles.map((link) => link.href),
+      "https://www.linkedin.com/company/zoorik",
+      "https://www.youtube.com/@getzoorik",
+      "https://x.com/getzoorik",
+      "https://www.reddit.com/r/zoorik",
+      "https://medium.com/zoorik",
+      "https://github.com/getzoorik",
       ...storeProfiles,
       crunchbaseProfile,
       wikidataEntity,
@@ -278,6 +281,10 @@ describe("the home page's structured data", () => {
       "https://www.g2.com/sellers/zoorik",
       "https://saasbrowser.com/en/saas/1707340/zoorik",
     ]);
+    /* Each address once, every one of the footer's profiles among them. */
+    const sameAs = org.sameAs as readonly string[];
+    expect(new Set(sameAs).size).toBe(sameAs.length);
+    for (const link of socialProfiles) expect(sameAs, link.platform).toContain(link.href);
     expect(storeProfiles).toEqual([
       "https://aws.amazon.com/marketplace/seller-profile?id=seller-mtaavozrqchlk",
       "https://marketplace.microsoft.com/en-us/partners/04f64eb0-8878-4f14-9578-bc5d104737e7/overview",
@@ -351,7 +358,7 @@ describe("the home page's structured data", () => {
 
 describe("every indexed page's structured data", () => {
   it("renders on every page in the sitemap as one block that parses to the page's graph", async () => {
-    expect(listed).toHaveLength(41 + learnArticles.length + glossaryTerms.length);
+    expect(listed).toHaveLength(39 + learnArticles.length + glossaryTerms.length);
     for (const { path } of listed) {
       pathname.current = path;
       const { default: Page } = await pageModule(path);
@@ -446,25 +453,11 @@ describe("every indexed page's structured data", () => {
       "How Amoeba rightsized our own lab VM’s btrfs pool by 25%",
     ]);
     /* The troubleshooting pages under Docs, each by its h1; the research papers under Zoorik alone. */
-    expect(names(routes.docsCoralNotConnecting)).toEqual([
+    expect(names(routes.coralTroubleshooting)).toEqual(["Zoorik", "Docs", "Coral troubleshooting"]);
+    expect(names(routes.amoebaTroubleshooting)).toEqual([
       "Zoorik",
       "Docs",
-      "Coral is not connecting to my cluster: what to check",
-    ]);
-    expect(names(routes.docsCoralNotRemovingNodes)).toEqual([
-      "Zoorik",
-      "Docs",
-      "Why Coral is not removing a node",
-    ]);
-    expect(names(routes.docsAmoebaNotShowingVm)).toEqual([
-      "Zoorik",
-      "Docs",
-      "Amoeba is not showing my VM: what to check",
-    ]);
-    expect(names(routes.docsAmoebaNotRightsizing)).toEqual([
-      "Zoorik",
-      "Docs",
-      "Why Amoeba has not rightsized my disks yet",
+      "Amoeba troubleshooting",
     ]);
     expect(names(routes.research)).toEqual(["Zoorik", "Cloud cost optimization research"]);
     expect(names(routes.privacy)).toEqual(["Zoorik", "Privacy"]);
@@ -497,7 +490,7 @@ describe("every indexed page's structured data", () => {
           "/events",
           "/news",
           "/cloud-cost-optimization-library",
-          "/research-cloud-cost-optimization",
+          "/cloud-cost-optimization-research-papers",
         ].includes(path)
       )
         expect(kind, path).toBe("CollectionPage");
@@ -528,8 +521,7 @@ describe("every indexed page's structured data", () => {
     for (const path of [
       routes.caseStudyCoralDevCluster,
       routes.docsInstallHelm,
-      routes.docsCoralNotConnecting,
-      routes.docsCoralNotRemovingNodes,
+      routes.coralTroubleshooting,
     ]) {
       expect(about(path), path).toEqual({ "@id": "https://zoorik.com/coral#software" });
     }
@@ -538,8 +530,7 @@ describe("every indexed page's structured data", () => {
       routes.amoebaGuide,
       routes.amoebaFaq,
       routes.caseStudyAmoebaLabVms,
-      routes.docsAmoebaNotShowingVm,
-      routes.docsAmoebaNotRightsizing,
+      routes.amoebaTroubleshooting,
     ]) {
       expect(about(path), path).toEqual({ "@id": "https://zoorik.com/amoeba#software" });
     }

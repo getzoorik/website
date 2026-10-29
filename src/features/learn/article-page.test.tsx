@@ -180,10 +180,10 @@ const closingProduct = (article: Article) =>
 
 /** Where each page a Related tile links to keeps its anchors. */
 const ANCHOR_SOURCES: Record<string, string> = {
-  "/coral/faq": "src/content/coral-faq.ts",
-  "/coral/guide": "src/content/coral-guide.ts",
-  "/amoeba/faq": "src/content/amoeba-faq.ts",
-  "/amoeba/guide": "src/content/amoeba-guide.ts",
+  "/coral-faq": "src/content/coral-faq.ts",
+  "/coral-guide": "src/content/coral-guide.ts",
+  "/amoeba-faq": "src/content/amoeba-faq.ts",
+  "/amoeba-guide": "src/content/amoeba-guide.ts",
 };
 
 describe("/learn/[slug]", () => {
@@ -619,7 +619,7 @@ describe("/learn/poor-architecture-cloud-bill, against its draft", () => {
         "/learn/shrink-azure-managed-disk",
       ],
       ["Coral", "/coral"],
-      ["the machine bill", "/value-lab/coral-dev-cluster"],
+      ["the machine bill", "/coral-value-lab"],
     ]);
   });
 

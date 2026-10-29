@@ -2,7 +2,7 @@ import { learnPath, routes } from "@/config/site";
 import type { GuideContent } from "@/content/guide";
 
 /**
- * `/amoeba/guide`: every string the Amoeba product guide prints, verbatim from
+ * `/amoeba-guide`: every string the Amoeba product guide prints, verbatim from
  * the approved mock. A paraphrase here is a different claim.
  *
  * Laid out like the FAQ, as the Coral guide is: eleven groups, 35 numbered

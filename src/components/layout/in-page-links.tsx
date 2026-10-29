@@ -72,7 +72,7 @@ export function InPageLinks(): null {
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    /* `/coral/guide/` and `/coral/guide` are one page. */
+    /* `/coral-guide/` and `/coral-guide` are one page. */
     const here = (pathname ?? window.location.pathname).replace(/(.)\/$/, "$1");
     const keepHash = keepsHash(here);
 

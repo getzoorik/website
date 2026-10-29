@@ -366,7 +366,7 @@ export const article: Article = {
             [
               { b: "Unclaimed capacity." },
               " The Node list shows every node’s monthly price, the capacity no pod has claimed, and the nodes Coral can’t empty, each with its reason and fix (see ",
-              { a: "nodes held", href: "/coral/guide#nodes-held" },
+              { a: "nodes held", href: "/coral-guide#nodes-held" },
               ").",
             ],
             [
@@ -383,7 +383,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "On our own AKS development cluster of 3 machines and 10\u00a0CPUs, Coral found that the apps would fit on fewer machines. It removed one 4-CPU worker on 6 October, taking the machine bill from $368.65 to $221.19 a month, and apps that ran a single copy restarted once on another machine. On 12 October it swapped the remaining worker for a cheaper machine of the same size. Eight days after we connected it, ",
-            { a: "the bill", href: "/value-lab/coral-dev-cluster" },
+            { a: "the bill", href: "/coral-value-lab" },
             " was $154.76 a month, 58% less.",
           ],
         },
@@ -459,12 +459,12 @@ export const article: Article = {
     {
       title: "How sizes are worked out",
       where: "Coral product guide",
-      href: "/coral/guide#how-sizes-are-worked-out",
+      href: "/coral-guide#how-sizes-are-worked-out",
     },
     {
       title: "How we reduced our own cluster’s machine bill by 58%",
       where: "Case study",
-      href: "/value-lab/coral-dev-cluster",
+      href: "/coral-value-lab",
     },
   ],
 };

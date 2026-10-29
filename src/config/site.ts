@@ -103,13 +103,15 @@ export const routes = {
      `<name>.py` in the public assessment repo, which is how the one-line
      commands the page prints are served. A page there could never be reached. */
   assessment: "/assessment",
-  /* The documents: the hub, then each product's guide and FAQ. The Amoeba two
-     are built but held while `amoebaDocs` is off. */
+  /* The documents: the hub, then each product's guide and FAQ, each at the
+     site's root, nothing nested (owner, 29 Oct 2026); their old addresses under
+     each product redirect here. The Amoeba two are built but held while
+     `amoebaDocs` is off. */
   docs: "/docs",
-  coralGuide: "/coral/guide",
-  coralFaq: "/coral/faq",
-  amoebaGuide: "/amoeba/guide",
-  amoebaFaq: "/amoeba/faq",
+  coralGuide: "/coral-guide",
+  coralFaq: "/coral-faq",
+  amoebaGuide: "/amoeba-guide",
+  amoebaFaq: "/amoeba-faq",
   login: "/login",
   /* The two legal pages. Deep-linked by section from the consoles, the
      Marketplace listing and replies to rights requests, and /terms cites
@@ -134,15 +136,18 @@ export const routes = {
      Their old /compare and /learn addresses redirect. */
   compareCoralAlternatives: "/cloud-cost-optimization-library/coral-alternatives",
   compareAmoebaAlternatives: "/cloud-cost-optimization-library/amoeba-alternatives",
-  /* Value Lab by Zoorik: the case studies' hub, with what the studies saved so far and the featured study, and one
-     page per study under it. The old /case-studies addresses, the hub's and each study's, redirect here.
-     Linked from the footer's Resources column. */
+  /* Value Lab by Zoorik: the case studies' hub, with what the studies saved so far and the featured study. The old
+     /case-studies address redirects here. Not in the footer, which links each study: /learn's More from Zoorik and the
+     sitemap lead here. */
   valueLab: "/value-lab",
-  caseStudyCoralDevCluster: "/value-lab/coral-dev-cluster",
+  /* Each study at the site's root, nothing nested (owner, 29 Oct 2026); the hub lists both, and the footer's
+     Resources column links each, after Research papers. Their old addresses under /value-lab, and the Coral study's
+     under /case-studies, redirect here. */
+  caseStudyCoralDevCluster: "/coral-value-lab",
   /* Amoeba on our own Azure lab VMs: the second study, beside the first on the hub. */
-  caseStudyAmoebaLabVms: "/value-lab/amoeba-lab-vms",
+  caseStudyAmoebaLabVms: "/amoeba-value-lab",
   /* Events: real conferences and community days, from the radar's checked list.
-     In the footer's Resources column, after Value Lab. */
+     In the footer's Resources column, after Amoeba Value Lab. */
   events: "/events",
   /* Zoorik News, at its own address rather than under /learn: our announcements, then Zoorik Radar, the week's
      changes. In the footer's Resources column, after Events. */
@@ -166,14 +171,14 @@ export const routes = {
   docsInstallHelm: "/docs/install-coral-with-helm",
   docsInstallTerraform: "/docs/install-coral-with-terraform",
   docsContributing: "/docs/contributing",
-  /* The four troubleshooting pages under /docs, in the guides' frame: two per product, listed on the hub at the end of
-     each product's group. */
-  docsCoralNotConnecting: "/docs/coral-not-connecting-to-cluster",
-  docsCoralNotRemovingNodes: "/docs/coral-not-removing-nodes",
-  docsAmoebaNotShowingVm: "/docs/amoeba-not-showing-my-vm",
-  docsAmoebaNotRightsizing: "/docs/amoeba-not-rightsizing-disks",
-  /* Research papers on cloud cost optimization, by subject. At the site's root, in no menu and no footer column yet. */
-  research: "/research-cloud-cost-optimization",
+  /* The two troubleshooting pages, one per product, at the site's root and in the guides' frame, each listed on the
+     hub at the end of its product's group and in the footer's Resources column after its product's FAQ. The four
+     pages they replace, under /docs, redirect to them. */
+  coralTroubleshooting: "/coral-troubleshooting",
+  amoebaTroubleshooting: "/amoeba-troubleshooting",
+  /* Research papers on cloud cost optimization, by subject. At the site's root, in no menu; in the footer's Resources
+     column after Learn. Its first address redirects here. */
+  research: "/cloud-cost-optimization-research-papers",
 } as const;
 
 /** Where the comparison pages live: under Cloud cost optimization tools. /compare and its old pages redirect there. */
@@ -247,15 +252,13 @@ export const hashKeepingRoutes: readonly string[] = [
   /* The case studies keep their hash as the articles do; the hub, like /learn, does not. */
   routes.caseStudyCoralDevCluster,
   routes.caseStudyAmoebaLabVms,
-  /* The three install and contributing guides and the four troubleshooting pages are built in the article frame and
+  /* The three install and contributing guides and the two troubleshooting pages are built in the article frame and
      keep theirs too. */
   routes.docsInstallHelm,
   routes.docsInstallTerraform,
   routes.docsContributing,
-  routes.docsCoralNotConnecting,
-  routes.docsCoralNotRemovingNodes,
-  routes.docsAmoebaNotShowingVm,
-  routes.docsAmoebaNotRightsizing,
+  routes.coralTroubleshooting,
+  routes.amoebaTroubleshooting,
   routes.coralGuide,
   routes.coralFaq,
   routes.amoebaGuide,
@@ -492,11 +495,9 @@ const NAV_STATES: ReadonlyMap<string, NavState> = new Map<string, NavState>([
   [routes.docsInstallHelm, { current: "docs" }],
   [routes.docsInstallTerraform, { current: "docs" }],
   [routes.docsContributing, { current: "docs" }],
-  /* The four troubleshooting pages mark Docs only, as the guides do. */
-  [routes.docsCoralNotConnecting, { current: "docs" }],
-  [routes.docsCoralNotRemovingNodes, { current: "docs" }],
-  [routes.docsAmoebaNotShowingVm, { current: "docs" }],
-  [routes.docsAmoebaNotRightsizing, { current: "docs" }],
+  /* The two troubleshooting pages mark Docs only, as the guides do. */
+  [routes.coralTroubleshooting, { current: "docs" }],
+  [routes.amoebaTroubleshooting, { current: "docs" }],
 ]);
 
 /** A Learn article or glossary term marks the Docs menu alone, whichever it is; /about marks nothing. */

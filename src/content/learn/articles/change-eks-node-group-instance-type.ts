@@ -442,7 +442,7 @@ export const article: Article = {
       title:
         "After node and workload optimization move us from larger machines to smaller ones, how do we get back to bigger machines in a sudden surge?",
       where: "Coral FAQ",
-      href: "/coral/faq#after-node-and-workload-optimization-move",
+      href: "/coral-faq#after-node-and-workload-optimization-move",
     },
   ],
 };

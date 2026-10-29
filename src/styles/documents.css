@@ -1,5 +1,5 @@
-/* Zoorik marketing: the documents section, `/docs`, `/coral/guide`, `/coral/faq` and
- * `/amoeba/guide` and `/amoeba/faq`, and the reading layout `/privacy` shares with them.
+/* Zoorik marketing: the documents section, `/docs`, `/coral-guide`, `/coral-faq` and
+ * `/amoeba-guide` and `/amoeba-faq`, and the reading layout `/privacy` shares with them.
  *
  * Ported from the mocks' `doc-pages` block (identical in every document mock), rule for rule,
  * in its order. Imported from globals.css after the site system and the header's menus, where

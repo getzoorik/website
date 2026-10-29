@@ -374,7 +374,7 @@ export const article: Article = {
               " With automation on and the Optimization type “Both”, Coral creates an HPA, with ",
               { code: "minReplicas" },
               " of 2 or more, for an ",
-              { a: "eligible", href: "/coral/guide#hpas-and-vpas" },
+              { a: "eligible", href: "/coral-guide#hpas-and-vpas" },
               " Deployment or Argo Rollout that has none. On a hand-made HPA it takes over, it keeps your ",
               { code: "minReplicas" },
               " and only raises ",
@@ -395,7 +395,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "On our own AKS development cluster, Coral removed a spare worker, rebalanced the requests of 14 apps and swapped the remaining worker for a cheaper machine of the same size. Eight days after we connected it, ",
-            { a: "the machine bill", href: "/value-lab/coral-dev-cluster" },
+            { a: "the machine bill", href: "/coral-value-lab" },
             " was $154.76 a month instead of $368.65, 58% less.",
           ],
         },
@@ -461,7 +461,7 @@ export const article: Article = {
       where: "Learn",
       href: "/learn/keda-vs-hpa-vs-vpa",
     },
-    { title: "Working with HPA", where: "Coral FAQ", href: "/coral/faq#working-with-hpa" },
-    { title: "HPAs and VPAs", where: "Coral product guide", href: "/coral/guide#hpas-and-vpas" },
+    { title: "Working with HPA", where: "Coral FAQ", href: "/coral-faq#working-with-hpa" },
+    { title: "HPAs and VPAs", where: "Coral product guide", href: "/coral-guide#hpas-and-vpas" },
   ],
 };

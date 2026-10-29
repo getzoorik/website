@@ -1,8 +1,8 @@
 import type { DocumentId } from "@/content/documents";
 
 /**
- * The shape of a product guide's content, shared by `/coral/guide` and
- * `/amoeba/guide` (one template draws both). `Id` is the guide's own list of
+ * The shape of a product guide's content, shared by `/coral-guide` and
+ * `/amoeba-guide` (one template draws both). `Id` is the guide's own list of
  * anchors, so a cross-reference can only name a group or a row on its own page.
  *
  * ─── LAID OUT LIKE THE FAQ ─────────────────────────────────────────────────

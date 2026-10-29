@@ -1,7 +1,7 @@
 import type { DocumentId } from "@/content/documents";
 
 /**
- * The shape of an FAQ page's content, shared by `/coral/faq` and `/amoeba/faq`
+ * The shape of an FAQ page's content, shared by `/coral-faq` and `/amoeba-faq`
  * (one template draws both). `Id` is the page's own list of question ids.
  *
  * 🔴 CLIENT ANSWERS ONLY. A question has its h3 and its short answer and

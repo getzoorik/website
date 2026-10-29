@@ -7,7 +7,7 @@ import { DocumentPage, documentMetadata } from "@/features/documents/document-pa
 import { Faq } from "@/features/documents/faq";
 
 /**
- * `/coral/faq`: the Coral FAQ on the web, the questions and their short answers.
+ * `/coral-faq`: the Coral FAQ on the web, the questions and their short answers.
  * Indexed, and prerendered at build like every page here; the download line's
  * facts are read from the PDF then. No FAQPage structured data.
  */

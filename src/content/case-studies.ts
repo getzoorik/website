@@ -4,7 +4,7 @@ import { platformLabel, products, type ProductId } from "@/content/products";
 
 /**
  * Case studies: the hub (`/value-lab`) and the first study
- * (`/value-lab/coral-dev-cluster`), every string and figure verbatim from
+ * (`/coral-value-lab`), every string and figure verbatim from
  * the mocks. The study is the published PDF on the web: its six numbered
  * sections, its copy and figures word for word, its drawings in the site's
  * figure style, and the PDF itself to download.
@@ -14,8 +14,9 @@ import { platformLabel, products, type ProductId } from "@/content/products";
  * generic ("Backend service A"), as in the PDF. Every figure is as the run
  * recorded it, at Azure pay-as-you-go list prices, 730 hours a month.
  *
- * Its place on the site is one line under Learn in the footer's Resources
- * column; the header has none.
+ * Each study is a line in the footer's Resources column, after Research
+ * papers ("Coral Value Lab", "Amoeba Value Lab"); the hub has none, and
+ * /learn's More from Zoorik and the sitemap lead to it. The header has none.
  *
  * Product names are written plainly; the pages keep each one out of
  * translation (`named()`) wherever the mocks mark it, and leave it alone where
@@ -441,7 +442,7 @@ export type AmoebaStudySectionId =
 export const GIB_PER_SQUARE = 8;
 
 /**
- * `/value-lab/amoeba-lab-vms`: Amoeba on two of our own lab VMs on Azure, 19 October 2026. Every string is the
+ * `/amoeba-value-lab`: Amoeba on two of our own lab VMs on Azure, 19 October 2026. Every string is the
  * checked draft's (`docs/website-seo/new-pages-2026-10-29/value-lab-amoeba/study.md`), every figure traced in its
  * ledger; the mock checks each string against the draft on every build.
  *

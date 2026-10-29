@@ -496,7 +496,7 @@ export const article: Article = {
               " Every change respects your minimums, LimitRanges and quotas, and routine changes under 10% are skipped (",
               {
                 a: "how Coral decides a change is safe",
-                href: "/coral/faq#how-does-coral-decide-a-change",
+                href: "/coral-faq#how-does-coral-decide-a-change",
               },
               "). Coral never changes your manifest. It sizes pods as they start, and resizes running pods in place on 1.33+ nodes where possible, or else restarts them one at a time.",
             ],
@@ -515,7 +515,7 @@ export const article: Article = {
             [
               { b: "Quotas and refusals." },
               " The agent’s inventory, sent every 5\u00a0minutes, covers nodes, namespaces, workloads with their requests, limits and labels, autoscalers, PodDisruptionBudgets and quotas. The only event text sent is the message when a pod can’t be created because of a quota, a limit range or an admission policy (",
-              { a: "what never leaves", href: "/coral/guide#what-never-leaves" },
+              { a: "what never leaves", href: "/coral-guide#what-never-leaves" },
               ").",
             ],
             [{ b: "Opt-in." }, " Pod sizing waits until you switch on “Automatically optimize”."],
@@ -525,7 +525,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "Smaller requests reduce the bill only when a node goes. On our own AKS development cluster, Coral removed a spare worker and rebalanced the requests of 14 apps by 12 October 2026. The CPU the apps reserve went from 0.78 to 0.43\u00a0cores, 45% less, and memory from 6.4 to 5.4\u00a0GiB, 16% less. Then Coral swapped the remaining worker for a cheaper machine of the same size. Eight days after we connected it, ",
-            { a: "the machine bill", href: "/value-lab/coral-dev-cluster" },
+            { a: "the machine bill", href: "/coral-value-lab" },
             " was $154.76 a month instead of $368.65, 58% less.",
           ],
         },
@@ -602,12 +602,12 @@ export const article: Article = {
     {
       title: "How does Coral decide a change is safe to apply automatically?",
       where: "Coral FAQ",
-      href: "/coral/faq#how-does-coral-decide-a-change",
+      href: "/coral-faq#how-does-coral-decide-a-change",
     },
     {
       title: "What never leaves",
       where: "Coral product guide",
-      href: "/coral/guide#what-never-leaves",
+      href: "/coral-guide#what-never-leaves",
     },
   ],
 };

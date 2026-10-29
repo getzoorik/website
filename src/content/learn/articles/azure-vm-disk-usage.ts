@@ -384,7 +384,7 @@ export const article: Article = {
           text: [
             { a: "Amoeba", href: "/amoeba" },
             " by Zoorik does this measuring on every VM you onboard, then acts on it. Its agent installs through Azure Run Command, the channel used above, and ",
-            { a: "every 15\u00a0seconds reports", href: "/amoeba/guide#what-leaves-the-vm" },
+            { a: "every 15\u00a0seconds reports", href: "/amoeba-guide#what-leaves-the-vm" },
             " each mount’s path, filesystem type, used and total size, and the devices, LUNs and cloud disk IDs behind it. That’s the mount-to-disk join from the report, kept current.",
           ],
         },

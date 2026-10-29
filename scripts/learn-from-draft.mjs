@@ -42,8 +42,10 @@
 // sources. The title loses its " | Zoorik" (the site's template adds it); the hub's line under the term is the
 // definition's first sentence. Every link to another term must lead to one of the drafts.
 //
-// In both modes a link to the old /case-studies/<study> address, which the article drafts still write, is written to
-// /value-lab/<study>, where the study lives now.
+// In both modes a link to an address that moved, in the text or a Related line, is written to where its page lives now:
+// a study's old /case-studies/<study> or /value-lab/<study> (which the article drafts still write) to its own address at
+// the site's root, a troubleshooting page under /docs to its product's troubleshooting page, a product's guide or FAQ
+// under the product to its own address at the root (`MOVED`).
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -136,8 +138,31 @@ const words = (s) => {
 
 const LINK = /\[([^\]]+)\]\(([^)\s]+)\)/g;
 
-/** A link's address as the site serves it: the case studies moved from /case-studies to Value Lab. */
-const moved = (href) => href.replace(/^\/case-studies(?=$|[/?#])/, "/value-lab");
+/**
+ * The addresses that moved, and where each page lives now: every page at the site's root, nothing nested (owner,
+ * 29 Oct 2026). A link keeps its #anchor and its query.
+ */
+const MOVED = new Map([
+  ["/case-studies", "/value-lab"],
+  ["/case-studies/coral-dev-cluster", "/coral-value-lab"],
+  ["/value-lab/coral-dev-cluster", "/coral-value-lab"],
+  ["/value-lab/amoeba-lab-vms", "/amoeba-value-lab"],
+  ["/docs/coral-not-connecting-to-cluster", "/coral-troubleshooting"],
+  ["/docs/coral-not-removing-nodes", "/coral-troubleshooting"],
+  ["/docs/amoeba-not-showing-my-vm", "/amoeba-troubleshooting"],
+  ["/docs/amoeba-not-rightsizing-disks", "/amoeba-troubleshooting"],
+  ["/research-cloud-cost-optimization", "/cloud-cost-optimization-research-papers"],
+  ["/coral/guide", "/coral-guide"],
+  ["/coral/faq", "/coral-faq"],
+  ["/amoeba/guide", "/amoeba-guide"],
+  ["/amoeba/faq", "/amoeba-faq"],
+]);
+
+/** A link's address as the site serves it (`MOVED`). */
+const moved = (href) => {
+  const [, path, rest] = /^([^?#]*)(.*)$/s.exec(href);
+  return (MOVED.get(path) ?? path) + rest;
+};
 const CODE = /`([^`]+)`/g;
 
 /** Joins neighbouring strings, and returns one string where the run is only words. */
@@ -461,9 +486,14 @@ function front(text) {
 function where(href) {
   const path = href.split("#")[0].split("?")[0];
   if (path.startsWith("/learn/")) return "Learn";
-  if (path.startsWith("/case-studies") || path.startsWith("/value-lab/")) return "Case study";
-  if (path.startsWith("/docs/")) return "Docs";
-  const m = /^\/(coral|amoeba)(\/(guide|faq))?$/.exec(path);
+  if (path === "/coral-value-lab" || path === "/amoeba-value-lab") return "Case study";
+  if (
+    path.startsWith("/docs/") ||
+    path === "/coral-troubleshooting" ||
+    path === "/amoeba-troubleshooting"
+  )
+    return "Docs";
+  const m = /^\/(coral|amoeba)(-(guide|faq))?$/.exec(path);
   if (m) {
     const name = m[1][0].toUpperCase() + m[1].slice(1);
     if (m[3] === "guide") return `${name} product guide`;
@@ -586,7 +616,8 @@ function convert(slug) {
     .map((line) => {
       const m = /^- "(.+)" → (\S+)\s*$/.exec(line);
       if (!m) throw new Error(`${slug}: a Related line is "- "Title" → /path": ${line}`);
-      return { title: words(m[1]), where: where(m[2]), href: m[2] };
+      const href = moved(m[2]);
+      return { title: words(m[1]), where: where(href), href };
     });
 
   const day = calendar.schedule.find((entry) => entry.slug === slug);
