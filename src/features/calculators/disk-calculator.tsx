@@ -159,6 +159,7 @@ export function DiskCalculator(): React.JSX.Element {
           value={sizeText}
           message={message("size")}
           help={richText(diskCalculator.help[cloud])}
+          whole
           onChange={setSizeText}
         />
         <CalcNumber

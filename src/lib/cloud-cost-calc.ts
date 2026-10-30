@@ -240,7 +240,8 @@ function map<T, U>(f: Figure<T>, fn: (v: T) => U): Figure<U> {
 
 export function nodeCost(input: NodeInput): NodeResult | { readonly error: NodeInputError } {
   const { size, usdPerHour, nodes } = input;
-  if (!Number.isInteger(nodes) || nodes < 1)
+  /* A safe integer, not just an integer: "1e308" is an integer to JavaScript, and its cost would print as "$∞". */
+  if (!Number.isSafeInteger(nodes) || nodes < 1)
     return { error: "nodes-must-be-a-whole-number-from-1" };
   if (size.cloud === "aws" && (size.enis === undefined || size.ipv4PerEni === undefined)) {
     return { error: "aws-size-needs-eni-facts" };

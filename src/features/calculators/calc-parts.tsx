@@ -127,6 +127,7 @@ export function CalcNumber({
   value,
   message,
   help,
+  whole = false,
   onChange,
 }: {
   readonly id: string;
@@ -135,6 +136,8 @@ export function CalcNumber({
   readonly value: string;
   readonly message?: string | null;
   readonly help?: ReactNode;
+  /** A field that takes only whole numbers (nodes, max pods, a disk's size): a phone offers digits, no point. */
+  readonly whole?: boolean;
   readonly onChange: (value: string) => void;
 }): React.JSX.Element {
   return (
@@ -146,7 +149,7 @@ export function CalcNumber({
         <input
           id={id}
           type="number"
-          inputMode="decimal"
+          inputMode={whole ? "numeric" : "decimal"}
           value={value}
           aria-describedby={help ? `${id}-m ${id}-h` : `${id}-m`}
           aria-invalid={message ? true : false}

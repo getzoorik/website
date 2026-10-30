@@ -161,6 +161,7 @@ export function NodeCalculator(): React.JSX.Element {
           unit={ui.nodes.unit}
           value={nodesText}
           message={message("nodes")}
+          whole
           onChange={setNodesText}
         />
         <details className="calc-more" id="more" hidden={cloud !== "azure"} ref={more}>
@@ -175,6 +176,7 @@ export function NodeCalculator(): React.JSX.Element {
             value={maxPodsText}
             message={message("maxpods")}
             help={richText(nodeCalculator.maxPodsHelp)}
+            whole
             onChange={setMaxPodsText}
           />
         </details>

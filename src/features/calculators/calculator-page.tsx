@@ -79,6 +79,7 @@ function Table({ table }: { readonly table: ReferenceTable }): React.JSX.Element
           ))}
         </tbody>
       </table>
+      {table.note ? <p>{richText(table.note)}</p> : null}
     </>
   );
 }
@@ -105,8 +106,12 @@ export function CalculatorPage({
       product={product}
       assessmentLead={richText(copy.close)}
     >
-      <section className="sec" id="calculator" aria-label="Calculator">
+      <section className="sec" id="calculator" aria-labelledby="calculator-h">
         <div className="wrap">
+          {/* The section's h2, for the outline only: the node result's h3s would otherwise follow the h1. */}
+          <h2 className="sr-only" id="calculator-h">
+            Calculator
+          </h2>
           <div className="calc-intro">
             {copy.intro.map((line) => (
               <p key={line}>{richText(line)}</p>

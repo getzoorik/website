@@ -373,8 +373,9 @@ export const nodeCalculatorUi = {
   memory: "Memory pods can use",
   keeps: "Kubernetes keeps",
   pods: "Max pods used",
-  /** "Across all nodes", then "Across all 3 nodes" once a count is entered. */
-  across: (nodes: number): string => `Across all ${nodes} ${nodes === 1 ? "node" : "nodes"}`,
+  /** "Across all nodes", then "Across all 3 nodes" once a count is entered, grouped as every figure is ("5,000"). */
+  across: (nodes: number): string =>
+    `Across all ${nodes.toLocaleString("en-US")} ${nodes === 1 ? "node" : "nodes"}`,
   vcpus: "vCPUs",
   memoryTotal: "Memory",
   notShown: "Not shown (see the note)",

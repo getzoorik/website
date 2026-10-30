@@ -158,6 +158,9 @@ describe("the checked calc.test.ts", () => {
       parseNumberInput("  "),
       parseNumberInput("3x"),
       Infinity,
+      /* An integer to JavaScript whose cost is Infinity: the page would print "$∞". */
+      parseNumberInput("1e308"),
+      Number.MAX_SAFE_INTEGER + 1,
     ]) {
       assert.deepEqual(
         nodeCost({ size: d4.size, usdPerHour: d4.usdPerHour, nodes }),

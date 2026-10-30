@@ -1,4 +1,4 @@
-import { sizeKindNames } from "@/content/calculators";
+import { nodeCalculator, sizeKindNames } from "@/content/calculators";
 import { cloudPrices, eniFacts, regionNames } from "@/content/cloud-prices";
 import {
   amount,
@@ -27,7 +27,19 @@ export interface ReferenceTable {
   /** The columns' widths, as the mock's colgroup sets them. */
   readonly widths: readonly string[];
   readonly rows: readonly (readonly string[])[];
+  /** A line under the table: on EKS's, the note its "Not shown (see the note)" cells point to. */
+  readonly note?: string;
 }
+
+/**
+ * The EKS note under its table: the calculator's note without its last sentence, whose figure follows the size chosen
+ * above (the table's Kubernetes keeps column gives it for each size). Without it, "see the note" would point at a
+ * note the result shows only while AWS is chosen.
+ */
+export const eksTableNote = nodeCalculator.eksNote.slice(
+  0,
+  nodeCalculator.eksNote.indexOf(" From what the node reports"),
+);
 
 const CLOUD_NAME: Readonly<Record<Cloud, string>> = { azure: "Azure (AKS)", aws: "AWS (EKS)" };
 const PRICE_WIDTHS = ["21%", "15%", "8%", "11%", "15%", "15%", "15%"];
@@ -84,6 +96,7 @@ export function nodeReferenceTables(): readonly ReferenceTable[] {
           `${amount(reserved.cpuMillicores.value / 1000)} vCPU, ${amount(reserved.memoryGib.value)} GiB`,
         ];
       }),
+      ...(cloud === "aws" ? { note: eksTableNote } : {}),
     };
     return [prices, pods];
   });

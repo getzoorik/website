@@ -82,6 +82,18 @@ describe("the reference tables", () => {
     });
   });
 
+  it("carry the note EKS's Not shown cells point to, under its table, whichever cloud the calculator shows", () => {
+    const eks = nodeReferenceTables().find((table) => table.title.startsWith("AWS (EKS): what"))!;
+    expect(eks.rows.every((row) => row[3] === "Not shown (see the note)")).toBe(true);
+    expect(eks.note).toBe(
+      "**Memory pods can use: not shown.** AWS works this out from the memory the node reports, which is less than the instance's memory. In AWS's example, an 8 GB instance reports 7,748 MiB. AWS doesn't publish that figure for each instance type.",
+    );
+    expect(nodeReferenceTables().filter((table) => table.note)).toEqual([eks]);
+    const root = render(<NodePage />).container;
+    const note = root.querySelector("#list-prices .fq-body table:last-of-type + p");
+    expect(text(note)).toMatch(/^Memory pods can use: not shown\. .* for each instance type\.$/);
+  });
+
   it("print every Azure tier and both EBS types, as the checked disk draft does", () => {
     const tables = diskReferenceTables();
     expect(tables.map((table) => table.title)).toEqual(checked.disk.map((table) => table.title));
@@ -118,7 +130,8 @@ describe("/node-cost-calculator", () => {
   it("shows a message in place of every figure for a blank, zero or part node count, and on EKS the note", () => {
     const root = render(<NodePage />).container;
     const nodes = root.querySelector<HTMLInputElement>("#nodes")!;
-    for (const value of ["", "0", "1.5"]) {
+    /* "1e308" is a whole number to JavaScript, but its cost is Infinity: a message, never "$∞". */
+    for (const value of ["", "0", "1.5", "1e308"]) {
       fireEvent.change(nodes, { target: { value } });
       expect(root.querySelector(".calc-ok")).toHaveAttribute("hidden");
       expect(text(root.querySelector("#calc-stop"))).toBe(
@@ -127,6 +140,10 @@ describe("/node-cost-calculator", () => {
       expect(root.querySelector("#nodes-m")).not.toHaveAttribute("hidden");
       expect(nodes).toHaveAttribute("aria-invalid", "true");
     }
+    /* A large count is grouped in the heading as in every figure. */
+    fireEvent.change(nodes, { target: { value: "5000" } });
+    expect(text(root.querySelector("#o-all-h"))).toBe("Across all 5,000 nodes");
+    expect(text(root.querySelector("#o-total"))).toBe("$700,800.00");
     fireEvent.change(nodes, { target: { value: "2" } });
     fireEvent.click(within(root.querySelector("[data-sw=cloud]")!).getByText("AWS (EKS)"));
     expect(root.querySelector("#more")).toHaveAttribute("hidden");
@@ -137,6 +154,21 @@ describe("/node-cost-calculator", () => {
     );
     expect(text(root.querySelector("#o-tpm"))).toBe("Not shown (see the note)");
     expect(text(root.querySelector("#o-total"))).toBe("$280.32");
+  });
+
+  it("keeps the outline in order and offers digits for whole numbers", () => {
+    const root = render(<NodePage />).container;
+    const levels = [...root.querySelectorAll("main h1, main h2, main h3, main h4")].map((h) =>
+      Number(h.tagName[1]),
+    );
+    levels.forEach((level, index) => {
+      if (index > 0) expect(level).toBeLessThanOrEqual(levels[index - 1]! + 1);
+    });
+    const section = root.querySelector("#calculator")!;
+    expect(section).toHaveAttribute("aria-labelledby", "calculator-h");
+    expect(text(root.querySelector("#calculator-h"))).toBe("Calculator");
+    expect(root.querySelector("#nodes")).toHaveAttribute("inputmode", "numeric");
+    expect(root.querySelector("#maxpods")).toHaveAttribute("inputmode", "numeric");
   });
 
   it("opens More settings on a max pods message", () => {
@@ -181,6 +213,9 @@ describe("/disk-cost-calculator", () => {
     expect(text(result.querySelector("#o-upline"))).toBe(
       "Azure prices this disk as E15 (256 GiB). The tier is 56 GiB larger than the disk. That part of the price is $4.20 a month.",
     );
+    /* The size is whole GiB, the used space can carry a fraction. */
+    expect(root.querySelector("#size")).toHaveAttribute("inputmode", "numeric");
+    expect(root.querySelector("#used")).toHaveAttribute("inputmode", "decimal");
   });
 
   it("prices EBS per GB, clamps the empty space at 0 and says why, and shows each range's message", () => {
