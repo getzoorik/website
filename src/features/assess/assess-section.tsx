@@ -54,6 +54,11 @@ export interface AssessSectionProps {
   readonly talkOnly?: boolean;
   /** The cards rise as they arrive. Home and the product pages only. */
   readonly reveal?: boolean;
+  /**
+   * One line over the cards, in the row's own width (`p.calc-close`, the calculators' sheet): what the page was and
+   * where the reader's own figure is. None on every other page.
+   */
+  readonly lead?: ReactNode;
 }
 
 /** One card: a `<Reveal>` where the page reveals, a plain div where it does not. */
@@ -85,6 +90,7 @@ export function AssessSection({
   product,
   talkOnly = false,
   reveal = true,
+  lead,
 }: AssessSectionProps = {}): React.JSX.Element {
   const { assessment, contact } = assessContent;
   const builders: readonly ProductId[] = product ? [product] : contact.both;
@@ -92,6 +98,7 @@ export function AssessSection({
   return (
     <section className="sec" id="assess">
       <div className="wrap">
+        {lead ? <p className="calc-close">{lead}</p> : null}
         <div className={talkOnly ? "as-grid as-solo" : "as-grid"}>
           {talkOnly ? null : (
             <Card reveal={reveal} order={0} className="as-card as-mini">

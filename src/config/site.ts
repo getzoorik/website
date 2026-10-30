@@ -179,6 +179,15 @@ export const routes = {
   /* Research papers on cloud cost optimization, by subject. At the site's root, in no menu; in the footer's Resources
      column after Learn. Its first address redirects here. */
   research: "/cloud-cost-optimization-research-papers",
+  /* Five pages at the site's root (owner, 30 Oct 2026), in no menu and no footer column yet: where they sit in the
+     header and footer is the owner's call. The Trust center (Coral's security overview, the DPA and the
+     sub-processors), linked from /security's Report a security issue row; Contact and Pricing, which link each other;
+     and the two calculators, linked from Cloud cost optimization tools' Free calculators. */
+  trust: "/trust",
+  contact: "/contact",
+  pricing: "/pricing",
+  nodeCostCalculator: "/node-cost-calculator",
+  diskCostCalculator: "/disk-cost-calculator",
 } as const;
 
 /** Where the comparison pages live: under Cloud cost optimization tools. /compare and its old pages redirect there. */

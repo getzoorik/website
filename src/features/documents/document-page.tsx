@@ -40,6 +40,8 @@ export interface DocumentPageProps {
    * policy's §15) must never turn it back on: two elements would share the id.
    */
   readonly assessmentRow?: boolean;
+  /** One line over the closing row's cards (the calculators' "This is the list price of one node size…"). */
+  readonly assessmentLead?: ReactNode;
   readonly children: ReactNode;
 }
 
@@ -47,6 +49,7 @@ export function DocumentPage({
   hero,
   product,
   assessmentRow = true,
+  assessmentLead,
   children,
 }: DocumentPageProps): React.JSX.Element {
   return (
@@ -58,7 +61,9 @@ export function DocumentPage({
       <main id="main" tabIndex={-1}>
         <DocumentHero {...hero} />
         {children}
-        {assessmentRow ? <AssessSection product={product} reveal={false} /> : null}
+        {assessmentRow ? (
+          <AssessSection product={product} reveal={false} lead={assessmentLead} />
+        ) : null}
       </main>
       <FooterSection />
     </>
