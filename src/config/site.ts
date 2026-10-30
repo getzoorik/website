@@ -189,7 +189,40 @@ export const routes = {
   pricing: "/pricing",
   nodeCostCalculator: "/node-cost-calculator",
   diskCostCalculator: "/disk-cost-calculator",
+  /* Ten planned pages, their addresses fixed now (owner, 30 Oct 2026) and at the site's root like every footer page.
+     Each product on each cloud, in the footer's Products column after its product; and what Coral works with, the
+     footer's "Works with" list under Products. None is built yet: `unbuiltPages` holds their footer lines back. */
+  coralForAks: "/coral-for-aks",
+  coralForEks: "/coral-for-eks",
+  amoebaForAzure: "/amoeba-for-azure",
+  amoebaForAws: "/amoeba-for-aws",
+  coralWorksWithClusterAutoscaler: "/coral-works-with-cluster-autoscaler",
+  coralWorksWithKarpenter: "/coral-works-with-karpenter",
+  coralWorksWithNodeAutoProvisioning: "/coral-works-with-aks-node-auto-provisioning",
+  coralWorksWithKeda: "/coral-works-with-keda",
+  coralWorksWithHelm: "/coral-works-with-helm",
+  coralWorksWithTerraform: "/coral-works-with-terraform",
 } as const;
+
+/**
+ * The planned pages not built yet. Each has its address in `routes` and its line in the footer's plan
+ * (`footerPlan` in `@/content/footer`), and the footer leaves the line out while its page is listed here, so the
+ * footer never leads to a 404. A page's own PR takes it off this list, and that is what wires it into the footer (a
+ * "Works with" line once all six of those pages are off it): a test fails while a built page is still listed, or
+ * while a footer line leads to a page that is neither built nor listed.
+ */
+export const unbuiltPages: ReadonlySet<string> = new Set<string>([
+  routes.coralForAks,
+  routes.coralForEks,
+  routes.amoebaForAzure,
+  routes.amoebaForAws,
+  routes.coralWorksWithClusterAutoscaler,
+  routes.coralWorksWithKarpenter,
+  routes.coralWorksWithNodeAutoProvisioning,
+  routes.coralWorksWithKeda,
+  routes.coralWorksWithHelm,
+  routes.coralWorksWithTerraform,
+]);
 
 /** Where the comparison pages live: under Cloud cost optimization tools. /compare and its old pages redirect there. */
 export const comparePath = "/cloud-cost-optimization-library";

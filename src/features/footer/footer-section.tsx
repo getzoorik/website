@@ -19,6 +19,7 @@ import {
   footerInstall,
   footerMarketplaces,
   footerSocialLinks,
+  type FooterColumn,
   type FooterLink,
 } from "@/content/footer";
 import { products } from "@/content/products";
@@ -30,8 +31,8 @@ import { NEW_TAB_HINT, isOffSite, offSiteProps } from "@/lib/links";
  * The site footer: the brand column (the wordmark, what Zoorik does and one
  * line per product, the "Built for Azure and AWS" badge, "Available in" and the
  * two marketplaces as buttons, Install from, "Ask about Zoorik on" (page-aware,
- * `AskButtons`), then the social tiles); then Products, Resources and Company;
- * then the bar: the legal name and city at its left end, the copyright line at
+ * `AskButtons`), then the social tiles); then Products, Resources and Company,
+ * a `stacked` list drawn under the list before it, in its column; then the bar: the legal name and city at its left end, the copyright line at
  * its right.
  *
  * The column titles are paragraphs (`p.foot-h`), not headings, as the mock
@@ -110,11 +111,15 @@ export function FooterSection(): JSX.Element {
             </div>
           </div>
 
-          {footerColumns.map((column) => (
-            <div className="foot-col" key={column.heading}>
-              <p className="foot-h">{column.heading}</p>
-              {column.links.map((link) => (
-                <FooterColumnLink key={link.label} link={link} />
+          {inColumns(footerColumns).map((lists) => (
+            <div className="foot-col" key={lists[0]!.heading}>
+              {lists.map((list) => (
+                <Fragment key={list.heading}>
+                  <p className="foot-h">{list.heading}</p>
+                  {list.links.map((link) => (
+                    <FooterColumnLink key={link.label} link={link} />
+                  ))}
+                </Fragment>
               ))}
             </div>
           ))}
@@ -132,6 +137,17 @@ export function FooterSection(): JSX.Element {
       </div>
     </footer>
   );
+}
+
+/** The lists in their columns: a `stacked` list joins the column before it. */
+function inColumns(lists: readonly FooterColumn[]): readonly (readonly FooterColumn[])[] {
+  const columns: FooterColumn[][] = [];
+  for (const list of lists) {
+    const last = columns.at(-1);
+    if (list.stacked && last) last.push(list);
+    else columns.push([list]);
+  }
+  return columns;
 }
 
 /**
