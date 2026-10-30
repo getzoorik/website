@@ -141,6 +141,8 @@ const CARDS: readonly {
   { file: "privacy", words: "Privacy policy", paths: ["/privacy"] },
   { file: "terms", words: "Terms of use", paths: ["/terms"] },
   { file: "security", words: "Security and data handling", paths: ["/security"] },
+  { file: "pricing", words: "How Coral and Amoeba are priced", paths: [routes.pricing] },
+  { file: "contact", words: "Contact Zoorik", paths: [routes.contact] },
   { file: "trust", words: "Security overview, DPA and sub-processors", paths: [routes.trust] },
   { file: "login", words: "Sign in", paths: ["/login"] },
   {
