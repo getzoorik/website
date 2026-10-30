@@ -14,8 +14,11 @@ import type { ProductId } from "@/content/products";
  */
 export const learnCompareLastUpdated = "19 October 2026";
 
-/** The day Cloud cost optimization tools' content last changed, for the sitemap's `lastmod` only, as above. */
-export const cloudCostToolsLastUpdated = "21 October 2026";
+/**
+ * The day Cloud cost optimization tools' content last changed, for the sitemap's `lastmod` only, as above. 30 Oct
+ * 2026: its Free calculators.
+ */
+export const cloudCostToolsLastUpdated = "30 October 2026";
 
 /**
  * Cloud cost optimization tools: every string it prints, verbatim. Its tiles are `shownGroups` in `learn-market.ts`,
@@ -54,6 +57,11 @@ export const cloudCostToolsPage = {
   ours: {
     id: "ours",
     title: "Compare Coral and Amoeba",
+  },
+  /** The two calculators, after Compare Coral and Amoeba, in its tiles' style: each tile is the calculator's own. */
+  calculators: {
+    id: "calculators",
+    title: "Free calculators",
   },
 } as const;
 

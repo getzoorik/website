@@ -40,7 +40,7 @@ function importGraph(file: string, seen = new Set<string>()): Set<string> {
 }
 
 describe("sitemap.xml", () => {
-  it("lists the home page, the product pages, the assessment, the documents, the install and contributing guides, the troubleshooting pages, open source, Learn and every article in its index, the glossary and every term in its index, Cloud cost optimization tools and the comparison pages, Value Lab and the two case studies, the research papers, /events, /pricing, /contact, /about, /careers, /brand-assets, /referrals, /partners, /design-partners, the privacy policy, the terms, security and the Trust center, absolute, and nothing else", () => {
+  it("lists the home page, the product pages, the assessment, the documents, the install and contributing guides, the troubleshooting pages, open source, Learn and every article in its index, the glossary and every term in its index, Cloud cost optimization tools with the comparison pages and the two calculators, Value Lab and the two case studies, the research papers, /events, /pricing, /contact, /about, /careers, /brand-assets, /referrals, /partners, /design-partners, the privacy policy, the terms, security and the Trust center, absolute, and nothing else", () => {
     expect(sitemap().map((entry) => entry.url)).toEqual([
       `${site.url}/`,
       `${site.url}/coral`,
@@ -69,6 +69,9 @@ describe("sitemap.xml", () => {
       `${site.url}/cloud-cost-optimization-library/amoeba-alternatives`,
       /* The live versus pages, read from their data: no test spells a competitor's name. */
       ...versusPages.map((page) => `${site.url}${versusRoute(page)}`),
+      /* The two calculators, at the root, linked from Cloud cost optimization tools. */
+      `${site.url}/node-cost-calculator`,
+      `${site.url}/disk-cost-calculator`,
       `${site.url}/value-lab`,
       `${site.url}/coral-value-lab`,
       `${site.url}/amoeba-value-lab`,
@@ -133,12 +136,15 @@ describe("sitemap.xml", () => {
         isoDay(glossaryPage.updated),
       ),
       ...Object.fromEntries(glossaryTerms.map((term) => [glossaryPath(term.slug), term.updated])),
-      /* Cloud cost optimization tools: the day its content last changed. */
-      "/cloud-cost-optimization-library": "2026-10-21",
+      /* Cloud cost optimization tools: the day its content last changed (its Free calculators, 30 Oct 2026). */
+      "/cloud-cost-optimization-library": "2026-10-30",
       /* The comparison pages: the day they were checked and published. */
       "/cloud-cost-optimization-library/coral-alternatives": "2026-10-19",
       "/cloud-cost-optimization-library/amoeba-alternatives": "2026-10-19",
       ...Object.fromEntries(versusPages.map((page) => [versusRoute(page), "2026-10-19"])),
+      /* The two calculators: the day their prices were read, which they print. */
+      "/node-cost-calculator": "2026-10-30",
+      "/disk-cost-calculator": "2026-10-30",
       /* Value Lab: the Amoeba study's card beside the Coral one (29 Oct 2026). Each study: the day it prints. */
       "/value-lab": "2026-10-29",
       "/coral-value-lab": "2026-10-12",
@@ -181,7 +187,7 @@ describe("sitemap.xml", () => {
        without one is never told to recrawl. */
     const entries = sitemap();
     expect(entries).toHaveLength(
-      (amoebaDocs ? 42 : 39) + learnArticles.length + glossaryTerms.length,
+      (amoebaDocs ? 44 : 41) + learnArticles.length + glossaryTerms.length,
     );
     /* Today is `LEARN_TODAY` when set (articles dated ahead, checked as of the day they go live), else the latest
        calendar day anywhere on Earth (UTC+14), so a date set to today in any time zone is not "the future". */

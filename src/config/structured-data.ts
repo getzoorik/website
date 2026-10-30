@@ -38,6 +38,7 @@ import { amoebaGuide } from "@/content/amoeba-guide";
 import { amoebaPageContent } from "@/content/amoeba-page";
 import { assessmentCopy } from "@/content/assessment";
 import { brandAssetsPage } from "@/content/brand-assets";
+import { diskCalculator, nodeCalculator } from "@/content/calculators";
 import { careers } from "@/content/careers";
 import { communityPage } from "@/content/community";
 import { contactPage } from "@/content/contact";
@@ -618,9 +619,10 @@ const pages: Readonly<Record<string, PageEntry>> = {
   [routes.privacy]: documentEntry(routes.privacy, privacy.meta, []),
   [routes.terms]: documentEntry(routes.terms, termsCopy.meta, []),
   [routes.security]: documentEntry(routes.security, securityPage.meta, []),
-  /* The Trust center, Contact and Pricing, each under Zoorik alone. The Trust center is about Coral, whose security
-     overview, DPA and sub-processors it is; Contact and Pricing are about the organisation, Contact as its
-     ContactPage. None carries an offer or a price: Pricing names none. */
+  /* The five pages of 30 Oct 2026, each under Zoorik alone but the calculators, which sit under Cloud cost
+     optimization tools as its comparison pages do. The Trust center is about Coral, whose security overview, DPA
+     and sub-processors it is; Contact and Pricing are about the organisation, Contact as its ContactPage. None
+     carries an offer or a price: Pricing names none. */
   [routes.trust]: {
     kind: "WebPage",
     name: titled(trustPage.meta.title),
@@ -642,6 +644,20 @@ const pages: Readonly<Record<string, PageEntry>> = {
     trail: [{ name: pricingPage.hero.title, path: routes.pricing }],
     about: "organization",
   },
+  ...Object.fromEntries(
+    [
+      { path: routes.nodeCostCalculator, copy: nodeCalculator },
+      { path: routes.diskCostCalculator, copy: diskCalculator },
+    ].map(({ path, copy }) => [
+      path,
+      {
+        kind: "WebPage",
+        name: titled(copy.meta.title),
+        description: copy.meta.description,
+        trail: [step(routes.cloudCostTools), { name: copy.hero.title, path }],
+      } satisfies PageEntry,
+    ]),
+  ),
 };
 
 /** Each indexed page's printed title, by path: what the footer's "Ask about Zoorik on" questions name a page by. */

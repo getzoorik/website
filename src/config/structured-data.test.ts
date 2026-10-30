@@ -141,6 +141,8 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/trust": () => import("@/app/trust/page"),
   "/contact": () => import("@/app/contact/page"),
   "/pricing": () => import("@/app/pricing/page"),
+  "/node-cost-calculator": () => import("@/app/node-cost-calculator/page"),
+  "/disk-cost-calculator": () => import("@/app/disk-cost-calculator/page"),
   "/open-source": () => import("@/app/open-source/page"),
   "/docs/install-coral-with-helm": () => import("@/app/docs/install-coral-with-helm/page"),
   "/docs/install-coral-with-terraform": () =>
@@ -361,7 +363,7 @@ describe("the home page's structured data", () => {
 
 describe("every indexed page's structured data", () => {
   it("renders on every page in the sitemap as one block that parses to the page's graph", async () => {
-    expect(listed).toHaveLength(42 + learnArticles.length + glossaryTerms.length);
+    expect(listed).toHaveLength(44 + learnArticles.length + glossaryTerms.length);
     for (const { path } of listed) {
       pathname.current = path;
       const { default: Page } = await pageModule(path);
@@ -463,7 +465,18 @@ describe("every indexed page's structured data", () => {
       "Amoeba troubleshooting",
     ]);
     expect(names(routes.research)).toEqual(["Zoorik", "Cloud cost optimization research"]);
-    /* The Trust center, Contact and Pricing under Zoorik alone. */
+    /* The five pages of 30 Oct 2026: the calculators under Cloud cost optimization tools by their h1, the rest under
+       Zoorik alone. */
+    expect(names(routes.nodeCostCalculator)).toEqual([
+      "Zoorik",
+      "Cloud cost optimization tools",
+      "Kubernetes node cost calculator",
+    ]);
+    expect(names(routes.diskCostCalculator)).toEqual([
+      "Zoorik",
+      "Cloud cost optimization tools",
+      "Disk cost calculator: Azure managed disks and Amazon EBS",
+    ]);
     expect(names(routes.trust)).toEqual(["Zoorik", "Trust center"]);
     expect(names(routes.contact)).toEqual(["Zoorik", "Contact"]);
     expect(names(routes.pricing)).toEqual(["Zoorik", "Pricing"]);

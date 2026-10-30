@@ -7,6 +7,7 @@ import { amoebaGuide } from "@/content/amoeba-guide";
 import { amoebaPageLastUpdated } from "@/content/amoeba-page";
 import { assessmentLastUpdated } from "@/content/assessment";
 import { brandAssetsLastUpdated } from "@/content/brand-assets";
+import { calculatorsLastUpdated } from "@/content/calculators";
 import { careersLastUpdated } from "@/content/careers";
 import { communityLastUpdated } from "@/content/community";
 import { contactLastUpdated } from "@/content/contact";
@@ -125,10 +126,13 @@ const contentDates: Partial<Record<string, string>> = {
   ),
   /* The research page prints no day: its content file's. */
   [routes.research]: researchLastUpdated,
-  /* The Trust center prints its day; /contact and /pricing print none. */
+  /* The five pages of 30 Oct 2026: /trust prints its day; /contact and /pricing print none, the calculators their
+     prices' day, which is their content's. */
   [routes.trust]: trustUpdated,
   [routes.contact]: contactLastUpdated,
   [routes.pricing]: pricingLastUpdated,
+  [routes.nodeCostCalculator]: calculatorsLastUpdated,
+  [routes.diskCostCalculator]: calculatorsLastUpdated,
 };
 
 /**
@@ -137,9 +141,10 @@ const contentDates: Partial<Record<string, string>> = {
  * Amoeba's once `amoebaDocs` publishes them, the install and contributing
  * guides and the troubleshooting pages), Learn and every article in the
  * Learn index (A–Z by slug), the glossary and every term in its index (A–Z by
- * slug), the case studies, the research papers, /events, /pricing, /contact,
- * /about, /careers, /brand-assets, /partners, /referrals, the privacy policy,
- * the terms, security and data handling, and the Trust center.
+ * slug), Cloud cost optimization tools with its comparison pages and the two
+ * calculators, the case studies, the research papers, /events, /pricing,
+ * /contact, /about, /careers, /brand-assets, /partners, /referrals, the
+ * privacy policy, the terms, security and data handling, and the Trust center.
  * A held page answers 404, so it is never listed.
  *
  * `lastModified` is the page's date from `learnDates` or `contentDates`, never the build's.
@@ -168,6 +173,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     routes.cloudCostTools,
     ...alternativesPages.map((page) => page.route),
     ...versusPages.map(versusRoute),
+    routes.nodeCostCalculator,
+    routes.diskCostCalculator,
     routes.valueLab,
     routes.caseStudyCoralDevCluster,
     routes.caseStudyAmoebaLabVms,
