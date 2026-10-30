@@ -153,10 +153,10 @@ export const routes = {
      changes. In the footer's Resources column, after Events. */
   news: "/news",
   /* Zoorik Community: r/zoorik, where Zoorik posts, the next events and the wider community. In the
-     footer's Resources column, after Cloud cost optimization tools. */
+     footer's Resources column, after Disk cost calculator. */
   community: "/community",
   /* Where to find Zoorik: the marketplaces, reviews, installs and profiles. In the footer's Products
-     column, after Assessment. */
+     column, after Pricing. */
   marketplaces: "/marketplaces",
   /* Three company pages, in the footer's Company column after Careers: the brand kit, and the
      partner and referral programs, both "coming soon" with no terms. */
@@ -179,10 +179,11 @@ export const routes = {
   /* Research papers on cloud cost optimization, by subject. At the site's root, in no menu; in the footer's Resources
      column after Learn. Its first address redirects here. */
   research: "/cloud-cost-optimization-research-papers",
-  /* Five pages at the site's root (owner, 30 Oct 2026), in no menu and no footer column yet: where they sit in the
-     header and footer is the owner's call. The Trust center (Coral's security overview, the DPA and the
-     sub-processors), linked from /security's Report a security issue row; Contact and Pricing, which link each other;
-     and the two calculators, linked from Cloud cost optimization tools' Free calculators. */
+  /* Five pages at the site's root (owner, 30 Oct 2026), in no menu; in the footer (owner, 30 Oct 2026): Pricing in
+     Products after Assessment, the two calculators in Resources after Cloud cost optimization tools, the Trust center
+     in Company after Security and Contact after Book a demo. The Trust center (Coral's security overview, the DPA and
+     the sub-processors), also linked from /security's Report a security issue row; Contact and Pricing, which link
+     each other; and the two calculators, also linked from Cloud cost optimization tools' Free calculators. */
   trust: "/trust",
   contact: "/contact",
   pricing: "/pricing",

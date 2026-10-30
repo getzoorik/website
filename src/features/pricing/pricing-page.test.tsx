@@ -107,7 +107,8 @@ describe("/pricing", () => {
       expect(row).not.toHaveAttribute("open");
       expect(row.querySelector(".fq-n")).toBeNull();
     }
-    expect(root.querySelector('a[href="/contact"]')).not.toBeNull();
+    /* In the page's own text: the footer links /contact on every page. */
+    expect(root.querySelector('main a[href="/contact"]')).not.toBeNull();
   });
 
   it("starts the sheet's rules at the classes only /contact and /pricing draw, or at Follow us", () => {

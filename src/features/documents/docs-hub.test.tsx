@@ -283,9 +283,9 @@ describe("/docs", () => {
       menu.map((a) => a.getAttribute("href")),
     );
     /* The footer's Resources column, after Learn, Research papers, the two Value Lab studies, Events, News, Cloud cost
-       optimization tools and Community. */
+       optimization tools, the two cost calculators and Community. */
     const resources = [...container.querySelectorAll(".foot-col")][1]!;
-    const docsLink = resources.querySelectorAll("a")[8]!;
+    const docsLink = resources.querySelectorAll("a")[10]!;
     expect(docsLink).toHaveAttribute("href", "/docs");
     expect(docsLink).toHaveTextContent("Docs");
   });
