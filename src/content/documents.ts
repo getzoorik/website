@@ -35,7 +35,8 @@ export type DocumentId =
   | "amoeba-one-pager"
   | "coral-case-study"
   | "coral-assessment-example"
-  | "amoeba-assessment-example";
+  | "amoeba-assessment-example"
+  | "coral-dpa";
 
 export interface PublishedDocument {
   readonly id: DocumentId;
@@ -54,7 +55,7 @@ export interface PublishedDocument {
 }
 
 /**
- * The eight PDFs the site knows, each copied from its source, never from an earlier copy:
+ * The nine PDFs the site knows, each copied from its source, never from an earlier copy:
  *   coral-product-guide.pdf
  *   coral-faq.pdf
  *   coral-one-pager.pdf
@@ -63,9 +64,12 @@ export interface PublishedDocument {
  *   coral-case-study-dev-cluster.pdf
  *   coral-assessment-example.pdf
  *   amoeba-assessment-example.pdf
+ *   coral-data-processing-agreement-v1.0.pdf
  *
- * 🔴 THERE IS NO NINTH. The internal FAQ for Zoorik's own team never ships:
+ * 🔴 THERE IS NO TENTH. The internal FAQ for Zoorik's own team never ships:
  * not as a file, an entry, a link or a fact (`src/app/internal-docs.test.ts`).
+ * Neither does the full security overview: /trust is its public summary, and
+ * its PDF goes out with the pilot paperwork.
  */
 /**
  * The day the /docs hub's content last changed, for the sitemap's
@@ -143,6 +147,17 @@ export const documents: Readonly<Record<DocumentId, PublishedDocument>> = {
     canonical: routes.assessment,
     released: true,
     spokenName: "the Amoeba example report",
+  },
+  /* The data processing agreement, version 1.0 (23 October 2026): offered by /trust alone, in its DPA section; not a
+     tile on the Docs hub. A Pilot Schedule names a version, and a named version never changes, so the version is in
+     the address: a later one gets a file and an address of its own, and this one stays. */
+  "coral-dpa": {
+    id: "coral-dpa",
+    product: "coral",
+    pdf: "/docs/coral-data-processing-agreement-v1.0.pdf",
+    canonical: routes.trust,
+    released: true,
+    spokenName: "the data processing agreement, version 1.0",
   },
 };
 

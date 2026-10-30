@@ -2,6 +2,7 @@ import { AwsMark, AzureMark } from "@/components/brand/cloud-marks";
 import { ProductMark } from "@/components/brand/product-marks";
 import { NewTabHint } from "@/components/primitives/new-tab-hint";
 import { contactEmail } from "@/config/site";
+import { diskCalculator, nodeCalculator } from "@/content/calculators";
 import {
   alternativesPages,
   cloudCostToolsPage,
@@ -26,6 +27,7 @@ import {
 } from "@/features/cloud-cost-tools/tools-filter";
 import { ArrowGlyph, ArrowOutGlyph } from "@/features/documents/document-glyphs";
 import { LinkTile } from "@/features/documents/link-tile";
+import { richText } from "@/features/documents/rich-text";
 import { LearnFrame, sectionClass } from "@/features/learn/learn-parts";
 import { marketOurs, marketTool } from "@/features/learn/market-rows";
 import { named } from "@/features/legal/named";
@@ -39,6 +41,7 @@ import { offSiteProps } from "@/lib/links";
  *           Amoeba first in theirs, with their marks; every other tool by name, with its initial in place of a logo),
  *           each with its short line, how it acts and its clouds; then the note with the day they were checked
  *   ours    Compare Coral and Amoeba, on the band: the live versus pages and the alternatives pages, two by two
+ *   calculators  Free calculators: the node and disk cost calculators, in the same tiles, two by two
  *   closing row
  *
  * Every name, line and fact is read from `learn-market.ts` and `learn-compare.ts`, so the page and the pages under
@@ -46,7 +49,7 @@ import { offSiteProps } from "@/lib/links";
  * (`tools-filter.tsx`), and with scripting off every tile shows.
  */
 
-const { hero, tools, ours } = cloudCostToolsPage;
+const { hero, tools, ours, calculators } = cloudCostToolsPage;
 
 /** How a tile says a tool acts: the mock's class for each way (`mk-auto` for a tool that acts on its own). */
 const ACTS_CLASS: Readonly<Record<MarketActs, string>> = {
@@ -236,11 +239,35 @@ function Ours(): React.JSX.Element {
   );
 }
 
+/** Free calculators: the node and disk cost calculators, each its own tile (`tile` in `calculators.ts`). */
+function Calculators(): React.JSX.Element {
+  return (
+    <section className={sectionClass()} id={calculators.id} aria-labelledby={`${calculators.id}-h`}>
+      <div className="wrap">
+        <div className="sec-hrow">
+          <h2 id={`${calculators.id}-h`}>{calculators.title}</h2>
+        </div>
+        <div className="dt-grid dt-2x2 tl-2x2">
+          {[nodeCalculator.tile, diskCalculator.tile].map((tile) => (
+            <LinkTile
+              key={tile.href}
+              href={tile.href}
+              title={richText(tile.title)}
+              line={richText(tile.line)}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function CloudCostTools(): React.JSX.Element {
   return (
     <LearnFrame hero={{ title: hero.title, deck: hero.deck }}>
       <Tools />
       <Ours />
+      <Calculators />
     </LearnFrame>
   );
 }

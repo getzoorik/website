@@ -7,8 +7,10 @@ import { amoebaGuide } from "@/content/amoeba-guide";
 import { amoebaPageLastUpdated } from "@/content/amoeba-page";
 import { assessmentLastUpdated } from "@/content/assessment";
 import { brandAssetsLastUpdated } from "@/content/brand-assets";
+import { calculatorsLastUpdated } from "@/content/calculators";
 import { careersLastUpdated } from "@/content/careers";
 import { communityLastUpdated } from "@/content/community";
+import { contactLastUpdated } from "@/content/contact";
 import { designPartnersLastUpdated } from "@/content/design-partners";
 import { amoebaStudy, caseStudiesHubLastUpdated, caseStudy } from "@/content/case-studies";
 import { coralFaqPage } from "@/content/coral-faq";
@@ -31,12 +33,14 @@ import { partnersLastUpdated } from "@/content/partners";
 import { openSourceGuides, openSourceLastUpdated, openSourceUpdated } from "@/content/open-source";
 import { glossaryPage, glossaryTerms, termRoute } from "@/content/learn/glossary";
 import { articleRoute, learnArticles } from "@/content/learn/published";
+import { pricingLastUpdated } from "@/content/pricing";
 import { privacy } from "@/content/privacy";
 import { referralsLastUpdated } from "@/content/referrals";
 import { researchLastUpdated } from "@/content/research";
 import { securityPage } from "@/content/security";
 import { termsCopy } from "@/content/terms";
 import { troubleshootingGuides, troubleshootingUpdated } from "@/content/troubleshooting";
+import { trustUpdated } from "@/content/trust";
 import { isoDay } from "@/lib/content-date";
 
 /**
@@ -122,6 +126,13 @@ const contentDates: Partial<Record<string, string>> = {
   ),
   /* The research page prints no day: its content file's. */
   [routes.research]: researchLastUpdated,
+  /* The five pages of 30 Oct 2026: /trust prints its day; /contact and /pricing print none, the calculators their
+     prices' day, which is their content's. */
+  [routes.trust]: trustUpdated,
+  [routes.contact]: contactLastUpdated,
+  [routes.pricing]: pricingLastUpdated,
+  [routes.nodeCostCalculator]: calculatorsLastUpdated,
+  [routes.diskCostCalculator]: calculatorsLastUpdated,
 };
 
 /**
@@ -130,9 +141,10 @@ const contentDates: Partial<Record<string, string>> = {
  * Amoeba's once `amoebaDocs` publishes them, the install and contributing
  * guides and the troubleshooting pages), Learn and every article in the
  * Learn index (A–Z by slug), the glossary and every term in its index (A–Z by
- * slug), the case studies, the research papers, /events, /about, /careers,
- * /brand-assets, /partners, /referrals, the privacy policy, the terms, and
- * security and data handling.
+ * slug), Cloud cost optimization tools with its comparison pages and the two
+ * calculators, the case studies, the research papers, /events, /pricing,
+ * /contact, /about, /careers, /brand-assets, /partners, /referrals, the
+ * privacy policy, the terms, security and data handling, and the Trust center.
  * A held page answers 404, so it is never listed.
  *
  * `lastModified` is the page's date from `learnDates` or `contentDates`, never the build's.
@@ -161,6 +173,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     routes.cloudCostTools,
     ...alternativesPages.map((page) => page.route),
     ...versusPages.map(versusRoute),
+    routes.nodeCostCalculator,
+    routes.diskCostCalculator,
     routes.valueLab,
     routes.caseStudyCoralDevCluster,
     routes.caseStudyAmoebaLabVms,
@@ -168,6 +182,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     routes.events,
     routes.news,
     routes.community,
+    routes.pricing,
+    routes.contact,
     routes.about,
     routes.careers,
     routes.brandAssets,
@@ -177,6 +193,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     routes.privacy,
     routes.terms,
     routes.security,
+    routes.trust,
   ].map((path) => {
     const printed = contentDates[path];
     const date = learnDates[path] ?? (printed ? isoDay(printed) : undefined);

@@ -1,0 +1,286 @@
+{
+  "node": [
+    {
+      "title": "Azure (AKS): monthly list price per node",
+      "head": ["Size", "Kind", "vCPUs", "Memory", "East US", "West Europe", "Central India"],
+      "rows": [
+        ["`Standard_D2s_v5`", "General purpose", "2", "8 GiB", "$70.08", "$83.95", "$73.73"],
+        ["`Standard_D4s_v5`", "General purpose", "4", "16 GiB", "$140.16", "$167.90", "$147.46"],
+        ["`Standard_D8s_v5`", "General purpose", "8", "32 GiB", "$280.32", "$335.80", "$294.92"],
+        ["`Standard_D16s_v5`", "General purpose", "16", "64 GiB", "$560.64", "$671.60", "$589.84"],
+        ["`Standard_D4as_v5`", "General purpose", "4", "16 GiB", "$125.56", "$151.84", "$81.03"],
+        ["`Standard_D8as_v5`", "General purpose", "8", "32 GiB", "$251.12", "$303.68", "$162.06"],
+        ["`Standard_F4s_v2`", "Compute optimized", "4", "8 GiB", "$123.37", "$141.62", "$124.10"],
+        ["`Standard_F8s_v2`", "Compute optimized", "8", "16 GiB", "$246.74", "$283.24", "$248.20"],
+        [
+          "`Standard_F16s_v2`",
+          "Compute optimized",
+          "16",
+          "32 GiB",
+          "$494.21",
+          "$566.48",
+          "$496.40"
+        ],
+        ["`Standard_E4s_v5`", "Memory optimized", "4", "32 GiB", "$183.96", "$221.92", "$189.80"],
+        ["`Standard_E8s_v5`", "Memory optimized", "8", "64 GiB", "$367.92", "$443.84", "$379.60"],
+        ["`Standard_E16s_v5`", "Memory optimized", "16", "128 GiB", "$735.84", "$887.68", "$759.20"]
+      ]
+    },
+    {
+      "title": "Azure (AKS): what pods can use on each node",
+      "head": ["Size", "Max pods", "CPU pods can use", "Memory pods can use", "Kubernetes keeps"],
+      "rows": [
+        [
+          "`Standard_D2s_v5`",
+          "250",
+          "1.9 of 2 vCPUs (95%)",
+          "5.9 of 8 GiB (73.8%)",
+          "0.1 vCPU, 2.1 GiB"
+        ],
+        [
+          "`Standard_D4s_v5`",
+          "250",
+          "3.86 of 4 vCPUs (96.5%)",
+          "11.9 of 16 GiB (74.4%)",
+          "0.14 vCPU, 4.1 GiB"
+        ],
+        [
+          "`Standard_D8s_v5`",
+          "250",
+          "7.82 of 8 vCPUs (97.8%)",
+          "26.85 of 32 GiB (83.9%)",
+          "0.18 vCPU, 5.15 GiB"
+        ],
+        [
+          "`Standard_D16s_v5`",
+          "250",
+          "15.74 of 16 vCPUs (98.4%)",
+          "58.85 of 64 GiB (92%)",
+          "0.26 vCPU, 5.15 GiB"
+        ],
+        [
+          "`Standard_D4as_v5`",
+          "250",
+          "3.86 of 4 vCPUs (96.5%)",
+          "11.9 of 16 GiB (74.4%)",
+          "0.14 vCPU, 4.1 GiB"
+        ],
+        [
+          "`Standard_D8as_v5`",
+          "250",
+          "7.82 of 8 vCPUs (97.8%)",
+          "26.85 of 32 GiB (83.9%)",
+          "0.18 vCPU, 5.15 GiB"
+        ],
+        [
+          "`Standard_F4s_v2`",
+          "250",
+          "3.86 of 4 vCPUs (96.5%)",
+          "5.9 of 8 GiB (73.8%)",
+          "0.14 vCPU, 2.1 GiB"
+        ],
+        [
+          "`Standard_F8s_v2`",
+          "250",
+          "7.82 of 8 vCPUs (97.8%)",
+          "11.9 of 16 GiB (74.4%)",
+          "0.18 vCPU, 4.1 GiB"
+        ],
+        [
+          "`Standard_F16s_v2`",
+          "250",
+          "15.74 of 16 vCPUs (98.4%)",
+          "26.85 of 32 GiB (83.9%)",
+          "0.26 vCPU, 5.15 GiB"
+        ],
+        [
+          "`Standard_E4s_v5`",
+          "250",
+          "3.86 of 4 vCPUs (96.5%)",
+          "26.85 of 32 GiB (83.9%)",
+          "0.14 vCPU, 5.15 GiB"
+        ],
+        [
+          "`Standard_E8s_v5`",
+          "250",
+          "7.82 of 8 vCPUs (97.8%)",
+          "58.85 of 64 GiB (92%)",
+          "0.18 vCPU, 5.15 GiB"
+        ],
+        [
+          "`Standard_E16s_v5`",
+          "250",
+          "15.74 of 16 vCPUs (98.4%)",
+          "122.85 of 128 GiB (96%)",
+          "0.26 vCPU, 5.15 GiB"
+        ]
+      ]
+    },
+    {
+      "title": "AWS (EKS): monthly list price per node",
+      "head": [
+        "Size",
+        "Kind",
+        "vCPUs",
+        "Memory",
+        "US East (N. Virginia)",
+        "EU (Ireland)",
+        "Asia Pacific (Mumbai)"
+      ],
+      "rows": [
+        ["`m6i.large`", "General purpose", "2", "8 GiB", "$70.08", "$78.11", "$73.73"],
+        ["`m6i.xlarge`", "General purpose", "4", "16 GiB", "$140.16", "$156.22", "$147.46"],
+        ["`m6i.2xlarge`", "General purpose", "8", "32 GiB", "$280.32", "$312.44", "$294.92"],
+        ["`m6i.4xlarge`", "General purpose", "16", "64 GiB", "$560.64", "$624.88", "$589.84"],
+        ["`m7i.xlarge`", "General purpose", "4", "16 GiB", "$147.17", "$164.03", "$154.83"],
+        ["`m7i.2xlarge`", "General purpose", "8", "32 GiB", "$294.34", "$328.06", "$309.67"],
+        ["`c6i.xlarge`", "Compute optimized", "4", "8 GiB", "$124.10", "$133.15", "$124.10"],
+        ["`c6i.2xlarge`", "Compute optimized", "8", "16 GiB", "$248.20", "$266.30", "$248.20"],
+        ["`c6i.4xlarge`", "Compute optimized", "16", "32 GiB", "$496.40", "$532.61", "$496.40"],
+        ["`r6i.large`", "Memory optimized", "2", "16 GiB", "$91.98", "$102.93", "$94.90"],
+        ["`r6i.xlarge`", "Memory optimized", "4", "32 GiB", "$183.96", "$205.86", "$189.80"],
+        ["`r6i.2xlarge`", "Memory optimized", "8", "64 GiB", "$367.92", "$411.72", "$379.60"]
+      ]
+    },
+    {
+      "title": "AWS (EKS): what pods can use on each node",
+      "head": ["Size", "Max pods", "CPU pods can use", "Memory pods can use", "Kubernetes keeps"],
+      "rows": [
+        [
+          "`m6i.large`",
+          "29",
+          "1.93 of 2 vCPUs (96.5%)",
+          "Not shown (see the note)",
+          "0.07 vCPU, 0.66 GiB"
+        ],
+        [
+          "`m6i.xlarge`",
+          "58",
+          "3.92 of 4 vCPUs (98%)",
+          "Not shown (see the note)",
+          "0.08 vCPU, 0.97 GiB"
+        ],
+        [
+          "`m6i.2xlarge`",
+          "58",
+          "7.91 of 8 vCPUs (98.9%)",
+          "Not shown (see the note)",
+          "0.09 vCPU, 0.97 GiB"
+        ],
+        [
+          "`m6i.4xlarge`",
+          "110",
+          "15.89 of 16 vCPUs (99.3%)",
+          "Not shown (see the note)",
+          "0.11 vCPU, 2.86 GiB"
+        ],
+        [
+          "`m7i.xlarge`",
+          "58",
+          "3.92 of 4 vCPUs (98%)",
+          "Not shown (see the note)",
+          "0.08 vCPU, 0.97 GiB"
+        ],
+        [
+          "`m7i.2xlarge`",
+          "58",
+          "7.91 of 8 vCPUs (98.9%)",
+          "Not shown (see the note)",
+          "0.09 vCPU, 0.97 GiB"
+        ],
+        [
+          "`c6i.xlarge`",
+          "58",
+          "3.92 of 4 vCPUs (98%)",
+          "Not shown (see the note)",
+          "0.08 vCPU, 0.97 GiB"
+        ],
+        [
+          "`c6i.2xlarge`",
+          "58",
+          "7.91 of 8 vCPUs (98.9%)",
+          "Not shown (see the note)",
+          "0.09 vCPU, 0.97 GiB"
+        ],
+        [
+          "`c6i.4xlarge`",
+          "110",
+          "15.89 of 16 vCPUs (99.3%)",
+          "Not shown (see the note)",
+          "0.11 vCPU, 2.86 GiB"
+        ],
+        [
+          "`r6i.large`",
+          "29",
+          "1.93 of 2 vCPUs (96.5%)",
+          "Not shown (see the note)",
+          "0.07 vCPU, 0.66 GiB"
+        ],
+        [
+          "`r6i.xlarge`",
+          "58",
+          "3.92 of 4 vCPUs (98%)",
+          "Not shown (see the note)",
+          "0.08 vCPU, 0.97 GiB"
+        ],
+        [
+          "`r6i.2xlarge`",
+          "58",
+          "7.91 of 8 vCPUs (98.9%)",
+          "Not shown (see the note)",
+          "0.09 vCPU, 0.97 GiB"
+        ]
+      ]
+    }
+  ],
+  "disk": [
+    {
+      "title": "Azure Premium SSD (LRS): monthly list price per disk",
+      "head": ["Tier", "Size", "East US", "West Europe", "Central India"],
+      "rows": [
+        ["P1", "4 GiB", "$0.60", "$0.78", "$0.84"],
+        ["P2", "8 GiB", "$1.20", "$1.56", "$1.68"],
+        ["P3", "16 GiB", "$2.40", "$3.12", "$3.36"],
+        ["P4", "32 GiB", "$5.28", "$5.81", "$5.28"],
+        ["P6", "64 GiB", "$10.21", "$11.23", "$10.21"],
+        ["P10", "128 GiB", "$19.71", "$21.68", "$19.71"],
+        ["P15", "256 GiB", "$38.01", "$41.81", "$38.01"],
+        ["P20", "512 GiB", "$73.22", "$80.54", "$73.22"],
+        ["P30", "1,024 GiB", "$135.17", "$148.68", "$135.17"],
+        ["P40", "2,048 GiB", "$259.05", "$284.94", "$259.05"],
+        ["P50", "4,096 GiB", "$495.57", "$545.10", "$495.57"],
+        ["P60", "8,192 GiB", "$946.08", "$1,040.64", "$946.08"],
+        ["P70", "16,384 GiB", "$1,802.06", "$1,982.17", "$1,802.06"],
+        ["P80", "32,767 GiB", "$3,604.11", "$3,964.34", "$3,604.11"]
+      ]
+    },
+    {
+      "title": "Azure Standard SSD (LRS): monthly list price per disk",
+      "head": ["Tier", "Size", "East US", "West Europe", "Central India"],
+      "rows": [
+        ["E1", "4 GiB", "$0.30", "$0.30", "$0.33"],
+        ["E2", "8 GiB", "$0.60", "$0.60", "$0.66"],
+        ["E3", "16 GiB", "$1.20", "$1.20", "$1.32"],
+        ["E4", "32 GiB", "$2.40", "$2.40", "$2.64"],
+        ["E6", "64 GiB", "$4.80", "$4.80", "$5.28"],
+        ["E10", "128 GiB", "$9.60", "$9.60", "$10.56"],
+        ["E15", "256 GiB", "$19.20", "$19.20", "$21.12"],
+        ["E20", "512 GiB", "$38.40", "$38.40", "$42.24"],
+        ["E30", "1,024 GiB", "$76.80", "$76.80", "$84.48"],
+        ["E40", "2,048 GiB", "$153.60", "$153.60", "$168.96"],
+        ["E50", "4,096 GiB", "$307.20", "$307.20", "$337.92"],
+        ["E60", "8,192 GiB", "$614.40", "$614.40", "$675.84"],
+        ["E70", "16,384 GiB", "$1,228.80", "$1,228.80", "$1,351.68"],
+        ["E80", "32,767 GiB", "$2,457.60", "$2,457.60", "$2,703.36"]
+      ]
+    },
+    {
+      "title": "Amazon EBS: storage list price per GB-month",
+      "head": ["Volume type", "US East (N. Virginia)", "EU (Ireland)", "Asia Pacific (Mumbai)"],
+      "rows": [
+        ["gp3", "$0.08", "$0.088", "$0.0912"],
+        ["gp2", "$0.10", "$0.11", "$0.114"]
+      ]
+    }
+  ]
+}

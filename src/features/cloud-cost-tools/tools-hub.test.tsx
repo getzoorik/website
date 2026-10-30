@@ -75,7 +75,7 @@ describe("/cloud-cost-optimization-library's metadata", () => {
       images: [pageCards["/cloud-cost-optimization-library"]],
     });
     expect(routes.cloudCostTools).toBe("/cloud-cost-optimization-library");
-    expect(cloudCostToolsLastUpdated).toBe("21 October 2026");
+    expect(cloudCostToolsLastUpdated).toBe("30 October 2026");
   });
 });
 
@@ -104,9 +104,10 @@ describe("/cloud-cost-optimization-library", () => {
     expect(sections.map((s) => [s.id, s.className, text(s.querySelector("h2"))])).toEqual([
       ["tools", "sec lv-sec", "Tools that reduce cloud cost"],
       ["ours", "sec lv-sec sec-band", "Compare Coral and Amoeba"],
+      ["calculators", "sec lv-sec", "Free calculators"],
       ["assess", "sec", "Find your own number"],
     ]);
-    for (const id of ["tools", "ours"]) {
+    for (const id of ["tools", "ours", "calculators"]) {
       const section = root.querySelector(`#${id}`)!;
       expect(section).toHaveAttribute("aria-labelledby", `${id}-h`);
       expect(section.querySelector(".sec-hrow > h2")).toHaveAttribute("id", `${id}-h`);
@@ -395,6 +396,34 @@ describe("/cloud-cost-optimization-library", () => {
       expect(readFileSync(file, "utf8")).not.toMatch(
         /localStorage|sessionStorage|indexedDB|document\.cookie/,
       );
+    }
+  });
+
+  it("lists the two calculators under Free calculators, two by two, each one link at the site's root", () => {
+    const grid = page().querySelector("#calculators .dt-grid")!;
+    expect(grid).toHaveClass("dt-2x2", "tl-2x2");
+    const tiles = [...grid.querySelectorAll(":scope > article.dt > a.dt-a")];
+    expect(
+      tiles.map((a) => [
+        a.getAttribute("href"),
+        text(a.querySelector(".dt-t")),
+        text(a.querySelector(".dt-l")),
+      ]),
+    ).toEqual([
+      [
+        routes.nodeCostCalculator,
+        "Kubernetes node cost calculator",
+        "A node’s monthly list price on AKS or EKS, and how much of it your pods can use.",
+      ],
+      [
+        routes.diskCostCalculator,
+        "Disk cost calculator",
+        "What an Azure managed disk or an EBS volume costs a month, and what its empty space costs.",
+      ],
+    ]);
+    for (const tile of tiles) {
+      expect(tile).not.toHaveAttribute("target");
+      expect(tile.querySelector("svg.dt-ic")).toHaveAttribute("aria-hidden", "true");
     }
   });
 

@@ -51,6 +51,8 @@ export interface DocumentHeroProps {
   readonly downloads?: readonly HeroDownload[];
   /** Anything else beside the text, in the files' place (Value Lab's "Saved so far"). */
   readonly aside?: ReactNode;
+  /** Buttons under the deck, in the home hero's row (`.hero-cta`): /pricing's assessment and Book a demo. */
+  readonly actions?: ReactNode;
 }
 
 /**
@@ -121,6 +123,7 @@ export function DocumentHero({
   productSwitch,
   downloads = [],
   aside,
+  actions,
 }: DocumentHeroProps): React.JSX.Element {
   const text = (
     <>
@@ -128,6 +131,7 @@ export function DocumentHero({
       <h1>{title}</h1>
       {productSwitch ? <ProductSwitch {...productSwitch} /> : null}
       {deck ? <p className="doc-deck">{deck}</p> : null}
+      {actions}
     </>
   );
 

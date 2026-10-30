@@ -1,0 +1,76 @@
+/* the two calculators (30 Oct 2026), as the mocks' <style id="calculators"> writes them: the form on the white card,
+   the result on the dark one (Value Lab's Saved so far panel: its kicker, figure and line; the rows are the guides'
+   download rows). The cloud and disk type are the Coral guide's segmented switch; region, size and the number fields
+   are /events' select and search field.
+   repo: the App Router keeps a visited page's sheet in the document, so the frame's rules start at the calculator's
+   own section (`#calculator ~ .doc-body`): another page can have a section called Sources. Every other selector names
+   a class only these two pages draw. */
+.calc-intro{max-width:62ch;margin:0 0 32px}
+.calc-intro p{font-size:1.0625rem;line-height:1.6;color:var(--muted);text-wrap:pretty}
+.calc-intro p + p{margin-top:12px}
+.calc-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:stretch}
+.calc-grid > .as-card,.calc-grid > .as-cal{grid-row:auto;display:block;justify-items:normal;min-width:0}
+.calc-f + .calc-f{margin-top:22px}
+.calc-l{display:block;margin-bottom:8px;font-size:var(--fs-micro);font-weight:500;line-height:1.4;color:var(--muted)}
+.calc-f .os-sw{display:flex;width:100%}
+.calc-f .os-sw button{flex:1 1 0;height:38px;padding:0 10px}
+.calc-sel{display:block;width:100%;height:44px;padding:0 12px;border:1px solid var(--line-ctl,#868DAB);border-radius:var(--r-ctl);background:var(--bg);
+  font:500 .9375rem/1 var(--sans);color:var(--text);cursor:pointer}
+.calc-in{display:flex;align-items:center;gap:10px;height:44px;padding:0 14px;border:1px solid var(--line-ctl,#868DAB);border-radius:var(--r-ctl);background:var(--bg)}
+.calc-in input{flex:1;min-width:0;height:100%;border:0;background:transparent;font:500 .9375rem/1 var(--sans);color:var(--text);outline:none;
+  font-variant-numeric:tabular-nums;-moz-appearance:textfield;appearance:textfield}
+.calc-in input::-webkit-outer-spin-button,.calc-in input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.calc-u{flex:none;font-size:var(--fs-small);font-weight:500;color:var(--muted)}
+.calc-in:focus-within,.calc-sel:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.calc-in.is-bad{border-color:var(--crit)}
+.calc-h{margin-top:8px;font-size:var(--fs-small);line-height:1.5;color:var(--muted);text-wrap:pretty}
+.calc-h a,.calc-note a{color:var(--accent);text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--accent) 35%,transparent);text-underline-offset:3px}
+.calc-m{margin-top:8px;font-size:var(--fs-small);font-weight:500;line-height:1.5;color:var(--text)}
+.calc-m::before{content:"";display:inline-block;width:7px;height:7px;margin:0 8px 1px 0;border-radius:50%;background:var(--crit)}
+.calc-more{margin-top:22px;border-top:1px solid var(--line)}
+.calc-more > summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0 0;font-size:.9375rem;font-weight:500;
+  color:var(--text);cursor:pointer;list-style:none}
+.calc-more > summary::-webkit-details-marker{display:none}
+.calc-more > summary .fq-chev{width:16px;height:16px;color:var(--muted);transition:transform var(--d-fast) var(--ease)}
+.calc-more[open] > summary .fq-chev{transform:rotate(180deg)}
+.calc-more > .calc-f{margin-top:16px}
+.calc-r{color:#fff}
+.calc-k{font-size:var(--fs-small);font-weight:500;color:rgba(255,255,255,.82)}
+.calc-n{margin-top:8px;font-size:1rem;color:rgba(255,255,255,.78)}
+.calc-n b{display:block;font-size:clamp(2.25rem,1.6rem + 1.6vw,3rem);font-weight:600;line-height:1.05;letter-spacing:-.035em;color:#fff;
+  font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.calc-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.calc-r h3{margin-top:28px;font-size:var(--fs-micro);font-weight:500;letter-spacing:.01em;color:rgba(255,255,255,.62)}
+.calc-rows{margin:10px 0 0;border:1px solid rgba(255,255,255,.16);border-radius:var(--r-card)}
+.calc-rows > div{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:4px 16px;padding:12px 16px}
+.calc-rows > div + div{border-top:1px solid rgba(255,255,255,.1)}
+.calc-rows dt{font-size:.9375rem;line-height:1.4;color:rgba(255,255,255,.78)}
+.calc-rows dd{margin:0;font-size:.9375rem;font-weight:500;line-height:1.4;color:#fff;text-align:right;font-variant-numeric:tabular-nums}
+.calc-rows > .is-note{display:block}
+.calc-note{margin-top:14px;font-size:var(--fs-small);line-height:1.55;color:rgba(255,255,255,.66);text-wrap:pretty}
+.calc-note b{font-weight:600;color:#fff}
+.calc-rows .calc-note{margin:0}
+.calc-stop{margin-top:12px;font-size:1rem;line-height:1.6;color:rgba(255,255,255,.78)}
+.calc-src{margin-top:20px;max-width:none}
+.calc-close{max-width:62ch;margin:0 0 28px;font-size:1.0625rem;line-height:1.6;color:var(--muted);text-wrap:pretty}
+#calculator ~ .doc-body #sources .gd-row{margin-top:24px;border-top:1px solid var(--line)}
+#calculator ~ .doc-body #sources .fq > summary{grid-template-columns:minmax(0,1fr) 16px;align-items:center}
+#calculator ~ .doc-body #sources .fq > summary h3{margin:0}
+#calculator ~ .doc-body #sources .gd-row > .fq-body{padding-left:0;padding-right:0}
+#calculator ~ .doc-body .ar-frame .fq-sec-b > :first-child{margin-top:0}
+#calculator ~ .doc-body #sources .fq-body h4:first-child{margin-top:0}
+@media (max-width:900px){.calc-grid{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:560px){.calc-two{grid-template-columns:minmax(0,1fr);gap:14px}.calc-rows > div{grid-template-columns:minmax(0,1fr)}
+  .calc-rows dd{text-align:left}}
+/* repo: what the mocks get from the browser and the site takes off. The mocks carry no reset, so the number fields and
+   the options keep the browser's own padding and an option group's label is bold; the site's reset (Tailwind's
+   preflight) zeroes them, so they are put back here. */
+.calc-in input{padding:1px 2px}
+.calc-sel optgroup{font-weight:700}
+.calc-sel option{padding:0 2px 1px}
+/* repo: the mock's page-wide `.mk-note` (the tools hub's sheet; the site has it under `.tl-wrap` only), on the line
+   under the calculator */
+.calc-src.mk-note{font-size:var(--fs-micro);color:var(--muted)}
+/* repo: the article frame keeps its sections 80px apart from 981px (doc-rows.css); the calculators' frame, the tools
+   hub's in the mocks, keeps the FAQ's 64px */
+@media (min-width:981px){ #calculator ~ .doc-body .ar-frame .fq-sec + .fq-sec{margin-top:64px} }

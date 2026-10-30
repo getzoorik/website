@@ -34,7 +34,8 @@ describe("the published documents", () => {
   it.each(published)("%s is served from public/docs/ and reads as an A4 PDF", (id) => {
     const facts = documentFacts(id);
     const file = join(process.cwd(), "public", documents[id].pdf);
-    expect(documents[id].pdf).toMatch(/^\/docs\/[a-z-]+\.pdf$/);
+    /* A plain name, or a versioned one ("-v1.0"): the DPA keeps its version in its address. */
+    expect(documents[id].pdf).toMatch(/^\/docs\/[a-z-]+(-v\d+\.\d+)?\.pdf$/);
     expect(facts.bytes).toBe(statSync(file).size);
     expect(facts.pages).toBeGreaterThan(0);
     expect(facts.paper).toBe("A4");
@@ -80,5 +81,6 @@ describe("the published documents", () => {
     expect(documents["coral-one-pager"].canonical).toBe("/coral");
     expect(documents["amoeba-guide"].canonical).toBe("/amoeba-guide");
     expect(documents["amoeba-one-pager"].canonical).toBe("/amoeba");
+    expect(documents["coral-dpa"].canonical).toBe("/trust");
   });
 });

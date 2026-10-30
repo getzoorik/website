@@ -19,7 +19,16 @@ export interface ContentsItem {
   readonly id: string;
   /** The section's name, as its h2 reads. */
   readonly label: string;
+  /**
+   * The section's parts, listed under it in a smaller, indented list (`ol.rl-sub`): /trust's security overview and its
+   * six h3s. The rail marks a part as it marks a section.
+   */
+  readonly children?: readonly ContentsItem[];
 }
+
+/** Every listed id in the order the lists draw them: each section, then its parts. */
+const flatIds = (items: readonly ContentsItem[]): string[] =>
+  items.flatMap((item) => [item.id, ...flatIds(item.children ?? [])]);
 
 /** A section is the one being read once its top has passed this line, 140px from the top of the viewport. */
 export const CONTENTS_LINE = 140;
@@ -77,12 +86,15 @@ export function useSectionInView(ids: readonly string[]): string | null {
 function ContentsList({
   items,
   current,
+  sub,
 }: {
   readonly items: readonly ContentsItem[];
   readonly current?: string | null;
+  /** A section's parts: the indented list under it. */
+  readonly sub?: boolean;
 }): React.JSX.Element {
   return (
-    <ol role="list">
+    <ol role="list" className={sub ? "rl-sub" : undefined}>
       {items.map((item) => (
         <li key={item.id}>
           <a
@@ -92,6 +104,9 @@ function ContentsList({
           >
             {item.label}
           </a>
+          {item.children?.length ? (
+            <ContentsList items={item.children} current={current} sub />
+          ) : null}
         </li>
       ))}
     </ol>
@@ -112,7 +127,7 @@ export function ContentsRail({
 }: {
   readonly items: readonly ContentsItem[];
 }): React.JSX.Element {
-  const current = useSectionInView(items.map((item) => item.id));
+  const current = useSectionInView(flatIds(items));
   return (
     <nav className="doc-rail" aria-label={contentsLabel}>
       <p>{contentsLabel}</p>

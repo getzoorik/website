@@ -67,7 +67,8 @@ export const securityPage = {
     title: "Security and data handling",
     deck: "What each product may change, what it sends us, and where we keep it.",
   },
-  updated: "Updated 9 October 2026",
+  /* 30 Oct 2026: the Trust center's link in Report a security issue. */
+  updated: "Updated 30 October 2026",
   /** The summary's title is a paragraph, the list a summary list. */
   summaryTitle: "Summary",
 } as const;
@@ -468,6 +469,7 @@ export const securityGroups: readonly SecurityGroup[] = [
             links: [
               { text: "Privacy policy", href: routes.privacy },
               { text: "Terms of use", href: routes.terms },
+              { text: "Trust center", href: routes.trust },
             ],
           },
         ],

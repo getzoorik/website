@@ -194,6 +194,8 @@ export function codeBreaks(text: string): ReactNode {
 
 export interface DocTableColumn {
   readonly label: string;
+  /** The header as it is drawn, where it keeps a name out of translation; `label` when none. */
+  readonly head?: ReactNode;
   /** The PDF's column width, e.g. "24%". */
   readonly width?: string;
 }
@@ -254,7 +256,7 @@ export function DocTable({
         <tr role="row">
           {columns.map((column) => (
             <th scope="col" role="columnheader" key={column.label}>
-              {column.label}
+              {column.head ?? column.label}
             </th>
           ))}
         </tr>

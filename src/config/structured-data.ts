@@ -38,8 +38,10 @@ import { amoebaGuide } from "@/content/amoeba-guide";
 import { amoebaPageContent } from "@/content/amoeba-page";
 import { assessmentCopy } from "@/content/assessment";
 import { brandAssetsPage } from "@/content/brand-assets";
+import { diskCalculator, nodeCalculator } from "@/content/calculators";
 import { careers } from "@/content/careers";
 import { communityPage } from "@/content/community";
+import { contactPage } from "@/content/contact";
 import { designPartnersPage } from "@/content/design-partners";
 import { amoebaStudy, caseStudiesHub, caseStudy } from "@/content/case-studies";
 import { coralFaqPage } from "@/content/coral-faq";
@@ -65,6 +67,7 @@ import type { Article } from "@/content/learn/article";
 import { glossaryPage, glossaryTerms, termName, termRoute } from "@/content/learn/glossary";
 import type { GlossaryTerm } from "@/content/learn/glossary-term";
 import { articleAuthor, articleCard, articleRoute, learnArticles } from "@/content/learn/published";
+import { pricingPage } from "@/content/pricing";
 import { privacy } from "@/content/privacy";
 import { referralsPage } from "@/content/referrals";
 import { researchPage } from "@/content/research";
@@ -73,6 +76,7 @@ import { platformLabel, productOrder, products, type ProductId } from "@/content
 import { securityPage } from "@/content/security";
 import { termsCopy } from "@/content/terms";
 import { troubleshootingGuides } from "@/content/troubleshooting";
+import { trustPage } from "@/content/trust";
 import { isoDay } from "@/lib/content-date";
 
 /**
@@ -269,7 +273,7 @@ interface Crumb {
 
 /** A page and its place in the site, from the same constants its metadata reads. */
 interface PageEntry {
-  readonly kind: "WebPage" | "CollectionPage" | "AboutPage";
+  readonly kind: "WebPage" | "CollectionPage" | "AboutPage" | "ContactPage";
   /** The page's `<title>`, as the page prints it. */
   readonly name: string;
   readonly description: string;
@@ -615,6 +619,45 @@ const pages: Readonly<Record<string, PageEntry>> = {
   [routes.privacy]: documentEntry(routes.privacy, privacy.meta, []),
   [routes.terms]: documentEntry(routes.terms, termsCopy.meta, []),
   [routes.security]: documentEntry(routes.security, securityPage.meta, []),
+  /* The five pages of 30 Oct 2026, each under Zoorik alone but the calculators, which sit under Cloud cost
+     optimization tools as its comparison pages do. The Trust center is about Coral, whose security overview, DPA
+     and sub-processors it is; Contact and Pricing are about the organisation, Contact as its ContactPage. None
+     carries an offer or a price: Pricing names none. */
+  [routes.trust]: {
+    kind: "WebPage",
+    name: titled(trustPage.meta.title),
+    description: trustPage.meta.description,
+    trail: [{ name: trustPage.hero.title, path: routes.trust }],
+    about: "coral",
+  },
+  [routes.contact]: {
+    kind: "ContactPage",
+    name: titled(contactPage.meta.title),
+    description: contactPage.meta.description,
+    trail: [{ name: contactPage.meta.title, path: routes.contact }],
+    about: "organization",
+  },
+  [routes.pricing]: {
+    kind: "WebPage",
+    name: titled(pricingPage.meta.title),
+    description: pricingPage.meta.description,
+    trail: [{ name: pricingPage.hero.title, path: routes.pricing }],
+    about: "organization",
+  },
+  ...Object.fromEntries(
+    [
+      { path: routes.nodeCostCalculator, copy: nodeCalculator },
+      { path: routes.diskCostCalculator, copy: diskCalculator },
+    ].map(({ path, copy }) => [
+      path,
+      {
+        kind: "WebPage",
+        name: titled(copy.meta.title),
+        description: copy.meta.description,
+        trail: [step(routes.cloudCostTools), { name: copy.hero.title, path }],
+      } satisfies PageEntry,
+    ]),
+  ),
 };
 
 /** Each indexed page's printed title, by path: what the footer's "Ask about Zoorik on" questions name a page by. */

@@ -95,6 +95,10 @@
 @media (hover:hover){.doc-rail ol a:hover{color:var(--text)}}
 .doc-rail a:focus-visible{outline-offset:-2px}
 .doc-rail .doc-top{margin-top:20px}
+/* a section's sub-parts, one step in (/trust's security overview) */
+.doc-rail ol.rl-sub a{padding-left:28px;font-size:.8125rem}
+.doc-toc ol.rl-sub{padding:0 0 0 16px}
+.doc-toc ol.rl-sub a{font-size:.875rem}
 .doc-top svg{transition:transform var(--d-fast) var(--ease)}
 @media (hover:hover){.doc-top:hover svg{transform:translateY(-2px) !important}}
 .doc-top:focus-visible svg{transform:translateY(-2px) !important}
