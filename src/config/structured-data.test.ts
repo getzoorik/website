@@ -138,6 +138,7 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/privacy": () => import("@/app/privacy/page"),
   "/terms": () => import("@/app/terms/page"),
   "/security": () => import("@/app/security/page"),
+  "/trust": () => import("@/app/trust/page"),
   "/open-source": () => import("@/app/open-source/page"),
   "/docs/install-coral-with-helm": () => import("@/app/docs/install-coral-with-helm/page"),
   "/docs/install-coral-with-terraform": () =>
@@ -358,7 +359,7 @@ describe("the home page's structured data", () => {
 
 describe("every indexed page's structured data", () => {
   it("renders on every page in the sitemap as one block that parses to the page's graph", async () => {
-    expect(listed).toHaveLength(39 + learnArticles.length + glossaryTerms.length);
+    expect(listed).toHaveLength(40 + learnArticles.length + glossaryTerms.length);
     for (const { path } of listed) {
       pathname.current = path;
       const { default: Page } = await pageModule(path);
@@ -460,6 +461,8 @@ describe("every indexed page's structured data", () => {
       "Amoeba troubleshooting",
     ]);
     expect(names(routes.research)).toEqual(["Zoorik", "Cloud cost optimization research"]);
+    /* The Trust center under Zoorik alone. */
+    expect(names(routes.trust)).toEqual(["Zoorik", "Trust center"]);
     expect(names(routes.privacy)).toEqual(["Zoorik", "Privacy"]);
     expect(names(routes.careers)).toEqual(["Zoorik", "Careers"]);
     expect(names(routes.events)).toEqual(["Zoorik", "Events"]);

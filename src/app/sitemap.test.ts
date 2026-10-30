@@ -40,7 +40,7 @@ function importGraph(file: string, seen = new Set<string>()): Set<string> {
 }
 
 describe("sitemap.xml", () => {
-  it("lists the home page, the product pages, the assessment, the documents, the install and contributing guides, the troubleshooting pages, open source, Learn and every article in its index, the glossary and every term in its index, Cloud cost optimization tools and the comparison pages, Value Lab and the two case studies, the research papers, /events, /about, /careers, /brand-assets, /referrals, /partners, /design-partners, the privacy policy, the terms and security, absolute, and nothing else", () => {
+  it("lists the home page, the product pages, the assessment, the documents, the install and contributing guides, the troubleshooting pages, open source, Learn and every article in its index, the glossary and every term in its index, Cloud cost optimization tools and the comparison pages, Value Lab and the two case studies, the research papers, /events, /about, /careers, /brand-assets, /referrals, /partners, /design-partners, the privacy policy, the terms, security and the Trust center, absolute, and nothing else", () => {
     expect(sitemap().map((entry) => entry.url)).toEqual([
       `${site.url}/`,
       `${site.url}/coral`,
@@ -85,6 +85,7 @@ describe("sitemap.xml", () => {
       `${site.url}/privacy`,
       `${site.url}/terms`,
       `${site.url}/security`,
+      `${site.url}/trust`,
     ]);
   });
 
@@ -92,7 +93,6 @@ describe("sitemap.xml", () => {
     const dates = Object.fromEntries(
       sitemap().map((entry) => [new URL(entry.url).pathname, entry.lastModified]),
     );
-    const updated = "2026-10-09";
     expect(dates).toEqual({
       /* A page that prints no day: the day its content last changed (the heading pass, 23 Oct 2026). */
       "/": "2026-10-23",
@@ -155,7 +155,10 @@ describe("sitemap.xml", () => {
       "/design-partners": "2026-10-21",
       "/privacy": "2026-10-19",
       "/terms": "2026-10-06",
-      "/security": updated,
+      /* /security prints "Updated 30 October 2026": the Trust center's link in Report a security issue. */
+      "/security": "2026-10-30",
+      /* The Trust center prints "Updated 30 October 2026". */
+      "/trust": "2026-10-30",
     });
     for (const entry of sitemap()) {
       expect(Object.keys(entry).filter((key) => key !== "lastModified")).toEqual(["url"]);
@@ -173,7 +176,7 @@ describe("sitemap.xml", () => {
        without one is never told to recrawl. */
     const entries = sitemap();
     expect(entries).toHaveLength(
-      (amoebaDocs ? 39 : 36) + learnArticles.length + glossaryTerms.length,
+      (amoebaDocs ? 40 : 37) + learnArticles.length + glossaryTerms.length,
     );
     /* Today is `LEARN_TODAY` when set (articles dated ahead, checked as of the day they go live), else the latest
        calendar day anywhere on Earth (UTC+14), so a date set to today in any time zone is not "the future". */

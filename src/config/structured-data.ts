@@ -73,6 +73,7 @@ import { platformLabel, productOrder, products, type ProductId } from "@/content
 import { securityPage } from "@/content/security";
 import { termsCopy } from "@/content/terms";
 import { troubleshootingGuides } from "@/content/troubleshooting";
+import { trustPage } from "@/content/trust";
 import { isoDay } from "@/lib/content-date";
 
 /**
@@ -615,6 +616,14 @@ const pages: Readonly<Record<string, PageEntry>> = {
   [routes.privacy]: documentEntry(routes.privacy, privacy.meta, []),
   [routes.terms]: documentEntry(routes.terms, termsCopy.meta, []),
   [routes.security]: documentEntry(routes.security, securityPage.meta, []),
+  /* The Trust center, under Zoorik alone and about Coral, whose security overview, DPA and sub-processors it is. */
+  [routes.trust]: {
+    kind: "WebPage",
+    name: titled(trustPage.meta.title),
+    description: trustPage.meta.description,
+    trail: [{ name: trustPage.hero.title, path: routes.trust }],
+    about: "coral",
+  },
 };
 
 /** Each indexed page's printed title, by path: what the footer's "Ask about Zoorik on" questions name a page by. */

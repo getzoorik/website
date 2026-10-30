@@ -37,6 +37,7 @@ import { researchLastUpdated } from "@/content/research";
 import { securityPage } from "@/content/security";
 import { termsCopy } from "@/content/terms";
 import { troubleshootingGuides, troubleshootingUpdated } from "@/content/troubleshooting";
+import { trustUpdated } from "@/content/trust";
 import { isoDay } from "@/lib/content-date";
 
 /**
@@ -122,6 +123,8 @@ const contentDates: Partial<Record<string, string>> = {
   ),
   /* The research page prints no day: its content file's. */
   [routes.research]: researchLastUpdated,
+  /* The Trust center prints its day. */
+  [routes.trust]: trustUpdated,
 };
 
 /**
@@ -131,8 +134,8 @@ const contentDates: Partial<Record<string, string>> = {
  * guides and the troubleshooting pages), Learn and every article in the
  * Learn index (A–Z by slug), the glossary and every term in its index (A–Z by
  * slug), the case studies, the research papers, /events, /about, /careers,
- * /brand-assets, /partners, /referrals, the privacy policy, the terms, and
- * security and data handling.
+ * /brand-assets, /partners, /referrals, the privacy policy, the terms,
+ * security and data handling, and the Trust center.
  * A held page answers 404, so it is never listed.
  *
  * `lastModified` is the page's date from `learnDates` or `contentDates`, never the build's.
@@ -177,6 +180,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     routes.privacy,
     routes.terms,
     routes.security,
+    routes.trust,
   ].map((path) => {
     const printed = contentDates[path];
     const date = learnDates[path] ?? (printed ? isoDay(printed) : undefined);

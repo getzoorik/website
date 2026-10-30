@@ -141,6 +141,7 @@ const CARDS: readonly {
   { file: "privacy", words: "Privacy policy", paths: ["/privacy"] },
   { file: "terms", words: "Terms of use", paths: ["/terms"] },
   { file: "security", words: "Security and data handling", paths: ["/security"] },
+  { file: "trust", words: "Security overview, DPA and sub-processors", paths: [routes.trust] },
   { file: "login", words: "Sign in", paths: ["/login"] },
   {
     file: "learn-azure-disk-cost-optimization",

@@ -1,0 +1,5 @@
+/* /trust (30 Oct 2026): /privacy's column, whose sheet the page shares. The opening paragraph before the first
+   section keeps a section's distance from it. The mock writes the rule on `.pp-prose`; here it is on the page's own
+   `.tr-prose`, because the App Router keeps a visited page's sheet in the document and /privacy's column is
+   `.pp-prose` too. */
+.tr-prose > p + section{margin-top:56px}

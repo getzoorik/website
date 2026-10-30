@@ -46,7 +46,8 @@ describe("/security", () => {
   it("keeps the Updated line and the summary open over the rows", () => {
     const root = page();
     const top = root.querySelector("article.gd-main > .fq-upd.gd-top > .pp-prose")!;
-    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 9 October 2026");
+    /* 30 Oct 2026: the Trust center's link in Report a security issue moved the day. */
+    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 30 October 2026");
     const summary = top.querySelector("#summary")!;
     expect(text(summary.querySelector(".sc-sum-t"))).toBe("Summary");
     expect([...summary.querySelectorAll("dt")].map(text)).toEqual([
@@ -134,7 +135,7 @@ describe("/security", () => {
     );
   });
 
-  it("links out to the guide and the legal pages, and nowhere else", () => {
+  it("links out to the guide, the legal pages and the Trust center, and nowhere else", () => {
     const links = [...page().querySelectorAll("article.gd-main a")].filter(
       (a) => !a.closest(".fq-chips"),
     );
@@ -146,6 +147,7 @@ describe("/security", () => {
       ["founders@zoorik.com", "mailto:founders@zoorik.com"],
       ["Privacy policy", "/privacy"],
       ["Terms of use", "/terms"],
+      ["Trust center", "/trust"],
     ]);
     for (const a of links) expect(a).not.toHaveAttribute("target");
   });
