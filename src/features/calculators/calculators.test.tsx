@@ -204,6 +204,17 @@ describe("/eks-and-aks-pricing-calculator", () => {
     expect(text(root.querySelector("#maxpods-m"))).toBe("AKS allows 10 to 250 pods per node.");
   });
 
+  it("opens More settings again while a max pods message stands", () => {
+    const root = render(<NodePage />).container;
+    const more = root.querySelector<HTMLDetailsElement>("#more")!;
+    fireEvent.change(root.querySelector("#maxpods")!, { target: { value: "10" } });
+    fireEvent.change(root.querySelector("#nodes")!, { target: { value: "2" } });
+    expect(more.open).toBe(true);
+    more.open = false;
+    fireEvent.change(root.querySelector("#nodes")!, { target: { value: "1" } });
+    expect(more.open).toBe(true);
+  });
+
   it("names its formula and its prices' sources and day under the calculator, and in Sources", () => {
     const root = render(<NodePage />).container;
     expect(text(root.querySelector("#calculator .calc-src"))).toBe(
