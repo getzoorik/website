@@ -191,7 +191,7 @@ export const routes = {
   diskCostCalculator: "/disk-cost-calculator",
   /* Ten planned pages, their addresses fixed now (owner, 30 Oct 2026) and at the site's root like every footer page.
      Each product on each cloud, in the footer's Products column after its product; and what Coral works with, the
-     footer's "Works with" list under Products. None is built yet: `unbuiltPages` holds their footer lines back. */
+     footer's "Works with" list under Products. All ten are in the footer; none is built yet (`unbuiltPages`). */
   coralForAks: "/coral-for-aks",
   coralForEks: "/coral-for-eks",
   amoebaForAzure: "/amoeba-for-azure",
@@ -205,11 +205,10 @@ export const routes = {
 } as const;
 
 /**
- * The planned pages not built yet. Each has its address in `routes` and its line in the footer's plan
- * (`footerPlan` in `@/content/footer`), and the footer leaves the line out while its page is listed here, so the
- * footer never leads to a 404. A page's own PR takes it off this list, and that is what wires it into the footer (a
- * "Works with" line once all six of those pages are off it): a test fails while a built page is still listed, or
- * while a footer line leads to a page that is neither built nor listed.
+ * The planned pages not built yet. Each has its address in `routes`, and the footer links it already (owner, 30 Oct
+ * 2026: "just put it there"), so each answers 404 until it is built. The checks that every link leads to a page skip
+ * these. A page's own PR takes it off this list: a test fails while a built page is still listed, or while a footer
+ * line leads to a page that is neither built nor listed.
  */
 export const unbuiltPages: ReadonlySet<string> = new Set<string>([
   routes.coralForAks,

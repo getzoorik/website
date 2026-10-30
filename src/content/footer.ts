@@ -1,5 +1,5 @@
 import { blueskyProfile, substackPublication } from "@/config/entity";
-import { amoebaDocs, calendarUrl, contactEmail, routes, site, unbuiltPages } from "@/config/site";
+import { amoebaDocs, calendarUrl, contactEmail, routes, site } from "@/config/site";
 import type { ProductId } from "@/content/products";
 
 /**
@@ -32,9 +32,6 @@ export interface FooterColumn {
   /** Drawn under the list before it, in that list's column, rather than as a
    *  column of its own ("Works with", under Products). */
   readonly stacked?: true;
-  /** Drawn only once every page it lists is built: a title over a few of
-   *  them reads as unfinished. */
-  readonly whole?: true;
 }
 
 export type FooterSocialPlatform =
@@ -212,11 +209,11 @@ export function askQuestion(path: string, title: string | undefined): string {
  *
  * Privacy and Terms are last in Company, in that order.
  *
- * This is the plan, with the pages not built yet among them (owner, 30 Oct
- * 2026): each product on each cloud after its product, and "Works with" under
- * Products. `footerColumns` is what is drawn.
+ * Each product on each cloud after its product, and "Works with" under
+ * Products, are drawn now, built or not (owner, 30 Oct 2026: "just put it
+ * there"); `unbuiltPages` lists the ones that answer 404 until built.
  */
-export const footerPlan: readonly FooterColumn[] = [
+export const footerColumns: readonly FooterColumn[] = [
   {
     heading: "Products",
     links: [
@@ -238,7 +235,6 @@ export const footerPlan: readonly FooterColumn[] = [
   {
     heading: "Works with",
     stacked: true,
-    whole: true,
     links: [
       { label: "Cluster Autoscaler", href: routes.coralWorksWithClusterAutoscaler },
       { label: "Karpenter", href: routes.coralWorksWithKarpenter },
@@ -311,24 +307,6 @@ export const footerPlan: readonly FooterColumn[] = [
     ],
   },
 ];
-
-/**
- * The lists as drawn: the plan without the lines whose pages are not built yet,
- * and without a `whole` list until every page in it is built. So a page's own
- * PR, which takes it off `unbuiltPages`, is what puts it in the footer.
- */
-export function builtColumns(
-  plan: readonly FooterColumn[],
-  unbuilt: ReadonlySet<string>,
-): readonly FooterColumn[] {
-  return plan.flatMap((list) => {
-    const links = list.links.filter((link) => !unbuilt.has(link.href));
-    if (links.length === 0 || (list.whole && links.length < list.links.length)) return [];
-    return [{ ...list, links }];
-  });
-}
-
-export const footerColumns: readonly FooterColumn[] = builtColumns(footerPlan, unbuiltPages);
 
 /** The bar under the columns, right end: the copyright line, the wordmark after it. */
 export const footerCopyright = "© 2026";

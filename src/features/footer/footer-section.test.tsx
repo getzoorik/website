@@ -257,10 +257,21 @@ describe("the footer's columns", () => {
         heading: ["P", "Products"],
         links: [
           ["Coral", "/coral"],
+          ["Coral for AKS", "/coral-for-aks"],
+          ["Coral for EKS", "/coral-for-eks"],
           ["Amoeba", "/amoeba"],
+          ["Amoeba for Azure", "/amoeba-for-azure"],
+          ["Amoeba for AWS", "/amoeba-for-aws"],
           ["Assessment", "/assessment"],
           ["Pricing", "/pricing"],
           ["Marketplaces", "/marketplaces"],
+          /* Works with, under Products in its column (owner, 30 Oct 2026). */
+          ["Cluster Autoscaler", "/coral-works-with-cluster-autoscaler"],
+          ["Karpenter", "/coral-works-with-karpenter"],
+          ["AKS node auto provisioning", "/coral-works-with-aks-node-auto-provisioning"],
+          ["KEDA", "/coral-works-with-keda"],
+          ["Helm", "/coral-works-with-helm"],
+          ["Terraform", "/coral-works-with-terraform"],
         ],
       },
       {
@@ -351,7 +362,12 @@ describe("the footer's columns", () => {
     /* "Coral guide": the label is one span, the name in it untranslated. */
     const named = [...footer.querySelectorAll(".foot-col a > span > span[translate='no']")];
     expect(named.map((el) => el.textContent)).toEqual([
-      /* The two Value Lab studies, then each product's guide, FAQ and troubleshooting. */
+      /* Each product on each cloud, then the two Value Lab studies, then each product's guide, FAQ and
+         troubleshooting. */
+      "Coral",
+      "Coral",
+      "Amoeba",
+      "Amoeba",
       "Coral",
       "Amoeba",
       "Coral",
