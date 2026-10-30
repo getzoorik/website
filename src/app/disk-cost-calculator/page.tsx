@@ -15,7 +15,7 @@ import "@/styles/calculators.css";
  * `/disk-cost-calculator`: what an Azure managed disk or an EBS volume costs a month, and what its empty space costs.
  * Indexed, listed in the sitemap, and prerendered at build like every page here; the calculator is its one client
  * island. At the site's root (owner, 30 Oct 2026: "At the root"), linked from Cloud cost optimization tools' Free
- * calculators.
+ * calculators and from the footer's Resources column, after Node cost calculator (owner, 30 Oct 2026).
  */
 /* Its title goes through the layout's template: "Disk cost calculator: Azure disks and Amazon EBS | Zoorik". */
 export const metadata: Metadata = documentMetadata(routes.diskCostCalculator, diskCalculator.meta);

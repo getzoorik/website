@@ -11,8 +11,8 @@ import "@/styles/trust.css";
 
 /**
  * `/trust`: the Trust center, Coral's security overview, the DPA and the sub-processors. Indexed, listed in the
- * sitemap, and prerendered at build like every page here. In no menu and no footer column yet (the owner's call):
- * /security's Report a security issue row and /contact link it.
+ * sitemap, and prerendered at build like every page here. In no menu; linked from the footer's Company column, after
+ * Security (owner, 30 Oct 2026), and from /security's Report a security issue row and /contact.
  */
 /* Its title goes through the layout's template: "Trust center | Zoorik". */
 export const metadata: Metadata = documentMetadata(routes.trust, trustPage.meta);

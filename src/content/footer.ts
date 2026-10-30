@@ -198,9 +198,10 @@ export function askQuestion(path: string, title: string | undefined): string {
  * `mailto:`, which stays in the tab.
  *
  * The same on every page. Assessment is the plain `/assessment`, never with a
- * `?p=`. Three columns after the brand: Products; Resources, the articles, the
- * research papers, each product's case study, the hubs and each product's
- * guide, FAQ and troubleshooting; Company. Every page they lead to is at the
+ * `?p=`. Three columns after the brand: Products, with Pricing; Resources, the
+ * articles, the research papers, each product's case study, the hubs, the two
+ * cost calculators and each product's guide, FAQ and troubleshooting; Company,
+ * with the Trust center and Contact. Every page they lead to is at the
  * site's root, nothing nested (owner, 29 Oct 2026).
  *
  * Privacy and Terms are last in Company, in that order.
@@ -212,7 +213,9 @@ export const footerColumns: readonly FooterColumn[] = [
       { label: "Coral", href: routes.coral, product: true },
       { label: "Amoeba", href: routes.amoeba, product: true },
       { label: "Assessment", href: routes.assessment },
-      /* Where to find Zoorik, after Assessment. */
+      /* How each product is priced, after Assessment (owner, 30 Oct 2026). */
+      { label: "Pricing", href: routes.pricing },
+      /* Where to find Zoorik, after Pricing. */
       { label: "Marketplaces", href: routes.marketplaces },
     ],
   },
@@ -231,6 +234,9 @@ export const footerColumns: readonly FooterColumn[] = [
       { label: "News", href: routes.news },
       /* The tools that reduce the bill, with the comparison pages, then the community, after News. */
       { label: "Cloud cost optimization tools", href: routes.cloudCostTools },
+      /* The two calculators, after the tools hub that groups them (owner, 30 Oct 2026). */
+      { label: "Node cost calculator", href: routes.nodeCostCalculator },
+      { label: "Disk cost calculator", href: routes.diskCostCalculator },
       { label: "Community", href: routes.community },
       { label: "Docs", href: routes.docs },
       /* What is open source and how to contribute, right after Docs. */
@@ -265,7 +271,10 @@ export const footerColumns: readonly FooterColumn[] = [
       { label: "Partners", href: routes.partners },
       { label: "Design partners", href: routes.designPartners },
       { label: "Security", href: routes.security },
+      /* The Trust center after Security, and Contact after Book a demo (owner, 30 Oct 2026). */
+      { label: "Trust center", href: routes.trust },
       { label: "Book a demo", href: calendarUrl },
+      { label: "Contact", href: routes.contact },
       { label: contactEmail, href: `mailto:${contactEmail}` },
       { label: "Login", href: routes.login },
       { label: "Privacy", href: routes.privacy },
