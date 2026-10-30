@@ -5,7 +5,7 @@ import { cleanup, render } from "@testing-library/react";
 import { createElement, type ComponentType } from "react";
 import { describe, expect, it, vi } from "vitest";
 
-import { glossaryPath, learnPath } from "@/config/site";
+import { glossaryPath, learnPath, unbuiltPages } from "@/config/site";
 import { authors } from "@/content/authors";
 import type { ArticleBlock } from "@/content/learn/article";
 import { articleFiles } from "@/content/learn/articles.generated";
@@ -191,7 +191,9 @@ describe("the Learn index", () => {
       for (const a of container.querySelectorAll("a[href^='/']")) {
         const href = a.getAttribute("href")!;
         const target = href.split(/[?#]/)[0]!.replace(/(.)\/$/, "$1");
-        if (!known.has(target) && !existsSync(`public${target}`)) missing.push(`${path} → ${href}`);
+        /* The footer links the planned pages before they are built (owner, 30 Oct 2026). */
+        if (!known.has(target) && !existsSync(`public${target}`) && !unbuiltPages.has(target))
+          missing.push(`${path} → ${href}`);
       }
       cleanup();
     }
