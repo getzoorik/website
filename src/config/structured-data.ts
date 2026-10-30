@@ -51,7 +51,7 @@ import { docsHub } from "@/content/documents";
 import { elasticContent } from "@/content/elastic";
 import { eventsPage } from "@/content/events";
 import { newsPage } from "@/content/news";
-import { footerColumns, socialProfiles, type FooterSocialPlatform } from "@/content/footer";
+import { footerPlan, socialProfiles, type FooterSocialPlatform } from "@/content/footer";
 import { learnPage } from "@/content/learn";
 import {
   alternativesPages,
@@ -311,9 +311,11 @@ interface PageEntry {
 /** A page's printed `<title>`: through the layout's template. */
 const titled = pageTitle;
 
-/** A step named as the footer names its page ("Docs", "Coral guide", "Privacy"). */
+/** A step named as the footer names its page ("Docs", "Coral guide", "Privacy"): from the footer's plan, so a built
+ *  page whose line still waits (a "Works with" page before the other five) is named too. Only a built page has an
+ *  entry here, so no step names one that is not. */
 function step(path: string): Crumb {
-  const link = footerColumns.flatMap((column) => column.links).find((l) => l.href === path);
+  const link = footerPlan.flatMap((column) => column.links).find((l) => l.href === path);
   if (!link) throw new Error(`structured data: no footer link names ${path}`);
   return { name: link.label, path };
 }

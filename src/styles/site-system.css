@@ -232,6 +232,8 @@ footer.site-foot{padding:56px 0 32px;background:var(--surface-2);border-top:1px 
 @media(max-width:1060px){.foot-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.foot-brand{grid-column:1 / -1}}
 @media(max-width:720px){.foot-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
 .foot-h{margin:0 0 13px;font-size:.8125rem;line-height:1.65;font-weight:600;letter-spacing:-.006em;color:var(--text)}
+/* a second list in the same column ("Works with", under Products) starts 28px under the last line of the first */
+.foot-col>a+.foot-h{margin-top:28px}
 /* the legal name and city, one muted line under the social row (the bottom bar stays © and the wordmark) */
 .foot-brand .foot-co{margin-top:16px;font-size:var(--fs-micro);line-height:1.5}
 .foot-brand p{max-width:44ch;font-size:var(--fs-small);line-height:1.6;color:var(--muted)}
