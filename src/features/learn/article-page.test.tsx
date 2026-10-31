@@ -24,6 +24,7 @@ import {
 } from "@/content/learn/published";
 import { learnPillars } from "@/content/learn";
 import { products } from "@/content/products";
+import { ArticlePage } from "@/features/learn/article-page";
 import { articleMetadata } from "@/features/learn/article-route";
 import { promptedLines } from "@/features/learn/article-well";
 import { printedDay } from "@/lib/content-date";
@@ -710,5 +711,20 @@ describe("/learn/poor-architecture-cloud-bill, against its draft", () => {
   it("ships its share card within its size budget", () => {
     const file = "public/og/pages/learn-poor-architecture-cloud-bill.png";
     expect(readFileSync(file).length / 1024, file).toBeLessThan(200);
+  });
+});
+
+describe("an article's cover", () => {
+  it("is named by its alt text where the article gives one (W31), and read as decoration where it gives none", () => {
+    const article = learnArticles.find((entry) => entry.cover && entry.coverAlt === undefined)!;
+    pathname.current = articleRoute(article);
+    const altOf = (shown: Article) =>
+      render(<ArticlePage article={shown} />)
+        .container.querySelector("figure.ar-cover img")!
+        .getAttribute("alt");
+    expect(altOf(article)).toBe("");
+    expect(
+      altOf({ ...article, coverAlt: "VPA vs HPA: the VPA sets pod size, the HPA sets pod count" }),
+    ).toBe("VPA vs HPA: the VPA sets pod size, the HPA sets pod count");
   });
 });

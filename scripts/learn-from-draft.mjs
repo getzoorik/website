@@ -38,8 +38,10 @@
 // its `updated` day, to --day where one is given, so a re-run never re-dates a live article. Its address is
 // /learn/<slug>, unless its draft's `route` names another at the site's root (D230: /cloud-cost-optimization and
 // /kubernetes-cost-optimization), which the article then carries as its `route`. A draft's `cover_alt` is its cover's
-// alt text (`coverAlt`). The pillar's list itself is not copied: the page draws it from the index. The output is
-// formatted with the repo's Prettier settings, and a second run writes the same files.
+// alt text (`coverAlt`); a draft with none keeps the alt text its live file carries, as the 1 Nov alt lines (W31) come
+// from docs/website-seo/new-pages-2026-11-01/cover-alt.md, not from the drafts, so a re-run never drops one. The
+// pillar's list itself is not copied: the page draws it from the index. The output is formatted with the repo's
+// Prettier settings, and a second run writes the same files.
 //
 // A glossary draft is front matter (slug, route, group, product, term, title, h1, meta), the definition with what
 // stands beside it before the first "## " heading, two to four sections in an article's blocks with one [DIAGRAM: …]
@@ -669,6 +671,7 @@ function convert(slug) {
   const cover = `/learn-covers/zoorik-learn-${slug}-1200x630.webp`;
   const h1 = typo(meta.h1);
   const live = daysOf(ARTICLES, slug);
+  const coverAlt = meta.cover_alt ? curly(meta.cover_alt) : liveCoverAlt(slug);
 
   const article = {
     slug,
@@ -688,7 +691,7 @@ function convert(slug) {
     updated: goLive ?? live.updated ?? day.date,
     author: day.author,
     ...(existsSync(join(ROOT, "public", cover))
-      ? { cover, ...(meta.cover_alt ? { coverAlt: curly(meta.cover_alt) } : {}) }
+      ? { cover, ...(coverAlt ? { coverAlt } : {}) }
       : {}),
     short: inline(short),
     sections: drawn,
@@ -771,6 +774,20 @@ function daysOf(dir, slug) {
     published: /\bpublished: "(\d{4}-\d{2}-\d{2})"/.exec(text)?.[1],
     updated: /\bupdated: "(\d{4}-\d{2}-\d{2})"/.exec(text)?.[1],
   };
+}
+
+/**
+ * The cover's alt text an article already on the site carries (`coverAlt`), or none. Prettier writes it in double
+ * quotes, or in single quotes when it holds more double quotes than single ones.
+ */
+function liveCoverAlt(slug) {
+  const file = join(ARTICLES, `${slug}.ts`);
+  if (!existsSync(file)) return undefined;
+  const m = /\bcoverAlt:\s*(?:"((?:[^"\\]|\\.)*)"|'((?:[^'\\]|\\.)*)')/.exec(
+    readFileSync(file, "utf8"),
+  );
+  if (!m) return undefined;
+  return JSON.parse(`"${m[1] ?? m[2].replace(/\\'/g, "'").replace(/"/g, '\\"')}"`);
 }
 
 function convertTerm(slug) {
