@@ -1,5 +1,6 @@
 import type { DocumentId } from "@/content/documents";
 import type { Step } from "@/content/how-it-works";
+import type { ArticleText } from "@/content/learn/article";
 import type { ProductFilm } from "@/content/product-films";
 import type { Platform, ProductId } from "@/content/products";
 
@@ -96,8 +97,9 @@ export interface ProductPageContent {
    *  others behind "More about <product>"; beside them What <product> does. */
   readonly about: {
     readonly title: string;
-    /** The first is the lead; the rest stay in the page, folded. */
-    readonly paragraphs: readonly [string, ...string[]];
+    /** The first is the lead; the rest stay in the page, folded. Each is an article's run of text, so it can link a
+     *  page on words already in it (owner, 1 Nov 2026). */
+    readonly paragraphs: readonly [ArticleText, ...ArticleText[]];
     /** The opener's words: "More about Coral". */
     readonly more: string;
   };

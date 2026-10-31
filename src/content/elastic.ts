@@ -18,7 +18,12 @@ export const elasticContent: ProductSectionContent = {
   /* The SEO heading pass (owner, 23 Oct 2026): the h2 names the category and links to /amoeba. */
   headline: "Block storage cost optimization",
   body: "Stop paying for empty disk space. Amoeba rightsizes Azure managed disks and Amazon EBS on Windows and Linux VMs, autonomously, without any downtime.",
-  runsOn: { label: "Runs on", platforms: ["azure", "aws", "windows", "linux"] },
+  /* Azure and AWS link to their cloud pages on the home page; Windows and Linux stay plain (owner, 1 Nov 2026). */
+  runsOn: {
+    label: "Runs on",
+    platforms: ["azure", "aws", "windows", "linux"],
+    links: { azure: routes.azureManagedDiskCostOptimization, aws: routes.ebsCostOptimization },
+  },
   cta: {
     href: `${routes.assessment}?p=amoeba`,
     label: "Estimate your saving",

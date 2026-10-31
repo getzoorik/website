@@ -49,6 +49,17 @@ afterEach(() => {
 const band = (container: HTMLElement) => container.querySelector<HTMLElement>("section#why")!;
 
 describe("without the risk", () => {
+  it("links its heading's first words to the cloud cost pillar, inside the line mask's inner span", () => {
+    const section = band(render(<ByDesignSection />).container);
+    const h2 = section.querySelector(".sec-head h2")!;
+    expect(h2.textContent).toBe("Cloud cost optimization, without the risk");
+    const link = h2.querySelector(":scope > span.lm > span > a")!;
+    expect(link.textContent).toBe("Cloud cost optimization");
+    expect(link).toHaveAttribute("href", "/cloud-cost-optimization");
+    expect(link).not.toHaveAttribute("class");
+    expect(h2.querySelectorAll("a")).toHaveLength(1);
+  });
+
   it("is four cards, each a drawing named by its sentence, then its title", () => {
     const section = band(render(<ByDesignSection />).container);
     expect(section).toHaveClass("sec", "sec-band");

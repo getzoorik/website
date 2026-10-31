@@ -1,11 +1,12 @@
 import { ProductMark } from "@/components/brand/product-marks";
 import { Arrow } from "@/components/primitives/arrow";
-import { Chips } from "@/components/primitives/chips";
+import { Chips, type ChipItem } from "@/components/primitives/chips";
 import { NamedText } from "@/components/primitives/named-text";
 import { Reveal } from "@/components/primitives/reveal";
 import { routes } from "@/config/site";
 import type { ProductSectionContent } from "@/content/product-section";
 import { products } from "@/content/products";
+import { Text } from "@/features/learn/article-page";
 
 /**
  * The copy column of a home product block: the product's lockup, the headline
@@ -29,9 +30,21 @@ import { products } from "@/content/products";
  * the category alone ("Kubernetes cost optimization"), rather than "Learn
  * more", so the two blocks' links differ by their own words; it ends on the
  * same arrow at 14px. A product's name in it is still kept out of translation.
+ *
+ * ─── THE LINKS INTO THE SUBJECT (owner, 1 Nov 2026) ────────────────────────
+ * Where the product has one, a sentence after the deck links the subject's Learn
+ * pillar, in the prose's own link style (`guide`), and the chips of the clouds
+ * with a page of their own are links to it (`runsOn.links`). Both are the home
+ * page's alone: the product page's hero reads the deck, and its Runs on chips
+ * the platforms, without them.
  */
 export function ProductCopy({ content }: { content: ProductSectionContent }): React.JSX.Element {
   const product = products[content.product];
+  const { links } = content.runsOn;
+  const chips = content.runsOn.platforms.map((platform): ChipItem => {
+    const href = links?.[platform];
+    return href ? { platform, href } : platform;
+  });
 
   return (
     <Reveal>
@@ -45,12 +58,14 @@ export function ProductCopy({ content }: { content: ProductSectionContent }): Re
       </h2>
       <p className="st-body">
         <NamedText text={content.body} name={product.name} />
+        {content.guide ? (
+          <>
+            {" "}
+            <Text text={content.guide} breaks={false} />
+          </>
+        ) : null}
       </p>
-      <Chips
-        id={`${product.id}-runs`}
-        label={content.runsOn.label}
-        items={content.runsOn.platforms}
-      />
+      <Chips id={`${product.id}-runs`} label={content.runsOn.label} items={chips} />
       <div className="btns">
         <a className="btn-ink" href={content.cta.href}>
           {content.cta.label} <Arrow />

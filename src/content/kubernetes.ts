@@ -15,7 +15,17 @@ export const kubernetesContent: ProductSectionContent = {
      the old headline. */
   headline: "Kubernetes cost optimization",
   body: "Stop paying for idle Kubernetes capacity. Coral rebalances workloads and removes the nodes you don’t need. No code changes.",
-  runsOn: { label: "Runs on", platforms: ["aks", "eks"] },
+  /* The home page's link to the Kubernetes pillar, which owns this search (D229; owner, 1 Nov 2026). */
+  guide: [
+    "Read our guide to ",
+    { a: "Kubernetes cost optimization", href: routes.kubernetesCostOptimization },
+    ".",
+  ],
+  runsOn: {
+    label: "Runs on",
+    platforms: ["aks", "eks"],
+    links: { aks: routes.aksCostOptimization, eks: routes.eksCostOptimization },
+  },
   cta: {
     href: `${routes.assessment}?p=coral`,
     label: "Estimate your saving",

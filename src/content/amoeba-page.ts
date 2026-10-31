@@ -21,9 +21,10 @@ import type { ProductPageContent, ReadMoreTile } from "@/content/product-page";
  */
 
 /**
- * 🔴 THE READ MORE ROW HOLDS ONLY WHAT IS PUBLISHED. The mock draws four tiles:
- * the guide and the FAQ (behind `amoebaDocs`), the one-pager download (behind
- * `amoebaOnePager`) and the /learn article. A tile whose flag is off drops out.
+ * 🔴 THE READ MORE ROW HOLDS ONLY WHAT IS PUBLISHED. The mock draws six tiles,
+ * two by two: the guide and the FAQ (behind `amoebaDocs`), the one-pager
+ * download (behind `amoebaOnePager`) and the /learn article, then the two cloud
+ * pages (owner, 1 Nov 2026). A tile whose flag is off drops out.
  * The per-cloud pages (`/azure-managed-disk-cost-optimization`, `/ebs-cost-optimization`) open their row
  * on the same two tiles, behind the same flag.
  */
@@ -70,7 +71,12 @@ export const amoebaPageContent: ProductPageContent = {
   about: {
     title: "What is Amoeba?",
     paragraphs: [
-      "Amoeba is a block storage cost optimization platform for VMs on Azure and AWS. Cloud disks only grow: an Azure managed disk or an Amazon Elastic Block Store (EBS) volume can be made larger, but not smaller. Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. Then it rightsizes that pool while it stays mounted. You pay for the space your data uses, not the space you once provisioned.",
+      /* "btrfs pool" links the Learn article on how one works (owner, 1 Nov 2026). */
+      [
+        "Amoeba is a block storage cost optimization platform for VMs on Azure and AWS. Cloud disks only grow: an Azure managed disk or an Amazon Elastic Block Store (EBS) volume can be made larger, but not smaller. Amoeba moves a VM’s data disks onto one ",
+        { a: "btrfs pool", href: learnPath("btrfs-multiple-disks") },
+        " sized to your data, with room to grow. Then it rightsizes that pool while it stays mounted. You pay for the space your data uses, not the space you once provisioned.",
+      ],
       "Amoeba installs an agent on each VM you onboard, through Azure Run Command or AWS Systems Manager, with no application code changes. The systemd services that use the data mounts restart at the switch onto the pool. After that, the pool grows and shrinks while it stays mounted.",
       "With Amoeba, you see used and provisioned space on every disk, what each VM’s disks cost at list price, and what the pool saves. You choose, per VM, whether shrinks run on their own or wait for you.",
     ],
@@ -120,6 +126,19 @@ export const amoebaPageContent: ProductPageContent = {
         title: "Shrinking an Azure managed disk",
         line: "Why it can’t, and what works",
         href: learnPath("shrink-azure-managed-disk"),
+      },
+      /* Its two cloud pages (owner, 1 Nov 2026), each line what that page covers. */
+      {
+        kind: "page",
+        title: "Azure managed disk cost optimization",
+        line: "Data disks on Windows and Linux VMs in Azure",
+        href: routes.azureManagedDiskCostOptimization,
+      },
+      {
+        kind: "page",
+        title: "EBS cost optimization",
+        line: "Data volumes on Windows and Linux EC2 instances",
+        href: routes.ebsCostOptimization,
       },
     ],
   },

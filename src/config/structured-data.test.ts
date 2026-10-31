@@ -204,7 +204,17 @@ describe("the home page's structured data", () => {
     expect(amoeba.description).toBe(
       "Block storage cost optimization for VMs on Azure and AWS. Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. Then it rightsizes that pool, one disk at a time.",
     );
-    const [whatIs] = amoebaPageContent.about.paragraphs;
+    /* The paragraph as its words: its one link, "btrfs pool", as the words it shows. */
+    const whatIs = [amoebaPageContent.about.paragraphs[0]]
+      .flat()
+      .map((piece) =>
+        typeof piece === "string"
+          ? piece
+          : "a" in piece && typeof piece.a === "string"
+            ? piece.a
+            : "",
+      )
+      .join("");
     expect(whatIs).toContain("block storage cost optimization platform for VMs on Azure and AWS");
     expect(whatIs).toContain(String(amoeba.description).split(". ")[1]!.replace(/\.$/, ""));
     expect(amoeba.applicationSubCategory).toBe("Block storage cost optimization");

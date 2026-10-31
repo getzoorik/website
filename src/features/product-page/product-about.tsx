@@ -1,14 +1,11 @@
 import { Chips } from "@/components/primitives/chips";
 import { NamedText } from "@/components/primitives/named-text";
 import { Reveal } from "@/components/primitives/reveal";
-import { site } from "@/config/site";
 import type { ProductPageContent } from "@/content/product-page";
-import { productOrder, products } from "@/content/products";
+import { products } from "@/content/products";
+import { Text } from "@/features/learn/article-page";
 import { OfferingDrawing } from "@/features/product-page/offering-drawing";
 import { OfferingTour } from "@/features/product-page/offering-tour";
-
-/** Every name running text can carry, each kept out of translation. */
-const NAMES = [site.name, ...productOrder.map((id) => products[id].name)];
 
 /**
  * What is <product>? (`#about-coral`, `#about-amoeba`), with What <product>
@@ -17,7 +14,10 @@ const NAMES = [site.name, ...productOrder.map((id) => products[id].name)];
  * Left, the heading asks the question and the lead paragraph says what the
  * product is. The other two (who it is for, what you see with it) sit behind a
  * quiet "More about <product>" (`details.pp-more`): folded, but in the page, for
- * search and for a screen reader (owner, 23 Oct 2026).
+ * search and for a screen reader (owner, 23 Oct 2026). Each paragraph is set as
+ * an article's text (`Text`), its product names kept out of translation and its
+ * links in the prose's own style: /coral links its subject's pillar and the
+ * autoscalers it works with, /amoeba the btrfs pool (owner, 1 Nov 2026).
  *
  * Right (`div.pf-does#what`), the twin heading on the same line, the offering
  * rows and the Runs on chips. Each row is its 88×52 drawing (`OfferingDrawing`),
@@ -47,7 +47,7 @@ export function ProductAbout({ content }: { content: ProductPageContent }): Reac
           </h2>
           <div className="pp-prose">
             <p>
-              <NamedText text={lead} name={NAMES} />
+              <Text text={lead} breaks={false} />
             </p>
             {more.length > 0 ? (
               <details className="pp-more">
@@ -56,9 +56,9 @@ export function ProductAbout({ content }: { content: ProductPageContent }): Reac
                     <NamedText text={about.more} name={name} />
                   </span>
                 </summary>
-                {more.map((paragraph) => (
-                  <p key={paragraph}>
-                    <NamedText text={paragraph} name={NAMES} />
+                {more.map((paragraph, index) => (
+                  <p key={index}>
+                    <Text text={paragraph} breaks={false} />
                   </p>
                 ))}
               </details>

@@ -53,6 +53,11 @@ export const offersContent: {
     readonly cta: { readonly label: string; readonly href: string };
   };
   readonly rows: readonly OfferRow[];
+  /**
+   * Under the section, one row of text links to the free tools (owner, 1 Nov 2026): the two calculators, Coral's
+   * first as everywhere on the site, then the tools library, each named as the footer names it.
+   */
+  readonly tools: readonly { readonly label: string; readonly href: string }[];
 } = {
   title: "Cloud cost assessment",
   note: savingsQualifier,
@@ -80,5 +85,10 @@ export const offersContent: {
       ],
     },
     { figure: "both", title: togetherLabel, tags: [{ text: "Overall cloud bill" }] },
+  ],
+  tools: [
+    { label: "EKS and AKS pricing calculator", href: routes.eksAndAksPricingCalculator },
+    { label: "EBS and Azure disk pricing", href: routes.ebsAndAzureDiskPricing },
+    { label: "Cloud cost optimization tools", href: routes.cloudCostTools },
   ],
 };

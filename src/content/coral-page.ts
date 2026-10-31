@@ -56,10 +56,25 @@ export const coralPageContent: ProductPageContent = {
   },
   about: {
     title: "What is Coral?",
+    /* The links (owner, 1 Nov 2026): the subject's pillar, which owns the search "Kubernetes cost optimization"
+       (D229), and the autoscalers Coral works with, each to its works-with page. */
     paragraphs: [
-      "Coral is a Kubernetes cost optimization platform for Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS). It continuously finds and removes the capacity your clusters don’t need, while your workloads keep serving. It sizes each container’s CPU and memory requests to what it really uses, and empties spare nodes one at a time so your autoscaler can remove them.",
-      /* "reduce", where the mock still has "cut": the site's verb (owner's wording rule). */
-      "Coral helps platform and engineering teams reduce AKS and EKS cost with no application code changes. It monitors every workload and node, recommends right sizes and spare nodes with the saving, and applies them safely: pods resize in place or restart one at a time within their PodDisruptionBudgets, and nodes drain one at a time. Coral works alongside native Kubernetes autoscaling: the Horizontal Pod Autoscaler, KEDA, Karpenter, Node Auto Provisioning (NAP) and the Cluster Autoscaler.",
+      [
+        "Coral is a ",
+        { a: "Kubernetes cost optimization", href: routes.kubernetesCostOptimization },
+        " platform for Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS). It continuously finds and removes the capacity your clusters don’t need, while your workloads keep serving. It sizes each container’s CPU and memory requests to what it really uses, and empties spare nodes one at a time so your autoscaler can remove them.",
+      ],
+      [
+        "Coral helps platform and engineering teams reduce AKS and EKS cost with no application code changes. It monitors every workload and node, recommends right sizes and spare nodes with the saving, and applies them safely: pods resize in place or restart one at a time within their PodDisruptionBudgets, and nodes drain one at a time. Coral works alongside native Kubernetes autoscaling: the Horizontal Pod Autoscaler, ",
+        { a: "KEDA", href: routes.coralWorksWithKeda },
+        ", ",
+        { a: "Karpenter", href: routes.coralWorksWithKarpenter },
+        ", ",
+        { a: "Node Auto Provisioning (NAP)", href: routes.coralWorksWithNodeAutoProvisioning },
+        " and ",
+        { a: "the Cluster Autoscaler", href: routes.coralWorksWithClusterAutoscaler },
+        ".",
+      ],
       "With Coral, you see where your Kubernetes spend goes, which capacity sits unused, and what each change saves at your cloud’s list price. Pod sizing starts when you switch on “Automatically optimize” for a policy or a workload. Node optimization is on from install, and you choose the node pools it works on.",
     ],
     more: "More about Coral",
@@ -118,6 +133,19 @@ export const coralPageContent: ProductPageContent = {
         title: "HPA vs VPA vs Cluster Autoscaler",
         line: "What each one scales, plus Karpenter",
         href: learnPath("hpa-vs-vpa-vs-cluster-autoscaler"),
+      },
+      /* Its two cloud pages (owner, 1 Nov 2026), each line what that page covers. */
+      {
+        kind: "page",
+        title: "AKS cost optimization",
+        line: "Node pools, NAP and the Cluster Autoscaler",
+        href: routes.aksCostOptimization,
+      },
+      {
+        kind: "page",
+        title: "EKS cost optimization",
+        line: "EC2 instances, Karpenter and the Cluster Autoscaler",
+        href: routes.eksCostOptimization,
       },
     ],
   },

@@ -77,8 +77,26 @@ describe("KubernetesSection", () => {
     expect(h2.querySelector("a")).toHaveAttribute("href", "/coral");
     const line = container.querySelector(".st-body")!;
     expect(line.textContent).toBe(
-      "Stop paying for idle Kubernetes capacity. Coral rebalances workloads and removes the nodes you don’t need. No code changes.",
+      "Stop paying for idle Kubernetes capacity. Coral rebalances workloads and removes the nodes you don’t need. No code changes. Read our guide to Kubernetes cost optimization.",
     );
     expect(line.querySelector('[translate="no"]')).toHaveTextContent("Coral");
+    /* The guide's sentence links the subject's pillar, in the prose link's own style (no class). */
+    const guide = line.querySelector("a")!;
+    expect(guide.textContent).toBe("Kubernetes cost optimization");
+    expect(guide).toHaveAttribute("href", "/kubernetes-cost-optimization");
+    expect(guide).not.toHaveAttribute("class");
+  });
+
+  test("links AKS and EKS to their pages", () => {
+    const { container } = render(<KubernetesSection />);
+    expect(
+      [...container.querySelectorAll("ul.chips-g > li > a.chip")].map((a) => [
+        a.textContent,
+        a.getAttribute("href"),
+      ]),
+    ).toEqual([
+      ["AKS", "/aks-cost-optimization"],
+      ["EKS", "/eks-cost-optimization"],
+    ]);
   });
 });

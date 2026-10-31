@@ -21,10 +21,30 @@ import { platformLabel, type Platform } from "@/content/products";
  * 🔴 `id` IS THE CALLER'S, AND UNIQUE ON ITS PAGE. Two rows on one page (home
  * has Coral's and Amoeba's) each name their own label. It also suffixes the
  * Azure mark's gradient ids, which must be unique in the document too.
+ *
+ * ─── A CHIP CAN BE A LINK ──────────────────────────────────────────────────
+ * Home's two Runs on rows link AKS, EKS, Azure and AWS to their cloud pages
+ * (owner, 1 Nov 2026). The mock makes the capsule itself the link
+ * (`span.chips-g > a.chip`); here it is `li > a.chip`, so the box is the same
+ * capsule and the list stays a list: the sheet lays each item out as a flex box
+ * (`.chips-g > li`), so the item is the capsule's 28px, not its text's line
+ * box. `a.chip` is the site system's: on hover its edge darkens and its name
+ * takes the accent, as a doc tile does.
  */
 
-/** A chip: a platform, drawn with its mark, or a plain word. */
-export type ChipItem = Platform | { readonly text: string };
+/** A chip: a platform, drawn with its mark; a platform that links to a page; or a plain word. */
+export type ChipItem =
+  Platform | { readonly platform: Platform; readonly href: string } | { readonly text: string };
+
+/** A platform's mark and its name, the inside of its chip. */
+function PlatformChip({ id, platform }: { readonly id: string; readonly platform: Platform }) {
+  return (
+    <>
+      <PlatformMark platform={platform} idSuffix={`${id}-${platform}`} />
+      {platformLabel[platform]}
+    </>
+  );
+}
 
 export interface ChipsProps {
   /** The label's id, unique on the page; the list is labelled by it. */
@@ -40,18 +60,27 @@ export function Chips({ id, label, items }: ChipsProps): React.JSX.Element {
         {label}
       </span>
       <ul className="chips-g" role="list" aria-labelledby={id}>
-        {items.map((item) =>
-          typeof item === "string" ? (
-            <li className="chip" key={item}>
-              <PlatformMark platform={item} idSuffix={`${id}-${item}`} />
-              {platformLabel[item]}
-            </li>
-          ) : (
+        {items.map((item) => {
+          if (typeof item === "string")
+            return (
+              <li className="chip" key={item}>
+                <PlatformChip id={id} platform={item} />
+              </li>
+            );
+          if ("platform" in item)
+            return (
+              <li key={item.platform}>
+                <a className="chip" href={item.href}>
+                  <PlatformChip id={id} platform={item.platform} />
+                </a>
+              </li>
+            );
+          return (
             <li className="chip" key={item.text}>
               {item.text}
             </li>
-          ),
-        )}
+          );
+        })}
       </ul>
     </div>
   );

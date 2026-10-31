@@ -1,3 +1,4 @@
+import type { ArticleText } from "@/content/learn/article";
 import type { Platform, ProductId } from "@/content/products";
 
 /**
@@ -19,9 +20,16 @@ export interface ProductSectionContent {
   readonly product: ProductId;
   readonly headline: string;
   readonly body: string;
+  /**
+   * On the home page only, a sentence after the deck that links the subject's Learn pillar (owner, 1 Nov 2026). The
+   * product page's hero line reads `body` alone.
+   */
+  readonly guide?: ArticleText;
   readonly runsOn: {
     readonly label: string;
     readonly platforms: readonly Platform[];
+    /** On the home page only, the chips that link to their cloud page (owner, 1 Nov 2026); the rest stay plain. */
+    readonly links?: Partial<Readonly<Record<Platform, string>>>;
   };
   /** Same tab, to this product's assessment. */
   readonly cta: {

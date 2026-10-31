@@ -1,4 +1,5 @@
 import { routes } from "@/config/site";
+import { diskCalculator, nodeCalculator } from "@/content/calculators";
 import { caseStudiesHub, caseStudy } from "@/content/case-studies";
 import { communityPage } from "@/content/community";
 import type { Article } from "@/content/learn/article";
@@ -51,7 +52,7 @@ export const learnPage = {
    * The day the hub's own content last changed, for the sitemap; it is not printed. A new article moves the hub's
    * sitemap day on its own (`sitemap.ts`), so this moves only when the hub itself changes.
    */
-  updated: "Updated 26 October 2026",
+  updated: "Updated 1 November 2026",
   /** The band's name for a screen reader: the two cards have no section heading of their own. */
   band: "Start here, and find the right fix",
   start: { title: "Start here", line: "Three guides that cover the whole bill." },
@@ -85,11 +86,31 @@ export const learnPillars: readonly { readonly subject: LearnSubject; readonly p
     { subject: "storage", pillar: "azure-disk-cost-optimization" },
   ];
 
-/** Find the right fix: what is costing the reader, and the guide that fixes it. */
-export const learnFixes: readonly { readonly problem: string; readonly slug: string }[] = [
-  { problem: "Machines sit half empty", slug: "cluster-autoscaler-not-scaling-down" },
-  { problem: "Disks are bigger than their data", slug: "shrink-azure-managed-disk" },
-  { problem: "You can’t see where the money goes", slug: "kubernetes-cost-estimation" },
+/**
+ * Find the right fix: what is costing the reader, and the guide that fixes it. The row reads the problem as its
+ * lead-in, then the guide's short name, the words it is searched by (owner, 1 Nov 2026): "Machines sit half empty:
+ * Cluster Autoscaler not scaling down".
+ */
+export const learnFixes: readonly {
+  readonly problem: string;
+  readonly words: string;
+  readonly slug: string;
+}[] = [
+  {
+    problem: "Machines sit half empty",
+    words: "Cluster Autoscaler not scaling down",
+    slug: "cluster-autoscaler-not-scaling-down",
+  },
+  {
+    problem: "Disks are bigger than their data",
+    words: "reduce Azure disk size",
+    slug: "shrink-azure-managed-disk",
+  },
+  {
+    problem: "You can’t see where the money goes",
+    words: "Kubernetes cost estimation",
+    slug: "kubernetes-cost-estimation",
+  },
 ];
 
 /** The order the site publishes by, rank 1 first. */
@@ -283,10 +304,10 @@ export const learnStart: readonly LearnRow[] = published(
   learnPillars.map((entry) => entry.pillar),
 ).map(rowOf);
 
-/** Find the right fix: each cause, with its guide's address and h1, once the guide is published. */
+/** Find the right fix: each cause and its guide's short name, with the guide's address and h1, once it is published. */
 export const learnFixRows: readonly LearnRow[] = learnFixes.flatMap((fix) => {
   const article = findArticle(fix.slug);
-  return article ? [{ ...rowOf(article), name: fix.problem }] : [];
+  return article ? [{ ...rowOf(article), name: `${fix.problem}: ${fix.words}` }] : [];
 });
 
 const onBand = new Set([
@@ -322,9 +343,14 @@ export const learnMedium = {
   url: "https://medium.com/zoorik/why-your-kubernetes-cluster-pays-for-capacity-it-doesnt-use-66863320dca3",
 } as const;
 
+/** A calculator's tile line, its apostrophes curled as the hub's lines are. */
+const curled = (line: string): string => line.replaceAll("'", "’");
+
 /**
- * More from Zoorik: Value Lab, Cloud cost optimization tools, Community, News and the glossary, each its name and one
- * line. Value Lab's figure is the study's own (`caseStudy.band`), and the pages' names are their own h1s.
+ * More from Zoorik: Value Lab, Cloud cost optimization tools, the two calculators, Community, News and the glossary,
+ * each its name and one line. Value Lab's figure is the study's own (`caseStudy.band`), and the pages' names are their
+ * own h1s, but for the calculators: each is named by the words it is searched by (owner, 1 Nov 2026), Coral's first,
+ * and keeps the line its tile has on the tools page.
  */
 export const learnMore: readonly {
   readonly href: string;
@@ -340,6 +366,16 @@ export const learnMore: readonly {
     href: routes.cloudCostTools,
     title: "Cloud cost optimization tools",
     line: "The tools that reduce the bill, and how each works.",
+  },
+  {
+    href: routes.eksAndAksPricingCalculator,
+    title: "EKS and AKS pricing calculator",
+    line: curled(nodeCalculator.tile.line),
+  },
+  {
+    href: routes.ebsAndAzureDiskPricing,
+    title: "EBS and Azure disk pricing",
+    line: curled(diskCalculator.tile.line),
   },
   {
     href: routes.community,

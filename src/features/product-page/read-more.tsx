@@ -12,9 +12,10 @@ import { formatSize, pageCount } from "@/lib/pdf-facts";
  * tiles, after How it works and before the closing row.
  *
  * A heading row ("Read more", and "All docs" into this product's group on the
- * hub), then four tiles, two by two from 981px (`.dt-2x2`): the guide and the
+ * hub), then six tiles, two by two from 981px (`.dt-2x2`): the guide and the
  * FAQ are pages and end on an arrow; the one-pager is a download and ends on
- * the download glyph; the fourth is the product's /learn article. A product's
+ * the download glyph; the fourth is the product's /learn article, and the last
+ * two are its clouds' pages (owner, 1 Nov 2026). A product's
  * name in a title is kept out of translation. Nothing here rises: the row is
  * reference, not a reveal.
  * ─── THE ONE-PAGER'S LINE IS MEASURED, NEVER TYPED ─────────────────────────

@@ -28,7 +28,8 @@ import { offSiteProps } from "@/lib/links";
  *   All articles    every other published article as a cover tile, in the order the site publishes by, with the
  *                   subject chips and Show all (`LearnArticleList`, the page's only script)
  *   Watch and read  the two product films and the Medium post, each a tile that opens it in a new tab
- *   More from       Value Lab, Cloud cost optimization tools, Community, News and the glossary (/learn/glossary)
+ *   More from       Value Lab, Cloud cost optimization tools, the two calculators, Community, News and the glossary
+ *                   (/learn/glossary)
  *
  * No closing row: the redesign ends on More from Zoorik. The pair rises as it arrives; nothing else moves but hover.
  */
