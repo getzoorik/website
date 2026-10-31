@@ -111,7 +111,7 @@ const pages = [
     copy: worksWithPages.nodeAutoProvisioning,
     h1: "Coral works with AKS node auto provisioning",
     description:
-      "AKS node auto provisioning (NAP) launches machines, and Coral rebalances the requests it reads. What connect turns on, and how rebalancing uses NAP.",
+      "AKS node auto provisioning (NAP) launches machines, and Coral rebalances the pod requests that NAP reads. What connect turns on, and how rebalancing uses NAP.",
     tool: "NAP",
     rows: 4,
     leaves: "What Coral leaves to NAP",
@@ -137,7 +137,7 @@ const pages = [
     copy: worksWithPages.keda,
     h1: "Coral works with KEDA",
     description:
-      "On AKS and EKS, KEDA sets how many pods run and Coral rebalances each pod's CPU and memory requests. How they work together, and what Coral never changes.",
+      "On AKS and EKS, KEDA sets how many pods run and Coral rebalances each pod's CPU and memory requests. See how they work together and what Coral leaves to KEDA.",
     tool: "KEDA",
     rows: 5,
     leaves: "What Coral leaves to KEDA",
@@ -189,12 +189,12 @@ const pages = [
     copy: worksWithPages.terraform,
     h1: "Coral works with Terraform",
     description:
-      "Create Coral's cloud permissions for AKS and EKS with our Terraform modules, and see which node pool fields Coral changes, so each apply keeps them.",
+      "Create Coral's cloud permissions for AKS and EKS with our Terraform modules. See which node pool fields Coral changes, so each apply doesn't undo them.",
     tool: "Terraform",
     rows: 5,
     leaves: "What stays yours",
     questions: [
-      "What do the modules create?",
+      "What do Coral’s Terraform modules create?",
       "Will terraform apply undo what Coral changes?",
       "Can I keep every pool minimum as I set it?",
       "Do I need Terraform to use Coral?",

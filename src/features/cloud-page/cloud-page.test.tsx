@@ -95,7 +95,7 @@ const cases: readonly (readonly [string, Case])[] = [
       content: coralForAksPage,
       title: "AKS cost optimization",
       description:
-        "Coral rebalances AKS clusters to reduce your cloud cost. It sizes pods to real use and empties spare nodes for the Cluster Autoscaler or NAP to remove.",
+        "AKS cost optimization with Coral: it rebalances your cluster, sizes pods to real use, and empties spare nodes for the Cluster Autoscaler or NAP to remove.",
       eyebrow: "Coral for AKS",
       chips: ["AKS"],
       order: coralOrder,
@@ -127,8 +127,8 @@ const cases: readonly (readonly [string, Case])[] = [
           "can-coral-move-my-workloads-to-cheaper",
           "Can Coral move my workloads to cheaper machines on AKS?",
         ],
-        ["what-do-i-need-on-azure-to", "What do I need on Azure to connect?"],
-        ["how-do-i-take-corals-azure-access", "How do I take Coral’s Azure access away?"],
+        ["what-do-i-need-on-azure-to", "What do I need on Azure to connect a cluster?"],
+        ["how-do-i-remove-corals-azure-access", "How do I remove Coral’s Azure access?"],
       ],
       readMore: [
         "/coral-guide#connect-a-cluster",
@@ -146,7 +146,7 @@ const cases: readonly (readonly [string, Case])[] = [
       content: coralForEksPage,
       title: "EKS cost optimization",
       description:
-        "Coral rebalances EKS clusters to reduce your cloud cost. It sizes pods to real use and empties spare nodes for Karpenter or the Cluster Autoscaler to remove.",
+        "EKS cost optimization with Coral: it rebalances your cluster, sizes pods to real use, and empties spare nodes for Karpenter or the Cluster Autoscaler to remove.",
       eyebrow: "Coral for EKS",
       chips: ["EKS"],
       order: coralOrder,
@@ -178,7 +178,7 @@ const cases: readonly (readonly [string, Case])[] = [
           "can-coral-move-my-workloads-to-cheaper",
           "Can Coral move my workloads to cheaper machines on EKS?",
         ],
-        ["what-do-i-need-on-aws-to", "What do I need on AWS to connect?"],
+        ["what-do-i-need-on-aws-to", "What do I need on AWS to connect a cluster?"],
         ["can-i-use-irsa-instead-of-eks", "Can I use IRSA instead of EKS Pod Identity?"],
       ],
       readMore: [
@@ -213,7 +213,10 @@ const cases: readonly (readonly [string, Case])[] = [
       setupRows: 5,
       questions: [
         ["which-azure-disks-does-amoeba-work-on", "Which Azure disks does Amoeba work on?"],
-        ["which-disk-type-does-the-pool-use", "Which disk type does the pool use?"],
+        [
+          "which-azure-disk-type-does-amoebas-pool",
+          "Which Azure disk type does Amoeba’s pool use?",
+        ],
         ["is-there-downtime", "Is there downtime?"],
         ["do-shrinks-wait-for-me", "Do shrinks wait for me?"],
         ["how-is-the-saving-worked-out-on", "How is the saving worked out on Azure?"],
@@ -250,7 +253,10 @@ const cases: readonly (readonly [string, Case])[] = [
       setupRows: 4,
       questions: [
         ["which-ebs-volumes-does-amoeba-work-on", "Which EBS volumes does Amoeba work on?"],
-        ["which-volume-type-does-the-pool-use", "Which volume type does the pool use?"],
+        [
+          "which-ebs-volume-type-does-amoebas-pool",
+          "Which EBS volume type does Amoeba’s pool use?",
+        ],
         ["is-there-downtime", "Is there downtime?"],
         ["do-i-pay-for-both-sets-of", "Do I pay for both sets of volumes during the move?"],
         ["how-is-the-saving-worked-out-on", "How is the saving worked out on AWS?"],

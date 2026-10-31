@@ -76,7 +76,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
     },
     hero: {
       title: "Coral works with Cluster Autoscaler",
-      deck: "The Cluster Autoscaler adds nodes for pods that can’t be scheduled, and removes underused nodes whose pods fit elsewhere. Coral rebalances CPU and memory requests to real use, and empties spare nodes one at a time for the autoscaler to remove. Coral never adds nodes for demand, so the two don’t fight.",
+      deck: "The Cluster Autoscaler adds nodes for pods that can’t be scheduled, and removes underused nodes whose pods fit elsewhere. To reduce cost, Coral rebalances CPU and memory requests to real use and empties spare nodes one at a time. The autoscaler removes them, and Coral never adds nodes for demand, so the two don’t fight.",
     },
     who: {
       tool: "Cluster Autoscaler",
@@ -104,7 +104,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
         [
           "Moving work to cheaper machines",
           "Picks only among the node groups you set up.",
-          "Needs Karpenter or AKS node auto provisioning (NAP), so not with the Cluster Autoscaler alone.",
+          "Needs Karpenter or AKS node auto provisioning (NAP), not the Cluster Autoscaler alone.",
         ],
       ],
     },
@@ -125,11 +125,11 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
       ],
     },
     setup: [
-      "**Your autoscaler stays.** Connect sets up NAP or Karpenter only on a cluster with no autoscaler. With the Cluster Autoscaler in place, it adds no other.",
+      "**Your autoscaler stays.** Connect sets up NAP or Karpenter only on a cluster with no autoscaler. With the Cluster Autoscaler in place, it adds neither.",
       "**Permission to remove nodes.** If you decline it at connect, pools the Cluster Autoscaler runs are optimized as usual. Fixed-size pools wait until you run `zoorikctl cluster grant-node-deletion`.",
       "**Pool minimums.** That permission lets Coral reduce a pool’s minimum when that minimum alone keeps an emptied node. Our Terraform modules can leave this out.",
       "**Node pools in Terraform.** Tell Terraform to ignore what the agent changes, or each apply undoes it. [Your own node pool code](/docs/install-coral-with-terraform#your-own-node-pool-code) shows how.",
-      "**A careful start.** Node optimization and the Evictor start at connect. Put the Evictor in “Dry run”, and switch off the node pools you don’t want touched.",
+      "**A careful start.** Node optimization and the Evictor, which moves pods off lightly used nodes, start at connect. Put the Evictor in “Dry run”, and switch off the node pools you don’t want touched.",
     ],
     questions: [
       {
@@ -153,7 +153,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
       {
         question: "What about pools the Cluster Autoscaler doesn’t run?",
         answer: [
-          "In a fixed-size pool that nothing else manages, Coral deletes the emptied machine itself. It needs the permission to remove nodes that connect asks for.",
+          "In a fixed-size pool that nothing else manages, Coral deletes the emptied machine itself. It needs the permission to remove nodes, which connect asks for.",
         ],
       },
       {
@@ -181,7 +181,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
     },
     hero: {
       title: "Coral works with Karpenter",
-      deck: "On EKS, Karpenter chooses, launches and removes the machines your pods need. Coral rebalances each pod’s CPU and memory requests to real use, so Karpenter can run fewer or smaller nodes. Coral never changes your Karpenter settings and never adds nodes for demand, so the two don’t fight.",
+      deck: "On EKS, Karpenter chooses, launches and removes the machines your pods need. To reduce cost, Coral rebalances each pod’s CPU and memory requests to real use, so Karpenter can run fewer or smaller nodes. Coral never changes your Karpenter settings and never adds nodes for demand, so the two don’t fight.",
     },
     who: {
       tool: "Karpenter",
@@ -217,7 +217,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
       "Coral rebalances each pod’s CPU and memory requests to real use, once you switch on “Automatically optimize”.",
       "With smaller requests, Karpenter can run fewer or smaller nodes in the pools it consolidates.",
       "In other pools, Coral empties spare nodes one at a time, and your autoscaler removes them.",
-      "When a rebalance runs, Coral creates fixed-size NodePools, and Karpenter launches the cheaper machines in them.",
+      "When a rebalance moves work to cheaper machines, Coral creates fixed-size NodePools, and Karpenter launches the new machines in them.",
       "Coral then drains and removes the old nodes one by one, and the new NodePools stay after the run.",
     ],
     leaves: {
@@ -282,11 +282,11 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
     meta: {
       title: "Coral works with AKS node auto provisioning",
       description:
-        "AKS node auto provisioning (NAP) launches machines, and Coral rebalances the requests it reads. What connect turns on, and how rebalancing uses NAP.",
+        "AKS node auto provisioning (NAP) launches machines, and Coral rebalances the pod requests that NAP reads. What connect turns on, and how rebalancing uses NAP.",
     },
     hero: {
       title: "Coral works with AKS node auto provisioning",
-      deck: "AKS node auto provisioning (NAP) adds nodes from pod requests, picks each machine, and consolidates the pools it runs. Coral rebalances those requests to real use, so NAP can run fewer or smaller nodes. Coral leaves NAP to consolidate its own pools and never adds nodes for demand, so the two don’t fight.",
+      deck: "AKS node auto provisioning (NAP) adds nodes from pod requests, picks each machine, and consolidates the pools it runs. To reduce cost, Coral rebalances those requests to real use, so NAP can run fewer or smaller nodes. Coral leaves NAP to consolidate its own pools and never adds nodes for demand, so the two don’t fight.",
     },
     who: {
       tool: "NAP",
@@ -316,7 +316,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
     together: [
       "When you switch on “Automatically optimize”, Coral rebalances each container’s requests to what it really uses.",
       "With smaller requests, NAP can run fewer or smaller nodes in the pools it consolidates.",
-      "To move work to cheaper machines, you choose nodes, and Coral’s plan compares current and rebalanced cost.",
+      "To move work to cheaper machines, you choose the nodes to replace, and Coral’s plan compares the cost before and after.",
       "When a rebalance runs, Coral creates fixed-size NodePools, and NAP launches the cheaper machines in them.",
       "Coral then drains and removes the old nodes one by one, and the new NodePools stay after the run.",
     ],
@@ -332,9 +332,9 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
     setup: [
       "**A cluster with no autoscaler.** Connect turns on NAP and adds Coral’s node class `zoorik-base`. It lists every cloud change and asks before it makes one.",
       "**Azure CNI.** NAP needs Azure CNI networking, not kubenet. On kubenet with no autoscaler, nothing adds nodes until you set one up.",
-      "**A cluster with the Cluster Autoscaler.** Connect turns on NAP only if the cluster has no autoscaler, so it leaves this cluster’s autoscaler in place. It sets up only what every AKS connect sets up, listed on [Coral for AKS](/coral-for-aks#setup).",
+      "**A cluster with the Cluster Autoscaler.** Connect leaves the Cluster Autoscaler in place and doesn’t turn on NAP. It sets up only what every AKS connect sets up, listed on [Coral for AKS](/coral-for-aks#setup).",
       "**Workload identity.** For the permission to remove nodes, connect turns on workload identity and the OIDC issuer if they are off. The OIDC issuer can’t be turned off again.",
-      "**Later.** If you decline the cloud changes at connect, `zoorikctl cluster prepare` sets up NAP when you are ready.",
+      "**Setting up NAP later.** If you decline the cloud changes at connect, `zoorikctl cluster prepare` sets up NAP when you are ready.",
     ],
     questions: [
       {
@@ -346,7 +346,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
       {
         question: "Is NAP the same as Karpenter?",
         answer: [
-          "NAP runs Karpenter for you on AKS. Coral treats both the same way: it leaves consolidating their pools to them, and either one launches the machines a rebalance needs.",
+          "NAP runs Karpenter for you on AKS. Coral treats both the same way: it leaves them to consolidate their own pools, and either one launches the machines a rebalance needs.",
         ],
       },
       {
@@ -382,11 +382,11 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
     meta: {
       title: "Coral works with KEDA",
       description:
-        "On AKS and EKS, KEDA sets how many pods run and Coral rebalances each pod's CPU and memory requests. How they work together, and what Coral never changes.",
+        "On AKS and EKS, KEDA sets how many pods run and Coral rebalances each pod's CPU and memory requests. See how they work together and what Coral leaves to KEDA.",
     },
     hero: {
       title: "Coral works with KEDA",
-      deck: "On AKS and EKS, KEDA decides how many pods run, from events or from CPU and memory. Coral rebalances how much CPU and memory each pod requests, so your pods fit on fewer or smaller nodes. The two don’t fight: Coral never takes over or changes the HPA that KEDA creates, and changes your ScaledObject only in a rebalance.",
+      deck: "On AKS and EKS, KEDA decides how many pods run, from events or from CPU and memory. Coral rebalances how much CPU and memory each pod requests, so your pods fit on fewer or smaller nodes. The two don’t fight: Coral never takes over or changes KEDA’s HPA, and changes your ScaledObject only in a rebalance onto cheaper machines.",
     },
     who: {
       tool: "KEDA",
@@ -408,7 +408,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
         ],
         [
           "Starting a new copy before a pod moves in a rebalance",
-          "Passes the raised minimum to its HPA, which adds the new copy.",
+          "Passes Coral’s raised minimum to its HPA, which adds the new copy.",
           "Can raise the ScaledObject’s minimum while a pod moves, so a new copy runs healthy on another node first.",
         ],
         [
@@ -532,8 +532,8 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
     setup: [
       "**Get a connect token** from the Connect dialog in the Coral console. Coral is in early access.",
       "**Install the chart** as [Install Coral with Helm](/docs/install-coral-with-helm) shows. It installs the same agent that a zoorikctl connect does.",
-      "**Add Coral’s cloud identity** if Coral is to remove machines. Our [Terraform modules](/coral-works-with-terraform) create it as code, or zoorikctl creates it from the command line. Without it, the agent still installs, and pools that an autoscaler runs are optimized as usual.",
-      "**With Argo CD,** ignore the fields that Coral’s own parts write after the install. The Helm guide [lists them](/docs/install-coral-with-helm#with-argo-cd-or-flux).",
+      "**Add Coral’s cloud identity** if you want Coral to remove machines. Our [Terraform modules](/coral-works-with-terraform) create it as code, or zoorikctl creates it from the command line. Without it, the agent still installs, and pools that an autoscaler runs are optimized as usual.",
+      "**With Argo CD,** ignore the fields that Coral’s own parts write after the install. The [Helm install guide](/docs/install-coral-with-helm#with-argo-cd-or-flux) lists them.",
       "**Connected with zoorikctl already?** Disconnect first, then install the chart with a new connect token. Helm can’t take over the objects zoorikctl created.",
     ],
     questions: [
@@ -582,7 +582,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
     meta: {
       title: "Coral works with Terraform",
       description:
-        "Create Coral's cloud permissions for AKS and EKS with our Terraform modules, and see which node pool fields Coral changes, so each apply keeps them.",
+        "Create Coral's cloud permissions for AKS and EKS with our Terraform modules. See which node pool fields Coral changes, so each apply doesn't undo them.",
     },
     hero: {
       title: "Coral works with Terraform",
@@ -604,7 +604,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
         [
           "Node pools",
           "Creates them and sets each pool’s minimum.",
-          "Empties spare nodes, and may reduce a minimum that keeps an empty machine.",
+          "Empties spare nodes, and may reduce a minimum that alone keeps an empty machine.",
         ],
         ["Adding nodes", "Can set up the autoscaler that does it.", "Never adds nodes for demand."],
         ["Your workload specs", "Applies them as you wrote them.", "Never edits them."],
@@ -632,11 +632,11 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
       "**On AKS,** turn on the cluster’s OIDC issuer and workload identity before you apply.",
       "**On EKS,** choose Pod Identity or IRSA. With Pod Identity, apply the module before you install the agent, so the agent gets its credentials when it starts.",
       "**Install the agent** with the Helm chart and the module’s output, as [Install Coral with Terraform + Helm](/docs/install-coral-with-terraform) shows.",
-      "**Ignore Coral’s fields** in your own node pool code, as [Your own node pool code](/docs/install-coral-with-terraform#your-own-node-pool-code) shows. Otherwise each apply undoes them.",
+      "**Ignore Coral’s fields** in your own node pool code, as the [Terraform install guide](/docs/install-coral-with-terraform#your-own-node-pool-code) shows. Otherwise each apply undoes them.",
     ],
     questions: [
       {
-        question: "What do the modules create?",
+        question: "What do Coral’s Terraform modules create?",
         answer: [
           "On AKS, a managed identity with its federated credential, and an assignment of Coral’s custom role on that cluster only. One module call in each tenant also creates the role, and the calls for other clusters reuse it. On EKS, an IAM role with its policy, and a Pod Identity association unless you choose IRSA.",
         ],
