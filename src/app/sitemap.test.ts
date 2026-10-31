@@ -40,11 +40,22 @@ function importGraph(file: string, seen = new Set<string>()): Set<string> {
 }
 
 describe("sitemap.xml", () => {
-  it("lists the home page, the product pages, the assessment, the documents, the install and contributing guides, the troubleshooting pages, open source, Learn and every article in its index, the glossary and every term in its index, Cloud cost optimization tools with the comparison pages and the two calculators, Value Lab and the two case studies, the research papers, /events, /pricing, /contact, /about, /careers, /brand-assets, /referrals, /partners, /design-partners, the privacy policy, the terms, security and the Trust center, absolute, and nothing else", () => {
+  it("lists the home page, the product pages, each product on each cloud, the six works-with pages, the assessment, the documents, the install and contributing guides, the troubleshooting pages, open source, Learn and every article in its index, the glossary and every term in its index, Cloud cost optimization tools with the comparison pages and the two calculators, Value Lab and the two case studies, the research papers, /events, /pricing, /contact, /about, /careers, /brand-assets, /referrals, /partners, /design-partners, the privacy policy, the terms, security and the Trust center, absolute, and nothing else", () => {
     expect(sitemap().map((entry) => entry.url)).toEqual([
       `${site.url}/`,
       `${site.url}/coral`,
       `${site.url}/amoeba`,
+      /* Each product on each cloud, in the footer's order, then the six pages on what Coral works with. */
+      `${site.url}/coral-for-aks`,
+      `${site.url}/coral-for-eks`,
+      `${site.url}/amoeba-for-azure`,
+      `${site.url}/amoeba-for-aws`,
+      `${site.url}/coral-works-with-cluster-autoscaler`,
+      `${site.url}/coral-works-with-karpenter`,
+      `${site.url}/coral-works-with-aks-node-auto-provisioning`,
+      `${site.url}/coral-works-with-keda`,
+      `${site.url}/coral-works-with-helm`,
+      `${site.url}/coral-works-with-terraform`,
       `${site.url}/assessment`,
       `${site.url}/marketplaces`,
       `${site.url}/docs`,
@@ -103,6 +114,17 @@ describe("sitemap.xml", () => {
       "/": "2026-10-23",
       "/coral": "2026-10-23",
       "/amoeba": "2026-10-23",
+      /* The ten pages of 31 Oct 2026 print no day: the day their content was written. */
+      "/coral-for-aks": "2026-10-31",
+      "/coral-for-eks": "2026-10-31",
+      "/amoeba-for-azure": "2026-10-31",
+      "/amoeba-for-aws": "2026-10-31",
+      "/coral-works-with-cluster-autoscaler": "2026-10-31",
+      "/coral-works-with-karpenter": "2026-10-31",
+      "/coral-works-with-aks-node-auto-provisioning": "2026-10-31",
+      "/coral-works-with-keda": "2026-10-31",
+      "/coral-works-with-helm": "2026-10-31",
+      "/coral-works-with-terraform": "2026-10-31",
       "/assessment": "2026-10-21",
       "/marketplaces": "2026-10-21",
       /* The guide PDF's new page count (30 Oct 2026). */
@@ -187,7 +209,7 @@ describe("sitemap.xml", () => {
        without one is never told to recrawl. */
     const entries = sitemap();
     expect(entries).toHaveLength(
-      (amoebaDocs ? 44 : 41) + learnArticles.length + glossaryTerms.length,
+      (amoebaDocs ? 54 : 51) + learnArticles.length + glossaryTerms.length,
     );
     /* Today is `LEARN_TODAY` when set (articles dated ahead, checked as of the day they go live), else the latest
        calendar day anywhere on Earth (UTC+14), so a date set to today in any time zone is not "the future". */

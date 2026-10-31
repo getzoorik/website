@@ -28,16 +28,17 @@ import { heroPhotoAlt } from "@/content/hero";
  * and next/image would wrap it and impose its own positioning, which is the
  * one thing that must not be reinterpreted here.
  *
- * ─── ONE SURFACE NOW: THE /login PANEL ─────────────────────────────────────
- * The heroes drew this frame until each took its film (`HeroFilm`, 23 Oct
- * 2026). /login draws it as `img.photo`, with the frame's own 1200×1200 and no
- * fetch priority (`login.html`): there it sits beside the chooser, not above
- * the fold's headline.
+ * ─── TWO SURFACES NOW: /login AND THE PER-CLOUD HEROES ─────────────────────
+ * The product heroes drew this frame until each took its film (`HeroFilm`, 23
+ * Oct 2026). /login draws it as `img.photo`, with the frame's own 1200×1200 and
+ * no fetch priority (`login.html`): there it sits beside the chooser, not above
+ * the fold's headline. The four per-cloud pages (`CloudPage`, 31 Oct 2026),
+ * which have no film, draw it as `img.hero-photo` in their hero, fetched first.
  */
 
 export interface HeroPhotoProps {
   readonly src: string;
-  /** The page's own class for the frame: `photo` on the /login panel. */
+  /** The page's own class for the frame: `photo` on the /login panel, `hero-photo` in a per-cloud hero. */
   readonly className: string;
   /** Fetched ahead of the page's other images; off on /login, beside the chooser. */
   readonly priority?: boolean;

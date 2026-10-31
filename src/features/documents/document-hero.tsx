@@ -19,9 +19,10 @@ import { DownloadGlyph } from "@/features/documents/document-glyphs";
  * the bottom of the text, stacked under it below 981px. `/docs` and `/privacy`
  * draw the h1 and the deck only. No eyebrow, breadcrumb, date line or second
  * line in the h1, except on the case study, which the mock gives a kicker over
- * its h1 and a second, green line inside it (`.cs-hero`), and on a glossary
+ * its h1 and a second, green line inside it (`.cs-hero`), on a glossary
  * term, whose kicker is its trail back to Learn and the glossary, with no deck
- * under its h1 (`.gl-hero`).
+ * under its h1 (`.gl-hero`), and on the works-with pages, whose eyebrow "Works
+ * with" stands over the h1 in the home hero's name style (`.hero-ey`).
  */
 
 /** One file in the download block: its label ("PDF") and the registry entry it reads. */
@@ -44,6 +45,8 @@ export interface DocumentHeroProps {
   readonly deck?: ReactNode;
   /** A small line over the h1: the case study's kind, product and date, a glossary term's trail (`.cs-kick`). */
   readonly kicker?: ReactNode;
+  /** The eyebrow over the h1, the home hero's name line (`.hero-ey`, works-with.css): the works-with pages'. */
+  readonly eyebrow?: ReactNode;
   /** A page's own class on the hero, beside `hero doc-hero` (the case study's `cs-hero`). */
   readonly className?: string;
   readonly productSwitch?: HeroSwitch;
@@ -119,6 +122,7 @@ export function DocumentHero({
   title,
   deck,
   kicker,
+  eyebrow,
   className,
   productSwitch,
   downloads = [],
@@ -128,6 +132,7 @@ export function DocumentHero({
   const text = (
     <>
       {kicker ? <p className="cs-kick">{kicker}</p> : null}
+      {eyebrow ? <p className="hero-ey">{eyebrow}</p> : null}
       <h1>{title}</h1>
       {productSwitch ? <ProductSwitch {...productSwitch} /> : null}
       {deck ? <p className="doc-deck">{deck}</p> : null}

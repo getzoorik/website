@@ -1,0 +1,13 @@
+/* The works-with pages (31 Oct 2026): the mocks' <style id="ten-pages">, in the Helm guide's frame. Values are
+ * copied, never reinterpreted. The eyebrow is the home hero's name line (site-system.css, `.hero h1 .hero-name`), set
+ * before the h1 so the h1 stays the page's phrase. The question rows are /pricing's (its two rules in
+ * contact-pricing.css), the FAQ's rows with no number column. Everything else is the guides' sheets. The mocks'
+ * code-face rule (code in a question's name) is the site's base rule already: `code` takes `--font-mono`, var(--code).
+ *
+ * repo: the App Router keeps a visited page's sheet in the document, so every rule starts at this page's own hero
+ * (`.doc-hero`, or the frame after it, `.doc-hero ~ .doc-body`), as cloud-page.css starts at `.cl-hero`. Only these
+ * pages put an eyebrow in a document hero, or /pricing's rows in a section of the frame (/pricing's own are the frame,
+ * `.doc-body.pr-faq`). */
+.doc-hero .hero-ey{margin:0 0 14px;font-size:.875rem;font-weight:500;letter-spacing:.01em;line-height:1.4;color:rgba(255,255,255,.72)}
+.doc-hero ~ .doc-body .pr-faq .fq summary{grid-template-columns:minmax(0,1fr) 16px}
+.doc-hero ~ .doc-body .pr-faq .fq > .fq-body{padding-left:0}

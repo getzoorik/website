@@ -47,6 +47,12 @@ export interface DocRowsGroup {
   readonly callouts?: ReactNode;
   /** The rows: `DocRow`s, or `LinkRow`s. */
   readonly rows?: ReactNode;
+  /**
+   * The rows are /pricing's, the FAQ's with no number column (`UnnumberedRow`s: the works-with pages' Questions, in
+   * the article frame): the section takes `.pr-faq`, and its column holds rows, so it is the rows' `fq-sec-b`, never
+   * prose. The two rules that drop the numeral's column are the page's own sheet (works-with.css), not this frame's.
+   */
+  readonly unnumbered?: boolean;
   /** An article's section: its text, open, in place of rows. */
   readonly body?: ReactNode;
   /** After the rows: a guide section's Related line. */
@@ -109,13 +115,13 @@ export function DocRows({
           {top ? <div className={classes.top}>{top}</div> : null}
           {groups.map((group) => (
             <section
-              className="fq-sec"
+              className={group.unnumbered ? "fq-sec pr-faq" : "fq-sec"}
               id={group.id}
               aria-labelledby={`${group.id}-h`}
               key={group.id}
             >
               <h2 id={`${group.id}-h`}>{group.title}</h2>
-              <div className={classes.body}>
+              <div className={group.unnumbered ? "fq-sec-b" : classes.body}>
                 {group.lede ? <p className="gd-lede">{group.lede}</p> : null}
                 {group.callouts}
                 {group.rows ? <div className="fq-list">{group.rows}</div> : null}
@@ -161,6 +167,31 @@ export function DocRow({ id, n, title, prose, children }: DocRowProps): React.JS
         <ChevronGlyph className="fq-chev" />
       </summary>
       <div className={prose ? "fq-body doc-prose" : "fq-body"}>{children}</div>
+    </details>
+  );
+}
+
+export interface UnnumberedRowProps {
+  readonly id: string;
+  readonly title: ReactNode;
+  /** The answer, set as prose. */
+  readonly children: ReactNode;
+}
+
+/**
+ * One row with no numeral, closed: /pricing's question rows, which the per-cloud
+ * and works-with pages draw too. Its h3 and a chevron, then the answer as
+ * prose. Its section takes `.pr-faq`, whose two rules drop the numeral's column
+ * (the page's own sheet: cloud-page.css, works-with.css).
+ */
+export function UnnumberedRow({ id, title, children }: UnnumberedRowProps): React.JSX.Element {
+  return (
+    <details className="fq" id={id}>
+      <summary>
+        <h3>{title}</h3>
+        <ChevronGlyph className="fq-chev" />
+      </summary>
+      <div className="fq-body doc-prose">{children}</div>
     </details>
   );
 }

@@ -189,9 +189,9 @@ export const routes = {
   pricing: "/pricing",
   nodeCostCalculator: "/node-cost-calculator",
   diskCostCalculator: "/disk-cost-calculator",
-  /* Ten planned pages, their addresses fixed now (owner, 30 Oct 2026) and at the site's root like every footer page.
-     Each product on each cloud, in the footer's Products column after its product; and what Coral works with, the
-     footer's "Works with" list under Products. All ten are in the footer; none is built yet (`unbuiltPages`). */
+  /* Ten pages at the site's root (addresses: owner, 30 Oct 2026; built: owner, 31 Oct 2026), in no menu. Each product
+     on each cloud, in the footer's Products column after its product; and what Coral works with, the footer's "Works
+     with" list under Products, also linked from the Coral cloud pages' Works with tiles. */
   coralForAks: "/coral-for-aks",
   coralForEks: "/coral-for-eks",
   amoebaForAzure: "/amoeba-for-azure",
@@ -203,25 +203,6 @@ export const routes = {
   coralWorksWithHelm: "/coral-works-with-helm",
   coralWorksWithTerraform: "/coral-works-with-terraform",
 } as const;
-
-/**
- * The planned pages not built yet. Each has its address in `routes`, and the footer links it already (owner, 30 Oct
- * 2026: "just put it there"), so each answers 404 until it is built. The checks that every link leads to a page skip
- * these. A page's own PR takes it off this list: a test fails while a built page is still listed, or while a footer
- * line leads to a page that is neither built nor listed.
- */
-export const unbuiltPages: ReadonlySet<string> = new Set<string>([
-  routes.coralForAks,
-  routes.coralForEks,
-  routes.amoebaForAzure,
-  routes.amoebaForAws,
-  routes.coralWorksWithClusterAutoscaler,
-  routes.coralWorksWithKarpenter,
-  routes.coralWorksWithNodeAutoProvisioning,
-  routes.coralWorksWithKeda,
-  routes.coralWorksWithHelm,
-  routes.coralWorksWithTerraform,
-]);
 
 /** Where the comparison pages live: under Cloud cost optimization tools. /compare and its old pages redirect there. */
 export const comparePath = "/cloud-cost-optimization-library";
@@ -301,6 +282,13 @@ export const hashKeepingRoutes: readonly string[] = [
   routes.docsContributing,
   routes.coralTroubleshooting,
   routes.amoebaTroubleshooting,
+  /* The six works-with pages are built in the article frame too, and their mocks carry `data-keep-hash`. */
+  routes.coralWorksWithClusterAutoscaler,
+  routes.coralWorksWithKarpenter,
+  routes.coralWorksWithNodeAutoProvisioning,
+  routes.coralWorksWithKeda,
+  routes.coralWorksWithHelm,
+  routes.coralWorksWithTerraform,
   routes.coralGuide,
   routes.coralFaq,
   routes.amoebaGuide,

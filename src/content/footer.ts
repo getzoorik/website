@@ -210,8 +210,8 @@ export function askQuestion(path: string, title: string | undefined): string {
  * Privacy and Terms are last in Company, in that order.
  *
  * Each product on each cloud after its product, and "Works with" under
- * Products, are drawn now, built or not (owner, 30 Oct 2026: "just put it
- * there"); `unbuiltPages` lists the ones that answer 404 until built.
+ * Products (owner, 30 Oct 2026; the ten pages built 31 Oct 2026). Every line
+ * leads to a built page.
  */
 export const footerColumns: readonly FooterColumn[] = [
   {

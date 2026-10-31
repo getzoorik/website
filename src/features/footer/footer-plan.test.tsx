@@ -6,15 +6,13 @@ import { describe, expect, it, vi } from "vitest";
 
 vi.mock("next/navigation", () => ({ usePathname: () => "/" }));
 
-import { unbuiltPages } from "@/config/site";
 import { footerColumns } from "@/content/footer";
 import { FooterSection } from "@/features/footer/footer-section";
 
 /**
- * The planned pages in the footer: linked now, built or not (owner, 30 Oct
- * 2026: "just put it there"). `unbuiltPages` names the ones that answer 404
- * until built; a page's own PR takes it off the list, and the first check below
- * fails until it does.
+ * The ten pages the footer drew before they were built (owner, 30 Oct 2026:
+ * "just put it there"), built on 31 Oct 2026. Every line the footer draws leads
+ * to a page this app builds, and each of the ten sits at the site's root.
  */
 
 /** Every page.tsx under src/app, as its route. */
@@ -28,17 +26,23 @@ function pageRoutes(dir = "src/app", base = ""): string[] {
 
 const text = (el: Element | null) => (el?.textContent ?? "").replace(/\s+/g, " ").trim();
 
-describe("the footer's planned pages", () => {
-  it("lead each line to a page that is built, or that is listed as not built yet, never both", () => {
+describe("the footer's per-cloud and Works with pages", () => {
+  it("lead every line to a page that is built, and put each of the ten at the site's root", () => {
     const built = new Set(pageRoutes());
     const own = footerColumns
       .flatMap((list) => list.links.map((link) => link.href))
       .filter((href) => href.startsWith("/"));
-    for (const href of own) expect(built.has(href) !== unbuiltPages.has(href), href).toBe(true);
-    /* Nothing is listed that the footer does not link. */
-    for (const href of unbuiltPages) expect(own, href).toContain(href);
-    /* Every planned page sits at the site's root (owner, 29 Oct 2026). */
-    for (const href of unbuiltPages) expect(href, href).toMatch(/^\/[a-z0-9-]+$/);
+    for (const href of own) expect(built, href).toContain(href);
+    /* Each product on each cloud, and every Works with line: built, and at the site's root (owner, 29 Oct 2026). */
+    const ten = [
+      ...footerColumns[0]!.links.filter((link) => link.named),
+      ...footerColumns.find((list) => list.heading === "Works with")!.links,
+    ].map((link) => link.href);
+    expect(ten).toHaveLength(10);
+    for (const href of ten) {
+      expect(built, href).toContain(href);
+      expect(href, href).toMatch(/^\/(coral|amoeba)-[a-z0-9-]+$/);
+    }
   });
 
   it("put each product on each cloud after its product, and Works with under Products, in the first column", () => {

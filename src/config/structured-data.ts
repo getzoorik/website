@@ -40,6 +40,7 @@ import { assessmentCopy } from "@/content/assessment";
 import { brandAssetsPage } from "@/content/brand-assets";
 import { diskCalculator, nodeCalculator } from "@/content/calculators";
 import { careers } from "@/content/careers";
+import { cloudPages } from "@/content/cloud-pages";
 import { communityPage } from "@/content/community";
 import { contactPage } from "@/content/contact";
 import { designPartnersPage } from "@/content/design-partners";
@@ -77,6 +78,7 @@ import { securityPage } from "@/content/security";
 import { termsCopy } from "@/content/terms";
 import { troubleshootingGuides } from "@/content/troubleshooting";
 import { trustPage } from "@/content/trust";
+import { worksWithPages } from "@/content/works-with";
 import { isoDay } from "@/lib/content-date";
 
 /**
@@ -329,6 +331,25 @@ function productEntry(content: ProductPageContent): PageEntry {
   };
 }
 
+/**
+ * A page under a product's own: each product on each cloud, and each page on what Coral works with. The product's
+ * step, then the page by its h1; about that product.
+ */
+function productPartEntry(
+  product: ProductId,
+  path: string,
+  meta: { readonly title: string; readonly description: string },
+  h1: string,
+): PageEntry {
+  return {
+    kind: "WebPage",
+    name: titled(meta.title),
+    description: meta.description,
+    trail: [step(routes[product]), { name: h1, path }],
+    about: product,
+  };
+}
+
 function documentEntry(
   path: string,
   meta: { readonly title: string; readonly description: string },
@@ -439,6 +460,19 @@ const pages: Readonly<Record<string, PageEntry>> = {
   },
   [routes.coral]: productEntry(coralPageContent),
   [routes.amoeba]: productEntry(amoebaPageContent),
+  /* The ten pages of 31 Oct 2026: each product on each cloud, then the six pages on what Coral works with. */
+  ...Object.fromEntries(
+    cloudPages.map((page) => [
+      page.path,
+      productPartEntry(page.product, page.path, page.meta, page.hero.title),
+    ]),
+  ),
+  ...Object.fromEntries(
+    Object.values(worksWithPages).map((page) => [
+      page.route,
+      productPartEntry("coral", page.route, page.meta, page.hero.title),
+    ]),
+  ),
   [routes.assessment]: documentEntry(routes.assessment, assessmentCopy.meta, []),
   [routes.docs]: documentEntry(routes.docs, docsHub.meta, [], { kind: "CollectionPage" }),
   [routes.coralGuide]: documentEntry(routes.coralGuide, coralGuide.meta, [step(routes.docs)], {
