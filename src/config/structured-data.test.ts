@@ -150,6 +150,18 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/docs/contributing": () => import("@/app/docs/contributing/page"),
   "/coral-troubleshooting": () => import("@/app/coral-troubleshooting/page"),
   "/amoeba-troubleshooting": () => import("@/app/amoeba-troubleshooting/page"),
+  "/coral-for-aks": () => import("@/app/coral-for-aks/page"),
+  "/coral-for-eks": () => import("@/app/coral-for-eks/page"),
+  "/amoeba-for-azure": () => import("@/app/amoeba-for-azure/page"),
+  "/amoeba-for-aws": () => import("@/app/amoeba-for-aws/page"),
+  "/coral-works-with-cluster-autoscaler": () =>
+    import("@/app/coral-works-with-cluster-autoscaler/page"),
+  "/coral-works-with-karpenter": () => import("@/app/coral-works-with-karpenter/page"),
+  "/coral-works-with-aks-node-auto-provisioning": () =>
+    import("@/app/coral-works-with-aks-node-auto-provisioning/page"),
+  "/coral-works-with-keda": () => import("@/app/coral-works-with-keda/page"),
+  "/coral-works-with-helm": () => import("@/app/coral-works-with-helm/page"),
+  "/coral-works-with-terraform": () => import("@/app/coral-works-with-terraform/page"),
 };
 const pageModule = (path: string): Promise<PageModule> => {
   const load = pageModules[path];
@@ -363,7 +375,7 @@ describe("the home page's structured data", () => {
 
 describe("every indexed page's structured data", () => {
   it("renders on every page in the sitemap as one block that parses to the page's graph", async () => {
-    expect(listed).toHaveLength(44 + learnArticles.length + glossaryTerms.length);
+    expect(listed).toHaveLength(54 + learnArticles.length + glossaryTerms.length);
     for (const { path } of listed) {
       pathname.current = path;
       const { default: Page } = await pageModule(path);
@@ -477,6 +489,30 @@ describe("every indexed page's structured data", () => {
       "Cloud cost optimization tools",
       "Disk cost calculator: Azure managed disks and Amazon EBS",
     ]);
+    /* The ten pages of 31 Oct 2026, each under its product's page by its h1. */
+    expect(names(routes.coralForAks)).toEqual(["Zoorik", "Coral", "AKS cost optimization"]);
+    expect(names(routes.coralForEks)).toEqual(["Zoorik", "Coral", "EKS cost optimization"]);
+    expect(names(routes.amoebaForAzure)).toEqual([
+      "Zoorik",
+      "Amoeba",
+      "Azure managed disk cost optimization",
+    ]);
+    expect(names(routes.amoebaForAws)).toEqual(["Zoorik", "Amoeba", "EBS cost optimization"]);
+    expect(names(routes.coralWorksWithClusterAutoscaler)).toEqual([
+      "Zoorik",
+      "Coral",
+      "Coral works with Cluster Autoscaler",
+    ]);
+    expect(names(routes.coralWorksWithNodeAutoProvisioning)).toEqual([
+      "Zoorik",
+      "Coral",
+      "Coral works with AKS node auto provisioning",
+    ]);
+    expect(names(routes.coralWorksWithTerraform)).toEqual([
+      "Zoorik",
+      "Coral",
+      "Coral works with Terraform",
+    ]);
     expect(names(routes.trust)).toEqual(["Zoorik", "Trust center"]);
     expect(names(routes.contact)).toEqual(["Zoorik", "Contact"]);
     expect(names(routes.pricing)).toEqual(["Zoorik", "Pricing"]);
@@ -546,6 +582,14 @@ describe("every indexed page's structured data", () => {
       routes.caseStudyCoralDevCluster,
       routes.docsInstallHelm,
       routes.coralTroubleshooting,
+      routes.coralForAks,
+      routes.coralForEks,
+      routes.coralWorksWithClusterAutoscaler,
+      routes.coralWorksWithKarpenter,
+      routes.coralWorksWithNodeAutoProvisioning,
+      routes.coralWorksWithKeda,
+      routes.coralWorksWithHelm,
+      routes.coralWorksWithTerraform,
     ]) {
       expect(about(path), path).toEqual({ "@id": "https://zoorik.com/coral#software" });
     }
@@ -555,6 +599,8 @@ describe("every indexed page's structured data", () => {
       routes.amoebaFaq,
       routes.caseStudyAmoebaLabVms,
       routes.amoebaTroubleshooting,
+      routes.amoebaForAzure,
+      routes.amoebaForAws,
     ]) {
       expect(about(path), path).toEqual({ "@id": "https://zoorik.com/amoeba#software" });
     }

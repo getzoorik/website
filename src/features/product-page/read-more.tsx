@@ -26,6 +26,11 @@ import { formatSize, pageCount } from "@/lib/pdf-facts";
  *
  * Only what is published is drawn: a product with no tile gets no row at all
  * (see `amoeba-page.ts`).
+ *
+ * The per-cloud pages (`/coral-for-aks`, `/amoeba-for-aws`…) draw the same row
+ * from their own tiles, so it takes only the product and the row. A product's
+ * name in a page tile's line is kept out of translation too ("The volume type
+ * Amoeba’s pool uses on AWS").
  */
 
 /** Every name a tile's title can carry. */
@@ -44,7 +49,9 @@ function Tile({ tile }: { readonly tile: ReadMoreTile }): React.JSX.Element {
             <span className="dt-t">
               <NamedText text={tile.title} name={NAMES} />
             </span>
-            <span className="dt-l">{tile.line}</span>
+            <span className="dt-l">
+              <NamedText text={tile.line} name={NAMES} />
+            </span>
           </span>
           <ArrowGlyph className="dt-go" weight={2.2} />
         </a>
@@ -76,7 +83,11 @@ function Tile({ tile }: { readonly tile: ReadMoreTile }): React.JSX.Element {
   );
 }
 
-export function ReadMore({ content }: { content: ProductPageContent }): React.JSX.Element | null {
+export function ReadMore({
+  content,
+}: {
+  content: Pick<ProductPageContent, "product" | "readMore">;
+}): React.JSX.Element | null {
   const { readMore, product } = content;
   if (readMore.tiles.length === 0) return null;
   const headingId = `read-${product}-h`;

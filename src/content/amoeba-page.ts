@@ -24,8 +24,10 @@ import type { ProductPageContent, ReadMoreTile } from "@/content/product-page";
  * 🔴 THE READ MORE ROW HOLDS ONLY WHAT IS PUBLISHED. The mock draws four tiles:
  * the guide and the FAQ (behind `amoebaDocs`), the one-pager download (behind
  * `amoebaOnePager`) and the /learn article. A tile whose flag is off drops out.
+ * The per-cloud pages (`/amoeba-for-azure`, `/amoeba-for-aws`) open their row
+ * on the same two tiles, behind the same flag.
  */
-const guideAndFaq: readonly ReadMoreTile[] = [
+export const amoebaGuideAndFaq: readonly ReadMoreTile[] = [
   {
     kind: "page",
     title: "Product guide",
@@ -108,7 +110,7 @@ export const amoebaPageContent: ProductPageContent = {
     title: "Read more",
     allDocs: { label: "All docs", href: `${routes.docs}#amoeba` },
     tiles: [
-      ...(amoebaDocs ? guideAndFaq : []),
+      ...(amoebaDocs ? amoebaGuideAndFaq : []),
       ...(amoebaOnePager
         ? [{ kind: "download", title: "One-pager", document: "amoeba-one-pager" } as const]
         : []),
