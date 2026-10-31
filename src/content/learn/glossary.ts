@@ -39,13 +39,13 @@ export function termCard(term: GlossaryTerm): ShareImage {
 }
 
 /**
- * `/learn/glossary`, the hub: every string it prints. Its title goes through the layout's template ("Glossary |
- * Zoorik"); its h1 names what the glossary is about. Each term's trail names the hub by `crumb`.
+ * `/learn/glossary`, the hub: every string it prints. Its title goes through the layout's template ("Cloud cost and
+ * FinOps glossary | Zoorik"); its h1 names what the glossary is about. Each term's trail names the hub by `crumb`.
  */
 export const glossaryPage = {
   path: routes.learnGlossary,
   meta: {
-    title: "Glossary",
+    title: "Cloud cost and FinOps glossary",
     description:
       "Plain answers to the cloud cost terms on AKS, EKS, Azure and AWS: Kubernetes requests and limits, disk IOPS and throughput, and spot and reserved pricing.",
   },
@@ -59,7 +59,7 @@ export const glossaryPage = {
    * The day the hub's own content last changed, for the sitemap; it is not printed. A new term moves the hub's sitemap
    * day on its own (`sitemap.ts`), so this moves only when the hub itself changes.
    */
-  updated: "Updated 26 October 2026",
+  updated: "Updated 1 November 2026",
   /** The hub's name in each term's trail, over its h1 and in the structured data. */
   crumb: "Glossary",
   /** After a group's count, beside its head: "10 terms". */

@@ -61,6 +61,9 @@
 .hero-home{display:grid;align-content:center;min-height:100vh;min-height:100svh}
 .hero-home > .hero-in{width:100%}
 .hero-home .hero-cta{margin-top:40px}
+/* the company sentence under the pitch (owner, 1 Nov 2026, O12): the pitch's measure, a step smaller
+   and quieter, so the pitch still reads first */
+.hero-home .hero-co{margin-top:12px;max-width:56ch;font-size:1rem;line-height:1.6;color:rgba(250,247,243,.64);text-wrap:pretty}
 /* the one quiet line, the stores' marks in front of their names. The links' colour and underline are
    the site system's `.hero p a:not([class])`, as in the mock; this rule's colour loses to it. */
 .hero-home .hx-mkt{margin-top:28px;font-size:.875rem;line-height:1.6;color:rgba(250,247,243,.6)}

@@ -236,7 +236,7 @@ describe("each question", () => {
     expect(
       links.map((link) => [link.closest("details")!.id, text(link), link.getAttribute("href")]),
     ).toEqual([
-      ["what-is-coral", "Kubernetes cost optimization on AKS and EKS", "/coral"],
+      ["what-is-coral", "Coral for AKS and EKS", "/coral"],
       [
         "what-leaves-my-cluster",
         "What leaves your cluster",

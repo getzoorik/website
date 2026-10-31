@@ -12,7 +12,7 @@ import { routes } from "@/config/site";
  */
 
 /** The page prints no date: the day its content last changed, for the sitemap. Move it in the PR that changes it. */
-export const researchLastUpdated = "29 October 2026";
+export const researchLastUpdated = "1 November 2026";
 
 export interface ResearchPaper {
   readonly title: string;
@@ -36,7 +36,7 @@ export const researchPage = {
   route: routes.research,
   /** The `<title>`'s own words, before " | Zoorik", and the description. */
   meta: {
-    title: "Cloud cost optimization research",
+    title: "Cloud cost optimization research papers",
     description:
       "Research papers on cloud cost optimization: cluster scheduling, resource sizing, spot pricing, block storage and live migration, with a short note on each.",
   },

@@ -16,15 +16,18 @@ import type { ProductPageContent, ReadMoreTile } from "@/content/product-page";
  * cards from `how-it-works.ts`, rather than copied: a second copy would be a
  * second claim free to drift. Nothing here is a new figure.
  *
- * Coral is "Kubernetes cost optimization" on AKS and EKS. It is never shown as
- * running on Windows or Linux.
+ * Coral is "Kubernetes cost optimization" on AKS and EKS, as its h1 says. Its
+ * `<title>` is "Coral: Kubernetes optimization for AKS and EKS" (owner, 1 Nov
+ * 2026, O1): the search "Kubernetes cost optimization" belongs to
+ * /kubernetes-cost-optimization (D229). It is never shown as running on Windows
+ * or Linux.
  */
 /**
  * The day /coral's content last changed (its title), for the sitemap's
  * `lastmod` only: the page does not print it. Whoever changes /coral's content
  * moves this to that day in the same PR; never the build's date.
  */
-export const coralPageLastUpdated = "23 October 2026";
+export const coralPageLastUpdated = "1 November 2026";
 
 /**
  * Read more's FAQ tile. The per-cloud pages (`/aks-cost-optimization`,
@@ -40,7 +43,7 @@ export const coralFaqTile: ReadMoreTile = {
 export const coralPageContent: ProductPageContent = {
   product: "coral",
   meta: {
-    title: "Kubernetes cost optimization",
+    title: "Coral: Kubernetes optimization for AKS and EKS",
     description:
       "Coral rebalances AKS and EKS clusters to reduce your cloud bill, autonomously, without any downtime. Works with HPA, Karpenter, NAP and Cluster Autoscaler.",
     appDescription:

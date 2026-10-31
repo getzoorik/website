@@ -54,7 +54,7 @@ describe("KubernetesSection", () => {
     expect(film).toHaveClass("mo-r");
     expect(film.style.getPropertyValue("--d")).toBe("120ms");
     expect(video).toHaveAttribute("src", "/motion/coral-overview-5s.mp4");
-    expect(video).toHaveAttribute("poster", "/motion/coral-poster.jpg");
+    expect(video).toHaveAttribute("poster", "/motion/coral-poster.webp");
     expect(video).toHaveAttribute("aria-label", homeFilms.coral.label);
     expect(video.getAttribute("aria-label")).toMatch(
       /^Coral product preview with example figures: the Overview, /,

@@ -92,7 +92,7 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
           "It sizes each container’s CPU and memory requests to what it really uses, and drains spare nodes one at a time so your autoscaler can remove them. No code changes.",
           [
             "More on the product page: ",
-            { href: routes.coral, text: "Kubernetes cost optimization on AKS and EKS" },
+            { href: routes.coral, text: "Coral for AKS and EKS" },
             ".",
           ],
         ],

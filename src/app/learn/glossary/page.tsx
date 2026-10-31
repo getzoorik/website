@@ -10,8 +10,8 @@ import "@/styles/learn.css";
 
 /**
  * `/learn/glossary`: the glossary's hub, every term by its group. Indexed, listed in the sitemap, prerendered at build,
- * with its own share card. Its title goes through the layout's template: "Glossary | Zoorik"; the h1 is "Cloud cost
- * glossary".
+ * with its own share card. Its title goes through the layout's template: "Cloud cost and FinOps glossary | Zoorik";
+ * the h1 is "Cloud cost glossary".
  */
 export const metadata: Metadata = documentMetadata(glossaryPage.path, glossaryPage.meta);
 

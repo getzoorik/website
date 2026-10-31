@@ -200,6 +200,10 @@ describe("the glossary index", () => {
         expect(target!.slug, term.slug).not.toBe(term.slug);
         expect(tile.line, tile.href).toMatch(/^[A-Z].*[.?!]$/);
       }
+      /* Each tile is keyed by its title, never its address: the titles are each the tile's own. */
+      expect(new Set(term.related.map((tile) => tile.title)).size, term.slug).toBe(
+        term.related.length,
+      );
     }
   });
 });

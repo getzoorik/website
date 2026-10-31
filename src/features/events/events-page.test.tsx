@@ -97,7 +97,7 @@ function expected(day: string) {
 
 describe("/events's metadata", () => {
   it("has the mock's title through the template, its description and its canonical", () => {
-    expect(metadata.title).toBe("Events");
+    expect(metadata.title).toBe("Kubernetes, FinOps and cloud cost events");
     expect(metadata.description).toBe(
       "Conferences and community days on Kubernetes, FinOps, cloud cost and block storage, with dates, places and a link to each event's own page.",
     );
@@ -105,7 +105,7 @@ describe("/events's metadata", () => {
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/events",
-      title: "Events | Zoorik",
+      title: "Kubernetes, FinOps and cloud cost events | Zoorik",
     });
   });
 });

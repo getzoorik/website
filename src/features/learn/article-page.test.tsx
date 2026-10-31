@@ -197,13 +197,18 @@ const codeOf = (blocks: readonly ArticleBlock[]): readonly { lang: string; code:
     );
   });
 
-/** The byline as read: the day, the author with the new-tab hint where they link, and the publisher. */
+/**
+ * The byline as read: the day, the day it changed where that is a later one, the author with the new-tab hint where
+ * they link, and the publisher.
+ */
 const bylineOf = (article: Article): string => {
   const author = articleAuthor(article);
+  const updated =
+    article.updated === article.published ? "" : ` · Updated ${printedDay(article.updated)}`;
   const by = author
     ? ` · By ${author.name}${author.linkedin ? " (opens in a new tab)" : ""}, ${author.role}`
     : "";
-  return `Published ${printedDay(article.published)}${by} · Published by Zoorik`;
+  return `Published ${printedDay(article.published)}${updated}${by} · Published by Zoorik`;
 };
 
 /** The product the closing row offers: the help box's, else the article's own. */
@@ -424,7 +429,7 @@ describe.each(learnArticles.map((article) => [articleRoute(article), article.slu
       }
     });
 
-    it("shows its cover under the byline, as decoration, where it has one", async () => {
+    it("shows its cover under the byline, named by its draft's alt text or else decoration", async () => {
       const top = (await main(slug)).querySelector(".ar-frame > .fq-upd.doc-prose:first-child")!;
       const cover = top.querySelector(":scope > p.doc-updated + figure.ar-cover img");
       if (!article.cover) {
@@ -432,7 +437,7 @@ describe.each(learnArticles.map((article) => [articleRoute(article), article.slu
         return;
       }
       expect(cover).toHaveAttribute("src", article.cover);
-      expect(cover).toHaveAttribute("alt", "");
+      expect(cover).toHaveAttribute("alt", article.coverAlt ?? "");
       expect(readFileSync(`public${article.cover}`).length).toBeGreaterThan(0);
     });
 
@@ -481,6 +486,9 @@ describe.each(learnArticles.map((article) => [articleRoute(article), article.slu
       expect(article.related.length).toBeLessThanOrEqual(5);
       const tiles = [...related.querySelectorAll("article.dt > .dt-a")];
       expect(tiles).toHaveLength(article.related.length);
+      /* Each tile is keyed by its title, never its address, so an unpublished article's address stays out of the
+         page's payload: the titles are each the tile's own. */
+      expect(new Set(article.related.map((tile) => tile.title)).size).toBe(article.related.length);
       article.related.forEach((tile, index) => {
         const link = titleLink({ text: tile.title, href: tile.href });
         const drawn = tiles[index]!;

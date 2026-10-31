@@ -4,6 +4,7 @@ import { render } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { marketplaces } from "@/config/marketplaces";
+import { site } from "@/config/site";
 import { heroFilmGrounds } from "@/features/hero-film/hero-films";
 
 import { HeroSection } from "./hero-section";
@@ -46,13 +47,25 @@ describe("the home hero", () => {
     expect(film).not.toHaveClass("hero-photo");
   });
 
-  it("holds five things only, in order: the name, the h1, the line, one button, the stores", () => {
+  it("holds six things only, in order: the name, the h1, the line, the company, one button, the stores", () => {
     const words = hero.querySelector(".hero-in")!;
     expect([...words.children].map((el) => `${el.tagName.toLowerCase()}.${el.className}`)).toEqual([
       "h1.",
       "p.hero-sub",
+      "p.hero-co",
       "div.hero-cta",
       "p.hx-mkt",
+    ]);
+    /* The company sentence, in the Organization's words, its three names kept out of translation. */
+    const company = words.querySelector("p.hero-co")!;
+    expect(company.textContent).toBe(
+      "Zoorik is a cloud cost optimization company. Coral reduces Kubernetes cost on AKS and EKS, and Amoeba reduces block storage cost on Azure and AWS, without any downtime.",
+    );
+    expect(company.textContent).toBe(site.description);
+    expect([...company.querySelectorAll("[translate='no']")].map((el) => el.textContent)).toEqual([
+      "Zoorik",
+      "Coral",
+      "Amoeba",
     ]);
     expect(words.querySelector("h1 > .hero-name:first-child")).toHaveTextContent("Zoorik");
     expect(words.querySelector("h1")!.textContent).toBe("Zoorik Reduce cloud cost, autonomously.");

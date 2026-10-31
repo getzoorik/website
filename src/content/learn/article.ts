@@ -205,7 +205,10 @@ export interface Article {
   readonly versus?: readonly [string, string];
   /** The day it was published, as an ISO day: the byline, the hub card and the structured data. */
   readonly published: string;
-  /** The day it last changed, as an ISO day: the sitemap and the structured data. */
+  /**
+   * The day it last changed, as an ISO day: the byline where it differs from `published`, the sitemap and the
+   * structured data.
+   */
   readonly updated: string;
   /** Who wrote it: an author's key in `authors.ts`, or "zoorik" when it is published under the company alone. */
   readonly author: AuthorKey | "zoorik";
@@ -234,6 +237,8 @@ export interface Article {
 /** The fixed words of an article page. */
 export const articleWords = {
   published: "Published ",
+  /** After the published day, only where the article changed since: " · Updated <day>". */
+  updated: " · Updated ",
   author: " · By ",
   by: " · Published by ",
   short: "Short answer.",

@@ -35,8 +35,8 @@ const words = (value: string): string => value.replace(/[\s ]+/g, " ").trim();
 const page = () => render(<GlossaryRoute />).container;
 
 describe("/learn/glossary's metadata", () => {
-  it("titles it Glossary through the template, describes and canonicalises it, with its own card", () => {
-    expect(metadata.title).toBe("Glossary");
+  it("titles it through the template, describes and canonicalises it, with its own card", () => {
+    expect(metadata.title).toBe("Cloud cost and FinOps glossary");
     expect(metadata.description).toBe(glossaryPage.meta.description);
     expect(metadata.description!.length).toBeGreaterThanOrEqual(140);
     expect(metadata.description!.length).toBeLessThanOrEqual(158);
@@ -44,7 +44,7 @@ describe("/learn/glossary's metadata", () => {
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/learn/glossary",
-      title: "Glossary | Zoorik",
+      title: "Cloud cost and FinOps glossary | Zoorik",
       images: [pageCards["/learn/glossary"]],
     });
     expect(pageCards["/learn/glossary"]!.url).toBe("/og/pages/glossary.png");

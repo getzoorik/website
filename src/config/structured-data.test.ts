@@ -271,10 +271,10 @@ describe("the home page's structured data", () => {
       url: calendarUrl,
     });
     expect(calendarUrl).toBe("https://cal.com/zoorik/talk");
-    /* The footer's profiles but Bluesky and Substack, then Zoorik's page in each store, the
-       Crunchbase profile and the Wikidata entry, then the PyPI user and the Terraform Registry
-       namespace, then the other profiles, Bluesky and Substack in their places among them, then the
-       directories. */
+    /* The footer's profiles but the empty Bluesky and Substack, then Zoorik's page in each store,
+       the Crunchbase profile and the Wikidata entry, then the PyPI user and the Terraform Registry
+       namespace, then the other profiles, Hugging Face among them, then the directories. No empty
+       profile (O14). */
     expect(org.sameAs).toEqual([
       "https://www.linkedin.com/company/zoorik",
       "https://www.youtube.com/@getzoorik",
@@ -287,17 +287,10 @@ describe("the home page's structured data", () => {
       wikidataEntity,
       "https://pypi.org/user/zoorik/",
       "https://registry.terraform.io/namespaces/getzoorik",
-      "https://bsky.app/profile/zoorik.com",
-      "https://gitlab.com/zoorik",
-      "https://zoorik.substack.com",
       "https://www.instagram.com/getzoorik/",
       "https://artifacthub.io/packages/search?org=zoorik",
-      "https://www.npmjs.com/org/zoorik",
-      "https://quay.io/organization/zoorik",
       "https://gravatar.com/getzoorik",
-      "https://news.ycombinator.com/user?id=zoorik",
-      "https://dev.to/zoorik",
-      "https://mastodon.social/@zoorik",
+      "https://huggingface.co/zoorik",
       "https://wellfound.com/company/zoorik",
       "https://www.f6s.com/company/zoorik",
       "https://tracxn.com/d/companies/zoorik/__0-HfxD5kpG4SADDRpAEc8XzSUYQVK-7bAubR7EZJjts",
@@ -305,10 +298,36 @@ describe("the home page's structured data", () => {
       "https://www.g2.com/sellers/zoorik",
       "https://saasbrowser.com/en/saas/1707340/zoorik",
     ]);
-    /* Each address once, every one of the footer's profiles among them. */
+    /* Each address once, every one of the footer's profiles among them but the two empty ones, which
+       the footer keeps. */
     const sameAs = org.sameAs as readonly string[];
     expect(new Set(sameAs).size).toBe(sameAs.length);
-    for (const link of socialProfiles) expect(sameAs, link.platform).toContain(link.href);
+    for (const link of socialProfiles) {
+      if (link.platform === "bluesky" || link.platform === "substack")
+        expect(sameAs, link.platform).not.toContain(link.href);
+      else expect(sameAs, link.platform).toContain(link.href);
+    }
+    expect(socialProfiles.map((link) => link.platform)).toContain("bluesky");
+    expect(socialProfiles.map((link) => link.platform)).toContain("substack");
+    for (const empty of [
+      "bsky.app",
+      "gitlab.com",
+      "substack.com",
+      "npmjs.com",
+      "quay.io",
+      "news.ycombinator.com",
+      "dev.to",
+      "mastodon.social",
+    ])
+      expect(
+        sameAs.some((link) => new URL(link).host.endsWith(empty)),
+        empty,
+      ).toBe(false);
+    /* "Zoorik Cloud" names the Organization only: the WebSite node, whose name Google reads as the site's, has
+       no alternateName. */
+    expect(org.alternateName).toBe("Zoorik Cloud");
+    expect(graph[1]!["@type"]).toBe("WebSite");
+    expect(graph[1]).not.toHaveProperty("alternateName");
     expect(storeProfiles).toEqual([
       "https://aws.amazon.com/marketplace/seller-profile?id=seller-mtaavozrqchlk",
       "https://marketplace.microsoft.com/en-us/partners/04f64eb0-8878-4f14-9578-bc5d104737e7/overview",
@@ -316,7 +335,7 @@ describe("the home page's structured data", () => {
     expect(crunchbaseProfile).toBe("https://www.crunchbase.com/organization/zoorik");
     expect(wikidataEntity).toBe("https://www.wikidata.org/wiki/Q141717592");
     expect(org.description).toBe(
-      "Reduce cloud cost while your systems keep serving. Coral: Kubernetes cost optimization on AKS and EKS. Amoeba: block storage cost optimization on Azure and AWS.",
+      "Zoorik is a cloud cost optimization company. Coral reduces Kubernetes cost on AKS and EKS, and Amoeba reduces block storage cost on Azure and AWS, without any downtime.",
     );
     expect(org.logo).toEqual({
       "@type": "ImageObject",
@@ -765,6 +784,12 @@ describe("every indexed page's structured data", () => {
         inDefinedTermSet: set,
         mainEntityOfPage: { "@id": `${url}#webpage` },
       });
+      /* Its page carries the days the term was published and last changed, as its Updated line prints the later. */
+      expect(ofType(nodes, "WebPage")[0], term.slug).toMatchObject({
+        "@id": `${url}#webpage`,
+        datePublished: term.published,
+        dateModified: term.updated,
+      });
       /* Its name is the term's words without the other names in brackets at its end ("Data transfer (egress) cost"
          keeps the bracket inside its name), and its description the definition's opening. */
       expect(node!.name, term.slug).not.toMatch(/\)\s*$/);
@@ -789,11 +814,12 @@ describe("every indexed page's structured data", () => {
       })),
       mainEntityOfPage: { "@id": `${hubUrl}#webpage` },
     });
-    /* No other page carries a term or a set. */
+    /* No other page carries a term or a set, and no other page node a date. */
     for (const { path } of listed) {
       if (path === routes.learnGlossary || path.startsWith(`${routes.learnGlossary}/`)) continue;
       expect(ofType(graphOf(path), "DefinedTerm"), path).toHaveLength(0);
       expect(ofType(graphOf(path), "DefinedTermSet"), path).toHaveLength(0);
+      expect(graphOf(path)[2], path).not.toHaveProperty("datePublished");
     }
   });
 

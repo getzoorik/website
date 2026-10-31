@@ -16,7 +16,7 @@ import "@/styles/research.css";
  * sitemap, and prerendered at build like every page here. It is drawn on /community's frame and carries Learn's and
  * /community's sheets, as the mock does, then its own.
  */
-/* Its title goes through the layout's template: "Cloud cost optimization research | Zoorik". */
+/* Its title goes through the layout's template: "Cloud cost optimization research papers | Zoorik". */
 export const metadata: Metadata = documentMetadata(routes.research, researchPage.meta);
 
 export default function Research(): React.JSX.Element {

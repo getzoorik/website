@@ -9,10 +9,16 @@ import type { ProductId } from "@/content/products";
  */
 
 /**
- * The day the versus and alternatives pages' content last changed, for the sitemap's `lastmod` only. Whoever changes
- * them moves this to that day in the same PR; never the build's date.
+ * The day the versus pages' content last changed, for the sitemap's `lastmod` only. Whoever changes them moves this to
+ * that day in the same PR; never the build's date.
  */
 export const learnCompareLastUpdated = "19 October 2026";
+
+/**
+ * The day the two alternatives pages' content last changed, for the sitemap's `lastmod` only, as above. 1 Nov 2026:
+ * their titles, and the Amoeba page's description.
+ */
+export const alternativesLastUpdated = "1 November 2026";
 
 /**
  * The day Cloud cost optimization tools' content last changed, for the sitemap's `lastmod` only, as above. 30 Oct
@@ -123,7 +129,7 @@ export const alternativesPages: readonly AlternativesPage[] = [
     product: "coral",
     h1: "Coral alternatives: Kubernetes cost tools compared",
     meta: {
-      title: "Kubernetes cost tools",
+      title: "Kubernetes cost optimization tools compared",
       description:
         "Weighing Coral against other ways to reduce Kubernetes cost on AKS and EKS? Here is each option, what it does and how it acts, from each company’s own pages.",
     },
@@ -134,9 +140,9 @@ export const alternativesPages: readonly AlternativesPage[] = [
     product: "amoeba",
     h1: "Amoeba alternatives: block storage tools compared",
     meta: {
-      title: "Block storage tools",
+      title: "Azure disk and EBS cost tools compared",
       description:
-        "Weighing Amoeba against other ways to reduce what Azure managed disks and Amazon EBS cost? Here is each option, what it does and how it acts, from each company’s own pages.",
+        "Tools that reduce Azure managed disk and Amazon EBS cost, compared: what each does, whether it acts or recommends, and where it runs.",
     },
     line: "Every way to right-size Azure managed disks and Amazon EBS, and how each one acts.",
   },

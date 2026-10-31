@@ -1,20 +1,13 @@
 import {
   artifactHubOrg,
-  blueskyProfile,
   crunchbaseProfile,
-  devToOrg,
   f6sCompany,
   g2Coral,
   g2Seller,
-  gitlabGroup,
   gravatarProfile,
-  hackerNewsProfile,
+  huggingFaceOrg,
   instagramProfile,
-  mastodonProfile,
-  npmOrg,
-  quayOrg,
   saasBrowserProfile,
-  substackPublication,
   tracxnCompany,
   tracxnLegalEntity,
   wellfoundCompany,
@@ -137,26 +130,30 @@ const guides: Readonly<Record<ProductId, string | null>> = {
   amoeba: amoebaDocs ? routes.amoebaGuide : null,
 };
 
-/** The footer's profiles `sameAs` lists in their own places further down, among the other profiles: each once. */
-const LATER_PROFILES: readonly FooterSocialPlatform[] = ["bluesky", "substack"];
+/**
+ * The footer's profiles `sameAs` leaves out: Bluesky and Substack, empty for now (owner, 1 Nov 2026, O14). A profile
+ * confirms who Zoorik is only once it carries something; the footer keeps both.
+ */
+const EMPTY_PROFILES: readonly FooterSocialPlatform[] = ["bluesky", "substack"];
 
 /**
  * Zoorik, with the facts /about prints (`about.ts`): the registered office, the
  * CIN, the address and the calendar to reach it by, and the logo. Its
- * description is the site's, and `sameAs` the footer's social profiles but
- * Bluesky and Substack (its row shows five of these six), the AWS Marketplace
- * seller page, the Crunchbase profile and the Wikidata entry (`entity.ts`),
- * which names zoorik.com as the official website, so a search engine can tell
- * this Zoorik from the others; then the two places Zoorik publishes under its
- * own name: the PyPI user that owns the `zoorik` package, and the Terraform
- * Registry namespace; then Bluesky (@zoorik.com), GitLab, Substack, Instagram,
- * Artifact Hub, npm, Quay and Gravatar, Bluesky and Substack keeping their
- * places here though the footer's profiles and its row hold them too
- * (`LATER_PROFILES`); then Hacker News,
- * dev.to, Mastodon and Wellfound; then the directories: F6S, Tracxn's company
- * and legal-entity pages, G2's seller page and SaaSBrowser. It is `memberOf`
- * each program /about lists under Programs (`memberships.ts`), as a
- * ProgramMembership with the program's page and the company that runs it.
+ * description is the site's, the company sentence (`site.description`), and
+ * its alternateName "Zoorik Cloud" (owner, 1 Nov 2026, O13), on this node
+ * alone: the WebSite node has none, as Google reads the site's name there.
+ * `sameAs` is the footer's social profiles but the empty Bluesky and Substack
+ * (`EMPTY_PROFILES`), the AWS Marketplace seller page, the Crunchbase profile
+ * and the Wikidata entry (`entity.ts`), which names zoorik.com as the official
+ * website, so a search engine can tell this Zoorik from the others; then the
+ * two places Zoorik publishes under its own name: the PyPI user that owns the
+ * `zoorik` package, and the Terraform Registry namespace; then Instagram,
+ * Artifact Hub, Gravatar, Hugging Face and Wellfound; then the directories:
+ * F6S, Tracxn's company and legal-entity pages, G2's seller page and
+ * SaaSBrowser. No profile without content (owner, 1 Nov 2026, O14: GitLab, npm,
+ * Quay, Hacker News, dev.to and Mastodon are out with Bluesky and Substack). It
+ * is `memberOf` each program /about lists under Programs (`memberships.ts`), as
+ * a ProgramMembership with the program's page and the company that runs it.
  * No founder and no founding date: /about names neither.
  */
 export const organization = {
@@ -164,6 +161,7 @@ export const organization = {
   "@id": organizationId,
   name: site.name,
   legalName: site.legalName,
+  alternateName: "Zoorik Cloud",
   url: homeUrl,
   logo: {
     "@type": "ImageObject",
@@ -186,24 +184,17 @@ export const organization = {
   knowsAbout: ["Cloud cost optimization", ...productOrder.map((id) => products[id].category)],
   sameAs: [
     ...socialProfiles
-      .filter((link) => !LATER_PROFILES.includes(link.platform))
+      .filter((link) => !EMPTY_PROFILES.includes(link.platform))
       .map((link) => link.href),
     ...storeProfiles,
     crunchbaseProfile,
     wikidataEntity,
     openSourceLinks.pypiUser,
     openSourceLinks.terraformRegistry,
-    blueskyProfile,
-    gitlabGroup,
-    substackPublication,
     instagramProfile,
     artifactHubOrg,
-    npmOrg,
-    quayOrg,
     gravatarProfile,
-    hackerNewsProfile,
-    devToOrg,
-    mastodonProfile,
+    huggingFaceOrg,
     wellfoundCompany,
     f6sCompany,
     tracxnCompany,
@@ -304,8 +295,16 @@ interface PageEntry {
     /** The page's share card. */
     readonly image: { readonly url: string };
   };
-  /** A glossary term's page: the term, by its name, and its definition's first sentence. */
-  readonly term?: { readonly name: string; readonly description: string };
+  /**
+   * A glossary term's page: the term, by its name, and its definition's first sentence; and the days it was
+   * published and last changed, as ISO days, which its page's node carries.
+   */
+  readonly term?: {
+    readonly name: string;
+    readonly description: string;
+    readonly published: string;
+    readonly updated: string;
+  };
   /** The glossary's hub: the set every term is in. */
   readonly termSet?: true;
 }
@@ -431,7 +430,12 @@ function termEntry(term: GlossaryTerm): PageEntry {
     description: term.meta,
     trail: [step(routes.learn), glossaryStep, { name: term.h1, path: termRoute(term) }],
     ...(term.product === "both" ? {} : { about: term.product }),
-    term: { name: termName(term), description: term.card },
+    term: {
+      name: termName(term),
+      description: term.card,
+      published: term.published,
+      updated: term.updated,
+    },
   };
 }
 
@@ -727,6 +731,10 @@ export function pageStructuredData(path: string) {
         ...(page.trail.length > 0 ? { breadcrumb: ref(trailId) } : {}),
         ...(about ? { about } : {}),
         ...(page.kind === "AboutPage" ? { mainEntity: ref(organizationId) } : {}),
+        /* A glossary term's page carries its days, as its Updated line prints the later one. */
+        ...(page.term
+          ? { datePublished: page.term.published, dateModified: page.term.updated }
+          : {}),
       },
       ...(page.trail.length > 0
         ? [

@@ -110,10 +110,11 @@ describe("sitemap.xml", () => {
       sitemap().map((entry) => [new URL(entry.url).pathname, entry.lastModified]),
     );
     expect(dates).toEqual({
-      /* A page that prints no day: the day its content last changed (the heading pass, 23 Oct 2026). */
-      "/": "2026-10-23",
-      "/coral": "2026-10-23",
-      "/amoeba": "2026-10-23",
+      /* A page that prints no day: the day its content last changed (the company sentence and the titles,
+         1 Nov 2026). */
+      "/": "2026-11-01",
+      "/coral": "2026-11-01",
+      "/amoeba": "2026-11-01",
       /* The ten pages of 31 Oct 2026 print no day: the day their content was written. */
       "/aks-cost-optimization": "2026-10-31",
       "/eks-cost-optimization": "2026-10-31",
@@ -125,7 +126,7 @@ describe("sitemap.xml", () => {
       "/coral-works-with-keda": "2026-10-31",
       "/coral-works-with-helm": "2026-10-31",
       "/coral-works-with-terraform": "2026-10-31",
-      "/assessment": "2026-10-21",
+      "/assessment": "2026-11-01",
       "/marketplaces": "2026-10-21",
       /* The guide PDF's new page count (30 Oct 2026). */
       "/docs": "2026-10-30",
@@ -160,9 +161,10 @@ describe("sitemap.xml", () => {
       ...Object.fromEntries(glossaryTerms.map((term) => [glossaryPath(term.slug), term.updated])),
       /* Cloud cost optimization tools: the day its content last changed (its Free calculators, 30 Oct 2026). */
       "/cloud-cost-optimization-library": "2026-10-30",
-      /* The comparison pages: the day they were checked and published. */
-      "/cloud-cost-optimization-library/coral-alternatives": "2026-10-19",
-      "/cloud-cost-optimization-library/amoeba-alternatives": "2026-10-19",
+      /* The comparison pages: the day the versus pages were checked and published, and the day the
+         alternatives pages were retitled (1 Nov 2026). */
+      "/cloud-cost-optimization-library/coral-alternatives": "2026-11-01",
+      "/cloud-cost-optimization-library/amoeba-alternatives": "2026-11-01",
       ...Object.fromEntries(versusPages.map((page) => [versusRoute(page), "2026-10-19"])),
       /* The two calculators: the day their prices were read, which they print. */
       "/eks-and-aks-pricing-calculator": "2026-10-30",
@@ -172,8 +174,8 @@ describe("sitemap.xml", () => {
       "/coral-value-lab": "2026-10-12",
       "/amoeba-value-lab": "2026-10-19",
       /* The research papers print no day: the day their content last changed. */
-      "/cloud-cost-optimization-research-papers": "2026-10-29",
-      "/events": "2026-10-21",
+      "/cloud-cost-optimization-research-papers": "2026-11-01",
+      "/events": "2026-11-01",
       /* Zoorik News: the week of its latest Radar. */
       "/news": "2026-10-19",
       "/community": "2026-10-21",
@@ -201,7 +203,7 @@ describe("sitemap.xml", () => {
   it("dates the home page by its content file, homeLastUpdated, and by nothing else", () => {
     const home = sitemap().find((entry) => new URL(entry.url).pathname === "/")!;
     expect(home.lastModified).toBe(isoDay(homeLastUpdated));
-    expect(homeLastUpdated).toBe("23 October 2026");
+    expect(homeLastUpdated).toBe("1 November 2026");
   });
 
   it("dates every page it lists, and none in the future", () => {

@@ -10,7 +10,7 @@
  * The day /events's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /events's content moves this to that day in the same PR; never the build's date.
  */
-export const eventsLastUpdated = "21 October 2026";
+export const eventsLastUpdated = "1 November 2026";
 
 /** The topics, in the Topic filter's order: the list's `category`, and the name its tag and its chip print. */
 export const eventTopics = [
@@ -48,6 +48,11 @@ export interface EventEntry {
   readonly whyItMatters: string;
   /** The organizer's public event page: the only address the page links an event to. */
   readonly officialUrl: string;
+  /**
+   * The organizer's own site, for the Event markup's organizer only (the page prints none). Set only where the list
+   * names it, as "devopsdays.org" or "ceph.io" in an organizer's name; never guessed from the event's page.
+   */
+  readonly organizerUrl?: string;
   /** The call for talks, in the list's words; empty when the page says nothing of one. */
   readonly cfp: string;
   /** The ticket label, never a price; empty when the list gives none, and then the page shows none. */
@@ -79,7 +84,7 @@ const months = [
 export const eventsPage = {
   /** The page's `<title>` (through the site's "%s | Zoorik" template) and description. */
   meta: {
-    title: "Events",
+    title: "Kubernetes, FinOps and cloud cost events",
     description:
       "Conferences and community days on Kubernetes, FinOps, cloud cost and block storage, with dates, places and a link to each event's own page.",
   },
@@ -153,7 +158,9 @@ export const eventsPage = {
  * Generated from the radar's list (76 events, each checked twice on its organizer's page), carrying its public
  * fields only: never its prices (`price_note`), sources, check notes or dropped events. The weekly radar refreshes
  * it: replace the list and `eventsListUpdated` with the new file's, and move `eventsLastUpdated` to the same day. Its
- * order does not matter: the page sorts by date, then by name, and leaves out what has ended. */
+ * order does not matter: the page sorts by date, then by name, and leaves out what has ended. `organizerUrl` is not a
+ * field of the radar's file: it is set here on the six events whose organizer names its site (devopsdays.org,
+ * ceph.io), so a refresh keeps it on those events. */
 
 /** The day the list was last checked (the radar file's `updated`): the hero's deck prints it. */
 export const eventsListUpdated = "19 October 2026";
@@ -214,6 +221,7 @@ export const events: readonly EventEntry[] = [
     whyItMatters:
       "Practitioners who run Kubernetes and cloud infrastructure day to day; good for conversations about cluster cost.",
     officialUrl: "https://devopsdays.org/events/2026-boston/welcome/",
+    organizerUrl: "https://devopsdays.org",
     cfp: "",
     tickets: "",
   },
@@ -480,6 +488,7 @@ export const events: readonly EventEntry[] = [
     whyItMatters:
       "Ceph, often through Rook, backs block and object storage for many Kubernetes clusters, so storage sizing and cost come up directly.",
     officialUrl: "https://ceph.io/en/community/events/2026/ceph-days-chicago/",
+    organizerUrl: "https://ceph.io",
     cfp: "Closed (deadline was 15 Oct 2026)",
     tickets: "Paid",
   },
@@ -537,6 +546,7 @@ export const events: readonly EventEntry[] = [
     whyItMatters:
       "One of the larger European devopsdays, attended by engineers who run cloud and Kubernetes workloads.",
     officialUrl: "https://devopsdays.org/events/2026-warsaw/welcome/",
+    organizerUrl: "https://devopsdays.org",
     cfp: "",
     tickets: "Paid",
   },
@@ -762,6 +772,7 @@ export const events: readonly EventEntry[] = [
     whyItMatters:
       "A dense cloud native community with many cloud-first startups that watch their infrastructure bills closely.",
     officialUrl: "https://devopsdays.org/events/2026-tel-aviv/welcome/",
+    organizerUrl: "https://devopsdays.org",
     cfp: "",
     tickets: "Paid",
   },
@@ -1118,6 +1129,7 @@ export const events: readonly EventEntry[] = [
     whyItMatters:
       "Reaches platform and operations engineers in Switzerland's finance and enterprise sector.",
     officialUrl: "https://devopsdays.org/events/2027-zurich/welcome/",
+    organizerUrl: "https://devopsdays.org",
     cfp: "Open via Sessionize; deadline not stated",
     tickets: "",
   },
@@ -1473,6 +1485,7 @@ export const events: readonly EventEntry[] = [
     whyItMatters:
       "A large Midwest crowd of operations and platform engineers who run enterprise cloud workloads.",
     officialUrl: "https://devopsdays.org/events/2027-chicago/welcome/",
+    organizerUrl: "https://devopsdays.org",
     cfp: "Not yet open (call for proposals TBD)",
     tickets: "",
   },

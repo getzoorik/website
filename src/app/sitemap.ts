@@ -23,6 +23,7 @@ import { newsLastUpdated } from "@/content/news";
 import { homeLastUpdated } from "@/content/hero";
 import { learnPage } from "@/content/learn";
 import {
+  alternativesLastUpdated,
   alternativesPages,
   cloudCostToolsLastUpdated,
   learnCompareLastUpdated,
@@ -93,11 +94,13 @@ const contentDates: Partial<Record<string, string>> = {
   [routes.amoebaGuide]: amoebaGuide.updated,
   [routes.amoebaFaq]: amoebaFaqPage.updated,
   [routes.cloudCostTools]: cloudCostToolsLastUpdated,
-  /* The comparison pages (under Cloud cost optimization tools) print "checked 19 October 2026": one content date. */
+  /* The comparison pages (under Cloud cost optimization tools) print "checked 19 October 2026"; their content dates
+     are the versus pages' and the alternatives pages'. */
   ...Object.fromEntries(
-    [...alternativesPages.map((page) => page.route), ...versusPages.map(versusRoute)].map(
-      (route) => [route, learnCompareLastUpdated] as const,
-    ),
+    versusPages.map((page) => [versusRoute(page), learnCompareLastUpdated] as const),
+  ),
+  ...Object.fromEntries(
+    alternativesPages.map((page) => [page.route, alternativesLastUpdated] as const),
   ),
   [routes.valueLab]: caseStudiesHubLastUpdated,
   [routes.caseStudyCoralDevCluster]: caseStudy.band.date,

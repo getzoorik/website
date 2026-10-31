@@ -90,7 +90,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
   summary: [
     {
       term: "Product page",
-      text: [[{ href: routes.coral, text: "Kubernetes cost optimization on AKS and EKS" }]],
+      text: [[{ href: routes.coral, text: "Coral for AKS and EKS" }]],
     },
     {
       term: "What Coral does",
