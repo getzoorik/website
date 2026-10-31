@@ -1,0 +1,40 @@
+/* Zoorik marketing — the per-cloud pages: /coral-for-aks, /coral-for-eks, /amoeba-for-azure and /amoeba-for-aws
+ * (31 Oct 2026).
+ *
+ * Ported VERBATIM from the mocks (`coral-for-aks.html`…, ten_pages_mock.py): their <style id="ten-pages">, then the
+ * rules of /coral's and /amoeba's own mocks that the site's product pages no longer carry (the racks photo, and
+ * "What is Coral?"'s text column outside its two-column grid). Values are copied, never reinterpreted. Everything else
+ * the pages draw is the site system's, the documents' sheet and the product pages' sheet. The mocks' code-face rules
+ * (code in a card's line or a question's name) are the site's base rule already: `code` takes `--font-mono`, var(--code).
+ *
+ * repo: the App Router keeps a visited page's sheet in the document, so every rule starts at this page's own hero
+ * (`.cl-hero`, or a section after it, `.cl-hero ~ …`), as product-tour.css scopes /coral's to `.pp-min`. */
+
+/* The photograph (the mocks' main sheet; hero.css dropped it when the product heroes took their films). Measured on
+   the source frame: the lit racks occupy x 0.35-0.70 and the right 30% is empty black. scaleX(-1) mirrors that empty
+   third under the headline, so the type sits on the photo's own negative space. */
+.cl-hero .hero-photo{position:absolute;top:0;right:0;height:100%;width:min(70%,1160px);
+  object-fit:cover;object-position:50% 50%;transform:scaleX(-1);
+  z-index:-2;pointer-events:none;user-select:none}
+@media(max-width:1080px){.cl-hero .hero-photo{width:82%}}
+@media(max-width:760px){.cl-hero .hero-photo{width:100%}}
+
+/* repo: sections.css sets `.hero-sub{text-wrap:pretty}` on every page; the mocks' sheet has no such rule, so the
+   line breaks as the mock breaks it (as careers.css and product-tour.css do for theirs). */
+.cl-hero .hero-sub{text-wrap:wrap}
+
+/* The eyebrow: the home hero's name line (.hero h1 .hero-name), set before the h1, so the h1 stays the search phrase. */
+.cl-hero .hero-ey{margin:0 0 14px;font-size:.875rem;font-weight:500;letter-spacing:.01em;line-height:1.4;color:rgba(255,255,255,.72)}
+
+/* What <product> does on <cloud>: "What is Coral?"'s text column (the mocks' unscoped .pp-prose; product-page.css
+   scopes it to the two-column grid this page does not draw). */
+.cl-hero ~ #about .pp-prose{margin-top:24px}
+.cl-hero ~ #about .pp-prose p{max-width:68ch;font-size:var(--fs-prose);line-height:1.7;color:var(--text);text-wrap:pretty}
+.cl-hero ~ #about .pp-prose p + p{margin-top:16px}
+
+/* A step card with no figure carries its one line in the closing row card's text (.as-card p). */
+.cl-hero ~ #how .stepc > .step-l{margin-top:12px;max-width:46ch;font-size:1rem;line-height:1.6;color:var(--muted);text-wrap:pretty}
+
+/* The question rows: /pricing's (contact-pricing.css), the FAQ's rows with no number column. */
+.cl-hero ~ .doc-body .pr-faq .fq summary{grid-template-columns:minmax(0,1fr) 16px}
+.cl-hero ~ .doc-body .pr-faq .fq > .fq-body{padding-left:0}

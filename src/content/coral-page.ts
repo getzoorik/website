@@ -3,7 +3,7 @@ import { assessContent, assessmentHref } from "@/content/assess";
 import { howItWorksSteps } from "@/content/how-it-works";
 import { kubernetesContent } from "@/content/kubernetes";
 import { productFilms } from "@/content/product-films";
-import type { ProductPageContent } from "@/content/product-page";
+import type { ProductPageContent, ReadMoreTile } from "@/content/product-page";
 
 /**
  * `/coral`: every string the page prints, verbatim from the mock.
@@ -25,6 +25,17 @@ import type { ProductPageContent } from "@/content/product-page";
  * moves this to that day in the same PR; never the build's date.
  */
 export const coralPageLastUpdated = "23 October 2026";
+
+/**
+ * Read more's FAQ tile. The per-cloud pages (`/coral-for-aks`,
+ * `/coral-for-eks`) draw the same one.
+ */
+export const coralFaqTile: ReadMoreTile = {
+  kind: "page",
+  title: "FAQ",
+  line: "Sizing, safety, HPA, nodes and autoscalers",
+  href: routes.coralFaq,
+};
 
 export const coralPageContent: ProductPageContent = {
   product: "coral",
@@ -96,12 +107,7 @@ export const coralPageContent: ProductPageContent = {
         line: "Connect, what changes, staying in control",
         href: routes.coralGuide,
       },
-      {
-        kind: "page",
-        title: "FAQ",
-        line: "Sizing, safety, HPA, nodes and autoscalers",
-        href: routes.coralFaq,
-      },
+      coralFaqTile,
       { kind: "download", title: "One-pager", document: "coral-one-pager" },
       /* Its /learn article. */
       {

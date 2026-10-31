@@ -1,3 +1,5 @@
+import type { ComponentType } from "react";
+
 import { Arrow } from "@/components/primitives/arrow";
 import { routes } from "@/config/site";
 import { openSourceUpdated, type GuideBlock, type OpenSourceGuide } from "@/content/open-source";
@@ -31,12 +33,22 @@ export const sectionSlug = (title: string): string =>
     .slice(0, 7)
     .join("-");
 
-function Block({ block }: { readonly block: GuideBlock }) {
+/**
+ * One block of a guide's section, as the guides draw it. The works-with pages draw theirs with it too, their text set
+ * by `RichText` (their mocks print inline code whole); a guide's is `OsText`, the default.
+ */
+export function Block({
+  block,
+  Text = OsText,
+}: {
+  readonly block: GuideBlock;
+  readonly Text?: ComponentType<{ readonly text: string }>;
+}) {
   switch (block.kind) {
     case "p":
       return (
         <p>
-          <OsText text={block.text} />
+          <Text text={block.text} />
         </p>
       );
     case "ul":
@@ -44,7 +56,7 @@ function Block({ block }: { readonly block: GuideBlock }) {
         <ul>
           {block.items.map((item) => (
             <li key={item}>
-              <OsText text={item} />
+              <Text text={item} />
             </li>
           ))}
         </ul>
@@ -56,7 +68,7 @@ function Block({ block }: { readonly block: GuideBlock }) {
             <li key={item}>
               <div>
                 <p>
-                  <OsText text={item} />
+                  <Text text={item} />
                 </p>
               </div>
             </li>
@@ -85,7 +97,7 @@ function Block({ block }: { readonly block: GuideBlock }) {
             <tr role="row">
               {block.head.map((label) => (
                 <th scope="col" role="columnheader" key={label}>
-                  <OsText text={label} />
+                  <Text text={label} />
                 </th>
               ))}
             </tr>
@@ -96,7 +108,7 @@ function Block({ block }: { readonly block: GuideBlock }) {
                 {cells.map((cell, index) => (
                   <td role="cell" data-label={block.head[index]} key={index}>
                     <div>
-                      <OsText text={cell} />
+                      <Text text={cell} />
                     </div>
                   </td>
                 ))}

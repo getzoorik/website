@@ -77,8 +77,45 @@ function plain(text: string): ReactNode[] {
 const bareAddresses = (text: string): string =>
   text.replace(/\[([a-z]+@zoorik\.com)\]\(mailto:\1\)/g, "$1");
 
+/** A piece held aside while the bold runs are found, as the mock holds its code and links: its place in `held`. */
+const HELD = /\uE000(\d+)\uE000/g;
+
+/**
+ * The mock finds its bold runs over the whole line, with the code and the links held aside, so a run may hold them
+ * (/coral-works-with-keda: "**Rebalancing needs [Karpenter](…) or [AKS node auto provisioning (NAP)](…).**"). Such
+ * a run is drawn here, whole, its inside as any text; every other run stays where `plain()` finds it, so a line
+ * with none is drawn exactly as before.
+ */
 export function richText(text: string): ReactNode {
-  const parts = bareAddresses(text).split(PIECE);
+  const line = bareAddresses(text);
+  const held: string[] = [];
+  const masked = line.replace(
+    new RegExp(PIECE.source, "g"),
+    (piece) => `\uE000${held.push(piece) - 1}\uE000`,
+  );
+  const restore = (part: string): string =>
+    part.replace(HELD, (_, at: string) => held[Number(at)] ?? "");
+  const runs = masked.split(/(\*\*.+?\*\*)/);
+  const holds = (run: string, index: number): boolean => index % 2 === 1 && run.includes("\uE000");
+  if (!runs.some(holds)) return pieces(line);
+  const out: ReactNode[] = [];
+  let rest = "";
+  runs.forEach((run, index) => {
+    if (!holds(run, index)) {
+      rest += run;
+      return;
+    }
+    if (rest) out.push(<Fragment key={out.length}>{pieces(restore(rest))}</Fragment>);
+    rest = "";
+    out.push(<b key={out.length}>{richText(restore(run.slice(2, -2)))}</b>);
+  });
+  if (rest) out.push(<Fragment key={out.length}>{pieces(restore(rest))}</Fragment>);
+  return out;
+}
+
+/** A line's code and links, and the plain text between them. */
+function pieces(line: string): ReactNode {
+  const parts = line.split(PIECE);
   return parts.map((part, index) => {
     if (index % 2 === 0) return <Fragment key={index}>{part ? plain(part) : null}</Fragment>;
     if (part.startsWith("`")) return <code key={index}>{part.slice(1, -1)}</code>;

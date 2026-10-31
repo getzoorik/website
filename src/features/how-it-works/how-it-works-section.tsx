@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import type { LegendTone, Step } from "@/content/how-it-works";
 import { StepMarkFigure } from "@/features/how-it-works/step-marks";
 import { Reveal } from "@/components/primitives/reveal";
@@ -37,8 +39,18 @@ const legendDotClass: Record<LegendTone, string> = {
   ring: "hw-dot d-ring",
 };
 
+/**
+ * A card with no figure, mark or key: a per-cloud page's (`/coral-for-aks`, `/amoeba-for-azure`…). It keeps the
+ * product's card name, and its note where the card has one, then says one line about that cloud (`p.step-l`, the
+ * closing row card's text, in cloud-page.css). The line is drawn as given, so a name in it stays out of translation.
+ */
+export interface LineStep extends Pick<Step, "ordinal" | "title" | "note"> {
+  readonly line: ReactNode;
+}
+
 interface StepCardProps {
-  readonly step: Step;
+  /** A product page's card, with its figure, mark and key; or a per-cloud page's, with its one line. */
+  readonly step: Step | LineStep;
   /**
    * Position in the row, which becomes `data-i` — ORDER, not an effect. The
    * observer turns it into a delay of `order × --z-step`. It is omitted on the
@@ -49,7 +61,8 @@ interface StepCardProps {
 }
 
 /**
- * Exported for the product pages, which show one product's three cards.
+ * Exported for the product pages, which show one product's three cards, and for
+ * the per-cloud pages, whose three cards carry one line each (`LineStep`).
  *
  * A step with a note sets its title and the note together in one div beside the
  * numeral, as the mocks draw it (`.step-top > div`); a step without one keeps the
@@ -71,6 +84,15 @@ export function StepCard({ step, order }: StepCardProps): React.JSX.Element {
           <h3>{step.title}</h3>
         )}
       </div>
+      {"line" in step ? <p className="step-l">{step.line}</p> : <StepFigure step={step} />}
+    </Reveal>
+  );
+}
+
+/** A product page's card under its head: the sentence for a screen reader, the figure and its mark, then the key. */
+function StepFigure({ step }: { readonly step: Step }): React.JSX.Element {
+  return (
+    <>
       <p className="sr-only">{step.description}</p>
       <div className="hw-lead">
         <div className="hw-key">
@@ -94,6 +116,6 @@ export function StepCard({ step, order }: StepCardProps): React.JSX.Element {
           </div>
         ))}
       </dl>
-    </Reveal>
+    </>
   );
 }

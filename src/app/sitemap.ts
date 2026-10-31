@@ -9,6 +9,7 @@ import { assessmentLastUpdated } from "@/content/assessment";
 import { brandAssetsLastUpdated } from "@/content/brand-assets";
 import { calculatorsLastUpdated } from "@/content/calculators";
 import { careersLastUpdated } from "@/content/careers";
+import { cloudPages } from "@/content/cloud-pages";
 import { communityLastUpdated } from "@/content/community";
 import { contactLastUpdated } from "@/content/contact";
 import { designPartnersLastUpdated } from "@/content/design-partners";
@@ -41,6 +42,7 @@ import { securityPage } from "@/content/security";
 import { termsCopy } from "@/content/terms";
 import { troubleshootingGuides, troubleshootingUpdated } from "@/content/troubleshooting";
 import { trustUpdated } from "@/content/trust";
+import { worksWithPages } from "@/content/works-with";
 import { isoDay } from "@/lib/content-date";
 
 /**
@@ -133,19 +135,26 @@ const contentDates: Partial<Record<string, string>> = {
   [routes.pricing]: pricingLastUpdated,
   [routes.nodeCostCalculator]: calculatorsLastUpdated,
   [routes.diskCostCalculator]: calculatorsLastUpdated,
+  /* The ten pages of 31 Oct 2026 print no day: each its content's, the four per-cloud pages' and the six works-with
+     pages'. */
+  ...Object.fromEntries(cloudPages.map((page) => [page.path, page.lastUpdated] as const)),
+  ...Object.fromEntries(
+    Object.values(worksWithPages).map((page) => [page.route, page.lastUpdated] as const),
+  ),
 };
 
 /**
- * Every indexed page: home first, then the two products (Coral first), the
- * assessment, the documents section (the hub, then Coral's guide and FAQ, then
- * Amoeba's once `amoebaDocs` publishes them, the install and contributing
- * guides and the troubleshooting pages), Learn and every article in the
- * Learn index (A–Z by slug), the glossary and every term in its index (A–Z by
- * slug), Cloud cost optimization tools with its comparison pages and the two
- * calculators, the case studies, the research papers, /events, /pricing,
- * /contact, /about, /careers, /brand-assets, /partners, /referrals, the
- * privacy policy, the terms, security and data handling, and the Trust center.
- * A held page answers 404, so it is never listed.
+ * Every indexed page: home first, then the two products (Coral first), each
+ * product on each cloud (Coral's two, then Amoeba's), the six pages on what
+ * Coral works with, the assessment, the documents section (the hub, then
+ * Coral's guide and FAQ, then Amoeba's once `amoebaDocs` publishes them, the
+ * install and contributing guides and the troubleshooting pages), Learn and
+ * every article in the Learn index (A–Z by slug), the glossary and every term
+ * in its index (A–Z by slug), Cloud cost optimization tools with its comparison
+ * pages and the two calculators, the case studies, the research papers,
+ * /events, /pricing, /contact, /about, /careers, /brand-assets, /partners,
+ * /referrals, the privacy policy, the terms, security and data handling, and
+ * the Trust center. A held page answers 404, so it is never listed.
  *
  * `lastModified` is the page's date from `learnDates` or `contentDates`, never the build's.
  */
@@ -154,6 +163,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/",
     routes.coral,
     routes.amoeba,
+    ...cloudPages.map((page) => page.path),
+    ...Object.values(worksWithPages).map((page) => page.route),
     routes.assessment,
     routes.marketplaces,
     routes.docs,

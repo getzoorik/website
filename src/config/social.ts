@@ -60,6 +60,49 @@ const CARDS: readonly {
 }[] = [
   { file: "coral", words: "Kubernetes cost optimization on AKS and EKS", paths: ["/coral"] },
   { file: "amoeba", words: "Block storage cost optimization on Azure and AWS", paths: ["/amoeba"] },
+  /* Each product on each cloud, then the six pages on what Coral works with (31 Oct 2026). */
+  { file: "coral-for-aks", words: "AKS cost optimization with Coral", paths: [routes.coralForAks] },
+  { file: "coral-for-eks", words: "EKS cost optimization with Coral", paths: [routes.coralForEks] },
+  {
+    file: "amoeba-for-azure",
+    words: "Azure managed disk cost optimization with Amoeba",
+    paths: [routes.amoebaForAzure],
+  },
+  {
+    file: "amoeba-for-aws",
+    words: "EBS cost optimization with Amoeba",
+    paths: [routes.amoebaForAws],
+  },
+  {
+    file: "coral-works-with-cluster-autoscaler",
+    words: "Coral works with Cluster Autoscaler",
+    paths: [routes.coralWorksWithClusterAutoscaler],
+  },
+  {
+    file: "coral-works-with-karpenter",
+    words: "Coral works with Karpenter",
+    paths: [routes.coralWorksWithKarpenter],
+  },
+  {
+    file: "coral-works-with-aks-node-auto-provisioning",
+    words: "Coral works with AKS node auto provisioning",
+    paths: [routes.coralWorksWithNodeAutoProvisioning],
+  },
+  {
+    file: "coral-works-with-keda",
+    words: "Coral works with KEDA",
+    paths: [routes.coralWorksWithKeda],
+  },
+  {
+    file: "coral-works-with-helm",
+    words: "Coral works with Helm",
+    paths: [routes.coralWorksWithHelm],
+  },
+  {
+    file: "coral-works-with-terraform",
+    words: "Coral works with Terraform",
+    paths: [routes.coralWorksWithTerraform],
+  },
   { file: "assessment", words: "Free cloud cost assessment", paths: ["/assessment"] },
   { file: "docs", words: "Product guides, FAQs and one-pagers", paths: ["/docs"] },
   { file: "coral-guide", words: "Coral product guide", paths: [routes.coralGuide] },
