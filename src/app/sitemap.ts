@@ -133,8 +133,8 @@ const contentDates: Partial<Record<string, string>> = {
   [routes.trust]: trustUpdated,
   [routes.contact]: contactLastUpdated,
   [routes.pricing]: pricingLastUpdated,
-  [routes.nodeCostCalculator]: calculatorsLastUpdated,
-  [routes.diskCostCalculator]: calculatorsLastUpdated,
+  [routes.eksAndAksPricingCalculator]: calculatorsLastUpdated,
+  [routes.ebsAndAzureDiskPricing]: calculatorsLastUpdated,
   /* The ten pages of 31 Oct 2026 print no day: each its content's, the four per-cloud pages' and the six works-with
      pages'. */
   ...Object.fromEntries(cloudPages.map((page) => [page.path, page.lastUpdated] as const)),
@@ -184,8 +184,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     routes.cloudCostTools,
     ...alternativesPages.map((page) => page.route),
     ...versusPages.map(versusRoute),
-    routes.nodeCostCalculator,
-    routes.diskCostCalculator,
+    routes.eksAndAksPricingCalculator,
+    routes.ebsAndAzureDiskPricing,
     routes.valueLab,
     routes.caseStudyCoralDevCluster,
     routes.caseStudyAmoebaLabVms,

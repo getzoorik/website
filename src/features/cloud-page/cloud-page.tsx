@@ -23,8 +23,9 @@ import { InstallYourWay } from "@/features/product-page/install-your-way";
 import { ReadMore } from "@/features/product-page/read-more";
 
 /**
- * A per-cloud page: `/coral-for-aks`, `/coral-for-eks`, `/amoeba-for-azure` and `/amoeba-for-aws` are this template
- * with four contents (`cloud-pages.ts`), TEMPLATES.md's Cloud template as the mocks draw it (`coral-for-aks.html`…).
+ * A per-cloud page: `/aks-cost-optimization`, `/eks-cost-optimization`, `/azure-managed-disk-cost-optimization` and
+ * `/ebs-cost-optimization` are this template with four contents (`cloud-pages.ts`), TEMPLATES.md's Cloud template as
+ * the mocks draw it (`aks-cost-optimization.html`…).
  *
  * ─── THE ORDER ─────────────────────────────────────────────────────────────
  * Hero (the product hero's ground: the glow, the turning mark and the racks photo; the footer label as the eyebrow,

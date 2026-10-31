@@ -1,8 +1,9 @@
 /**
- * `/node-cost-calculator` and `/disk-cost-calculator`: every string the two pages print, word for word from the
- * checked drafts (docs/website-seo/new-pages-2026-10-30/calculators/node.md and disk.md, every figure and claim traced
- * in that folder's ledger.md) and the mocks (node-cost-calculator.html, disk-cost-calculator.html). The owner placed
- * them "At the root" (30 Oct 2026), linked from Cloud cost optimization tools' Free calculators.
+ * `/eks-and-aks-pricing-calculator` and `/ebs-and-azure-disk-pricing`: every string the two pages print, word for word
+ * from the checked drafts (docs/website-seo/new-pages-2026-10-30/calculators/node.md and disk.md, every figure and
+ * claim traced in that folder's ledger.md) and the mocks (eks-and-aks-pricing-calculator.html,
+ * ebs-and-azure-disk-pricing.html). The owner placed them "At the root" (30 Oct 2026), linked from Cloud cost
+ * optimization tools' Free calculators.
  *
  * The figures the calculators work out are not here: they come from `@/content/cloud-prices` through
  * `@/lib/cloud-cost-calc`, so a page can never print a price its data does not hold. The text is the drafts' small
@@ -168,7 +169,7 @@ export const nodeCalculator = {
         },
         {
           text: "How to reduce Kubernetes cost: rebalance requests, then remove spare nodes",
-          href: "/learn/reduce-kubernetes-cost",
+          href: "/kubernetes-cost-optimization",
         },
       ],
     },
@@ -178,7 +179,7 @@ export const nodeCalculator = {
   tile: {
     title: "Kubernetes node cost calculator",
     line: "A node's monthly list price on AKS or EKS, and how much of it your pods can use.",
-    href: "/node-cost-calculator",
+    href: "/eks-and-aks-pricing-calculator",
   },
   sourceFirst:
     "Prices from the [Azure Retail Prices API](https://prices.azure.com/api/retail/prices) and the [AWS Price List for Amazon EC2](https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonEC2/current/region_index.json), retrieved 30 October 2026.",
@@ -311,7 +312,7 @@ export const diskCalculator = {
   tile: {
     title: "Disk cost calculator",
     line: "What an Azure managed disk or an EBS volume costs a month, and what its empty space costs.",
-    href: "/disk-cost-calculator",
+    href: "/ebs-and-azure-disk-pricing",
   },
   sourceFirst:
     "Prices from the [Azure Retail Prices API](https://prices.azure.com/api/retail/prices) and the [AWS Price List for Amazon EC2](https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonEC2/current/region_index.json), which carries EBS, retrieved 30 October 2026.",

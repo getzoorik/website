@@ -82,7 +82,7 @@ export const term: GlossaryTerm = {
             "Utilization falls when eligible usage drops below the hourly commitment, for example after you remove spare nodes.",
             [
               "So ",
-              { a: "reduce your usage first", href: "/learn/how-to-reduce-cloud-costs" },
+              { a: "reduce your usage first", href: "/cloud-cost-optimization" },
               ", then commit to what’s left.",
             ],
             [
@@ -117,7 +117,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/effective-savings-rate",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: { title: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
   sources: [
     {
       publisher: "AWS",

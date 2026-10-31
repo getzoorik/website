@@ -27,8 +27,8 @@ import type { ProductPageContent, ReadMoreTile } from "@/content/product-page";
 export const coralPageLastUpdated = "23 October 2026";
 
 /**
- * Read more's FAQ tile. The per-cloud pages (`/coral-for-aks`,
- * `/coral-for-eks`) draw the same one.
+ * Read more's FAQ tile. The per-cloud pages (`/aks-cost-optimization`,
+ * `/eks-cost-optimization`) draw the same one.
  */
 export const coralFaqTile: ReadMoreTile = {
   kind: "page",

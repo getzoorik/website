@@ -33,7 +33,8 @@ describe("the footer's per-cloud and Works with pages", () => {
       .flatMap((list) => list.links.map((link) => link.href))
       .filter((href) => href.startsWith("/"));
     for (const href of own) expect(built, href).toContain(href);
-    /* Each product on each cloud, and every Works with line: built, and at the site's root (owner, 29 Oct 2026). */
+    /* Each product on each cloud, and every Works with line: built, and at the site's root (owner, 29 Oct 2026), the
+       four per-cloud pages at the address of their search (D230). */
     const ten = [
       ...footerColumns[0]!.links.filter((link) => link.named),
       ...footerColumns.find((list) => list.heading === "Works with")!.links,
@@ -41,7 +42,7 @@ describe("the footer's per-cloud and Works with pages", () => {
     expect(ten).toHaveLength(10);
     for (const href of ten) {
       expect(built, href).toContain(href);
-      expect(href, href).toMatch(/^\/(coral|amoeba)-[a-z0-9-]+$/);
+      expect(href, href).toMatch(/^\/[a-z0-9-]+$/);
     }
   });
 
@@ -63,11 +64,11 @@ describe("the footer's per-cloud and Works with pages", () => {
       ]),
     ).toEqual([
       ["Coral", "/coral"],
-      ["Coral for AKS", "/coral-for-aks"],
-      ["Coral for EKS", "/coral-for-eks"],
+      ["Coral for AKS", "/aks-cost-optimization"],
+      ["Coral for EKS", "/eks-cost-optimization"],
       ["Amoeba", "/amoeba"],
-      ["Amoeba for Azure", "/amoeba-for-azure"],
-      ["Amoeba for AWS", "/amoeba-for-aws"],
+      ["Amoeba for Azure", "/azure-managed-disk-cost-optimization"],
+      ["Amoeba for AWS", "/ebs-cost-optimization"],
       ["Assessment", "/assessment"],
       ["Pricing", "/pricing"],
       ["Marketplaces", "/marketplaces"],

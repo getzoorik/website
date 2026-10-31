@@ -680,8 +680,8 @@ const pages: Readonly<Record<string, PageEntry>> = {
   },
   ...Object.fromEntries(
     [
-      { path: routes.nodeCostCalculator, copy: nodeCalculator },
-      { path: routes.diskCostCalculator, copy: diskCalculator },
+      { path: routes.eksAndAksPricingCalculator, copy: nodeCalculator },
+      { path: routes.ebsAndAzureDiskPricing, copy: diskCalculator },
     ].map(({ path, copy }) => [
       path,
       {

@@ -67,7 +67,7 @@ export const term: GlossaryTerm = {
               "Finding it takes a ",
               {
                 a: "review of what you run against what it uses",
-                href: "/learn/how-to-reduce-cloud-costs",
+                href: "/cloud-cost-optimization",
               },
               ".",
             ],
@@ -103,7 +103,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/rightsizing",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: { title: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
   sources: [
     {
       publisher: "Amazon Web Services",

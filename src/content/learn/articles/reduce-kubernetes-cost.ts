@@ -4,6 +4,7 @@ import { figure as figure2 } from "@/features/learn/figures/reduce-kubernetes-co
 
 export const article: Article = {
   slug: "reduce-kubernetes-cost",
+  route: "/kubernetes-cost-optimization",
   title: "How to reduce Kubernetes cost: requests, then nodes",
   meta: "How to reduce Kubernetes cost on AKS and EKS: rebalance requests to real use, then let the Cluster Autoscaler, Karpenter or AKS NAP remove spare nodes.",
   h1: "How to reduce Kubernetes cost: rebalance requests, then remove spare nodes",

@@ -79,7 +79,7 @@ export const term: GlossaryTerm = {
             "Engineers can weigh cost only when they see it. Microsoft asks for clear cost data, fast.",
             [
               "A discount reduces only the rate. Usage changes ",
-              { a: "reduce your cloud cost", href: "/learn/how-to-reduce-cloud-costs" },
+              { a: "reduce your cloud cost", href: "/cloud-cost-optimization" },
               " by running less.",
             ],
             "If engineers reduce usage below a commitment, it goes under-used. Microsoft warns that this can lose money, though rarely.",
@@ -111,7 +111,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/savings-plan",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: { title: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
   sources: [
     {
       publisher: "Microsoft Learn",

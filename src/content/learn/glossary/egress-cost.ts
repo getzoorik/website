@@ -65,7 +65,7 @@ export const term: GlossaryTerm = {
             ],
             "On EKS, the AWS Load Balancer Controller’s ip mode sends traffic straight to pods, skipping a cross-zone hop.",
             [
-              { a: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+              { a: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
               " covers the rest of your cloud cost.",
             ],
             [
@@ -95,7 +95,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/finops",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: { title: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
   sources: [
     {
       publisher: "AWS",

@@ -69,7 +69,7 @@ export const term: GlossaryTerm = {
           items: [
             [
               "Reports alone don’t ",
-              { a: "reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+              { a: "reduce cloud costs", href: "/cloud-cost-optimization" },
               ". Your cloud cost goes down when you change what runs, or the rate you pay for it.",
             ],
             [
@@ -106,7 +106,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/cloud-chargeback",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: { title: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
   sources: [
     {
       publisher: "Microsoft Learn",

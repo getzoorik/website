@@ -76,7 +76,7 @@ export const term: GlossaryTerm = {
             "A purchase month usually looks smaller in amortized cost, and later months look bigger.",
             [
               "With purchase spikes flattened, other ",
-              { a: "changes in cost", href: "/learn/how-to-reduce-cloud-costs" },
+              { a: "changes in cost", href: "/cloud-cost-optimization" },
               " stand out.",
             ],
             "An unused line is commitment you paid for but didn’t use.",
@@ -108,7 +108,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/savings-plan-coverage-vs-utilization",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: { title: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
   sources: [
     {
       publisher: "Microsoft Learn",

@@ -71,7 +71,7 @@ export const term: GlossaryTerm = {
           items: [
             [
               "Cloud cost chargeback doesn’t change the provider’s invoice. But a team that pays its own share has a reason to ",
-              { a: "reduce it", href: "/learn/how-to-reduce-cloud-costs" },
+              { a: "reduce it", href: "/cloud-cost-optimization" },
               ".",
             ],
             [
@@ -106,7 +106,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/cloud-unit-economics",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: { title: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
   sources: [
     {
       publisher: "Microsoft Learn",

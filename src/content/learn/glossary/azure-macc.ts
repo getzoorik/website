@@ -59,7 +59,7 @@ export const term: GlossaryTerm = {
             "Some MACCs also have milestones, set amounts due by set dates. Missing one brings a shortfall charge too.",
             "While a MACC isn’t met, billing account admins get emails 90, 60 and 30\u00a0days before it expires.",
             [
-              { a: "Reduce your spend", href: "/learn/how-to-reduce-cloud-costs" },
+              { a: "Reduce your spend", href: "/cloud-cost-optimization" },
               " before you sign a new MACC, so it matches real use.",
             ],
             [
@@ -89,7 +89,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/finops",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: { title: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
   sources: [
     {
       publisher: "Microsoft Learn",

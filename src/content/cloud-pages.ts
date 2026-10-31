@@ -7,10 +7,11 @@ import type { ProductPageContent } from "@/content/product-page";
 import type { Platform, ProductId } from "@/content/products";
 
 /**
- * The four per-cloud pages: `/coral-for-aks`, `/coral-for-eks`, `/amoeba-for-azure` and `/amoeba-for-aws` (D227; owner,
- * 31 Oct 2026: "GO build all 10 at once !!!"). Every string they print, word for word from the checked drafts
- * (docs/website-seo/new-pages-2026-10-31/<slug>/page.md, each claim traced in its ledger.md; TEMPLATES.md's Cloud
- * template, CONSISTENCY.md's cross-page pass) and their mocks (ux-design/website/<slug>.html).
+ * The four per-cloud pages: `/aks-cost-optimization`, `/eks-cost-optimization`, `/azure-managed-disk-cost-optimization`
+ * and `/ebs-cost-optimization` (D227; owner, 31 Oct 2026: "GO build all 10 at once !!!"). Every string they print, word
+ * for word from the checked drafts (docs/website-seo/new-pages-2026-10-31/<its first address>/page.md, each claim
+ * traced in its ledger.md; TEMPLATES.md's Cloud template, CONSISTENCY.md's cross-page pass) and their mocks
+ * (ux-design/website/<its address>.html). Each moved to the address of its search on 1 Nov 2026 (D230).
  *
  * 🔴 NO FIGURE, PRICE, VERSION, THRESHOLD, TIMING OR COUNT. A page with a gap says how the product works on that cloud
  * and claims no test. The step cards keep each product's own card names (`how-it-works.ts`, read, never copied), and
@@ -163,10 +164,10 @@ const helmTile: CloudTile = {
   line: "Install the agent with our Helm chart, for teams on Helm, Argo CD or Flux.",
 };
 
-/** `/coral-for-aks`: docs/website-seo/new-pages-2026-10-31/coral-for-aks/page.md. */
-export const coralForAksPage: CoralCloudPage = {
+/** `/aks-cost-optimization`: docs/website-seo/new-pages-2026-10-31/coral-for-aks/page.md. */
+export const aksCostOptimizationPage: CoralCloudPage = {
   product: "coral",
-  path: routes.coralForAks,
+  path: routes.aksCostOptimization,
   lastUpdated: BUILT,
   meta: {
     title: "AKS cost optimization",
@@ -290,7 +291,7 @@ export const coralForAksPage: CoralCloudPage = {
         kind: "page",
         title: "How to reduce Kubernetes cost",
         line: "Rebalance requests to real use, then let spare nodes go",
-        href: learnPath("reduce-kubernetes-cost"),
+        href: routes.kubernetesCostOptimization,
       },
       {
         kind: "page",
@@ -302,10 +303,10 @@ export const coralForAksPage: CoralCloudPage = {
   },
 };
 
-/** `/coral-for-eks`: docs/website-seo/new-pages-2026-10-31/coral-for-eks/page.md. */
-export const coralForEksPage: CoralCloudPage = {
+/** `/eks-cost-optimization`: docs/website-seo/new-pages-2026-10-31/coral-for-eks/page.md. */
+export const eksCostOptimizationPage: CoralCloudPage = {
   product: "coral",
-  path: routes.coralForEks,
+  path: routes.eksCostOptimization,
   lastUpdated: BUILT,
   meta: {
     title: "EKS cost optimization",
@@ -444,10 +445,10 @@ export const coralForEksPage: CoralCloudPage = {
  *  "Resize online" is not this page's word). */
 const AMOEBA_03 = "Rightsize the pool";
 
-/** `/amoeba-for-azure`: docs/website-seo/new-pages-2026-10-31/amoeba-for-azure/page.md. */
-export const amoebaForAzurePage: AmoebaCloudPage = {
+/** `/azure-managed-disk-cost-optimization`: docs/website-seo/new-pages-2026-10-31/amoeba-for-azure/page.md. */
+export const azureManagedDiskCostOptimizationPage: AmoebaCloudPage = {
   product: "amoeba",
-  path: routes.amoebaForAzure,
+  path: routes.azureManagedDiskCostOptimization,
   lastUpdated: BUILT,
   meta: {
     title: "Azure managed disk cost optimization",
@@ -531,7 +532,7 @@ export const amoebaForAzurePage: AmoebaCloudPage = {
     rows: [
       {
         question: "Which Azure disks does Amoeba work on?",
-        answer: `The managed data disks of running Windows and Linux VMs. Amoeba never touches the OS disk. On AWS, it works with Amazon EBS volumes: see [Amoeba for AWS](${routes.amoebaForAws}).`,
+        answer: `The managed data disks of running Windows and Linux VMs. Amoeba never touches the OS disk. On AWS, it works with Amazon EBS volumes: see [Amoeba for AWS](${routes.ebsCostOptimization}).`,
       },
       {
         question: "Which Azure disk type does Amoeba's pool use?",
@@ -577,11 +578,11 @@ export const amoebaForAzurePage: AmoebaCloudPage = {
   },
 };
 
-/** `/amoeba-for-aws`: docs/website-seo/new-pages-2026-10-31/amoeba-for-aws/page.md. Amoeba on AWS is built, and the
- *  page says how it works and claims nothing more (ledger X4). */
-export const amoebaForAwsPage: AmoebaCloudPage = {
+/** `/ebs-cost-optimization`: docs/website-seo/new-pages-2026-10-31/amoeba-for-aws/page.md. Amoeba on AWS is built,
+ *  and the page says how it works and claims nothing more (ledger X4). */
+export const ebsCostOptimizationPage: AmoebaCloudPage = {
   product: "amoeba",
-  path: routes.amoebaForAws,
+  path: routes.ebsCostOptimization,
   lastUpdated: BUILT,
   meta: {
     title: "EBS cost optimization",
@@ -662,7 +663,7 @@ export const amoebaForAwsPage: AmoebaCloudPage = {
     rows: [
       {
         question: "Which EBS volumes does Amoeba work on?",
-        answer: `The non-root EBS data volumes of running EC2 instances, on Windows and Linux. Amoeba never touches the root volume. On Azure, it works with managed disks: see [Amoeba for Azure](${routes.amoebaForAzure}).`,
+        answer: `The non-root EBS data volumes of running EC2 instances, on Windows and Linux. Amoeba never touches the root volume. On Azure, it works with managed disks: see [Amoeba for Azure](${routes.azureManagedDiskCostOptimization}).`,
       },
       {
         question: "Which EBS volume type does Amoeba's pool use?",
@@ -710,8 +711,8 @@ export const amoebaForAwsPage: AmoebaCloudPage = {
 
 /** The four, in the footer's order: Coral's two, then Amoeba's. The sitemap reads each page's path and date here. */
 export const cloudPages: readonly CloudPageContent[] = [
-  coralForAksPage,
-  coralForEksPage,
-  amoebaForAzurePage,
-  amoebaForAwsPage,
+  aksCostOptimizationPage,
+  eksCostOptimizationPage,
+  azureManagedDiskCostOptimizationPage,
+  ebsCostOptimizationPage,
 ];

@@ -216,8 +216,8 @@ describe("competitors' names", () => {
         .default;
     const matchers = names.map((name) => [name, found(name)] as const);
     const offenders: string[] = [];
-    /* Each page, at its address; the two dynamic routes among them, /learn/[slug] once per article and
-       /learn/glossary/[slug] once per term. */
+    /* Each page, at its address; the two dynamic routes among them, /learn/[slug] once per article it serves (the
+       two at the site's root are pages of their own) and /learn/glossary/[slug] once per term. */
     const article = "src/app/learn/[slug]/page.tsx";
     const term = "src/app/learn/glossary/[slug]/page.tsx";
     expect(others).toContain(article);
@@ -232,16 +232,18 @@ describe("competitors' names", () => {
               async () => createElement(await load(path)),
             ] as [string, () => Promise<React.ReactElement>],
         ),
-      ...learnArticles.map(
-        (entry) =>
-          [
-            learnPath(entry.slug),
-            async () => {
-              const page = (await import("@/app/learn/[slug]/page")).default;
-              return page({ params: Promise.resolve({ slug: entry.slug }) });
-            },
-          ] as [string, () => Promise<React.ReactElement>],
-      ),
+      ...learnArticles
+        .filter((entry) => entry.route === undefined)
+        .map(
+          (entry) =>
+            [
+              learnPath(entry.slug),
+              async () => {
+                const page = (await import("@/app/learn/[slug]/page")).default;
+                return page({ params: Promise.resolve({ slug: entry.slug }) });
+              },
+            ] as [string, () => Promise<React.ReactElement>],
+        ),
       ...glossaryTerms.map(
         (entry) =>
           [

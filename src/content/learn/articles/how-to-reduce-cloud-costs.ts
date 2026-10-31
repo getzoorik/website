@@ -5,6 +5,7 @@ import { figure as figure3 } from "@/features/learn/figures/how-to-reduce-cloud-
 
 export const article: Article = {
   slug: "how-to-reduce-cloud-costs",
+  route: "/cloud-cost-optimization",
   title: "How to reduce cloud costs: what moves the bill",
   meta: "How to reduce cloud costs on Azure and AWS, in order: tag the spend, fix the architecture, remove idle resources, shrink requests and disks, then commit.",
   h1: "How to reduce cloud costs: the fixes that move the bill",
@@ -161,7 +162,7 @@ export const article: Article = {
           text: [
             { a: "VPA vs HPA", href: "/learn/vpa-vs-hpa" },
             " covers how requests and the HPA meet on CPU, and ",
-            { a: "How to reduce Kubernetes cost", href: "/learn/reduce-kubernetes-cost" },
+            { a: "How to reduce Kubernetes cost", href: "/kubernetes-cost-optimization" },
             " is the full walk-through for AKS and EKS.",
           ],
         },
@@ -357,7 +358,7 @@ export const article: Article = {
     {
       title: "How to reduce Kubernetes cost: rebalance requests, then remove spare nodes",
       where: "Learn",
-      href: "/learn/reduce-kubernetes-cost",
+      href: "/kubernetes-cost-optimization",
     },
     {
       title: "Can you shrink an Azure managed disk?",

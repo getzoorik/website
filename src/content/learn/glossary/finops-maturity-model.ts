@@ -71,7 +71,7 @@ export const term: GlossaryTerm = {
             "Start the FinOps crawl, walk, run rating with the capabilities that matter most to your business.",
             [
               "A stage alone doesn’t ",
-              { a: "reduce your cloud cost", href: "/learn/how-to-reduce-cloud-costs" },
+              { a: "reduce your cloud cost", href: "/cloud-cost-optimization" },
               ". Changing what you use, or the rate you pay, does.",
             ],
             [
@@ -102,7 +102,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/cloud-cost-anomaly-detection",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: { title: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
   sources: [
     {
       publisher: "Microsoft Learn",

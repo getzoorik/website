@@ -211,6 +211,37 @@ const nextConfig: NextConfig = {
         destination: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
         statusCode: 301,
       },
+      /* Eight pages at the address of their search (D230, owner, 1 Nov 2026), each old address one hop from the new,
+         kept at least a year. The two pillar articles leave /learn for the site's root: these rules run before the
+         /learn/[slug] route, which no longer serves them. */
+      {
+        source: "/learn/how-to-reduce-cloud-costs",
+        destination: "/cloud-cost-optimization",
+        statusCode: 301,
+      },
+      {
+        source: "/learn/reduce-kubernetes-cost",
+        destination: "/kubernetes-cost-optimization",
+        statusCode: 301,
+      },
+      {
+        source: "/disk-cost-calculator",
+        destination: "/ebs-and-azure-disk-pricing",
+        statusCode: 301,
+      },
+      {
+        source: "/node-cost-calculator",
+        destination: "/eks-and-aks-pricing-calculator",
+        statusCode: 301,
+      },
+      { source: "/coral-for-aks", destination: "/aks-cost-optimization", statusCode: 301 },
+      { source: "/coral-for-eks", destination: "/eks-cost-optimization", statusCode: 301 },
+      { source: "/amoeba-for-aws", destination: "/ebs-cost-optimization", statusCode: 301 },
+      {
+        source: "/amoeba-for-azure",
+        destination: "/azure-managed-disk-cost-optimization",
+        statusCode: 301,
+      },
       ...MOVED_DOCUMENTS.map((file) => ({
         source: `/resources/${file}`,
         destination: `/docs/${file}`,

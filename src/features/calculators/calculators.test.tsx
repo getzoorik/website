@@ -6,11 +6,11 @@ import { describe, expect, it, vi } from "vitest";
 /* The nav and the footer read the pathname. */
 vi.mock("next/navigation", async (original) => ({
   ...(await original<typeof import("next/navigation")>()),
-  usePathname: () => "/node-cost-calculator",
+  usePathname: () => "/eks-and-aks-pricing-calculator",
 }));
 
-import DiskPage, { metadata as diskMetadata } from "@/app/disk-cost-calculator/page";
-import NodePage, { metadata as nodeMetadata } from "@/app/node-cost-calculator/page";
+import DiskPage, { metadata as diskMetadata } from "@/app/ebs-and-azure-disk-pricing/page";
+import NodePage, { metadata as nodeMetadata } from "@/app/eks-and-aks-pricing-calculator/page";
 import { routes } from "@/config/site";
 import {
   calculatorsLastUpdated,
@@ -41,25 +41,25 @@ describe("the calculators' metadata", () => {
     expect(nodeMetadata.description).toBe(
       "Price an AKS or EKS node from the Azure and AWS list prices. See a node pool's monthly cost and how much of each node your pods can use.",
     );
-    expect(nodeMetadata.alternates).toEqual({ canonical: "/node-cost-calculator" });
+    expect(nodeMetadata.alternates).toEqual({ canonical: "/eks-and-aks-pricing-calculator" });
     expect(nodeMetadata.openGraph).toMatchObject({
-      url: "/node-cost-calculator",
+      url: "/eks-and-aks-pricing-calculator",
       title: "Kubernetes node cost calculator | Zoorik",
-      images: [{ url: "/og/pages/node-cost-calculator.png" }],
+      images: [{ url: "/og/pages/eks-and-aks-pricing-calculator.png" }],
     });
     expect(diskMetadata.title).toBe("Disk cost calculator: Azure disks and Amazon EBS");
-    expect(diskMetadata.alternates).toEqual({ canonical: "/disk-cost-calculator" });
+    expect(diskMetadata.alternates).toEqual({ canonical: "/ebs-and-azure-disk-pricing" });
     expect(diskMetadata.openGraph).toMatchObject({
       title: "Disk cost calculator: Azure disks and Amazon EBS | Zoorik",
-      images: [{ url: "/og/pages/disk-cost-calculator.png" }],
+      images: [{ url: "/og/pages/ebs-and-azure-disk-pricing.png" }],
     });
     for (const meta of [nodeMetadata, diskMetadata]) {
       expect(`${String(meta.title)} | Zoorik`.length).toBeLessThanOrEqual(60);
       expect(String(meta.description).length).toBeLessThanOrEqual(160);
     }
     expect([nodeCalculator.tile.href, diskCalculator.tile.href]).toEqual([
-      routes.nodeCostCalculator,
-      routes.diskCostCalculator,
+      routes.eksAndAksPricingCalculator,
+      routes.ebsAndAzureDiskPricing,
     ]);
   });
 
@@ -104,7 +104,7 @@ describe("the reference tables", () => {
   });
 });
 
-describe("/node-cost-calculator", () => {
+describe("/eks-and-aks-pricing-calculator", () => {
   it("draws the calculator at its defaults on the server: three Standard_D4s_v5 nodes in East US", () => {
     const root = render(<NodePage />).container;
     const result = root.querySelector("#calc-result")!;
@@ -201,7 +201,7 @@ describe("/node-cost-calculator", () => {
   });
 });
 
-describe("/disk-cost-calculator", () => {
+describe("/ebs-and-azure-disk-pricing", () => {
   it("draws the calculator at its defaults on the server: 200 GiB Standard SSD in East US, 50 GiB used", () => {
     const root = render(<DiskPage />).container;
     const result = root.querySelector("#calc-result")!;

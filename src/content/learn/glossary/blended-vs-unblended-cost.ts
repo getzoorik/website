@@ -78,7 +78,7 @@ export const term: GlossaryTerm = {
             "AWS’s Cloud Financial Management blog says most customers need only unblended cost.",
             [
               "To reduce your cloud cost, see ",
-              { a: "what moves it", href: "/learn/how-to-reduce-cloud-costs" },
+              { a: "what moves it", href: "/cloud-cost-optimization" },
               ".",
             ],
             [
@@ -113,7 +113,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/showback",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: { title: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
   sources: [
     {
       publisher: "AWS",

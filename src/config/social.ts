@@ -61,17 +61,25 @@ const CARDS: readonly {
   { file: "coral", words: "Kubernetes cost optimization on AKS and EKS", paths: ["/coral"] },
   { file: "amoeba", words: "Block storage cost optimization on Azure and AWS", paths: ["/amoeba"] },
   /* Each product on each cloud, then the six pages on what Coral works with (31 Oct 2026). */
-  { file: "coral-for-aks", words: "AKS cost optimization with Coral", paths: [routes.coralForAks] },
-  { file: "coral-for-eks", words: "EKS cost optimization with Coral", paths: [routes.coralForEks] },
   {
-    file: "amoeba-for-azure",
-    words: "Azure managed disk cost optimization with Amoeba",
-    paths: [routes.amoebaForAzure],
+    file: "aks-cost-optimization",
+    words: "AKS cost optimization with Coral",
+    paths: [routes.aksCostOptimization],
   },
   {
-    file: "amoeba-for-aws",
+    file: "eks-cost-optimization",
+    words: "EKS cost optimization with Coral",
+    paths: [routes.eksCostOptimization],
+  },
+  {
+    file: "azure-managed-disk-cost-optimization",
+    words: "Azure managed disk cost optimization with Amoeba",
+    paths: [routes.azureManagedDiskCostOptimization],
+  },
+  {
+    file: "ebs-cost-optimization",
     words: "EBS cost optimization with Amoeba",
-    paths: [routes.amoebaForAws],
+    paths: [routes.ebsCostOptimization],
   },
   {
     file: "coral-works-with-cluster-autoscaler",
@@ -185,14 +193,14 @@ const CARDS: readonly {
   { file: "terms", words: "Terms of use", paths: ["/terms"] },
   { file: "security", words: "Security and data handling", paths: ["/security"] },
   {
-    file: "node-cost-calculator",
+    file: "eks-and-aks-pricing-calculator",
     words: "Kubernetes node cost calculator",
-    paths: [routes.nodeCostCalculator],
+    paths: [routes.eksAndAksPricingCalculator],
   },
   {
-    file: "disk-cost-calculator",
+    file: "ebs-and-azure-disk-pricing",
     words: "Disk cost calculator: Azure disks and Amazon EBS",
-    paths: [routes.diskCostCalculator],
+    paths: [routes.ebsAndAzureDiskPricing],
   },
   { file: "pricing", words: "How Coral and Amoeba are priced", paths: [routes.pricing] },
   { file: "contact", words: "Contact Zoorik", paths: [routes.contact] },
@@ -221,7 +229,7 @@ const CARDS: readonly {
   {
     file: "learn-how-to-reduce-cloud-costs",
     words: "How to reduce cloud costs: what moves the bill",
-    paths: ["/learn/how-to-reduce-cloud-costs"],
+    paths: [routes.cloudCostOptimization],
   },
   {
     file: "learn-hpa-vs-vpa-vs-cluster-autoscaler",
@@ -246,7 +254,7 @@ const CARDS: readonly {
   {
     file: "learn-reduce-kubernetes-cost",
     words: "How to reduce Kubernetes cost: requests, then nodes",
-    paths: ["/learn/reduce-kubernetes-cost"],
+    paths: [routes.kubernetesCostOptimization],
   },
   {
     file: "learn-shrink-azure-managed-disk",

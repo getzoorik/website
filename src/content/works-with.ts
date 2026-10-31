@@ -230,7 +230,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
       ],
     },
     setup: [
-      "**Karpenter already runs on the cluster.** Connect leaves it as it is. It sets up only what every EKS connect sets up, listed on [Coral for EKS](/coral-for-eks#setup).",
+      "**Karpenter already runs on the cluster.** Connect leaves it as it is. It sets up only what every EKS connect sets up, listed on [Coral for EKS](/eks-cost-optimization#setup).",
       "**The cluster has no node autoscaler.** Connect sets up Karpenter with your approval, or you run `zoorikctl cluster prepare` later. It lists every cloud change and asks before it makes one, and `--dry-run` changes nothing.",
       "**What it sets up.** In AWS: IAM roles, an SQS queue with EventBridge rules, discovery tags, an access entry and Pod Identity. In the cluster: Karpenter, its node classes and a default NodePool.",
       "**What you need for that.** Helm, and the AWS rights for SQS, EventBridge and cluster updates, besides the IAM rights every EKS connect needs.",
@@ -332,7 +332,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
     setup: [
       "**A cluster with no autoscaler.** Connect turns on NAP and adds Coral’s node class `zoorik-base`. It lists every cloud change and asks before it makes one.",
       "**Azure CNI.** NAP needs Azure CNI networking, not kubenet. On kubenet with no autoscaler, nothing adds nodes until you set one up.",
-      "**A cluster with the Cluster Autoscaler.** Connect leaves the Cluster Autoscaler in place and doesn’t turn on NAP. It sets up only what every AKS connect sets up, listed on [Coral for AKS](/coral-for-aks#setup).",
+      "**A cluster with the Cluster Autoscaler.** Connect leaves the Cluster Autoscaler in place and doesn’t turn on NAP. It sets up only what every AKS connect sets up, listed on [Coral for AKS](/aks-cost-optimization#setup).",
       "**Workload identity.** For the permission to remove nodes, connect turns on workload identity and the OIDC issuer if they are off. The OIDC issuer can’t be turned off again.",
       "**Setting up NAP later.** If you decline the cloud changes at connect, `zoorikctl cluster prepare` sets up NAP when you are ready.",
     ],

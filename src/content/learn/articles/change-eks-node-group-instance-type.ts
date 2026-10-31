@@ -364,7 +364,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "A rebalance never goes past a PDB, and a node that can’t be emptied within 45\u00a0minutes is kept. Where a warm handover applies, Coral starts a new copy on another node first, and it must be Ready and serving for 5\u00a0minutes with no restarts before the old pod goes. Pods that don’t qualify, such as StatefulSet pods or pods with ReadWriteOnce volumes, are evicted instead, and a single-replica app among them gets a short restart. ",
-            { a: "Reducing Kubernetes cost", href: "/learn/reduce-kubernetes-cost" },
+            { a: "Reducing Kubernetes cost", href: "/kubernetes-cost-optimization" },
             " puts rebalancing and node removal in order.",
           ],
         },

@@ -75,7 +75,7 @@ export const term: GlossaryTerm = {
             "Spot reduces each node’s price. It suits work that can stop and restart, like batch jobs and test environments.",
             [
               "Requests that match ",
-              { a: "real use", href: "/learn/reduce-kubernetes-cost" },
+              { a: "real use", href: "/kubernetes-cost-optimization" },
               " mean fewer nodes.",
             ],
             "An evicted Azure Spot VM’s disks still cost you under Deallocate, its default policy. AKS spot pools default to Delete.",
@@ -118,7 +118,7 @@ export const term: GlossaryTerm = {
   ],
   next: {
     title: "How to reduce Kubernetes cost: requests, then nodes",
-    href: "/learn/reduce-kubernetes-cost",
+    href: "/kubernetes-cost-optimization",
   },
   sources: [
     {

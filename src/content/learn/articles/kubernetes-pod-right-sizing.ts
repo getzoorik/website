@@ -394,7 +394,7 @@ export const article: Article = {
     {
       title: "How to reduce Kubernetes cost: rebalance requests, then remove spare nodes",
       where: "Learn",
-      href: "/learn/reduce-kubernetes-cost",
+      href: "/kubernetes-cost-optimization",
     },
     {
       title: "Kubernetes overprovisioning: what it is and how to measure it",

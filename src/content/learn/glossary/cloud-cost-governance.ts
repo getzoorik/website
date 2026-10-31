@@ -81,7 +81,7 @@ export const term: GlossaryTerm = {
             "A forecast alert warns where spend is heading, not only what you’ve spent.",
             [
               "Rules and alerts set limits. To ",
-              { a: "reduce the cloud cost", href: "/learn/how-to-reduce-cloud-costs" },
+              { a: "reduce the cloud cost", href: "/cloud-cost-optimization" },
               " you pay now, you change what runs.",
             ],
             [
@@ -108,7 +108,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/cloud-tagging-strategy",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: { title: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
   sources: [
     {
       publisher: "Microsoft Learn",

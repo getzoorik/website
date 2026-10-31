@@ -219,11 +219,11 @@ export const footerColumns: readonly FooterColumn[] = [
     links: [
       { label: "Coral", href: routes.coral, product: true },
       /* Each product on each cloud, after its product (owner, 30 Oct 2026). */
-      { label: "Coral for AKS", href: routes.coralForAks, named: "coral" },
-      { label: "Coral for EKS", href: routes.coralForEks, named: "coral" },
+      { label: "Coral for AKS", href: routes.aksCostOptimization, named: "coral" },
+      { label: "Coral for EKS", href: routes.eksCostOptimization, named: "coral" },
       { label: "Amoeba", href: routes.amoeba, product: true },
-      { label: "Amoeba for Azure", href: routes.amoebaForAzure, named: "amoeba" },
-      { label: "Amoeba for AWS", href: routes.amoebaForAws, named: "amoeba" },
+      { label: "Amoeba for Azure", href: routes.azureManagedDiskCostOptimization, named: "amoeba" },
+      { label: "Amoeba for AWS", href: routes.ebsCostOptimization, named: "amoeba" },
       { label: "Assessment", href: routes.assessment },
       /* How each product is priced, after Assessment (owner, 30 Oct 2026). */
       { label: "Pricing", href: routes.pricing },
@@ -260,8 +260,8 @@ export const footerColumns: readonly FooterColumn[] = [
       /* The tools that reduce the bill, with the comparison pages, then the community, after News. */
       { label: "Cloud cost optimization tools", href: routes.cloudCostTools },
       /* The two calculators, after the tools hub that groups them (owner, 30 Oct 2026). */
-      { label: "Node cost calculator", href: routes.nodeCostCalculator },
-      { label: "Disk cost calculator", href: routes.diskCostCalculator },
+      { label: "EKS and AKS pricing calculator", href: routes.eksAndAksPricingCalculator },
+      { label: "EBS and Azure disk pricing", href: routes.ebsAndAzureDiskPricing },
       { label: "Community", href: routes.community },
       { label: "Docs", href: routes.docs },
       /* What is open source and how to contribute, right after Docs. */

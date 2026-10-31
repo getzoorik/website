@@ -10,7 +10,7 @@ import { authors } from "@/content/authors";
 import type { ArticleBlock } from "@/content/learn/article";
 import { articleFiles } from "@/content/learn/articles.generated";
 import { glossaryTerms } from "@/content/learn/glossary";
-import { articleAuthor, learnArticles } from "@/content/learn/published";
+import { articleAuthor, articleRoute, learnArticles } from "@/content/learn/published";
 import { versusPages, versusRoute } from "@/content/learn-compare";
 import { isoDay, printedDay } from "@/lib/content-date";
 import { learnToday } from "@/lib/learn-today";
@@ -44,7 +44,10 @@ function routes(dir = "src/app", base = ""): string[] {
     const path = join(dir, name);
     if (statSync(path).isDirectory()) return routes(path, `${base}/${name}`);
     if (name !== "page.tsx") return [];
-    if (base === "/learn/[slug]") return learnArticles.map((article) => learnPath(article.slug));
+    if (base === "/learn/[slug]")
+      return learnArticles
+        .filter((article) => article.route === undefined)
+        .map((article) => learnPath(article.slug));
     if (base === "/learn/glossary/[slug]")
       return glossaryTerms.map((term) => glossaryPath(term.slug));
     if (base === "/compare/[slug]") return versusPages.map(versusRoute);
@@ -148,11 +151,19 @@ describe("the Learn index", () => {
   it("draws no link to a page that does not exist, on Learn or the pages that link into it", async () => {
     const known = new Set(routes());
     const pages: [string, () => Promise<React.JSX.Element>][] = [
+      /* Each article at its own address: /learn/[slug], or its page at the site's root. */
       ...learnArticles.map(
         (article) =>
           [
-            learnPath(article.slug),
-            () => LearnArticle({ params: Promise.resolve({ slug: article.slug }) }),
+            articleRoute(article),
+            article.route
+              ? async () => {
+                  const page = (await import(
+                    /* @vite-ignore */ join(process.cwd(), `src/app${article.route}/page.tsx`)
+                  )) as { default: ComponentType };
+                  return createElement(page.default);
+                }
+              : () => LearnArticle({ params: Promise.resolve({ slug: article.slug }) }),
           ] as [string, () => Promise<React.JSX.Element>],
       ),
       ...glossaryTerms.map(

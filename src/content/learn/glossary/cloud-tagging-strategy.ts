@@ -91,7 +91,7 @@ export const term: GlossaryTerm = {
             ],
             [
               "Tags don’t ",
-              { a: "reduce your cloud cost", href: "/learn/how-to-reduce-cloud-costs" },
+              { a: "reduce your cloud cost", href: "/cloud-cost-optimization" },
               " by themselves.",
             ],
             [
@@ -122,7 +122,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-cost-allocation",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: { title: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
   sources: [
     {
       publisher: "Microsoft Learn",

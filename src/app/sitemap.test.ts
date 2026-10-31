@@ -7,7 +7,7 @@ import { amoebaDocs, comparePath, glossaryPath, learnPath, routes, site } from "
 import { homeLastUpdated } from "@/content/hero";
 import { learnPage } from "@/content/learn";
 import { glossaryPage, glossaryTerms } from "@/content/learn/glossary";
-import { learnArticles } from "@/content/learn/published";
+import { articleRoute, learnArticles } from "@/content/learn/published";
 import { versusPages, versusRoute } from "@/content/learn-compare";
 import { isoDay } from "@/lib/content-date";
 import { learnToday } from "@/lib/learn-today";
@@ -46,10 +46,10 @@ describe("sitemap.xml", () => {
       `${site.url}/coral`,
       `${site.url}/amoeba`,
       /* Each product on each cloud, in the footer's order, then the six pages on what Coral works with. */
-      `${site.url}/coral-for-aks`,
-      `${site.url}/coral-for-eks`,
-      `${site.url}/amoeba-for-azure`,
-      `${site.url}/amoeba-for-aws`,
+      `${site.url}/aks-cost-optimization`,
+      `${site.url}/eks-cost-optimization`,
+      `${site.url}/azure-managed-disk-cost-optimization`,
+      `${site.url}/ebs-cost-optimization`,
       `${site.url}/coral-works-with-cluster-autoscaler`,
       `${site.url}/coral-works-with-karpenter`,
       `${site.url}/coral-works-with-aks-node-auto-provisioning`,
@@ -70,8 +70,8 @@ describe("sitemap.xml", () => {
       ...(amoebaDocs ? [`${site.url}/amoeba-troubleshooting`] : []),
       `${site.url}/open-source`,
       `${site.url}/learn`,
-      /* Every article in the Learn index, A–Z by slug. */
-      ...learnArticles.map((article) => `${site.url}${learnPath(article.slug)}`),
+      /* Every article in the Learn index, A–Z by slug, each at its own address: the two pillars at the root. */
+      ...learnArticles.map((article) => `${site.url}${articleRoute(article)}`),
       `${site.url}/learn/glossary`,
       /* Every term in the glossary index, A–Z by slug. */
       ...glossaryTerms.map((term) => `${site.url}${glossaryPath(term.slug)}`),
@@ -81,8 +81,8 @@ describe("sitemap.xml", () => {
       /* The live versus pages, read from their data: no test spells a competitor's name. */
       ...versusPages.map((page) => `${site.url}${versusRoute(page)}`),
       /* The two calculators, at the root, linked from Cloud cost optimization tools. */
-      `${site.url}/node-cost-calculator`,
-      `${site.url}/disk-cost-calculator`,
+      `${site.url}/eks-and-aks-pricing-calculator`,
+      `${site.url}/ebs-and-azure-disk-pricing`,
       `${site.url}/value-lab`,
       `${site.url}/coral-value-lab`,
       `${site.url}/amoeba-value-lab`,
@@ -115,10 +115,10 @@ describe("sitemap.xml", () => {
       "/coral": "2026-10-23",
       "/amoeba": "2026-10-23",
       /* The ten pages of 31 Oct 2026 print no day: the day their content was written. */
-      "/coral-for-aks": "2026-10-31",
-      "/coral-for-eks": "2026-10-31",
-      "/amoeba-for-azure": "2026-10-31",
-      "/amoeba-for-aws": "2026-10-31",
+      "/aks-cost-optimization": "2026-10-31",
+      "/eks-cost-optimization": "2026-10-31",
+      "/azure-managed-disk-cost-optimization": "2026-10-31",
+      "/ebs-cost-optimization": "2026-10-31",
       "/coral-works-with-cluster-autoscaler": "2026-10-31",
       "/coral-works-with-karpenter": "2026-10-31",
       "/coral-works-with-aks-node-auto-provisioning": "2026-10-31",
@@ -149,7 +149,7 @@ describe("sitemap.xml", () => {
         isoDay(learnPage.updated),
       ),
       ...Object.fromEntries(
-        learnArticles.map((article) => [learnPath(article.slug), article.updated]),
+        learnArticles.map((article) => [articleRoute(article), article.updated]),
       ),
       /* The glossary's hub: its own day or its newest term's, whichever is later. Each term: the day it last
          changed. */
@@ -165,8 +165,8 @@ describe("sitemap.xml", () => {
       "/cloud-cost-optimization-library/amoeba-alternatives": "2026-10-19",
       ...Object.fromEntries(versusPages.map((page) => [versusRoute(page), "2026-10-19"])),
       /* The two calculators: the day their prices were read, which they print. */
-      "/node-cost-calculator": "2026-10-30",
-      "/disk-cost-calculator": "2026-10-30",
+      "/eks-and-aks-pricing-calculator": "2026-10-30",
+      "/ebs-and-azure-disk-pricing": "2026-10-30",
       /* Value Lab: the Amoeba study's card beside the Coral one (29 Oct 2026). Each study: the day it prints. */
       "/value-lab": "2026-10-29",
       "/coral-value-lab": "2026-10-12",
@@ -242,12 +242,15 @@ describe("sitemap.xml", () => {
       ? []
       : [routes.amoebaGuide, routes.amoebaFaq, routes.amoebaTroubleshooting];
     /* A dynamic route stands for the pages it prerenders: /cloud-cost-optimization-library/[slug] for the live versus pages, /learn/[slug]
-       for every article in the Learn index, /learn/glossary/[slug] for every term in the glossary index. */
+       for every article in the Learn index but the two at the root (pages of their own), /learn/glossary/[slug] for
+       every term in the glossary index. */
     const pages = (route: string) =>
       route === `${comparePath}/[slug]`
         ? versusPages.map(versusRoute)
         : route === `${routes.learn}/[slug]`
-          ? learnArticles.map((article) => learnPath(article.slug))
+          ? learnArticles
+              .filter((article) => article.route === undefined)
+              .map((article) => learnPath(article.slug))
           : route === `${routes.learnGlossary}/[slug]`
             ? glossaryTerms.map((term) => glossaryPath(term.slug))
             : [route];

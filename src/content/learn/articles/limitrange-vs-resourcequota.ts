@@ -290,7 +290,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "A quota doesn’t ",
-            { a: "make a cluster smaller", href: "/learn/reduce-kubernetes-cost" },
+            { a: "make a cluster smaller", href: "/kubernetes-cost-optimization" },
             " by itself: it stops one namespace from asking for more than its share. It counts what pod specs ask for, in absolute units, so adding nodes doesn’t raise any namespace’s share. Nor does it restrict which nodes a namespace’s pods land on.",
           ],
         },

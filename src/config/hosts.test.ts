@@ -5,6 +5,7 @@ import {
 } from "next/experimental/testing/server";
 import { describe, expect, it } from "vitest";
 
+import { routes } from "@/config/site";
 import { alternativesPages, versusPages, versusRoute } from "@/content/learn-compare";
 
 import nextConfig from "../../next.config";
@@ -137,6 +138,46 @@ describe("the research papers' first address", () => {
     await expectMoved([
       ["/research-cloud-cost-optimization", "/cloud-cost-optimization-research-papers"],
     ]);
+  });
+});
+
+describe("the eight pages that moved to the address of their search (D230)", () => {
+  const moves = [
+    ["/learn/how-to-reduce-cloud-costs", routes.cloudCostOptimization],
+    ["/learn/reduce-kubernetes-cost", routes.kubernetesCostOptimization],
+    ["/disk-cost-calculator", routes.ebsAndAzureDiskPricing],
+    ["/node-cost-calculator", routes.eksAndAksPricingCalculator],
+    ["/coral-for-aks", routes.aksCostOptimization],
+    ["/coral-for-eks", routes.eksCostOptimization],
+    ["/amoeba-for-aws", routes.ebsCostOptimization],
+    ["/amoeba-for-azure", routes.azureManagedDiskCostOptimization],
+  ] as const;
+
+  it("301s each old address to its new one in a single hop", async () => {
+    await expectMoved(moves);
+    for (const [from, to] of moves) {
+      const rules = ((await nextConfig.redirects?.()) ?? []).filter((rule) => rule.source === from);
+      expect(rules, from).toEqual([{ source: from, destination: to, statusCode: 301 }]);
+    }
+  });
+
+  it("answers the two articles' old /learn addresses before the /learn/[slug] route, which no longer lists them", async () => {
+    const { generateStaticParams } = await import("@/app/learn/[slug]/page");
+    const listed = generateStaticParams().map(({ slug }) => slug);
+    for (const slug of ["how-to-reduce-cloud-costs", "reduce-kubernetes-cost"]) {
+      expect(listed, slug).not.toContain(slug);
+      expect((await respond(`https://zoorik.com/learn/${slug}`)).status, slug).toBe(301);
+    }
+  });
+
+  it("leaves Azure disk cost optimization to its article: nothing moves to or from that address (D230, 1 Nov)", async () => {
+    const rules = (await nextConfig.redirects?.()) ?? [];
+    expect(
+      rules.filter((rule) => rule.destination.endsWith("/azure-disk-cost-optimization")),
+    ).toEqual([]);
+    expect((await respond("https://zoorik.com/learn/azure-disk-cost-optimization")).status).toBe(
+      200,
+    );
   });
 });
 

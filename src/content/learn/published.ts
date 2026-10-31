@@ -29,16 +29,33 @@ export function articleAt(slug: string): Article {
   return article;
 }
 
-/** An article's address. */
-export const articleRoute = (article: Article): `/learn/${string}` => learnPath(article.slug);
+/**
+ * An article's address: the one its file names (`route`), else /learn/<slug>. Every page, list and index that leads
+ * to an article builds its address here.
+ */
+export const articleRoute = (article: Article): `/${string}` =>
+  article.route ?? learnPath(article.slug);
+
+/** The articles with an address of their own (`route`), by that address. */
+const byRoute: ReadonlyMap<string, Article> = new Map(
+  learnArticles.flatMap((article) => (article.route ? [[article.route, article] as const] : [])),
+);
+
+/** The published article served at this address of its own (`route`); none there throws, at build. */
+export function articleServedAt(route: `/${string}`): Article {
+  const article = byRoute.get(route);
+  if (!article) throw new Error(`No published Learn article at "${route}"`);
+  return article;
+}
 
 /**
- * The slug a link names when it leads to a Learn article (`/learn/<slug>`, with or without a hash or query). The
- * glossary's hub, /learn/glossary, is not an article.
+ * The slug a link names when it leads to a Learn article (`/learn/<slug>`, or an article's own `route`, with or without
+ * a hash or query). The glossary's hub, /learn/glossary, is not an article.
  */
 export function learnSlugOf(href: string): string | null {
-  const match = /^\/learn\/([^/?#]+)(?:[?#].*)?$/.exec(href);
-  return match && match[1] !== "glossary" ? match[1]! : null;
+  const path = /^[^?#]*/.exec(href)![0];
+  const match = /^\/learn\/([^/]+)$/.exec(path);
+  return byRoute.get(path)?.slug ?? (match && match[1] !== "glossary" ? match[1]! : null);
 }
 
 /** Whether a link may be drawn: anything but a link to a Learn article or a glossary term that is not published. */

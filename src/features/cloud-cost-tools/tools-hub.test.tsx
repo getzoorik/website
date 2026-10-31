@@ -411,12 +411,12 @@ describe("/cloud-cost-optimization-library", () => {
       ]),
     ).toEqual([
       [
-        routes.nodeCostCalculator,
+        routes.eksAndAksPricingCalculator,
         "Kubernetes node cost calculator",
         "A node’s monthly list price on AKS or EKS, and how much of it your pods can use.",
       ],
       [
-        routes.diskCostCalculator,
+        routes.ebsAndAzureDiskPricing,
         "Disk cost calculator",
         "What an Azure managed disk or an EBS volume costs a month, and what its empty space costs.",
       ],

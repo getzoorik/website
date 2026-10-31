@@ -71,7 +71,8 @@ function versusModule(slug: string): () => Promise<PageModule> {
   };
 }
 
-/** A Learn article is one dynamic route (`/learn/[slug]`) too: its module, resolved for one slug. */
+/** A Learn article is one dynamic route (`/learn/[slug]`) too, the two at the site's root aside: its module, resolved
+ *  for one slug. */
 function articleModule(slug: string): () => Promise<PageModule> {
   return async () => {
     const page = await import("@/app/learn/[slug]/page");
@@ -110,8 +111,13 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/amoeba-faq": () => import("@/app/amoeba-faq/page"),
   "/learn": () => import("@/app/learn/page"),
   ...Object.fromEntries(
-    learnArticles.map((article) => [articleRoute(article), articleModule(article.slug)]),
+    learnArticles
+      .filter((article) => article.route === undefined)
+      .map((article) => [articleRoute(article), articleModule(article.slug)]),
   ),
+  /* The two Learn articles at the site's root (D230), each a page of its own. */
+  "/cloud-cost-optimization": () => import("@/app/cloud-cost-optimization/page"),
+  "/kubernetes-cost-optimization": () => import("@/app/kubernetes-cost-optimization/page"),
   "/learn/glossary": () => import("@/app/learn/glossary/page"),
   ...Object.fromEntries(glossaryTerms.map((term) => [termRoute(term), termModule(term.slug)])),
   "/value-lab": () => import("@/app/value-lab/page"),
@@ -141,8 +147,8 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/trust": () => import("@/app/trust/page"),
   "/contact": () => import("@/app/contact/page"),
   "/pricing": () => import("@/app/pricing/page"),
-  "/node-cost-calculator": () => import("@/app/node-cost-calculator/page"),
-  "/disk-cost-calculator": () => import("@/app/disk-cost-calculator/page"),
+  "/eks-and-aks-pricing-calculator": () => import("@/app/eks-and-aks-pricing-calculator/page"),
+  "/ebs-and-azure-disk-pricing": () => import("@/app/ebs-and-azure-disk-pricing/page"),
   "/open-source": () => import("@/app/open-source/page"),
   "/docs/install-coral-with-helm": () => import("@/app/docs/install-coral-with-helm/page"),
   "/docs/install-coral-with-terraform": () =>
@@ -150,10 +156,11 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/docs/contributing": () => import("@/app/docs/contributing/page"),
   "/coral-troubleshooting": () => import("@/app/coral-troubleshooting/page"),
   "/amoeba-troubleshooting": () => import("@/app/amoeba-troubleshooting/page"),
-  "/coral-for-aks": () => import("@/app/coral-for-aks/page"),
-  "/coral-for-eks": () => import("@/app/coral-for-eks/page"),
-  "/amoeba-for-azure": () => import("@/app/amoeba-for-azure/page"),
-  "/amoeba-for-aws": () => import("@/app/amoeba-for-aws/page"),
+  "/aks-cost-optimization": () => import("@/app/aks-cost-optimization/page"),
+  "/eks-cost-optimization": () => import("@/app/eks-cost-optimization/page"),
+  "/azure-managed-disk-cost-optimization": () =>
+    import("@/app/azure-managed-disk-cost-optimization/page"),
+  "/ebs-cost-optimization": () => import("@/app/ebs-cost-optimization/page"),
   "/coral-works-with-cluster-autoscaler": () =>
     import("@/app/coral-works-with-cluster-autoscaler/page"),
   "/coral-works-with-karpenter": () => import("@/app/coral-works-with-karpenter/page"),
@@ -479,25 +486,29 @@ describe("every indexed page's structured data", () => {
     expect(names(routes.research)).toEqual(["Zoorik", "Cloud cost optimization research"]);
     /* The five pages of 30 Oct 2026: the calculators under Cloud cost optimization tools by their h1, the rest under
        Zoorik alone. */
-    expect(names(routes.nodeCostCalculator)).toEqual([
+    expect(names(routes.eksAndAksPricingCalculator)).toEqual([
       "Zoorik",
       "Cloud cost optimization tools",
       "Kubernetes node cost calculator",
     ]);
-    expect(names(routes.diskCostCalculator)).toEqual([
+    expect(names(routes.ebsAndAzureDiskPricing)).toEqual([
       "Zoorik",
       "Cloud cost optimization tools",
       "Disk cost calculator: Azure managed disks and Amazon EBS",
     ]);
     /* The ten pages of 31 Oct 2026, each under its product's page by its h1. */
-    expect(names(routes.coralForAks)).toEqual(["Zoorik", "Coral", "AKS cost optimization"]);
-    expect(names(routes.coralForEks)).toEqual(["Zoorik", "Coral", "EKS cost optimization"]);
-    expect(names(routes.amoebaForAzure)).toEqual([
+    expect(names(routes.aksCostOptimization)).toEqual(["Zoorik", "Coral", "AKS cost optimization"]);
+    expect(names(routes.eksCostOptimization)).toEqual(["Zoorik", "Coral", "EKS cost optimization"]);
+    expect(names(routes.azureManagedDiskCostOptimization)).toEqual([
       "Zoorik",
       "Amoeba",
       "Azure managed disk cost optimization",
     ]);
-    expect(names(routes.amoebaForAws)).toEqual(["Zoorik", "Amoeba", "EBS cost optimization"]);
+    expect(names(routes.ebsCostOptimization)).toEqual([
+      "Zoorik",
+      "Amoeba",
+      "EBS cost optimization",
+    ]);
     expect(names(routes.coralWorksWithClusterAutoscaler)).toEqual([
       "Zoorik",
       "Coral",
@@ -582,8 +593,8 @@ describe("every indexed page's structured data", () => {
       routes.caseStudyCoralDevCluster,
       routes.docsInstallHelm,
       routes.coralTroubleshooting,
-      routes.coralForAks,
-      routes.coralForEks,
+      routes.aksCostOptimization,
+      routes.eksCostOptimization,
       routes.coralWorksWithClusterAutoscaler,
       routes.coralWorksWithKarpenter,
       routes.coralWorksWithNodeAutoProvisioning,
@@ -599,8 +610,8 @@ describe("every indexed page's structured data", () => {
       routes.amoebaFaq,
       routes.caseStudyAmoebaLabVms,
       routes.amoebaTroubleshooting,
-      routes.amoebaForAzure,
-      routes.amoebaForAws,
+      routes.azureManagedDiskCostOptimization,
+      routes.ebsCostOptimization,
     ]) {
       expect(about(path), path).toEqual({ "@id": "https://zoorik.com/amoeba#software" });
     }

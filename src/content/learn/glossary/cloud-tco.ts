@@ -76,7 +76,7 @@ export const term: GlossaryTerm = {
             "Comparing only prices leaves out power, staff time and the move.",
             [
               "After the move, ",
-              { a: "using less", href: "/learn/how-to-reduce-cloud-costs" },
+              { a: "using less", href: "/cloud-cost-optimization" },
               " reduces the cloud part of your TCO.",
             ],
             [
@@ -111,7 +111,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/finops",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: { title: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
   sources: [
     {
       publisher: "Microsoft Learn",

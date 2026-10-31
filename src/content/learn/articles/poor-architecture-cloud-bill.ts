@@ -312,7 +312,7 @@ export const article: Article = {
     {
       title: "How to reduce cloud costs: the fixes that move the bill",
       where: "Learn",
-      href: "/learn/how-to-reduce-cloud-costs",
+      href: "/cloud-cost-optimization",
     },
     {
       title: "Can you shrink an Azure managed disk?",

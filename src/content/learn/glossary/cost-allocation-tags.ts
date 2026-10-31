@@ -59,7 +59,7 @@ export const term: GlossaryTerm = {
           items: [
             [
               "The purpose of cost allocation tags is to show who owns your node, virtual machine (VM) and disk spend. Tags alone don’t ",
-              { a: "reduce it", href: "/learn/how-to-reduce-cloud-costs" },
+              { a: "reduce it", href: "/cloud-cost-optimization" },
               ".",
             ],
             [
@@ -98,7 +98,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/cloud-chargeback",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: { title: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
   sources: [
     {
       publisher: "AWS",

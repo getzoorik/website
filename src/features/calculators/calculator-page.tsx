@@ -13,8 +13,8 @@ import { sectionSlug } from "@/features/open-source/os-guide-page";
 import type { ReferenceTable } from "./reference-tables";
 
 /**
- * A calculator's page, in the tools hub's family (the two calculators at /node-cost-calculator and
- * /disk-cost-calculator):
+ * A calculator's page, in the tools hub's family (the two calculators at /eks-and-aks-pricing-calculator and
+ * /ebs-and-azure-disk-pricing):
  *
  *   hero          the title and one line
  *   calculator    the two paragraphs, the form and its result side by side (stacked below 900px), then the formula

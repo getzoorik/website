@@ -78,7 +78,7 @@ export const term: GlossaryTerm = {
             ],
             [
               "Reserve only for the nodes you still need after you ",
-              { a: "reduce your costs", href: "/learn/how-to-reduce-cloud-costs" },
+              { a: "reduce your costs", href: "/cloud-cost-optimization" },
               ".",
             ],
             [
@@ -109,7 +109,7 @@ export const term: GlossaryTerm = {
     },
     { title: "Node pool", line: "Nodes that share one setup.", href: "/learn/glossary/node-pool" },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: { title: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
   sources: [
     {
       publisher: "AWS",

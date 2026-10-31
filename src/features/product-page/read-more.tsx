@@ -27,7 +27,7 @@ import { formatSize, pageCount } from "@/lib/pdf-facts";
  * Only what is published is drawn: a product with no tile gets no row at all
  * (see `amoeba-page.ts`).
  *
- * The per-cloud pages (`/coral-for-aks`, `/amoeba-for-aws`…) draw the same row
+ * The per-cloud pages (`/aks-cost-optimization`, `/ebs-cost-optimization`…) draw the same row
  * from their own tiles, so it takes only the product and the row. A product's
  * name in a page tile's line is kept out of translation too ("The volume type
  * Amoeba’s pool uses on AWS").
