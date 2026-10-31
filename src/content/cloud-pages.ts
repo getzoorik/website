@@ -399,7 +399,7 @@ export const coralForEksPage: CoralCloudPage = {
       {
         question: "Can Coral move my pods to cheaper EC2 instances?",
         answer:
-          "Rebalancing needs Karpenter. Coral creates fixed-size NodePools of cheaper instances that still fit your pods, and Karpenter launches them in place of the nodes you choose. With only the Cluster Autoscaler, Coral removes nodes and keeps each group's instance types.",
+          "Yes, with Karpenter. Coral creates fixed-size NodePools of cheaper instances that still fit your pods, and Karpenter launches them in place of the nodes you choose. With only the Cluster Autoscaler, Coral removes nodes and keeps each group's instance types.",
       },
       {
         question: "What do I need on AWS to connect a cluster?",
