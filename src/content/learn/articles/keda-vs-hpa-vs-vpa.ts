@@ -51,7 +51,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "None of the three adds or removes nodes. The Cluster Autoscaler, Karpenter and AKS node auto provisioning (NAP) do that, and the guide to ",
-            { a: "Kubernetes autoscaling", href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler" },
+            { a: "Kubernetes autoscaling", href: "/learn/kubernetes-autoscaling" },
             " compares them.",
           ],
         },
@@ -592,7 +592,7 @@ export const article: Article = {
     {
       title: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
       where: "Learn",
-      href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+      href: "/learn/kubernetes-autoscaling",
     },
   ],
 };

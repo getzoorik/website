@@ -23,7 +23,7 @@ export const term: GlossaryTerm = {
         "Horizontal means more pods, not bigger ones. ",
         { a: "VPA vs HPA", href: "/learn/vpa-vs-hpa" },
         " compares it with vertical scaling, and ",
-        { a: "Kubernetes autoscaling", href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler" },
+        { a: "Kubernetes autoscaling", href: "/learn/kubernetes-autoscaling" },
         " sets it beside the VPA and the Cluster Autoscaler.",
       ],
     },
@@ -77,7 +77,7 @@ export const term: GlossaryTerm = {
           items: [
             "At a 50% target, each pod’s request is twice its target use.",
             [
-              { a: "Node autoscalers", href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler" },
+              { a: "Node autoscalers", href: "/learn/kubernetes-autoscaling" },
               " add nodes to fit pods’ requests, not their real use.",
             ],
             "When new replicas don’t fit, you pay for nodes sized to those requests.",

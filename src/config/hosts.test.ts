@@ -169,15 +169,36 @@ describe("the eight pages that moved to the address of their search (D230)", () 
       expect((await respond(`https://zoorik.com/learn/${slug}`)).status, slug).toBe(301);
     }
   });
+});
 
-  it("leaves Azure disk cost optimization to its article: nothing moves to or from that address (D230, 1 Nov)", async () => {
+describe("the two Learn articles that moved to the address of their search (owner, 1 Nov 2026)", () => {
+  const moves = [
+    ["/learn/hpa-vs-vpa-vs-cluster-autoscaler", "/learn/kubernetes-autoscaling"],
+    ["/learn/azure-disk-cost-optimization", "/learn/azure-disk-reservations"],
+  ] as const;
+
+  it("301s each old address to its new one in a single hop", async () => {
+    await expectMoved(moves);
     const rules = (await nextConfig.redirects?.()) ?? [];
-    expect(
-      rules.filter((rule) => rule.destination.endsWith("/azure-disk-cost-optimization")),
-    ).toEqual([]);
-    expect((await respond("https://zoorik.com/learn/azure-disk-cost-optimization")).status).toBe(
-      200,
-    );
+    for (const [from, to] of moves) {
+      expect(
+        rules.filter((rule) => rule.source === from),
+        from,
+      ).toEqual([{ source: from, destination: to, statusCode: 301 }]);
+      expect(
+        rules.filter((rule) => rule.destination === from),
+        from,
+      ).toEqual([]);
+    }
+  });
+
+  it("serves each article at its new address only, from the file its slug names", async () => {
+    const { generateStaticParams } = await import("@/app/learn/[slug]/page");
+    const listed = generateStaticParams().map(({ slug }) => slug);
+    for (const [from, to] of moves) {
+      expect(listed, from).not.toContain(from.slice("/learn/".length));
+      expect(listed, to).toContain(to.slice("/learn/".length));
+    }
   });
 });
 
@@ -243,11 +264,11 @@ describe("the comparison pages' older addresses under /learn", () => {
 });
 
 describe("the retired autoscalers article", () => {
-  it("301s /learn/coral-and-native-autoscalers to HPA vs VPA vs Cluster Autoscaler, which is no redirect itself", async () => {
+  it("301s /learn/coral-and-native-autoscalers straight to Kubernetes autoscaling, which is no redirect itself", async () => {
     const old = await respond("https://zoorik.com/learn/coral-and-native-autoscalers");
     expect(old.status).toBe(301);
-    expect(getRedirectUrl(old)).toBe("https://zoorik.com/learn/hpa-vs-vpa-vs-cluster-autoscaler");
-    const article = await respond("https://zoorik.com/learn/hpa-vs-vpa-vs-cluster-autoscaler");
+    expect(getRedirectUrl(old)).toBe("https://zoorik.com/learn/kubernetes-autoscaling");
+    const article = await respond("https://zoorik.com/learn/kubernetes-autoscaling");
     expect(article.status).not.toBe(301);
   });
 });

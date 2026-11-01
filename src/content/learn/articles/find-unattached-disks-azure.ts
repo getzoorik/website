@@ -540,7 +540,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "For the rest of your disk cost, see ",
-            { a: "Azure disk cost optimization", href: "/learn/azure-disk-cost-optimization" },
+            { a: "Azure disk cost optimization", href: "/learn/azure-disk-reservations" },
             ".",
           ],
         },
@@ -601,7 +601,7 @@ export const article: Article = {
     {
       title: "Azure disk cost optimization: stop paying for empty space",
       where: "Learn",
-      href: "/learn/azure-disk-cost-optimization",
+      href: "/learn/azure-disk-reservations",
     },
     {
       title: "Azure disk snapshot cost: incremental vs full snapshots",

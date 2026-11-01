@@ -107,7 +107,7 @@ export const term: GlossaryTerm = {
             "Our ",
             { a: "Azure disk pricing calculator", href: "/ebs-and-azure-disk-pricing" },
             " gives a Premium SSD’s monthly list price. ",
-            { a: "Azure disk cost optimization", href: "/learn/azure-disk-cost-optimization" },
+            { a: "Azure disk cost optimization", href: "/learn/azure-disk-reservations" },
             " shows ways to reduce it.",
           ],
         },

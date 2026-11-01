@@ -227,7 +227,7 @@ export const azureCostOptimizationPage: TopicPage = {
           `Check the type. [Premium SSD v2 vs Premium SSD](${article("premium-ssd-v2-vs-premium-ssd")}) compares the two Premium SSD types.`,
         ),
         p(
-          `[Azure disk cost optimization](${article("azure-disk-cost-optimization")}) walks through every step, and the [Azure disk pricing calculator](${routes.ebsAndAzureDiskPricing}) prices one disk at list price. [How to reduce Azure disk size](${article("shrink-azure-managed-disk")}) covers the copy to a smaller disk.`,
+          `[Azure disk cost optimization](${article("azure-disk-reservations")}) walks through every step, and the [Azure disk pricing calculator](${routes.ebsAndAzureDiskPricing}) prices one disk at list price. [How to reduce Azure disk size](${article("shrink-azure-managed-disk")}) covers the copy to a smaller disk.`,
         ),
       ],
     },
@@ -413,7 +413,7 @@ export const azureCostOptimizationPage: TopicPage = {
       },
       {
         title: "Azure disk cost optimization",
-        href: article("azure-disk-cost-optimization"),
+        href: article("azure-disk-reservations"),
         line: "What a managed disk is charged for, and how to pay for your data",
       },
       {

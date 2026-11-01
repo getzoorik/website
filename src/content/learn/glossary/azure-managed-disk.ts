@@ -127,7 +127,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/ephemeral-os-disk",
     },
   ],
-  next: { title: "Azure disk cost optimization", href: "/learn/azure-disk-cost-optimization" },
+  next: { title: "Azure disk cost optimization", href: "/learn/azure-disk-reservations" },
   sources: [
     {
       publisher: "Microsoft Learn",

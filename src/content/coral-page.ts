@@ -133,7 +133,7 @@ export const coralPageContent: ProductPageContent = {
         kind: "page",
         title: "HPA vs VPA vs Cluster Autoscaler",
         line: "What each one scales, plus Karpenter",
-        href: learnPath("hpa-vs-vpa-vs-cluster-autoscaler"),
+        href: learnPath("kubernetes-autoscaling"),
       },
       /* Its two cloud pages (owner, 1 Nov 2026), each line what that page covers. */
       {

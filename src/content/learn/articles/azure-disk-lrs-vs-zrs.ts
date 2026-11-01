@@ -449,7 +449,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "The provisioned size is the other lever on a disk’s price, covered in ",
-            { a: "Azure disk cost optimization", href: "/learn/azure-disk-cost-optimization" },
+            { a: "Azure disk cost optimization", href: "/learn/azure-disk-reservations" },
             ".",
           ],
         },
@@ -562,7 +562,7 @@ export const article: Article = {
     {
       title: "Azure disk cost optimization: stop paying for empty space",
       where: "Learn",
-      href: "/learn/azure-disk-cost-optimization",
+      href: "/learn/azure-disk-reservations",
     },
     {
       title: "Premium SSD vs Standard SSD on Azure: what you pay for",

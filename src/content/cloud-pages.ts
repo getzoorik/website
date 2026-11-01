@@ -582,7 +582,7 @@ export const azureManagedDiskCostOptimizationPage: AmoebaCloudPage = {
         kind: "page",
         title: "Azure disk reservations: are they worth it?",
         line: "What a managed disk is charged for, and how to pay for your data",
-        href: learnPath("azure-disk-cost-optimization"),
+        href: learnPath("azure-disk-reservations"),
       },
       {
         kind: "page",

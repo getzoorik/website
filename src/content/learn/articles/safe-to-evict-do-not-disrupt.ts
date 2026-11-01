@@ -73,7 +73,7 @@ export const article: Article = {
             " too, and so does EKS Auto Mode on Amazon Elastic Kubernetes Service (EKS). ",
             {
               a: "How the native autoscalers fit together",
-              href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+              href: "/learn/kubernetes-autoscaling",
             },
             " covers which one runs where.",
           ],

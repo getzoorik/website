@@ -261,7 +261,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            { a: "Node autoscalers", href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler" },
+            { a: "Node autoscalers", href: "/learn/kubernetes-autoscaling" },
             " such as the Cluster Autoscaler and Karpenter count the same way. Kubernetes’ node autoscaling documentation says they provision nodes to fit pod requests and consolidate on requests rather than real use, so a request set too high can stop a node from being consolidated.",
           ],
         },
@@ -484,7 +484,7 @@ export const article: Article = {
     {
       title: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
       where: "Learn",
-      href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+      href: "/learn/kubernetes-autoscaling",
     },
     {
       title: "KEDA vs HPA: where event-driven scaling fits",

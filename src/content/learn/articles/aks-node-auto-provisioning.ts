@@ -600,7 +600,7 @@ export const article: Article = {
             ". For where NAP sits beside the HPA, the VPA and the Cluster Autoscaler, see ",
             {
               a: "HPA vs VPA vs Cluster Autoscaler",
-              href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+              href: "/learn/kubernetes-autoscaling",
             },
             ".",
           ],
@@ -686,7 +686,7 @@ export const article: Article = {
     {
       title: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
       where: "Learn",
-      href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+      href: "/learn/kubernetes-autoscaling",
     },
   ],
 };

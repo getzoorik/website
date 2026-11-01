@@ -604,7 +604,7 @@ export const article: Article = {
     {
       title: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
       where: "Learn",
-      href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+      href: "/learn/kubernetes-autoscaling",
     },
     {
       title: "Does optimization ever modify HPA minReplicas or maxReplicas?",

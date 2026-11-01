@@ -86,7 +86,7 @@ export const learnPillars: readonly { readonly subject: LearnSubject; readonly p
   [
     { subject: "cloud", pillar: "how-to-reduce-cloud-costs" },
     { subject: "k8s", pillar: "reduce-kubernetes-cost" },
-    { subject: "storage", pillar: "azure-disk-cost-optimization" },
+    { subject: "storage", pillar: "azure-disk-reservations" },
   ];
 
 /**
@@ -120,7 +120,7 @@ export const learnFixes: readonly {
 export const learnPriority: readonly string[] = [
   "how-to-reduce-cloud-costs",
   "reduce-kubernetes-cost",
-  "azure-disk-cost-optimization",
+  "azure-disk-reservations",
   "shrink-azure-managed-disk",
   "kubernetes-cost-estimation",
   "kubernetes-pod-right-sizing",
@@ -129,7 +129,7 @@ export const learnPriority: readonly string[] = [
   "find-unattached-disks-azure",
   "azure-vm-disk-usage",
   "check-ebs-volume-usage",
-  "hpa-vs-vpa-vs-cluster-autoscaler",
+  "kubernetes-autoscaling",
   "keda-vs-karpenter",
   "kubernetes-allocatable-vs-capacity",
   "limitrange-vs-resourcequota",
@@ -192,7 +192,7 @@ export const learnPriority: readonly string[] = [
 const learnNames: Readonly<Record<string, string>> = {
   "how-to-reduce-cloud-costs": "Cloud cost optimization: how to reduce cloud costs",
   "reduce-kubernetes-cost": "Kubernetes cost optimization",
-  "azure-disk-cost-optimization": "Azure disk reservations",
+  "azure-disk-reservations": "Azure disk reservations",
   "shrink-azure-managed-disk": "Reduce Azure disk size: can a managed disk shrink?",
   "kubernetes-cost-estimation": "Kubernetes cost estimation",
   "kubernetes-pod-right-sizing": "Kubernetes pod right sizing",
@@ -201,7 +201,7 @@ const learnNames: Readonly<Record<string, string>> = {
   "find-unattached-disks-azure": "Find unattached disks in Azure",
   "azure-vm-disk-usage": "Azure VM disk usage: used vs provisioned",
   "check-ebs-volume-usage": "Check EBS volume usage: used vs paid",
-  "hpa-vs-vpa-vs-cluster-autoscaler": "HPA vs VPA vs Cluster Autoscaler",
+  "kubernetes-autoscaling": "HPA vs VPA vs Cluster Autoscaler",
   "keda-vs-karpenter": "KEDA vs Karpenter",
   "kubernetes-allocatable-vs-capacity": "Kubernetes allocatable vs capacity",
   "limitrange-vs-resourcequota": "LimitRange vs ResourceQuota",

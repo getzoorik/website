@@ -892,7 +892,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
         },
         {
           text: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
-          href: learnPath("hpa-vs-vpa-vs-cluster-autoscaler"),
+          href: learnPath("kubernetes-autoscaling"),
         },
       ],
     },

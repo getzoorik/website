@@ -163,7 +163,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "Disk type is one way to reduce disk cost. ",
-            { a: "Azure disk cost optimization", href: "/learn/azure-disk-cost-optimization" },
+            { a: "Azure disk cost optimization", href: "/learn/azure-disk-reservations" },
             " covers the others.",
           ],
         },
@@ -480,7 +480,7 @@ export const article: Article = {
     {
       title: "Azure disk cost optimization: stop paying for empty space",
       where: "Learn",
-      href: "/learn/azure-disk-cost-optimization",
+      href: "/learn/azure-disk-reservations",
     },
     {
       title: "Premium SSD vs Standard SSD on Azure: what you pay for",

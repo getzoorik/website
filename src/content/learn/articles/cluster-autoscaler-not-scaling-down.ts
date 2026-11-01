@@ -36,7 +36,7 @@ export const article: Article = {
             "Picture a node with 4\u00a0CPU and 16\u00a0GiB allocatable, the part of its capacity it offers to pods (",
             { a: "allocatable vs capacity", href: "/learn/kubernetes-allocatable-vs-capacity" },
             " has the detail). Its pods request 2.2\u00a0CPU and 6\u00a0GiB but use 0.3\u00a0CPU between them. You pay for the whole node, and the ",
-            { a: "Cluster Autoscaler", href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler" },
+            { a: "Cluster Autoscaler", href: "/learn/kubernetes-autoscaling" },
             " keeps it, because it compares requests with allocatable and never looks at use.",
           ],
         },
@@ -581,7 +581,7 @@ export const article: Article = {
     {
       title: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
       where: "Learn",
-      href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+      href: "/learn/kubernetes-autoscaling",
     },
     {
       title: "Karpenter vs Cluster Autoscaler: how each removes nodes",

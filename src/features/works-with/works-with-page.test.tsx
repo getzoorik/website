@@ -130,7 +130,7 @@ const pages = [
       "/coral-guide#rebalancing",
       "/coral-faq#do-i-need-coral-with-karpenter",
       "/learn/aks-node-auto-provisioning",
-      "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+      "/learn/kubernetes-autoscaling",
       "/coral-works-with-cluster-autoscaler",
       "/coral-works-with-karpenter",
     ],

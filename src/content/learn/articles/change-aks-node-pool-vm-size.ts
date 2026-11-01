@@ -552,7 +552,7 @@ export const article: Article = {
             "Other pods are evicted within their PDB, and single-copy ones restart. ",
             {
               a: "HPA vs VPA vs Cluster Autoscaler",
-              href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+              href: "/learn/kubernetes-autoscaling",
             },
             " shows where request sizing sits beside the autoscalers. ",
             { a: "AKS cost optimization", href: "/aks-cost-optimization" },

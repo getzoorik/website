@@ -1,9 +1,9 @@
 import type { Article } from "@/content/learn/article";
-import { figure as figure1 } from "@/features/learn/figures/azure-disk-cost-optimization/1";
-import { figure as figure2 } from "@/features/learn/figures/azure-disk-cost-optimization/2";
+import { figure as figure1 } from "@/features/learn/figures/azure-disk-reservations/1";
+import { figure as figure2 } from "@/features/learn/figures/azure-disk-reservations/2";
 
 export const article: Article = {
-  slug: "azure-disk-cost-optimization",
+  slug: "azure-disk-reservations",
   title: "Azure disk reservations: are they worth it?",
   meta: "Are Azure disk reservations worth it? Only for Premium SSD, P30 to P80, that you’ll keep at one size for a year. Delete unused disks and size to data first.",
   h1: "Azure disk reservations: reserve last, after you stop paying for empty space",
@@ -15,7 +15,7 @@ export const article: Article = {
   published: "2026-10-21",
   updated: "2026-11-01",
   author: "sheldon",
-  cover: "/learn-covers/zoorik-learn-azure-disk-cost-optimization-1200x630.webp",
+  cover: "/learn-covers/zoorik-learn-azure-disk-reservations-1200x630.webp",
   coverAlt: "Azure disk cost optimization: disks charged in full become one pool sized to data",
   short: [
     "An Azure disk reservation covers only Premium SSD from P30 to P80, for a one-year term, and it comes last, once disk sizes are settled. First stop paying for empty space: a ",

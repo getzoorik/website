@@ -237,7 +237,7 @@ const CARDS: readonly {
   {
     file: "learn-azure-disk-cost-optimization",
     words: "Azure disk cost optimization",
-    paths: ["/learn/azure-disk-cost-optimization"],
+    paths: ["/learn/azure-disk-reservations"],
   },
   {
     file: "learn-change-eks-node-group-instance-type",
@@ -262,7 +262,7 @@ const CARDS: readonly {
   {
     file: "learn-hpa-vs-vpa-vs-cluster-autoscaler",
     words: "HPA vs VPA vs Cluster Autoscaler, plus Karpenter",
-    paths: ["/learn/hpa-vs-vpa-vs-cluster-autoscaler"],
+    paths: ["/learn/kubernetes-autoscaling"],
   },
   {
     file: "learn-kubernetes-cost-estimation",

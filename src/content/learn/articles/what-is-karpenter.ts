@@ -404,7 +404,7 @@ export const article: Article = {
             " puts the two jobs in order: requests first, then nodes. ",
             {
               a: "HPA vs VPA vs Cluster Autoscaler",
-              href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+              href: "/learn/kubernetes-autoscaling",
             },
             " shows which tool owns which layer: pod count, pod size or node count.",
           ],

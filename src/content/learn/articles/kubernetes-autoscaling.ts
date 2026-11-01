@@ -1,9 +1,9 @@
 import type { Article } from "@/content/learn/article";
-import { figure as figure1 } from "@/features/learn/figures/hpa-vs-vpa-vs-cluster-autoscaler/1";
-import { figure as figure2 } from "@/features/learn/figures/hpa-vs-vpa-vs-cluster-autoscaler/2";
+import { figure as figure1 } from "@/features/learn/figures/kubernetes-autoscaling/1";
+import { figure as figure2 } from "@/features/learn/figures/kubernetes-autoscaling/2";
 
 export const article: Article = {
-  slug: "hpa-vs-vpa-vs-cluster-autoscaler",
+  slug: "kubernetes-autoscaling",
   title: "Kubernetes autoscaling: HPA and node autoscalers",
   meta: "Kubernetes autoscaling: the HPA sets pod count, the Cluster Autoscaler node count. HPA vs Cluster Autoscaler and Karpenter vs HPA in a surge.",
   h1: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
@@ -16,7 +16,7 @@ export const article: Article = {
   published: "2026-10-22",
   updated: "2026-11-01",
   author: "saurav",
-  cover: "/learn-covers/zoorik-learn-hpa-vs-vpa-vs-cluster-autoscaler-1200x630.webp",
+  cover: "/learn-covers/zoorik-learn-kubernetes-autoscaling-1200x630.webp",
   coverAlt:
     "HPA vs VPA vs Cluster Autoscaler: the HPA adds pods, the VPA makes a pod bigger, the Cluster Autoscaler adds a node",
   short: [

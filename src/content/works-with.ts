@@ -409,7 +409,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
       "[Coral product guide: Rebalancing](/coral-guide#rebalancing): what a rebalance needs, and how it runs.",
       "[Coral FAQ: Do I need Coral with Karpenter or NAP?](/coral-faq#do-i-need-coral-with-karpenter): the short answer, with more on autoscalers.",
       "[AKS node auto provisioning (NAP): how to enable it](/learn/aks-node-auto-provisioning): what NAP is, and how to enable or disable it.",
-      "[Kubernetes autoscaling: HPA and Cluster Autoscaler](/learn/hpa-vs-vpa-vs-cluster-autoscaler): pods, requests and nodes, plus Karpenter.",
+      "[Kubernetes autoscaling: HPA and Cluster Autoscaler](/learn/kubernetes-autoscaling): pods, requests and nodes, plus Karpenter.",
       "[Coral works with Cluster Autoscaler](/coral-works-with-cluster-autoscaler): Coral empties spare nodes, and the Cluster Autoscaler removes them.",
       "[Coral works with Karpenter](/coral-works-with-karpenter): the same story on EKS, with Karpenter itself.",
     ],

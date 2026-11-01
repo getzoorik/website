@@ -344,7 +344,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "The size doesn’t change, so a half-empty P30 becomes a half-empty E30. ",
-            { a: "Disk reservations", href: "/learn/azure-disk-cost-optimization" },
+            { a: "Disk reservations", href: "/learn/azure-disk-reservations" },
             " exist only for Premium SSD SKUs from P30 to P80. Each is bought for one SKU in one region, so a reservation won’t cover the converted disk.",
           ],
         },
@@ -490,7 +490,7 @@ export const article: Article = {
     {
       title: "Azure disk cost optimization: stop paying for empty space",
       where: "Learn",
-      href: "/learn/azure-disk-cost-optimization",
+      href: "/learn/azure-disk-reservations",
     },
     {
       title: "Azure disk IOPS vs throughput: what limits your disks",

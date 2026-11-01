@@ -119,7 +119,7 @@ export const term: GlossaryTerm = {
         {
           kind: "p",
           text: [
-            { a: "Azure disk cost optimization", href: "/learn/azure-disk-cost-optimization" },
+            { a: "Azure disk cost optimization", href: "/learn/azure-disk-reservations" },
             " shows ways to reduce this cost.",
           ],
         },
@@ -163,7 +163,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/azure-ultra-disk",
     },
   ],
-  next: { title: "Azure disk cost optimization", href: "/learn/azure-disk-cost-optimization" },
+  next: { title: "Azure disk cost optimization", href: "/learn/azure-disk-reservations" },
   sources: [
     {
       publisher: "Microsoft Learn",

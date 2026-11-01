@@ -229,7 +229,7 @@ const cases: readonly (readonly [string, Case])[] = [
       readMore: [
         "/amoeba-guide",
         "/amoeba-faq",
-        "/learn/azure-disk-cost-optimization",
+        "/learn/azure-disk-reservations",
         "/learn/shrink-azure-managed-disk",
       ],
     },

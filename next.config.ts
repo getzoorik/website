@@ -205,10 +205,24 @@ const nextConfig: NextConfig = {
         destination: "/cloud-cost-optimization-library/amoeba-alternatives",
         statusCode: 301,
       },
-      /* The comparison of Coral and the native autoscalers is replaced by HPA vs VPA vs Cluster Autoscaler. */
+      /* The comparison of Coral and the native autoscalers is replaced by Kubernetes autoscaling, at its own address
+         since 1 Nov 2026: straight there, never through the article's old address. */
       {
         source: "/learn/coral-and-native-autoscalers",
-        destination: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+        destination: "/learn/kubernetes-autoscaling",
+        statusCode: 301,
+      },
+      /* Two Learn articles at the address of their search (owner, 1 Nov 2026), each old address one hop from the new:
+         HPA vs VPA vs Cluster Autoscaler is Kubernetes autoscaling, and Azure disk cost optimization is Azure disk
+         reservations. */
+      {
+        source: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+        destination: "/learn/kubernetes-autoscaling",
+        statusCode: 301,
+      },
+      {
+        source: "/learn/azure-disk-cost-optimization",
+        destination: "/learn/azure-disk-reservations",
         statusCode: 301,
       },
       /* Eight pages at the address of their search (D230, owner, 1 Nov 2026), each old address one hop from the new,
