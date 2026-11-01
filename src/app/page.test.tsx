@@ -306,10 +306,13 @@ describe("the home page", () => {
 
   it("closes on two cards that open on their headlines", () => {
     const row = page.querySelector("#assess")!;
-    /* The small uppercase labels are gone; the headlines carry the cards. */
+    /* The small uppercase labels are gone; the headlines carry the cards. They are `div.as-h`, not h2, so the words
+       that close every page stay out of its heading outline (1 Nov 2026). */
     expect(row.querySelector(".kicker, .cta-kick")).toBeNull();
-    expect(row.querySelector(".as-mini")!.firstElementChild!.tagName).toBe("H2");
-    expect(row.querySelector(".as-cal")!.firstElementChild!.tagName).toBe("H2");
+    for (const card of [row.querySelector(".as-mini")!, row.querySelector(".as-cal")!]) {
+      expect(card.firstElementChild!.tagName).toBe("DIV");
+      expect(card.firstElementChild).toHaveClass("as-h");
+    }
     expect(row.querySelector(".as-cal p")!.textContent).toBe(
       "Thirty minutes with the people who build Coral and Amoeba.",
     );

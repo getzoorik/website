@@ -9,7 +9,8 @@ import { assessmentHref } from "@/content/assess";
  * 🔴 NO PRICE, RATE, CURRENCY OR FIGURE (D193, 9 Oct 2026: "no prices on the site, only one true sentence about
  * pricing"). The one sentence is the owner's, word for word (D226, 30 Oct 2026), and it is the hero's deck. Nothing
  * here says what a vCPU or a GB "it manages" is beyond that line. The page's text holds no digit at all, and its
- * structured data no offer (`pricing-page.test.tsx`); the shared closing row's "Thirty minutes" is spelled out.
+ * structured data no offer (`pricing-page.test.tsx`); the shared closing row's "Thirty minutes" and the safety
+ * snapshots' "seven days" (the 7 days /security prints) are spelled out.
  *
  * The text is the draft's small markup, drawn by `RichText`: `code`, [text](href), the address as a mailto.
  */
@@ -207,7 +208,7 @@ export const pricingPage = {
         answer: [
           {
             kind: "p",
-            text: "Yes, but only while the move runs. The source disks are deleted once the switch is checked. Then you pay for the safety snapshots for the 7 days they're kept.",
+            text: "Yes, but only while the move runs. The source disks are deleted once the switch is checked. Then you pay for the safety snapshots for the seven days they're kept.",
           },
         ],
       },

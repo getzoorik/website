@@ -56,8 +56,9 @@ describe("/pricing", () => {
     expect(all).not.toMatch(/\d/);
     expect(all).not.toMatch(/[$€£₹]|\b(USD|EUR|INR)\b/);
     expect(all).not.toMatch(/'/);
-    /* The closing row's meeting length is spelled out. */
+    /* The closing row's meeting length is spelled out, and so are the safety snapshots' 7 days (1 Nov 2026). */
     expect(all).toContain("Thirty minutes with the people who build Coral and Amoeba.");
+    expect(all).toContain("for the seven days they’re kept.");
     const json = JSON.stringify(pageStructuredData("/pricing"));
     for (const word of [
       "offers",

@@ -439,9 +439,12 @@ describe("/cloud-cost-optimization-library", () => {
     expect(text(row)).toContain("Thirty minutes with the people who build Coral and Amoeba.");
   });
 
-  it("is the footer's Cloud cost optimization tools, the words its h1 starts with", () => {
-    const link = page().querySelector(`footer a[href="${routes.cloudCostTools}"]`)!;
+  it("is the footer's Cloud cost optimization tools, the words its tools' h2 starts with", () => {
+    const root = page();
+    const link = root.querySelector(`footer a[href="${routes.cloudCostTools}"]`)!;
     expect(text(link)).toBe("Cloud cost optimization tools");
-    expect(cloudCostToolsPage.hero.title.startsWith(text(link))).toBe(true);
+    /* The h1 leads with "Cloud cost management tools", and the tools' h2 carries the footer's words (1 Nov 2026). */
+    expect(cloudCostToolsPage.tools.title.startsWith(text(link))).toBe(true);
+    expect(text(root.querySelector("#tools h2")).startsWith(text(link))).toBe(true);
   });
 });

@@ -237,7 +237,7 @@ describe("the home page's structured data", () => {
     expect(coral.name).toBe(products.coral.name);
     expect(coral.description).toBe(coralPageContent.meta.appDescription);
     expect(coral.description).toBe(
-      "Kubernetes cost optimization on AKS and EKS. Coral sizes pod requests to real use and drains idle nodes one at a time.",
+      "Kubernetes cost optimization on AKS and EKS. Coral sizes pod requests to real use and drains spare nodes one at a time.",
     );
     expect(coral.applicationSubCategory).toBe("Kubernetes cost optimization");
     expect(coral.featureList).toEqual([
@@ -580,7 +580,7 @@ describe("every indexed page's structured data", () => {
     expect(names(routes.compareCoralAlternatives)).toEqual([
       "Zoorik",
       "Cloud cost optimization tools",
-      "Coral alternatives: Kubernetes cost tools compared",
+      "Kubernetes cost optimization tools compared",
     ]);
   });
 
@@ -741,13 +741,14 @@ describe("every indexed page's structured data", () => {
       );
     }
     const [study] = ofType(graphOf(routes.caseStudyCoralDevCluster), "TechArticle");
-    expect(study).toMatchObject({ datePublished: "2026-10-12", dateModified: "2026-10-12" });
+    /* Published on the day each study prints; modified on the day its content last changed (1 Nov 2026). */
+    expect(study).toMatchObject({ datePublished: "2026-10-12", dateModified: "2026-11-01" });
     expect(caseStudy.band.date).toBe("12 October 2026");
     const [amoeba] = ofType(graphOf(routes.caseStudyAmoebaLabVms), "TechArticle");
     expect(amoeba).toMatchObject({
       headline: "How Amoeba rightsized our own lab VM’s btrfs pool by 25%",
       datePublished: "2026-10-19",
-      dateModified: "2026-10-19",
+      dateModified: "2026-11-01",
       image: "https://zoorik.com/og/pages/value-lab-amoeba-lab-vms.png",
     });
     expect(orgRef).toEqual({ "@id": "https://zoorik.com/#organization" });

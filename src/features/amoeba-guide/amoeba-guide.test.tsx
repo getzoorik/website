@@ -164,7 +164,8 @@ describe("/amoeba-guide groups and rows", () => {
 
   it("stays at product level: no day counts, session timings, quiet hour or internal command names", () => {
     const words = text(page().querySelector("article.gd-main"));
-    expect(words).not.toMatch(
+    /* The one day count is the safety snapshots' 7 days, which /security and the terms print (1 Nov 2026). */
+    expect(words.replace(/\b7 days\b/g, "")).not.toMatch(
       /\b\d+ days\b|\bminutes\b|\b12 hours\b|quietest|device remove|governance/i,
     );
     expect(words).toContain("The kernel must be recent and support btrfs");

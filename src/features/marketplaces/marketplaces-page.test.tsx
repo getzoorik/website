@@ -68,7 +68,7 @@ describe("/marketplaces's metadata", () => {
       title: "Marketplaces | Zoorik",
     });
     expect(routes.marketplaces).toBe("/marketplaces");
-    expect(marketplacesLastUpdated).toBe("21 October 2026");
+    expect(marketplacesLastUpdated).toBe("1 November 2026");
   });
 });
 

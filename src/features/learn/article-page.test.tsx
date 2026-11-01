@@ -715,10 +715,11 @@ describe("/learn/poor-architecture-cloud-bill, against its draft", () => {
   });
 
   it("links only words already in the text", async () => {
-    const links = [...(await main(slug)).querySelectorAll(".ar-frame .fq-sec-b a")].map((a) => [
-      text(a),
-      a.getAttribute("href"),
-    ]);
+    /* Not the help box's links, which close its own product section, Where Coral fits (1 Nov 2026): every article's
+       help is checked with the frame's close. */
+    const links = [...(await main(slug)).querySelectorAll(".ar-frame .fq-sec-b a")]
+      .filter((a) => !a.closest("p.ar-help-a"))
+      .map((a) => [text(a), a.getAttribute("href")]);
     expect(links).toEqual([
       [
         "Azure managed disks and Amazon EBS volumes can grow but can’t shrink in place",

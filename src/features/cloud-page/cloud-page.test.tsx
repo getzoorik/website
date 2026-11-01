@@ -549,8 +549,9 @@ describe.each(cases)("%s", (path, c) => {
     main.querySelector("#install")?.remove();
     for (const numeral of main.querySelectorAll(".stepn")) numeral.remove();
     const all = text(main);
-    /* The only digits are in names: EC2, gp3 and Premium SSD v2. */
-    for (const token of all.match(/\S*\d\S*/g) ?? []) {
+    /* The only digits are in names: EC2, gp3 and Premium SSD v2, and the safety snapshots' 7 days, which /security and
+       the terms print (1 Nov 2026). */
+    for (const token of all.replace(/\b7 days\b/g, "days").match(/\S*\d\S*/g) ?? []) {
       expect(token.replace(/[,.:;)]+$/, "")).toMatch(/^(EC2|gp3|v2)$/);
     }
     expect(all).not.toMatch(/[$€£₹%]|\b(USD|EUR|INR)\b/);

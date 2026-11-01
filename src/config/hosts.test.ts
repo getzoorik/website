@@ -5,6 +5,7 @@ import {
 } from "next/experimental/testing/server";
 import { describe, expect, it } from "vitest";
 
+import { generateStaticParams } from "@/app/learn/[slug]/page";
 import { routes } from "@/config/site";
 import { alternativesPages, versusPages, versusRoute } from "@/content/learn-compare";
 
@@ -162,7 +163,6 @@ describe("the eight pages that moved to the address of their search (D230)", () 
   });
 
   it("answers the two articles' old /learn addresses before the /learn/[slug] route, which no longer lists them", async () => {
-    const { generateStaticParams } = await import("@/app/learn/[slug]/page");
     const listed = generateStaticParams().map(({ slug }) => slug);
     for (const slug of ["how-to-reduce-cloud-costs", "reduce-kubernetes-cost"]) {
       expect(listed, slug).not.toContain(slug);
@@ -192,8 +192,7 @@ describe("the two Learn articles that moved to the address of their search (owne
     }
   });
 
-  it("serves each article at its new address only, from the file its slug names", async () => {
-    const { generateStaticParams } = await import("@/app/learn/[slug]/page");
+  it("serves each article at its new address only, from the file its slug names", () => {
     const listed = generateStaticParams().map(({ slug }) => slug);
     for (const [from, to] of moves) {
       expect(listed, from).not.toContain(from.slice("/learn/".length));
