@@ -31,18 +31,18 @@ describe("page metadata", () => {
       template: "%s | Zoorik",
     });
     expect(home).not.toHaveProperty("title");
-    expect(assessment.title).toBe("Cloud cost assessment");
+    expect(assessment.title).toBe("Free cloud cost assessment for Azure and AWS");
     expect(login.title).toBe("Sign in");
-    expect(amoeba.title).toBe("Block storage cost optimization");
-    expect(coral.title).toBe("Kubernetes cost optimization");
+    expect(amoeba.title).toBe("Block storage cost optimization for Azure and AWS");
+    expect(coral.title).toBe("Coral: Kubernetes optimization for AKS and EKS");
   });
 
   it("keeps each full title within the 60 characters a search result shows", () => {
     /* "<title> | Zoorik", at most 60. */
     const { template } = layout.title as { template: string };
     const full = (title: unknown) => template.replace("%s", String(title));
-    expect(full(amoeba.title)).toBe("Block storage cost optimization | Zoorik");
-    expect(full(coral.title)).toBe("Kubernetes cost optimization | Zoorik");
+    expect(full(amoeba.title)).toBe("Block storage cost optimization for Azure and AWS | Zoorik");
+    expect(full(coral.title)).toBe("Coral: Kubernetes optimization for AKS and EKS | Zoorik");
     for (const title of [amoeba.title, coral.title, assessment.title])
       expect(full(title).length).toBeLessThanOrEqual(60);
     expect((layout.title as { default: string }).default).toHaveLength(55);
@@ -53,10 +53,10 @@ describe("page metadata", () => {
       "Zoorik reduces cloud cost, autonomously, without any downtime. Coral rebalances Kubernetes on AKS and EKS. Amoeba rightsizes Azure disks and Amazon EBS.",
     );
     expect(amoeba.description).toBe(
-      "Amoeba rightsizes Azure managed disks and Amazon EBS volumes to the data you store, to reduce your cloud bill, autonomously, without any downtime.",
+      "Amoeba rightsizes Azure managed disks and Amazon EBS volumes to the data you store, to reduce your cloud cost, autonomously, without any downtime.",
     );
     expect(coral.description).toBe(
-      "Coral rebalances AKS and EKS clusters to reduce your cloud bill, autonomously, without any downtime. Works with HPA, Karpenter, NAP and Cluster Autoscaler.",
+      "Coral rebalances AKS and EKS clusters to reduce your cloud cost, autonomously, without any downtime. Works with HPA, Karpenter, NAP and Cluster Autoscaler.",
     );
     /* Coral is never shown on Windows or Linux. */
     expect(String(coral.description)).not.toMatch(/Windows|Linux/);

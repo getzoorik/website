@@ -9,24 +9,28 @@ export const article: Article = {
   meta: "What safe-to-evict and karpenter.sh/do-not-disrupt do, which autoscaler reads each, where emptyDir and hostPath pods hold nodes, and when to drop a marker.",
   h1: "The safe-to-evict and do-not-disrupt annotations explained",
   deck: "One annotation on one pod can keep its whole node running, so it pays to know which autoscaler reads which.",
-  card: "What safe-to-evict and do-not-disrupt do, which autoscaler reads each, and why a held node stays on your bill.",
+  card: "What safe-to-evict and do-not-disrupt do, which autoscaler reads each, and why you keep paying for a held node.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Node lifecycle and scheduling",
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-11-01",
   author: "sonia",
   cover: "/learn-covers/zoorik-learn-safe-to-evict-do-not-disrupt-1200x630.webp",
+  coverAlt:
+    "safe-to-evict and do-not-disrupt: an annotation stops the pod’s eviction, so the node stays",
   short: [
     "The ",
     { code: "cluster-autoscaler.kubernetes.io/safe-to-evict" },
     " and ",
     { code: "karpenter.sh/do-not-disrupt" },
-    " annotations tell a node autoscaler whether it may evict a pod, and so whether the pod’s node can be removed. Set the one your autoscaler reads. The Cluster Autoscaler reads safe-to-evict: ",
+    " annotations tell a node autoscaler whether it may evict a pod, and so remove its node. The Cluster Autoscaler reads safe-to-evict: ",
     { code: '"false"' },
     " holds the node, and ",
     { code: '"true"' },
-    " releases pods it would otherwise keep, such as ones with emptyDir or hostPath data. Karpenter, AKS node auto-provisioning and EKS Auto Mode read do-not-disrupt, which keeps the node out of consolidation.",
+    " releases pods it would otherwise keep, such as emptyDir or hostPath pods. Karpenter, AKS node auto-provisioning and ",
+    { a: "EKS Auto Mode", href: "/learn/glossary/eks-auto-mode" },
+    " read do-not-disrupt, which keeps the node out of consolidation.",
   ],
   sections: [
     {
@@ -35,15 +39,23 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
+          text: "Picture a node that runs a long batch job, with no checkpoints, beside a few web pods. Overnight all of them, the job included, would fit elsewhere. The Cluster Autoscaler could remove the node.",
+        },
+        {
+          kind: "p",
           text: [
-            "Picture a node that runs a long batch job, with no checkpoints, beside a few web pods. Overnight all of them, the job included, would fit elsewhere. The Cluster Autoscaler could remove the node. But the batch pod carries ",
+            "But the batch pod carries ",
             { code: 'safe-to-evict: "false"' },
-            ", so the node keeps running, and stays on your bill, while that pod is there. Without the annotation, the job could be evicted halfway and start over.",
+            ", so the node keeps running, and you pay for it, while that pod is there. Without the annotation, the job could be evicted halfway and start over.",
           ],
         },
         {
           kind: "p",
-          text: "That is the trade both annotations decide. To remove a node, an autoscaler evicts its pods, so it first checks whether each pod may move. Most of that check reads what you already have: PodDisruptionBudgets (PDBs), the pod’s controller and its scheduling rules. You write the two annotations, or markers, by hand for each workload.",
+          text: [
+            "That is the trade both annotations decide. To remove a node, an autoscaler evicts its pods, so it first checks whether each pod may move. Most of that check reads what you already have: ",
+            { a: "PodDisruptionBudgets (PDBs)", href: "/learn/glossary/pod-disruption-budget" },
+            ", the pod’s controller and its scheduling rules. You write the two annotations, or markers, by hand for each workload.",
+          ],
         },
       ],
     },
@@ -269,7 +281,9 @@ export const article: Article = {
           text: [
             "The Karpenter do-not-disrupt annotation keeps a pod’s node out of two of Karpenter’s graceful methods. ",
             { a: "Consolidation", href: "/learn/karpenter-consolidation" },
-            " deletes a node whose pods fit elsewhere, or replaces it with a cheaper one. Drift replaces a node that no longer matches the spec set by its NodePool (the Karpenter resource that defines a group of nodes) or its node class.",
+            " deletes a node whose pods fit elsewhere, or replaces it with a cheaper one. Drift replaces a node that no longer matches the spec set by its ",
+            { a: "NodePool", href: "/learn/glossary/node-pool" },
+            " (the Karpenter resource that defines a group of nodes) or its node class.",
           ],
         },
         {
@@ -328,7 +342,9 @@ export const article: Article = {
           text: [
             "The annotation doesn’t exclude a node from Karpenter’s forceful methods: expiration (the node reaching its ",
             { code: "expireAfter" },
-            " lifetime, 720\u00a0hours or 30\u00a0days by default), interruption (such as a Spot interruption warning), and manual deletion with ",
+            " lifetime, 720\u00a0hours or 30\u00a0days by default), interruption (such as a ",
+            { a: "Spot", href: "/learn/glossary/spot-instance" },
+            " interruption warning), and manual deletion with ",
             { code: "kubectl delete node" },
             ". Node auto repair isn’t held back by it either.",
           ],
@@ -503,9 +519,20 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "On our own AKS development cluster, Coral removed a spare 4-CPU worker, taking the machine bill from $368.65 to $221.19 a month. Then it swapped the remaining worker for a cheaper machine of the same size. Each time, single-copy apps restarted once. Eight days after we connected Coral, ",
-            { a: "the bill", href: "/coral-value-lab" },
-            " was $154.76 a month, 58% less.",
+            { a: "Coral works with Karpenter", href: "/coral-works-with-karpenter" },
+            " covers how the two run together.",
+          ],
+        },
+        {
+          kind: "p",
+          text: "On our own AKS development cluster, Coral removed a spare 4-CPU worker, taking the machine cost from $368.65 to $221.19 a month. Then it swapped the remaining worker for a cheaper machine of the same size. Each time, single-copy apps restarted once.",
+        },
+        {
+          kind: "p",
+          text: [
+            "Eight days after we connected Coral, ",
+            { a: "the cluster’s machines cost", href: "/coral-value-lab" },
+            " $154.76 a month instead of $368.65, 58% less.",
           ],
         },
       ],
@@ -515,7 +542,7 @@ export const article: Article = {
     product: "coral",
     text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and drains spare nodes so your autoscaler can remove them. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
-      { label: "Kubernetes cost optimization with Coral", href: "/coral" },
+      { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Estimate your saving", href: "/assessment?p=coral" },
     ],
   },
@@ -572,6 +599,11 @@ export const article: Article = {
       title: "Karpenter consolidation: policies, budgets and limits",
       where: "Learn",
       href: "/learn/karpenter-consolidation",
+    },
+    {
+      title: "How to change an EKS node group instance type",
+      where: "Learn",
+      href: "/learn/change-eks-node-group-instance-type",
     },
     { title: "Nodes held", where: "Coral product guide", href: "/coral-guide#nodes-held" },
   ],

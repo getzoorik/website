@@ -1,4 +1,4 @@
-import { routes } from "@/config/site";
+import { routes, site } from "@/config/site";
 
 /**
  * Hero copy — the name, the headline, the pitch and the one call to action.
@@ -28,11 +28,11 @@ import { routes } from "@/config/site";
 export const heroPhotoAlt = "Server racks in a data centre, lit by blue status lights";
 
 /**
- * The day the home page's content last changed (its title, "Zoorik | …"), for the sitemap's
- * `lastmod` only: the page does not print it. Whoever changes the home page's content
+ * The day the home page's content last changed (the company sentence in its hero), for the
+ * sitemap's `lastmod` only: the page does not print it. Whoever changes the home page's content
  * moves this to that day in the same PR; never the build's date.
  */
-export const homeLastUpdated = "23 October 2026";
+export const homeLastUpdated = "1 November 2026";
 
 export const heroContent = {
   /**
@@ -46,5 +46,10 @@ export const heroContent = {
   name: "Zoorik",
   headline: "Reduce cloud cost, autonomously.",
   sub: "Software that optimizes Kubernetes and block storage on its own, while your systems keep serving.",
+  /**
+   * Under the pitch, the company sentence (owner, 1 Nov 2026, O12): what Zoorik is, in the words
+   * the Organization's markup uses (`site.description`), so the two never drift apart.
+   */
+  company: site.description,
   cta: { label: "Estimate your saving", href: routes.assessment },
 } as const;

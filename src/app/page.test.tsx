@@ -61,7 +61,7 @@ describe("the home page", () => {
       [
         "coral",
         "/coral",
-        "Stop paying for idle Kubernetes capacity. Coral rebalances workloads and removes the nodes you don’t need. No code changes.",
+        "Stop paying for idle Kubernetes capacity. Coral rebalances workloads and removes the nodes you don’t need. No code changes. Read our guide to Kubernetes cost optimization.",
         "Coral",
       ],
       [
@@ -76,6 +76,50 @@ describe("the home page", () => {
       const body = section.querySelector(".st-body")!;
       expect(body.textContent, id).toBe(line);
       expect(body.querySelector('[translate="no"]'), id).toHaveTextContent(name);
+    }
+    /* Coral's line ends on the subject's guide, which owns the search "Kubernetes cost optimization" (owner, 1 Nov
+       2026); Amoeba's has no link. */
+    expect(
+      [...page.querySelectorAll("section#coral .st-body a")].map((a) => [
+        a.textContent,
+        a.getAttribute("href"),
+        a.getAttribute("class"),
+      ]),
+    ).toEqual([["Kubernetes cost optimization", "/kubernetes-cost-optimization", null]]);
+    expect(page.querySelector("section#amoeba .st-body a")).toBeNull();
+  });
+
+  it("links each product's clouds to their pages, and leaves Windows and Linux plain", () => {
+    for (const [id, links, plain] of [
+      [
+        "coral",
+        [
+          ["AKS", "/aks-cost-optimization"],
+          ["EKS", "/eks-cost-optimization"],
+        ],
+        [],
+      ],
+      [
+        "amoeba",
+        [
+          ["Azure", "/azure-managed-disk-cost-optimization"],
+          ["AWS", "/ebs-cost-optimization"],
+        ],
+        ["Windows", "Linux"],
+      ],
+    ] as const) {
+      const chips = page.querySelector(`section#${id} ul.chips-g`)!;
+      expect(
+        [...chips.querySelectorAll("li > a.chip")].map((a) => [
+          a.textContent,
+          a.getAttribute("href"),
+        ]),
+        id,
+      ).toEqual(links);
+      expect(
+        [...chips.querySelectorAll(":scope > li.chip")].map((chip) => chip.textContent),
+        id,
+      ).toEqual(plain);
     }
   });
 
@@ -118,7 +162,11 @@ describe("the home page", () => {
     expect(page.querySelector("input")).toBeNull();
     /* In the page's own content: the header's FAQ menu and the footer's FAQ
        link lead to the FAQ page, which is not a section of this one. */
-    expect(page.querySelector("main")!.textContent).not.toMatch(/\bpricing\b|\bper month\b|FAQ/i);
+    /* The offers' tools row names the two calculators by the words they are searched by ("EKS and AKS pricing
+       calculator"): links on to them, not a pricing section. */
+    const main = page.querySelector("main")!.cloneNode(true) as HTMLElement;
+    main.querySelector("#offers .btns")!.remove();
+    expect(main.textContent).not.toMatch(/\bpricing\b|\bper month\b|FAQ/i);
   });
 
   it("lands every in-page anchor on something that is there", () => {
@@ -419,9 +467,17 @@ describe("the home page", () => {
     /* No axis: the "Off the cost it optimizes" row and its ticks are gone. */
     expect(offers.querySelector(".ofx-axis, .ofx-ticks")).toBeNull();
     expect(offers.textContent).not.toMatch(/Off the cost it optimizes|100%/);
-    /* One link, the assessment's; nothing names a price. */
-    expect(hrefs("#offers a")).toEqual(["/assessment"]);
-    expect(offers.textContent).not.toMatch(/\$|per month|pricing/i);
+    /* The assessment's link, then the row of the free tools under it (owner, 1 Nov 2026); nothing else names a
+       price. */
+    expect(hrefs("#offers a")).toEqual([
+      "/assessment",
+      "/eks-and-aks-pricing-calculator",
+      "/ebs-and-azure-disk-pricing",
+      "/cloud-cost-optimization-library",
+    ]);
+    const priced = offers.cloneNode(true) as HTMLElement;
+    priced.querySelector(".btns")!.remove();
+    expect(priced.textContent).not.toMatch(/\$|per month|pricing/i);
     expect(
       [...rows[2]!.querySelectorAll(".ofx-h [translate='no']")].map((el) => el.textContent),
     ).toEqual(["Coral", "Amoeba"]);

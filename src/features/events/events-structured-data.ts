@@ -1,4 +1,7 @@
+import { site } from "@/config/site";
 import type { EventEntry } from "@/content/events";
+
+import { banner } from "./event-facts";
 
 /**
  * /events's Event markup: one JSON-LD block, beside the page's own (`pageStructuredData`), with an Event per event
@@ -8,8 +11,10 @@ import type { EventEntry } from "@/content/events";
  * and naming one the organizer has not would invent it.
  *
  * Built only from the list's own fields: the name, the days, how to attend (from its format), where (the venue,
- * city and country; the event's page for an online one; both for a hybrid one), the organizer, the event's page
- * and its description. 🔴 NO offers OR price: the page shows tickets as a label only, and so does its markup.
+ * city and country; the event's page for an online one; both for a hybrid one), the organizer (with its own site,
+ * `organizerUrl`, where the list gives one), the event's page and its description; and the event's own picture, the
+ * banner its card shows (`banner`), where it has one. An event with no banner has no image, never a stand-in.
+ * 🔴 NO offers OR price: the page shows tickets as a label only, and so does its markup.
  */
 
 const schema = "https://schema.org/";
@@ -48,6 +53,7 @@ function location(
 
 function eventNode(event: EventEntry): Record<string, unknown> {
   const where = location(event);
+  const picture = banner(event);
   return {
     "@type": "Event",
     name: event.name,
@@ -56,7 +62,12 @@ function eventNode(event: EventEntry): Record<string, unknown> {
     eventStatus: `${schema}EventScheduled`,
     eventAttendanceMode: attendance[event.format],
     ...(where ? { location: where } : {}),
-    organizer: { "@type": "Organization", name: event.organizer },
+    ...(picture ? { image: [`${site.url}${picture.src}`] } : {}),
+    organizer: {
+      "@type": "Organization",
+      name: event.organizer,
+      ...(event.organizerUrl ? { url: event.organizerUrl } : {}),
+    },
     url: event.officialUrl,
     description: event.description,
   };

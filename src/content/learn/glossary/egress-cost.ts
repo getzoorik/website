@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -28,7 +28,7 @@ export const term: GlossaryTerm = {
           kind: "ul",
           items: [
             "On AWS, the rate depends on the service and the source Region.",
-            "The egress cost in Azure is charged per GB in tiers, by where the data leaves and how it’s routed.",
+            "The egress cost in Azure is charged per GB in tiers, by where data leaves and how it’s routed.",
             "Both give you 100\u00a0GB a month out to the internet free (October 2026). Prices change.",
             "Between Regions, both charge for data on the way out, not on arrival.",
           ],
@@ -65,8 +65,8 @@ export const term: GlossaryTerm = {
             ],
             "On EKS, the AWS Load Balancer Controller’s ip mode sends traffic straight to pods, skipping a cross-zone hop.",
             [
-              { a: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
-              " covers the rest of your cloud cost.",
+              { a: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
+              " covers your other cloud costs.",
             ],
             [
               "The ",
@@ -95,7 +95,10 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/finops",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: {
+    title: "Cloud cost optimization: how to reduce cloud costs",
+    href: "/cloud-cost-optimization",
+  },
   sources: [
     {
       publisher: "AWS",

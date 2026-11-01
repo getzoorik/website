@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "finops-pricing",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -65,7 +65,7 @@ export const term: GlossaryTerm = {
             "You pay the full commitment every hour, used or not, and can’t change it later.",
             [
               "Spare nodes raise what you’d commit to, so ",
-              { a: "reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+              { a: "reduce cloud costs", href: "/cloud-cost-optimization" },
               " first.",
             ],
             "On EKS, a plan covers your EC2\u00a0nodes, but not EKS’s own charges.",
@@ -106,7 +106,10 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/reserved-instance",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: {
+    title: "Cloud cost optimization: how to reduce cloud costs",
+    href: "/cloud-cost-optimization",
+  },
   sources: [
     {
       publisher: "AWS",

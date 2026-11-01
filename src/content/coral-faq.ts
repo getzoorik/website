@@ -73,7 +73,7 @@ export const coralFaqPage = {
     title: "Coral FAQ",
     deck: "Sizing, safety, HPA, nodes and autoscalers.",
   },
-  updated: "Updated 25 October 2026",
+  updated: "Updated 1 November 2026",
   /** The one download line after the last group: the FAQ's PDF, and no other. */
   download: { label: "FAQ PDF", document: "coral-faq" },
 } as const;
@@ -92,7 +92,7 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
           "It sizes each container’s CPU and memory requests to what it really uses, and drains spare nodes one at a time so your autoscaler can remove them. No code changes.",
           [
             "More on the product page: ",
-            { href: routes.coral, text: "Kubernetes cost optimization on AKS and EKS" },
+            { href: routes.coral, text: "Coral for AKS and EKS" },
             ".",
           ],
         ],

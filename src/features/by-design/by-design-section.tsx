@@ -2,6 +2,7 @@ import { Reveal } from "@/components/primitives/reveal";
 import { byDesignCards, byDesignHeader } from "@/content/by-design";
 import { ByDesignFigure } from "@/features/by-design/by-design-drawings";
 import { WhyMotion } from "@/features/by-design/why-motion";
+import { Text } from "@/features/learn/article-page";
 
 /**
  * By design — "Cloud cost optimization, without the risk": the home page's one
@@ -19,7 +20,8 @@ import { WhyMotion } from "@/features/by-design/why-motion";
  *
  * The heading is set in two spans (`.lm > span`) for the line mask: the outer
  * one clips, the inner one slides up into it when the head has risen
- * (engines.css). The h2 itself carries no class.
+ * (engines.css). The h2 itself carries no class; its first words are a link to
+ * the cloud cost pillar, inside the inner span, so they slide up with the rest.
  *
  * `#why` is not in the nav. It has an id because every section does, and because
  * a link to it should not have to wait for one; the drawings' rules hang on it.
@@ -31,7 +33,9 @@ export function ByDesignSection(): React.JSX.Element {
         <Reveal className="sec-head">
           <h2>
             <span className="lm">
-              <span>{byDesignHeader.title}</span>
+              <span>
+                <Text text={byDesignHeader.title} breaks={false} />
+              </span>
             </span>
           </h2>
         </Reveal>

@@ -60,8 +60,8 @@ export interface GlossaryTerm {
   /** The sections, "Why it matters for your cloud cost" among them; Related terms is `related`. */
   readonly sections: readonly ArticleSection[];
   readonly related: readonly GlossaryRelated[];
-  /** "Read next": the Learn article the term leads to, by the words the draft gives it. */
-  readonly next: { readonly title: string; readonly href: `/learn/${string}` };
+  /** "Read next": the Learn article the term leads to, at its address, by the words the draft gives it. */
+  readonly next: { readonly title: string; readonly href: `/${string}` };
   readonly sources: readonly ArticleSource[];
 }
 

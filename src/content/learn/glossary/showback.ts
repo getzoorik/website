@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "finops-pricing",
   product: "both",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -25,20 +25,20 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "In AWS’s example, the infrastructure engineering team learns its share of last month’s spend. A showback model is how you split the cost, and AWS describes three common ones, from least to most effort:",
+          text: "In AWS’s example, the infrastructure engineering team learns its share of last month’s spend. A showback model is how you split the cost. AWS describes three common ones, from least to most effort:",
         },
         {
           kind: "ul",
           items: [
             "By account: one line per AWS account.",
             "By team or business unit: each team’s accounts are grouped together.",
-            "By tag: a label on each resource names its team, and a tag counts only after you activate it for cost allocation.",
+            "By tag: a label on each resource names its team. Tags count only once activated for cost allocation.",
           ],
         },
         {
           kind: "p",
           text: [
-            "One node in a shared Kubernetes cluster runs many teams’ pods, so a tag on it can’t split the cost. That takes ",
+            "A tag can’t split one shared Kubernetes node’s cost between many teams’ pods. That takes ",
             { a: "Kubernetes cost allocation", href: "/learn/glossary/kubernetes-cost-allocation" },
             ". On Azure Kubernetes Service (AKS), see ",
             { a: "AKS cost analysis", href: "/learn/aks-cost-analysis" },
@@ -72,11 +72,16 @@ export const term: GlossaryTerm = {
             "A report alone doesn’t reduce your node and disk cost.",
             [
               { a: "Coral", href: "/coral" },
-              " rebalances CPU and memory requests on AKS and Amazon Elastic Kubernetes Service (EKS) to match real use. With requests that match use, the same pods fit on fewer nodes.",
+              " rebalances CPU and memory requests on AKS and Amazon Elastic Kubernetes Service (EKS) to match real use. So the same pods fit on fewer nodes.",
             ],
             [
               { a: "Amoeba", href: "/amoeba" },
               " moves a virtual machine’s data disks onto one pool sized to your data, then rightsizes it autonomously.",
+            ],
+            [
+              "Our library lists ",
+              { a: "FinOps tools", href: "/cloud-cost-optimization-library" },
+              " and other cloud cost optimization tools, with what each one does.",
             ],
             ["The ", { a: "free assessment", href: "/assessment" }, " works out your own figure."],
           ],

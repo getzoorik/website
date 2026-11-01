@@ -11,25 +11,16 @@ export const term: GlossaryTerm = {
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
       text: [
         "Premium SSD in Azure is a solid-state drive (SSD) type of ",
         { a: "Azure managed disk", href: "/learn/glossary/azure-managed-disk" },
-        ". It’s for production apps that need high performance and low ",
+        ". It’s for production apps needing high performance and low ",
         { a: "latency", href: "/learn/glossary/disk-latency" },
         ".",
-      ],
-    },
-    { kind: "p", text: "From Microsoft’s docs:" },
-    {
-      kind: "ul",
-      items: [
-        "It’s designed for single-digit millisecond latency, 99.9% of the time.",
-        "It can be the operating system (OS) disk or a data disk.",
-        "It needs a virtual machine (VM) size that supports premium storage.",
       ],
     },
   ],
@@ -40,7 +31,11 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "LRS means locally redundant storage. Azure writes your data three times in one data center. It guards against server rack and drive failures, not an availability zone failure.",
+          text: "LRS means locally redundant storage: three copies in one data center. It guards against rack and drive failures, not zone failures.",
+        },
+        {
+          kind: "p",
+          text: "Premium SSD also comes as ZRS, zone-redundant storage. It copies your data across three availability zones in the region. Writes have a little more latency than on LRS.",
         },
       ],
     },
@@ -50,16 +45,40 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "Base input/output operations per second (IOPS) depend on disk size. Azure Premium SSD IOPS run from 120 to 20,000. The VM has a limit too.",
-        },
-        { kind: "p", text: "Microsoft’s example app needs 4,000\u00a0IOPS:" },
-        {
-          kind: "ul",
-          items: [
-            "Its 1\u00a0TiB Premium SSD can deliver 5,000.",
-            "But its DS1 VM is limited to 3,200.",
-            "So the app gets 3,200 and runs slower.",
+          text: [
+            "Input/output operations per second (",
+            { a: "IOPS", href: "/learn/glossary/iops" },
+            ") and throughput depend on disk size.",
           ],
+        },
+        {
+          kind: "table",
+          columns: [
+            { label: "Limit", width: "28%" },
+            { label: "Premium SSD", width: "72%" },
+          ],
+          rows: [
+            ["Sizes", "P1 (4\u00a0GiB) to P80 (32,767\u00a0GiB)"],
+            ["Base IOPS per disk", "120 to 20,000"],
+            ["Base throughput per disk", "25 to 900\u00a0MB/s"],
+            [
+              "Bursting",
+              "P1 to P20 burst to 3,500\u00a0IOPS for up to 30\u00a0minutes. P30 and larger burst only with on-demand bursting",
+            ],
+            ["Redundancy", "LRS or ZRS"],
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "Each size’s figures are in ",
+            { a: "Azure disk sizes", href: "/learn/glossary/azure-disk-sizes" },
+            ".",
+          ],
+        },
+        {
+          kind: "p",
+          text: "In Microsoft’s example, a DS1 virtual machine (VM) caps its 1\u00a0TiB disk at 3,200\u00a0IOPS.",
         },
         { kind: "svg", figure: figure1 },
       ],
@@ -76,26 +95,27 @@ export const term: GlossaryTerm = {
               { a: "size tier", href: "/learn/glossary/azure-disk-sizes" },
               " the disk rounds up to, however little data it holds.",
             ],
-            "On-demand bursting adds an hourly fee and burst transaction costs. Without it, transactions are free.",
             [
               { a: "Premium SSD v2", href: "/learn/premium-ssd-v2-vs-premium-ssd" },
-              " is charged per GiB instead, plus IOPS above 3,000 and throughput above 125\u00a0MB/s.",
+              " is charged per GiB, plus IOPS above 3,000 and throughput above 125\u00a0MB/s.",
             ],
           ],
         },
         {
           kind: "p",
           text: [
-            "For web servers, development and testing, Microsoft suggests ",
-            { a: "Standard SSD", href: "/learn/premium-ssd-vs-standard-ssd-azure" },
-            ".",
+            "Our ",
+            { a: "Azure disk pricing calculator", href: "/ebs-and-azure-disk-pricing" },
+            " gives a Premium SSD’s monthly list price. ",
+            { a: "Azure disk cost optimization", href: "/learn/azure-disk-cost-optimization" },
+            " shows ways to reduce it.",
           ],
         },
         {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously. On Azure, it uses Premium SSD v2 where the region and zone offer it, and Premium SSD otherwise.",
+            " moves a VM’s data disks onto one pool sized to your data. On Azure, it uses Premium SSD v2 where offered, and Premium SSD otherwise.",
           ],
         },
         {
@@ -112,7 +132,7 @@ export const term: GlossaryTerm = {
   related: [
     {
       title: "Azure disk sizes",
-      line: "The size tiers you pay for.",
+      line: "The tiers you pay for.",
       href: "/learn/glossary/azure-disk-sizes",
     },
     {
@@ -146,6 +166,11 @@ export const term: GlossaryTerm = {
       publisher: "Microsoft Learn",
       title: "“Azure premium storage: Design for high performance”",
       url: "https://learn.microsoft.com/en-us/azure/virtual-machines/premium-storage-performance",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“Scalability and performance targets for VM disks”",
+      url: "https://learn.microsoft.com/en-us/azure/virtual-machines/disks-scalability-targets",
     },
   ],
 };

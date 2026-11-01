@@ -72,8 +72,8 @@ describe("What we offer", () => {
     );
   });
 
-  it("has one link, the card's, to the plain assessment", () => {
-    const links = [...section.querySelectorAll("a")];
+  it("has one link in the card and the panel, the card's, to the plain assessment", () => {
+    const links = [...section.querySelectorAll(".ofx-split a")];
     expect(links).toHaveLength(1);
     const go = links[0]!;
     expect(go).toHaveClass("btn", "btn-light", "ofx-free-go");
@@ -253,8 +253,32 @@ describe("What we offer", () => {
     );
   });
 
+  it("ends on one row of links to the free tools, the two calculators first, Coral's before Amoeba's", () => {
+    const row = section.querySelector(".wrap > .ofx-split + .btns")!;
+    expect(row).not.toBeNull();
+    const links = [...row.children];
+    expect(links.map((a) => [a.tagName, a.className, a.getAttribute("href"), text(a)])).toEqual([
+      ["A", "alink", routes.eksAndAksPricingCalculator, "EKS and AKS pricing calculator"],
+      ["A", "alink", routes.ebsAndAzureDiskPricing, "EBS and Azure disk pricing"],
+      ["A", "alink", routes.cloudCostTools, "Cloud cost optimization tools"],
+    ]);
+    for (const a of links) {
+      expect(a).not.toHaveAttribute("target");
+      expect(a.querySelector(":scope > span + svg path")).toHaveAttribute(
+        "d",
+        "M5 12h14M13 5l7 7-7 7",
+      );
+    }
+    /* It does not rise: it is a way on, not a figure. */
+    expect(row.closest("[data-reveal], .rise")).toBeNull();
+  });
+
   it("names no price", () => {
-    expect(section.textContent).not.toMatch(/\$|per month|pricing/i);
+    /* The tools row names the two calculators by the words they are searched by; a link to a calculator is not a
+       price. */
+    const panel = section.cloneNode(true) as HTMLElement;
+    panel.querySelector(".btns")!.remove();
+    expect(panel.textContent).not.toMatch(/\$|per month|pricing/i);
   });
 
   it("is brought in by the pass's one observer: the side and every row", () => {

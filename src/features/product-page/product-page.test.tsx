@@ -13,6 +13,7 @@ import { findArticle, learnSlugOf } from "@/content/learn/published";
 import { socialProfiles } from "@/content/footer";
 import { howItWorksSteps } from "@/content/how-it-works";
 import { kubernetesContent } from "@/content/kubernetes";
+import type { ArticleText } from "@/content/learn/article";
 import type { ProductPageContent, ReadMoreTile } from "@/content/product-page";
 import { productFilms, youtubeChannel } from "@/content/product-films";
 import { documentFacts } from "@/features/documents/document-facts";
@@ -52,6 +53,23 @@ const withFilm = (content: ProductPageContent, url: string | null): ProductPageC
 });
 
 const text = (el: Element | null): string => (el?.textContent ?? "").replace(/\s+/g, " ").trim();
+
+/** A paragraph of What is it? as plain words: a link as its words. */
+const plain = (run: ArticleText): string =>
+  typeof run === "string"
+    ? run
+    : run
+        .map((piece) => {
+          if (typeof piece === "string") return piece;
+          if ("b" in piece) return plain(piece.b);
+          if ("code" in piece) return piece.code;
+          return typeof piece.a === "string" ? piece.a : piece.a.code;
+        })
+        .join("");
+
+/** A run's links, each its words and its address. */
+const linksOf = (el: Element): string[][] =>
+  [...el.querySelectorAll("a")].map((a) => [text(a), a.getAttribute("href") ?? ""]);
 
 describe.each(pages)("the product page %s", (path, content) => {
   const product = content.product;
@@ -212,7 +230,7 @@ describe.each(pages)("the product page %s", (path, content) => {
     const [lead, more] = [...prose.children];
     expect(prose.children).toHaveLength(2);
     expect(lead!.tagName).toBe("P");
-    expect(lead!.textContent).toBe(content.about.paragraphs[0]);
+    expect(lead!.textContent).toBe(plain(content.about.paragraphs[0]));
     expect(lead!.textContent).toMatch(new RegExp(`^${name} is a `));
     /* The other two stay in the page, folded: closed, behind a quiet opener. */
     expect(more!.tagName).toBe("DETAILS");
@@ -222,8 +240,13 @@ describe.each(pages)("the product page %s", (path, content) => {
     expect(text(summary)).toBe(`More about ${name}`);
     expect(summary.querySelector('[translate="no"]')).toHaveTextContent(name);
     expect([...more!.querySelectorAll(":scope > p")].map((p) => p.textContent)).toEqual(
-      content.about.paragraphs.slice(1),
+      content.about.paragraphs.slice(1).map(plain),
     );
+    /* Each link is set as the prose's links are: no class of its own, in place. */
+    for (const a of prose.querySelectorAll("a")) {
+      expect(a).not.toHaveAttribute("class");
+      expect(a).not.toHaveAttribute("target");
+    }
     expect(content.about.paragraphs).toHaveLength(3);
   });
 
@@ -603,9 +626,9 @@ describe.each(pages)("the film on %s", (path, content) => {
   });
 });
 
-/** A product's Learn tile: its last, a page tile to a published article. */
+/** A product's Learn tile: the one before its two cloud pages, a page tile to a published article. */
 const learnTile = (content: ProductPageContent) => {
-  const tile = content.readMore.tiles.at(-1) as Extract<ReadMoreTile, { kind: "page" }>;
+  const tile = content.readMore.tiles.at(-3) as Extract<ReadMoreTile, { kind: "page" }>;
   expect(tile.kind).toBe("page");
   expect(findArticle(learnSlugOf(tile.href) ?? "")?.slug, tile.href).toBeDefined();
   return tile;
@@ -624,7 +647,24 @@ describe("the Coral page", () => {
     expect(main.querySelector(".hero-logos, .vk-logos")).toBeNull();
   });
 
-  it("ends on Read more: the guide, the FAQ, the one-pager and its article, two by two", () => {
+  it("links its category to the subject's guide, and each autoscaler to the page on working with it", () => {
+    const page = renderPage("/coral", coralPageContent);
+    const prose = page.querySelector("#about-coral .pp-prose")!;
+    const [lead, more] = [...prose.children];
+    expect(linksOf(lead!)).toEqual([
+      ["Kubernetes cost optimization", routes.kubernetesCostOptimization],
+    ]);
+    expect(linksOf(more!)).toEqual([
+      ["KEDA", routes.coralWorksWithKeda],
+      ["Karpenter", routes.coralWorksWithKarpenter],
+      ["Node Auto Provisioning (NAP)", routes.coralWorksWithNodeAutoProvisioning],
+      ["the Cluster Autoscaler", routes.coralWorksWithClusterAutoscaler],
+    ]);
+    /* The site's verb, where the mock had "cut". */
+    expect(text(more!)).toContain("reduce AKS and EKS cost");
+  });
+
+  it("ends on Read more: the guide, the FAQ, the one-pager, its article and its two clouds, two by two", () => {
     const page = renderPage("/coral", coralPageContent);
     const article = learnTile(coralPageContent);
     const section = page.querySelector("section#read-coral")!;
@@ -643,23 +683,29 @@ describe("the Coral page", () => {
       routes.coralFaq,
       documents["coral-one-pager"].pdf,
       article.href,
+      routes.aksCostOptimization,
+      routes.eksCostOptimization,
     ]);
     expect(tiles.map((tile) => text(tile.querySelector(".dt-t")))).toEqual([
       "Product guide",
       "FAQ",
       "One-pager",
       article.title,
+      "AKS cost optimization",
+      "EKS cost optimization",
     ]);
     /* A product's name in the article tile's title is kept out of translation. */
     expect(
       [...tiles[3]!.querySelectorAll(".dt-t [translate='no']")].map((name) => text(name)),
     ).toEqual(article.title.match(/\b(Coral|Amoeba)\b/g) ?? []);
-    expect([0, 1, 3].map((i) => text(tiles[i]!.querySelector(".dt-l")))).toEqual([
+    expect([0, 1, 3, 4, 5].map((i) => text(tiles[i]!.querySelector(".dt-l")))).toEqual([
       "Connect, what changes, staying in control",
       "Sizing, safety, HPA, nodes and autoscalers",
       article.line,
+      "Node pools, NAP and the Cluster Autoscaler",
+      "EC2 instances, Karpenter and the Cluster Autoscaler",
     ]);
-    for (const tile of [tiles[0]!, tiles[1]!, tiles[3]!]) {
+    for (const tile of [tiles[0]!, tiles[1]!, tiles[3]!, tiles[4]!, tiles[5]!]) {
       expect(tile).not.toHaveAttribute("download");
       expect(tile.querySelector(".dt-go")).not.toHaveClass("is-down");
     }
@@ -736,10 +782,27 @@ describe("the Amoeba page", () => {
         ["FAQ", routes.amoebaFaq],
         ...(amoebaOnePager ? [["One-pager", "/docs/amoeba-one-pager.pdf"]] : []),
         [article.title, article.href],
+        ["Azure managed disk cost optimization", routes.azureManagedDiskCostOptimization],
+        ["EBS cost optimization", routes.ebsCostOptimization],
+      ]);
+      expect(
+        [...section.querySelectorAll("a.dt-a")]
+          .slice(-2)
+          .map((a) => text(a.querySelector(".dt-l"))),
+      ).toEqual([
+        "Data disks on Windows and Linux VMs in Azure",
+        "Data volumes on Windows and Linux EC2 instances",
       ]);
       expect(text(section.querySelector(`a[href="${article.href}"] .dt-l`))).toBe(article.line);
     },
   );
+
+  it("links btrfs pool to the article on how one works", () => {
+    const page = renderPage("/amoeba", amoebaPageContent);
+    const [lead, more] = [...page.querySelector("#about-amoeba .pp-prose")!.children];
+    expect(linksOf(lead!)).toEqual([["btrfs pool", "/learn/btrfs-multiple-disks"]]);
+    expect(more!.querySelector("a")).toBeNull();
+  });
 
   it("says only what the worked example is, under the cards", () => {
     const page = renderPage("/amoeba", amoebaPageContent);

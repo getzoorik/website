@@ -282,7 +282,7 @@ export const careers = {
       {
         product: "coral",
         href: routes.coral,
-        poster: "/motion/coral-poster.jpg",
+        poster: "/motion/coral-poster.webp",
         src: "/motion/coral-overview-5s.mp4",
         label: "Coral’s Overview with example figures",
         stack: [
@@ -297,7 +297,7 @@ export const careers = {
       {
         product: "amoeba",
         href: routes.amoeba,
-        poster: "/motion/amoeba-poster.jpg",
+        poster: "/motion/amoeba-poster.webp",
         src: "/motion/amoeba-overview-5s.mp4",
         label: "Amoeba’s Overview with example figures",
         stack: [

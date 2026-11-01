@@ -40,9 +40,10 @@ const legendDotClass: Record<LegendTone, string> = {
 };
 
 /**
- * A card with no figure, mark or key: a per-cloud page's (`/coral-for-aks`, `/amoeba-for-azure`…). It keeps the
- * product's card name, and its note where the card has one, then says one line about that cloud (`p.step-l`, the
- * closing row card's text, in cloud-page.css). The line is drawn as given, so a name in it stays out of translation.
+ * A card with no figure, mark or key: a per-cloud page's (`/aks-cost-optimization`,
+ * `/azure-managed-disk-cost-optimization`…). It keeps the product's card name, and its note where the card has one,
+ * then says one line about that cloud (`p.step-l`, the closing row card's text, in cloud-page.css). The line is drawn
+ * as given, so a name in it stays out of translation.
  */
 export interface LineStep extends Pick<Step, "ordinal" | "title" | "note"> {
   readonly line: ReactNode;

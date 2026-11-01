@@ -20,12 +20,12 @@ const text = (el: Element | null): string => (el?.textContent ?? "").replace(/[\
 
 describe("/cloud-cost-optimization-research-papers", () => {
   it("is titled, described and canonicalised as its mock, with its own card", () => {
-    expect(metadata.title).toBe("Cloud cost optimization research");
+    expect(metadata.title).toBe("Cloud cost optimization research papers");
     expect(String(metadata.description).length).toBeLessThanOrEqual(160);
     expect(metadata.alternates).toEqual({ canonical: "/cloud-cost-optimization-research-papers" });
     expect(metadata.openGraph).toMatchObject({
       url: "/cloud-cost-optimization-research-papers",
-      title: "Cloud cost optimization research | Zoorik",
+      title: "Cloud cost optimization research papers | Zoorik",
       images: [
         {
           url: "/og/pages/research-cloud-cost-optimization.png",

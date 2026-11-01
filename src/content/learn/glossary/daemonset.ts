@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -47,7 +47,6 @@ export const term: GlossaryTerm = {
       id: "daemonset-vs-deployment",
       title: "DaemonSet vs Deployment",
       blocks: [
-        { kind: "p", text: "Both keep pods running." },
         {
           kind: "ul",
           items: [
@@ -63,7 +62,16 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "The scheduler counts each pod’s request against its node, so a DaemonSet’s request takes room on every node you pay for. A container with only a limit usually gets that limit as its request.",
+          text: [
+            "The scheduler counts each pod’s ",
+            { a: "request", href: "/learn/glossary/kubernetes-resource-requests" },
+            " against its node, so a DaemonSet’s request takes room on every node you pay for. By default, the Cluster Autoscaler counts DaemonSet requests when it decides to remove a node; see ",
+            {
+              a: "Cluster Autoscaler not scaling down",
+              href: "/learn/cluster-autoscaler-not-scaling-down",
+            },
+            ".",
+          ],
         },
         {
           kind: "p",
@@ -97,7 +105,7 @@ export const term: GlossaryTerm = {
     },
     {
       title: "Max pods per node",
-      line: "Each copy is a pod and uses one of the node’s pod slots.",
+      line: "Each copy takes one of the node’s pod slots.",
       href: "/learn/glossary/max-pods-per-node",
     },
     {
@@ -127,9 +135,9 @@ export const term: GlossaryTerm = {
       url: "https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/",
     },
     {
-      publisher: "Kubernetes",
-      title: "“Kubelet Configuration (v1beta1)”",
-      url: "https://kubernetes.io/docs/reference/config-api/kubelet-config.v1beta1/",
+      publisher: "Kubernetes Autoscaler",
+      title: "“Cluster Autoscaler FAQ”",
+      url: "https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/FAQ.md",
     },
   ],
 };

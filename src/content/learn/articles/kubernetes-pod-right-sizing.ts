@@ -5,7 +5,7 @@ import { figure as figure3 } from "@/features/learn/figures/kubernetes-pod-right
 
 export const article: Article = {
   slug: "kubernetes-pod-right-sizing",
-  title: "Kubernetes pod rebalancing",
+  title: "Kubernetes pod right sizing, step by step",
   meta: "Kubernetes pod right sizing, step by step: read real CPU and memory use, set requests from it, keep limits safe, find CPU throttling and roll back cleanly.",
   h1: "Kubernetes pod right sizing: set requests from real use",
   deck: "How to read what each container really uses, set its requests from that, and change them without OOM kills.",
@@ -14,11 +14,16 @@ export const article: Article = {
   hub: "Kubernetes",
   topic: "Kubernetes cost basics",
   published: "2026-10-21",
-  updated: "2026-10-21",
+  updated: "2026-11-01",
   author: "shreya",
   cover: "/learn-covers/zoorik-learn-kubernetes-pod-right-sizing-1200x630.webp",
-  short:
-    "Kubernetes pod right sizing means setting each container’s CPU and memory requests from what it really uses. The scheduler and the Cluster Autoscaler count requests, not use, so requests decide how many nodes you pay for. Set CPU at a high percentile of several days of use and memory at the peak, both plus headroom, and don’t reduce limits until you know why they were set.",
+  coverAlt:
+    "Kubernetes pod right sizing: the old request moves down to a new request just above real use, day by day",
+  short: [
+    "Kubernetes pod right sizing means setting each container’s ",
+    { a: "CPU and memory requests", href: "/learn/glossary/kubernetes-resource-requests" },
+    " from its real use. The scheduler and the Cluster Autoscaler count requests, not use, so requests decide how many nodes you pay for. Set CPU at a high percentile and memory at the peak, both plus headroom, and don’t reduce limits until you know why they were set.",
+  ],
   sections: [
     {
       id: "why-requests-not-use-set-what-you",
@@ -26,7 +31,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Picture a Deployment of 20\u00a0replicas, each requesting 1\u00a0CPU and using 150m (0.15\u00a0CPU). Together they use 3\u00a0CPU but request 20\u00a0CPU of node capacity, and your bill covers the nodes that provide it.",
+          text: "Picture a Deployment of 20\u00a0replicas, each requesting 1\u00a0CPU and using 150m (0.15\u00a0CPU). Together they use 3\u00a0CPU but request 20\u00a0CPU of node capacity, and you pay for the nodes that provide it.",
         },
         {
           kind: "p",
@@ -40,7 +45,9 @@ export const article: Article = {
               a: "considers a node for removal",
               href: "/learn/cluster-autoscaler-not-scaling-down",
             },
-            " only when its pods’ CPU requests and memory requests each sum to under 50% of the node’s allocatable capacity, the default ",
+            " only when its pods’ CPU requests and memory requests each sum to under 50% of the node’s ",
+            { a: "allocatable capacity", href: "/learn/kubernetes-allocatable-vs-capacity" },
+            ", the default ",
             { code: "--scale-down-utilization-threshold" },
             ". Actual use doesn’t enter that check. When requests sit far above use across a whole cluster, that’s ",
             { a: "Kubernetes overprovisioning", href: "/learn/kubernetes-overprovisioning" },
@@ -50,7 +57,7 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Worked example",
-          text: "If 150m is each replica’s 7-day 95th percentile (P95), and the Deployment has no Horizontal Pod Autoscaler (HPA), the example rule in step 1 below, P95 plus 10%, gives a request of 150m × 1.1 = 165m. The 20\u00a0replicas then request 20 × 165m = 3.3\u00a0CPU instead of 20. That leaves 16.7\u00a0CPU of node capacity free for other pods, and a smaller request reaches your bill when the capacity it frees lets a node go.",
+          text: "If 150m is each replica’s 7-day 95th percentile (P95), and the Deployment has no Horizontal Pod Autoscaler (HPA), the example rule in step 1 below, P95 plus 10%, gives a request of 150m × 1.1 = 165m. The 20\u00a0replicas then request 20 × 165m = 3.3\u00a0CPU instead of 20. That leaves 16.7\u00a0CPU of node capacity free for other pods, and you pay less once that free capacity lets a node go.",
         },
         { kind: "svg", figure: figure1 },
       ],
@@ -116,7 +123,11 @@ export const article: Article = {
           kind: "p",
           text: [
             { code: "kubectl top pod" },
-            " shows only the current reading that Metrics Server serves to the HPA and the Vertical Pod Autoscaler (VPA). Sizing needs history that includes last Monday’s peak, from a monitoring system such as Prometheus, scraping cAdvisor, the container-metrics daemon built into the kubelet.",
+            " shows only the current reading that Metrics Server serves to the ",
+            { a: "HPA", href: "/learn/glossary/horizontal-pod-autoscaler" },
+            " and the ",
+            { a: "Vertical Pod Autoscaler (VPA)", href: "/learn/glossary/vertical-pod-autoscaler" },
+            ". Sizing needs history that includes last Monday’s peak, from a monitoring system such as Prometheus, scraping cAdvisor, the container-metrics daemon built into the kubelet.",
           ],
         },
         {
@@ -224,7 +235,19 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "On Linux the kernel enforces a CPU limit as a quota of CPU time per period, and the default period is 100\u00a0ms. A 500m limit therefore allows 50\u00a0ms of CPU time in each 100\u00a0ms, and once that quota is spent, the container’s threads are throttled until the next period refills it.",
+          text: [
+            {
+              a: "CPU throttling in Kubernetes",
+              href: "/learn/glossary/kubernetes-cpu-throttling",
+            },
+            " is when the Linux kernel holds back a container that hits its CPU limit. On Linux the kernel enforces a ",
+            { a: "CPU limit", href: "/learn/glossary/kubernetes-resource-limits" },
+            " as a quota of CPU time per period, and the default period is 100\u00a0ms.",
+          ],
+        },
+        {
+          kind: "p",
+          text: "A 500m limit therefore allows 50\u00a0ms of CPU time in each 100\u00a0ms, and once that quota is spent, the container’s threads are throttled until the next period refills it.",
         },
         {
           kind: "p",
@@ -313,11 +336,15 @@ export const article: Article = {
             ],
             [
               { b: "Regular pods’ limits stay or rise." },
-              " On the built-in policies, Coral never reduces the CPU or memory limit of a regular (non-Guaranteed) pod, so startup can still burst above the request into free CPU on the node. When Coral changes a memory request, the limit becomes the largest of your own limit, 1.5 times the new request and 128\u00a0MiB, and a container with no limit keeps none. A custom policy can set limits its own way.",
+              " On the built-in policies, Coral never reduces the CPU or memory limit of a regular (",
+              { a: "non-Guaranteed", href: "/learn/glossary/kubernetes-qos-class" },
+              ") pod, so startup can still burst above the request into free CPU on the node. When Coral changes a memory request, the limit becomes the largest of your own limit, 1.5 times the new request and 128\u00a0MiB, and a container with no limit keeps none. A custom policy can set limits its own way.",
             ],
             [
               { b: "How a change lands." },
-              " Coral only recommends until you switch on “Automatically optimize” for a policy or a workload. Your manifest is never changed. Coral sets new requests as pods start, resizes running pods in place on 1.33+ nodes, or else restarts them one at a time within their PodDisruptionBudgets. Through a policy, reductions in the first 24\u00a0hours of data are capped at 10%, then 25%, then 35%. Every change respects your minimums, LimitRanges and quotas.",
+              " Coral only recommends until you switch on “Automatically optimize” for a policy or a workload. Your manifest is never changed. Coral sets new requests as pods start, resizes running pods in place on 1.33+ nodes, or else restarts them one at a time within their ",
+              { a: "PodDisruptionBudgets", href: "/learn/glossary/pod-disruption-budget" },
+              ". Through a policy, reductions in the first 24\u00a0hours of data are capped at 10%, then 25%, then 35%. Every change respects your minimums, LimitRanges and quotas.",
             ],
             [
               { b: "Going back." },
@@ -329,10 +356,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "On our own AKS development cluster, Coral had rebalanced the requests of 14 apps by 12 October 2026. CPU reserved by the cluster’s own apps went from 0.78 to 0.43\u00a0cores, 45% less, and memory from 6.4 to 5.4\u00a0GiB, 16% less. ",
-            {
-              a: "How we reduced our own cluster’s machine bill by 58%",
-              href: "/coral-value-lab",
-            },
+            { a: "How we reduced AKS cluster costs by 58%", href: "/coral-value-lab" },
             " has the full run.",
           ],
         },
@@ -343,7 +367,7 @@ export const article: Article = {
     product: "coral",
     text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and drains spare nodes so your autoscaler can remove them. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
-      { label: "Kubernetes cost optimization with Coral", href: "/coral" },
+      { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Estimate your saving", href: "/assessment?p=coral" },
     ],
   },
@@ -392,9 +416,9 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "How to reduce Kubernetes cost: rebalance requests, then remove spare nodes",
+      title: "Kubernetes cost optimization: rebalance requests, then remove spare nodes",
       where: "Learn",
-      href: "/learn/reduce-kubernetes-cost",
+      href: "/kubernetes-cost-optimization",
     },
     {
       title: "Kubernetes overprovisioning: what it is and how to measure it",

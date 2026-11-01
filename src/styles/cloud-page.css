@@ -1,8 +1,8 @@
-/* Zoorik marketing — the per-cloud pages: /coral-for-aks, /coral-for-eks, /amoeba-for-azure and /amoeba-for-aws
- * (31 Oct 2026).
+/* Zoorik marketing — the per-cloud pages: /aks-cost-optimization, /eks-cost-optimization,
+ * /azure-managed-disk-cost-optimization and /ebs-cost-optimization (31 Oct 2026; at these addresses since D230).
  *
- * Ported VERBATIM from the mocks (`coral-for-aks.html`…, ten_pages_mock.py): their <style id="ten-pages">, then the
- * rules of /coral's and /amoeba's own mocks that the site's product pages no longer carry (the racks photo, and
+ * Ported VERBATIM from the mocks (`aks-cost-optimization.html`…, ten_pages_mock.py): their <style id="ten-pages">, then
+ * the rules of /coral's and /amoeba's own mocks that the site's product pages no longer carry (the racks photo, and
  * "What is Coral?"'s text column outside its two-column grid). Values are copied, never reinterpreted. Everything else
  * the pages draw is the site system's, the documents' sheet and the product pages' sheet. The mocks' code-face rules
  * (code in a card's line or a question's name) are the site's base rule already: `code` takes `--font-mono`, var(--code).

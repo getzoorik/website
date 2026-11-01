@@ -1,8 +1,8 @@
 /**
- * The arithmetic behind /node-cost-calculator and /disk-cost-calculator. Pure functions: no React, no fetch, no
- * clock. Ported line for line from the checked calc.ts (docs/website-seo/new-pages-2026-10-30/calculators), where
- * every rule traces to an official page quoted in that folder's ledger.md and checked by its fetch_docs.py. The data
- * is `@/content/cloud-prices`; the pages' formats are at the end of this file.
+ * The arithmetic behind /eks-and-aks-pricing-calculator and /ebs-and-azure-disk-pricing. Pure functions: no React, no
+ * fetch, no clock. Ported line for line from the checked calc.ts (docs/website-seo/new-pages-2026-10-30/calculators),
+ * where every rule traces to an official page quoted in that folder's ledger.md and checked by its fetch_docs.py. The
+ * data is `@/content/cloud-prices`; the pages' formats are at the end of this file.
  *
  * Value, then reason, then hide: a figure the clouds don't publish is a reason, never a number (`Figure`), and a
  * field that is blank or out of range is an error the page shows in place of every figure.

@@ -15,9 +15,11 @@ export const article: Article = {
   topic: "Kubernetes cost basics",
   versus: ["Allocatable", "Capacity"],
   published: "2026-10-24",
-  updated: "2026-10-24",
+  updated: "2026-11-01",
   author: "sonia",
   cover: "/learn-covers/zoorik-learn-kubernetes-allocatable-vs-capacity-1200x630.webp",
+  coverAlt:
+    "Allocatable vs capacity: a node’s capacity minus what is reserved is the allocatable room for pods",
   short:
     "Kubernetes allocatable vs capacity is the gap between what a node has and what pods can claim. Capacity covers the node’s total CPU, memory, ephemeral storage and pod count. Allocatable is capacity minus what the node reserves for the kubelet, the container runtime and the OS. For memory and storage, the hard eviction threshold comes off too. The scheduler fills allocatable with pod requests, not pod use, so a node can be full while its CPU sits mostly idle.",
   sections: [
@@ -31,7 +33,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Every node has two gaps. You can change little of the first, capacity minus allocatable, which the machine, the platform and max pods set. Max pods is the most pods a node may run. Your manifests set the second gap, between what pods request and what they use.",
+          text: [
+            "Every node has two gaps. You can change little of the first, capacity minus allocatable, which the machine, the platform and max pods set. ",
+            { a: "Max pods", href: "/learn/glossary/max-pods-per-node" },
+            " is the most pods a node may run. Your manifests set the second gap, between what pods request and what they use.",
+          ],
         },
         {
           kind: "table",
@@ -70,6 +76,14 @@ export const article: Article = {
               "Pricing: you pay for the whole machine",
               "Fitting pods, and counting how many nodes a pool needs",
             ],
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "The ",
+            { a: "EKS and AKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
+            " shows a node’s monthly list price and how much of it your pods can use.",
           ],
         },
       ],
@@ -217,7 +231,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Max pods is the setting you do choose, up to 250, when you create the cluster or add a node pool. To change it later, Microsoft says to add a new pool and migrate your pods. Fewer pod slots per node leave more memory for pods, but a pool of many small pods may then need more nodes.",
+          text: [
+            "Max pods is the setting you do choose, up to 250, when you create the cluster or add a ",
+            { a: "node pool", href: "/learn/glossary/node-pool" },
+            ". To change it later, Microsoft says to add a new pool and migrate your pods. Fewer pod slots per node leave more memory for pods, but a pool of many small pods may then need more nodes.",
+          ],
         },
         { kind: "h3", id: "eks", title: "EKS" },
         {
@@ -240,7 +258,9 @@ export const article: Article = {
             { code: "systemReserved" },
             " under ",
             { code: "spec.kubelet" },
-            " in the EC2NodeClass. For Bottlerocket, custom AMIs and EKS Auto Mode nodes, read the figures from the node instead of assuming the Amazon Linux formula.",
+            " in the EC2NodeClass. For Bottlerocket, custom AMIs and ",
+            { a: "EKS Auto Mode", href: "/learn/glossary/eks-auto-mode" },
+            " nodes, read the figures from the node instead of assuming the Amazon Linux formula.",
           ],
         },
       ],
@@ -289,7 +309,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The node in that output shows the arithmetic. Its five kube-system pods request 680m of its 1,800m allocatable CPU, which leaves 1,120m (1,800m − 680m). A new pod that requests more than that won’t fit there, however quiet the node is. System pods take their requests out of allocatable like any other pod, and a DaemonSet does so on every node it runs on.",
+          text: [
+            "The node in that output shows the arithmetic. Its five kube-system pods request 680m of its 1,800m allocatable CPU, which leaves 1,120m (1,800m − 680m). A new pod that requests more than that won’t fit there, however quiet the node is. System pods take their requests out of allocatable like any other pod, and a ",
+            { a: "DaemonSet", href: "/learn/glossary/daemonset" },
+            " does so on every node it runs on.",
+          ],
         },
         { kind: "svg", figure: figure3 },
         {
@@ -314,7 +338,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "When requests sit far above use, idle nodes count as full, new pods get new machines, and the autoscaler keeps the ones you have. Smaller requests reduce the bill only when a node goes. ",
+            "When requests sit far above use, idle nodes count as full, new pods get new machines, and the autoscaler keeps the ones you have. Smaller requests reduce your cloud cost only when a node goes. ",
             { a: "Kubernetes overprovisioning", href: "/learn/kubernetes-overprovisioning" },
             " shows how to measure the gap.",
           ],
@@ -334,7 +358,7 @@ export const article: Article = {
             [
               { b: "Put the effort into rebalancing requests." },
               " ",
-              { a: "Kubernetes pod rebalancing", href: "/learn/kubernetes-pod-right-sizing" },
+              { a: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
               " shows how to set them from measured use.",
             ],
           ],
@@ -357,7 +381,9 @@ export const article: Article = {
           items: [
             [
               { b: "Rebalancing." },
-              " On the default balanced policy, Coral sets each container’s CPU request to the 80th percentile of the last 3\u00a0days plus 10%. Its memory request is 10% above the highest use in the last 8\u00a0days. Running pods are resized in place on 1.33+ nodes where possible, or restarted one at a time within their PodDisruptionBudgets.",
+              " On the default balanced policy, Coral sets each container’s CPU request to the 80th percentile of the last 3\u00a0days plus 10%. Its memory request is 10% above the highest use in the last 8\u00a0days. Running pods are resized in place on 1.33+ nodes where possible, or restarted one at a time within their ",
+              { a: "PodDisruptionBudgets", href: "/learn/glossary/pod-disruption-budget" },
+              ".",
             ],
             [
               { b: "HPA-aware sizing." },
@@ -381,10 +407,14 @@ export const article: Article = {
         },
         {
           kind: "p",
+          text: "On our own AKS development cluster of 3 machines and 10\u00a0CPUs, Coral found that the apps would fit on fewer machines. It removed one 4-CPU worker on 6 October, which reduced the cluster’s machine cost from $368.65 to $221.19 a month. Apps that ran a single copy restarted once on another machine.",
+        },
+        {
+          kind: "p",
           text: [
-            "On our own AKS development cluster of 3 machines and 10\u00a0CPUs, Coral found that the apps would fit on fewer machines. It removed one 4-CPU worker on 6 October, taking the machine bill from $368.65 to $221.19 a month, and apps that ran a single copy restarted once on another machine. On 12 October it swapped the remaining worker for a cheaper machine of the same size. Eight days after we connected it, ",
-            { a: "the bill", href: "/coral-value-lab" },
-            " was $154.76 a month, 58% less.",
+            "On 12 October it swapped the remaining worker for a cheaper machine of the same size. Eight days after we connected it, ",
+            { a: "the cluster’s machines cost", href: "/coral-value-lab" },
+            " $154.76 a month, 58% less.",
           ],
         },
       ],
@@ -394,7 +424,7 @@ export const article: Article = {
     product: "coral",
     text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and drains spare nodes so your autoscaler can remove them. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
-      { label: "Kubernetes cost optimization with Coral", href: "/coral" },
+      { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Estimate your saving", href: "/assessment?p=coral" },
     ],
   },

@@ -15,9 +15,11 @@ export const article: Article = {
   topic: "Kubernetes cost basics",
   versus: ["LimitRange", "ResourceQuota"],
   published: "2026-10-25",
-  updated: "2026-10-25",
+  updated: "2026-11-01",
   author: "soumya",
   cover: "/learn-covers/zoorik-learn-limitrange-vs-resourcequota-1200x630.webp",
+  coverAlt:
+    "LimitRange vs ResourceQuota: a LimitRange covers each container, a ResourceQuota the total, with headroom left",
   short:
     "LimitRange vs ResourceQuota is per-object rules against a namespace-wide total. A LimitRange works on each container, pod or PersistentVolumeClaim (PVC): it fills in default requests and limits for containers, and refuses values below a minimum, above a maximum or past a limit-to-request ratio. A ResourceQuota caps the namespace’s requests, limits and object counts. Use both with a CPU or memory quota: it may refuse pods with no requests or limits, and LimitRange defaults fill them in and count against it.",
   sections: [
@@ -27,7 +29,11 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Picture a namespace with two objects. Its LimitRange gives containers a default CPU request of 100m, which is 0.1\u00a0CPU (m means thousandths of a CPU). Its ResourceQuota caps CPU requests at 4\u00a0CPU. Every container that sets no CPU request or limit gets the 100m, and the quota adds it to the namespace’s total, so 40 such pods fill the quota and a 41st is refused. At a 500m default only 8 fit, and at 2\u00a0CPU only 2. So the default you write in one object decides how many pods the other admits.",
+          text: [
+            "Picture a namespace with two objects. Its LimitRange gives containers a default ",
+            { a: "CPU request", href: "/learn/glossary/kubernetes-resource-requests" },
+            " of 100m, which is 0.1\u00a0CPU (m means thousandths of a CPU). Its ResourceQuota caps CPU requests at 4\u00a0CPU. Every container that sets no CPU request or limit gets the 100m, and the quota adds it to the namespace’s total, so 40 such pods fill the quota and a 41st is refused. At a 500m default only 8 fit, and at 2\u00a0CPU only 2. So the default you write in one object decides how many pods the other admits.",
+          ],
         },
         {
           kind: "p",
@@ -129,7 +135,9 @@ export const article: Article = {
             { code: "maxLimitRequestRatio" },
             " caps the ratio of limit to request, so with ",
             { code: 'cpu: "10"' },
-            " a 100m request allows a CPU limit of at most 1\u00a0CPU.",
+            " a 100m request allows a ",
+            { a: "CPU limit", href: "/learn/glossary/kubernetes-resource-limits" },
+            " of at most 1\u00a0CPU.",
           ],
         },
         { kind: "p", text: "Two more rules:" },
@@ -289,16 +297,16 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "A quota doesn’t ",
-            { a: "make a cluster smaller", href: "/learn/reduce-kubernetes-cost" },
-            " by itself: it stops one namespace from asking for more than its share. It counts what pod specs ask for, in absolute units, so adding nodes doesn’t raise any namespace’s share. Nor does it restrict which nodes a namespace’s pods land on.",
+            "A quota caps one namespace’s share, but it isn’t ",
+            { a: "Kubernetes cost optimization", href: "/kubernetes-cost-optimization" },
+            " by itself: it doesn’t make a cluster smaller. It counts what pod specs ask for, in absolute units, so adding nodes doesn’t raise any namespace’s share. Nor does it restrict which nodes a namespace’s pods land on.",
           ],
         },
         {
           kind: "p",
           text: [
             "Scopes narrow what a quota counts: with a scope such as ",
-            { code: "BestEffort" },
+            { a: { code: "BestEffort" }, href: "/learn/glossary/kubernetes-qos-class" },
             ", ",
             { code: "NotBestEffort" },
             " or ",
@@ -466,7 +474,7 @@ export const article: Article = {
             [
               { b: "When a request cap is full, rebalance requests." },
               " Compare each workload’s requests, LimitRange defaults included, with what its containers really use, and reduce those far above it. That frees quota without taking a replica away. ",
-              { a: "Kubernetes pod rebalancing", href: "/learn/kubernetes-pod-right-sizing" },
+              { a: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
               " walks through it.",
             ],
           ],
@@ -510,7 +518,9 @@ export const article: Article = {
             ],
             [
               { b: "Warm handover." },
-              " When Coral drains a node, it starts one extra copy of an eligible Deployment or Argo Rollout pod and waits for it to be Ready before the old pod goes. With no quota room for that copy, Coral falls back to eviction within the PodDisruptionBudget. A single-replica app then restarts briefly.",
+              " When Coral drains a node, it starts one extra copy of an eligible Deployment or Argo Rollout pod and waits for it to be Ready before the old pod goes. With no quota room for that copy, Coral falls back to eviction within the ",
+              { a: "PodDisruptionBudget", href: "/learn/glossary/pod-disruption-budget" },
+              ". A single-replica app then restarts briefly.",
             ],
             [
               { b: "Quotas and refusals." },
@@ -524,8 +534,8 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Smaller requests reduce the bill only when a node goes. On our own AKS development cluster, Coral removed a spare worker and rebalanced the requests of 14 apps by 12 October 2026. The CPU the apps reserve went from 0.78 to 0.43\u00a0cores, 45% less, and memory from 6.4 to 5.4\u00a0GiB, 16% less. Then Coral swapped the remaining worker for a cheaper machine of the same size. Eight days after we connected it, ",
-            { a: "the machine bill", href: "/coral-value-lab" },
+            "Smaller requests reduce your cloud cost only when a node goes. On our own AKS development cluster, Coral removed a spare worker and rebalanced the requests of 14 apps by 12 October 2026. The CPU the apps reserve went from 0.78 to 0.43\u00a0cores, 45% less, and memory from 6.4 to 5.4\u00a0GiB, 16% less. Then Coral swapped the remaining worker for a cheaper machine of the same size. Eight days after we connected it, ",
+            { a: "the machine cost", href: "/coral-value-lab" },
             " was $154.76 a month instead of $368.65, 58% less.",
           ],
         },
@@ -536,7 +546,7 @@ export const article: Article = {
     product: "coral",
     text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and drains spare nodes so your autoscaler can remove them. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
-      { label: "Kubernetes cost optimization with Coral", href: "/coral" },
+      { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Estimate your saving", href: "/assessment?p=coral" },
     ],
   },

@@ -13,9 +13,11 @@ export const article: Article = {
   hub: "Block storage",
   topic: "Linux filesystems",
   published: "2026-10-27",
-  updated: "2026-10-27",
+  updated: "2026-11-01",
   author: "sourabh",
   cover: "/learn-covers/zoorik-learn-btrfs-multiple-disks-1200x630.webp",
+  coverAlt:
+    "btrfs on multiple disks: single uses every disk in full, while raid1 leaves part of the larger disk unused",
   short: [
     "btrfs on multiple disks is one filesystem across several block devices, and ",
     { code: "btrfs device add" },
@@ -408,7 +410,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "Plain ",
-            { code: "df" },
+            { a: { code: "df" }, href: "/learn/glossary/df-vs-du" },
             " gives one number for space that btrfs splits by profile. The btrfs(5) glossary says its results aren’t accurate.",
           ],
         },
@@ -489,7 +491,9 @@ export const article: Article = {
           items: [
             [
               { b: "The pool." },
-              " Amoeba moves a VM’s data disks onto one btrfs pool, sized to your data, with room to grow. On Azure the pool uses Premium SSD v2 where your region offers it, and Premium SSD otherwise. On AWS it uses gp3.",
+              " Amoeba moves a VM’s data disks onto one btrfs pool, sized to your data, with room to grow. On Azure the pool uses Premium SSD v2 where your region offers it, and Premium SSD otherwise. On AWS it uses ",
+              { a: "gp3", href: "/learn/glossary/ebs-gp3" },
+              ".",
             ],
             [
               { b: "The move." },

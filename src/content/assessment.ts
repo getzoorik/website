@@ -4,8 +4,10 @@ import type { DocumentId } from "@/content/documents";
 import type { ProductId } from "@/content/products";
 
 /**
- * `/assessment`: the hero with the product switch and the chosen product's one line to run, What you get (both
- * products' runs and their example reports), What it does, and After the run. Every string is the mock's, verbatim.
+ * `/assessment`: the hero with what the assessment is, the product switch and the chosen product's one line to run,
+ * What you get (both products' runs and their example reports), What it does, Before you run it (three questions), and
+ * After the run. Every string is the mock's, verbatim; W32's (1 Nov 2026) are
+ * docs/website-seo/new-pages-2026-11-01/assessment-copy.md's, as written.
  *
  * The output is one PDF report. No curl line and no "one Python file" anywhere on the page.
  *
@@ -19,7 +21,7 @@ import type { ProductId } from "@/content/products";
  * The day /assessment's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /assessment's content moves this to that day in the same PR; never the build's date.
  */
-export const assessmentLastUpdated = "21 October 2026";
+export const assessmentLastUpdated = "1 November 2026";
 
 /** One run in What you get: the terminal's lines and the example report under it. */
 export interface AssessmentDemo {
@@ -52,7 +54,7 @@ export const assessmentProducts: Readonly<Record<ProductId, AssessmentProduct>> 
     run: "npx -y zoorik assess coral",
     copy: "Copy the Coral command",
     reads:
-      "Nodes, pods, workloads, HPAs, PodDisruptionBudgets, 3 minutes of usage and list prices. Never Secrets or ConfigMaps.",
+      "Nodes, pods, ReplicaSets and Jobs, 3 minutes of usage and list prices. Never Secrets or ConfigMaps.",
     runs: [
       { text: "az aks command invoke", code: true },
       { text: ", only when kubectl can’t reach an AKS cluster." },
@@ -101,15 +103,22 @@ export interface HintRun {
 export type HintPart =
   HintRun | { readonly cloud: "azure" | "aws"; readonly runs: readonly HintRun[] };
 
+/** One question in Before you run it, and its answer: a paragraph, or a short list. */
+export type AssessmentQuestion = { readonly title: string } & (
+  { readonly text: string } | { readonly items: readonly string[] }
+);
+
 export const assessmentCopy = {
   /** The page's `<title>` (through the site's template) and description. */
   meta: {
-    title: "Cloud cost assessment",
+    title: "Free cloud cost assessment for Azure and AWS",
     description:
-      "See how much you can reduce your cloud bill: a free, read-only assessment for Kubernetes (Coral) and block storage (Amoeba) on Azure and AWS. Run it in Cloud Shell or your terminal and get one PDF report. Nothing leaves your account.",
+      "A free, read-only assessment for Kubernetes and block storage on Azure and AWS. Run it in Cloud Shell or your terminal and get one PDF report.",
   },
   /** The h1, without "Free"; the page's `<title>` keeps it. */
   title: "Cloud cost assessment",
+  /** Under the h1, before the line to choose: what the assessment is. The same on both products. */
+  lead: "The free assessment estimates what you could save on Kubernetes (AKS and EKS) or block storage on Azure and AWS. It’s read-only, runs in Cloud Shell or your terminal, and writes one PDF. It sends nothing to Zoorik.",
   /** Over the switch, set like the lines under the command. */
   sub: "Choose the assessment you want.",
   run: {
@@ -177,6 +186,30 @@ export const assessmentCopy = {
       },
     ] as const,
     trust: "Read-only · Sends nothing",
+  },
+  /** After What it does: how long a run takes, the access it needs and how the saving is worked out. The same on
+   *  both products. */
+  before: {
+    id: "before-you-run",
+    title: "Before you run it",
+    questions: [
+      {
+        title: "How long does it take?",
+        text: "A Kubernetes run samples usage for 3 minutes by default, so it takes a little over 3 minutes. Private AKS clusters, and many or large clusters, take longer.",
+      },
+      {
+        title: "What access does it need?",
+        items: [
+          "For AKS, it needs read access to your clusters and the Azure Kubernetes Service Cluster User Role on each.",
+          "For EKS, it needs read-only EKS, EC2 and pricing actions, and an EKS access entry.",
+          "For block storage on Azure, it needs Reader on the subscriptions, plus Run Command for the used-space read.",
+        ],
+      },
+      {
+        title: "How is the saving worked out?",
+        text: "It sets each container’s request from its peak use, then works out how many nodes the pods need. The saving is (nodes today − nodes needed) × hourly list price × 730.",
+      },
+    ] as readonly AssessmentQuestion[],
   },
   after: {
     title: "After the run",

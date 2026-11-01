@@ -110,6 +110,13 @@ h3{font-size:var(--fs-h3);font-weight:600;line-height:1.35;letter-spacing:-.015e
 .hero .chips-l{color:rgba(255,255,255,.6)}
 .hero .chip{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.04);color:rgba(255,255,255,.86)}
 .hero .chip svg.tux{color:#fff}
+/* a chip that is a link (home's Runs on rows, 1 Nov 2026): the same capsule; on hover its edge darkens and its name takes
+   the accent, as a doc tile does */
+a.chip{transition:border-color var(--d-fast) var(--ease),color var(--d-fast) var(--ease)}
+@media (hover:hover){a.chip:hover{border-color:var(--card-hover);color:var(--accent)}}
+/* the site's chips are list items: a link chip sits inside its item, which lays it out as the row lays a chip, so the
+   item is the capsule's 28px and not its text's line box (the mock's chip row holds its chips directly) */
+.chips-g > li{display:flex}
 
 /* ── the feature list: a washed tick, a title and one muted line, between hairlines ── */
 .flist{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
@@ -338,10 +345,10 @@ footer.site-foot .foot-grid{flex:1 0 auto;align-content:start}
 /* the bottom bar (owner, 23 Oct 2026): the legal name and city at the left end, © and the wordmark at the right */
 .foot-bar{justify-content:space-between}
 .foot-bar .foot-co{margin:0;font-size:.8125rem;line-height:1.5;color:var(--muted)}
-/* the product sections' h2 names the product's category and links to its page (the SEO heading pass, 23 Oct 2026):
-   the heading's own ink, the accent on hover */
-.st-h a{color:inherit;text-decoration:none;transition:color var(--d-fast) var(--ease)}
-@media (hover:hover){.st-h a:hover{color:var(--accent)}}
+/* the product sections' h2 names the product's category and links to its page (the SEO heading pass, 23 Oct 2026),
+   and the why band's h2 links its first words to their pillar (1 Nov 2026): the heading's own ink, the accent on hover */
+.st-h a,.sec-head h2 a{color:inherit;text-decoration:none;transition:color var(--d-fast) var(--ease)}
+@media (hover:hover){.st-h a:hover,.sec-head h2 a:hover{color:var(--accent)}}
 /* the longer product h1s step down once on the narrowest phones */
 @media(max-width:360px){.pp-hero h1{font-size:2.25rem}}
 

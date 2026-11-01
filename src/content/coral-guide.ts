@@ -83,14 +83,14 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
     deck: "How to connect a cluster, what Coral changes, and how you stay in control.",
     downloads: [{ label: "PDF", document: "coral-guide" }],
   },
-  updated: "Updated 30 October 2026",
+  updated: "Updated 1 November 2026",
   /* The product page first, then the PDF cover's three cards; the fine line is
      the last term's second paragraph, without the PDF's "This guide describes
      Coral as released in October 2026." */
   summary: [
     {
       term: "Product page",
-      text: [[{ href: routes.coral, text: "Kubernetes cost optimization on AKS and EKS" }]],
+      text: [[{ href: routes.coral, text: "Coral for AKS and EKS" }]],
     },
     {
       term: "What Coral does",

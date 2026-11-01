@@ -4,8 +4,8 @@ import type { ProductId } from "@/content/products";
 /**
  * A Learn article, as one file under `articles/` writes it: one `Article` per file, named by its slug. The index
  * (`articles.generated.ts`, written by `scripts/gen-learn-index.mjs`) lists every file, and everything per article
- * reads it: the page at /learn/<slug>, its metadata and share card, its structured data, the sitemap and the hub.
- * An article is published when its file is in the index.
+ * reads it: the page at its address (`articleRoute`: /learn/<slug>, or its own `route`), its metadata and share card,
+ * its structured data, the sitemap and the hub. An article is published when its file is in the index.
  *
  * ─── PLAIN DATA, ONE SMALL MARKUP ──────────────────────────────────────────
  * A run of text is a string, or a list of pieces where a piece is bold, inline code or a link. Product names are
@@ -182,8 +182,10 @@ export const learnTopics = [
 export type LearnTopic = (typeof learnTopics)[number];
 
 export interface Article {
-  /** The file's name and the page's address: /learn/<slug>. */
+  /** The file's name, and the page's address, /learn/<slug>, where it has no `route`. */
   readonly slug: string;
+  /** Its address when it is not /learn/<slug>: a page at the site's root, at the address of its search (D230). */
+  readonly route?: `/${string}`;
   /** The `<title>`, through the site's template, and the share card's title. */
   readonly title: string;
   /** The meta description. */
@@ -203,12 +205,17 @@ export interface Article {
   readonly versus?: readonly [string, string];
   /** The day it was published, as an ISO day: the byline, the hub card and the structured data. */
   readonly published: string;
-  /** The day it last changed, as an ISO day: the sitemap and the structured data. */
+  /**
+   * The day it last changed, as an ISO day: the byline where it differs from `published`, the sitemap and the
+   * structured data.
+   */
   readonly updated: string;
   /** Who wrote it: an author's key in `authors.ts`, or "zoorik" when it is published under the company alone. */
   readonly author: AuthorKey | "zoorik";
   /** Its drawn cover (1200 × 630 WebP in `public/learn-covers/`), under the byline. */
   readonly cover?: `/learn-covers/${string}.webp`;
+  /** The cover's alt text, where the draft gives one (`cover_alt`); without it the cover is read as decoration. */
+  readonly coverAlt?: string;
   /** The answer after "Short answer.", first in the column. An essay has none. */
   readonly short?: ArticleText;
   readonly strip?: readonly ArticleStripStep[];
@@ -230,6 +237,8 @@ export interface Article {
 /** The fixed words of an article page. */
 export const articleWords = {
   published: "Published ",
+  /** After the published day, only where the article changed since: " · Updated <day>". */
+  updated: " · Updated ",
   author: " · By ",
   by: " · Published by ",
   short: "Short answer.",

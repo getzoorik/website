@@ -7,46 +7,53 @@ export const article: Article = {
   title: "Azure VM disk usage: check used vs provisioned",
   meta: "Azure VM disk usage lives inside the guest, not in Azure disk metrics. Read used space with df, Run Command or Azure Monitor and match it to what you pay for.",
   h1: "Azure VM disk usage: how to check used vs provisioned space",
-  deck: "Azure bills the size you provision, but its disk metrics can’t see inside it. How to read used space and compare.",
-  card: "Azure bills provisioned size, but its disk metrics can’t see used space. Check it in the VM and at scale.",
+  deck: "Azure charges for the size you provision, but its disk metrics can’t see inside it. How to read used space and compare.",
+  card: "You pay for provisioned size, but Azure’s disk metrics can’t see used space. Check it in the VM and at scale.",
   product: "amoeba",
   hub: "Block storage",
   topic: "Azure block storage",
   published: "2026-10-23",
-  updated: "2026-10-23",
+  updated: "2026-11-01",
   author: "shubankar",
   cover: "/learn-covers/zoorik-learn-azure-vm-disk-usage-1200x630.webp",
+  coverAlt: "Azure VM disk usage: df -Th shows the used space against each disk’s provisioned size",
   short: [
-    "Azure VM disk usage is two numbers: the provisioned size you pay for and the space your files use. A disk’s portal page and its bill show only the first, and Azure’s platform disk metrics report neither. Used space is known only to the filesystem inside the VM, so read it there, with ",
-    { code: "df -Th" },
+    "Azure VM disk usage is two numbers: the provisioned size you pay for and the space your files use. A disk’s portal page and its charges show only the first, and Azure’s platform disk metrics report neither. Used space is known only to the filesystem inside the VM, so read it there, with ",
+    { a: { code: "df -Th" }, href: "/learn/glossary/df-vs-du" },
     " in a shell or through Run Command, or collect it with Azure Monitor Agent’s guest metrics. Compare the two, disk by disk.",
   ],
   sections: [
     {
-      id: "azure-bills-the-provisioned-size-and-its",
-      title: "Azure bills the provisioned size, and its disk metrics don’t show used space",
+      id: "azure-charges-for-the-provisioned-size-and",
+      title: "Azure charges for the provisioned size, and its disk metrics don’t show used space",
       blocks: [
         {
           kind: "p",
-          text: "Picture a 500\u00a0GiB managed disk with 50\u00a0GiB of it in use, the example Microsoft’s billing guide uses for snapshots. The portal lists 500\u00a0GiB, and the disk’s own line on the bill is set by that size.",
+          text: "Picture a 500\u00a0GiB managed disk with 50\u00a0GiB of it in use, the example Microsoft’s guide to disk charges uses for snapshots. The portal lists 500\u00a0GiB, and the disk’s own charge is set by that size.",
         },
         {
           kind: "callout",
           label: "Worked example",
           text: "On that disk, 50 ÷ 500 = 10% of the provisioned size is in use, and the other 500 − 50 = 450\u00a0GiB, 90%, holds no data. That’s 500 ÷ 50 = 10\u00a0GiB provisioned per GiB of data.",
         },
-        { kind: "p", text: "Microsoft’s billing guide gives three cases:" },
+        { kind: "p", text: "The same guide gives three cases:" },
         {
           kind: "ul",
           items: [
-            "A 512\u00a0GiB Premium SSD appears on the bill as a P20\u00a0disk.",
-            "A 1\u00a0TiB Standard SSD is billed at the E30 tier, and growing it to 3\u00a0TiB moves it to E50.",
-            "Premium SSD v2 is billed per GiB you provision.",
+            [
+              "A 512\u00a0GiB ",
+              { a: "Premium SSD", href: "/learn/glossary/azure-premium-ssd" },
+              " is charged as a P20, one of the fixed ",
+              { a: "Azure disk sizes", href: "/learn/glossary/azure-disk-sizes" },
+              ".",
+            ],
+            "A 1\u00a0TiB Standard SSD is charged at the E30 tier, and growing it to 3\u00a0TiB moves it to E50.",
+            "Premium SSD v2 is charged per GiB you provision.",
           ],
         },
         {
           kind: "p",
-          text: "None of those meters depends on how full the disk is: a P20 is billed as a P20 whether it’s 5% full or 95% full.",
+          text: "None of those meters depends on how full the disk is: a P20 is charged as a P20 whether it’s 5% full or 95% full.",
         },
         {
           kind: "p",
@@ -61,7 +68,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "The check has two halves: read each filesystem’s size and use inside the guest, then tie each filesystem to the Azure disk behind it, whose size is the one on the bill.",
+          text: "The check has two halves. First, read each filesystem’s size and use inside the guest. Then tie each filesystem to the Azure disk behind it, whose size is the one you pay for.",
         },
         {
           kind: "h3",
@@ -87,7 +94,7 @@ export const article: Article = {
             { code: "/opt/db/log" },
             " on ",
             { code: "/dev/sde1" },
-            " is 32G with 49M used. One is close to full, while the other is billed for space that holds almost nothing.",
+            " is 32G with 49M used. One is close to full, while the other is charged for space that holds almost nothing.",
           ],
         },
         {
@@ -97,7 +104,7 @@ export const article: Article = {
             { code: "df" },
             " measures the filesystem, and the filesystem can be smaller than the disk. ",
             { a: "Expanding a disk in Azure", href: "/learn/azure-disk-expand-without-downtime" },
-            " is half the job: Microsoft’s guide has you expand the managed disk first, then the partition and the filesystem inside Linux. A disk grown without the second step bills for space ",
+            " is half the job: Microsoft’s guide has you expand the managed disk first, then the partition and the filesystem inside Linux. A disk grown without the second step is charged for space ",
             { code: "df" },
             " never counts, so always take the provisioned size from Azure.",
           ],
@@ -177,10 +184,7 @@ export const article: Article = {
           kind: "ol",
           start: 3,
           items: [
-            [
-              { b: "Read each managed disk’s provisioned size." },
-              " That’s the size the bill uses:",
-            ],
+            [{ b: "Read each managed disk’s provisioned size." }, " That’s the size you pay for:"],
           ],
         },
         {
@@ -190,7 +194,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "That command lists every disk in the resource group, so pick out the names from step 2. The VM’s Disks page in the portal shows the same LUN, name and size for each disk, and on the sample VM the LUN is what joins each mount to a disk on the bill:",
+          text: "That command lists every disk in the resource group, so pick out the names from step 2. The VM’s Disks page in the portal shows the same LUN, name and size for each disk. On the sample VM, the LUN is what joins each mount to the disk you pay for:",
         },
         { kind: "svg", figure: figure2 },
         { kind: "h3", id: "on-windows", title: "On Windows" },
@@ -358,19 +362,25 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Azure can’t take the empty space back in place. Microsoft’s expand guide says shrinking an existing disk “isn’t supported and might result in data loss.” Freeing blocks with TRIM doesn’t reduce the disk’s own bill either: Microsoft describes TRIM as saving money on storage billed by consumption, such as unmanaged standard disks and disk snapshots.",
+          text: "Azure can’t take the empty space back in place. Microsoft’s expand guide says shrinking an existing disk “isn’t supported and might result in data loss.” Freeing blocks with TRIM doesn’t reduce the disk’s own cost either: Microsoft describes TRIM as saving money on storage charged by consumption, such as unmanaged standard disks and disk snapshots.",
         },
         {
           kind: "p",
           text: [
             { a: "Snapshots", href: "/learn/azure-disk-snapshot-cost" },
-            " are the one managed-disk charge billed on used size: a full snapshot of the 500\u00a0GiB disk above is billed for 50\u00a0GiB, while the disk stays billed for its provisioned size. What to do with the gap is covered in ",
-            { a: "the guide to shrinking a disk", href: "/learn/shrink-azure-managed-disk" },
+            " are the one managed-disk charge set by used size. A full snapshot of the 500\u00a0GiB disk above is charged for 50\u00a0GiB, while the disk stays charged at its provisioned size.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "What to do with the gap is covered in ",
+            { a: "how to reduce Azure disk size", href: "/learn/shrink-azure-managed-disk" },
             " and in ",
-            { a: "the disk cost guide", href: "/learn/azure-disk-cost-optimization" },
-            ". On AWS the measuring job has the same shape, and ",
-            { a: "the EBS guide", href: "/learn/check-ebs-volume-usage" },
-            " walks through it.",
+            { a: "Azure disk cost optimization", href: "/learn/azure-disk-cost-optimization" },
+            ". On AWS the measuring job has the same shape, covered in ",
+            { a: "how to check EBS volume usage", href: "/learn/check-ebs-volume-usage" },
+            ".",
           ],
         },
       ],
@@ -383,22 +393,32 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " by Zoorik does this measuring on every VM you onboard, then acts on it. Its agent installs through Azure Run Command, the channel used above, and ",
-            { a: "every 15\u00a0seconds reports", href: "/amoeba-guide#what-leaves-the-vm" },
+            " by Zoorik does this measuring on every VM you onboard, then acts on it. Its agent installs through Azure Run Command, the channel used above.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "The agent then ",
+            { a: "keeps reporting", href: "/amoeba-guide#what-leaves-the-vm" },
             " each mount’s path, filesystem type, used and total size, and the devices, LUNs and cloud disk IDs behind it. That’s the mount-to-disk join from the report, kept current.",
           ],
         },
         {
           kind: "p",
-          text: "The console shows used and provisioned space on every disk, 30\u00a0days of both on each VM’s Dashboard, and what the disks cost at Azure’s list price. Before the agent’s first report, used space reads “Available once the agent reports” rather than a guess.",
+          text: "The console shows used and provisioned space on every disk, and what the disks cost at Azure’s list price. Each VM’s Dashboard also shows its recent used and provisioned space. Before the agent’s first report, used space reads “Available once the agent reports” rather than a guess.",
         },
         {
           kind: "p",
-          text: "Then Amoeba rightsizes. It moves the VM’s data mounts onto one btrfs pool, and each mount keeps its path. Amoeba sizes the pool from the highest use of the last 7\u00a0days, so the pool sits inside its target band with room for the largest recent 15-minute rise and at least 10\u00a0GiB free. It copies the data while services run, and the systemd services that use those mounts restart at the switch onto the pool. After that the pool expands as the data grows and shrinks one disk at a time as it falls, without unmounting.",
+          text: "Then Amoeba rightsizes. It moves the VM’s data mounts onto one btrfs pool sized to your data, with room to grow. Each mount keeps its path.",
         },
         {
           kind: "p",
-          text: "Amoeba works on Windows and Linux VMs. On Linux, it needs systemd, kernel 5.14 or later, and btrfs loaded or loadable, and every process that keeps a data mount open must run as a systemd service. The VM needs 3 free data-disk slots: 2 for the pool and 1 kept free for an urgent expand. VMs in the Red Hat family are not moved.",
+          text: "It copies the data while services run, and the systemd services that use those mounts restart at the switch onto the pool. After that, the pool grows before it fills, and shrinks one disk at a time when your data goes down and stays down.",
+        },
+        {
+          kind: "p",
+          text: "Amoeba works on Windows and Linux VMs. On Linux, the VM needs a recent kernel with btrfs, and every process that keeps a data mount open must run under systemd. The VM also needs a few free data-disk slots for the pool.",
         },
         {
           kind: "p",

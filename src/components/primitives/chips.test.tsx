@@ -65,6 +65,26 @@ describe("Chips", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
+  it("sets a platform with an address as a link chip: the item holds the link, which keeps the chip's box", () => {
+    const { container } = render(
+      <Chips
+        id="coral-runs"
+        label="Runs on"
+        items={[{ platform: "aks", href: "/aks-cost-optimization" }, "linux"]}
+      />,
+    );
+    const [linked, plain] = [...container.querySelectorAll("ul.chips-g > li")];
+
+    expect(linked).not.toHaveAttribute("class");
+    const a = linked!.querySelector(":scope > a.chip")!;
+    expect(a).toHaveAttribute("href", "/aks-cost-optimization");
+    expect(a).not.toHaveAttribute("target");
+    expect(a.textContent).toBe("AKS");
+    expect(a.querySelector("svg")).toHaveAttribute("data-mark", "azure");
+    expect(plain).toHaveClass("chip");
+    expect(plain!.querySelector("a")).toBeNull();
+  });
+
   it("sets a plain word as a chip with no mark", () => {
     const { container } = render(
       <Chips id="works" label="Compatible with your native" items={[{ text: "Karpenter" }]} />,

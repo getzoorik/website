@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "kubernetes",
   product: "coral",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -47,7 +47,7 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "The Horizontal Pod Autoscaler on EKS is built in, so there’s nothing to install. EKS lists Metrics Server as a prerequisite.",
+          text: "The Horizontal Pod Autoscaler on EKS is built in. EKS lists Metrics Server as a prerequisite.",
         },
       ],
     },
@@ -62,7 +62,7 @@ export const term: GlossaryTerm = {
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
-          text: "If average use reached 200m, twice the target, the HPA would double the pods.",
+          text: "At 200m average use, twice the target, the HPA would double the pods.",
         },
       ],
     },
@@ -74,7 +74,12 @@ export const term: GlossaryTerm = {
           kind: "ul",
           items: [
             "At a 50% target, each pod’s request is twice its target use.",
-            "Node autoscalers add nodes to fit pods’ requests, not their real use.",
+            [
+              { a: "Node autoscalers", href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler" },
+              " add nodes to fit pods’ requests, not their real use. For event-driven scaling, see ",
+              { a: "KEDA vs Karpenter", href: "/learn/keda-vs-karpenter" },
+              ".",
+            ],
             "When new replicas don’t fit, you pay for nodes sized to those requests.",
           ],
         },

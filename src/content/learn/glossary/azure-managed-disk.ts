@@ -11,14 +11,14 @@ export const term: GlossaryTerm = {
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
       text: [
         "An Azure managed disk is a ",
         { a: "block storage", href: "/learn/glossary/block-storage" },
-        " volume that Azure manages for your virtual machine (VM). A managed disk in Azure works like a physical disk in a server, but it’s virtual. “Managed” means you pick the type and size, and Azure handles the rest.",
+        " volume that Azure manages for your virtual machine (VM). A managed disk in Azure is like a physical disk in a server, but virtual. “Managed” means you pick the type and size, and Azure handles the rest.",
       ],
     },
     { kind: "p", text: "A managed disk in an Azure VM has one of two roles:" },
@@ -38,7 +38,7 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "Azure charges for the provisioned size, the size you set, so you pay for all 1\u00a0TiB, not the 200\u00a0GiB you use.",
+          text: "Azure charges for the size you provision: all 1\u00a0TiB, not the 200\u00a0GiB you use.",
         },
         { kind: "svg", figure: figure1 },
       ],
@@ -63,15 +63,17 @@ export const term: GlossaryTerm = {
         {
           kind: "ul",
           items: [
-            "You can grow a data disk while the VM keeps running, within some limits.",
+            "You can grow a data disk while the VM runs, within some limits.",
             "Microsoft says shrinking an existing disk “isn’t supported and might result in data loss.”",
-            "So you keep paying for a disk sized for an old peak.",
+            "So you keep paying for an old peak’s size.",
           ],
         },
         {
           kind: "p",
           text: [
-            "For ways to reduce that cost, see ",
+            "An Azure managed disk can’t shrink in place; see ",
+            { a: "how to reduce Azure disk size", href: "/learn/shrink-azure-managed-disk" },
+            ". For ways to reduce that cost, see ",
             { a: "Azure disk cost optimization", href: "/learn/azure-disk-cost-optimization" },
             ".",
           ],
@@ -80,7 +82,7 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously. It never touches the OS disk. It works on Azure managed disks and Amazon EBS volumes, on Windows and Linux VMs.",
+            " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously. It works on Windows and Linux VMs, never on the OS disk.",
           ],
         },
         {
@@ -97,7 +99,7 @@ export const term: GlossaryTerm = {
   related: [
     {
       title: "Block storage",
-      line: "The storage type a managed disk gives you.",
+      line: "The storage type of a managed disk.",
       href: "/learn/glossary/block-storage",
     },
     {
@@ -106,6 +108,11 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/azure-temporary-disk",
     },
     { title: "EBS volume", line: "The AWS match.", href: "/learn/glossary/ebs-volume" },
+    {
+      title: "Ephemeral OS disk",
+      line: "An OS disk on the VM’s local storage.",
+      href: "/learn/glossary/ephemeral-os-disk",
+    },
   ],
   next: { title: "Azure disk cost optimization", href: "/learn/azure-disk-cost-optimization" },
   sources: [

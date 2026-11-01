@@ -3,7 +3,7 @@ import { readdirSync } from "node:fs";
 import { render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { comparePath } from "@/config/site";
+import { comparePath, routes } from "@/config/site";
 import { pageCards } from "@/config/social";
 import { pageStructuredData } from "@/config/structured-data";
 import {
@@ -13,6 +13,8 @@ import {
   type VersusPage,
 } from "@/content/learn-compare";
 import { marketChecked, marketGroups, marketMarks, versusFacts } from "@/content/learn-market";
+import { findTerm, glossarySlugOf } from "@/content/learn/glossary";
+import { findArticle, isLiveHref, learnSlugOf } from "@/content/learn/published";
 import { products } from "@/content/products";
 
 /* The nav and the footer read the pathname; `notFound` stays Next's own. */
@@ -33,10 +35,13 @@ import { marketTool } from "./market-rows";
 
 /**
  * The versus pages, one dynamic route under /cloud-cost-optimization-library: only
- * the two live pages exist, each prints its rows from the market data with every claim about the other tool linked to
- * its source, the day it was checked, and no SOC 2 row; any other slug, a held page among them, is a 404, and each
- * live page's old address under /learn redirects here. Competitors' names are read from the data, never typed here.
- * The sitemap entries are in `src/app/sitemap.test.ts`, the page graphs in `src/config/structured-data.test.ts`.
+ * the four live pages exist (one per product, then since 1 Nov 2026 two more for Coral, against the clouds' own
+ * tools), each prints its rows from the market data with every claim about the other tool linked to its source,
+ * the day it was checked, and no SOC 2 row; the two newer print the template's optional parts too (the short answer,
+ * the Learn frame, the questions, the sources and Read more), the other two exactly as before; any other slug, a held
+ * page among them, is a 404, and each live page's old address under /learn redirects here. Competitors' names are
+ * read from the data, never typed here. The sitemap entries are in `src/app/sitemap.test.ts`, the page graphs in
+ * `src/config/structured-data.test.ts`.
  */
 
 const text = (el: Element | null): string => (el?.textContent ?? "").replace(/[\s ]+/g, " ").trim();
@@ -50,21 +55,49 @@ async function page(entry: VersusPage): Promise<HTMLElement> {
 
 const factsOf = (entry: VersusPage) => versusFacts.find((facts) => facts.slug === entry.slug)!;
 
-/** What a cell prints: its mark's word, then " · " and its note when it has one. */
+/** What a cell prints: its mark's word, then " · " and its note when it has one (a figure's no-break space read as a
+ *  space, as `text` reads it). */
 const printed = (cell: { mark: keyof typeof marketMarks; note: string }) =>
-  `${marketMarks[cell.mark].word}${cell.note ? ` · ${cell.note}` : ""}`;
+  `${marketMarks[cell.mark].word}${cell.note ? ` · ${cell.note}` : ""}`.replace(/\s+/g, " ");
+
+/** What `richText` prints for the drafts' markup: code bare, a link's words, bold bare, straight quotes curled. */
+const plain = (source: string): string =>
+  source
+    .replace(/`([^`]*)`/g, "$1")
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/\*\*([^*]*)\*\*/g, "$1")
+    .replace(/"([^"]*)"/g, "“$1”")
+    .replace(/'/g, "’")
+    .replace(/\s+/g, " ");
+
+/** The day each page prints in its kicker and its fine print: its own, else the market's. */
+const checkedOf = (entry: VersusPage): string => entry.checked ?? "19 October 2026";
+
+/** Each page's rows with the pricing row: the two first pages' counts as they were, the newer pages' from their drafts. */
+const rowCounts: Readonly<Record<string, number>> = {
+  "coral-vs-stormforge": 14,
+  "amoeba-vs-zesty-disk": 11,
+  "coral-vs-azure-advisor": 11,
+  "coral-vs-aws-compute-optimizer": 12,
+};
 
 afterEach(() => {
   pathname.current = comparePath;
 });
 
 describe("the versus route", () => {
-  it("prerenders exactly the live pages, one per product, and nothing else", () => {
+  it("prerenders exactly the live pages, the first two then Coral's two newer, and nothing else", () => {
     expect(route.dynamicParams).toBe(false);
     expect(route.generateStaticParams()).toEqual(
       versusPages.map((entry) => ({ slug: entry.slug })),
     );
-    expect(versusPages.map((entry) => entry.product)).toEqual(["coral", "amoeba"]);
+    expect(versusPages.map((entry) => entry.product)).toEqual([
+      "coral",
+      "amoeba",
+      "coral",
+      "coral",
+    ]);
+    expect(Object.keys(rowCounts)).toEqual(versusPages.map((entry) => entry.slug));
     for (const entry of versusPages)
       expect(versusRoute(entry)).toBe(`${comparePath}/${entry.slug}`);
     /* No file or folder under the tools hub is named after a company: its own page, the one dynamic segment for the
@@ -86,7 +119,7 @@ describe("the versus route", () => {
         (entry) => [entry.route.replace(comparePath, "/learn"), entry.route] as const,
       ),
     ];
-    expect(old).toHaveLength(4);
+    expect(old).toHaveLength(6);
     for (const [from, to] of old) {
       const response = await unstable_getResponseFromNextConfig({
         url: `https://zoorik.com${from}`,
@@ -145,23 +178,26 @@ describe.each(versusPages.map((entry) => [entry.slug, entry] as const))("%s", (_
     expect(metadata.openGraph).toMatchObject({
       url: versusRoute(entry),
       title: `${entry.meta.title} | Zoorik`,
-      /* the product's comparison card, the same as its alternatives page's */
       images: [pageCards[versusRoute(entry)]],
     });
-    expect(metadata.openGraph).toMatchObject({
-      images: [
-        {
-          url: `/og/pages/${entry.product === "coral" ? "kubernetes-cost-tools" : "block-storage-tools"}.png`,
-        },
-      ],
-    });
-    expect(entry.meta.title).toBe(`${ours} vs ${facts.name}`);
+    /* Its own card, whose words are its title; else the product's comparison card, its alternatives page's. */
+    const card = entry.card
+      ? entry.slug
+      : entry.product === "coral"
+        ? "kubernetes-cost-tools"
+        : "block-storage-tools";
+    expect(metadata.openGraph).toMatchObject({ images: [{ url: `/og/pages/${card}.png` }] });
+    if (entry.card) expect(pageCards[versusRoute(entry)]!.alt).toBe(`Zoorik. ${entry.meta.title}.`);
+    expect(`${entry.meta.title} | Zoorik`.length).toBeLessThanOrEqual(60);
+    expect(entry.meta.description.length).toBeLessThanOrEqual(158);
+    /* "Coral vs AWS Compute Optimizer for EKS": the draft's title names the cluster it is about. */
+    expect(entry.meta.title.startsWith(`${ours} vs ${facts.name}`)).toBe(true);
   });
 
   it("draws the hero: the kicker with the checked day, the h1 and the deck", async () => {
     const root = await page(entry);
     expect(root.querySelectorAll("h1")).toHaveLength(1);
-    expect(text(root.querySelector(".vp-kick"))).toBe("Compare · checked 19 October 2026");
+    expect(text(root.querySelector(".vp-kick"))).toBe(`Compare · checked ${checkedOf(entry)}`);
     expect(marketChecked).toBe("19 October 2026");
     expect(text(root.querySelector("h1"))).toBe(entry.meta.title);
     expect(text(root.querySelector(".doc-deck"))).toBe(entry.meta.description);
@@ -175,12 +211,28 @@ describe.each(versusPages.map((entry) => [entry.slug, entry] as const))("%s", (_
     expect(JSON.parse(blocks[0]!.textContent!)).toEqual(
       JSON.parse(JSON.stringify(pageStructuredData(versusRoute(entry)))),
     );
-    expect([...root.querySelectorAll("main > section")].map((s) => s.id)).toEqual([
-      "glance",
-      "side-by-side",
-      "assess",
-    ]);
+    /* `main`'s children by id; the Learn frame as the ids of its sections, in brackets. */
+    const order = [...root.querySelector("main")!.children].map((el) =>
+      el.matches("div.sec.doc-body")
+        ? `[${[...el.querySelectorAll(".fq-sec")].map((section) => section.id).join(" ")}]`
+        : el.id,
+    );
+    expect(order).toEqual(
+      entry.sections
+        ? [
+            "top",
+            "glance",
+            "side-by-side",
+            `[${[...entry.sections.map((section) => section.id), "questions", "sources"].join(" ")}]`,
+            "read-more",
+            "assess",
+          ]
+        : ["top", "glance", "side-by-side", "assess"],
+    );
     expect(root.querySelector("#side-by-side")).toHaveClass("sec", "lv-sec", "sec-band");
+    expect([...root.querySelectorAll("main .sec-band")].map((el) => el.id)).toEqual([
+      "side-by-side",
+    ]);
   });
 
   it("sets each one beside the other in its maker's words, ours to its page, theirs to its own", async () => {
@@ -208,7 +260,7 @@ describe.each(versusPages.map((entry) => [entry.slug, entry] as const))("%s", (_
     expect(heads).toEqual(["", ours, facts.name]);
     const labels = [...root.querySelectorAll(".vp-t tbody th[scope=row]")].map(text);
     expect(labels).toEqual([...facts.rows.map((row) => row.label), "Published pricing"]);
-    expect(labels.length).toBe(entry.product === "coral" ? 14 : 11);
+    expect(labels.length).toBe(rowCounts[entry.slug]);
     expect(labels.some((label) => /soc ?2/i.test(label))).toBe(false);
     expect(text(root.querySelector(".vp-t"))).not.toMatch(/soc ?2/i);
   });
@@ -241,7 +293,7 @@ describe.each(versusPages.map((entry) => [entry.slug, entry] as const))("%s", (_
     });
     const pricing = rows.at(-1)!;
     const [mine, theirs] = [...pricing.querySelectorAll("td")];
-    expect(text(mine)).toBe(facts.pricing.ours);
+    expect(text(mine)).toBe(facts.pricing.ours.replace(/\s+/g, " "));
     expect([...theirs!.querySelectorAll("a.vx-src")].map((a) => a.getAttribute("href"))).toEqual(
       facts.pricing.sources,
     );
@@ -253,7 +305,7 @@ describe.each(versusPages.map((entry) => [entry.slug, entry] as const))("%s", (_
     const root = await page(entry);
     const fine = root.querySelector(".vp-fine")!;
     expect(text(fine)).toBe(
-      `${facts.name} is a trademark of its owner. Everything said here about ${facts.name} comes from its own public pages, each linked, checked 19 October 2026. “Not stated” means its pages do not say. Something changed? Write to founders@zoorik.com and we will correct it.`,
+      `${facts.name} is a trademark of its owner. Everything said here about ${facts.name} comes from its own public pages, each linked, checked ${checkedOf(entry)}. “Not stated” means its pages do not say. Something changed? Write to founders@zoorik.com and we will correct it.`,
     );
     expect(fine.querySelector("a")).toHaveAttribute("href", "mailto:founders@zoorik.com");
   });
@@ -261,5 +313,217 @@ describe.each(versusPages.map((entry) => [entry.slug, entry] as const))("%s", (_
   it("draws no logo of the other tool, only its name", async () => {
     const root = await page(entry);
     expect(root.querySelectorAll("main img")).toHaveLength(0);
+  });
+});
+
+/** Each newer page's question rows' ids, as its mock writes them (`sectionSlug`: the question's first seven words). */
+const questionIds: Readonly<Record<string, readonly string[]>> = {
+  "coral-vs-azure-advisor": [
+    "is-azure-advisor-free",
+    "does-azure-advisor-rightsize-aks-pods",
+    "does-coral-replace-azure-advisor",
+    "are-advisors-saving-figures-exact",
+    "how-do-you-see-what-coral-would",
+  ],
+  "coral-vs-aws-compute-optimizer": [
+    "does-aws-compute-optimizer-support-eks",
+    "can-coral-and-aws-compute-optimizer-run",
+    "does-coral-change-eks-managed-node-groups",
+    "can-coral-move-eks-nodes-to-cheaper",
+    "how-do-you-see-what-coral-would",
+  ],
+};
+
+/** A block's element, by its kind. */
+const blockTag = { p: "P", ul: "UL", ol: "OL", h3: "H3", table: "TABLE", links: "ASIDE" } as const;
+
+describe("the template's optional parts", () => {
+  it("are printed by the two pages of 1 Nov 2026 only, each checked, dated and carded that day", () => {
+    const newer = versusPages.filter((entry) => entry.sections);
+    expect(newer.map((entry) => entry.slug)).toEqual(Object.keys(questionIds));
+    for (const entry of newer) {
+      expect(entry.checked, entry.slug).toBe("1 November 2026");
+      expect(entry.lastUpdated, entry.slug).toBe("1 November 2026");
+      expect(entry.card, entry.slug).toBe(true);
+      expect([entry.short, entry.questions, entry.sources, entry.readMore]).not.toContain(
+        undefined,
+      );
+    }
+  });
+
+  it.each(versusPages.filter((entry) => !entry.sections).map((entry) => [entry.slug, entry]))(
+    "leave %s exactly as it was",
+    async (_slug, entry) => {
+      const root = await page(entry);
+      expect(root.querySelector(".ar-short, .doc-body, .fq-chips, #read-more")).toBeNull();
+      expect([
+        entry.checked,
+        entry.lastUpdated,
+        entry.card,
+        entry.short,
+        entry.questions,
+        entry.sources,
+        entry.readMore,
+      ]).toEqual(Array(7).fill(undefined));
+    },
+  );
+});
+
+describe.each(
+  versusPages.filter((entry) => entry.sections).map((entry) => [entry.slug, entry] as const),
+)("%s: its own parts", (_slug, entry) => {
+  const sections = entry.sections!;
+  const questions = entry.questions!;
+  const sources = entry.sources!;
+  const readMore = entry.readMore!;
+
+  it("puts the short answer under the deck, on the hero's ground", async () => {
+    const root = await page(entry);
+    const short = root.querySelector("header.lv-hero .hero-in > .doc-deck + p.ar-short")!;
+    expect(short).not.toBeNull();
+    expect(text(short.querySelector(":scope > b"))).toBe("Short answer.");
+    expect(text(short)).toBe(`Short answer. ${plain(entry.short!)}`);
+    expect(short.querySelector('span[translate="no"]')).toHaveTextContent("Coral");
+  });
+
+  it("sets each section's text open in the Learn frame, the chips naming every group", async () => {
+    const frame = (await page(entry)).querySelector("main > div.sec.doc-body")!;
+    expect(frame.querySelector(":scope > .wrap > article")).toHaveClass(
+      "doc-main",
+      "fq-main",
+      "ar-frame",
+    );
+    expect(
+      [...frame.querySelectorAll("nav.fq-chips a")].map((a) => [a.getAttribute("href"), text(a)]),
+    ).toEqual([
+      ...sections.map((section) => [`#${section.id}`, plain(section.title)]),
+      ["#questions", plain(questions.title)],
+      ["#sources", "Sources"],
+    ]);
+    for (const section of sections) {
+      const el = frame.querySelector(`section.fq-sec#${section.id}`)!;
+      expect(el).toHaveAttribute("aria-labelledby", `${section.id}-h`);
+      expect(text(el.querySelector(`h2#${section.id}-h`))).toBe(plain(section.title));
+      const body = el.querySelector(":scope > .fq-sec-b.doc-prose")!;
+      expect([...body.children].map((child) => child.tagName)).toEqual(
+        section.blocks.map((block) => blockTag[block.kind]),
+      );
+      section.blocks.forEach((block, index) => {
+        const child = body.children[index]!;
+        if (block.kind === "p" || block.kind === "h3")
+          expect(text(child), section.id).toBe(plain(block.text));
+        if (block.kind === "ul" || block.kind === "ol")
+          expect([...child.children].map(text), section.id).toEqual(block.items.map(plain));
+      });
+    }
+  });
+
+  it("asks its questions in /pricing's rows: closed, with no number column", async () => {
+    const section = (await page(entry)).querySelector("section.fq-sec.pr-faq#questions")!;
+    expect(text(section.querySelector("h2#questions-h"))).toBe(plain(questions.title));
+    expect(section.querySelector(":scope > .fq-sec-b")).not.toHaveClass("doc-prose");
+    const rows = [...section.querySelectorAll(".fq-list > details.fq")];
+    expect(rows.map((row) => row.id)).toEqual(questionIds[entry.slug]);
+    expect(rows.map((row) => text(row.querySelector("summary > h3")))).toEqual(
+      questions.rows.map((row) => plain(row.question)),
+    );
+    expect(rows.map((row) => text(row.querySelector(".fq-body.doc-prose > p")))).toEqual(
+      questions.rows.map((row) => plain(row.answer)),
+    );
+    for (const row of rows) {
+      expect(row).not.toHaveAttribute("open");
+      expect(row.querySelector(".fq-n")).toBeNull();
+      expect(row.querySelector("summary > svg.fq-chev")).toHaveAttribute("aria-hidden", "true");
+    }
+    /* The last question opens Coral's own assessment. */
+    expect(rows.at(-1)!.querySelector("a")).toHaveAttribute("href", "/assessment?p=coral");
+  });
+
+  it("names the sources of its prose, each a new tab, set apart by semicolons and closed by a full stop", async () => {
+    const section = (await page(entry)).querySelector("section.fq-sec#sources")!;
+    expect(text(section.querySelector("h2#sources-h"))).toBe("Sources");
+    const line = section.querySelector(":scope > .fq-sec-b.doc-prose > p.ar-src")!;
+    const links = [...line.querySelectorAll("a")];
+    expect(links.map((a) => a.getAttribute("href"))).toEqual(sources.map((source) => source.url));
+    for (const a of links) {
+      expect(a).toHaveAttribute("target", "_blank");
+      expect(a).toHaveAttribute("rel", "noopener noreferrer");
+      expect(a.querySelector(".nw-nb > svg")).not.toBeNull();
+    }
+    expect(text(line)).toBe(
+      `${sources.map((source) => `${source.publisher}, ${source.title} (opens in a new tab)`).join("; ")}.`,
+    );
+  });
+
+  it("ends on Read more, its sibling page last but one, before the closing row", async () => {
+    const read = (await page(entry)).querySelector("main > section.sec#read-more")!;
+    expect(read).toHaveAttribute("aria-labelledby", "read-more-h");
+    expect(text(read.querySelector(".sec-hrow > h2#read-more-h"))).toBe("Read more");
+    const tiles = [...read.querySelectorAll(".dt-grid > article.dt")];
+    const expected = readMore.map((tile) => {
+      if (!("versus" in tile)) return tile;
+      const sibling = versusPages.find((other) => other.slug === tile.versus)!;
+      return { title: sibling.meta.title, href: versusRoute(sibling), line: sibling.line };
+    });
+    expect(
+      tiles.map((tile) => [
+        text(tile.querySelector(".dt-t")),
+        tile.querySelector("a.dt-a")?.getAttribute("href") ?? null,
+        text(tile.querySelector(".dt-l")),
+      ]),
+    ).toEqual(
+      expected.map((tile) => [
+        plain(tile.title),
+        isLiveHref(tile.href) ? tile.href : null,
+        plain(tile.line),
+      ]),
+    );
+    const other = versusPages.find((page) => page.sections && page.slug !== entry.slug)!;
+    expect(readMore.at(-1)).toEqual({ versus: other.slug });
+  });
+
+  it("links only pages that exist, a Learn page not published yet set as its words", async () => {
+    const main = (await page(entry)).querySelector("main")!;
+    const live = new Set<string>(Object.values(routes));
+    const own = [...main.querySelectorAll("a[href^='/']")].map((a) => a.getAttribute("href")!);
+    expect(own.length).toBeGreaterThan(0);
+    for (const href of own) {
+      const where = href.split("#")[0]!.split("?")[0]!;
+      const article = learnSlugOf(where);
+      const term = glossarySlugOf(where);
+      if (article) expect(findArticle(article), href).toBeDefined();
+      else if (term) expect(findTerm(term), href).toBeDefined();
+      else if (where.startsWith(`${comparePath}/`))
+        expect(versusPages.map(versusRoute), href).toContain(where);
+      else expect(live.has(where), href).toBe(true);
+    }
+  });
+
+  it("keeps the site's words in its own copy, and every product name out of translation", async () => {
+    const root = await page(entry);
+    const parts = [
+      root.querySelector(".ar-short")!,
+      ...root.querySelectorAll("main > div.doc-body section.fq-sec:not(#sources)"),
+      root.querySelector("#read-more")!,
+    ];
+    const own = parts.map(text).join(" ");
+    const retired = [
+      ["storage", "tax"],
+      ["s", "tx"],
+    ].map(([head, tail]) => head! + tail!);
+    expect(own).not.toMatch(
+      new RegExp(
+        `\\b(${[...retired, "cut", "cuts", "lower", "slash", "online", "bill", "bills", "billed", "billing"].join("|")})\\b`,
+        "i",
+      ),
+    );
+    expect(own).not.toMatch(new RegExp(["disk", "storage"].join(" "), "i"));
+    for (const part of parts) {
+      const walker = document.createTreeWalker(part, NodeFilter.SHOW_TEXT);
+      for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+        if (/\b(Coral|Amoeba|Zoorik)\b/.test(node.textContent ?? ""))
+          expect(node.parentElement!.closest('[translate="no"]'), node.textContent!).not.toBeNull();
+      }
+    }
   });
 });

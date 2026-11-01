@@ -7,7 +7,7 @@ import { amoebaDocs, comparePath, glossaryPath, learnPath, routes, site } from "
 import { homeLastUpdated } from "@/content/hero";
 import { learnPage } from "@/content/learn";
 import { glossaryPage, glossaryTerms } from "@/content/learn/glossary";
-import { learnArticles } from "@/content/learn/published";
+import { articleRoute, learnArticles } from "@/content/learn/published";
 import { versusPages, versusRoute } from "@/content/learn-compare";
 import { isoDay } from "@/lib/content-date";
 import { learnToday } from "@/lib/learn-today";
@@ -40,16 +40,19 @@ function importGraph(file: string, seen = new Set<string>()): Set<string> {
 }
 
 describe("sitemap.xml", () => {
-  it("lists the home page, the product pages, each product on each cloud, the six works-with pages, the assessment, the documents, the install and contributing guides, the troubleshooting pages, open source, Learn and every article in its index, the glossary and every term in its index, Cloud cost optimization tools with the comparison pages and the two calculators, Value Lab and the two case studies, the research papers, /events, /pricing, /contact, /about, /careers, /brand-assets, /referrals, /partners, /design-partners, the privacy policy, the terms, security and the Trust center, absolute, and nothing else", () => {
+  it("lists the home page, the product pages, the two Topic pages, each product on each cloud, the six works-with pages, the assessment, the documents, the install and contributing guides, the troubleshooting pages, open source, Learn and every article in its index, the glossary and every term in its index, Cloud cost optimization tools with the comparison pages and the two calculators, Value Lab and the two case studies, the research papers, /events, /pricing, /contact, /about, /careers, /brand-assets, /referrals, /partners, /design-partners, the privacy policy, the terms, security and the Trust center, absolute, and nothing else", () => {
     expect(sitemap().map((entry) => entry.url)).toEqual([
       `${site.url}/`,
       `${site.url}/coral`,
       `${site.url}/amoeba`,
+      /* The two Topic pages (1 Nov 2026): Azure, then AWS. */
+      `${site.url}/azure-cost-optimization`,
+      `${site.url}/aws-cost-optimization`,
       /* Each product on each cloud, in the footer's order, then the six pages on what Coral works with. */
-      `${site.url}/coral-for-aks`,
-      `${site.url}/coral-for-eks`,
-      `${site.url}/amoeba-for-azure`,
-      `${site.url}/amoeba-for-aws`,
+      `${site.url}/aks-cost-optimization`,
+      `${site.url}/eks-cost-optimization`,
+      `${site.url}/azure-managed-disk-cost-optimization`,
+      `${site.url}/ebs-cost-optimization`,
       `${site.url}/coral-works-with-cluster-autoscaler`,
       `${site.url}/coral-works-with-karpenter`,
       `${site.url}/coral-works-with-aks-node-auto-provisioning`,
@@ -70,8 +73,8 @@ describe("sitemap.xml", () => {
       ...(amoebaDocs ? [`${site.url}/amoeba-troubleshooting`] : []),
       `${site.url}/open-source`,
       `${site.url}/learn`,
-      /* Every article in the Learn index, A–Z by slug. */
-      ...learnArticles.map((article) => `${site.url}${learnPath(article.slug)}`),
+      /* Every article in the Learn index, A–Z by slug, each at its own address: the two pillars at the root. */
+      ...learnArticles.map((article) => `${site.url}${articleRoute(article)}`),
       `${site.url}/learn/glossary`,
       /* Every term in the glossary index, A–Z by slug. */
       ...glossaryTerms.map((term) => `${site.url}${glossaryPath(term.slug)}`),
@@ -81,8 +84,8 @@ describe("sitemap.xml", () => {
       /* The live versus pages, read from their data: no test spells a competitor's name. */
       ...versusPages.map((page) => `${site.url}${versusRoute(page)}`),
       /* The two calculators, at the root, linked from Cloud cost optimization tools. */
-      `${site.url}/node-cost-calculator`,
-      `${site.url}/disk-cost-calculator`,
+      `${site.url}/eks-and-aks-pricing-calculator`,
+      `${site.url}/ebs-and-azure-disk-pricing`,
       `${site.url}/value-lab`,
       `${site.url}/coral-value-lab`,
       `${site.url}/amoeba-value-lab`,
@@ -110,29 +113,34 @@ describe("sitemap.xml", () => {
       sitemap().map((entry) => [new URL(entry.url).pathname, entry.lastModified]),
     );
     expect(dates).toEqual({
-      /* A page that prints no day: the day its content last changed (the heading pass, 23 Oct 2026). */
-      "/": "2026-10-23",
-      "/coral": "2026-10-23",
-      "/amoeba": "2026-10-23",
-      /* The ten pages of 31 Oct 2026 print no day: the day their content was written. */
-      "/coral-for-aks": "2026-10-31",
-      "/coral-for-eks": "2026-10-31",
-      "/amoeba-for-azure": "2026-10-31",
-      "/amoeba-for-aws": "2026-10-31",
-      "/coral-works-with-cluster-autoscaler": "2026-10-31",
-      "/coral-works-with-karpenter": "2026-10-31",
-      "/coral-works-with-aks-node-auto-provisioning": "2026-10-31",
-      "/coral-works-with-keda": "2026-10-31",
-      "/coral-works-with-helm": "2026-10-31",
-      "/coral-works-with-terraform": "2026-10-31",
-      "/assessment": "2026-10-21",
+      /* A page that prints no day: the day its content last changed (the company sentence and the titles,
+         1 Nov 2026). */
+      "/": "2026-11-01",
+      "/coral": "2026-11-01",
+      "/amoeba": "2026-11-01",
+      /* The two Topic pages print no day: the day their content was written (1 Nov 2026). */
+      "/azure-cost-optimization": "2026-11-01",
+      "/aws-cost-optimization": "2026-11-01",
+      /* The four cloud pages of 31 Oct 2026 print no day: the day their content was written. */
+      "/aks-cost-optimization": "2026-10-31",
+      "/eks-cost-optimization": "2026-10-31",
+      "/azure-managed-disk-cost-optimization": "2026-10-31",
+      "/ebs-cost-optimization": "2026-10-31",
+      /* The six works-with pages print no day: the day their content last changed (their D230 links, and the NAP
+         article in Read more, 1 Nov 2026). */
+      "/coral-works-with-cluster-autoscaler": "2026-11-01",
+      "/coral-works-with-karpenter": "2026-11-01",
+      "/coral-works-with-aks-node-auto-provisioning": "2026-11-01",
+      "/coral-works-with-keda": "2026-11-01",
+      "/coral-works-with-helm": "2026-11-01",
+      "/coral-works-with-terraform": "2026-11-01",
+      "/assessment": "2026-11-01",
       "/marketplaces": "2026-10-21",
       /* The guide PDF's new page count (30 Oct 2026). */
       "/docs": "2026-10-30",
-      /* The Custom policies steps of 30 Oct 2026. */
-      "/coral-guide": "2026-10-30",
-      /* The four questions of 25 Oct 2026. */
-      "/coral-faq": "2026-10-25",
+      /* The Coral link's new words (O1), 1 Nov 2026. */
+      "/coral-guide": "2026-11-01",
+      "/coral-faq": "2026-11-01",
       /* The Amoeba guide and FAQ, rewritten at product level on 27 Oct 2026. */
       ...(amoebaDocs ? { "/amoeba-guide": "2026-10-27", "/amoeba-faq": "2026-10-27" } : {}),
       /* The three guides print "Updated 16 October 2026"; /open-source gives its content file's date. */
@@ -149,7 +157,7 @@ describe("sitemap.xml", () => {
         isoDay(learnPage.updated),
       ),
       ...Object.fromEntries(
-        learnArticles.map((article) => [learnPath(article.slug), article.updated]),
+        learnArticles.map((article) => [articleRoute(article), article.updated]),
       ),
       /* The glossary's hub: its own day or its newest term's, whichever is later. Each term: the day it last
          changed. */
@@ -158,22 +166,30 @@ describe("sitemap.xml", () => {
         isoDay(glossaryPage.updated),
       ),
       ...Object.fromEntries(glossaryTerms.map((term) => [glossaryPath(term.slug), term.updated])),
-      /* Cloud cost optimization tools: the day its content last changed (its Free calculators, 30 Oct 2026). */
-      "/cloud-cost-optimization-library": "2026-10-30",
-      /* The comparison pages: the day they were checked and published. */
-      "/cloud-cost-optimization-library/coral-alternatives": "2026-10-19",
-      "/cloud-cost-optimization-library/amoeba-alternatives": "2026-10-19",
-      ...Object.fromEntries(versusPages.map((page) => [versusRoute(page), "2026-10-19"])),
-      /* The two calculators: the day their prices were read, which they print. */
-      "/node-cost-calculator": "2026-10-30",
-      "/disk-cost-calculator": "2026-10-30",
+      /* Cloud cost optimization tools: the day its content last changed (Part 4's title and deck, 1 Nov 2026). */
+      "/cloud-cost-optimization-library": "2026-11-01",
+      /* The comparison pages: the day the versus pages were checked and published (the first two 19 Oct 2026, the
+         two against the clouds' own tools 1 Nov 2026), and the day the alternatives pages were retitled
+         (1 Nov 2026). */
+      "/cloud-cost-optimization-library/coral-alternatives": "2026-11-01",
+      "/cloud-cost-optimization-library/amoeba-alternatives": "2026-11-01",
+      ...Object.fromEntries(
+        versusPages
+          .filter((page) => page.lastUpdated === undefined)
+          .map((page) => [versusRoute(page), "2026-10-19"]),
+      ),
+      "/cloud-cost-optimization-library/coral-vs-azure-advisor": "2026-11-01",
+      "/cloud-cost-optimization-library/coral-vs-aws-compute-optimizer": "2026-11-01",
+      /* The two calculators: the day their content last changed (Part 4's titles, 1 Nov 2026). */
+      "/eks-and-aks-pricing-calculator": "2026-11-01",
+      "/ebs-and-azure-disk-pricing": "2026-11-01",
       /* Value Lab: the Amoeba study's card beside the Coral one (29 Oct 2026). Each study: the day it prints. */
       "/value-lab": "2026-10-29",
       "/coral-value-lab": "2026-10-12",
       "/amoeba-value-lab": "2026-10-19",
       /* The research papers print no day: the day their content last changed. */
-      "/cloud-cost-optimization-research-papers": "2026-10-29",
-      "/events": "2026-10-21",
+      "/cloud-cost-optimization-research-papers": "2026-11-01",
+      "/events": "2026-11-01",
       /* Zoorik News: the week of its latest Radar. */
       "/news": "2026-10-19",
       "/community": "2026-10-21",
@@ -201,7 +217,7 @@ describe("sitemap.xml", () => {
   it("dates the home page by its content file, homeLastUpdated, and by nothing else", () => {
     const home = sitemap().find((entry) => new URL(entry.url).pathname === "/")!;
     expect(home.lastModified).toBe(isoDay(homeLastUpdated));
-    expect(homeLastUpdated).toBe("23 October 2026");
+    expect(homeLastUpdated).toBe("1 November 2026");
   });
 
   it("dates every page it lists, and none in the future", () => {
@@ -209,7 +225,7 @@ describe("sitemap.xml", () => {
        without one is never told to recrawl. */
     const entries = sitemap();
     expect(entries).toHaveLength(
-      (amoebaDocs ? 54 : 51) + learnArticles.length + glossaryTerms.length,
+      (amoebaDocs ? 58 : 55) + learnArticles.length + glossaryTerms.length,
     );
     /* Today is `LEARN_TODAY` when set (articles dated ahead, checked as of the day they go live), else the latest
        calendar day anywhere on Earth (UTC+14), so a date set to today in any time zone is not "the future". */
@@ -242,12 +258,15 @@ describe("sitemap.xml", () => {
       ? []
       : [routes.amoebaGuide, routes.amoebaFaq, routes.amoebaTroubleshooting];
     /* A dynamic route stands for the pages it prerenders: /cloud-cost-optimization-library/[slug] for the live versus pages, /learn/[slug]
-       for every article in the Learn index, /learn/glossary/[slug] for every term in the glossary index. */
+       for every article in the Learn index but the two at the root (pages of their own), /learn/glossary/[slug] for
+       every term in the glossary index. */
     const pages = (route: string) =>
       route === `${comparePath}/[slug]`
         ? versusPages.map(versusRoute)
         : route === `${routes.learn}/[slug]`
-          ? learnArticles.map((article) => learnPath(article.slug))
+          ? learnArticles
+              .filter((article) => article.route === undefined)
+              .map((article) => learnPath(article.slug))
           : route === `${routes.learnGlossary}/[slug]`
             ? glossaryTerms.map((term) => glossaryPath(term.slug))
             : [route];

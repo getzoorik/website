@@ -135,7 +135,7 @@ describe("/learn", () => {
     expect(root.querySelector("#assess")).toBeNull();
   });
 
-  it("starts each subject on its pillar, and names each cause by the guide that fixes it, once published", () => {
+  it("starts each subject on its pillar, and leads each cause into the guide that fixes it, once published", () => {
     const root = page();
     const [start, fix] = [...root.querySelectorAll(".lr-pair .lr-c")];
     expect(text(start!.querySelector("h2"))).toBe(learnPage.start.title);
@@ -152,9 +152,17 @@ describe("/learn", () => {
     expect([...fix!.querySelectorAll("a.lr-l")].map(row)).toEqual(
       learnFixes.flatMap((entry) => {
         const article = findArticle(entry.slug);
-        return article ? [[articleRoute(article), entry.problem, article.h1]] : [];
+        return article
+          ? [[articleRoute(article), `${entry.problem}: ${entry.words}`, article.h1]]
+          : [];
       }),
     );
+    /* The problem leads in; the link's words end on the guide's short name, the words it is searched by. */
+    expect(learnFixes.map((entry) => `${entry.problem}: ${entry.words}`)).toEqual([
+      "Machines sit half empty: Cluster Autoscaler not scaling down",
+      "Disks are bigger than their data: reduce Azure disk size",
+      "You can’t see where the money goes: Kubernetes cost estimation",
+    ]);
     expect(fix!.querySelector(".lr-list.lr-dark")).not.toBeNull();
   });
 
@@ -239,7 +247,7 @@ describe("/learn", () => {
     );
   });
 
-  it("links Value Lab, the tools, the community, the news and the glossary, Value Lab's figure read from the study", () => {
+  it("links Value Lab, the tools, the two calculators, the community, the news and the glossary, Value Lab's figure read from the study", () => {
     const root = page();
     const drawn = [...root.querySelectorAll("#more .dt a")].map((a) => [
       a.getAttribute("href"),
@@ -250,9 +258,22 @@ describe("/learn", () => {
     expect(learnMore.map((tile) => tile.href)).toEqual([
       routes.valueLab,
       routes.cloudCostTools,
+      routes.eksAndAksPricingCalculator,
+      routes.ebsAndAzureDiskPricing,
       routes.community,
       routes.news,
       routes.learnGlossary,
+    ]);
+    /* The calculators are named by the words they are searched by, Coral's first, each with its tools-page line. */
+    expect(learnMore.slice(2, 4).map((tile) => [tile.title, tile.line])).toEqual([
+      [
+        "EKS and AKS pricing calculator",
+        "A node’s monthly list price on AKS or EKS, and how much of it your pods can use.",
+      ],
+      [
+        "EBS and Azure disk pricing",
+        "What an Azure managed disk or an EBS volume costs a month, and what its empty space costs.",
+      ],
     ]);
     expect(learnMore[0]!.line.startsWith(caseStudy.band.stats[0].value)).toBe(true);
     /* The glossary is linked once on the hub, by its h1. */
@@ -263,7 +284,15 @@ describe("/learn", () => {
 
   it("names no tool of the market, and links no page that compares with one", () => {
     expect(competitors.length).toBeGreaterThan(40);
-    expect(competitors).toEqual(expect.arrayContaining(versusFacts.map((facts) => facts.name)));
+    /* The versus pages against a competitor; the two of 1 Nov 2026 are against the clouds' own tools. */
+    const competing = versusFacts.filter((facts) =>
+      marketGroups
+        .filter((group) => group.id !== "native")
+        .flatMap((group) => group.tools)
+        .some((tool) => tool.name === facts.tool && !NOT_COMPETITORS.has(tool.subgroup)),
+    );
+    expect(competing).toHaveLength(2);
+    expect(competitors).toEqual(expect.arrayContaining(competing.map((facts) => facts.name)));
     const root = page();
     const words = [
       root.ownerDocument.body.textContent ?? "",

@@ -4,18 +4,26 @@ import { join } from "node:path";
 import type { Metadata } from "next";
 import { describe, expect, it, vi } from "vitest";
 
-import AmoebaForAws, { metadata as amoebaForAwsMeta } from "@/app/amoeba-for-aws/page";
-import AmoebaForAzure, { metadata as amoebaForAzureMeta } from "@/app/amoeba-for-azure/page";
-import CoralForAks, { metadata as coralForAksMeta } from "@/app/coral-for-aks/page";
-import CoralForEks, { metadata as coralForEksMeta } from "@/app/coral-for-eks/page";
+import AksCostOptimization, {
+  metadata as aksCostOptimizationMeta,
+} from "@/app/aks-cost-optimization/page";
+import AzureManagedDiskCostOptimization, {
+  metadata as azureManagedDiskCostOptimizationMeta,
+} from "@/app/azure-managed-disk-cost-optimization/page";
+import EbsCostOptimization, {
+  metadata as ebsCostOptimizationMeta,
+} from "@/app/ebs-cost-optimization/page";
+import EksCostOptimization, {
+  metadata as eksCostOptimizationMeta,
+} from "@/app/eks-cost-optimization/page";
 import { amoebaDocs, keepsHash, navState, routes } from "@/config/site";
 import { amoebaGuideSectionIds } from "@/content/amoeba-guide";
 import {
-  amoebaForAwsPage,
-  amoebaForAzurePage,
+  aksCostOptimizationPage,
+  azureManagedDiskCostOptimizationPage,
   cloudPages,
-  coralForAksPage,
-  coralForEksPage,
+  ebsCostOptimizationPage,
+  eksCostOptimizationPage,
   type AmoebaCloudPage,
   type CloudPageContent,
   type CoralCloudPage,
@@ -26,11 +34,11 @@ import { findTerm, glossarySlugOf } from "@/content/learn/glossary";
 import { findArticle, learnSlugOf } from "@/content/learn/published";
 
 /**
- * The four per-cloud pages, `/coral-for-aks`, `/coral-for-eks`, `/amoeba-for-azure` and `/amoeba-for-aws`: one
- * template, four contents. What is checked is what the drafts and the mocks ask of each page as a whole: the title
- * and description, the hero, every section in the template's order under its anchor, the cards, the setup table, the
- * works-with tiles (Coral), the questions, Read more and the closing row; that every link lands; and that nothing on
- * the page is a figure or a price.
+ * The four per-cloud pages, `/aks-cost-optimization`, `/eks-cost-optimization`, `/azure-managed-disk-cost-optimization`
+ * and `/ebs-cost-optimization`: one template, four contents. What is checked is what the drafts and the mocks ask of
+ * each page as a whole: the title and description, the hero, every section in the template's order under its anchor,
+ * the cards, the setup table, the works-with tiles (Coral), the questions, Read more and the closing row; that every
+ * link lands; and that nothing on the page is a figure or a price.
  */
 let pathname = "/";
 vi.mock("next/navigation", () => ({ usePathname: () => pathname }));
@@ -88,11 +96,11 @@ const amoebaOrder = ["top", "about", "how", "[setup needs questions]", "read-amo
 
 const cases: readonly (readonly [string, Case])[] = [
   [
-    "/coral-for-aks",
+    "/aks-cost-optimization",
     {
-      Page: CoralForAks,
-      metadata: coralForAksMeta,
-      content: coralForAksPage,
+      Page: AksCostOptimization,
+      metadata: aksCostOptimizationMeta,
+      content: aksCostOptimizationPage,
       title: "AKS cost optimization",
       description:
         "AKS cost optimization with Coral: it rebalances your cluster, sizes pods to real use, and empties spare nodes for the Cluster Autoscaler or NAP to remove.",
@@ -133,17 +141,17 @@ const cases: readonly (readonly [string, Case])[] = [
       readMore: [
         "/coral-guide#connect-a-cluster",
         "/coral-faq",
-        "/learn/reduce-kubernetes-cost",
+        "/kubernetes-cost-optimization",
         "/learn/cluster-autoscaler-not-scaling-down",
       ],
     },
   ],
   [
-    "/coral-for-eks",
+    "/eks-cost-optimization",
     {
-      Page: CoralForEks,
-      metadata: coralForEksMeta,
-      content: coralForEksPage,
+      Page: EksCostOptimization,
+      metadata: eksCostOptimizationMeta,
+      content: eksCostOptimizationPage,
       title: "EKS cost optimization",
       description:
         "EKS cost optimization with Coral: it rebalances your cluster, sizes pods to real use, and empties spare nodes for Karpenter or the Cluster Autoscaler to remove.",
@@ -187,11 +195,11 @@ const cases: readonly (readonly [string, Case])[] = [
     },
   ],
   [
-    "/amoeba-for-azure",
+    "/azure-managed-disk-cost-optimization",
     {
-      Page: AmoebaForAzure,
-      metadata: amoebaForAzureMeta,
-      content: amoebaForAzurePage,
+      Page: AzureManagedDiskCostOptimization,
+      metadata: azureManagedDiskCostOptimizationMeta,
+      content: azureManagedDiskCostOptimizationPage,
       title: "Azure managed disk cost optimization",
       description:
         "Reduce Azure managed disk cost on Windows and Linux VMs. Amoeba moves data disks onto one pool sized to your data, then grows and shrinks it with your data.",
@@ -227,11 +235,11 @@ const cases: readonly (readonly [string, Case])[] = [
     },
   ],
   [
-    "/amoeba-for-aws",
+    "/ebs-cost-optimization",
     {
-      Page: AmoebaForAws,
-      metadata: amoebaForAwsMeta,
-      content: amoebaForAwsPage,
+      Page: EbsCostOptimization,
+      metadata: ebsCostOptimizationMeta,
+      content: ebsCostOptimizationPage,
       title: "EBS cost optimization",
       description:
         "Reduce Amazon EBS cost on EC2 instances. Amoeba moves data volumes onto one pool of gp3 volumes sized to your data, then grows and shrinks it with your data.",
@@ -276,10 +284,10 @@ function renderPage(path: string, { Page }: Case): HTMLElement {
 describe("the four per-cloud pages", () => {
   it("are the four the footer names, in its order, each dated the day it was built", () => {
     expect(cloudPages.map((page) => page.path)).toEqual([
-      routes.coralForAks,
-      routes.coralForEks,
-      routes.amoebaForAzure,
-      routes.amoebaForAws,
+      routes.aksCostOptimization,
+      routes.eksCostOptimization,
+      routes.azureManagedDiskCostOptimization,
+      routes.ebsCostOptimization,
     ]);
     expect(cloudPages.map((page) => page.lastUpdated)).toEqual(Array(4).fill("31 October 2026"));
     /* Product pages, not documents: the header marks nothing, and an in-page link leaves the address clean, as on

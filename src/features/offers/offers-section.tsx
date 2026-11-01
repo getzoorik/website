@@ -180,6 +180,10 @@ function Row({
  * is restated because Safari drops it under `list-style:none`. The free
  * card's label and each row's name are h3s under the section's h2, so each can
  * be reached by heading.
+ *
+ * Under both, one row of text links to the free tools (owner, 1 Nov 2026): the
+ * product blocks' own row (`.btns`) of `.alink`s, each ending on the arrow. It
+ * does not rise: it is a way on, not a figure.
  */
 export function OffersSection(): React.JSX.Element {
   const { free } = offersContent;
@@ -213,6 +217,14 @@ export function OffersSection(): React.JSX.Element {
               ))}
             </ul>
           </div>
+        </div>
+        <div className="btns">
+          {offersContent.tools.map((tool) => (
+            <a className="alink" href={tool.href} key={tool.href}>
+              <span>{tool.label}</span>
+              <Arrow />
+            </a>
+          ))}
         </div>
       </div>
     </section>

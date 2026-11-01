@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -60,7 +60,7 @@ export const term: GlossaryTerm = {
             [
               "Leaving later, which can mean ",
               { a: "egress", href: "/learn/glossary/egress-cost" },
-              " fees. AWS waives data transfer out to the internet for eligible customers who move all their data off AWS, once AWS Support approves.",
+              " fees. AWS waives data transfer out to the internet for eligible customers moving all their data off AWS, once AWS Support approves.",
             ],
           ],
         },
@@ -76,7 +76,7 @@ export const term: GlossaryTerm = {
             "Comparing only prices leaves out power, staff time and the move.",
             [
               "After the move, ",
-              { a: "using less", href: "/learn/how-to-reduce-cloud-costs" },
+              { a: "cloud cost optimization", href: "/cloud-cost-optimization" },
               " reduces the cloud part of your TCO.",
             ],
             [
@@ -105,13 +105,12 @@ export const term: GlossaryTerm = {
       line: "A license saving Azure Migrate counts.",
       href: "/learn/glossary/azure-hybrid-benefit",
     },
-    {
-      title: "FinOps",
-      line: "Teams sharing ownership of cloud spend.",
-      href: "/learn/glossary/finops",
-    },
+    { title: "FinOps", line: "Shared ownership of cloud spend.", href: "/learn/glossary/finops" },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: {
+    title: "Cloud cost optimization: how to reduce cloud costs",
+    href: "/cloud-cost-optimization",
+  },
   sources: [
     {
       publisher: "Microsoft Learn",

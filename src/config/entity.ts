@@ -13,14 +13,13 @@ export const crunchbaseProfile = "https://www.crunchbase.com/organization/zoorik
 
 /**
  * Zoorik's Bluesky account. Its handle is the domain itself, @zoorik.com, which
- * Bluesky checks against the `_atproto` TXT record on zoorik.com.
+ * Bluesky checks against the `_atproto` TXT record on zoorik.com. The footer
+ * and /about show it; `sameAs` leaves it out while it has no post (owner, 1 Nov
+ * 2026, O14).
  */
 export const blueskyProfile = "https://bsky.app/profile/zoorik.com";
 
-/** Zoorik's public GitLab group, with the same name, logo and description. */
-export const gitlabGroup = "https://gitlab.com/zoorik";
-
-/** Zoorik's Substack publication. */
+/** Zoorik's Substack publication: in the footer and on /news, not in `sameAs` while its archive is empty (O14). */
 export const substackPublication = "https://zoorik.substack.com";
 
 /** Zoorik's Instagram account. */
@@ -29,15 +28,19 @@ export const instagramProfile = "https://www.instagram.com/getzoorik/";
 /** Zoorik's packages on Artifact Hub (Verified Publisher); it has no organization page of its own. */
 export const artifactHubOrg = "https://artifacthub.io/packages/search?org=zoorik";
 
-/** The names Zoorik holds on npm and Quay, and its Gravatar profile. */
+/**
+ * The name Zoorik holds on npm. It holds no package (the `zoorik` package is a
+ * user's), so it is not in `sameAs` (O14) and /marketplaces never links it.
+ */
 export const npmOrg = "https://www.npmjs.com/org/zoorik";
-export const quayOrg = "https://quay.io/organization/zoorik";
+
+/** Zoorik's Gravatar profile. */
 export const gravatarProfile = "https://gravatar.com/getzoorik";
 
-/** Zoorik on Hacker News, dev.to, Mastodon and Wellfound. */
-export const hackerNewsProfile = "https://news.ycombinator.com/user?id=zoorik";
-export const devToOrg = "https://dev.to/zoorik";
-export const mastodonProfile = "https://mastodon.social/@zoorik";
+/** Zoorik's organization on Hugging Face (owner, 1 Nov 2026, O13). */
+export const huggingFaceOrg = "https://huggingface.co/zoorik";
+
+/** Zoorik on Wellfound. */
 export const wellfoundCompany = "https://wellfound.com/company/zoorik";
 
 /**

@@ -523,6 +523,12 @@ export function ArticlePage({ article }: { readonly article: Article }): React.J
             <p className="doc-updated">
               {articleWords.published}
               {printedDay(article.published)}
+              {article.updated !== article.published ? (
+                <>
+                  {articleWords.updated}
+                  {printedDay(article.updated)}
+                </>
+              ) : null}
               {author ? <Byline author={author} /> : null}
               {articleWords.by}
               <a href={routes.about}>{named("Zoorik")}</a>
@@ -530,9 +536,15 @@ export function ArticlePage({ article }: { readonly article: Article }): React.J
             {article.cover ? (
               <figure className="ar-cover">
                 {/* A plain <img>: the cover is one drawn file in public/learn-covers, and the sheet owns the box
-                    (`.ar-cover img`). It pictures what the h1 already says, so it is read as decoration. */}
+                    (`.ar-cover img`). Its alt is the draft's `cover_alt`; without one it is read as decoration. */}
                 {/* eslint-disable-next-line @next/next/no-img-element -- see above */}
-                <img src={article.cover} alt="" width={1200} height={630} decoding="async" />
+                <img
+                  src={article.cover}
+                  alt={article.coverAlt ?? ""}
+                  width={1200}
+                  height={630}
+                  decoding="async"
+                />
               </figure>
             ) : null}
             {article.short ? (
@@ -584,7 +596,7 @@ export function ArticlePage({ article }: { readonly article: Article }): React.J
           const link = titleLink({ text: tile.title, href: tile.href });
           return (
             <LinkTile
-              key={tile.href}
+              key={tile.title}
               href={link.href}
               title={named(link.text)}
               line={named(tile.where)}

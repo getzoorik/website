@@ -1,3 +1,6 @@
+import { routes } from "@/config/site";
+import type { ArticleText } from "@/content/learn/article";
+
 /**
  * By design — "Cloud cost optimization, without the risk", the home page's one
  * band: four promises, each a drawing with its title as the caption.
@@ -29,9 +32,16 @@ export interface ByDesignCard {
   readonly description: string;
 }
 
-export const byDesignHeader = {
-  title: "Cloud cost optimization, without the risk",
-} as const;
+/**
+ * The band's heading. Its first words link to the cloud cost pillar, which owns that search (owner, 1 Nov 2026), in
+ * the heading's own ink, the accent on hover (`.sec-head h2 a`, the site system).
+ */
+export const byDesignHeader: { readonly title: ArticleText } = {
+  title: [
+    { a: "Cloud cost optimization", href: routes.cloudCostOptimization },
+    ", without the risk",
+  ],
+};
 
 export const byDesignCards: readonly ByDesignCard[] = [
   {

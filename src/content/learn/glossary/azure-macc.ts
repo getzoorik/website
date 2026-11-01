@@ -11,11 +11,11 @@ export const term: GlossaryTerm = {
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
-      text: "Azure MACC, the Microsoft Azure Consumption Commitment, is a contract to spend a set amount on Azure over a set period. An Azure MACC agreement is tied to a Microsoft Customer Agreement or Enterprise Agreement billing account. Eligible spend on each invoice reduces the balance.",
+      text: "Azure MACC, the Microsoft Azure Consumption Commitment, is a contract to spend a set amount on Azure over a set period. An Azure MACC agreement is part of a Microsoft Customer Agreement or Enterprise Agreement. Eligible spend on each invoice reduces the balance.",
     },
   ],
   sections: [
@@ -57,9 +57,9 @@ export const term: GlossaryTerm = {
             "Miss the total by the end date, and you pay the remaining balance as a shortfall charge. It comes as an Azure prepayment credit.",
             "So a saving that takes spend below the commitment may not reduce the invoice.",
             "Some MACCs also have milestones, set amounts due by set dates. Missing one brings a shortfall charge too.",
-            "While a MACC isn’t met, billing account admins get emails 90, 60 and 30\u00a0days before it expires.",
+            "While a MACC isn’t met, the account admins get emails 90, 60 and 30\u00a0days before it expires.",
             [
-              { a: "Reduce your spend", href: "/learn/how-to-reduce-cloud-costs" },
+              { a: "Reduce cloud costs", href: "/cloud-cost-optimization" },
               " before you sign a new MACC, so it matches real use.",
             ],
             [
@@ -89,7 +89,10 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/finops",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: {
+    title: "Cloud cost optimization: how to reduce cloud costs",
+    href: "/cloud-cost-optimization",
+  },
   sources: [
     {
       publisher: "Microsoft Learn",

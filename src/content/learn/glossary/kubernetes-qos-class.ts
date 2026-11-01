@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "kubernetes",
   product: "coral",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -116,7 +116,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/burstable-instance",
     },
   ],
-  next: { title: "Kubernetes pod rebalancing", href: "/learn/kubernetes-pod-right-sizing" },
+  next: { title: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
   sources: [
     {
       publisher: "Kubernetes",

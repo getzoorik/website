@@ -45,33 +45,55 @@ export const shareImage = (url: ShareImage["url"], alt: string): ShareImage => (
  * card by its URL, so a redrawn card gets a new file name. Each `alt` reads the card: its name, then its words. The
  * home page has none of its own: it shows the brand card.
  */
-/** A product's comparison pages, its alternatives page then its versus page: they share one card. */
+/**
+ * A product's comparison pages, its alternatives page then its versus pages: they share one card, except a versus page
+ * with its own (`card`, below).
+ */
 const comparisonsOf = (product: ProductId): `/${string}`[] => [
   ...alternativesPages
     .filter((page) => page.product === product)
     .map((page) => page.route as `/${string}`),
-  ...versusPages.filter((page) => page.product === product).map(versusRoute),
+  ...versusPages.filter((page) => page.product === product && !page.card).map(versusRoute),
 ];
+
+/** A versus page with its own card, `public/og/pages/<slug>.png`, whose words are its title. */
+const versusCard = (slug: string): { file: string; words: string; paths: `/${string}`[] } => {
+  const page = versusPages.find((entry) => entry.slug === slug && entry.card);
+  if (!page) throw new Error(`No live versus page "${slug}" has its own card.`);
+  return { file: page.slug, words: page.meta.title, paths: [versusRoute(page)] };
+};
 
 const CARDS: readonly {
   readonly file: string;
   readonly words: string;
   readonly paths: readonly `/${string}`[];
 }[] = [
-  { file: "coral", words: "Kubernetes cost optimization on AKS and EKS", paths: ["/coral"] },
+  {
+    file: "coral-kubernetes-optimization",
+    words: "Kubernetes optimization for AKS and EKS",
+    paths: ["/coral"],
+  },
   { file: "amoeba", words: "Block storage cost optimization on Azure and AWS", paths: ["/amoeba"] },
   /* Each product on each cloud, then the six pages on what Coral works with (31 Oct 2026). */
-  { file: "coral-for-aks", words: "AKS cost optimization with Coral", paths: [routes.coralForAks] },
-  { file: "coral-for-eks", words: "EKS cost optimization with Coral", paths: [routes.coralForEks] },
   {
-    file: "amoeba-for-azure",
-    words: "Azure managed disk cost optimization with Amoeba",
-    paths: [routes.amoebaForAzure],
+    file: "aks-cost-optimization",
+    words: "AKS cost optimization with Coral",
+    paths: [routes.aksCostOptimization],
   },
   {
-    file: "amoeba-for-aws",
+    file: "eks-cost-optimization",
+    words: "EKS cost optimization with Coral",
+    paths: [routes.eksCostOptimization],
+  },
+  {
+    file: "azure-managed-disk-cost-optimization",
+    words: "Azure managed disk cost optimization with Amoeba",
+    paths: [routes.azureManagedDiskCostOptimization],
+  },
+  {
+    file: "ebs-cost-optimization",
     words: "EBS cost optimization with Amoeba",
-    paths: [routes.amoebaForAws],
+    paths: [routes.ebsCostOptimization],
   },
   {
     file: "coral-works-with-cluster-autoscaler",
@@ -102,6 +124,17 @@ const CARDS: readonly {
     file: "coral-works-with-terraform",
     words: "Coral works with Terraform",
     paths: [routes.coralWorksWithTerraform],
+  },
+  /* The two Topic pages (1 Nov 2026). */
+  {
+    file: "azure-cost-optimization",
+    words: "Azure cost optimization: how to reduce Azure costs",
+    paths: [routes.azureCostOptimization],
+  },
+  {
+    file: "aws-cost-optimization",
+    words: "AWS cost optimization: how to reduce AWS costs",
+    paths: [routes.awsCostOptimization],
   },
   { file: "assessment", words: "Free cloud cost assessment", paths: ["/assessment"] },
   { file: "docs", words: "Product guides, FAQs and one-pagers", paths: ["/docs"] },
@@ -137,8 +170,8 @@ const CARDS: readonly {
   { file: "open-source", words: "Open source", paths: ["/open-source"] },
   { file: "learn", words: "Cloud cost optimization guides", paths: ["/learn"] },
   {
-    file: "cloud-cost-optimization-tools",
-    words: "Cloud cost optimization tools",
+    file: "cloud-cost-optimization-and-finops-tools",
+    words: "Cloud cost optimization tools and FinOps tools",
     paths: [routes.cloudCostTools],
   },
   {
@@ -146,14 +179,17 @@ const CARDS: readonly {
     words: "Kubernetes cost tools compared",
     paths: comparisonsOf("coral"),
   },
+  /* Coral's two versus pages against the clouds' own tools (1 Nov 2026), each with its own card. */
+  versusCard("coral-vs-azure-advisor"),
+  versusCard("coral-vs-aws-compute-optimizer"),
   {
     file: "block-storage-tools",
     words: "Block storage tools compared",
     paths: comparisonsOf("amoeba"),
   },
   {
-    file: "value-lab",
-    words: "What Coral and Amoeba reduced on real cloud bills",
+    file: "value-lab-at-list-prices",
+    words: "What Coral and Amoeba reduced, every figure at list prices",
     paths: ["/value-lab"],
   },
   {
@@ -185,14 +221,14 @@ const CARDS: readonly {
   { file: "terms", words: "Terms of use", paths: ["/terms"] },
   { file: "security", words: "Security and data handling", paths: ["/security"] },
   {
-    file: "node-cost-calculator",
-    words: "Kubernetes node cost calculator",
-    paths: [routes.nodeCostCalculator],
+    file: "eks-and-aks-pricing-calculator",
+    words: "EKS pricing calculator: AKS and EKS node cost",
+    paths: [routes.eksAndAksPricingCalculator],
   },
   {
-    file: "disk-cost-calculator",
-    words: "Disk cost calculator: Azure disks and Amazon EBS",
-    paths: [routes.diskCostCalculator],
+    file: "ebs-and-azure-disk-pricing",
+    words: "EBS pricing and Azure disk pricing calculator",
+    paths: [routes.ebsAndAzureDiskPricing],
   },
   { file: "pricing", words: "How Coral and Amoeba are priced", paths: [routes.pricing] },
   { file: "contact", words: "Contact Zoorik", paths: [routes.contact] },
@@ -219,9 +255,9 @@ const CARDS: readonly {
     paths: ["/learn/find-unattached-disks-azure"],
   },
   {
-    file: "learn-how-to-reduce-cloud-costs",
-    words: "How to reduce cloud costs: what moves the bill",
-    paths: ["/learn/how-to-reduce-cloud-costs"],
+    file: "cloud-cost-optimization",
+    words: "Cloud cost optimization: how to reduce cloud costs",
+    paths: [routes.cloudCostOptimization],
   },
   {
     file: "learn-hpa-vs-vpa-vs-cluster-autoscaler",
@@ -234,26 +270,30 @@ const CARDS: readonly {
     paths: ["/learn/kubernetes-cost-estimation"],
   },
   {
-    file: "learn-kubernetes-pod-right-sizing",
-    words: "Kubernetes pod rebalancing",
+    file: "learn-kubernetes-pod-right-sizing-step-by-step",
+    words: "Kubernetes pod right sizing, step by step",
     paths: ["/learn/kubernetes-pod-right-sizing"],
   },
   {
-    file: "learn-poor-architecture-cloud-bill",
-    words: "How poor architecture increases your cloud bill",
+    file: "learn-poor-architecture-cloud-costs",
+    words: "How poor architecture increases your cloud costs",
     paths: ["/learn/poor-architecture-cloud-bill"],
   },
   {
-    file: "learn-reduce-kubernetes-cost",
-    words: "How to reduce Kubernetes cost: requests, then nodes",
-    paths: ["/learn/reduce-kubernetes-cost"],
+    file: "kubernetes-cost-optimization",
+    words: "Kubernetes cost optimization: requests, then nodes",
+    paths: [routes.kubernetesCostOptimization],
   },
   {
-    file: "learn-shrink-azure-managed-disk",
-    words: "Can a managed disk shrink?",
+    file: "learn-reduce-azure-disk-size",
+    words: "Reduce Azure disk size: can a managed disk shrink?",
     paths: ["/learn/shrink-azure-managed-disk"],
   },
-  { file: "learn-vpa-vs-hpa", words: "VPA vs HPA", paths: ["/learn/vpa-vs-hpa"] },
+  {
+    file: "learn-hpa-vs-vpa-in-kubernetes",
+    words: "HPA vs VPA in Kubernetes: when to use which",
+    paths: ["/learn/vpa-vs-hpa"],
+  },
   {
     file: "learn-azure-vm-disk-usage",
     words: "Azure VM disk usage: check used vs provisioned",
@@ -303,6 +343,247 @@ const CARDS: readonly {
     file: "learn-azure-disk-snapshot-cost",
     words: "Azure disk snapshot cost: incremental vs full",
     paths: ["/learn/azure-disk-snapshot-cost"],
+  },
+  /* The articles and guides of the 1 Nov 2026 release, each by its title. */
+  {
+    file: "learn-aks-cost-analysis",
+    words: "AKS cost analysis: what the add-on shows",
+    paths: ["/learn/aks-cost-analysis"],
+  },
+  {
+    file: "learn-aks-node-auto-provisioning",
+    words: "AKS node auto provisioning (NAP): how to enable it",
+    paths: ["/learn/aks-node-auto-provisioning"],
+  },
+  {
+    file: "learn-aks-storage-classes",
+    words: "AKS storage classes: which Azure disk each creates",
+    paths: ["/learn/aks-storage-classes"],
+  },
+  {
+    file: "learn-aks-vs-eks-cost",
+    words: "AKS vs EKS cost: control plane fees and nodes",
+    paths: ["/learn/aks-vs-eks-cost"],
+  },
+  {
+    file: "learn-azure-disk-expand-without-downtime",
+    words: "Azure disk expand without downtime, step by step",
+    paths: ["/learn/azure-disk-expand-without-downtime"],
+  },
+  {
+    file: "learn-azure-disk-iops-vs-throughput",
+    words: "Azure disk IOPS vs throughput: what limits disks",
+    paths: ["/learn/azure-disk-iops-vs-throughput"],
+  },
+  {
+    file: "learn-azure-disk-lrs-vs-zrs",
+    words: "Azure disk LRS vs ZRS: what zone redundancy costs",
+    paths: ["/learn/azure-disk-lrs-vs-zrs"],
+  },
+  {
+    file: "learn-azure-disk-performance-tiers",
+    words: "Azure disk performance tiers and bursting",
+    paths: ["/learn/azure-disk-performance-tiers"],
+  },
+  {
+    file: "learn-azure-managed-disk-types",
+    words: "Azure disk types: pricing and how to choose",
+    paths: ["/learn/azure-managed-disk-types"],
+  },
+  {
+    file: "learn-azure-vm-disk-space-alert",
+    words: "Azure VM disk space alert in Azure Monitor",
+    paths: ["/learn/azure-vm-disk-space-alert"],
+  },
+  {
+    file: "learn-btrfs-device-remove",
+    words: "btrfs device remove: take a disk out of a pool",
+    paths: ["/learn/btrfs-device-remove"],
+  },
+  {
+    file: "learn-btrfs-vs-lvm",
+    words: "btrfs vs LVM: which one can shrink on a cloud VM?",
+    paths: ["/learn/btrfs-vs-lvm"],
+  },
+  {
+    file: "learn-change-aks-node-pool-vm-size",
+    words: "How to change an AKS node pool VM size",
+    paths: ["/learn/change-aks-node-pool-vm-size"],
+  },
+  {
+    file: "learn-cluster-autoscaler-overprovisioning",
+    words: "Cluster Autoscaler overprovisioning with pause pods",
+    paths: ["/learn/cluster-autoscaler-overprovisioning"],
+  },
+  {
+    file: "learn-combine-ebs-volumes",
+    words: "Combine EBS volumes into one: LVM, RAID 0 or btrfs",
+    paths: ["/learn/combine-ebs-volumes"],
+  },
+  {
+    file: "learn-compute-optimizer-ebs",
+    words: "AWS Compute Optimizer for EBS: what it recommends",
+    paths: ["/learn/compute-optimizer-ebs"],
+  },
+  {
+    file: "learn-cordon-vs-drain",
+    words: "Cordon vs drain in Kubernetes: what each does",
+    paths: ["/learn/cordon-vs-drain"],
+  },
+  {
+    file: "learn-ebs-elastic-volumes",
+    words: "EBS Elastic Volumes: what you can and can’t change",
+    paths: ["/learn/ebs-elastic-volumes"],
+  },
+  {
+    file: "learn-ebs-snapshot-cost",
+    words: "EBS snapshot cost: pricing and how to reduce it",
+    paths: ["/learn/ebs-snapshot-cost"],
+  },
+  {
+    file: "learn-ebs-volume-types",
+    words: "EBS volume types: pricing and how to choose",
+    paths: ["/learn/ebs-volume-types"],
+  },
+  {
+    file: "learn-gp2-vs-gp3",
+    words: "gp2 vs gp3: pricing, performance and migration",
+    paths: ["/learn/gp2-vs-gp3"],
+  },
+  {
+    file: "learn-how-to-choose-aks-node-sizes",
+    words: "How to choose AKS node sizes: VM series and price",
+    paths: ["/learn/how-to-choose-aks-node-sizes"],
+  },
+  {
+    file: "learn-how-to-choose-eks-instance-types",
+    words: "EKS instance types: how to choose family and size",
+    paths: ["/learn/how-to-choose-eks-instance-types"],
+  },
+  {
+    file: "learn-in-place-pod-resize",
+    words: "In-place pod resize on Kubernetes, AKS and EKS",
+    paths: ["/learn/in-place-pod-resize"],
+  },
+  {
+    file: "learn-increase-ebs-volume-size",
+    words: "Increase EBS volume size without downtime on Linux",
+    paths: ["/learn/increase-ebs-volume-size"],
+  },
+  {
+    file: "learn-io2-vs-gp3",
+    words: "io2 vs gp3: when Provisioned IOPS is worth it",
+    paths: ["/learn/io2-vs-gp3"],
+  },
+  {
+    file: "learn-is-btrfs-stable",
+    words: "Is btrfs stable in 2026? Feature by feature",
+    paths: ["/learn/is-btrfs-stable"],
+  },
+  {
+    file: "learn-karpenter-consolidation",
+    words: "Karpenter consolidation: policies, budgets, limits",
+    paths: ["/learn/karpenter-consolidation"],
+  },
+  {
+    file: "learn-karpenter-cost-optimization",
+    words: "Karpenter cost optimization: the request gap",
+    paths: ["/learn/karpenter-cost-optimization"],
+  },
+  {
+    file: "learn-karpenter-vs-cluster-autoscaler",
+    words: "Karpenter vs Cluster Autoscaler on EKS and AKS",
+    paths: ["/learn/karpenter-vs-cluster-autoscaler"],
+  },
+  {
+    file: "learn-keda-vs-hpa-vs-vpa",
+    words: "KEDA vs HPA vs VPA: where event-driven scaling fits",
+    paths: ["/learn/keda-vs-hpa-vs-vpa"],
+  },
+  {
+    file: "learn-kubernetes-bin-packing",
+    words: "Kubernetes bin packing: same pods, fewer nodes",
+    paths: ["/learn/kubernetes-bin-packing"],
+  },
+  {
+    file: "learn-kubernetes-descheduler",
+    words: "Kubernetes descheduler: what it moves and when",
+    paths: ["/learn/kubernetes-descheduler"],
+  },
+  {
+    file: "learn-kubernetes-drain-node-without-downtime",
+    words: "How to drain a Kubernetes node without downtime",
+    paths: ["/learn/kubernetes-drain-node-without-downtime"],
+  },
+  {
+    file: "learn-kubernetes-node-size-best-practices",
+    words: "Kubernetes node size best practices on AKS and EKS",
+    paths: ["/learn/kubernetes-node-size-best-practices"],
+  },
+  {
+    file: "learn-kubernetes-overprovisioning",
+    words: "Kubernetes overprovisioning: how to measure it",
+    paths: ["/learn/kubernetes-overprovisioning"],
+  },
+  {
+    file: "learn-oomkilled-exit-code-137",
+    words: "OOMKilled exit code 137 in Kubernetes: how to fix",
+    paths: ["/learn/oomkilled-exit-code-137"],
+  },
+  {
+    file: "learn-pod-affinity-vs-node-affinity",
+    words: "Pod affinity vs node affinity: what each decides",
+    paths: ["/learn/pod-affinity-vs-node-affinity"],
+  },
+  {
+    file: "learn-pod-disruption-budget-best-practices",
+    words: "Pod disruption budget best practices: AKS and EKS",
+    paths: ["/learn/pod-disruption-budget-best-practices"],
+  },
+  {
+    file: "learn-premium-ssd-v2-vs-premium-ssd",
+    words: "Premium SSD v2 vs Premium SSD: which costs less",
+    paths: ["/learn/premium-ssd-v2-vs-premium-ssd"],
+  },
+  {
+    file: "learn-premium-ssd-vs-standard-ssd-azure",
+    words: "Premium SSD vs Standard SSD on Azure: cost and IOPS",
+    paths: ["/learn/premium-ssd-vs-standard-ssd-azure"],
+  },
+  {
+    file: "learn-remove-disk-from-lvm",
+    words: "Remove a disk from LVM without losing data",
+    paths: ["/learn/remove-disk-from-lvm"],
+  },
+  {
+    file: "learn-resize-pvc-kubernetes",
+    words: "Resize a PVC in Kubernetes, and why it can’t shrink",
+    paths: ["/learn/resize-pvc-kubernetes"],
+  },
+  {
+    file: "learn-resize2fs-shrink-ext4",
+    words: "resize2fs shrink ext4: why it must be unmounted",
+    paths: ["/learn/resize2fs-shrink-ext4"],
+  },
+  {
+    file: "learn-shrink-ebs-volume",
+    words: "How to shrink an EBS volume when it only grows",
+    paths: ["/learn/shrink-ebs-volume"],
+  },
+  {
+    file: "learn-topology-spread-constraints",
+    words: "Topology spread constraints: maxSkew and scale-down",
+    paths: ["/learn/topology-spread-constraints"],
+  },
+  {
+    file: "learn-what-is-karpenter",
+    words: "What is Karpenter? How it picks and removes nodes",
+    paths: ["/learn/what-is-karpenter"],
+  },
+  {
+    file: "learn-what-is-keda",
+    words: "What is KEDA in Kubernetes? Event-driven scaling",
+    paths: ["/learn/what-is-keda"],
   },
   /* The glossary's hub, then each term by its h1. */
   {
@@ -481,8 +762,8 @@ const CARDS: readonly {
     paths: ["/learn/glossary/ephemeral-os-disk"],
   },
   {
-    file: "glossary-finops",
-    words: "What is FinOps?",
+    file: "glossary-finops-cloud-finops-explained",
+    words: "What is FinOps? Cloud FinOps explained",
     paths: ["/learn/glossary/finops"],
   },
   {

@@ -5,7 +5,7 @@ import { figure as figure3 } from "@/features/learn/figures/shrink-azure-managed
 
 export const article: Article = {
   slug: "shrink-azure-managed-disk",
-  title: "Can a managed disk shrink?",
+  title: "Reduce Azure disk size: can a managed disk shrink?",
   meta: "You can’t reduce Azure disk size in place: managed disks only grow. The copy route step by step, the OS disk case, and how Amoeba rightsizes data disks.",
   h1: "Can you shrink an Azure managed disk?",
   deck: "Not in place. How to reduce Azure disk size by copying, what it costs you, and how Amoeba rightsizes data disks.",
@@ -14,11 +14,16 @@ export const article: Article = {
   hub: "Block storage",
   topic: "Azure block storage",
   published: "2026-10-21",
-  updated: "2026-10-27",
+  updated: "2026-11-01",
   author: "vineet",
   cover: "/learn-covers/zoorik-learn-shrink-azure-managed-disk-1200x630.webp",
-  short:
-    "No, you can’t shrink an Azure managed disk in place. A managed disk can grow but never get smaller: Microsoft Learn says shrinking an existing disk “isn’t supported and might result in data loss.” To reduce Azure disk size, you copy the data to a new, smaller disk, move the mount and delete the old disk. That works for data disks, but an OS disk needs a new VM. Amazon Elastic Block Store (EBS) volumes can’t shrink either.",
+  coverAlt:
+    "Shrink an Azure managed disk? Shrink in place is crossed out, so copy to a new disk instead",
+  short: [
+    "No, you can’t shrink an ",
+    { a: "Azure managed disk", href: "/learn/glossary/azure-managed-disk" },
+    " in place. A managed disk can grow but never get smaller: Microsoft Learn says shrinking an existing disk “isn’t supported and might result in data loss.” To reduce Azure disk size, you copy the data to a new, smaller disk, move the mount and delete the old disk. That works for data disks, but an OS disk needs a new VM. Amazon Elastic Block Store (EBS) volumes can’t shrink either.",
+  ],
   sections: [
     {
       id: "why-the-space-you-bought-stays-on",
@@ -35,7 +40,13 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Premium SSD and Standard SSD come in sizes that double from 4\u00a0GiB to 32,767\u00a0GiB. A 512\u00a0GiB Premium SSD (size P20) therefore costs the same whether it holds 500\u00a0GiB or 5\u00a0GiB.",
+          text: [
+            "Premium SSD and Standard SSD come in fixed ",
+            { a: "Azure disk sizes", href: "/learn/glossary/azure-disk-sizes" },
+            " that double from 4\u00a0GiB to 32,767\u00a0GiB. A 512\u00a0GiB ",
+            { a: "Premium SSD", href: "/learn/glossary/azure-premium-ssd" },
+            " (size P20) therefore costs the same whether it holds 500\u00a0GiB or 5\u00a0GiB.",
+          ],
         },
         {
           kind: "p",
@@ -315,7 +326,9 @@ export const article: Article = {
           items: [
             [
               { b: "The pool." },
-              " Amoeba moves the VM’s data disks onto one btrfs pool sized to your data, with room to grow. On Azure the pool uses Premium SSD v2 where your VM’s region and zone offer it, and Premium SSD otherwise.",
+              " Amoeba moves the VM’s data disks onto one ",
+              { a: "btrfs pool", href: "/learn/btrfs-multiple-disks" },
+              " sized to your data, with room to grow. On Azure the pool uses Premium SSD v2 where your VM’s region and zone offer it, and Premium SSD otherwise.",
             ],
             [
               { b: "The move." },

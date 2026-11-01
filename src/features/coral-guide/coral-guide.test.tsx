@@ -252,7 +252,7 @@ describe("/coral-guide page", () => {
     const container = page();
     const top = container.querySelector("article.gd-main > .fq-upd")!;
     expect(top).toBe(container.querySelector("article.gd-main")!.firstElementChild);
-    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 30 October 2026");
+    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 1 November 2026");
     const list = top.querySelector("dl.doc-sum")!;
     expect([...list.querySelectorAll("dt")].map(text)).toEqual([
       "Product page",
@@ -262,7 +262,7 @@ describe("/coral-guide page", () => {
     ]);
     expect(list.querySelector("h2, h3")).toBeNull();
     expect(list.querySelector("dd a")).toHaveAttribute("href", "/coral");
-    expect(text(list.querySelector("dd a"))).toBe("Kubernetes cost optimization on AKS and EKS");
+    expect(text(list.querySelector("dd a"))).toBe("Coral for AKS and EKS");
     const last = [...list.querySelectorAll("dd")][3]!;
     expect([...last.querySelectorAll("p")].map(text)).toEqual([
       "Nothing is resized until you switch on “Automatically optimize”. Every engine has its own switch.",

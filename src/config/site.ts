@@ -28,10 +28,12 @@ export const site = {
       It opens with the name, for the same reason as the title. */
   homeDescription:
     "Zoorik reduces cloud cost, autonomously, without any downtime. Coral rebalances Kubernetes on AKS and EKS. Amoeba rightsizes Azure disks and Amazon EBS.",
-  /** The layout's description, and the organisation's in the structured data.
-      The home page has its own. */
+  /** The company sentence (owner, 1 Nov 2026, O12): the layout's description,
+      the organisation's in the structured data, and the home hero's line
+      under its pitch (`heroContent.company`). The home page's meta
+      description is its own. */
   description:
-    "Reduce cloud cost while your systems keep serving. Coral: Kubernetes cost optimization on AKS and EKS. Amoeba: block storage cost optimization on Azure and AWS.",
+    "Zoorik is a cloud cost optimization company. Coral reduces Kubernetes cost on AKS and EKS, and Amoeba reduces block storage cost on Azure and AWS, without any downtime.",
   /** Drives `<meta name="theme-color">`; the brand navy, matching the mock. */
   themeColor: "#070F52",
 } as const;
@@ -119,12 +121,17 @@ export const routes = {
   privacy: "/privacy",
   terms: "/terms",
   /* The company pages and Learn: about, security and the articles' hub. Each
-     article lives under it at /learn/<slug> (`learnPath`). */
+     article lives under it at /learn/<slug> (`learnPath`), the two below aside. */
   about: "/about",
   /* Careers, linked from the footer's Company column. */
   careers: "/careers",
   security: "/security",
   learn: "/learn",
+  /* Two Learn articles at the site's root, at the address of their search (D230, owner, 1 Nov 2026): the cloud cost
+     pillar and the Kubernetes one. Each article's file names its own (`route`); these are the same two, for the pages
+     that cannot read the Learn index. Their old /learn/<slug> addresses redirect here. */
+  cloudCostOptimization: "/cloud-cost-optimization",
+  kubernetesCostOptimization: "/kubernetes-cost-optimization",
   /* The cloud cost glossary, under Learn: one page per term at /learn/glossary/<slug> (`glossaryPath`). Linked from
      /learn's More from Zoorik and from every term's trail. */
   learnGlossary: "/learn/glossary",
@@ -132,7 +139,7 @@ export const routes = {
      /compare, redirects here. In the footer's Resources column, after News. */
   cloudCostTools: "/cloud-cost-optimization-library",
   /* The comparison pages, under Cloud cost optimization tools: each product's alternatives, and the versus pages
-     (`comparePath`; their slugs are data, `versusPages` in @/content/learn-compare; one per product is kept live).
+     (`comparePath`; their slugs are data, `versusPages` in @/content/learn-compare; only the live ones are built).
      Their old /compare and /learn addresses redirect. */
   compareCoralAlternatives: "/cloud-cost-optimization-library/coral-alternatives",
   compareAmoebaAlternatives: "/cloud-cost-optimization-library/amoeba-alternatives",
@@ -153,7 +160,7 @@ export const routes = {
      changes. In the footer's Resources column, after Events. */
   news: "/news",
   /* Zoorik Community: r/zoorik, where Zoorik posts, the next events and the wider community. In the
-     footer's Resources column, after Disk cost calculator. */
+     footer's Resources column, after EBS and Azure disk pricing. */
   community: "/community",
   /* Where to find Zoorik: the marketplaces, reviews, installs and profiles. In the footer's Products
      column, after Pricing. */
@@ -187,36 +194,53 @@ export const routes = {
   trust: "/trust",
   contact: "/contact",
   pricing: "/pricing",
-  nodeCostCalculator: "/node-cost-calculator",
-  diskCostCalculator: "/disk-cost-calculator",
+  /* The two calculators at the address of their search (D230, owner, 1 Nov 2026); their 30 Oct addresses,
+     /node-cost-calculator and /disk-cost-calculator, redirect here. */
+  eksAndAksPricingCalculator: "/eks-and-aks-pricing-calculator",
+  ebsAndAzureDiskPricing: "/ebs-and-azure-disk-pricing",
   /* Ten pages at the site's root (addresses: owner, 30 Oct 2026; built: owner, 31 Oct 2026), in no menu. Each product
      on each cloud, in the footer's Products column after its product; and what Coral works with, the footer's "Works
-     with" list under Products, also linked from the Coral cloud pages' Works with tiles. */
-  coralForAks: "/coral-for-aks",
-  coralForEks: "/coral-for-eks",
-  amoebaForAzure: "/amoeba-for-azure",
-  amoebaForAws: "/amoeba-for-aws",
+     with" list under Products, also linked from the Coral cloud pages' Works with tiles. The four per-cloud pages moved
+     to the address of their search (D230, owner, 1 Nov 2026); their first addresses (/coral-for-aks, /coral-for-eks,
+     /amoeba-for-azure, /amoeba-for-aws) redirect here. */
+  aksCostOptimization: "/aks-cost-optimization",
+  eksCostOptimization: "/eks-cost-optimization",
+  azureManagedDiskCostOptimization: "/azure-managed-disk-cost-optimization",
+  ebsCostOptimization: "/ebs-cost-optimization",
   coralWorksWithClusterAutoscaler: "/coral-works-with-cluster-autoscaler",
   coralWorksWithKarpenter: "/coral-works-with-karpenter",
   coralWorksWithNodeAutoProvisioning: "/coral-works-with-aks-node-auto-provisioning",
   coralWorksWithKeda: "/coral-works-with-keda",
   coralWorksWithHelm: "/coral-works-with-helm",
   coralWorksWithTerraform: "/coral-works-with-terraform",
+  /* The two Topic pages (D229, owner, 1 Nov 2026), at the site's root and in no menu: each cloud's costs, line by line,
+     and where Coral and Amoeba fit. Linked from each other and from their versus pages in the library, and listed in
+     the sitemap. */
+  azureCostOptimization: "/azure-cost-optimization",
+  awsCostOptimization: "/aws-cost-optimization",
 } as const;
 
 /** Where the comparison pages live: under Cloud cost optimization tools. /compare and its old pages redirect there. */
 export const comparePath = "/cloud-cost-optimization-library";
 
 /**
- * A Learn article's address, by its slug. The articles themselves are listed by
- * the Learn index (`@/content/learn/published`), which this file never reads:
- * the header and the hash rule below know an article by its address alone.
+ * A Learn article's address under /learn, by its slug: every article's but the two at the site's root
+ * (`rootArticlePaths`). An article's own address is `articleRoute`, from the Learn index
+ * (`@/content/learn/published`), which this file never reads: the header and the hash rule below know an article by
+ * its address alone.
  */
 export const learnPath = (slug: string): `/learn/${string}` => `/learn/${slug}`;
 
-/** Whether a pathname is a Learn article's: one segment under /learn, the glossary's hub aside. */
+/** The Learn articles served at the site's root rather than under /learn (D230): each names it as its `route`. */
+export const rootArticlePaths: readonly string[] = [
+  routes.cloudCostOptimization,
+  routes.kubernetesCostOptimization,
+];
+
+/** Whether a pathname is a Learn article's: one segment under /learn, the glossary's hub aside, or one at the root. */
 export const isLearnArticlePath = (pathname: string): boolean =>
-  /^\/learn\/[^/]+$/.test(pathname) && pathname !== routes.learnGlossary;
+  (/^\/learn\/[^/]+$/.test(pathname) && pathname !== routes.learnGlossary) ||
+  rootArticlePaths.includes(pathname);
 
 /** A glossary term's address, by its slug. The terms are listed by the glossary index (`@/content/learn/glossary`). */
 export const glossaryPath = (slug: string): `/learn/glossary/${string}` =>
@@ -289,6 +313,9 @@ export const hashKeepingRoutes: readonly string[] = [
   routes.coralWorksWithKeda,
   routes.coralWorksWithHelm,
   routes.coralWorksWithTerraform,
+  /* The two Topic pages are built in the article frame too, and their mocks carry `data-keep-hash`. */
+  routes.azureCostOptimization,
+  routes.awsCostOptimization,
   routes.coralGuide,
   routes.coralFaq,
   routes.amoebaGuide,
@@ -504,7 +531,7 @@ export interface NavState {
  * A table keyed by pathname, not a lookup the component works out: the
  * pathname is known at build, so every page prerenders with its own state, and
  * a page added later is one row here. A Learn article needs no row: any
- * /learn/<slug> marks Docs.
+ * /learn/<slug>, and the two at the root (`rootArticlePaths`), mark Docs.
  */
 const NAV_STATES: ReadonlyMap<string, NavState> = new Map<string, NavState>([
   [routes.coral, { current: "coral" }],
@@ -530,7 +557,7 @@ const NAV_STATES: ReadonlyMap<string, NavState> = new Map<string, NavState>([
   [routes.amoebaTroubleshooting, { current: "docs" }],
 ]);
 
-/** A Learn article or glossary term marks the Docs menu alone, whichever it is; /about marks nothing. */
+/** A Learn article, wherever it lives, or a glossary term marks the Docs menu alone; /about marks nothing. */
 const LEARN_ARTICLE_STATE: NavState = { current: "docs" };
 
 /** A page's place in the header, from its pathname alone, so it is known when the page is prerendered. */

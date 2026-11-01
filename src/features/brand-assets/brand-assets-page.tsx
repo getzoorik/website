@@ -38,7 +38,11 @@ import { named } from "@/features/legal/named";
  * utility hero draws (still under reduced motion); the Copy buttons are the one client island.
  */
 
-const kit = (file: string) => `${brandKitDir}/${file}`;
+/**
+ * A kit file's address, its name percent-encoded: Cloudflare's static assets answer `@` with a 307 to `%40`, so an
+ * `@2x` PNG linked as written would cost every download a redirect.
+ */
+const kit = (file: string) => `${brandKitDir}/${encodeURIComponent(file)}`;
 
 /**
  * A file of the kit, drawn as the file the reader downloads: a plain `<img>` of `/brand-kit/<file>`, not

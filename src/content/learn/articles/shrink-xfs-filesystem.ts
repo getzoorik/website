@@ -13,9 +13,10 @@ export const article: Article = {
   hub: "Block storage",
   topic: "Linux filesystems",
   published: "2026-10-27",
-  updated: "2026-10-27",
+  updated: "2026-11-01",
   author: "ravi",
   cover: "/learn-covers/zoorik-learn-shrink-xfs-filesystem-1200x630.webp",
+  coverAlt: "Shrink XFS? Not between allocation groups, only the free tail can go",
   short: [
     "You can’t shrink an XFS filesystem in any useful way: Red Hat says “XFS has no utility to reduce the size of a file system.” Since Linux 5.13, ",
     { code: "xfs_growfs" },
@@ -126,12 +127,12 @@ export const article: Article = {
           items: [
             [
               "Measure what the mount holds with ",
-              { code: "df -Th" },
+              { a: { code: "df -Th" }, href: "/learn/glossary/df-vs-du" },
               ", and choose a size with room for growth.",
             ],
             [
-              "Create and attach a smaller disk, with the exact steps in the ",
-              { a: "Azure guide", href: "/learn/shrink-azure-managed-disk" },
+              "Create and attach a smaller disk, with the exact steps in ",
+              { a: "how to reduce Azure disk size", href: "/learn/shrink-azure-managed-disk" },
               ".",
             ],
             [
@@ -159,7 +160,9 @@ export const article: Article = {
             { code: "-A" },
             " and ",
             { code: "-X" },
-            " flags add them back, as in the Azure guide’s first pass. The trailing slash on ",
+            " flags add them back, as in the first pass of ",
+            { a: "how to reduce Azure disk size", href: "/learn/shrink-azure-managed-disk" },
+            ". The trailing slash on ",
             { code: "/data/" },
             " copies its contents.",
           ],
@@ -181,7 +184,7 @@ export const article: Article = {
             { code: "/mnt/new" },
             " that are gone from ",
             { code: "/data" },
-            ", as in the Azure guide’s final pass. With xfsdump, run this pipe instead:",
+            ", as in that guide’s final pass. With xfsdump, run this pipe instead:",
           ],
         },
         {
@@ -368,7 +371,9 @@ export const article: Article = {
           items: [
             [
               { b: "The pool." },
-              " Amoeba moves a VM’s data disks onto one btrfs pool, sized to your data, with room to grow. On Azure the pool uses Premium SSD v2 where your region offers it, and Premium SSD otherwise. On AWS it uses gp3.",
+              " Amoeba moves a VM’s data disks onto one ",
+              { a: "btrfs pool", href: "/learn/btrfs-multiple-disks" },
+              ", sized to your data, with room to grow. On Azure the pool uses Premium SSD v2 where your region offers it, and Premium SSD otherwise. On AWS it uses gp3.",
             ],
             [
               { b: "The move." },
@@ -476,6 +481,11 @@ export const article: Article = {
       title: "btrfs device remove: take a disk out of a btrfs pool",
       where: "Learn",
       href: "/learn/btrfs-device-remove",
+    },
+    {
+      title: "btrfs on multiple disks: how a btrfs pool works",
+      where: "Learn",
+      href: "/learn/btrfs-multiple-disks",
     },
   ],
 };

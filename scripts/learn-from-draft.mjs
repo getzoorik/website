@@ -14,7 +14,8 @@
 //   --calendar  a JSON file with `schedule` (each article's day and author key) and `authors`
 //   --visual    (optional) the folder of drawn figures: <slug>/fig-<n>-*.svg and <slug>/captions.json. Where it has
 //               an article's n-th figure, that drawing is used in place of the figure file
-//   --day       (optional) the ISO day the articles go live, in place of the calendar's
+//   --day       (optional) the ISO day the articles go live, in place of the calendar's; for an article already on
+//               the site, the day it changed (it keeps the day it was published)
 //   --glossary  glossary terms in place of articles: src/content/learn/glossary/<slug>.ts, and the term's one drawn
 //               figure under src/features/learn/figures/glossary/<slug>/1.ts. It reads the drafts, their drawings
 //               (--visual) and the day they go live or change (--day; a term already on the site keeps the day it
@@ -24,28 +25,38 @@
 // engineers.**", "**Note.**") is a callout. A drawn figure loses its "[ FIG n // … ]" line, and what is under it moves
 // up into its place. An article's cover is public/learn-covers/zoorik-learn-<slug>-1200x630.webp when there is one.
 //
-// A draft is front matter (title, meta, h1, deck, card, product, hub_group, type), then the short answer, the
-// sections ("## " headings, an id after a heading as {#id}), and the foot: the help box, the sources and the Related
-// lines. A section holds paragraphs, "### " parts, lists (numbered ones may start past 1, and an item may hold a
-// paragraph or a code block), pipe tables, fenced code and [DIAGRAM: …] lines, each drawn by its figure file in turn.
-// Text may carry **bold**, `code`, [links](/path) and links to other sites; the article gets curly quotes and a
-// no-break space between a figure and its unit, as the page prints them.
+// A draft is front matter (title, meta, h1, deck, card, product, hub_group, type, route, and cover_alt where it has
+// one), then the short answer, the sections ("## " headings, an id after a heading as {#id}), and the foot: the help
+// box, the sources and the Related lines. A section holds paragraphs, "### " parts, lists (numbered ones may start
+// past 1, and an item may hold a paragraph or a code block), pipe tables, fenced code and [DIAGRAM: …] lines, each
+// drawn by its figure file in turn. Text may carry **bold**, `code`, [links](/path) and links to other sites; the
+// article gets curly quotes and a no-break space between a figure and its unit, as the page prints them.
 //
 // The article's day and author come from the calendar, its topic from the pillar's list of every article, and a
 // comparison's two sides from its h1; its share card is found by its address (`pageCards` in src/config/social.ts).
-// The pillar's list itself is not copied: the page draws it from the index. The output is formatted with the repo's
+// An article already on the site keeps the days in its file: a later run keeps the day it was published and moves only
+// its `updated` day, to --day where one is given, so a re-run never re-dates a live article. Its address is
+// /learn/<slug>, unless its draft's `route` names another at the site's root (D230: /cloud-cost-optimization and
+// /kubernetes-cost-optimization), which the article then carries as its `route`. A draft's `cover_alt` is its cover's
+// alt text (`coverAlt`); a draft with none keeps the alt text its live file carries, as the 1 Nov alt lines (W31) come
+// from docs/website-seo/new-pages-2026-11-01/cover-alt.md, not from the drafts, so a re-run never drops one. The
+// pillar's list itself is not copied: the page draws it from the index. The output is formatted with the repo's
 // Prettier settings, and a second run writes the same files.
 //
 // A glossary draft is front matter (slug, route, group, product, term, title, h1, meta), the definition with what
 // stands beside it before the first "## " heading, two to four sections in an article's blocks with one [DIAGRAM: …]
-// among them, "## Related terms" (each line "- [Term](/learn/glossary/<slug>): its line"), "**Read next:**" and the
-// sources. The title loses its " | Zoorik" (the site's template adds it); the hub's line under the term is the
-// definition's first sentence. Every link to another term must lead to one of the drafts.
+// among them (an id after a heading as {#id}, so a renamed section keeps its anchor), "## Related terms" (each line
+// "- [Term](/learn/glossary/<slug>): its line"), "**Read next:**" and the sources. The title loses its " | Zoorik"
+// (the site's template adds it); the hub's line under the term is the definition's first sentence. Every link to
+// another term must lead to one of the drafts.
 //
-// In both modes a link to an address that moved, in the text or a Related line, is written to where its page lives now:
-// a study's old /case-studies/<study> or /value-lab/<study> (which the article drafts still write) to its own address at
-// the site's root, a troubleshooting page under /docs to its product's troubleshooting page, a product's guide or FAQ
-// under the product to its own address at the root (`MOVED`).
+// In both modes a link to an address that moved, in the text, the help box, a Related line or Read next, is written to
+// where its page lives now: a study's old /case-studies/<study> or /value-lab/<study> (which the article drafts still
+// write) to its own address at the site's root, a troubleshooting page under /docs to its product's troubleshooting
+// page, a product's guide or FAQ under the product to its own address at the root, and the eight pages that moved to
+// the address of their search (D230) to it (`MOVED`).
+//
+// A draft that is not on the calendar is refused.
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -156,6 +167,15 @@ const MOVED = new Map([
   ["/coral/faq", "/coral-faq"],
   ["/amoeba/guide", "/amoeba-guide"],
   ["/amoeba/faq", "/amoeba-faq"],
+  /* D230 (owner, 1 Nov 2026): eight pages at the address of their search. */
+  ["/learn/how-to-reduce-cloud-costs", "/cloud-cost-optimization"],
+  ["/learn/reduce-kubernetes-cost", "/kubernetes-cost-optimization"],
+  ["/disk-cost-calculator", "/ebs-and-azure-disk-pricing"],
+  ["/node-cost-calculator", "/eks-and-aks-pricing-calculator"],
+  ["/coral-for-aks", "/aks-cost-optimization"],
+  ["/coral-for-eks", "/eks-cost-optimization"],
+  ["/amoeba-for-aws", "/ebs-cost-optimization"],
+  ["/amoeba-for-azure", "/azure-managed-disk-cost-optimization"],
 ]);
 
 /** A link's address as the site serves it (`MOVED`). */
@@ -485,7 +505,7 @@ function front(text) {
 /** Where a Related tile's page lives, as its tile says under its title. */
 function where(href) {
   const path = href.split("#")[0].split("?")[0];
-  if (path.startsWith("/learn/")) return "Learn";
+  if (path.startsWith("/learn/") || ROUTED.has(path)) return "Learn";
   if (path === "/coral-value-lab" || path === "/amoeba-value-lab") return "Case study";
   if (
     path.startsWith("/docs/") ||
@@ -535,8 +555,10 @@ function topics() {
   let heading = null;
   for (const line of section.split("\n")) {
     if (line.startsWith("### ")) heading = line.slice(4).trim();
-    const link = /^- \[[^\]]+\]\(\/learn\/([^)#?]+)\)/.exec(line);
-    if (link && heading) map.set(link[1], heading);
+    const link = /^- \[[^\]]+\]\(([^)#?]+)\)/.exec(line);
+    const path = link ? moved(link[1]) : null;
+    const slug = path && (ROUTED.get(path) ?? /^\/learn\/([^/]+)$/.exec(path)?.[1]);
+    if (slug && heading) map.set(slug, heading);
   }
   return map;
 }
@@ -553,11 +575,31 @@ function versusOf(slug, h1) {
   return [parts.slice(0, -1).join(" · "), parts.at(-1)];
 }
 
+/**
+ * The articles whose draft names an address other than /learn/<slug> (`route`), by that address: a page at the site's
+ * root (D230). A link to it, in the pillar's list or a Related line, leads to that article.
+ */
+const ROUTED = glossary
+  ? null
+  : new Map(
+      readdirSync(draftsDir)
+        .filter((name) => name.endsWith(".md"))
+        .map((name) => front(readFileSync(join(draftsDir, name), "utf8")).meta)
+        .filter((meta) => meta.route && meta.route !== `/learn/${meta.slug}`)
+        .map((meta) => [meta.route, meta.slug]),
+    );
+
 const TOPICS = glossary ? null : topics();
 
 function convert(slug) {
   const { meta, body } = front(readFileSync(join(draftsDir, `${slug}.md`), "utf8"));
   if (meta.slug !== slug) throw new Error(`${slug}: its front matter names ${meta.slug}`);
+  /* Its address: /learn/<slug>, or one address at the site's root, which the article carries. */
+  const route = meta.route ?? `/learn/${slug}`;
+  if (route !== `/learn/${slug}` && !/^\/[a-z0-9]+(?:-[a-z0-9]+)*$/.test(route))
+    throw new Error(
+      `${slug}: its route is /learn/${slug} or an address at the site's root: ${route}`,
+    );
   const at = body.indexOf("\n**Help box:");
   if (at < 0) throw new Error(`${slug}: no help box`);
   const mainLines = body.slice(0, at).trimEnd().split("\n");
@@ -601,7 +643,7 @@ function convert(slug) {
   const linksLine = foot.find((line) => line.startsWith("- Links:"));
   const links = [...linksLine.matchAll(/"([^"]+)" → (\S+?)(?:;|$)/g)].map(([, label, href]) => ({
     label: words(label),
-    href,
+    href: moved(href),
   }));
   const s0 = foot.indexOf("**Sources:**");
   const r0 = foot.indexOf("**Related:**");
@@ -629,9 +671,12 @@ function convert(slug) {
   if (!product) throw new Error(`${slug}: product "${meta.product}"`);
   const cover = `/learn-covers/zoorik-learn-${slug}-1200x630.webp`;
   const h1 = typo(meta.h1);
+  const live = daysOf(ARTICLES, slug);
+  const coverAlt = meta.cover_alt ? curly(meta.cover_alt) : liveCoverAlt(slug);
 
   const article = {
     slug,
+    ...(route !== `/learn/${slug}` ? { route } : {}),
     title: curly(meta.title),
     meta: curly(meta.meta),
     h1,
@@ -643,10 +688,12 @@ function convert(slug) {
     hub: meta.hub_group,
     topic,
     ...(meta.type === "versus" ? { versus: versusOf(slug, meta.h1) } : {}),
-    published: goLive ?? day.date,
-    updated: goLive ?? day.date,
+    published: live.published ?? goLive ?? day.date,
+    updated: goLive ?? live.updated ?? day.date,
     author: day.author,
-    ...(existsSync(join(ROOT, "public", cover)) ? { cover } : {}),
+    ...(existsSync(join(ROOT, "public", cover))
+      ? { cover, ...(coverAlt ? { coverAlt } : {}) }
+      : {}),
     short: inline(short),
     sections: drawn,
     help: { product: helpProduct.toLowerCase(), text: inline(helpText), links },
@@ -716,12 +763,32 @@ const plain = (run) =>
         )
         .join("");
 
-/** The day a term already on the site was published: a later run moves its `updated` day to --day, never this one. */
-function publishedDay(slug) {
-  const file = join(TERMS, `${slug}.ts`);
-  return existsSync(file)
-    ? /\bpublished: "(\d{4}-\d{2}-\d{2})"/.exec(readFileSync(file, "utf8"))?.[1]
-    : undefined;
+/**
+ * The days an article or a term already on the site carries, from its file in `dir`: a later run keeps the day it was
+ * published, and moves its `updated` day only to --day. None for one not on the site yet.
+ */
+function daysOf(dir, slug) {
+  const file = join(dir, `${slug}.ts`);
+  if (!existsSync(file)) return {};
+  const text = readFileSync(file, "utf8");
+  return {
+    published: /\bpublished: "(\d{4}-\d{2}-\d{2})"/.exec(text)?.[1],
+    updated: /\bupdated: "(\d{4}-\d{2}-\d{2})"/.exec(text)?.[1],
+  };
+}
+
+/**
+ * The cover's alt text an article already on the site carries (`coverAlt`), or none. Prettier writes it in double
+ * quotes, or in single quotes when it holds more double quotes than single ones.
+ */
+function liveCoverAlt(slug) {
+  const file = join(ARTICLES, `${slug}.ts`);
+  if (!existsSync(file)) return undefined;
+  const m = /\bcoverAlt:\s*(?:"((?:[^"\\]|\\.)*)"|'((?:[^'\\]|\\.)*)')/.exec(
+    readFileSync(file, "utf8"),
+  );
+  if (!m) return undefined;
+  return JSON.parse(`"${m[1] ?? m[2].replace(/\\'/g, "'").replace(/"/g, '\\"')}"`);
 }
 
 function convertTerm(slug) {
@@ -760,8 +827,8 @@ function convertTerm(slug) {
   const sections = parts
     .filter((part) => part !== relatedPart)
     .map(({ heading, lines: own }) => ({
-      id: slugOf(heading),
-      title: words(heading),
+      id: /\s*\{#([^}]+)\}\s*$/.exec(heading)?.[1] ?? slugOf(heading),
+      title: words(heading.replace(/\s*\{#[^}]*\}\s*$/, "")),
       blocks: render(parse(own), ctx),
     }));
   if (ctx.figures !== 1 || !ctx.drawn.has(1))
@@ -786,8 +853,10 @@ function convertTerm(slug) {
       };
     });
 
-  const next = /^\*\*Read next:\*\* \[([^\]]+)\]\((\/learn\/[a-z0-9-]+)\)\s*$/.exec(foot[0]);
-  if (!next) throw new Error(`${slug}: "**Read next:** [Title](/learn/<slug>)": ${foot[0]}`);
+  /* An article's address: /learn/<slug>, or one of the two at the site's root (D230). */
+  const next = /^\*\*Read next:\*\* \[([^\]]+)\]\((\/(?:learn\/)?[a-z0-9-]+)\)\s*$/.exec(foot[0]);
+  if (!next)
+    throw new Error(`${slug}: "**Read next:** [Title](/learn/<slug> or its address)": ${foot[0]}`);
   const s0 = foot.indexOf("**Sources:**");
   if (s0 < 0) throw new Error(`${slug}: no Sources`);
   const sources = foot
@@ -822,12 +891,12 @@ function convertTerm(slug) {
     card,
     group: meta.group,
     product,
-    published: publishedDay(slug) ?? goLive,
+    published: daysOf(TERMS, slug).published ?? goLive,
     updated: goLive,
     definition,
     sections,
     related,
-    next: { title: words(next[1]), href: next[2] },
+    next: { title: words(next[1]), href: moved(next[2]) },
     sources,
   };
   return { term, figures: ctx.figures };

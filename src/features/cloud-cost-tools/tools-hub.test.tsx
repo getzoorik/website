@@ -64,18 +64,21 @@ afterEach(() => {
 
 describe("/cloud-cost-optimization-library's metadata", () => {
   it("is titled, described and canonicalised as its mock, with its own card", () => {
-    expect(metadata.title).toBe("Cloud cost optimization tools");
+    /* Part 4 (1 Nov 2026): the title and description carry the page's searches. */
+    expect(metadata.title).toBe("Cloud cost optimization tools and FinOps tools");
     expect(metadata.description).toBe(
-      "The tools that reduce the cloud bill on Azure and AWS: what each one does, how it works and which clouds it supports, checked on each company's own pages.",
+      "Cloud cost management tools for Azure and AWS: the cloud cost optimization tools and FinOps tools that reduce what you pay, and how each one acts.",
     );
+    expect(`${String(metadata.title)} | Zoorik`.length).toBeLessThanOrEqual(60);
+    expect(String(metadata.description).length).toBeLessThanOrEqual(158);
     expect(metadata.alternates).toEqual({ canonical: "/cloud-cost-optimization-library" });
     expect(metadata.openGraph).toMatchObject({
       url: "/cloud-cost-optimization-library",
-      title: "Cloud cost optimization tools | Zoorik",
+      title: "Cloud cost optimization tools and FinOps tools | Zoorik",
       images: [pageCards["/cloud-cost-optimization-library"]],
     });
     expect(routes.cloudCostTools).toBe("/cloud-cost-optimization-library");
-    expect(cloudCostToolsLastUpdated).toBe("30 October 2026");
+    expect(cloudCostToolsLastUpdated).toBe("1 November 2026");
   });
 });
 
@@ -84,9 +87,9 @@ describe("/cloud-cost-optimization-library", () => {
     const root = page();
     expect(root.querySelectorAll("h1")).toHaveLength(1);
     expect(root.querySelector("header.hero.doc-hero.lv-hero#top")).not.toBeNull();
-    expect(text(root.querySelector("h1"))).toBe("Cloud cost optimization tools");
+    expect(text(root.querySelector("h1"))).toBe("Cloud cost optimization tools and FinOps tools");
     expect(text(root.querySelector(".doc-deck"))).toBe(
-      "The tools that reduce the cloud bill, how each one works and which clouds it supports.",
+      "These cloud cost management tools reduce what you pay on Azure and AWS. Each tile says what the tool does, how it acts and which clouds it supports. Filter them by cloud, or by kind: block storage, Kubernetes, FinOps tools or the cloud providers’ own.",
     );
     expect(root.querySelector(".vp-kick")).toBeNull();
     /* The mock has no search: the chips filter the tiles. */
@@ -338,11 +341,12 @@ describe("/cloud-cost-optimization-library", () => {
     expect(note.querySelector("a")).toHaveAttribute("href", `mailto:${contactEmail}`);
   });
 
-  it("compares Coral and Amoeba in four tiles, two by two: the live versus pages, then the alternatives pages", () => {
+  it("compares Coral and Amoeba in six tiles, two by two: the live versus pages, then the alternatives pages", () => {
     const root = page();
     const grid = root.querySelector("#ours .dt-grid")!;
     expect(grid).toHaveClass("dt-2x2", "tl-2x2");
     const tiles = [...grid.querySelectorAll(":scope > article.dt > a.dt-a")];
+    expect(tiles).toHaveLength(6);
     expect(
       tiles.map((a) => [
         a.getAttribute("href"),
@@ -411,13 +415,13 @@ describe("/cloud-cost-optimization-library", () => {
       ]),
     ).toEqual([
       [
-        routes.nodeCostCalculator,
-        "Kubernetes node cost calculator",
+        routes.eksAndAksPricingCalculator,
+        "EKS and AKS pricing calculator",
         "A node’s monthly list price on AKS or EKS, and how much of it your pods can use.",
       ],
       [
-        routes.diskCostCalculator,
-        "Disk cost calculator",
+        routes.ebsAndAzureDiskPricing,
+        "EBS and Azure disk pricing calculator",
         "What an Azure managed disk or an EBS volume costs a month, and what its empty space costs.",
       ],
     ]);
@@ -433,9 +437,9 @@ describe("/cloud-cost-optimization-library", () => {
     expect(text(row)).toContain("Thirty minutes with the people who build Coral and Amoeba.");
   });
 
-  it("is the footer's Cloud cost optimization tools", () => {
+  it("is the footer's Cloud cost optimization tools, the words its h1 starts with", () => {
     const link = page().querySelector(`footer a[href="${routes.cloudCostTools}"]`)!;
     expect(text(link)).toBe("Cloud cost optimization tools");
-    expect(cloudCostToolsPage.hero.title).toBe("Cloud cost optimization tools");
+    expect(cloudCostToolsPage.hero.title.startsWith(text(link))).toBe(true);
   });
 });

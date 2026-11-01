@@ -8,37 +8,46 @@ export const article: Article = {
   title: "How to check EBS volume usage: used vs paid space",
   meta: "Check EBS volume usage from inside the instance with df, lsblk or the CloudWatch agent’s disk_used_percent, then match used space to the size you pay for.",
   h1: "How to check EBS volume usage: used space vs paid space",
-  deck: "AWS bills the size you provision, and its EBS metrics measure I/O. How to read the used space and line the two up.",
-  card: "EBS bills the size you provision and its metrics measure I/O. Read used space per volume and compare.",
+  deck: "AWS charges for the size you provision, and its EBS metrics measure I/O. How to read the used space and line the two up.",
+  card: "EBS charges for the size you provision and its metrics measure I/O. Read used space per volume and compare.",
   product: "amoeba",
   hub: "Block storage",
   topic: "AWS block storage",
   published: "2026-10-23",
-  updated: "2026-10-23",
+  updated: "2026-11-01",
   author: "swapnil",
   cover: "/learn-covers/zoorik-learn-check-ebs-volume-usage-1200x630.webp",
+  coverAlt: "Check EBS volume usage: df -hT shows the used part and the rest, paid for, not used",
   short: [
-    "To check EBS volume usage, read it inside the instance. AWS bills each Amazon Elastic Block Store (EBS) volume for the space you provision, and CloudWatch’s built-in EBS metrics report I/O, not how full the filesystem is. Run ",
-    { code: "df -hT" },
-    " for used space per mount and ",
+    "To check EBS volume usage, read used space inside the instance and compare it with the size you pay for. CloudWatch’s built-in metrics for each ",
+    { a: "Amazon Elastic Block Store (EBS) volume", href: "/learn/glossary/ebs-volume" },
+    " report I/O, not used space. Run ",
+    { a: { code: "df -hT" }, href: "/learn/glossary/df-vs-du" },
+    " for used space and ",
     { code: "lsblk -o +SERIAL" },
-    " to tie each mount to its volume ID on Nitro instances, or collect ",
+    " for volume IDs on Nitro instances, or collect the CloudWatch agent’s ",
     { code: "disk_used_percent" },
-    " with the CloudWatch agent. Then compare each volume’s used space with the provisioned size you pay for.",
+    ".",
   ],
   sections: [
     {
-      id: "ebs-bills-the-size-you-provision-however",
-      title: "EBS bills the size you provision, however little data it holds",
+      id: "ebs-charges-for-the-size-you-provision",
+      title: "EBS charges for the size you provision, however little data it holds",
       blocks: [
         {
           kind: "p",
-          text: "Picture a 500\u00a0GiB gp3\u00a0volume holding 50\u00a0GiB of data: AWS bills it for all 500\u00a0GiB, the same as a full volume of that size.",
+          text: [
+            "Picture a 500\u00a0GiB ",
+            { a: "gp3", href: "/learn/glossary/ebs-gp3" },
+            " volume holding 50\u00a0GiB of data. AWS charges you for all 500\u00a0GiB, the same as a full volume of that size. Our ",
+            { a: "EBS pricing calculator", href: "/ebs-and-azure-disk-pricing" },
+            " shows a volume’s monthly list price and what its empty space costs.",
+          ],
         },
         {
           kind: "callout",
           label: "Worked example",
-          text: "The volume is 50 ÷ 500 = 10% full, so the other 500 − 50 = 450\u00a0GiB, 90% of the billed size, holds no data. The gp3 example on the EBS pricing page uses a rate of $0.08 per GB-month. At that rate the volume costs 500 × $0.08 = $40 a month, and 450 × $0.08 = $36 of that pays for space that holds nothing. Rates vary by Region and change.",
+          text: "The volume is 50 ÷ 500 = 10% full, so the other 500 − 50 = 450\u00a0GiB, 90% of the size you pay for, holds no data. The gp3 example on the EBS pricing page uses a rate of $0.08 per GB-month. At that rate the volume costs 500 × $0.08 = $40 a month, and 450 × $0.08 = $36 of that pays for space that holds nothing. Rates vary by Region and change.",
         },
         { kind: "svg", figure: figure1 },
         {
@@ -46,7 +55,7 @@ export const article: Article = {
           text: [
             "The pricing page’s rule covers every EBS volume type. Volume storage “is charged by the amount of GB you provision per month until you release the storage.” Detaching a volume doesn’t release it. A detached volume waits in the ",
             { code: "available" },
-            " state, still billed, until you delete it. ",
+            " state, still charged, until you delete it. ",
             { a: "Snapshot storage", href: "/learn/ebs-snapshot-cost" },
             " is the exception. It’s based on the space your data takes up in Amazon S3, and EBS “does not save empty blocks.”",
           ],
@@ -55,8 +64,12 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Elastic Volumes", href: "/learn/ebs-elastic-volumes" },
-            ", AWS’s name for changing a volume in place, can make a volume larger, change its type or adjust its performance, but it can’t shrink one. In AWS’s words, “You can’t decrease the volume size.” An increase made for a migration or a log spike stays on the bill after the data shrinks again, so an EBS cost review starts by measuring used space against provisioned space, one volume at a time.",
+            ", AWS’s name for changing a volume in place, can make a volume larger, change its type or adjust its performance, but it can’t shrink one. In AWS’s words, “You can’t decrease the volume size.”",
           ],
+        },
+        {
+          kind: "p",
+          text: "An increase made for a migration or a log spike is still charged after the data shrinks again. So an EBS cost review starts by measuring used space against provisioned space, one volume at a time.",
         },
       ],
     },
@@ -69,7 +82,13 @@ export const article: Article = {
           text: [
             "How to check EBS volume utilization depends on which kind you mean: how busy a volume is (its I/O) or how full it is (its used space). The Monitoring tab on a volume in the EC2 console and the ",
             { code: "AWS/EBS" },
-            " namespace in CloudWatch cover only the first. That namespace receives 1-minute metrics at no charge for every attached volume: bytes and operations read and written, queue length, idle time, burst balance on gp2, st1 and sc1, and on Nitro instances average IOPS (input/output operations per second), throughput and latency. None of them reports used or free space, and AWS’s metrics page points you to the operating system for that.",
+            " namespace in CloudWatch cover only the first. That namespace receives 1-minute metrics at no charge for every attached volume: bytes and operations read and written, queue length, idle time, burst balance on gp2, st1 and sc1, and on Nitro instances average ",
+            { a: "IOPS", href: "/learn/glossary/iops" },
+            " (input/output operations per second), ",
+            { a: "throughput", href: "/learn/glossary/disk-throughput" },
+            " and ",
+            { a: "latency", href: "/learn/glossary/disk-latency" },
+            ". None of them reports used or free space, and AWS’s metrics page points you to the operating system for that.",
           ],
         },
         {
@@ -77,7 +96,7 @@ export const article: Article = {
           text: [
             "The two measures don’t track each other. ",
             { code: "VolumeIdleTime" },
-            " counts the seconds in a period with no reads or writes, so a volume can sit idle while it’s nearly full of cold data, or stay busy all day on a filesystem that’s mostly empty. Only the mostly empty one is billed for space it doesn’t use.",
+            " counts the seconds in a period with no reads or writes, so a volume can sit idle while it’s nearly full of cold data, or stay busy all day on a filesystem that’s mostly empty. Only the mostly empty one is charged for space it doesn’t use.",
           ],
         },
       ],
@@ -88,7 +107,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Used space is known only to the filesystem, so the check starts on the instance and ends with the size AWS bills.",
+          text: "Used space is known only to the filesystem, so the check starts on the instance and ends with the size you pay for.",
         },
         {
           kind: "h3",
@@ -200,7 +219,7 @@ export const article: Article = {
               { code: "/data" },
               ", while ",
               { code: "df -hT" },
-              " shows the XFS filesystem on it at 8.0G with 33M used. The bill counts 30\u00a0GiB, and ",
+              " shows the XFS filesystem on it at 8.0G with 33M used. AWS charges for 30\u00a0GiB, and ",
               { code: "df" },
               " never sees 22 of them.",
             ],
@@ -210,12 +229,12 @@ export const article: Article = {
               { code: "df" },
               " reports mounted filesystems only, so an attached volume with no mount point is missing from its output. ",
               { code: "lsblk" },
-              " still lists it with an empty mount point, and AWS still bills its full size.",
+              " still lists it with an empty mount point, and AWS still charges for its full size.",
             ],
           ],
         },
         { kind: "svg", figure: figure2 },
-        { kind: "h3", id: "3-read-the-size-aws-bills", title: "3. Read the size AWS bills" },
+        { kind: "h3", id: "3-read-the-size-you-pay-for", title: "3. Read the size you pay for" },
         {
           kind: "p",
           text: "This lists the instance’s volumes with their provisioned sizes in GiB:",
@@ -304,7 +323,7 @@ export const article: Article = {
             { code: "disk" },
             ", the ",
             { code: "append_dimensions" },
-            " block adds the EBS volume ID to each disk metric, so the mount and the bill share a key.",
+            " block adds the EBS volume ID to each disk metric, so the mount and the provisioned size share a key.",
           ],
         },
         {
@@ -400,7 +419,7 @@ export const article: Article = {
           items: [
             [
               { b: [{ code: "available" }, " volumes first."] },
-              " They’re billed in full and nothing reads them, but deleting one deletes its data, so confirm nobody needs it first.",
+              " They’re charged in full and nothing reads them, but deleting one deletes its data, so confirm nobody needs it first.",
             ],
             [
               { b: "A filesystem smaller than its volume." },
@@ -432,16 +451,20 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " by Zoorik optimizes Azure managed disks and Amazon EBS, and keeps the measurement above current on each instance you onboard. Its agent installs through AWS Systems Manager Run Command and reports each mount’s size and use every 15\u00a0seconds, and Amoeba prices the volumes from the AWS Price List API.",
+            " by Zoorik optimizes Azure managed disks and Amazon EBS, and keeps the measurement above current on each instance you onboard. Its agent installs through AWS Systems Manager Run Command and reports each mount’s size and use. Amoeba prices the volumes from the AWS Price List API.",
           ],
         },
         {
           kind: "p",
-          text: "Then Amoeba rightsizes. It moves the data on a running EC2 instance’s EBS data volumes onto one btrfs pool, built from gp3\u00a0volumes in the instance’s Availability Zone, and never touches the root volume. Pool size comes from the highest use of the last 7\u00a0days, so the pool sits inside its target band, 80% to 90% full by default, with room for the largest recent 15-minute rise and at least 10\u00a0GiB free.",
+          text: "Then Amoeba rightsizes. It moves the data on a running EC2 instance’s EBS data volumes onto one btrfs pool sized to your data, with room to grow. Amoeba builds the pool from gp3\u00a0volumes in the instance’s Availability Zone and never touches the root volume.",
         },
         {
           kind: "p",
-          text: "Each mount keeps its path. On Linux, the systemd services that use those mounts restart at the switch onto the pool. After that, expands go in while the pool stays mounted, and shrinks remove one volume at a time.",
+          text: "The move copies your data while your services run. Then each mount switches to the pool, with a short restart of the services that use it, and keeps its path.",
+        },
+        {
+          kind: "p",
+          text: "After the switch, Amoeba grows the pool before it fills, and sooner when data arrives fast. When your data goes down and stays down, it shrinks the pool one volume at a time. So you pay for close to what you use.",
         },
         {
           kind: "p",
@@ -452,11 +475,11 @@ export const article: Article = {
           items: [
             [
               { b: "On AWS:" },
-              " the instance must be running, managed by Systems Manager with its SSM agent connected, and a Nitro type that exposes EBS as NVMe. It needs at least one EBS data volume and 3 free attachment slots: 2 for the pool and 1 kept free for an urgent expand.",
+              " the instance must be running, managed by Systems Manager with its SSM agent connected, and a Nitro type that exposes EBS as NVMe. It needs at least one EBS data volume and a few free attachment slots for the pool.",
             ],
             [
               { b: "On Linux:" },
-              " it needs systemd, kernel 5.14 or later and btrfs loaded or loadable, and every process that keeps a data mount open must run as a systemd service. Instances whose OS is in the Red Hat family aren’t moved.",
+              " it needs a recent kernel with btrfs, and every service that keeps a data mount open must run under systemd.",
             ],
           ],
         },
@@ -466,6 +489,13 @@ export const article: Article = {
             "The free block storage assessment covers Amazon EBS. For the data volumes of Linux EC2 instances, ",
             { a: "it estimates your own figure", href: "/assessment?p=amoeba" },
             ", proposes a gp3 pool, and writes one PDF without sending anything to Zoorik. Inside an instance, it runs a command only after you say yes, through Systems Manager.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            { a: "EBS cost optimization", href: "/ebs-cost-optimization" },
+            " covers what Amoeba does on AWS.",
           ],
         },
       ],

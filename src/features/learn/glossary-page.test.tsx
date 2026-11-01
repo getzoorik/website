@@ -103,6 +103,8 @@ const runsIn = (blocks: readonly ArticleBlock[]): readonly ArticleText[] =>
                 ...runsIn((item as { blocks: readonly ArticleBlock[] }).blocks),
               ],
         );
+      case "table":
+        return [...block.columns.map((column) => column.label), ...block.rows.flat()];
       default:
         return [];
     }
@@ -200,6 +202,10 @@ describe("the glossary index", () => {
         expect(target!.slug, term.slug).not.toBe(term.slug);
         expect(tile.line, tile.href).toMatch(/^[A-Z].*[.?!]$/);
       }
+      /* Each tile is keyed by its title, never its address: the titles are each the tile's own. */
+      expect(new Set(term.related.map((tile) => tile.title)).size, term.slug).toBe(
+        term.related.length,
+      );
     }
   });
 });
@@ -229,7 +235,10 @@ describe.each(glossaryTerms.map((term) => term.slug))("/learn/glossary/%s", (slu
       images: [termCard(term)],
     });
     expect(termCard(term)).toBe(pageCards[route]);
-    expect(termCard(term).url).toBe(`/og/pages/glossary-${slug}.png`);
+    /* A redrawn card keeps the term's name and adds its new words: platforms cache cards by URL. */
+    expect(termCard(term).url).toMatch(
+      new RegExp(`^/og/pages/glossary-${slug}(-[a-z0-9-]+)?\\.png$`),
+    );
   });
 
   it("opens on the utility hero: the trail back to Learn and the glossary over the h1, and no deck", async () => {
@@ -306,6 +315,28 @@ describe.each(glossaryTerms.map((term) => term.slug))("/learn/glossary/%s", (slu
     expect(frame.querySelectorAll(".doc-well")).toHaveLength(
       blocksOf(term).filter((block) => block.kind === "code").length,
     );
+  });
+
+  it("sets its tables as an article does: the stacked table, its widths, each cell labelled with its column", async () => {
+    const frame = (await main(slug)).querySelector(".ar-frame")!;
+    const tables = [...frame.querySelectorAll("table.doc-tbl.nw-tbl")];
+    const drawn = blocksOf(term).filter((block) => block.kind === "table");
+    expect(tables).toHaveLength(drawn.length);
+    drawn.forEach((block, index) => {
+      const table = tables[index]!;
+      expect([...table.querySelectorAll("col")].map((col) => col.style.width)).toEqual(
+        block.columns.map((column) => column.width),
+      );
+      const labels = [...table.querySelectorAll("th")].map(text);
+      expect(labels).toEqual(block.columns.map((column) => words(plain(column.label))));
+      const rows = [...table.querySelectorAll("tbody tr")];
+      expect(rows).toHaveLength(block.rows.length);
+      for (const row of rows) {
+        [...row.querySelectorAll("td")].forEach((td, at) =>
+          expect(td.getAttribute("data-label")!.replace(/\s+/g, " ")).toBe(labels[at]),
+        );
+      }
+    });
   });
 
   it("links a body's words only to pages that are published, and keeps the words of the rest", async () => {
@@ -389,5 +420,42 @@ describe.each(glossaryTerms.map((term) => term.slug))("/learn/glossary/%s", (slu
       },
     );
     expect(loose.map(text)).toEqual([]);
+  });
+});
+
+/**
+ * The blocks a term's page first held on 1 Nov 2026: a table in four terms and a command in one, drawn by the
+ * article's own parts, and the two sections whose ids the drafts pin ({#id}) so a renamed heading keeps its anchor.
+ */
+describe("the 1 Nov glossary blocks", () => {
+  it.each(["azure-disk-sizes", "azure-premium-ssd", "ephemeral-os-disk", "burstable-instance"])(
+    "/learn/glossary/%s draws its table",
+    async (slug) => {
+      const term = findTerm(slug)!;
+      expect(blocksOf(term).filter((block) => block.kind === "table")).toHaveLength(1);
+      const frame = (await main(slug)).querySelector(".ar-frame")!;
+      expect(frame.querySelectorAll(".fq-sec-b > table.doc-tbl.nw-tbl")).toHaveLength(1);
+    },
+  );
+
+  it("/learn/glossary/ephemeral-os-disk draws its command in the article's code well", async () => {
+    const term = findTerm("ephemeral-os-disk")!;
+    const code = blocksOf(term).filter((block) => block.kind === "code");
+    expect(code).toHaveLength(1);
+    const well = (await main("ephemeral-os-disk")).querySelector(".ar-frame .fq-sec-b .doc-well")!;
+    expect(well.querySelector("pre")?.textContent).toContain(
+      (code[0] as { code: string }).code.split("\n")[0]!.trim(),
+    );
+  });
+
+  it("keeps the section ids its drafts pin", async () => {
+    expect(
+      (await main("azure-disk-sizes")).querySelector(
+        "section.fq-sec#common-azure-managed-disk-sizes",
+      ),
+    ).not.toBeNull();
+    expect(
+      (await main("ephemeral-os-disk")).querySelector("section.fq-sec#what-you-give-up"),
+    ).not.toBeNull();
   });
 });

@@ -4,24 +4,27 @@ import { figure as figure2 } from "@/features/learn/figures/reduce-kubernetes-co
 
 export const article: Article = {
   slug: "reduce-kubernetes-cost",
-  title: "How to reduce Kubernetes cost: requests, then nodes",
-  meta: "How to reduce Kubernetes cost on AKS and EKS: rebalance requests to real use, then let the Cluster Autoscaler, Karpenter or AKS NAP remove spare nodes.",
-  h1: "How to reduce Kubernetes cost: rebalance requests, then remove spare nodes",
-  deck: "Smaller requests free room on your nodes. The bill falls when a spare node goes. Both steps, in order.",
+  route: "/kubernetes-cost-optimization",
+  title: "Kubernetes cost optimization: requests, then nodes",
+  meta: "Kubernetes cost optimization on AKS and EKS: rebalance requests to real use, then let the Cluster Autoscaler, Karpenter or AKS NAP remove spare nodes.",
+  h1: "Kubernetes cost optimization: rebalance requests, then remove spare nodes",
+  deck: "Smaller requests free room on your nodes. Your cloud cost falls when a spare node goes. Both steps, in order.",
   card: "Rebalance requests to real use, then let spare nodes go: the order that reduces AKS and EKS cost.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes cost basics",
   published: "2026-10-21",
-  updated: "2026-10-21",
+  updated: "2026-11-01",
   author: "swapnil",
   cover: "/learn-covers/zoorik-learn-reduce-kubernetes-cost-1200x630.webp",
+  coverAlt:
+    "Reduce Kubernetes cost: rebalance requests, and the cluster has one node fewer to pay for",
   short:
-    "To reduce Kubernetes cost, work in two steps, in this order. First, rebalance each container’s CPU and memory requests to what it really uses, because the scheduler and your node autoscaler count what pods request, not what they use. Then let the spare nodes go: the Cluster Autoscaler, Karpenter or AKS node auto-provisioning (NAP) removes a node once it is underused and its pods fit elsewhere. Smaller requests change nothing on the bill until a node is removed.",
+    "Kubernetes cost optimization takes two steps, in this order. First, rebalance each container’s CPU and memory requests to what it uses, since node autoscalers count requests, not use. Then let the Cluster Autoscaler, Karpenter or AKS node auto-provisioning (NAP) remove spare nodes: smaller requests reduce cost only once a node goes.",
   sections: [
     {
       id: "you-pay-for-nodes-and-requests-decide",
-      title: "You pay for nodes, and requests decide how many you run",
+      title: "Kubernetes cost optimization: requests decide how many nodes you pay for",
       blocks: [
         {
           kind: "p",
@@ -29,7 +32,15 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "On Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS) the bill is for the virtual machines behind your nodes, and AWS’s EKS Best Practices Guide says EC2 instances are the bulk of the cost in most EKS clusters. So most Kubernetes cost savings come from running fewer nodes.",
+          text: "On Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS), you’re charged for the virtual machines behind your nodes. AWS’s EKS Best Practices Guide says EC2 instances are the bulk of the cost in most EKS clusters. So most Kubernetes cost savings come from running fewer nodes.",
+        },
+        {
+          kind: "p",
+          text: [
+            "The ",
+            { a: "EKS and AKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
+            " gives one node’s monthly list price.",
+          ],
         },
         {
           kind: "p",
@@ -48,7 +59,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "AWS’s guide ranks Kubernetes cost reduction in that order too: size the workloads, reduce unused capacity, then choose capacity types such as Spot, covered further down. ",
+            "AWS’s guide ranks Kubernetes cost reduction in that order too: size the workloads, reduce unused capacity, then choose capacity types such as ",
+            { a: "Spot", href: "/learn/glossary/spot-instance" },
+            ", covered further down. ",
             { a: "Kubernetes overprovisioning", href: "/learn/kubernetes-overprovisioning" },
             " explains where padded requests come from and how to measure them.",
           ],
@@ -88,7 +101,9 @@ export const article: Article = {
                   items: [
                     [
                       { b: "CPU:" },
-                      " a high percentile of that window plus headroom. A container may use more CPU than its request when the node has room, and at its CPU limit it is throttled rather than stopped.",
+                      " a high percentile of that window plus headroom. A container may use more CPU than its request when the node has room, and at its CPU limit it is ",
+                      { a: "throttled", href: "/learn/glossary/kubernetes-cpu-throttling" },
+                      " rather than stopped.",
                     ],
                     [
                       { b: "Memory:" },
@@ -154,12 +169,18 @@ export const article: Article = {
             { code: "--scale-down-utilization-threshold" },
             ", 0.5 by default), every pod on it can move to another node, it has stayed that way for the unneeded time (",
             { code: "--scale-down-unneeded-time" },
-            ", 10\u00a0minutes by default), and its node pool or Auto Scaling group is above its minimum count.",
+            ", 10\u00a0minutes by default), and its ",
+            { a: "node pool", href: "/learn/glossary/node-pool" },
+            " or Auto Scaling group is above its minimum count.",
           ],
         },
         {
           kind: "p",
-          text: "Before it removes the node, the Cluster Autoscaler checks that each pod’s PodDisruptionBudget (PDB) allows at least one replica to go, then evicts the pods through the Eviction API, and keeps the node if an eviction fails. Non-empty nodes go one at a time.",
+          text: [
+            "Before it removes the node, the Cluster Autoscaler checks that each pod’s ",
+            { a: "PodDisruptionBudget (PDB)", href: "/learn/glossary/pod-disruption-budget" },
+            " allows at least one replica to go, then evicts the pods through the Eviction API, and keeps the node if an eviction fails. Non-empty nodes go one at a time.",
+          ],
         },
         { kind: "svg", figure: figure2 },
         {
@@ -221,8 +242,8 @@ export const article: Article = {
         {
           kind: "table",
           columns: [
-            { label: "What holds the node", width: "65%" },
-            { label: "What frees it", width: "35%" },
+            { label: "What holds the node", width: "62%" },
+            { label: "What frees it", width: "38%" },
           ],
           rows: [
             [
@@ -266,7 +287,11 @@ export const article: Article = {
                 { code: 'karpenter.sh/do-not-disrupt: "true"' },
                 ".",
               ],
-              "Remove the annotation unless the pod really can’t move.",
+              [
+                "Remove ",
+                { a: "the annotation", href: "/learn/safe-to-evict-do-not-disrupt" },
+                " unless the pod really can’t move.",
+              ],
             ],
           ],
         },
@@ -293,7 +318,11 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Buy commitments last: one bought before you rebalance and consolidate would cover capacity you’re about to remove. AWS suggests working out your cluster’s minimum and maximum capacity, covering the minimum with a Savings Plan, and running on Spot the capacity your availability doesn’t depend on. The four below pay off most on the nodes you keep:",
+          text: [
+            "Buy commitments last: one bought before you rebalance and consolidate would cover capacity you’re about to remove. AWS suggests working out your cluster’s minimum and maximum capacity, covering the minimum with a ",
+            { a: "Savings Plan", href: "/learn/glossary/savings-plan" },
+            ", and running on Spot the capacity your availability doesn’t depend on. The four below pay off most on the nodes you keep:",
+          ],
         },
         {
           kind: "ul",
@@ -312,9 +341,9 @@ export const article: Article = {
             ],
             [
               { b: "Visibility:" },
-              " trace the bill to Kubernetes objects. On AKS, the ",
+              " trace your cloud cost to Kubernetes objects. On AKS, the ",
               { a: "cost analysis add-on", href: "/learn/aks-cost-analysis" },
-              " breaks cluster cost down by Kubernetes constructs in Microsoft Cost Management, and on EKS you tag your worker nodes so AWS Cost Explorer can show their billing.",
+              " breaks cluster cost down by Kubernetes constructs in Microsoft Cost Management. On EKS, you tag your worker nodes so AWS Cost Explorer can show what they cost.",
             ],
           ],
         },
@@ -328,7 +357,11 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Coral optimizes Kubernetes", href: "/coral" },
-            " on AKS and EKS clusters running Kubernetes 1.30 or later, taking the same two steps and leaving scale-up to your node autoscaler.",
+            " on AKS and EKS clusters running Kubernetes 1.30 or later, taking the same two steps and leaving scale-up to your node autoscaler. ",
+            { a: "AKS cost optimization", href: "/aks-cost-optimization" },
+            " and ",
+            { a: "EKS cost optimization", href: "/eks-cost-optimization" },
+            " show what Coral does on each cloud.",
           ],
         },
         {
@@ -358,8 +391,15 @@ export const article: Article = {
         },
         {
           kind: "p",
+          text: "On our own AKS development cluster, the apps already fit on fewer machines. So on 6 October, after we gave Coral permission to remove machines, node optimization removed one 4-CPU worker on its own, in under 10\u00a0minutes, before sizing was automatic.",
+        },
+        {
+          kind: "p",
+          text: "The machine cost went from $368.65 to $221.19 a month, $147.46 less for that one worker. Apps that run a single copy restarted once on another machine. That is Zoorik’s own AKS cluster, not a customer result, at Azure pay-as-you-go list prices for a 730-hour month.",
+        },
+        {
+          kind: "p",
           text: [
-            "On our own AKS development cluster, the apps already fit on fewer machines. So on 6 October, after we gave Coral permission to remove machines, node optimization removed one 4-CPU worker on its own, in under 10\u00a0minutes, before sizing was automatic. The machine bill went from $368.65 to $221.19 a month, $147.46 less for that one worker, and apps that run a single copy restarted once on another machine. That is Zoorik’s own AKS cluster, not a customer result, at Azure pay-as-you-go list prices for a 730-hour month. ",
             { a: "The case study", href: "/coral-value-lab" },
             " has the full timeline, and its 58% also counts a swap to a cheaper worker on 12 October.",
           ],
@@ -371,7 +411,7 @@ export const article: Article = {
     product: "coral",
     text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and drains spare nodes so your autoscaler can remove them. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
-      { label: "Kubernetes cost optimization with Coral", href: "/coral" },
+      { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Estimate your saving", href: "/assessment?p=coral" },
     ],
   },

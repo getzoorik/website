@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "finops-pricing",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -74,9 +74,9 @@ export const term: GlossaryTerm = {
           items: [
             "Spot reduces each node’s price. It suits work that can stop and restart, like batch jobs and test environments.",
             [
-              "Requests that match ",
-              { a: "real use", href: "/learn/reduce-kubernetes-cost" },
-              " mean fewer nodes.",
+              "Right-sized requests mean fewer nodes. See ",
+              { a: "Kubernetes cost optimization", href: "/kubernetes-cost-optimization" },
+              ".",
             ],
             "An evicted Azure Spot VM’s disks still cost you under Deallocate, its default policy. AKS spot pools default to Delete.",
             [
@@ -117,8 +117,8 @@ export const term: GlossaryTerm = {
     },
   ],
   next: {
-    title: "How to reduce Kubernetes cost: requests, then nodes",
-    href: "/learn/reduce-kubernetes-cost",
+    title: "Kubernetes cost optimization: requests, then nodes",
+    href: "/kubernetes-cost-optimization",
   },
   sources: [
     {

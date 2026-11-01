@@ -71,7 +71,8 @@ function versusModule(slug: string): () => Promise<PageModule> {
   };
 }
 
-/** A Learn article is one dynamic route (`/learn/[slug]`) too: its module, resolved for one slug. */
+/** A Learn article is one dynamic route (`/learn/[slug]`) too, the two at the site's root aside: its module, resolved
+ *  for one slug. */
 function articleModule(slug: string): () => Promise<PageModule> {
   return async () => {
     const page = await import("@/app/learn/[slug]/page");
@@ -110,8 +111,13 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/amoeba-faq": () => import("@/app/amoeba-faq/page"),
   "/learn": () => import("@/app/learn/page"),
   ...Object.fromEntries(
-    learnArticles.map((article) => [articleRoute(article), articleModule(article.slug)]),
+    learnArticles
+      .filter((article) => article.route === undefined)
+      .map((article) => [articleRoute(article), articleModule(article.slug)]),
   ),
+  /* The two Learn articles at the site's root (D230), each a page of its own. */
+  "/cloud-cost-optimization": () => import("@/app/cloud-cost-optimization/page"),
+  "/kubernetes-cost-optimization": () => import("@/app/kubernetes-cost-optimization/page"),
   "/learn/glossary": () => import("@/app/learn/glossary/page"),
   ...Object.fromEntries(glossaryTerms.map((term) => [termRoute(term), termModule(term.slug)])),
   "/value-lab": () => import("@/app/value-lab/page"),
@@ -141,8 +147,8 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/trust": () => import("@/app/trust/page"),
   "/contact": () => import("@/app/contact/page"),
   "/pricing": () => import("@/app/pricing/page"),
-  "/node-cost-calculator": () => import("@/app/node-cost-calculator/page"),
-  "/disk-cost-calculator": () => import("@/app/disk-cost-calculator/page"),
+  "/eks-and-aks-pricing-calculator": () => import("@/app/eks-and-aks-pricing-calculator/page"),
+  "/ebs-and-azure-disk-pricing": () => import("@/app/ebs-and-azure-disk-pricing/page"),
   "/open-source": () => import("@/app/open-source/page"),
   "/docs/install-coral-with-helm": () => import("@/app/docs/install-coral-with-helm/page"),
   "/docs/install-coral-with-terraform": () =>
@@ -150,10 +156,13 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/docs/contributing": () => import("@/app/docs/contributing/page"),
   "/coral-troubleshooting": () => import("@/app/coral-troubleshooting/page"),
   "/amoeba-troubleshooting": () => import("@/app/amoeba-troubleshooting/page"),
-  "/coral-for-aks": () => import("@/app/coral-for-aks/page"),
-  "/coral-for-eks": () => import("@/app/coral-for-eks/page"),
-  "/amoeba-for-azure": () => import("@/app/amoeba-for-azure/page"),
-  "/amoeba-for-aws": () => import("@/app/amoeba-for-aws/page"),
+  "/azure-cost-optimization": () => import("@/app/azure-cost-optimization/page"),
+  "/aws-cost-optimization": () => import("@/app/aws-cost-optimization/page"),
+  "/aks-cost-optimization": () => import("@/app/aks-cost-optimization/page"),
+  "/eks-cost-optimization": () => import("@/app/eks-cost-optimization/page"),
+  "/azure-managed-disk-cost-optimization": () =>
+    import("@/app/azure-managed-disk-cost-optimization/page"),
+  "/ebs-cost-optimization": () => import("@/app/ebs-cost-optimization/page"),
   "/coral-works-with-cluster-autoscaler": () =>
     import("@/app/coral-works-with-cluster-autoscaler/page"),
   "/coral-works-with-karpenter": () => import("@/app/coral-works-with-karpenter/page"),
@@ -197,7 +206,17 @@ describe("the home page's structured data", () => {
     expect(amoeba.description).toBe(
       "Block storage cost optimization for VMs on Azure and AWS. Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. Then it rightsizes that pool, one disk at a time.",
     );
-    const [whatIs] = amoebaPageContent.about.paragraphs;
+    /* The paragraph as its words: its one link, "btrfs pool", as the words it shows. */
+    const whatIs = [amoebaPageContent.about.paragraphs[0]]
+      .flat()
+      .map((piece) =>
+        typeof piece === "string"
+          ? piece
+          : "a" in piece && typeof piece.a === "string"
+            ? piece.a
+            : "",
+      )
+      .join("");
     expect(whatIs).toContain("block storage cost optimization platform for VMs on Azure and AWS");
     expect(whatIs).toContain(String(amoeba.description).split(". ")[1]!.replace(/\.$/, ""));
     expect(amoeba.applicationSubCategory).toBe("Block storage cost optimization");
@@ -264,10 +283,10 @@ describe("the home page's structured data", () => {
       url: calendarUrl,
     });
     expect(calendarUrl).toBe("https://cal.com/zoorik/talk");
-    /* The footer's profiles but Bluesky and Substack, then Zoorik's page in each store, the
-       Crunchbase profile and the Wikidata entry, then the PyPI user and the Terraform Registry
-       namespace, then the other profiles, Bluesky and Substack in their places among them, then the
-       directories. */
+    /* The footer's profiles but the empty Bluesky and Substack, then Zoorik's page in each store,
+       the Crunchbase profile and the Wikidata entry, then the PyPI user and the Terraform Registry
+       namespace, then the other profiles, Hugging Face among them, then the directories. No empty
+       profile (O14). */
     expect(org.sameAs).toEqual([
       "https://www.linkedin.com/company/zoorik",
       "https://www.youtube.com/@getzoorik",
@@ -280,17 +299,10 @@ describe("the home page's structured data", () => {
       wikidataEntity,
       "https://pypi.org/user/zoorik/",
       "https://registry.terraform.io/namespaces/getzoorik",
-      "https://bsky.app/profile/zoorik.com",
-      "https://gitlab.com/zoorik",
-      "https://zoorik.substack.com",
       "https://www.instagram.com/getzoorik/",
       "https://artifacthub.io/packages/search?org=zoorik",
-      "https://www.npmjs.com/org/zoorik",
-      "https://quay.io/organization/zoorik",
       "https://gravatar.com/getzoorik",
-      "https://news.ycombinator.com/user?id=zoorik",
-      "https://dev.to/zoorik",
-      "https://mastodon.social/@zoorik",
+      "https://huggingface.co/zoorik",
       "https://wellfound.com/company/zoorik",
       "https://www.f6s.com/company/zoorik",
       "https://tracxn.com/d/companies/zoorik/__0-HfxD5kpG4SADDRpAEc8XzSUYQVK-7bAubR7EZJjts",
@@ -298,10 +310,36 @@ describe("the home page's structured data", () => {
       "https://www.g2.com/sellers/zoorik",
       "https://saasbrowser.com/en/saas/1707340/zoorik",
     ]);
-    /* Each address once, every one of the footer's profiles among them. */
+    /* Each address once, every one of the footer's profiles among them but the two empty ones, which
+       the footer keeps. */
     const sameAs = org.sameAs as readonly string[];
     expect(new Set(sameAs).size).toBe(sameAs.length);
-    for (const link of socialProfiles) expect(sameAs, link.platform).toContain(link.href);
+    for (const link of socialProfiles) {
+      if (link.platform === "bluesky" || link.platform === "substack")
+        expect(sameAs, link.platform).not.toContain(link.href);
+      else expect(sameAs, link.platform).toContain(link.href);
+    }
+    expect(socialProfiles.map((link) => link.platform)).toContain("bluesky");
+    expect(socialProfiles.map((link) => link.platform)).toContain("substack");
+    for (const empty of [
+      "bsky.app",
+      "gitlab.com",
+      "substack.com",
+      "npmjs.com",
+      "quay.io",
+      "news.ycombinator.com",
+      "dev.to",
+      "mastodon.social",
+    ])
+      expect(
+        sameAs.some((link) => new URL(link).host.endsWith(empty)),
+        empty,
+      ).toBe(false);
+    /* "Zoorik Cloud" names the Organization only: the WebSite node, whose name Google reads as the site's, has
+       no alternateName. */
+    expect(org.alternateName).toBe("Zoorik Cloud");
+    expect(graph[1]!["@type"]).toBe("WebSite");
+    expect(graph[1]).not.toHaveProperty("alternateName");
     expect(storeProfiles).toEqual([
       "https://aws.amazon.com/marketplace/seller-profile?id=seller-mtaavozrqchlk",
       "https://marketplace.microsoft.com/en-us/partners/04f64eb0-8878-4f14-9578-bc5d104737e7/overview",
@@ -309,7 +347,7 @@ describe("the home page's structured data", () => {
     expect(crunchbaseProfile).toBe("https://www.crunchbase.com/organization/zoorik");
     expect(wikidataEntity).toBe("https://www.wikidata.org/wiki/Q141717592");
     expect(org.description).toBe(
-      "Reduce cloud cost while your systems keep serving. Coral: Kubernetes cost optimization on AKS and EKS. Amoeba: block storage cost optimization on Azure and AWS.",
+      "Zoorik is a cloud cost optimization company. Coral reduces Kubernetes cost on AKS and EKS, and Amoeba reduces block storage cost on Azure and AWS, without any downtime.",
     );
     expect(org.logo).toEqual({
       "@type": "ImageObject",
@@ -375,7 +413,7 @@ describe("the home page's structured data", () => {
 
 describe("every indexed page's structured data", () => {
   it("renders on every page in the sitemap as one block that parses to the page's graph", async () => {
-    expect(listed).toHaveLength(54 + learnArticles.length + glossaryTerms.length);
+    expect(listed).toHaveLength(58 + learnArticles.length + glossaryTerms.length);
     for (const { path } of listed) {
       pathname.current = path;
       const { default: Page } = await pageModule(path);
@@ -479,25 +517,29 @@ describe("every indexed page's structured data", () => {
     expect(names(routes.research)).toEqual(["Zoorik", "Cloud cost optimization research"]);
     /* The five pages of 30 Oct 2026: the calculators under Cloud cost optimization tools by their h1, the rest under
        Zoorik alone. */
-    expect(names(routes.nodeCostCalculator)).toEqual([
+    expect(names(routes.eksAndAksPricingCalculator)).toEqual([
       "Zoorik",
       "Cloud cost optimization tools",
-      "Kubernetes node cost calculator",
+      "EKS pricing calculator: what an EKS or AKS node costs a month",
     ]);
-    expect(names(routes.diskCostCalculator)).toEqual([
+    expect(names(routes.ebsAndAzureDiskPricing)).toEqual([
       "Zoorik",
       "Cloud cost optimization tools",
-      "Disk cost calculator: Azure managed disks and Amazon EBS",
+      "AWS EBS pricing and Azure disk pricing calculator",
     ]);
     /* The ten pages of 31 Oct 2026, each under its product's page by its h1. */
-    expect(names(routes.coralForAks)).toEqual(["Zoorik", "Coral", "AKS cost optimization"]);
-    expect(names(routes.coralForEks)).toEqual(["Zoorik", "Coral", "EKS cost optimization"]);
-    expect(names(routes.amoebaForAzure)).toEqual([
+    expect(names(routes.aksCostOptimization)).toEqual(["Zoorik", "Coral", "AKS cost optimization"]);
+    expect(names(routes.eksCostOptimization)).toEqual(["Zoorik", "Coral", "EKS cost optimization"]);
+    expect(names(routes.azureManagedDiskCostOptimization)).toEqual([
       "Zoorik",
       "Amoeba",
       "Azure managed disk cost optimization",
     ]);
-    expect(names(routes.amoebaForAws)).toEqual(["Zoorik", "Amoeba", "EBS cost optimization"]);
+    expect(names(routes.ebsCostOptimization)).toEqual([
+      "Zoorik",
+      "Amoeba",
+      "EBS cost optimization",
+    ]);
     expect(names(routes.coralWorksWithClusterAutoscaler)).toEqual([
       "Zoorik",
       "Coral",
@@ -582,8 +624,8 @@ describe("every indexed page's structured data", () => {
       routes.caseStudyCoralDevCluster,
       routes.docsInstallHelm,
       routes.coralTroubleshooting,
-      routes.coralForAks,
-      routes.coralForEks,
+      routes.aksCostOptimization,
+      routes.eksCostOptimization,
       routes.coralWorksWithClusterAutoscaler,
       routes.coralWorksWithKarpenter,
       routes.coralWorksWithNodeAutoProvisioning,
@@ -599,8 +641,8 @@ describe("every indexed page's structured data", () => {
       routes.amoebaFaq,
       routes.caseStudyAmoebaLabVms,
       routes.amoebaTroubleshooting,
-      routes.amoebaForAzure,
-      routes.amoebaForAws,
+      routes.azureManagedDiskCostOptimization,
+      routes.ebsCostOptimization,
     ]) {
       expect(about(path), path).toEqual({ "@id": "https://zoorik.com/amoeba#software" });
     }
@@ -754,6 +796,12 @@ describe("every indexed page's structured data", () => {
         inDefinedTermSet: set,
         mainEntityOfPage: { "@id": `${url}#webpage` },
       });
+      /* Its page carries the days the term was published and last changed, as its Updated line prints the later. */
+      expect(ofType(nodes, "WebPage")[0], term.slug).toMatchObject({
+        "@id": `${url}#webpage`,
+        datePublished: term.published,
+        dateModified: term.updated,
+      });
       /* Its name is the term's words without the other names in brackets at its end ("Data transfer (egress) cost"
          keeps the bracket inside its name), and its description the definition's opening. */
       expect(node!.name, term.slug).not.toMatch(/\)\s*$/);
@@ -778,11 +826,12 @@ describe("every indexed page's structured data", () => {
       })),
       mainEntityOfPage: { "@id": `${hubUrl}#webpage` },
     });
-    /* No other page carries a term or a set. */
+    /* No other page carries a term or a set, and no other page node a date. */
     for (const { path } of listed) {
       if (path === routes.learnGlossary || path.startsWith(`${routes.learnGlossary}/`)) continue;
       expect(ofType(graphOf(path), "DefinedTerm"), path).toHaveLength(0);
       expect(ofType(graphOf(path), "DefinedTermSet"), path).toHaveLength(0);
+      expect(graphOf(path)[2], path).not.toHaveProperty("datePublished");
     }
   });
 

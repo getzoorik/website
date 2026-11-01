@@ -1,10 +1,11 @@
 import type { EniFacts, PricesFile } from "@/lib/cloud-cost-calc";
 
 /**
- * The list prices and node facts the two calculators read (/node-cost-calculator, /disk-cost-calculator), as the
- * checked data files hold them: docs/website-seo/new-pages-2026-10-30/calculators/prices.json (fetch_prices.py) and
- * allocatable.json (build_allocatable.ts), every figure traced in that folder's ledger.md and re-fetched by its
- * verify stage. Only the parts the pages read are here, in the files' own order; nothing is rounded or typed by hand.
+ * The list prices and node facts the two calculators read (/eks-and-aks-pricing-calculator,
+ * /ebs-and-azure-disk-pricing), as the checked data files hold them:
+ * docs/website-seo/new-pages-2026-10-30/calculators/prices.json (fetch_prices.py) and allocatable.json
+ * (build_allocatable.ts), every figure traced in that folder's ledger.md and re-fetched by its verify stage. Only the
+ * parts the pages read are here, in the files' own order; nothing is rounded or typed by hand.
  *
  *   Azure  the Azure Retail Prices API (https://prices.azure.com/api/retail/prices): Linux pay-as-you-go VM prices
  *          per hour, and Premium SSD and Standard SSD LRS managed disks per month, in East US, West Europe and

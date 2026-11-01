@@ -7,16 +7,16 @@ export const term: GlossaryTerm = {
   title: "What is the FinOps maturity model?",
   meta: "The FinOps maturity model rates each FinOps capability crawl, walk or run. See what each stage looks like, how to rate your team, and why run isn’t required.",
   h1: "What is the FinOps maturity model?",
-  card: "The FinOps maturity model rates how far your team has come in each FinOps capability.",
+  card: "The FinOps maturity model rates your team’s progress in each FinOps capability.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
       text: [
-        "The FinOps maturity model rates how far your team has come in each ",
+        "The FinOps maturity model rates your team’s progress in each ",
         { a: "FinOps", href: "/learn/glossary/finops" },
         " capability. A capability is one area of FinOps work, such as budgeting or forecasting. Crawl, walk and run are its three stages.",
       ],
@@ -29,14 +29,14 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "This is the FinOps Foundation maturity model, part of its FinOps Framework. Microsoft’s training describes each stage:",
+          text: "This is the FinOps Foundation maturity model, from its FinOps Framework. Microsoft describes each stage:",
         },
         {
           kind: "ul",
           items: [
-            "At crawl, there’s very little reporting or tooling. Basic processes exist, but not all major teams follow them.",
+            "At crawl, there’s little reporting or tooling. Basic processes exist, but not all major teams follow them.",
             "At walk, the organization follows the process. Automation or processes cover most needs.",
-            "At run, all teams follow it, and the hard cases are handled. Automation is the preferred approach.",
+            "At run, all teams follow it, and hard cases are handled. Automation is preferred.",
           ],
         },
         { kind: "svg", figure: figure1 },
@@ -67,12 +67,17 @@ export const term: GlossaryTerm = {
         {
           kind: "ul",
           items: [
-            "At crawl, some major teams don’t follow the process yet, so their spend gets fewer checks.",
-            "Start the FinOps crawl, walk, run rating with the capabilities that matter most to your business.",
+            "At crawl, some major teams skip the process, so their spend gets fewer checks.",
+            "Start the FinOps crawl, walk, run rating with the capabilities that matter most.",
             [
               "A stage alone doesn’t ",
-              { a: "reduce your cloud cost", href: "/learn/how-to-reduce-cloud-costs" },
+              { a: "reduce your cloud cost", href: "/cloud-cost-optimization" },
               ". Changing what you use, or the rate you pay, does.",
+            ],
+            [
+              "Our library lists ",
+              { a: "FinOps tools", href: "/cloud-cost-optimization-library" },
+              " and other cloud cost optimization tools, with what each one does.",
             ],
             [
               "The ",
@@ -88,7 +93,7 @@ export const term: GlossaryTerm = {
     { title: "FinOps", line: "The practice the model rates.", href: "/learn/glossary/finops" },
     {
       title: "FinOps personas",
-      line: "The roles that take part.",
+      line: "The roles involved.",
       href: "/learn/glossary/finops-personas",
     },
     {
@@ -102,7 +107,10 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/cloud-cost-anomaly-detection",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: {
+    title: "Cloud cost optimization: how to reduce cloud costs",
+    href: "/cloud-cost-optimization",
+  },
   sources: [
     {
       publisher: "Microsoft Learn",

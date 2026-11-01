@@ -7,15 +7,15 @@ export const term: GlossaryTerm = {
   title: "What is cloud cost anomaly detection?",
   meta: "Cloud cost anomaly detection learns your normal spend and alerts on sudden jumps. See how AWS and Azure find a cost anomaly, and the costs it can’t see.",
   h1: "What is cloud cost anomaly detection?",
-  card: "Cloud cost anomaly detection is an automated check that learns your normal cloud spend and flags sudden changes.",
+  card: "Cloud cost anomaly detection is an automated check that learns your normal spend and flags sudden changes.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
-      text: "Cloud cost anomaly detection is an automated check that learns your normal cloud spend and flags sudden changes. The cost anomaly meaning is narrow: a spike or drop your past spend doesn’t predict.",
+      text: "Cloud cost anomaly detection is an automated check that learns your normal spend and flags sudden changes. The cost anomaly meaning is narrow: a spike or drop your past spend doesn’t predict.",
     },
   ],
   sections: [
@@ -25,13 +25,13 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "In AWS, it’s spend that AWS Cost Anomaly Detection marks as unusual, using machine learning. Microsoft Cost Management finds anomalies per Azure subscription. Both can email you an alert.",
+          text: "In AWS, it’s spend that AWS Cost Anomaly Detection marks as unusual, using machine learning. Microsoft Cost Management finds anomalies per Azure subscription.",
         },
         {
           kind: "ul",
           items: [
             "AWS allows for weekly or monthly patterns and natural growth.",
-            "AWS checks about three times a day, but detection can take up to 24\u00a0hours.",
+            "AWS checks about three times a day; detection can take up to 24\u00a0hours.",
             "AWS needs 10\u00a0days of history for a newly used service.",
             "Azure compares each day’s total with a forecast from the last 60\u00a0days.",
             "Azure runs that check 36\u00a0hours after the day ends (UTC).",
@@ -49,7 +49,7 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "On 30 June, a VpnGw1 charge on its virtual private network (VPN) gateway stopped, and a costlier VpnGw3 charge started. Daily cost rose to $20.68 that day and $30.22 from 1 July.",
+          text: "On 30 June, a VpnGw1 charge on its virtual private network gateway stopped. A costlier VpnGw3 charge started. Daily cost rose to $20.68 that day and $30.22 from 1 July.",
         },
         { kind: "svg", figure: figure1 },
       ],
@@ -61,15 +61,16 @@ export const term: GlossaryTerm = {
         {
           kind: "ul",
           items: [
-            "An alert flags a sudden jump within days. If it wasn’t planned, you catch the mistake early.",
-            "Detection misses steady over-provisioning, such as a virtual machine sized above its load from day one. That cost is part of the normal it learns.",
+            "An email alert flags a sudden jump within days. If it wasn’t planned, you catch it early.",
+            "Detection misses steady over-provisioning, such as a virtual machine oversized from day one. That cost is part of the normal it learns.",
             [
-              "Finding it takes a ",
-              {
-                a: "review of what you run against what it uses",
-                href: "/learn/how-to-reduce-cloud-costs",
-              },
-              ".",
+              { a: "Cloud cost optimization", href: "/cloud-cost-optimization" },
+              " finds it by comparing what you run with its use.",
+            ],
+            [
+              "Our library lists FinOps tools and other ",
+              { a: "cloud cost optimization tools", href: "/cloud-cost-optimization-library" },
+              ", with what each one does.",
             ],
             [
               "The ",
@@ -82,14 +83,10 @@ export const term: GlossaryTerm = {
     },
   ],
   related: [
-    {
-      title: "FinOps",
-      line: "Teams sharing ownership of cloud spend.",
-      href: "/learn/glossary/finops",
-    },
+    { title: "FinOps", line: "Shared ownership of cloud spend.", href: "/learn/glossary/finops" },
     {
       title: "Showback",
-      line: "Reports each team’s share of the cloud cost.",
+      line: "Reports each team’s share of the cost.",
       href: "/learn/glossary/showback",
     },
     {
@@ -103,7 +100,10 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/rightsizing",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: {
+    title: "Cloud cost optimization: how to reduce cloud costs",
+    href: "/cloud-cost-optimization",
+  },
   sources: [
     {
       publisher: "Amazon Web Services",

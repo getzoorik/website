@@ -10,9 +10,8 @@ vi.mock("next/navigation", async (original) => ({
   usePathname: () => pathname.current,
 }));
 
+import AksCostOptimization from "@/app/aks-cost-optimization/page";
 import CoralFaq from "@/app/coral-faq/page";
-import CoralForAks from "@/app/coral-for-aks/page";
-import CoralForEks from "@/app/coral-for-eks/page";
 import CoralGuide from "@/app/coral-guide/page";
 import CoralWorksWithNodeAutoProvisioning, {
   metadata as napMeta,
@@ -30,6 +29,7 @@ import CoralWorksWithTerraform, {
 } from "@/app/coral-works-with-terraform/page";
 import InstallCoralWithHelm from "@/app/docs/install-coral-with-helm/page";
 import InstallCoralWithTerraform from "@/app/docs/install-coral-with-terraform/page";
+import EksCostOptimization from "@/app/eks-cost-optimization/page";
 import Trust from "@/app/trust/page";
 import { keepsHash, navState, routes } from "@/config/site";
 import { findTerm, glossarySlugOf } from "@/content/learn/glossary";
@@ -125,6 +125,7 @@ const pages = [
     readMore: [
       "/coral-guide#rebalancing",
       "/coral-faq#do-i-need-coral-with-karpenter",
+      "/learn/aks-node-auto-provisioning",
       "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
       "/coral-works-with-cluster-autoscaler",
       "/coral-works-with-karpenter",
@@ -227,8 +228,8 @@ const ANCHORED: Readonly<Record<string, () => React.JSX.Element>> = {
   [routes.trust]: Trust,
   [routes.docsInstallHelm]: InstallCoralWithHelm,
   [routes.docsInstallTerraform]: InstallCoralWithTerraform,
-  [routes.coralForAks]: CoralForAks,
-  [routes.coralForEks]: CoralForEks,
+  [routes.aksCostOptimization]: AksCostOptimization,
+  [routes.eksCostOptimization]: EksCostOptimization,
 };
 const printedIds = new Map<string, ReadonlySet<string>>();
 const idsOn = (route: string): ReadonlySet<string> | undefined => {
@@ -268,7 +269,7 @@ describe("the works-with pages", () => {
     expect(Object.values(worksWithPages).map((copy) => copy.route)).toEqual(
       pages.map((page) => page.route),
     );
-    expect(worksWithLastUpdated).toBe("31 October 2026");
+    expect(worksWithLastUpdated).toBe("1 November 2026");
     for (const copy of Object.values(worksWithPages)) {
       expect(copy.lastUpdated).toBe(worksWithLastUpdated);
     }

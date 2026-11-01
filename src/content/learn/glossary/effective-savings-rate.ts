@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -65,7 +65,7 @@ export const term: GlossaryTerm = {
             "Effective cost above list cost gives negative savings, and a negative ESR.",
             [
               "A high ESR doesn’t mean a low cloud cost. Discounts reduce unit prices. Using fewer resources is the other half of ",
-              { a: "how to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+              { a: "how to reduce cloud costs", href: "/cloud-cost-optimization" },
               ".",
             ],
             [
@@ -100,7 +100,10 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/amortized-cost",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: {
+    title: "Cloud cost optimization: how to reduce cloud costs",
+    href: "/cloud-cost-optimization",
+  },
   sources: [
     {
       publisher: "Microsoft Learn",

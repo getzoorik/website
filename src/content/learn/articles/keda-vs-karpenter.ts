@@ -14,11 +14,13 @@ export const article: Article = {
   topic: "Kubernetes autoscaling",
   versus: ["KEDA", "Karpenter"],
   published: "2026-10-24",
-  updated: "2026-10-24",
+  updated: "2026-11-01",
   author: "aditya",
   cover: "/learn-covers/zoorik-learn-keda-vs-karpenter-1200x630.webp",
+  coverAlt:
+    "KEDA vs Karpenter: KEDA sets how many pods, Karpenter sets which nodes, and requests are changed by neither",
   short:
-    "KEDA vs Karpenter is pod count against node count. KEDA (Kubernetes Event-driven Autoscaling) sets how many pods run, down to zero, from events such as a queue’s backlog. Karpenter sets the nodes: it launches nodes that fit the requests of pods that can’t be scheduled, and removes nodes it no longer needs. Use KEDA when work waits for pods, Karpenter when pods wait for nodes, and both for zero pods and zero nodes. Neither changes what each pod requests.",
+    "KEDA vs Karpenter is pod count against node count. KEDA (Kubernetes Event-driven Autoscaling) sets how many pods run from events, down to zero, and Karpenter adds and removes nodes to fit them. Use KEDA when work waits for pods, Karpenter when pods wait for nodes, and both for zero pods and zero nodes.",
   sections: [
     {
       id: "when-to-use-keda-vs-karpenter",
@@ -42,7 +44,9 @@ export const article: Article = {
             ],
             [
               { b: "Use a node autoscaler when pods wait for nodes." },
-              " That can be Karpenter, NAP on AKS, EKS Auto Mode or the Cluster Autoscaler.",
+              " That can be Karpenter, NAP on AKS, ",
+              { a: "EKS Auto Mode", href: "/learn/glossary/eks-auto-mode" },
+              " or the Cluster Autoscaler.",
             ],
             [{ b: "Run both for zero pods and zero nodes overnight." }],
             [
@@ -56,8 +60,8 @@ export const article: Article = {
           kind: "table",
           columns: [
             { label: "", width: "14%" },
-            { label: "KEDA", width: "48%" },
-            { label: "Karpenter", width: "38%" },
+            { label: "KEDA", width: "50%" },
+            { label: "Karpenter", width: "36%" },
           ],
           rows: [
             [
@@ -94,7 +98,9 @@ export const article: Article = {
             [
               "How it gives capacity back",
               [
-                "Its HPA scales pods in, and KEDA goes from 1 to 0 after ",
+                "Its ",
+                { a: "HPA", href: "/learn/glossary/horizontal-pod-autoscaler" },
+                " scales pods in, and KEDA goes from 1 to 0 after ",
                 { code: "cooldownPeriod" },
                 " (300\u00a0seconds by default)",
               ],
@@ -217,7 +223,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Unless you set budgets, one default budget of 10% of nodes caps how many of a NodePool’s nodes consolidation can disrupt at once. Pods leave through the Eviction API, so PodDisruptionBudgets (PDBs) hold. A pod annotated ",
+            "Unless you set budgets, one default budget of 10% of nodes caps how many of a NodePool’s nodes consolidation can disrupt at once. Pods leave through the Eviction API, so ",
+            { a: "PodDisruptionBudgets (PDBs)", href: "/learn/glossary/pod-disruption-budget" },
+            " hold. A pod annotated ",
             { code: 'karpenter.sh/do-not-disrupt: "true"' },
             " keeps its node out of consolidation. ",
             { a: "Karpenter consolidation", href: "/learn/karpenter-consolidation" },
@@ -314,7 +322,7 @@ export const article: Article = {
             [
               { b: "Rebalance requests to measured use." },
               " With that trigger, change them in small steps and watch the replica count. ",
-              { a: "Kubernetes pod rebalancing", href: "/learn/kubernetes-pod-right-sizing" },
+              { a: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
               " walks through the method.",
             ],
             [
@@ -408,8 +416,17 @@ export const article: Article = {
         {
           kind: "p",
           text: [
+            { a: "Coral works with KEDA", href: "/coral-works-with-keda" },
+            " and ",
+            { a: "Coral works with Karpenter", href: "/coral-works-with-karpenter" },
+            " cover the setup.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
             "On our own AKS development cluster, Coral removed a spare worker and swapped the remaining worker for a cheaper machine of the same size. The CPU the apps reserve went from 0.78 to 0.43\u00a0cores. Eight days after we connected Coral, ",
-            { a: "the machine bill", href: "/coral-value-lab" },
+            { a: "the machine cost", href: "/coral-value-lab" },
             " was $154.76 a month instead of $368.65, 58% less.",
           ],
         },
@@ -420,7 +437,7 @@ export const article: Article = {
     product: "coral",
     text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and drains spare nodes so your autoscaler can remove them. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
-      { label: "Kubernetes cost optimization with Coral", href: "/coral" },
+      { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Estimate your saving", href: "/assessment?p=coral" },
     ],
   },

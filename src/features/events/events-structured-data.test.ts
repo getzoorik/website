@@ -1,13 +1,15 @@
+import { existsSync } from "node:fs";
+
 import { describe, expect, it } from "vitest";
 
 import { events, type EventEntry } from "@/content/events";
 
-import { upcoming } from "./event-facts";
+import { banner, slug, upcoming } from "./event-facts";
 import { eventsStructuredData } from "./events-structured-data";
 
 /**
  * /events's Event markup: one Event per event shown at build whose days are known, built from the list's fields
- * alone, with no offers and no price.
+ * alone, with the banner its card shows as its image, and no offers and no price.
  */
 
 type Node = Readonly<Record<string, unknown>>;
@@ -84,6 +86,26 @@ describe("the events' structured data", () => {
     });
   });
 
+  it("gives an event the banner its card shows as its image, and none without one", () => {
+    const pictured = events.find((event) => banner(event))!;
+    const [node] = graphOf([{ ...pictured, startDate: "2026-11-16", endDate: "" }]);
+    expect(node!.image).toEqual([`https://zoorik.com/event-banners/${slug(pictured)}.webp`]);
+    expect(graphOf([base])[0]).not.toHaveProperty("image");
+  });
+
+  it("names the organizer's own site only where the list gives it", () => {
+    const [node] = graphOf([{ ...base, organizerUrl: "https://example.org" }]);
+    expect(node!.organizer).toEqual({
+      "@type": "Organization",
+      name: "Example organizers",
+      url: "https://example.org",
+    });
+    expect(graphOf([base])[0]!.organizer).toEqual({
+      "@type": "Organization",
+      name: "Example organizers",
+    });
+  });
+
   it("leaves out a month-only event: a month is not a start date", () => {
     expect(graphOf([{ ...base, startDate: "2027-04", dateStatus: "announced month" }])).toEqual([]);
   });
@@ -95,10 +117,40 @@ describe("the events' structured data", () => {
     expect(graph.map((node) => node.name)).toEqual(dated.map((event) => event.name));
     expect(graph.length).toBeLessThan(shown.length);
     for (const [i, node] of graph.entries()) {
-      expect(node.url).toBe(dated[i]!.officialUrl);
+      const event = dated[i]!;
+      expect(node.url).toBe(event.officialUrl);
       expect(node.startDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       expect(node.endDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      /* Its image is its card's own banner, a file the site serves; an event with none has no image. */
+      const picture = banner(event);
+      if (picture) {
+        expect(node.image, event.name).toEqual([`https://zoorik.com${picture.src}`]);
+        expect(existsSync(`public${picture.src}`), event.name).toBe(true);
+      } else {
+        expect(node, event.name).not.toHaveProperty("image");
+      }
     }
+    expect(graph.filter((node) => node.image).length).toBeGreaterThan(0);
+  });
+
+  it("gives every event its organizer's own site, never a sign-in or event-detail page", () => {
+    for (const event of events) {
+      const site = new URL(event.organizerUrl!);
+      expect(site.protocol, event.name).toBe("https:");
+      expect(site.search + site.hash, event.name).toBe("");
+      expect(site.pathname, event.name).not.toMatch(/login|sign-?in|register|events\/details/i);
+    }
+    const kcds = events.filter((event) =>
+      event.organizerUrl!.startsWith("https://community2.cncf.io/"),
+    );
+    for (const event of kcds)
+      expect(event.organizerUrl, event.name).toMatch(
+        /^https:\/\/community2\.cncf\.io\/kcd-[a-z-]+\/$/,
+      );
+    for (const event of upcoming(events, "2026-10-19").filter(
+      (event) => event.startDate.length === 10,
+    ))
+      expect(graphOf([event])[0]!.organizer, event.name).toHaveProperty("url", event.organizerUrl);
   });
 
   it("carries no offer and no price", () => {

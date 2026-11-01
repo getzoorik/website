@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -75,9 +75,9 @@ export const term: GlossaryTerm = {
             "Neither view changes what you pay, only when and where each cost shows.",
             "A purchase month usually looks smaller in amortized cost, and later months look bigger.",
             [
-              "With purchase spikes flattened, other ",
-              { a: "changes in cost", href: "/learn/how-to-reduce-cloud-costs" },
-              " stand out.",
+              "With purchase spikes flattened, ",
+              { a: "cloud cost optimization", href: "/cloud-cost-optimization" },
+              " spots other cost changes.",
             ],
             "An unused line is commitment you paid for but didn’t use.",
             [
@@ -108,7 +108,10 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/savings-plan-coverage-vs-utilization",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/learn/how-to-reduce-cloud-costs" },
+  next: {
+    title: "Cloud cost optimization: how to reduce cloud costs",
+    href: "/cloud-cost-optimization",
+  },
   sources: [
     {
       publisher: "Microsoft Learn",
