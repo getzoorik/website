@@ -1,9 +1,8 @@
-import { NewTabHint } from "@/components/primitives/new-tab-hint";
 import { researchPage, type ResearchGroup, type ResearchPaper } from "@/content/research";
 import { ArrowOutGlyph, DocGlyph } from "@/features/documents/document-glyphs";
 import { named } from "@/features/legal/named";
 import { LearnFrame } from "@/features/learn/learn-parts";
-import { offSiteProps } from "@/lib/links";
+import { NEW_TAB_HINT, isOffSite, offSiteProps } from "@/lib/links";
 
 /**
  * `/cloud-cost-optimization-research-papers`, on /community's frame (Learn's):
@@ -20,7 +19,7 @@ import { offSiteProps } from "@/lib/links";
 
 /* A paper's tile keeps the Read more tile's classes (`article.dt > div.dt-a`: the icon, the words, the arrow out), so it
    looks as it did. Only the paper's name is the link, so the link's words are the title alone, not the title, byline
-   and note run together. */
+   and note run together. The new-tab hint is in the link's label, not its text, so the h3 holds the title alone. */
 function Paper({ paper }: { readonly paper: ResearchPaper }): React.JSX.Element {
   return (
     <article className="dt">
@@ -28,9 +27,12 @@ function Paper({ paper }: { readonly paper: ResearchPaper }): React.JSX.Element 
         <DocGlyph className="dt-ic" />
         <div>
           <h3 className="dt-t">
-            <a href={paper.href} {...offSiteProps(paper.href)}>
+            <a
+              href={paper.href}
+              {...offSiteProps(paper.href)}
+              aria-label={isOffSite(paper.href) ? paper.title + NEW_TAB_HINT : paper.title}
+            >
               {named(paper.title)}
-              <NewTabHint href={paper.href} />
             </a>
           </h3>
           <p className="dt-l">{named(paper.by)}</p>

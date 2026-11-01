@@ -377,7 +377,7 @@ export const article: Article = {
             "What to do with the gap is covered in ",
             { a: "how to reduce Azure disk size", href: "/learn/shrink-azure-managed-disk" },
             " and in ",
-            { a: "Azure disk cost optimization", href: "/learn/azure-disk-reservations" },
+            { a: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
             ". On AWS the measuring job has the same shape, covered in ",
             { a: "how to check EBS volume usage", href: "/learn/check-ebs-volume-usage" },
             ".",
@@ -500,7 +500,7 @@ export const article: Article = {
       href: "/learn/shrink-azure-managed-disk",
     },
     {
-      title: "Azure disk cost optimization: stop paying for empty space",
+      title: "Azure disk reservations: are they worth it?",
       where: "Learn",
       href: "/learn/azure-disk-reservations",
     },

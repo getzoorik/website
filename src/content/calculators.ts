@@ -299,7 +299,7 @@ export const diskCalculator = {
       title: "Related reading",
       related: [
         {
-          text: "Azure disk cost optimization: stop paying for empty space",
+          text: "Azure disk reservations: are they worth it?",
           href: "/learn/azure-disk-reservations",
         },
         { text: "Can you shrink an Azure managed disk?", href: "/learn/shrink-azure-managed-disk" },

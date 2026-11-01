@@ -156,7 +156,7 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
             "Compared in full: ",
             {
               href: learnPath("kubernetes-autoscaling"),
-              text: "HPA vs VPA vs Cluster Autoscaler",
+              text: "Kubernetes autoscaling",
             },
             ".",
           ],

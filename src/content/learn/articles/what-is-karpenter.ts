@@ -345,7 +345,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "karpenter-on-aks-node-auto-provisioning",
-          title: "Karpenter on AKS: node auto provisioning",
+          title: "On AKS, NAP runs Karpenter for you",
         },
         {
           kind: "p",
@@ -403,7 +403,7 @@ export const article: Article = {
             { a: "Kubernetes cost optimization guide", href: "/kubernetes-cost-optimization" },
             " puts the two jobs in order: requests first, then nodes. ",
             {
-              a: "HPA vs VPA vs Cluster Autoscaler",
+              a: "Kubernetes autoscaling",
               href: "/learn/kubernetes-autoscaling",
             },
             " shows which tool owns which layer: pod count, pod size or node count.",

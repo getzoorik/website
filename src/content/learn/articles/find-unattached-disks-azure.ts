@@ -540,7 +540,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "For the rest of your disk cost, see ",
-            { a: "Azure disk cost optimization", href: "/learn/azure-disk-reservations" },
+            { a: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
             ".",
           ],
         },
@@ -599,7 +599,7 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "Azure disk cost optimization: stop paying for empty space",
+      title: "Azure disk reservations: are they worth it?",
       where: "Learn",
       href: "/learn/azure-disk-reservations",
     },

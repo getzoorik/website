@@ -29,7 +29,7 @@ export const article: Article = {
   sections: [
     {
       id: "cloud-cost-optimization-see-the-spend-first",
-      title: "Cloud cost optimization strategies: see the spend first, commit last",
+      title: "Cloud cost optimization strategies: see the cost first, commit last",
       blocks: [
         {
           kind: "p",
@@ -385,7 +385,7 @@ export const article: Article = {
     },
   ],
   help: {
-    text: "Coral rebalances Kubernetes on AKS and EKS, and Amoeba rightsizes block storage on Azure and AWS. We estimate 40–50% off AKS and EKS cost and 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Coral rebalances Kubernetes on AKS and EKS, and Amoeba rightsizes block storage on Azure and AWS. We estimate 40–50% off AKS and EKS cost and 50–60% off block storage cost. They are estimated ranges, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Block storage cost optimization with Amoeba", href: "/amoeba" },

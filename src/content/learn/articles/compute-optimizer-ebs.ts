@@ -256,7 +256,7 @@ export const article: Article = {
     },
     {
       id: "is-aws-compute-optimizer-free",
-      title: "Is AWS Compute Optimizer free?",
+      title: "Are Compute Optimizer’s EBS recommendations free?",
       blocks: [
         {
           kind: "p",

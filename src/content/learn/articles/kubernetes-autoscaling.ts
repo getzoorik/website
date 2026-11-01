@@ -18,7 +18,7 @@ export const article: Article = {
   author: "saurav",
   cover: "/learn-covers/zoorik-learn-kubernetes-autoscaling-1200x630.webp",
   coverAlt:
-    "HPA vs VPA vs Cluster Autoscaler: the HPA adds pods, the VPA makes a pod bigger, the Cluster Autoscaler adds a node",
+    "Kubernetes autoscaling: the HPA adds pods, the VPA makes a pod bigger, the Cluster Autoscaler adds a node",
   short: [
     "Kubernetes autoscaling works on three layers, and each autoscaler changes one: pod count, pod size or node count. The ",
     { a: "Horizontal Pod Autoscaler (HPA)", href: "/learn/glossary/horizontal-pod-autoscaler" },

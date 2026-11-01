@@ -201,7 +201,7 @@ const learnNames: Readonly<Record<string, string>> = {
   "find-unattached-disks-azure": "Find unattached disks in Azure",
   "azure-vm-disk-usage": "Azure VM disk usage: used vs provisioned",
   "check-ebs-volume-usage": "Check EBS volume usage: used vs paid",
-  "kubernetes-autoscaling": "HPA vs VPA vs Cluster Autoscaler",
+  "kubernetes-autoscaling": "Kubernetes autoscaling",
   "keda-vs-karpenter": "KEDA vs Karpenter",
   "kubernetes-allocatable-vs-capacity": "Kubernetes allocatable vs capacity",
   "limitrange-vs-resourcequota": "LimitRange vs ResourceQuota",

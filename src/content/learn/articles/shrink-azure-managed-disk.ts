@@ -70,7 +70,7 @@ export const article: Article = {
               href: "/learn/azure-disk-expand-without-downtime",
             },
             ", with exceptions such as taking a Premium SSD past 4\u00a0TiB. But when the data shrinks again, the space and its charge both stay. ",
-            { a: "Azure disk cost optimization", href: "/learn/azure-disk-reservations" },
+            { a: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
             " covers the rest of what you pay for disks.",
           ],
         },
@@ -435,7 +435,7 @@ export const article: Article = {
       href: "/amoeba-faq#can-a-shrink-lose-data",
     },
     {
-      title: "Azure disk cost optimization: stop paying for empty space",
+      title: "Azure disk reservations: are they worth it?",
       where: "Learn",
       href: "/learn/azure-disk-reservations",
     },

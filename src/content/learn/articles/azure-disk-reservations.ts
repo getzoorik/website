@@ -16,7 +16,7 @@ export const article: Article = {
   updated: "2026-11-01",
   author: "sheldon",
   cover: "/learn-covers/zoorik-learn-azure-disk-reservations-1200x630.webp",
-  coverAlt: "Azure disk cost optimization: disks charged in full become one pool sized to data",
+  coverAlt: "Azure disk reservations: disks charged in full become one pool sized to data",
   short: [
     "An Azure disk reservation covers only Premium SSD from P30 to P80, for a one-year term, and it comes last, once disk sizes are settled. First stop paying for empty space: a ",
     { a: "managed disk", href: "/learn/glossary/azure-managed-disk" },

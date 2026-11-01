@@ -390,7 +390,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "For the other ways to reduce what managed disks cost, see ",
-            { a: "Azure disk cost optimization", href: "/learn/azure-disk-reservations" },
+            { a: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
             ".",
           ],
         },

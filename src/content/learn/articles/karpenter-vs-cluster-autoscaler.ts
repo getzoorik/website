@@ -103,9 +103,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "The two sit one layer below the pod autoscalers, which ",
+            "The two sit one layer below the pod autoscalers, which the guide to ",
             {
-              a: "HPA vs VPA vs Cluster Autoscaler",
+              a: "Kubernetes autoscaling",
               href: "/learn/kubernetes-autoscaling",
             },
             " compares. Both run on Amazon Elastic Kubernetes Service (EKS) and Azure Kubernetes Service (AKS).",

@@ -21,7 +21,7 @@ export const term: GlossaryTerm = {
   sections: [
     {
       id: "thin-provisioning-vs-thick-provisioning",
-      title: "Thin provisioning vs thick provisioning",
+      title: "Thick vs thin provisioning: up front or as you write",
       blocks: [
         {
           kind: "ul",
@@ -98,7 +98,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/df-vs-du",
     },
   ],
-  next: { title: "Azure disk cost optimization", href: "/learn/azure-disk-reservations" },
+  next: { title: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
   sources: [
     {
       publisher: "Microsoft Learn",

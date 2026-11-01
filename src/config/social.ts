@@ -235,8 +235,8 @@ const CARDS: readonly {
   { file: "trust", words: "Security overview, DPA and sub-processors", paths: [routes.trust] },
   { file: "login", words: "Sign in", paths: ["/login"] },
   {
-    file: "learn-azure-disk-cost-optimization",
-    words: "Azure disk cost optimization",
+    file: "learn-azure-disk-reservations",
+    words: "Azure disk reservations: are they worth it?",
     paths: ["/learn/azure-disk-reservations"],
   },
   {
@@ -260,8 +260,8 @@ const CARDS: readonly {
     paths: [routes.cloudCostOptimization],
   },
   {
-    file: "learn-hpa-vs-vpa-vs-cluster-autoscaler",
-    words: "HPA vs VPA vs Cluster Autoscaler, plus Karpenter",
+    file: "learn-kubernetes-autoscaling",
+    words: "Kubernetes autoscaling: HPA and node autoscalers",
     paths: ["/learn/kubernetes-autoscaling"],
   },
   {

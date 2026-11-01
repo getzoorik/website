@@ -163,7 +163,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "Disk type is one way to reduce disk cost. ",
-            { a: "Azure disk cost optimization", href: "/learn/azure-disk-reservations" },
+            { a: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
             " covers the others.",
           ],
         },
@@ -478,7 +478,7 @@ export const article: Article = {
       href: "/learn/azure-managed-disk-types",
     },
     {
-      title: "Azure disk cost optimization: stop paying for empty space",
+      title: "Azure disk reservations: are they worth it?",
       where: "Learn",
       href: "/learn/azure-disk-reservations",
     },

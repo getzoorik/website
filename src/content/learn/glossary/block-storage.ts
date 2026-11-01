@@ -106,7 +106,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/disk-throughput",
     },
   ],
-  next: { title: "Azure disk cost optimization", href: "/learn/azure-disk-reservations" },
+  next: { title: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
   sources: [
     {
       publisher: "Amazon Web Services",

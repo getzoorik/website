@@ -371,13 +371,17 @@ export const article: Article = {
             " walks through the same loop with a plain HPA, and the order that avoids it.",
           ],
         },
-        { kind: "h3", id: "vpa-update-modes", title: "VPA update modes" },
         {
           kind: "p",
           text: [
-            "The VPA’s ",
+            "The ",
+            {
+              a: "VPA update modes",
+              href: "/learn/glossary/vertical-pod-autoscaler#vpa-update-modes",
+            },
+            ", set in the ",
             { code: "updateMode" },
-            " field sets how far it acts on its targets:",
+            " field, decide how far it acts on its targets:",
           ],
         },
         {

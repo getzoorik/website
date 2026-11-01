@@ -19,5 +19,10 @@
 #papers .res-group .dt-grid{grid-template-rows:none}
 #papers .res-group .dt{display:flex;grid-row:auto;position:relative}
 #papers .dt-t a::after{content:"";position:absolute;inset:0;border-radius:var(--r-card)}
+/* the title's link is stretched over the tile, so its focus ring goes round the whole tile and the title turns accent,
+   as a whole-tile link's focus looks */
+#papers .dt-t a:focus-visible{outline:none}
+#papers .dt-t a:focus-visible::after{outline:2px solid var(--z-focus,var(--accent));outline-offset:3px}
+#papers .dt:has(.dt-t a:focus-visible) .dt-t{color:var(--accent)}
 #papers .dt-a{flex:1 1 auto}
 #papers .dt-l + .dt-l{margin-top:8px;color:var(--text)}

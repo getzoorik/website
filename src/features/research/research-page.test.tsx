@@ -65,10 +65,12 @@ describe("/cloud-cost-optimization-research-papers", () => {
       expect(link).toHaveAttribute("rel", "noopener noreferrer");
       expect(tile.querySelectorAll("p.dt-l")).toHaveLength(2);
       expect(tile.querySelector("svg.dt-go")).toHaveAttribute("aria-hidden", "true");
-      expect(link.querySelector(".sr-only")).toHaveTextContent("(opens in a new tab)");
+      /* The h3 holds the paper's name alone; a screen reader still hears that the link opens a new tab. */
+      expect(link.querySelector(".sr-only")).toBeNull();
+      expect(link).toHaveAccessibleName(`${text(link)} (opens in a new tab)`);
     }
     expect(text(tiles[0]!.querySelector(".dt-t"))).toBe(
-      "Large-scale cluster management at Google with Borg (opens in a new tab)",
+      "Large-scale cluster management at Google with Borg",
     );
     expect(text(tiles[0]!.querySelector(".dt-l"))).toBe(
       "Abhishek Verma et al. · ACM EuroSys, 2015",

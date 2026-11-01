@@ -488,7 +488,7 @@ export const article: Article = {
       href: "/learn/azure-disk-performance-tiers",
     },
     {
-      title: "Azure disk cost optimization: stop paying for empty space",
+      title: "Azure disk reservations: are they worth it?",
       where: "Learn",
       href: "/learn/azure-disk-reservations",
     },
