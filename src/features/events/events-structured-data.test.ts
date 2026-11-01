@@ -133,18 +133,24 @@ describe("the events' structured data", () => {
     expect(graph.filter((node) => node.image).length).toBeGreaterThan(0);
   });
 
-  it("names an organizer's own site only where its name in the list gives that site", () => {
-    const sited = events.filter((event) => event.organizerUrl);
-    expect(sited.map((event) => event.organizerUrl)).toEqual([
-      "https://devopsdays.org",
-      "https://ceph.io",
-      "https://devopsdays.org",
-      "https://devopsdays.org",
-      "https://devopsdays.org",
-      "https://devopsdays.org",
-    ]);
-    for (const event of sited)
-      expect(event.organizer, event.name).toContain(new URL(event.organizerUrl!).host);
+  it("gives every event its organizer's own site, never a sign-in or event-detail page", () => {
+    for (const event of events) {
+      const site = new URL(event.organizerUrl!);
+      expect(site.protocol, event.name).toBe("https:");
+      expect(site.search + site.hash, event.name).toBe("");
+      expect(site.pathname, event.name).not.toMatch(/login|sign-?in|register|events\/details/i);
+    }
+    const kcds = events.filter((event) =>
+      event.organizerUrl!.startsWith("https://community2.cncf.io/"),
+    );
+    for (const event of kcds)
+      expect(event.organizerUrl, event.name).toMatch(
+        /^https:\/\/community2\.cncf\.io\/kcd-[a-z-]+\/$/,
+      );
+    for (const event of upcoming(events, "2026-10-19").filter(
+      (event) => event.startDate.length === 10,
+    ))
+      expect(graphOf([event])[0]!.organizer, event.name).toHaveProperty("url", event.organizerUrl);
   });
 
   it("carries no offer and no price", () => {

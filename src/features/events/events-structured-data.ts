@@ -11,8 +11,8 @@ import { banner } from "./event-facts";
  * and naming one the organizer has not would invent it.
  *
  * Built only from the list's own fields: the name, the days, how to attend (from its format), where (the venue,
- * city and country; the event's page for an online one; both for a hybrid one), the organizer (with its own site
- * where the list gives one, `organizerUrl`), the event's page and its description; and the event's own picture, the
+ * city and country; the event's page for an online one; both for a hybrid one), the organizer (with its own site,
+ * `organizerUrl`, where the list gives one), the event's page and its description; and the event's own picture, the
  * banner its card shows (`banner`), where it has one. An event with no banner has no image, never a stand-in.
  * 🔴 NO offers OR price: the page shows tickets as a label only, and so does its markup.
  */
