@@ -52,7 +52,7 @@ describe("social cards", () => {
     expect(amoeba.description).toBe(
       "Block storage cost optimization: Amoeba rightsizes Azure managed disks and Amazon EBS to your data, autonomously, without any downtime after the one switch.",
     );
-    expect(coral.title).toBe("Kubernetes cost optimization for AKS and EKS | Zoorik");
+    expect(coral.title).toBe("Coral: Kubernetes optimization for AKS and EKS | Zoorik");
     expect(coral.description).toBe(
       "Kubernetes optimization platform for AKS and EKS: Coral rebalances clusters to reduce your cloud cost, autonomously, without any downtime.",
     );

@@ -34,7 +34,7 @@ describe("page metadata", () => {
     expect(assessment.title).toBe("Free cloud cost assessment for Azure and AWS");
     expect(login.title).toBe("Sign in");
     expect(amoeba.title).toBe("Block storage cost optimization for Azure and AWS");
-    expect(coral.title).toBe("Kubernetes cost optimization for AKS and EKS");
+    expect(coral.title).toBe("Coral: Kubernetes optimization for AKS and EKS");
   });
 
   it("keeps each full title within the 60 characters a search result shows", () => {
@@ -42,7 +42,7 @@ describe("page metadata", () => {
     const { template } = layout.title as { template: string };
     const full = (title: unknown) => template.replace("%s", String(title));
     expect(full(amoeba.title)).toBe("Block storage cost optimization for Azure and AWS | Zoorik");
-    expect(full(coral.title)).toBe("Kubernetes cost optimization for AKS and EKS | Zoorik");
+    expect(full(coral.title)).toBe("Coral: Kubernetes optimization for AKS and EKS | Zoorik");
     for (const title of [amoeba.title, coral.title, assessment.title])
       expect(full(title).length).toBeLessThanOrEqual(60);
     expect((layout.title as { default: string }).default).toHaveLength(55);

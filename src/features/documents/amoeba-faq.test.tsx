@@ -17,8 +17,8 @@ import AmoebaFaqPage from "@/app/amoeba-faq/page";
 /**
  * `/amoeba-faq`: the ids shared links depend on, the first group "About
  * Amoeba", the groups and their two callouts, the 29 questions that open in
- * place with their short answers, and what the page never carries (no fact
- * is still to come since 1 Nov 2026). The body is rendered on its own, as it renders whatever
+ * place with their short answers, the four facts still to come, and what the
+ * page never carries. The body is rendered on its own, as it renders whatever
  * the flag says; the route is checked held (404) and, with the flag mocked on,
  * published. Its metadata is in `src/app/metadata.test.ts`.
  */
@@ -70,7 +70,28 @@ const QUESTION_IDS = [
 
 /* The mock's bullets per question, 01 to 29. */
 const BULLETS = [
-  3, 3, 3, 2, 2, 1, 4, 3, 3, 4, 3, 2, 3, 3, 1, 3, 3, 3, 4, 1, 3, 5, 4, 3, 2, 2, 2, 3, 3,
+  3, 3, 3, 2, 2, 1, 4, 4, 3, 4, 3, 3, 3, 4, 1, 3, 3, 3, 4, 1, 3, 5, 4, 3, 2, 2, 2, 3, 3,
+];
+
+/* Every "To come" on the page: the question, the bullet it fills (1-based), and
+   its text, verbatim. The mock answers the rest (AWS, pricing). */
+const PLACEHOLDERS = [
+  [
+    "what-happens-if-the-switch-onto",
+    2,
+    "To come: what happens to writes made on the pool if a late check fails after the services restarted",
+  ],
+  ["does-the-copy-slow-down-my", 3, "To come: measured effect of the copy on disk latency"],
+  [
+    "how-fast-does-amoeba-expand-when",
+    4,
+    "To come: typical time from the trigger to the added capacity",
+  ],
+  [
+    "does-amoeba-work-on-windows-vms",
+    1,
+    "To come: Windows support: versions, filesystems, and how the pool works on Windows",
+  ],
 ];
 
 const text = (el: Element | null): string => (el?.textContent ?? "").replace(/[\s ]+/g, " ").trim();
@@ -224,9 +245,30 @@ describe("the body", () => {
     });
   });
 
-  it("carries no fact still to come", () => {
-    expect(page.querySelectorAll(".ph")).toHaveLength(0);
-    expect(page.textContent).not.toContain("To come");
+  it("carries the four facts to come as whole bullets, in the mock's places", () => {
+    const placeholders = [...page.querySelectorAll(".ph")];
+    expect(placeholders).toHaveLength(4);
+    expect(
+      placeholders.map((ph) => {
+        const li = ph.parentElement!;
+        return [
+          li.closest("details")!.id,
+          [...li.parentElement!.children].indexOf(li) + 1,
+          ph.textContent,
+        ];
+      }),
+    ).toEqual(PLACEHOLDERS);
+    for (const ph of placeholders) {
+      expect(ph.tagName).toBe("SPAN");
+      expect(ph.parentElement!.tagName).toBe("LI");
+      expect(ph.parentElement!.childNodes).toHaveLength(1);
+    }
+    /* "To come: " is the placeholder's own text, at 500, and a search result never quotes it. */
+    for (const ph of placeholders) {
+      expect(ph).toHaveAttribute("data-nosnippet");
+      expect(ph.firstElementChild).toHaveClass("ph-k");
+      expect(ph.firstElementChild!.textContent).toBe("To come: ");
+    }
   });
 
   describe("what it never carries", () => {

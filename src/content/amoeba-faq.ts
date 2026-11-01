@@ -14,9 +14,9 @@ import type { FaqSection } from "@/content/faq";
  * this site, nor do its deck, fine print, cards, sources or gaps.
  * `src/app/internal-docs.test.ts` fails if they come back.
  *
- * On 1 November 2026 the four "To come" bullets were dropped: the Windows
- * question gives its short yes, and the other three answers keep their written
- * bullets. A fact that is written later goes back in as a bullet of its answer.
+ * Four facts are still to come, each a whole bullet carried as a `{ ph }`
+ * segment in the mock's place. Filling one is replacing its segment with text;
+ * nothing else changes.
  *
  * ─── THE IDS ARE A CONTRACT ────────────────────────────────────────────────
  * Group and question ids are stored as fixed strings and never derived from
@@ -160,6 +160,11 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         question: "What happens if the switch onto the pool fails?",
         short: [
           "The agent tries to put the original mounts back and start your services again. The source disks are never written during the switch.",
+          [
+            {
+              ph: "what happens to writes made on the pool if a late check fails after the services restarted",
+            },
+          ],
           "Amoeba then tries the switch again, so your services can restart more than once.",
           "If the outcome can’t be known, the move pauses instead.",
         ],
@@ -208,6 +213,7 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         short: [
           "The copy runs inside the VM, and Amoeba sets its speed from your VM’s own disk load.",
           "When the disks are busy, the copy slows down or waits. This needs cgroup v2 on the VM. Without it, the copy doesn’t slow down for your load.",
+          [{ ph: "measured effect of the copy on disk latency" }],
         ],
       },
       {
@@ -236,6 +242,7 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
           "Amoeba grows the pool before it fills, and sooner when data arrives fast.",
           "The agent reports the pool’s use regularly, and Amoeba weighs an expand on every report.",
           "An expand adds room while the pool stays mounted, so your services keep running.",
+          [{ ph: "typical time from the trigger to the added capacity" }],
         ],
       },
       {
@@ -298,7 +305,7 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         id: "does-amoeba-work-on-windows-vms",
         question: "Does Amoeba work on Windows VMs?",
         short: [
-          "Yes. Amoeba works on the data disks of running Windows and Linux VMs, on Azure and AWS.",
+          [{ ph: "Windows support: versions, filesystems, and how the pool works on Windows" }],
         ],
       },
       {

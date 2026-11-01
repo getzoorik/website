@@ -11,11 +11,9 @@ import type { GuideContent } from "@/content/guide";
  * timings or phase names. The move only goes forward, and a VM's one setting
  * is Auto or Manual shrinks.
  *
- * On 1 November 2026 the twelve "To come" placeholders were dropped: each
- * sentence or cell keeps the words written around it, the Windows row gives
- * its short yes, and the empty "Open the console" step and connect well went.
- * A fact that is written later goes back in as plain text, or text with bold
- * or code; a placeholder (`{ ph }`) prints "To come: " and its description.
+ * The facts the draft does not have yet are placeholders (`{ ph }`): the page
+ * prints "To come: " and the description. Filling one is an edit to this file
+ * alone: replace the piece with plain text, or text with bold or code.
  *
  * ─── THE ANCHOR IDS ARE A CONTRACT ─────────────────────────────────────────
  * Other pages and shared links point at these ids: the groups keep the
@@ -243,7 +241,10 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                 ],
                 [
                   "The rights to connect",
-                  "In Azure, the rights to add Zoorik’s app to your directory, create a custom role, and assign it on each subscription.",
+                  [
+                    "In Azure, the rights to add Zoorik’s app to your directory, create a custom role, and assign it on each subscription. ",
+                    { ph: "the exact Azure roles needed to run the connect script" },
+                  ],
                 ],
                 [
                   "A running VM with data disks",
@@ -255,9 +256,12 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                 ],
                 [
                   "Linux",
-                  "The kernel must be recent and support btrfs, built in or as a module, and services on data mounts must run under systemd. The agent also needs rsync, btrfs-progs (mkfs.btrfs and btrfs) and psmisc (fuser), which the installer doesn’t add, and cgroup v2 for its disk-load readings. Amoeba checks the running kernel, never the OS name.",
+                  [
+                    "The kernel must be recent and support btrfs, built in or as a module, and services on data mounts must run under systemd. The agent also needs rsync, btrfs-progs (mkfs.btrfs and btrfs) and psmisc (fuser), which the installer doesn’t add, and cgroup v2 for its disk-load readings. Amoeba checks the running kernel, never the OS name. ",
+                    { ph: "supported Linux distributions and versions" },
+                  ],
                 ],
-                ["Windows", "Amoeba works on the data disks of Windows VMs too."],
+                ["Windows", [{ ph: "supported Windows versions and what Amoeba needs on them" }]],
                 [
                   "Services on data mounts",
                   "Every process that keeps a data mount open must run as a systemd service. Then the agent can stop it and start it again at the switch.",
@@ -268,9 +272,20 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                 ],
                 [
                   "Network",
-                  "Outbound access from each VM to Zoorik for the agent’s reports and command channels, and to the hosts it downloads from.",
+                  [
+                    "Outbound access from each VM to Zoorik for the agent’s reports and command channels, and to the hosts it downloads from. ",
+                    {
+                      ph: "hosts to allow: Zoorik, GitHub release downloads and the distribution’s package mirrors",
+                    },
+                  ],
                 ],
-                ["A console account", "Sign in with a Microsoft or Google account."],
+                [
+                  "A console account",
+                  [
+                    "Sign in with a Microsoft or Google account. ",
+                    { ph: "the Amoeba console address" },
+                  ],
+                ],
               ],
             },
           ],
@@ -302,11 +317,25 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
               kind: "steps",
               steps: [
                 {
+                  title: "Open the console",
+                  body: [
+                    {
+                      kind: "p",
+                      text: [{ ph: "the Amoeba console address, and how you sign in" }],
+                    },
+                  ],
+                },
+                {
                   title: "Connect Azure",
                   body: [
                     {
                       kind: "p",
                       text: "Click “Connect Azure” and enter your directory (tenant) ID. The console shows a script to run in Azure Cloud Shell. It adds Zoorik’s app to your directory, creates the role “Zoorik Storage Operator”, and assigns it to the app on each subscription you name.",
+                    },
+                    {
+                      kind: "well",
+                      lines: [[{ ph: "the connect script, exactly as the console prints it" }]],
+                      prompt: "$ ",
                     },
                   ],
                 },
@@ -358,7 +387,10 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
               kind: "ul",
               items: [
                 "The list comes from Azure Resource Graph only. Amoeba doesn’t look inside a VM, or show its used space or savings, until the VM’s agent reports.",
-                "VMs that can’t be onboarded are counted in one line under the list, with the reason. For example, the VM is stopped or has only an OS disk.",
+                [
+                  "VMs that can’t be onboarded are counted in one line under the list, with the reason. For example, the VM is stopped or has only an OS disk. ",
+                  { ph: "how Windows VMs appear in the onboarding list" },
+                ],
                 "The list can be a little behind Azure.",
                 "A VM you onboarded before keeps its settings when you onboard it again.",
               ],
@@ -662,6 +694,11 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                 "The agent stops every systemd service that holds a data mount open, with systemctl stop. It never kills a process itself.",
                 "It checks nothing is left to copy, saves /etc/fstab, mounts the pool at each data mount’s path, and starts the services again. Your mount paths stay the same.",
                 "If any step fails, the agent tries to put the original mounts back and start the services again. The source disks are never written during the switch. Amoeba then tries the switch again, so your services can restart more than once.",
+                [
+                  {
+                    ph: "what happens to writes made on the pool if a late check fails after the services restarted",
+                  },
+                ],
                 "A process that holds a data mount open outside a systemd service can’t be stopped cleanly, so the switch can’t finish.",
               ],
             },
@@ -676,6 +713,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
               items: [
                 "A move only goes forward. Once the switch is checked, Amoeba snapshots each source disk, deletes the disk, and keeps the snapshot for 7 days before deleting it too.",
                 "A disk is deleted only after its own snapshot succeeded, and only when its tag names this move.",
+                [{ ph: "how to restore from a safety snapshot, and who does it" }],
                 "You pay for both sets of disks only while the move runs, and then for the snapshots while they’re kept.",
                 "The pool keeps growing before it fills. Shrinks wait until Amoeba has seen enough of your use after the move.",
               ],
@@ -727,6 +765,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                 "The pool stays mounted while it grows, so your services keep running.",
                 "Amoeba grows existing disks in place, or adds new ones while the VM has a free disk slot.",
                 "When data arrives fast, it adds room sooner.",
+                [{ ph: "typical time from the trigger to the added capacity" }],
               ],
             },
           ],
@@ -981,7 +1020,10 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                   [{ code: "Microsoft.Compute/virtualMachines/runCommand/action" }],
                   "Installing the agent, and checking the copy and the switch during the move.",
                 ],
-                [[{ code: "Microsoft.Compute/virtualMachines/reapply/action" }], ""],
+                [
+                  [{ code: "Microsoft.Compute/virtualMachines/reapply/action" }],
+                  [{ ph: "when Amoeba reapplies a VM" }],
+                ],
                 [
                   [
                     { code: "Microsoft.Compute/disks/write" },

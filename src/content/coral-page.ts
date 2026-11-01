@@ -17,10 +17,9 @@ import type { ProductPageContent, ReadMoreTile } from "@/content/product-page";
  * second claim free to drift. Nothing here is a new figure.
  *
  * Coral's h1 is "Kubernetes optimization for AKS and EKS", and its `<title>`
- * "Kubernetes cost optimization for AKS and EKS" (owner, 1 Nov 2026): the
- * product page leads with "<x> cost optimization" in its title, and the h1
- * leaves the bare search "Kubernetes cost optimization" to
- * /kubernetes-cost-optimization (D229). It is never shown as running on Windows
+ * "Coral: Kubernetes optimization for AKS and EKS" (owner, 1 Nov 2026, O1):
+ * the search "Kubernetes cost optimization" belongs to
+ * /kubernetes-cost-optimization (D229), so neither carries it. It is never shown as running on Windows
  * or Linux.
  */
 /**
@@ -44,7 +43,7 @@ export const coralFaqTile: ReadMoreTile = {
 export const coralPageContent: ProductPageContent = {
   product: "coral",
   meta: {
-    title: "Kubernetes cost optimization for AKS and EKS",
+    title: "Coral: Kubernetes optimization for AKS and EKS",
     description:
       "Kubernetes optimization platform for AKS and EKS: Coral rebalances clusters to reduce your cloud cost, autonomously, without any downtime.",
     appDescription:
