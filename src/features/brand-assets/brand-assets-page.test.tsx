@@ -29,7 +29,7 @@ import BrandAssetsRoute, { metadata } from "@/app/brand-assets/page";
 
 const text = (el: Element | null): string => (el?.textContent ?? "").replace(/[\s ]+/g, " ").trim();
 const main = () => render(<BrandAssetsRoute />).container.querySelector("main")!;
-const servedFile = (href: string) => join(process.cwd(), "public", href);
+const servedFile = (href: string) => join(process.cwd(), "public", decodeURIComponent(href));
 
 /** WCAG 2 contrast of two "#RRGGBB" colours, to one decimal as the page prints it. */
 function contrast(a: string, b: string): string {
@@ -200,6 +200,8 @@ describe("/brand-assets", () => {
     for (const link of links) {
       const href = link.getAttribute("href")!;
       expect(href.startsWith("/brand-kit/"), href).toBe(true);
+      /* Percent-encoded, so Cloudflare's assets serve it without a redirect (an "@" answers 307 to "%40"). */
+      expect(href).toBe(encodeURI(decodeURIComponent(href)).replaceAll("@", "%40"));
       expect(existsSync(servedFile(href)), href).toBe(true);
     }
     const labels = (tile: Element) => [...tile.querySelectorAll(".bk-dl")].map((a) => text(a));
@@ -207,7 +209,7 @@ describe("/brand-assets", () => {
     expect(labels(onNavy!)).toEqual(["SVG", "PNG"]);
     expect([...onNavy!.querySelectorAll(".bk-dl")].map((a) => a.getAttribute("href"))).toEqual([
       "/brand-kit/zoorik-logo-on-navy.svg",
-      "/brand-kit/zoorik-logo-on-navy@2x.png",
+      "/brand-kit/zoorik-logo-on-navy%402x.png",
     ]);
     const small = page.querySelectorAll("#mark .bk-tile")[3]!;
     expect(labels(small)).toEqual(["SVG", "PNG 16", "PNG 32", "PNG 64"]);
