@@ -3,7 +3,8 @@
    /about's; FAQ rows are the FAQ's, without numbers on /pricing.
    repo: the App Router keeps a visited page's sheet in the document, so a rule that could reach another page's
    elements starts at this page's own section: Follow us is `#follow`, where /about's Find us cards hold store buttons
-   of their own. Every other selector names a class only these two pages draw. */
+   of their own, and the marketplace row is `#buy`, where /partners draws the same row. Every other selector names a
+   class only these two pages draw. */
 .ct-col{max-width:960px}
 .ct-g + .ct-g{margin-top:clamp(40px,4.5vw,56px)}
 .ct-g > h3{margin-bottom:16px;font-size:var(--fs-h3);font-weight:600;line-height:1.35}
@@ -22,7 +23,7 @@
 .cp-d .cta-fine{margin-top:16px}
 .pr-col{max-width:var(--doc-col,720px)}
 .pr-col > :first-child{margin-top:0}
-.cp-buyrow .mkt-btns{gap:10px}
+#buy .cp-buyrow .mkt-btns{gap:10px}
 .cp-more{display:flex;flex-wrap:wrap;align-items:center;gap:8px 24px;margin-top:16px}
 .cp-more p{color:var(--muted)}
 .cp-more p a{color:var(--accent);text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--accent) 35%,transparent);text-underline-offset:3px}

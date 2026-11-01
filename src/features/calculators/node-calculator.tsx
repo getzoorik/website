@@ -86,10 +86,11 @@ export function NodeCalculator(): React.JSX.Element {
   const error = "error" in result ? MESSAGES[result.error] : undefined;
   const failed = "error" in result;
 
-  /* A max pods message opens More settings, so the field it names is in view. */
+  /* A max pods message opens More settings, so the field it names is in view: after every render while it stands, as
+     the mock's render() does, so a reader who closes the fold sees it again on the next input. */
   useEffect(() => {
     if (error?.field === "maxpods" && more.current) more.current.open = true;
-  }, [error?.field, error?.text]);
+  });
 
   const chooseCloud = (next: Cloud) => {
     setCloud(next);
