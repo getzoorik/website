@@ -338,11 +338,12 @@ describe("/cloud-cost-optimization-library", () => {
     expect(note.querySelector("a")).toHaveAttribute("href", `mailto:${contactEmail}`);
   });
 
-  it("compares Coral and Amoeba in four tiles, two by two: the live versus pages, then the alternatives pages", () => {
+  it("compares Coral and Amoeba in six tiles, two by two: the live versus pages, then the alternatives pages", () => {
     const root = page();
     const grid = root.querySelector("#ours .dt-grid")!;
     expect(grid).toHaveClass("dt-2x2", "tl-2x2");
     const tiles = [...grid.querySelectorAll(":scope > article.dt > a.dt-a")];
+    expect(tiles).toHaveLength(6);
     expect(
       tiles.map((a) => [
         a.getAttribute("href"),

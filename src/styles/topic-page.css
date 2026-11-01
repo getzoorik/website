@@ -1,0 +1,37 @@
+/* Zoorik marketing — the Topic pages: /azure-cost-optimization and /aws-cost-optimization (1 Nov 2026).
+ *
+ * Ported VERBATIM from the mocks' <style id="four-pages"> (`azure-cost-optimization.html`, four_pages_mock.py), rule
+ * for rule, in their order. Values are copied, never reinterpreted. Everything else the pages draw is the site's own:
+ * the cloud pages' hero (cloud-page.css, through `cl-hero`: the photo, the eyebrow, the line and the question rows'
+ * two rules), the Learn frame (doc-rows.css), the articles' sheet (article.css: the stacked table, the help box), the
+ * guides' table spacing (open-source.css), the cards (`.pl`), the doc tiles and the closing row.
+ *
+ * repo: the App Router keeps a visited page's sheet in the document, so every rule starts at this page's own hero
+ * (`.tp-hero`, or a section after it, `.tp-hero ~ …`), as cloud-page.css starts at `.cl-hero`. */
+
+/* "Where Coral and Amoeba fit": the home page's cards (.pl) two up, as /about's Find us pair them; each card's head
+   is the docs hub's product head (.res-head: the product's mark at 24px beside its name); its link rests at its foot,
+   as Install your way's links do */
+.tp-hero ~ #coral-and-amoeba .tp-prods{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+@media (min-width:760px){.tp-hero ~ #coral-and-amoeba .tp-prods{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tp-hero ~ #coral-and-amoeba .tp-prods .pl{padding:clamp(24px,3vw,36px)}
+.tp-hero ~ #coral-and-amoeba .tp-ph{display:flex;align-items:center;gap:12px}
+.tp-hero ~ #coral-and-amoeba .tp-ph svg{width:24px;height:24px;flex:none}
+.tp-hero ~ #coral-and-amoeba .tp-ph h3{font-size:var(--fs-h3);font-weight:600;line-height:1.35;letter-spacing:-.012em}
+.tp-hero ~ #coral-and-amoeba .tp-prods .pl p{margin-top:12px;font-size:1rem;line-height:1.65}
+.tp-hero ~ #coral-and-amoeba .tp-prods .pl .alink{align-self:flex-start;margin-top:auto;padding-top:20px}
+/* the lines under the cards: "What is Coral?"'s text column (the product pages' .pp-prose) */
+.tp-hero ~ #coral-and-amoeba .pp-prose{margin-top:24px}
+.tp-hero ~ #coral-and-amoeba .pp-prose p{max-width:68ch;font-size:var(--fs-prose);line-height:1.7;color:var(--text);text-wrap:pretty}
+.tp-hero ~ #coral-and-amoeba .pp-prose p + p{margin-top:16px}
+.tp-hero ~ #coral-and-amoeba .tp-prods + .pp-prose{margin-top:40px}
+.tp-hero ~ #coral-and-amoeba .pp-prose a,.tp-hero ~ #coral-and-amoeba .tp-prods .pl p a{color:var(--accent);text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--accent) 35%,transparent);text-underline-offset:3px}
+/* the h1 keeps the site's hero measure (hero.css: .hero h1, 21ch, balanced), which the product heroes lift
+   (site-system.css: .pp-hero h1, none): a one-line product name never shows it, but this long h1 does */
+.tp-hero h1{max-width:21ch;text-wrap:balance}
+/* the Azure link-out box sits inside its section, so it takes the in-section callout's space (Learn's .ar-call: 24px),
+   not the article-foot help box's 56px */
+.tp-hero ~ .doc-body .fq-sec-b > .doc-call.doc-help{margin-top:24px}
+/* repo: sections.css sets `.sec-head p{text-wrap:pretty}` on every page; the mock's sheet has no such rule, so the
+   band's lead breaks as the mock breaks it (as brand-assets.css and careers.css do for theirs) */
+.tp-hero ~ #coral-and-amoeba .sec-head p{text-wrap:wrap}

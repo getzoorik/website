@@ -202,7 +202,7 @@ describe("the comparison pages' old addresses under /compare", () => {
     expect(hub.status).toBe(301);
     expect(getRedirectUrl(hub)).toBe("https://zoorik.com/cloud-cost-optimization-library");
     const pages = [...versusPages.map(versusRoute), ...alternativesPages.map((page) => page.route)];
-    expect(pages).toHaveLength(4);
+    expect(pages).toHaveLength(6);
     for (const path of pages) {
       expect(path.startsWith("/cloud-cost-optimization-library/"), path).toBe(true);
       const old = await respond(
@@ -225,7 +225,7 @@ describe("the comparison pages' older addresses under /learn", () => {
           [page.route.replace("/cloud-cost-optimization-library/", "/learn/"), page.route] as const,
       ),
     ];
-    expect(moved).toHaveLength(4);
+    expect(moved).toHaveLength(6);
     for (const [from, to] of moved) {
       const response = await respond(`https://zoorik.com${from}`);
       expect(response.status, from).toBe(301);

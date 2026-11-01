@@ -156,6 +156,8 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/docs/contributing": () => import("@/app/docs/contributing/page"),
   "/coral-troubleshooting": () => import("@/app/coral-troubleshooting/page"),
   "/amoeba-troubleshooting": () => import("@/app/amoeba-troubleshooting/page"),
+  "/azure-cost-optimization": () => import("@/app/azure-cost-optimization/page"),
+  "/aws-cost-optimization": () => import("@/app/aws-cost-optimization/page"),
   "/aks-cost-optimization": () => import("@/app/aks-cost-optimization/page"),
   "/eks-cost-optimization": () => import("@/app/eks-cost-optimization/page"),
   "/azure-managed-disk-cost-optimization": () =>
@@ -411,7 +413,7 @@ describe("the home page's structured data", () => {
 
 describe("every indexed page's structured data", () => {
   it("renders on every page in the sitemap as one block that parses to the page's graph", async () => {
-    expect(listed).toHaveLength(54 + learnArticles.length + glossaryTerms.length);
+    expect(listed).toHaveLength(58 + learnArticles.length + glossaryTerms.length);
     for (const { path } of listed) {
       pathname.current = path;
       const { default: Page } = await pageModule(path);

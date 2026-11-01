@@ -45,13 +45,23 @@ export const shareImage = (url: ShareImage["url"], alt: string): ShareImage => (
  * card by its URL, so a redrawn card gets a new file name. Each `alt` reads the card: its name, then its words. The
  * home page has none of its own: it shows the brand card.
  */
-/** A product's comparison pages, its alternatives page then its versus page: they share one card. */
+/**
+ * A product's comparison pages, its alternatives page then its versus pages: they share one card, except a versus page
+ * with its own (`card`, below).
+ */
 const comparisonsOf = (product: ProductId): `/${string}`[] => [
   ...alternativesPages
     .filter((page) => page.product === product)
     .map((page) => page.route as `/${string}`),
-  ...versusPages.filter((page) => page.product === product).map(versusRoute),
+  ...versusPages.filter((page) => page.product === product && !page.card).map(versusRoute),
 ];
+
+/** A versus page with its own card, `public/og/pages/<slug>.png`, whose words are its title. */
+const versusCard = (slug: string): { file: string; words: string; paths: `/${string}`[] } => {
+  const page = versusPages.find((entry) => entry.slug === slug && entry.card);
+  if (!page) throw new Error(`No live versus page "${slug}" has its own card.`);
+  return { file: page.slug, words: page.meta.title, paths: [versusRoute(page)] };
+};
 
 const CARDS: readonly {
   readonly file: string;
@@ -115,6 +125,17 @@ const CARDS: readonly {
     words: "Coral works with Terraform",
     paths: [routes.coralWorksWithTerraform],
   },
+  /* The two Topic pages (1 Nov 2026). */
+  {
+    file: "azure-cost-optimization",
+    words: "Azure cost optimization: how to reduce Azure costs",
+    paths: [routes.azureCostOptimization],
+  },
+  {
+    file: "aws-cost-optimization",
+    words: "AWS cost optimization: how to reduce AWS costs",
+    paths: [routes.awsCostOptimization],
+  },
   { file: "assessment", words: "Free cloud cost assessment", paths: ["/assessment"] },
   { file: "docs", words: "Product guides, FAQs and one-pagers", paths: ["/docs"] },
   { file: "coral-guide", words: "Coral product guide", paths: [routes.coralGuide] },
@@ -158,6 +179,9 @@ const CARDS: readonly {
     words: "Kubernetes cost tools compared",
     paths: comparisonsOf("coral"),
   },
+  /* Coral's two versus pages against the clouds' own tools (1 Nov 2026), each with its own card. */
+  versusCard("coral-vs-azure-advisor"),
+  versusCard("coral-vs-aws-compute-optimizer"),
   {
     file: "block-storage-tools",
     words: "Block storage tools compared",

@@ -53,6 +53,14 @@ const competitors = marketGroups
   .flatMap((group) => group.tools)
   .filter((tool) => !NOT_COMPETITORS.has(tool.subgroup));
 
+/**
+ * The versus pages' facts against a competitor: not the two of 1 Nov 2026, whose tools are the clouds' own (Azure
+ * Advisor, AWS Compute Optimizer), which any page may name.
+ */
+const competingFacts = versusFacts.filter((facts) =>
+  competitors.some((tool) => tool.name === facts.tool),
+);
+
 const names = [
   ...new Set(
     competitors.flatMap((tool) => {
@@ -132,8 +140,9 @@ describe("competitors' names", () => {
   it("are read from the market data", () => {
     expect(competitors.length).toBeGreaterThan(40);
     expect(names.length).toBeGreaterThan(40);
-    /* The two the live versus pages print among them. */
-    expect(names).toEqual(expect.arrayContaining(versusFacts.map((facts) => facts.name)));
+    /* The two the live versus pages against a competitor print among them. */
+    expect(competingFacts).toHaveLength(2);
+    expect(names).toEqual(expect.arrayContaining(competingFacts.map((facts) => facts.name)));
   });
 
   it("appear in no file in src/ but the market data, the versus pages' titles and the naming pages' tests", () => {
@@ -166,7 +175,7 @@ describe("competitors' names", () => {
   });
 
   it("are found however code would spell them, and a one-word name in lower case only in a compound or a path", () => {
-    const [name] = versusFacts.map((facts) => facts.name).filter((n) => parts(n).length > 1);
+    const [name] = competingFacts.map((facts) => facts.name).filter((n) => parts(n).length > 1);
     const run = parts(name!);
     const camel = run.map((part, i) => (i === 0 ? part : part[0]!.toUpperCase() + part.slice(1)));
     for (const spelling of [
@@ -266,7 +275,7 @@ describe("competitors' names", () => {
     /* And the hub names them: the check would see a name on a page. */
     pathname.current = "/cloud-cost-optimization-library";
     const hub = printed(render(createElement(await load(hubPage))).container);
-    expect(versusFacts.every((facts) => found(facts.name).test(hub))).toBe(true);
+    expect(competingFacts.every((facts) => found(facts.name).test(hub))).toBe(true);
     cleanup();
   }, 40_000);
 

@@ -40,11 +40,14 @@ function importGraph(file: string, seen = new Set<string>()): Set<string> {
 }
 
 describe("sitemap.xml", () => {
-  it("lists the home page, the product pages, each product on each cloud, the six works-with pages, the assessment, the documents, the install and contributing guides, the troubleshooting pages, open source, Learn and every article in its index, the glossary and every term in its index, Cloud cost optimization tools with the comparison pages and the two calculators, Value Lab and the two case studies, the research papers, /events, /pricing, /contact, /about, /careers, /brand-assets, /referrals, /partners, /design-partners, the privacy policy, the terms, security and the Trust center, absolute, and nothing else", () => {
+  it("lists the home page, the product pages, the two Topic pages, each product on each cloud, the six works-with pages, the assessment, the documents, the install and contributing guides, the troubleshooting pages, open source, Learn and every article in its index, the glossary and every term in its index, Cloud cost optimization tools with the comparison pages and the two calculators, Value Lab and the two case studies, the research papers, /events, /pricing, /contact, /about, /careers, /brand-assets, /referrals, /partners, /design-partners, the privacy policy, the terms, security and the Trust center, absolute, and nothing else", () => {
     expect(sitemap().map((entry) => entry.url)).toEqual([
       `${site.url}/`,
       `${site.url}/coral`,
       `${site.url}/amoeba`,
+      /* The two Topic pages (1 Nov 2026): Azure, then AWS. */
+      `${site.url}/azure-cost-optimization`,
+      `${site.url}/aws-cost-optimization`,
       /* Each product on each cloud, in the footer's order, then the six pages on what Coral works with. */
       `${site.url}/aks-cost-optimization`,
       `${site.url}/eks-cost-optimization`,
@@ -115,6 +118,9 @@ describe("sitemap.xml", () => {
       "/": "2026-11-01",
       "/coral": "2026-11-01",
       "/amoeba": "2026-11-01",
+      /* The two Topic pages print no day: the day their content was written (1 Nov 2026). */
+      "/azure-cost-optimization": "2026-11-01",
+      "/aws-cost-optimization": "2026-11-01",
       /* The ten pages of 31 Oct 2026 print no day: the day their content was written. */
       "/aks-cost-optimization": "2026-10-31",
       "/eks-cost-optimization": "2026-10-31",
@@ -161,11 +167,18 @@ describe("sitemap.xml", () => {
       ...Object.fromEntries(glossaryTerms.map((term) => [glossaryPath(term.slug), term.updated])),
       /* Cloud cost optimization tools: the day its content last changed (its Free calculators, 30 Oct 2026). */
       "/cloud-cost-optimization-library": "2026-10-30",
-      /* The comparison pages: the day the versus pages were checked and published, and the day the
-         alternatives pages were retitled (1 Nov 2026). */
+      /* The comparison pages: the day the versus pages were checked and published (the first two 19 Oct 2026, the
+         two against the clouds' own tools 1 Nov 2026), and the day the alternatives pages were retitled
+         (1 Nov 2026). */
       "/cloud-cost-optimization-library/coral-alternatives": "2026-11-01",
       "/cloud-cost-optimization-library/amoeba-alternatives": "2026-11-01",
-      ...Object.fromEntries(versusPages.map((page) => [versusRoute(page), "2026-10-19"])),
+      ...Object.fromEntries(
+        versusPages
+          .filter((page) => page.lastUpdated === undefined)
+          .map((page) => [versusRoute(page), "2026-10-19"]),
+      ),
+      "/cloud-cost-optimization-library/coral-vs-azure-advisor": "2026-11-01",
+      "/cloud-cost-optimization-library/coral-vs-aws-compute-optimizer": "2026-11-01",
       /* The two calculators: the day their prices were read, which they print. */
       "/eks-and-aks-pricing-calculator": "2026-10-30",
       "/ebs-and-azure-disk-pricing": "2026-10-30",
@@ -211,7 +224,7 @@ describe("sitemap.xml", () => {
        without one is never told to recrawl. */
     const entries = sitemap();
     expect(entries).toHaveLength(
-      (amoebaDocs ? 54 : 51) + learnArticles.length + glossaryTerms.length,
+      (amoebaDocs ? 58 : 55) + learnArticles.length + glossaryTerms.length,
     );
     /* Today is `LEARN_TODAY` when set (articles dated ahead, checked as of the day they go live), else the latest
        calendar day anywhere on Earth (UTC+14), so a date set to today in any time zone is not "the future". */

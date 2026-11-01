@@ -139,7 +139,7 @@ export const routes = {
      /compare, redirects here. In the footer's Resources column, after News. */
   cloudCostTools: "/cloud-cost-optimization-library",
   /* The comparison pages, under Cloud cost optimization tools: each product's alternatives, and the versus pages
-     (`comparePath`; their slugs are data, `versusPages` in @/content/learn-compare; one per product is kept live).
+     (`comparePath`; their slugs are data, `versusPages` in @/content/learn-compare; only the live ones are built).
      Their old /compare and /learn addresses redirect. */
   compareCoralAlternatives: "/cloud-cost-optimization-library/coral-alternatives",
   compareAmoebaAlternatives: "/cloud-cost-optimization-library/amoeba-alternatives",
@@ -213,6 +213,11 @@ export const routes = {
   coralWorksWithKeda: "/coral-works-with-keda",
   coralWorksWithHelm: "/coral-works-with-helm",
   coralWorksWithTerraform: "/coral-works-with-terraform",
+  /* The two Topic pages (D229, owner, 1 Nov 2026), at the site's root and in no menu: each cloud's costs, line by line,
+     and where Coral and Amoeba fit. Linked from each other and from their versus pages in the library, and listed in
+     the sitemap. */
+  azureCostOptimization: "/azure-cost-optimization",
+  awsCostOptimization: "/aws-cost-optimization",
 } as const;
 
 /** Where the comparison pages live: under Cloud cost optimization tools. /compare and its old pages redirect there. */
@@ -308,6 +313,9 @@ export const hashKeepingRoutes: readonly string[] = [
   routes.coralWorksWithKeda,
   routes.coralWorksWithHelm,
   routes.coralWorksWithTerraform,
+  /* The two Topic pages are built in the article frame too, and their mocks carry `data-keep-hash`. */
+  routes.azureCostOptimization,
+  routes.awsCostOptimization,
   routes.coralGuide,
   routes.coralFaq,
   routes.amoebaGuide,

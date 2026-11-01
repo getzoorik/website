@@ -69,6 +69,7 @@ import type { ProductPageContent } from "@/content/product-page";
 import { platformLabel, productOrder, products, type ProductId } from "@/content/products";
 import { securityPage } from "@/content/security";
 import { termsCopy } from "@/content/terms";
+import { topicPages } from "@/content/topic-pages";
 import { troubleshootingGuides } from "@/content/troubleshooting";
 import { trustPage } from "@/content/trust";
 import { worksWithPages } from "@/content/works-with";
@@ -475,6 +476,19 @@ const pages: Readonly<Record<string, PageEntry>> = {
     Object.values(worksWithPages).map((page) => [
       page.route,
       productPartEntry("coral", page.route, page.meta, page.hero.title),
+    ]),
+  ),
+  /* The two Topic pages of 1 Nov 2026: a cloud as a whole, about neither product alone; in no footer column, so the
+     trail names the page by its h1. */
+  ...Object.fromEntries(
+    topicPages.map((page) => [
+      page.path,
+      {
+        kind: "WebPage",
+        name: titled(page.meta.title),
+        description: page.meta.description,
+        trail: [{ name: page.hero.title, path: page.path }],
+      } satisfies PageEntry,
     ]),
   ),
   [routes.assessment]: documentEntry(routes.assessment, assessmentCopy.meta, []),

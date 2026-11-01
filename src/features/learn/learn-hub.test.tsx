@@ -284,7 +284,15 @@ describe("/learn", () => {
 
   it("names no tool of the market, and links no page that compares with one", () => {
     expect(competitors.length).toBeGreaterThan(40);
-    expect(competitors).toEqual(expect.arrayContaining(versusFacts.map((facts) => facts.name)));
+    /* The versus pages against a competitor; the two of 1 Nov 2026 are against the clouds' own tools. */
+    const competing = versusFacts.filter((facts) =>
+      marketGroups
+        .filter((group) => group.id !== "native")
+        .flatMap((group) => group.tools)
+        .some((tool) => tool.name === facts.tool && !NOT_COMPETITORS.has(tool.subgroup)),
+    );
+    expect(competing).toHaveLength(2);
+    expect(competitors).toEqual(expect.arrayContaining(competing.map((facts) => facts.name)));
     const root = page();
     const words = [
       root.ownerDocument.body.textContent ?? "",

@@ -1,4 +1,4 @@
-/* Zoorik marketing: Learn and the pages built on it: /learn, Cloud cost optimization tools, the two versus pages and
+/* Zoorik marketing: Learn and the pages built on it: /learn, Cloud cost optimization tools, the four versus pages and
  * two alternatives pages under it, and /community. Ported from the mock's two blocks, whole, rule for rule and
  * in their order: `learn-v2` (the search, the heads, the chips, the subject cards, the covers, the article cards,
  * Find the right fix, the proof panel, option B's paths, the narrow widths and reduced motion), then `learn-v2b`
@@ -25,6 +25,8 @@
  * rule says so: the search field's padding and placeholder colour (Tailwind's preflight). Two "repo:" rules add to the
  * mock: the films' hover zoom is stilled under reduced motion, as the mock stills the cards' lift, and a Find the right
  * fix Read line whose article is not published yet is set as plain text.
+ *
+ * The versus pages also load the articles' sheet (`article.css`) for their optional parts' sources line.
  *
  * Loaded only by the pages that draw it (`src/app/learn/**`, `src/app/cloud-cost-optimization-library`,
  * `src/app/cloud-cost-optimization-library/**`, `src/app/community`). */
@@ -270,6 +272,15 @@ p.fx-read{color:inherit;font-weight:inherit}
 .vx-src svg{width:11px;height:11px}
 .vp-fine{margin-top:16px;font-size:.8125rem;line-height:1.6;color:var(--muted)}
 .vp-fine a{color:var(--accent)}
+/* the versus template's optional parts (1 Nov 2026; the mocks' four-pages block, compare-<slug>.html): the Learn
+   article's short answer, under the deck on the hero's ground; then, in the Learn frame after the table, /pricing's
+   question rows (the FAQ's with no number column), their two rules started at the Learn hero, as works-with.css starts
+   them at the document hero */
+.lv-hero .ar-short{margin-top:24px;padding-top:20px;max-width:44rem;border-top:1px solid rgba(250,247,243,.16);
+  font-size:1rem;line-height:1.65;color:rgba(255,255,255,.78);text-wrap:pretty}
+.lv-hero .ar-short b{font-weight:600;color:#fff}
+.lv-hero ~ .doc-body .pr-faq .fq summary{grid-template-columns:minmax(0,1fr) 16px}
+.lv-hero ~ .doc-body .pr-faq .fq > .fq-body{padding-left:0}
 .ap-q{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
 .ap-q article{padding:24px;border:1px solid var(--line);border-radius:var(--r-card);background:#fff}
 .ap-n{display:grid;place-items:center;width:32px;height:32px;margin-bottom:14px;border-radius:50%;background:#050B3D;color:#FAF7F3;font-weight:600;font-size:.875rem}
