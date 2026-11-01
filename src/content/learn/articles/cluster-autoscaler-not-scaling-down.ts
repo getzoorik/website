@@ -5,7 +5,7 @@ import { figure as figure2 } from "@/features/learn/figures/cluster-autoscaler-n
 export const article: Article = {
   slug: "cluster-autoscaler-not-scaling-down",
   title: "Cluster Autoscaler not scaling down on AKS and EKS",
-  meta: "Cluster Autoscaler not scaling down on AKS or EKS: the pods, PDBs, node pool minimums and timers that keep nodes running, and the fix for each one.",
+  meta: "Cluster Autoscaler not scaling down on AKS or EKS? The scale-down utilization threshold, PDBs, pods, pool minimums and timers that keep nodes, and each fix.",
   h1: "Cluster Autoscaler not scaling down: what keeps nodes running",
   deck: "The pods, budgets, minimums and timers that hold nodes on AKS and EKS, how to find which one, and the fix.",
   card: "Why the Cluster Autoscaler keeps a node on AKS or EKS, how to find the reason, and the fix for each one.",
@@ -36,7 +36,7 @@ export const article: Article = {
             "Picture a node with 4\u00a0CPU and 16\u00a0GiB allocatable, the part of its capacity it offers to pods (",
             { a: "allocatable vs capacity", href: "/learn/kubernetes-allocatable-vs-capacity" },
             " has the detail). Its pods request 2.2\u00a0CPU and 6\u00a0GiB but use 0.3\u00a0CPU between them. You pay for the whole node, and the ",
-            { a: "Cluster Autoscaler", href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler" },
+            { a: "Cluster Autoscaler", href: "/learn/kubernetes-autoscaling" },
             " keeps it, because it compares requests with allocatable and never looks at use.",
           ],
         },
@@ -46,6 +46,11 @@ export const article: Article = {
           text: "CPU requests sit at 55% of allocatable (2.2 ÷ 4) and memory at 37.5% (6 ÷ 16). The higher figure decides, and 55% is over the 50% line, which sits at 2\u00a0CPU (4 × 0.5). To get under it, requests must fall by more than 0.2\u00a0CPU (2.2 − 2), while 1.9\u00a0CPU of them goes unused (2.2 − 0.3).",
         },
         { kind: "svg", figure: figure1 },
+        {
+          kind: "h3",
+          id: "how-cluster-autoscaler-scale-down-decides-a",
+          title: "How Cluster Autoscaler scale-down decides a node is unneeded",
+        },
         {
           kind: "p",
           text: "The Cluster Autoscaler adds nodes for pods that can’t be scheduled and removes nodes it calls unneeded. Every 10\u00a0seconds, when no scale-up is needed, it checks each node against three conditions in its FAQ. All must hold:",
@@ -445,7 +450,7 @@ export const article: Article = {
     },
     {
       id: "raising-the-threshold-helps-less-than-resizing",
-      title: "Raising the threshold helps less than resizing requests",
+      title: "Raising the scale-down utilization threshold helps less than resizing requests",
       blocks: [
         {
           kind: "p",
@@ -477,15 +482,15 @@ export const article: Article = {
           items: [
             [
               { b: "Checks first." },
-              " Before draining, Coral simulates the scheduler on the live cluster, and every pod must fit elsewhere with its affinity, taints, spread, ports and zones. Coral also respects PDBs, do-not-disrupt, safe-to-evict “false” and your autoscaler’s minimum pool size.",
+              " Before draining, Coral simulates the scheduler on the live cluster, and every pod must fit elsewhere with its affinity, taints, spread, ports and zones. Coral also respects PDBs, do-not-disrupt and safe-to-evict “false”. By default, Coral may reduce a pool’s minimum when that minimum alone keeps a node it has emptied, and disconnect puts the old minimum back.",
             ],
             [
               { b: "One by one." },
-              " Coral cordons and drains one node at a time, and if a drain can’t finish in 10\u00a0minutes, the node goes back into service.",
+              " Coral cordons and drains one node at a time, and if a drain can’t finish in time, the node goes back into service.",
             ],
             [
               { b: "Your autoscaler deletes." },
-              " After “Wait before removing empty nodes” (5\u00a0minutes by default), Coral hands the empty node to your autoscaler, whose own timers decide when it goes. Coral never adds nodes for demand.",
+              " After “Wait before removing empty nodes”, Coral hands the empty node to your autoscaler, whose own timers decide when it goes. Coral never adds nodes for demand.",
             ],
           ],
         },
@@ -574,9 +579,9 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "HPA vs VPA vs Cluster Autoscaler: what each one scales",
+      title: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
       where: "Learn",
-      href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+      href: "/learn/kubernetes-autoscaling",
     },
     {
       title: "Karpenter vs Cluster Autoscaler: how each removes nodes",
@@ -588,7 +593,11 @@ export const article: Article = {
       where: "Learn",
       href: "/learn/pod-disruption-budget-best-practices",
     },
-    { title: "Nodes held", where: "Coral product guide", href: "/coral-guide#nodes-held" },
+    {
+      title: "Why Coral holds a node, and each fix",
+      where: "Coral product guide",
+      href: "/coral-guide#nodes-held",
+    },
     {
       title: "How does Coral interact with Cluster Autoscaler or Karpenter decisions?",
       where: "Coral FAQ",

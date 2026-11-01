@@ -198,7 +198,7 @@ export const article: Article = {
     },
     {
       id: "multi-attach-needs-provisioned-iops-and-99",
-      title: "Multi-Attach needs Provisioned IOPS, and 99.999% durability needs io2",
+      title: "EBS Multi-Attach needs Provisioned IOPS, and 99.999% durability needs io2",
       blocks: [
         {
           kind: "p",
@@ -300,7 +300,7 @@ export const article: Article = {
     },
     {
       id: "io1-vs-io2-vs-gp3-io2-replaces",
-      title: "io1 vs io2 vs gp3: io2 replaces io1 at the same price or less",
+      title: "Migrate io1 to io2: the same price or less, changed in place",
       blocks: [
         {
           kind: "p",
@@ -314,7 +314,15 @@ export const article: Article = {
           kind: "p",
           text: "io1’s durability is gp3’s 99.8% to 99.9%. AWS’s Multi-Attach guide recommends io2 over io1 for performance, consistency and durability, at less cost.",
         },
-        { kind: "p", text: "So in io1 vs io2 vs gp3:" },
+        {
+          kind: "p",
+          text: [
+            "To ",
+            { a: "compare io1 vs io2 with every other EBS type", href: "/learn/ebs-volume-types" },
+            ", see EBS volume types.",
+          ],
+        },
+        { kind: "p", text: "So, of the three types:" },
         {
           kind: "ul",
           items: [
@@ -361,7 +369,7 @@ export const article: Article = {
           text: [
             "If none of them holds, keep gp3 at the IOPS and throughput you measured. If you’re still on gp2, ",
             { a: "moving to gp3", href: "/learn/gp2-vs-gp3" },
-            " comes first. AWS prices gp3 20% below gp2 per GiB.",
+            " comes first. AWS prices gp3 20% below gp2 per GB.",
           ],
         },
         {
@@ -448,11 +456,11 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " Amoeba copies your data while your services run, then switches each mount to the pool with a short restart of those services. If the switch fails, it puts the original mounts back and tries again.",
+              " The services that use those mounts restart once, at the switch onto the pool.",
             ],
             [
               { b: "The old volumes." },
-              " Once the switch is checked, Amoeba snapshots and deletes each old volume, then deletes the snapshots a few days later. You pay for both sets of volumes only while the move runs, then for the snapshots while they’re kept.",
+              " Once the switch is checked, Amoeba snapshots and deletes each old volume, then deletes the snapshots 7 days later. You pay for both sets of volumes only while the move runs, then for the snapshots while they’re kept.",
             ],
           ],
         },
@@ -465,7 +473,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves an EC2 instance’s EBS data volumes onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one volume at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage cost optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
@@ -522,7 +530,7 @@ export const article: Article = {
       href: "/learn/gp2-vs-gp3",
     },
     {
-      title: "EBS volume types: pricing and how to choose",
+      title: "EBS volume types compared: how to choose one",
       where: "Learn",
       href: "/learn/ebs-volume-types",
     },

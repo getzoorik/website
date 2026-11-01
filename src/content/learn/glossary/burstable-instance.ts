@@ -44,6 +44,12 @@ export const term: GlossaryTerm = {
               { a: "B-series VM", href: "/learn/glossary/azure-vm-series" },
               ", such as Bsv2.",
             ],
+          ],
+        },
+        { kind: "h3", id: "how-cpu-credits-work", title: "How CPU credits work" },
+        {
+          kind: "ul",
+          items: [
             "A CPU credit in AWS is one virtual CPU (vCPU) at 100% for one minute.",
             "T3 unlimited mode is the default. Dedicated Hosts don’t support it.",
           ],
@@ -90,7 +96,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why burstable instances matter for your cloud cost",
       blocks: [
         {
           kind: "ul",

@@ -103,10 +103,10 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "The two sit one layer below the pod autoscalers, which ",
+            "The two sit one layer below the pod autoscalers, which the guide to ",
             {
-              a: "HPA vs VPA vs Cluster Autoscaler",
-              href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+              a: "Kubernetes autoscaling",
+              href: "/learn/kubernetes-autoscaling",
             },
             " compares. Both run on Amazon Elastic Kubernetes Service (EKS) and Azure Kubernetes Service (AKS).",
           ],
@@ -171,7 +171,7 @@ export const article: Article = {
             [
               "On AKS",
               "Built in: you switch it on per node pool",
-              "Node auto-provisioning (NAP), which runs Karpenter for you",
+              "Node auto provisioning (NAP), which runs Karpenter for you",
             ],
           ],
         },
@@ -346,7 +346,7 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Watch out",
-          text: "Microsoft warns that the AKS cluster autoscaler and node auto-provisioning (NAP) both “react to pending pod pressure, and can lead to double provisioning of nodes”. Its migration guide’s fix is mutually exclusive scheduling, with a taint on each side and a toleration that sends each workload to one of them.",
+          text: "Microsoft warns that the AKS cluster autoscaler and node auto provisioning (NAP) both “react to pending pod pressure, and can lead to double provisioning of nodes”. Its migration guide’s fix is mutually exclusive scheduling, with a taint on each side and a toleration that sends each workload to one of them.",
         },
         { kind: "svg", figure: figure2 },
         {
@@ -356,6 +356,11 @@ export const article: Article = {
             { code: "AllowClusterAutoscalerAndNAP" },
             " feature flag. Microsoft treats the pairing as a migration step. It warns that keeping it indefinitely can make scaling unpredictable.",
           ],
+        },
+        {
+          kind: "h3",
+          id: "how-to-migrate-from-cluster-autoscaler-to",
+          title: "How to migrate from Cluster Autoscaler to Karpenter on EKS",
         },
         {
           kind: "p",
@@ -412,7 +417,15 @@ export const article: Article = {
               { b: "Karpenter" },
               " itself is open-source software you install and manage. It gets AWS technical support when it runs unmodified at a compatible version, and has no AWS Service Level Agreement.",
             ],
-            [{ b: "The Cluster Autoscaler" }, " works through Auto Scaling groups."],
+            [
+              {
+                b: [
+                  "The ",
+                  { a: "Cluster Autoscaler", href: "/coral-works-with-cluster-autoscaler" },
+                ],
+              },
+              " works through Auto Scaling groups.",
+            ],
           ],
         },
         {
@@ -591,9 +604,9 @@ export const article: Article = {
       href: "/learn/aks-node-auto-provisioning",
     },
     {
-      title: "HPA vs VPA vs Cluster Autoscaler: what each one scales",
+      title: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
       where: "Learn",
-      href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+      href: "/learn/kubernetes-autoscaling",
     },
   ],
 };

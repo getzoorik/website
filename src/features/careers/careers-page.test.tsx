@@ -328,7 +328,7 @@ describe("/careers's sections", () => {
         ["PostgreSQL", "postgresql"],
       ],
       [
-        ["Linux VMs", "linux"],
+        ["Windows and Linux VMs", "windows"],
         ["btrfs", null],
         ["systemd", null],
         ["Azure", "azure"],
@@ -336,6 +336,11 @@ describe("/careers's sections", () => {
         ["Java", null],
       ],
     ]);
+    /* Amoeba's VMs carry both marks, Windows before Linux. */
+    const vms = stacks[1]!.querySelector(":scope > li")!;
+    expect(
+      [...vms.querySelectorAll(":scope > svg")].map((svg) => svg.getAttribute("data-mark")),
+    ).toEqual(["windows", "linux"]);
   });
 
   it("closes on a flat navy card: no open roles, two buttons, the address and the teams, each a ready email", () => {
@@ -391,7 +396,7 @@ describe("/careers's sections", () => {
 describe("/careers's words", () => {
   it("speaks of the products in the site's words: reduce, never cut or lower", () => {
     const main = page().querySelector("main")!;
-    expect(main.textContent).toContain("We reduce our customers’ cloud bills");
+    expect(main.textContent).toContain("We reduce our customers’ cloud cost");
     expect(main.textContent).not.toMatch(/\bcuts?\b|\blower\b|\bwaste/i);
   });
 

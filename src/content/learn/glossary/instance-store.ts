@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "instance-store",
   term: "Instance store (AWS EC2)",
   title: "What is instance store in AWS?",
-  meta: "Instance store in AWS is temporary block storage on the EC2 host, at no extra charge. See when its data is lost, how it compares with EBS, and what it costs.",
+  meta: "AWS instance store is temporary EC2 instance storage on the host, at no extra charge. See when its data is lost, instance store vs EBS, and what it costs.",
   h1: "What is instance store in AWS?",
   card: "Instance store in AWS is temporary block storage for an EC2 instance, a server in AWS.",
   group: "block-storage",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -65,7 +65,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why instance store matters for your cloud cost",
       blocks: [
         {
           kind: "p",

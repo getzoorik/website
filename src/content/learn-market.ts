@@ -403,7 +403,7 @@ export const marketGroups: readonly MarketGroup[] = [
       product: "amoeba",
       name: "Amoeba by Zoorik",
       company: "Zoorik",
-      line: "Rightsizes block storage on Azure managed disks and Amazon EBS, autonomously, without any downtime.",
+      line: "Rightsizes block storage on Azure managed disks and Amazon EBS, autonomously, without any downtime after the one switch onto its pool.",
       acts: "changes infrastructure",
       clouds: ["Azure", "AWS"],
       href: routes.amoeba,
@@ -411,7 +411,7 @@ export const marketGroups: readonly MarketGroup[] = [
     tools: [
       {
         name: "Lucidity Disk AutoScaler (with Lumen)",
-        company: "Lucidity (independent; no acquisition found as of 19 Oct 2026)",
+        company: "Lucidity (independent)",
         subgroup: "Disk autoscaling",
         line: "Agent-based autoscaler that grows and shrinks live cloud disks; Lumen finds idle and mis-tiered disks agentlessly.",
         acts: "changes infrastructure",
@@ -433,7 +433,7 @@ export const marketGroups: readonly MarketGroup[] = [
       },
       {
         name: "Datafy EBS AutoScaler (and EBS Sensor)",
-        company: "Datafy Inc. (independent; no acquisition found as of 19 Oct 2026)",
+        company: "Datafy Inc. (independent)",
         subgroup: "Disk autoscaling",
         line: "Grows and shrinks Amazon EBS volumes on EC2 and EKS automatically; free read-only Sensor reports usage.",
         acts: "changes infrastructure",
@@ -454,8 +454,7 @@ export const marketGroups: readonly MarketGroup[] = [
       },
       {
         name: "Zesty Disk",
-        company:
-          "Zesty (independent; bought Qubex in Nov 2024, per Zesty's own Kompass launch release)",
+        company: "Zesty (independent)",
         subgroup: "Disk autoscaling",
         line: "Builds an EC2 filesystem from several EBS volumes, adding and removing volumes to grow or shrink capacity.",
         acts: "changes infrastructure",
@@ -936,7 +935,7 @@ export const marketGroups: readonly MarketGroup[] = [
         ],
       },
       {
-        name: "AKS node auto-provisioning (NAP)",
+        name: "AKS node auto provisioning (NAP)",
         company: "Microsoft",
         subgroup: "Azure",
         line: "AKS feature, based on Karpenter, that provisions VM sizes for pending pods and removes or replaces underutilized nodes.",
@@ -1042,8 +1041,10 @@ export interface ShownTool {
 /** One kind of tool on Cloud cost optimization tools: its name, the market group its tools are in, and its tiles. */
 export interface ShownGroup {
   readonly kind: ToolKind;
-  /** On its chip and over its tiles. */
+  /** On its chip, and over its tiles where it has no `heading`. */
   readonly label: string;
+  /** Over its tiles, where the chip's short name is not the search it answers (1 Nov 2026). */
+  readonly heading?: string;
   /** The group of `marketGroups` its tools are read from. */
   readonly group: string;
   /** Coral or Amoeba, first, with its tile's line. */
@@ -1118,7 +1119,8 @@ export const shownGroups: readonly ShownGroup[] = [
     group: "storage",
     ours: {
       product: "amoeba",
-      short: "Rightsizes Azure managed disks and Amazon EBS, without any downtime.",
+      short:
+        "Rightsizes Azure managed disks and Amazon EBS, without any downtime after the one switch.",
     },
     tools: [
       {
@@ -1146,6 +1148,7 @@ export const shownGroups: readonly ShownGroup[] = [
   {
     kind: "finops",
     label: "FinOps",
+    heading: "FinOps tools",
     group: "finops",
     tools: [
       {
@@ -1183,6 +1186,7 @@ export const shownGroups: readonly ShownGroup[] = [
   {
     kind: "cloud",
     label: "Cloud providers",
+    heading: "AWS and Azure’s own cost optimization tools",
     group: "native",
     tools: [
       {
@@ -1191,7 +1195,7 @@ export const shownGroups: readonly ShownGroup[] = [
         googleCloud: false,
       },
       {
-        name: "AKS node auto-provisioning (NAP)",
+        name: "AKS node auto provisioning (NAP)",
         short: "Provisions VM sizes for pending pods and removes underused nodes.",
         googleCloud: false,
       },
@@ -1345,19 +1349,6 @@ export const versusFacts: readonly VersusFacts[] = [
         },
       },
       {
-        label: "Rightsizes block storage",
-        ours: {
-          mark: "yes",
-          note: "through Amoeba: Azure managed disks and Amazon EBS on VMs",
-          sources: [],
-        },
-        theirs: {
-          mark: "unknown",
-          note: "No disk or PV sizing described on its pages (checked 19 Oct 2026)",
-          sources: ["https://www.cloudbolt.io/stormforge/"],
-        },
-      },
-      {
         label: "Resizes without restarting pods",
         ours: {
           mark: "yes",
@@ -1421,7 +1412,7 @@ export const versusFacts: readonly VersusFacts[] = [
       },
       {
         label: "Free tier or trial",
-        ours: { mark: "partly", note: "a free cost assessment; the product by demo", sources: [] },
+        ours: { mark: "partly", note: "a free assessment; the product by demo", sources: [] },
         theirs: {
           mark: "yes",
           note: "Full optimization on 1 cluster for 30 days (the AWS agent listing says 45 days)",
@@ -1434,7 +1425,7 @@ export const versusFacts: readonly VersusFacts[] = [
     ],
     pricing: {
       label: "Published pricing",
-      ours: "Not published: the price and terms come with your order or marketplace purchase",
+      ours: "Priced per vCPU it manages, bought on AWS or Microsoft Marketplace",
       theirs:
         "Not on the product page. CloudBolt's AWS Marketplace post (3 Apr 2025): pay as you go 'Starting at $0.0041 per CPU per hour'; the EKS add-on agent listing is free",
       sources: [
@@ -1452,7 +1443,7 @@ export const versusFacts: readonly VersusFacts[] = [
     slug: "amoeba-vs-zesty-disk",
     tool: "Zesty Disk",
     name: "Zesty Disk",
-    line: "Kubernetes pod rightsizing, replica and placement optimization, EKS PV autoscaling, Zesty Disk for EBS, and commitment management.",
+    line: "Builds an EC2 filesystem from several EBS volumes, adding and removing volumes to grow or shrink capacity.",
     rows: [
       {
         label: "Grows and shrinks block storage",
@@ -1463,11 +1454,10 @@ export const versusFacts: readonly VersusFacts[] = [
         },
         theirs: {
           mark: "yes",
-          note: "PV autoscaling extends and shrinks EKS PVs (existing PVCs must be migrated first); Zesty Disk grows and shrinks EBS filesystems on EC2: Linux (Btrfs or OpenZFS) and Windows Server 2016-2025 (Windows removes only the last-added volume); AWS only",
+          note: "Zesty Disk grows and shrinks EBS filesystems on EC2: Linux (Btrfs or OpenZFS) and Windows Server 2016-2025 (Windows removes only the last-added volume); AWS only",
           sources: [
             "https://docs.zesty.co/docs/system-requirements.md",
             "https://docs.zesty.co/docs/how-zesty-disk-works",
-            "https://docs.zesty.co/docs/faq-pvs-autoscaling.md",
           ],
         },
       },
@@ -1486,18 +1476,6 @@ export const versusFacts: readonly VersusFacts[] = [
         theirs: { mark: "yes", note: "", sources: ["https://docs.zesty.co/docs/zesty-disk"] },
       },
       {
-        label: "Kubernetes volumes (EKS)",
-        ours: { mark: "no", note: "VM data disks, not Kubernetes volumes", sources: [] },
-        theirs: {
-          mark: "yes",
-          note: "EKS 1.28+; PV autoscaling needs the EBS CSI add-on",
-          sources: [
-            "https://docs.zesty.co/docs/kubernetes-resource-optimization",
-            "https://docs.zesty.co/docs/deploy-storage-autoscaling.md",
-          ],
-        },
-      },
-      {
         label: "Resizes without downtime",
         ours: {
           mark: "partly",
@@ -1506,9 +1484,8 @@ export const versusFacts: readonly VersusFacts[] = [
         },
         theirs: {
           mark: "yes",
-          note: "In-place pod resize on EKS 1.33+; Zesty Disk moves data at runtime without restart (some agent installs on RHEL/Rocky need one instance restart)",
+          note: "Zesty Disk moves data at runtime without restart (some agent installs on RHEL/Rocky need one instance restart)",
           sources: [
-            "https://docs.zesty.co/docs/kubernetes-resource-optimization",
             "https://docs.zesty.co/docs/how-zesty-disk-works",
             "https://docs.zesty.co/docs/install-the-zesty-disk-agent.md",
           ],
@@ -1536,10 +1513,9 @@ export const versusFacts: readonly VersusFacts[] = [
         },
         theirs: {
           mark: "yes",
-          note: "Helm chart for PV autoscaling and the Kubernetes agent; Terraform module onboards AWS accounts and gives Helm values for Kompass; Zesty Disk can be managed with Terraform",
+          note: "Zesty Disk can be managed with Terraform",
           sources: [
-            "https://docs.zesty.co/docs/deploy-storage-autoscaling.md",
-            "https://docs.zesty.co/docs/onboard-an-aws-account-with-terraform",
+            "https://docs.zesty.co/docs/how-do-we-manage-zesty-disk-as-code-with-terraform.md",
           ],
         },
       },
@@ -1568,7 +1544,7 @@ export const versusFacts: readonly VersusFacts[] = [
         label: "Free tier or trial",
         ours: {
           mark: "partly",
-          note: "a free disk assessment; the product in early access, by demo",
+          note: "a free block storage cost assessment; the product in early access, by demo",
           sources: [],
         },
         theirs: {
@@ -1580,9 +1556,9 @@ export const versusFacts: readonly VersusFacts[] = [
     ],
     pricing: {
       label: "Published pricing",
-      ours: "Not published: the price and terms come with your order",
+      ours: "Priced per GB it manages; the price and terms come with your order",
       theirs:
-        "Pricing page: 'Usage-based pricing', 'Pricing based on actual usage and realized savings', no figures. PV autoscaling page: 'a base fee plus a fee per storage managed by Zesty', billed on capacity after optimization. AWS Marketplace: Zesty Platform 1-month contract $5,000.00 per month, overage $1.00 per unit. Zesty Disk is a $0.00 12-month contract plus usage: $0.025 per GB up to 300,000 GB, $0.015 up to 1,000,000 GB and $0.01 above.",
+        "Pricing page: 'Usage-based pricing', 'Pricing based on actual usage and realized savings', no figures. PV autoscaling page: 'a base fee plus a fee per storage managed by Zesty', charged on capacity after optimization. AWS Marketplace: Zesty Platform 1-month contract $5,000.00 per month, overage $1.00 per unit. Zesty Disk is a $0.00 12-month contract plus usage: $0.025 per GB up to 300,000 GB, $0.015 up to 1,000,000 GB and $0.01 above.",
       sources: [
         "https://zesty.co/pricing",
         "https://zesty.co/platform/pv-autoscaling/",

@@ -43,7 +43,7 @@ describe("/community's metadata", () => {
       url: "/community",
       title: "Community | Zoorik",
     });
-    expect(communityLastUpdated).toBe("21 October 2026");
+    expect(communityLastUpdated).toBe("1 November 2026");
   });
 });
 

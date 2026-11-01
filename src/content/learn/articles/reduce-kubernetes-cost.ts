@@ -6,7 +6,7 @@ export const article: Article = {
   slug: "reduce-kubernetes-cost",
   route: "/kubernetes-cost-optimization",
   title: "Kubernetes cost optimization: requests, then nodes",
-  meta: "Kubernetes cost optimization on AKS and EKS: rebalance requests to real use, then let the Cluster Autoscaler, Karpenter or AKS NAP remove spare nodes.",
+  meta: "Kubernetes cost optimization on AKS and EKS. Kubernetes cost management starts with requests: rebalance, then remove spare nodes to reduce Kubernetes costs.",
   h1: "Kubernetes cost optimization: rebalance requests, then remove spare nodes",
   deck: "Smaller requests free room on your nodes. Your cloud cost falls when a spare node goes. Both steps, in order.",
   card: "Rebalance requests to real use, then let spare nodes go: the order that reduces AKS and EKS cost.",
@@ -20,11 +20,11 @@ export const article: Article = {
   coverAlt:
     "Reduce Kubernetes cost: rebalance requests, and the cluster has one node fewer to pay for",
   short:
-    "Kubernetes cost optimization takes two steps, in this order. First, rebalance each container’s CPU and memory requests to what it uses, since node autoscalers count requests, not use. Then let the Cluster Autoscaler, Karpenter or AKS node auto-provisioning (NAP) remove spare nodes: smaller requests reduce cost only once a node goes.",
+    "Kubernetes cost optimization takes two steps, in this order. First, rebalance each container’s CPU and memory requests to what it uses, since node autoscalers count requests, not use. Then let the Cluster Autoscaler, Karpenter or AKS node auto provisioning (NAP) remove spare nodes: smaller requests reduce cost only once a node goes.",
   sections: [
     {
       id: "you-pay-for-nodes-and-requests-decide",
-      title: "Kubernetes cost optimization: requests decide how many nodes you pay for",
+      title: "How to reduce Kubernetes costs: requests decide how many nodes you pay for",
       blocks: [
         {
           kind: "p",
@@ -39,7 +39,9 @@ export const article: Article = {
           text: [
             "The ",
             { a: "EKS and AKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
-            " gives one node’s monthly list price.",
+            " gives one node’s monthly list price. To work out ",
+            { a: "what a cluster costs", href: "/learn/kubernetes-cost-estimation" },
+            ", see Kubernetes cost estimation.",
           ],
         },
         {
@@ -373,7 +375,7 @@ export const article: Article = {
             ],
             [
               { b: "Nodes." },
-              " Node optimization is on from install. Coral checks that every pod on a node fits on another Ready node, then cordons and drains one node at a time. If a drain can’t finish in 10\u00a0minutes, the node goes back into service.",
+              " Node optimization is on from install. Coral checks that every pod on a node fits on another Ready node, then cordons and drains one node at a time. If a drain can’t finish in time, the node goes back into service.",
             ],
             [
               { b: "Machines." },
@@ -381,7 +383,7 @@ export const article: Article = {
             ],
             [
               { b: "Held nodes." },
-              " Consolidation respects PDBs, any pod or node marked not to be disrupted, and your autoscaler’s minimum pool size. Node list → “What’s holding them” gives each held node’s reason and fix.",
+              " Consolidation respects PDBs and any pod or node marked not to be disrupted. By default, Coral may reduce a pool’s minimum when that minimum alone keeps a node it has emptied, and disconnect puts the old minimum back. Node list → “What’s holding them” gives each held node’s reason and fix.",
             ],
             [
               { b: "Restarts." },
@@ -391,16 +393,16 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "On our own AKS development cluster, the apps already fit on fewer machines. So on 6 October, after we gave Coral permission to remove machines, node optimization removed one 4-CPU worker on its own, in under 10\u00a0minutes, before sizing was automatic.",
+          text: "On our own AKS development cluster, the apps already fit on fewer machines. So on 6 October, after we gave Coral permission to remove machines, node optimization removed one 4-CPU node on its own, in under 10\u00a0minutes, before sizing was automatic.",
         },
         {
           kind: "p",
-          text: "The machine cost went from $368.65 to $221.19 a month, $147.46 less for that one worker. Apps that run a single copy restarted once on another machine. That is Zoorik’s own AKS cluster, not a customer result, at Azure pay-as-you-go list prices for a 730-hour month.",
+          text: "The machine cost went from $368.65 to $221.19 a month, $147.46 less for that one node. Apps that run a single copy restarted once on another machine. That is Zoorik’s own AKS cluster, not a customer result, at Azure pay-as-you-go list prices for a 730-hour month.",
         },
         {
           kind: "p",
           text: [
-            { a: "The case study", href: "/coral-value-lab" },
+            { a: "The Coral Value Lab study", href: "/coral-value-lab" },
             " has the full timeline, and its 58% also counts a swap to a cheaper worker on 12 October.",
           ],
         },
@@ -481,8 +483,8 @@ export const article: Article = {
       href: "/coral-faq#if-workload-optimization-reduces-requests-how",
     },
     {
-      title: "How we reduced our own cluster’s machine bill by 58%",
-      where: "Case study",
+      title: "How we reduced our own AKS cluster’s machine cost by 58%",
+      where: "Coral Value Lab",
       href: "/coral-value-lab",
     },
   ],

@@ -133,7 +133,7 @@ function Tile({ tile }: { readonly tile: BrandTile }): React.JSX.Element {
   return (
     <article className="bk-tile">
       <div className={`bk-prev bk-${tile.ground}`}>
-        <KitImage file={`${tile.stem}.svg`} alt={tile.name} lazy />
+        <KitImage file={`${tile.stem}.svg`} alt={tile.alt} lazy />
       </div>
       <div className="bk-tb">
         <h3>{tile.name}</h3>

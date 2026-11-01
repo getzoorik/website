@@ -4,9 +4,9 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/savings-pla
 export const term: GlossaryTerm = {
   slug: "savings-plan",
   term: "Savings plan (AWS Savings Plans, Azure savings plan for compute)",
-  title: "What is a savings plan (AWS and Azure)?",
+  title: "AWS savings plans and the Azure savings plan",
   meta: "An AWS savings plan trades a one- or three-year hourly commitment for cheaper compute. See how it works and compares to Azure’s plan and reserved instances.",
-  h1: "What is a savings plan (AWS and Azure)?",
+  h1: "AWS savings plans and the Azure savings plan",
   card: "An AWS Savings Plan is a commitment to spend a set dollar amount per hour on compute, for one or three years.",
   group: "finops-pricing",
   product: "coral",
@@ -25,7 +25,7 @@ export const term: GlossaryTerm = {
   sections: [
     {
       id: "an-example-from-aws",
-      title: "An example from AWS",
+      title: "An AWS savings plan example",
       blocks: [
         {
           kind: "p",
@@ -40,7 +40,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "savings-plan-vs-reserved-instance",
-      title: "Savings plan vs reserved instance",
+      title: "AWS savings plans vs reserved instances",
       blocks: [
         {
           kind: "ul",
@@ -57,7 +57,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why savings plans matter for your cloud cost",
       blocks: [
         {
           kind: "ul",
@@ -68,6 +68,12 @@ export const term: GlossaryTerm = {
               { a: "reduce cloud costs", href: "/cloud-cost-optimization" },
               " first.",
             ],
+          ],
+        },
+        { kind: "h3", id: "savings-plans-on-eks-and-aks", title: "Savings plans on EKS and AKS" },
+        {
+          kind: "ul",
+          items: [
             "On EKS, a plan covers your EC2\u00a0nodes, but not EKS’s own charges.",
             "On AKS, it covers the virtual machines behind your nodes, if Microsoft lists their series as eligible.",
             [

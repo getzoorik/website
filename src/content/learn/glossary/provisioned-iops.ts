@@ -5,23 +5,23 @@ export const term: GlossaryTerm = {
   slug: "provisioned-iops",
   term: "Provisioned IOPS",
   title: "What is provisioned IOPS?",
-  meta: "Provisioned IOPS is the disk performance you set and pay for, used or not. See how AWS and Azure charge for it, with AWS’s own gp3 example in plain numbers.",
+  meta: "Provisioned IOPS (PIOPS) is the disk performance you set and pay for, used or not. See how AWS and Azure charge for it, with AWS’s own gp3 example.",
   h1: "What is provisioned IOPS?",
-  card: "Provisioned IOPS is the disk performance you set and pay for, counted in input/output operations per second (IOPS).",
+  card: "Provisioned IOPS (PIOPS) is the disk performance you set and pay for, counted in input/output operations per second (IOPS).",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
-      text: "Provisioned IOPS is the disk performance you set and pay for, counted in input/output operations per second (IOPS). That’s the reads and writes a disk can do each second. You pay for that number, whether your app uses it or not.",
+      text: "Provisioned IOPS (PIOPS) is the disk performance you set and pay for, counted in input/output operations per second (IOPS). That’s the reads and writes a disk can do each second. You pay for that number, whether your app uses it or not.",
     },
   ],
   sections: [
     {
       id: "provisioned-iops-in-aws-and-azure",
-      title: "Provisioned IOPS in AWS and Azure",
+      title: "Provisioned IOPS on Amazon EBS and Azure disks",
       blocks: [
         {
           kind: "ul",
@@ -52,7 +52,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why provisioned IOPS matter for your cloud cost",
       blocks: [
         {
           kind: "ul",

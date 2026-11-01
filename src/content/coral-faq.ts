@@ -103,7 +103,7 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
         short: [
           "AKS and EKS on Kubernetes 1.30 or later, with at least one Linux node (amd64 or arm64).",
           "Running pods are resized in place on 1.33+ nodes. On older nodes they restart one at a time.",
-          "Windows nodes are listed and costed, but their workloads are not right-sized.",
+          "Windows nodes are listed and costed, but their workloads are not resized.",
         ],
       },
       {
@@ -142,7 +142,7 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
         question: "How is the saving worked out?",
         short: [
           "At your cloud’s published list price for the region, with spot nodes at the spot rate and a 730-hour month. Discounts, reservations and savings plans are left out.",
-          "A smaller request reaches your bill when the freed capacity lets a node go.",
+          "A smaller request reduces your cloud cost when the freed capacity lets a node go.",
           "Every figure says where it comes from. Until data exists, figures read “Calculating”.",
         ],
       },
@@ -155,8 +155,8 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
           [
             "Compared in full: ",
             {
-              href: learnPath("hpa-vs-vpa-vs-cluster-autoscaler"),
-              text: "HPA vs VPA vs Cluster Autoscaler",
+              href: learnPath("kubernetes-autoscaling"),
+              text: "Kubernetes autoscaling",
             },
             ".",
           ],
@@ -179,7 +179,7 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
         question: "Where can I buy Coral?",
         short: [
           "Coral is available in AWS Marketplace and Microsoft Marketplace.",
-          "If you pay for Coral, the price, billing period and payment terms are in your order or your marketplace purchase.",
+          "If you pay for Coral, your order or marketplace purchase sets the price, how often you pay and the payment terms.",
         ],
       },
     ],
@@ -250,7 +250,7 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
       {
         id: "a-workload-is-idle-for-6",
         question:
-          "A workload is idle for 6\u00a0days and busy every Monday. Will Coral cut resources before Monday?",
+          "A workload is idle for 6\u00a0days and busy every Monday. Will Coral reduce resources before Monday?",
         short: [
           [
             { b: "Memory: no." },
@@ -288,7 +288,7 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
           "A workload needs 4\u00a0CPUs during startup but only 500m afterwards. How is it handled?",
         short: [
           "By default Coral ignores the first 2\u00a0minutes of CPU after a container starts, so the request ends up near 500m.",
-          "Startup can still go above the request, using free CPU on the node, because Coral doesn’t lower CPU limits on regular pods.",
+          "Startup can still go above the request, using free CPU on the node, because Coral doesn’t reduce CPU limits on regular pods.",
           "If startup must be fast, set a CPU minimum or use a policy that counts startup CPU.",
           "Guaranteed StatefulSet pods and workloads with a CPU-based HPA are sized differently.",
         ],
@@ -304,7 +304,7 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
         question: "How does Coral decide a change is safe to apply automatically?",
         short: [
           "Only workloads with “Automatically optimize” on are changed. Zoorik’s own namespace is never changed.",
-          "Through a policy, cuts in the first 24\u00a0hours of data are capped at 10%, 25%, then 35%. After that Coral needs at least 90% of the expected samples.",
+          "Through a policy, reductions in the first 24\u00a0hours of data are capped at 10%, 25%, then 35%. After that Coral needs at least 90% of the expected samples.",
           "Every change respects your minimums, LimitRanges and quotas. Routine changes under 10% are skipped.",
           "Pods are resized in place where possible. Otherwise they are replaced one at a time, within your PDBs.",
         ],
@@ -336,7 +336,7 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
         id: "is-there-a-warm-up-period",
         question: "Is there a warm-up period before automation?",
         short: [
-          "For pod sizing, yes. When you turn it on through a policy, cuts in the first 24\u00a0hours of data are capped at 10%, then 25%, then 35%.",
+          "For pod sizing, yes. When you turn it on through a policy, reductions in the first 24\u00a0hours of data are capped at 10%, then 25%, then 35%.",
           "Workloads that already have 24\u00a0hours of good data get the full recommendation straight away.",
           "Turning on a single workload directly skips this warm-up.",
           "Node optimization has no warm-up. It starts at install.",
@@ -347,7 +347,7 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
         question: "Memory spikes can cause OOM kills. How much safety buffer is kept?",
         short: [
           "Memory is set from the highest usage of the last 8\u00a0days, plus 10% (15 to 20% on some other policies).",
-          "Coral never lowers a memory limit on regular pods, so a container with a limit is OOM-killed at the same point.",
+          "Coral never reduces a memory limit on regular pods, so a container with a limit is OOM-killed at the same point.",
           "A container with no memory limit can be evicted sooner if the node runs short of memory.",
           "If an OOM kill still happens, Coral raises that container’s memory straight away, by 20% per kill and at least 100\u00a0MiB.",
         ],
@@ -441,7 +441,7 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
           "Only on HPAs Coral manages: ones it creates for safe Deployments, with minReplicas of 2 or more, and ones you created by hand that it takes over.",
           "On an HPA it takes over, Coral keeps minReplicas, only raises maxReplicas, and restores your values when it lets go.",
           "An HPA that Coral creates can scale a steady Deployment down to its minimum.",
-          "It never changes min or max on HPAs from Helm, Argo CD, Flux, KEDA or kubectl apply.",
+          "Outside a rebalance’s warm handover, it never changes min or max on HPAs from Helm, KEDA or kubectl apply, and never on HPAs whose bounds Argo CD or Flux own.",
         ],
       },
       {
@@ -480,7 +480,7 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
           "How do you make sure node consolidation doesn’t cause scheduling failures later?",
         short: [
           "Before draining, Coral simulates the scheduler on the live cluster. Every pod must fit elsewhere, with its affinity, taints, spread, ports and zones.",
-          "It respects PDBs, do-not-disrupt and your autoscaler’s minimum pool size.",
+          "It respects PDBs and do-not-disrupt.",
           "Room for future growth is your autoscaler’s job.",
           "Known gap: per-node disk-attach limits aren’t checked yet.",
         ],
@@ -512,9 +512,9 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
         id: "how-does-coral-interact-with-cluster",
         question: "How does Coral interact with Cluster Autoscaler or Karpenter decisions?",
         short: [
-          "Coral never changes your autoscaler’s settings and never adds nodes for demand.",
-          "Karpenter, NAP or the Cluster Autoscaler deletes the nodes Coral empties, within your autoscaler’s minimums.",
-          "Pools that Karpenter or NAP already consolidates are left to them. Coral deletes VMs itself only in fixed-size pools that nothing else manages.",
+          "Coral never adds nodes for demand and never raises a pool’s minimum. By default it may reduce a minimum that alone keeps an emptied node, and disconnect puts the old one back.",
+          "Karpenter, NAP or the Cluster Autoscaler deletes the nodes Coral empties.",
+          "Pools that Karpenter or NAP already consolidates are left to them. Coral deletes nodes itself only in fixed-size pools that nothing else manages.",
         ],
       },
       {

@@ -153,7 +153,7 @@ describe("What we offer", () => {
     expect(rows.map((row) => text(row.querySelector(".ofx-cap > .sr-only")))).toEqual([
       "off AKS and EKS cost",
       "off block storage cost",
-      "off your overall cloud bill",
+      "off your overall cloud cost",
     ]);
   });
 
@@ -181,7 +181,7 @@ describe("What we offer", () => {
         ["azure", null, "Managed Disks"],
         ["aws", "aws", "EBS"],
       ],
-      [[null, null, "Overall cloud bill"]],
+      [[null, null, "Overall cloud cost"]],
     ]);
     /* Each Azure mark names its own gradients, so the three never share one. */
     const gradients = [...section.querySelectorAll("linearGradient")].map((g) => g.id);

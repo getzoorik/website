@@ -4,9 +4,9 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/cost-alloca
 export const term: GlossaryTerm = {
   slug: "cost-allocation-tags",
   term: "Cost allocation tags",
-  title: "What are cost allocation tags?",
-  meta: "Cost allocation tags label cloud resources so your reports can split the cost by team or app. See how they work on AWS, Azure and EKS, and what they can’t do.",
-  h1: "What are cost allocation tags?",
+  title: "What are cost allocation tags in AWS and Azure?",
+  meta: "Cost allocation tags label cloud resources so reports can split cloud cost by team or app. See how AWS cost allocation tags, Azure tags and EKS tags work.",
+  h1: "What are cost allocation tags in AWS and Azure?",
   card: "Cost allocation tags are labels on cloud resources that let cost reports split your cloud cost by team, app or environment.",
   group: "finops-pricing",
   product: "both",
@@ -32,12 +32,23 @@ export const term: GlossaryTerm = {
       title: "Cost allocation tags on AWS, Azure and EKS",
       blocks: [
         {
-          kind: "ul",
-          items: [
-            "AWS cost allocation tags are user-defined tags you create, or AWS-generated tags such as aws:createdBy. Each one shows in Cost Explorer only after you activate it in the Billing and Cost Management console. In AWS Organizations, only the management account can activate tags.",
-            "For Azure cost allocation tags, Microsoft Cost Management reads the tags on each usage record. Resource group and subscription tags reach them only with tag inheritance on.",
-            "On Amazon Elastic Kubernetes Service (EKS), AWS adds aws:eks:cluster-name to each EC2 instance (virtual machine) in a cluster. Once active, this EKS cost allocation tag splits instance cost by cluster, not control plane cost.",
-          ],
+          kind: "h3",
+          id: "user-defined-and-aws-generated-cost-allocation",
+          title: "User-defined and AWS-generated cost allocation tags",
+        },
+        {
+          kind: "p",
+          text: "AWS cost allocation tags are user-defined tags you create, or AWS-generated tags such as aws:createdBy. Each one shows in Cost Explorer only after you activate it in the Billing and Cost Management console. In AWS Organizations, only the management account can activate tags.",
+        },
+        { kind: "h3", id: "azure-cost-allocation-tags", title: "Azure cost allocation tags" },
+        {
+          kind: "p",
+          text: "For Azure cost allocation tags, Microsoft Cost Management reads the tags on each usage record. Resource group and subscription tags reach them only with tag inheritance on.",
+        },
+        { kind: "h3", id: "eks-cost-allocation-tags", title: "EKS cost allocation tags" },
+        {
+          kind: "p",
+          text: "On Amazon Elastic Kubernetes Service (EKS), AWS adds aws:eks:cluster-name to each EC2 instance (virtual machine) in a cluster. Once active, this EKS cost allocation tag splits instance cost by cluster, not control plane cost.",
         },
         { kind: "svg", figure: figure1 },
         {
@@ -52,7 +63,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why cost allocation tags matter for your cloud cost",
       blocks: [
         {
           kind: "ul",

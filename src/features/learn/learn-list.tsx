@@ -75,9 +75,9 @@ export function LearnArticleList({
             >
               <a className="dt-a" href={tile.href} title={tile.title}>
                 <span className="lr-cvt">
-                  <span className="lr-eb">{label(tile.subject)}</span>
+                  <span className="lr-eb">{label(tile.subject)}</span>{" "}
                   <span>
-                    <span className="dt-t">{named(tile.name)}</span>
+                    <span className="dt-t">{named(tile.name)}</span>{" "}
                     <span className="lr-m">{tile.meta}</span>
                   </span>
                 </span>

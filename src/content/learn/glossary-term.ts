@@ -57,7 +57,10 @@ export interface GlossaryTerm {
   readonly updated: string;
   /** What stands before the first heading: the definition first, then any list, command or figure with it. */
   readonly definition: readonly ArticleBlock[];
-  /** The sections, "Why it matters for your cloud cost" among them; Related terms is `related`. */
+  /**
+   * Two to four sections, `#why-it-matters-for-your-cloud-cost` among them, named for the term ("Why rightsizing
+   * matters for your cloud cost"); the related terms are `related`.
+   */
   readonly sections: readonly ArticleSection[];
   readonly related: readonly GlossaryRelated[];
   /** "Read next": the Learn article the term leads to, at its address, by the words the draft gives it. */
@@ -69,5 +72,5 @@ export interface GlossaryTerm {
 export const glossaryWords = {
   updated: "Updated ",
   next: "Read next:",
-  related: "Related terms",
+  related: "More cloud cost terms",
 } as const;

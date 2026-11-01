@@ -21,17 +21,18 @@ import {
  * The day the versus pages' content last changed, for the sitemap's `lastmod` only. Whoever changes them moves this to
  * that day in the same PR; never the build's date.
  */
-export const learnCompareLastUpdated = "19 October 2026";
+export const learnCompareLastUpdated = "1 November 2026";
 
 /**
  * The day the two alternatives pages' content last changed, for the sitemap's `lastmod` only, as above. 1 Nov 2026:
- * their titles, and the Amoeba page's description.
+ * their titles, h1s, descriptions, decks and section names, and the Amoeba page's line.
  */
 export const alternativesLastUpdated = "1 November 2026";
 
 /**
  * The day Cloud cost optimization tools' content last changed, for the sitemap's `lastmod` only, as above. 1 Nov
- * 2026: Part 4's title, h1, description and deck, and the calculators' tile names.
+ * 2026: Part 4's title, h1, description and deck, and the calculators' tile names; then its title and h1 again, and
+ * its tools' section and group names.
  */
 export const cloudCostToolsLastUpdated = "1 November 2026";
 
@@ -43,19 +44,19 @@ export const cloudCostToolsLastUpdated = "1 November 2026";
 export const cloudCostToolsPage = {
   /** The page's `<title>`, as is, and its description. */
   meta: {
-    title: "Cloud cost optimization tools and FinOps tools",
+    title: "Cloud cost management tools and FinOps tools",
     description:
       "Cloud cost management tools for Azure and AWS: the cloud cost optimization tools and FinOps tools that reduce what you pay, and how each one acts.",
   },
   /** The h1 and, as the page has no intro, the deck is its first paragraph (Part 4, 1 Nov 2026). */
   hero: {
-    title: "Cloud cost optimization tools and FinOps tools",
+    title: "Cloud cost management tools and FinOps tools",
     deck: "These cloud cost management tools reduce what you pay on Azure and AWS. Each tile says what the tool does, how it acts and which clouds it supports. Filter them by cloud, or by kind: block storage, Kubernetes, FinOps tools or the cloud providers’ own.",
   },
   /** The tiles, by kind, under the two rows of chips. */
   tools: {
     id: "tools",
-    title: "Tools that reduce cloud cost",
+    title: "Cloud cost optimization tools for Azure and AWS",
     /** The chips' names for a screen reader, and their first chips. */
     kinds: { label: "Kind of tool", all: "All" },
     clouds: { label: "Cloud", all: "All clouds" },
@@ -96,8 +97,10 @@ export interface VersusPage {
   readonly slug: string;
   readonly product: ProductId;
   /** The page's `<title>` (through the site's "%s | Zoorik" template) and description; the title is its h1 and the
-   *  description its deck. */
+   *  description its deck, unless it has its own (`deck`). */
   readonly meta: { readonly title: string; readonly description: string };
+  /** Its deck under the h1, where it is not the description (1 Nov 2026: the description carries the searches). */
+  readonly deck?: string;
   /** Its tile's line on Cloud cost optimization tools' Compare Coral and Amoeba. */
   readonly line: string;
   /**
@@ -129,7 +132,8 @@ export const versusFrameCopy = {
   /** Before the short answer, in bold. */
   short: "Short answer.",
   sources: { id: "sources", title: "Sources" },
-  readMore: "Read more",
+  /** Named for the product the page compares: "Coral docs and guides". */
+  readMore: (product: string) => `${product} docs and guides`,
 } as const;
 
 /** The day the two 1 Nov 2026 versus pages were checked and written. */
@@ -161,11 +165,30 @@ export const versusPages: readonly VersusPage[] = [
     slug: "coral-vs-stormforge",
     product: "coral",
     meta: {
-      title: "Coral vs StormForge",
+      title: "StormForge vs Coral",
       description:
-        "Both reduce the cost of Kubernetes. Here is what each one does, side by side, from each company’s own pages.",
+        "StormForge and Coral both reduce Kubernetes cost. See how each works with HPA and Karpenter, and its pricing, side by side, from each company’s own pages.",
     },
+    deck: "StormForge and Coral both reduce the cost of Kubernetes. Here is what each one does, side by side, from each company’s own pages.",
     line: "What each one does for Kubernetes cost on Azure and AWS, side by side.",
+    questions: {
+      title: "Questions about StormForge and Coral",
+      rows: [
+        {
+          question: "What is StormForge?",
+          answer:
+            "StormForge, by CloudBolt, uses machine learning to rightsize container requests and limits, and recalculates HPA targets along with them. It leaves nodes to node autoscalers.",
+        },
+        {
+          question: "How much does StormForge cost?",
+          answer: `Its product page gives no price. CloudBolt's AWS Marketplace post (3 Apr 2025) gives a pay-as-you-go price: "Starting at $0.0041 per CPU per hour". The EKS add-on agent listing is free. Coral is priced per vCPU it manages, bought on AWS or Microsoft Marketplace.`,
+        },
+        {
+          question: "Does StormForge manage nodes?",
+          answer: `No. Its FAQ says it adjusts pod requests and limits, while "tools like Karpenter optimize the nodes themselves". Coral empties spare machines so the autoscaler removes them, and rebalances work onto cheaper ones.`,
+        },
+      ],
+    },
   },
   {
     slug: "amoeba-vs-zesty-disk",
@@ -173,8 +196,9 @@ export const versusPages: readonly VersusPage[] = [
     meta: {
       title: "Amoeba vs Zesty Disk",
       description:
-        "Both reduce the cost of block storage. Here is what each one does, side by side, from each company’s own pages.",
+        "Amoeba vs Zesty Disk: both reduce block storage cost. What each one does, its clouds and its pricing, side by side, from each company’s own pages.",
     },
+    deck: "Both reduce the cost of block storage. Here is what each one does, side by side, from each company’s own pages.",
     line: "What each one does for block storage cost on Azure and AWS, side by side.",
   },
 
@@ -182,7 +206,7 @@ export const versusPages: readonly VersusPage[] = [
     slug: "coral-vs-azure-advisor",
     product: "coral",
     meta: {
-      title: "Coral vs Azure Advisor",
+      title: "Azure Advisor vs Coral",
       description:
         "Azure Advisor recommends cost fixes across Azure, for free. Coral acts inside your AKS and EKS clusters. Here is what each one does, side by side.",
     },
@@ -191,7 +215,7 @@ export const versusPages: readonly VersusPage[] = [
     lastUpdated: NOV_1,
     card: true,
     short:
-      "Azure Advisor is free and recommends fixes across many Azure services, but you apply each one yourself. Coral works only in AKS or EKS clusters, where it empties spare nodes and, once switched on, sizes pod requests to real use.",
+      "You apply each Advisor fix yourself. Coral works only in AKS or EKS clusters, where it empties spare nodes and, once switched on, rebalances pod requests to real use.",
     sections: [
       {
         id: "which-to-use",
@@ -202,17 +226,17 @@ export const versusPages: readonly VersusPage[] = [
           ),
           ul(
             "Use Advisor across Azure: idle VMs, unattached disks, reservations and savings plans.",
-            "Use Coral where your spend sits in AKS or EKS clusters. Coral rebalances CPU and memory requests, works with your Horizontal Pod Autoscaler (HPA), and drains spare nodes so your autoscaler can remove them.",
-            "Use Amoeba where VM data disks are bigger than the data on them, on Azure or AWS.",
+            "Use Coral where your cost sits in AKS or EKS clusters. Coral rebalances CPU and memory requests, works with your Horizontal Pod Autoscaler (HPA), and drains spare nodes so your autoscaler can remove them.",
+            `Use Amoeba where VM data disks are bigger than the data on them, on Azure or AWS: Advisor's cost list never makes a disk in use smaller. See [Azure managed disk cost optimization](${routes.azureManagedDiskCostOptimization}).`,
           ),
           p(
-            `Advisor stops at Azure. On AWS, Coral covers EKS the same way: see [EKS cost optimization](${routes.eksCostOptimization}). For the rest of your Azure spend, read our guide to [Azure cost optimization](${routes.azureCostOptimization}).`,
+            `Advisor stops at Azure. On AWS, Coral covers EKS the same way: see [EKS cost optimization](${routes.eksCostOptimization}). For the rest of your Azure cost, read our guide to [Azure cost optimization](${routes.azureCostOptimization}).`,
           ),
         ],
       },
       {
         id: "aks-recommendations",
-        title: "What Advisor recommends for AKS",
+        title: "What Azure Advisor recommends for AKS",
         blocks: [
           p(
             `Kubernetes places each pod by its [requests](${glossaryPath("kubernetes-resource-requests")}), not by what it uses. The scheduler keeps the sum of requests on a node below the node's capacity. So a node can be full while its CPU sits close to idle.`,
@@ -242,36 +266,15 @@ export const versusPages: readonly VersusPage[] = [
           ),
         ],
       },
-      {
-        id: "amoeba",
-        title: "Where Amoeba fits",
-        blocks: [
-          p("Advisor's disk advice has three parts:"),
-          ul(
-            "Review disks that aren't attached to a VM (in preview).",
-            "Move busy Standard HDDs to Standard SSD.",
-            "Consider reservations for managed disks.",
-          ),
-          p(
-            "None of its cost recommendations makes a disk in use smaller. Amoeba covers that gap.",
-          ),
-          p(
-            "Amoeba works on the data disks of running VMs: Azure managed disks and Amazon EBS volumes, on Windows and Linux VMs. It moves a VM's data disks onto one btrfs pool sized to your data, with room to grow.",
-          ),
-          p(
-            "The pool grows before it fills. When your data goes down and stays down, Amoeba shrinks it one disk at a time.",
-          ),
-          ul(
-            `Delete what you don't need first: [find unattached disks in Azure](${learnPath("find-unattached-disks-azure")}).`,
-            `Price a disk with our [Azure disk pricing calculator](${routes.ebsAndAzureDiskPricing}).`,
-            `See what Amoeba does on Azure: [Azure managed disk cost optimization](${routes.azureManagedDiskCostOptimization}).`,
-          ),
-        ],
-      },
     ],
     questions: {
       title: "Questions about Coral and Azure Advisor",
       rows: [
+        {
+          question: "What is Azure Advisor?",
+          answer:
+            "Azure Advisor is Microsoft's free Azure service that analyzes configuration and usage to recommend cost, reliability, security, performance and operational excellence improvements.",
+        },
         {
           question: "Is Azure Advisor free?",
           answer:
@@ -355,7 +358,7 @@ export const versusPages: readonly VersusPage[] = [
     slug: "coral-vs-aws-compute-optimizer",
     product: "coral",
     meta: {
-      title: "Coral vs AWS Compute Optimizer for EKS",
+      title: "AWS Compute Optimizer vs Coral for EKS",
       description:
         "AWS Compute Optimizer gives EKS node groups idle recommendations, not rightsizing. Coral rebalances pod requests and removes spare nodes. Side by side.",
     },
@@ -364,7 +367,7 @@ export const versusPages: readonly VersusPage[] = [
     lastUpdated: NOV_1,
     card: true,
     short:
-      "AWS Compute Optimizer reads instance metrics and gives the Auto Scaling groups behind EKS node groups idle recommendations, not rightsizing. Kubernetes places pods by their requests, which those metrics don't show. Coral empties spare EKS nodes for your autoscaler to remove and, once switched on, rebalances pod requests to real use.",
+      "Kubernetes places pods by their requests, which instance metrics don't show. Coral empties spare EKS nodes for your autoscaler to remove and, once switched on, rebalances pod requests to real use.",
     sections: [
       {
         id: "compute-optimizer-eks",
@@ -400,7 +403,7 @@ export const versusPages: readonly VersusPage[] = [
             `For EBS data volumes on your VMs, Compute Optimizer recommends volume configurations. Amoeba moves a VM's data volumes onto one btrfs pool sized to your data, then rightsizes it. See [EBS cost optimization](${routes.ebsCostOptimization}), and [what Compute Optimizer recommends for EBS volumes](${learnPath("compute-optimizer-ebs")}).`,
           ),
           p(
-            `For the rest of your AWS spend, see [AWS cost optimization](${routes.awsCostOptimization}).`,
+            `For the rest of your AWS cost, see [AWS cost optimization](${routes.awsCostOptimization}).`,
           ),
         ],
       },
@@ -408,6 +411,16 @@ export const versusPages: readonly VersusPage[] = [
     questions: {
       title: "Questions about Coral and AWS Compute Optimizer",
       rows: [
+        {
+          question: "What is AWS Compute Optimizer?",
+          answer:
+            "AWS Compute Optimizer is an AWS service that analyzes your AWS resources' configuration and utilization metrics to provide rightsizing recommendations and identify idle resources.",
+        },
+        {
+          question: "Is AWS Compute Optimizer free?",
+          answer:
+            "Yes. AWS makes no additional charge for it: you pay for your AWS resources and CloudWatch monitoring. Enhanced infrastructure metrics, with up to three months of history, cost $0.0003360215 per resource per hour, about $0.25 for a full 31-day month.",
+        },
         {
           question: "Does AWS Compute Optimizer support EKS?",
           answer: `Partly. For the Auto Scaling groups behind EKS node groups, it makes idle recommendations but no rightsizing ones. AWS lists "Amazon ECS or Amazon EKS workloads" among the groups it doesn't rightsize.`,
@@ -505,8 +518,12 @@ export interface AlternativesPage {
   readonly product: ProductId;
   /** Its h1, and its tile's title on Cloud cost optimization tools. */
   readonly h1: string;
-  /** The `<title>`'s own words (before " | Zoorik") and the description, which is its deck. */
+  /** The `<title>`'s own words (before " | Zoorik") and the description, which is its deck unless it has its own. */
   readonly meta: { readonly title: string; readonly description: string };
+  /** Its deck under the h1, where it is not the description (1 Nov 2026: the description carries the searches). */
+  readonly deck?: string;
+  /** Its own names for How to choose and The options, where they are not `alternativesCopy`'s. */
+  readonly titles?: { readonly choose?: string; readonly options?: string };
   /** Its tile's line on Cloud cost optimization tools' Compare Coral and Amoeba. */
   readonly line: string;
 }
@@ -516,24 +533,31 @@ export const alternativesPages: readonly AlternativesPage[] = [
   {
     route: routes.compareCoralAlternatives,
     product: "coral",
-    h1: "Coral alternatives: Kubernetes cost tools compared",
+    h1: "Kubernetes cost optimization tools compared",
     meta: {
       title: "Kubernetes cost optimization tools compared",
       description:
-        "Weighing Coral against other ways to reduce Kubernetes cost on AKS and EKS? Here is each option, what it does and how it acts, from each company’s own pages.",
+        "Kubernetes cost optimization tools compared: Coral, Cast AI and its competitors, Goldilocks and Karpenter. What each does on AKS and EKS, from its own pages.",
+    },
+    deck: "Weighing Coral against other Kubernetes cost optimization tools on AKS and EKS? Here is each option, what it does and how it acts, from each company’s own pages.",
+    titles: {
+      choose: "How to choose a Kubernetes cost tool for AKS and EKS",
+      options: "Cast AI competitors and other Kubernetes cost tools",
     },
     line: "Every way to reduce Kubernetes cost on AKS and EKS, and how each one acts.",
   },
   {
     route: routes.compareAmoebaAlternatives,
     product: "amoeba",
-    h1: "Amoeba alternatives: block storage tools compared",
+    h1: "Azure disk and EBS cost tools compared",
     meta: {
       title: "Azure disk and EBS cost tools compared",
       description:
-        "Tools that reduce Azure managed disk and Amazon EBS cost, compared: what each does, whether it acts or recommends, and where it runs.",
+        "Azure disk and EBS cost optimization tools, compared: what each does, whether it acts or recommends, and where it runs.",
     },
-    line: "Every way to right-size Azure managed disks and Amazon EBS, and how each one acts.",
+    deck: "Tools that reduce Azure managed disk and Amazon EBS cost, compared: what each does, whether it acts or recommends, and where it runs.",
+    titles: { choose: "How to choose a disk autoscaler" },
+    line: "Every way to rightsize Azure managed disks and Amazon EBS, and how each one acts.",
   },
 ];
 
@@ -569,7 +593,7 @@ export const alternativesCopy = {
   choose: {
     id: "choose",
     title: "How to choose",
-    lede: "Four questions that separate these tools faster than any feature list.",
+    lede: "Four questions to ask before you pick a tool.",
   },
   options: {
     id: "options",

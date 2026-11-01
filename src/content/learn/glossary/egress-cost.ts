@@ -3,9 +3,9 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/egress-cost
 
 export const term: GlossaryTerm = {
   slug: "egress-cost",
-  term: "Data transfer (egress) cost",
+  term: "Egress cost (data transfer, bandwidth)",
   title: "What is egress cost in the cloud?",
-  meta: "Egress cost is what AWS and Azure charge for data that leaves a Region. See what’s free, how cross-AZ traffic is charged and how to keep it small.",
+  meta: "Egress cost is what a cloud charges for data leaving a Region; ingress from the internet is free. See how AWS data transfer and Azure bandwidth are charged.",
   h1: "What is egress cost in the cloud?",
   card: "Egress cost is the fee a cloud charges for data leaving a Region, to the internet or another Region.",
   group: "finops-pricing",
@@ -21,7 +21,7 @@ export const term: GlossaryTerm = {
   sections: [
     {
       id: "egress-cost-in-aws-and-azure",
-      title: "Egress cost in AWS and Azure",
+      title: "AWS data transfer costs and Azure bandwidth costs",
       blocks: [
         { kind: "p", text: "AWS calls egress fees data transfer, and Azure calls them bandwidth." },
         {
@@ -52,7 +52,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why egress cost matters",
       blocks: [
         {
           kind: "ul",
@@ -64,10 +64,6 @@ export const term: GlossaryTerm = {
               " field, generally available since Kubernetes 1.33, can prefer same-zone pods.",
             ],
             "On EKS, the AWS Load Balancer Controller’s ip mode sends traffic straight to pods, skipping a cross-zone hop.",
-            [
-              { a: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
-              " covers your other cloud costs.",
-            ],
             [
               "The ",
               { a: "free assessment", href: "/assessment" },
@@ -91,7 +87,7 @@ export const term: GlossaryTerm = {
     },
     {
       title: "FinOps",
-      line: "The practice of managing cloud spend.",
+      line: "The practice of managing cloud cost.",
       href: "/learn/glossary/finops",
     },
   ],

@@ -4,9 +4,9 @@ import { figure as figure2 } from "@/features/learn/figures/combine-ebs-volumes/
 
 export const article: Article = {
   slug: "combine-ebs-volumes",
-  title: "Combine EBS volumes into one: LVM, RAID 0 or btrfs",
-  meta: "Combine EBS volumes into one with LVM, RAID 0 or a btrfs pool: the commands for each, and what each asks of you when you add a volume or want one back.",
-  h1: "How to combine EBS volumes into one: LVM, RAID 0 or a btrfs pool",
+  title: "AWS EBS RAID 0, LVM or btrfs: combine EBS volumes",
+  meta: "AWS EBS RAID 0, LVM or a btrfs pool: how to combine EBS volumes into one, the commands for each, and what each takes to add a volume or give one back.",
+  h1: "How to combine EBS volumes: AWS EBS RAID 0, LVM or a btrfs pool",
   deck: "Three ways to put several EBS volumes under one mount, and what each asks of you when the set of volumes changes.",
   card: "LVM, RAID 0 or a btrfs pool across EBS volumes: the commands, and what adding or removing a volume takes.",
   product: "amoeba",
@@ -20,7 +20,7 @@ export const article: Article = {
   coverAlt:
     "Combine EBS volumes into one: LVM, RAID 0 or a btrfs pool joins EBS volumes under one /data mount",
   short:
-    "To combine EBS volumes into one on Linux, you join them in the operating system with LVM, mdadm RAID 0 or a btrfs pool. They differ in speed, and most of all in what it takes to add a volume or give one back.",
+    "To combine EBS volumes into one on Linux, you join them in the operating system with LVM, an EBS RAID 0 array built with mdadm, or a btrfs pool. They differ in speed, and most of all in what it takes to add a volume or give one back.",
   sections: [
     {
       id: "combine-ebs-volumes-into-one",
@@ -196,7 +196,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "add-a-volume-to-the-volume-group",
-          title: "Add a volume to the volume group",
+          title: "Add a new EBS volume to an existing LVM volume group",
         },
         {
           kind: "p",
@@ -297,7 +297,7 @@ export const article: Article = {
           kind: "p",
           text: "AWS designs gp3 for an annual failure rate no higher than 0.2 percent. If failures are independent, the yearly chance of losing the array is at most 1 − 0.998⁴. That’s about 0.8 percent.",
         },
-        { kind: "h3", id: "create-the-raid-0-array", title: "Create the RAID 0 array" },
+        { kind: "h3", id: "create-the-raid-0-array", title: "Create the RAID 0 array with mdadm" },
         {
           kind: "p",
           text: [
@@ -553,7 +553,7 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
+              " The services that use those mounts restart once, at the switch onto the pool.",
             ],
             [
               { b: "Growing." },
@@ -567,7 +567,7 @@ export const article: Article = {
             ],
             [
               { b: "The old volumes." },
-              " Once the switch is checked, Amoeba snapshots and deletes each old volume. It deletes each snapshot a few days later.",
+              " Once the switch is checked, Amoeba snapshots and deletes each old volume. It deletes each snapshot 7 days later.",
             ],
           ],
         },
@@ -592,7 +592,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves an EC2 instance’s EBS data volumes onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one volume at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage cost optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },

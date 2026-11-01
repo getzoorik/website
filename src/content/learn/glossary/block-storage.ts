@@ -5,23 +5,23 @@ export const term: GlossaryTerm = {
   slug: "block-storage",
   term: "Block storage",
   title: "What is block storage?",
-  meta: "Block storage meaning in plain words: the disks you attach to cloud VMs, how Azure and AWS charge for them by size, and how they differ from object storage.",
+  meta: "Block storage, or block-level storage, is the disk you attach to a cloud VM. See how Azure and AWS charge for it by size, and block storage vs object storage.",
   h1: "What is block storage?",
-  card: "Block storage is storage that a server uses as a disk.",
+  card: "Block storage, or block-level storage, is storage that a server uses as a disk.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
-      text: "Block storage is storage that a server uses as a disk. You pick its size and attach it to a cloud virtual machine (VM). It works like a local hard drive.",
+      text: "Block storage, or block-level storage, is storage that a server uses as a disk. You pick its size and attach it to a cloud virtual machine (VM). It works like a local hard drive.",
     },
   ],
   sections: [
     {
       id: "block-storage-in-aws-and-azure",
-      title: "Block storage in AWS and Azure",
+      title: "Cloud block storage on AWS and Azure",
       blocks: [
         {
           kind: "p",
@@ -59,7 +59,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why block storage matters for your cloud cost",
       blocks: [
         {
           kind: "p",
@@ -82,11 +82,6 @@ export const term: GlossaryTerm = {
               "The ",
               { a: "free assessment", href: "/assessment?p=amoeba" },
               " works out your own figure.",
-            ],
-            [
-              "For Azure disks, read ",
-              { a: "Azure disk cost optimization", href: "/learn/azure-disk-cost-optimization" },
-              ".",
             ],
           ],
         },
@@ -111,7 +106,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/disk-throughput",
     },
   ],
-  next: { title: "Azure disk cost optimization", href: "/learn/azure-disk-cost-optimization" },
+  next: { title: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
   sources: [
     {
       publisher: "Amazon Web Services",

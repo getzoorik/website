@@ -25,7 +25,7 @@ function selectors(sheet: string): string[] {
 describe("the research sheet", () => {
   it("starts every selector at the page's own section", () => {
     const found = selectors(css);
-    expect(found).toHaveLength(5);
+    expect(found).toHaveLength(9);
     expect(found.filter((s) => !s.startsWith("#papers "))).toEqual([]);
   });
 

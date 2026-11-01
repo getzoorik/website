@@ -51,21 +51,21 @@ export function WorksWithPage({ page }: { readonly page: WorksWithCopy }): React
       <DocRows
         frame="article"
         groups={[
-          textGroup("who-does-what", worksWith.who.title, [
+          textGroup("who-does-what", page.sections.who, [
             {
               kind: "table",
-              head: [worksWith.who.job, page.who.tool, products.coral.name],
+              head: [worksWith.job, page.who.tool, products.coral.name],
               rows: page.who.rows,
               widths: WHO_WIDTHS,
             },
           ]),
-          textGroup("together", worksWith.together, [{ kind: "steps", items: page.together }]),
+          textGroup("together", page.sections.together, [{ kind: "steps", items: page.together }]),
           textGroup("leaves", page.leaves.title, [{ kind: "ul", items: page.leaves.items }]),
-          textGroup("setup", worksWith.setup, [{ kind: "ul", items: page.setup }]),
+          textGroup("setup", page.sections.setup, [{ kind: "ul", items: page.setup }]),
           {
             id: "questions",
-            title: worksWith.questions,
-            chip: worksWith.questions,
+            title: richText(page.sections.questions),
+            chip: page.sections.questions,
             unnumbered: true,
             /* Each addressed as the mocks address a row: the question's first seven words. */
             rows: page.questions.map(({ question, answer }) => (
@@ -76,7 +76,7 @@ export function WorksWithPage({ page }: { readonly page: WorksWithCopy }): React
               </UnnumberedRow>
             )),
           },
-          textGroup("read-more", worksWith.readMore, [{ kind: "ul", items: page.readMore }]),
+          textGroup("read-more", page.sections.readMore, [{ kind: "ul", items: page.readMore }]),
         ]}
       />
     </DocumentPage>

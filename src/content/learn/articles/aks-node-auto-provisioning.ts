@@ -5,10 +5,10 @@ import { figure as figure3 } from "@/features/learn/figures/aks-node-auto-provis
 
 export const article: Article = {
   slug: "aks-node-auto-provisioning",
-  title: "AKS node auto provisioning (NAP): how to enable it",
-  meta: "AKS node auto provisioning (NAP) is managed Karpenter on AKS. Its October 2026 status, network needs, and how to enable or disable it with az or Terraform.",
-  h1: "AKS node auto provisioning (NAP): what it is, how to enable",
-  deck: "Managed Karpenter on AKS: where it stands in October 2026, what it needs, and how to turn it on and off.",
+  title: "Karpenter on Azure: AKS node auto provisioning",
+  meta: "Karpenter on Azure is AKS node auto provisioning (NAP). Its October 2026 status, network needs, and how to enable or disable it with az or Terraform.",
+  h1: "Karpenter on Azure: AKS node auto provisioning (NAP) and how to enable it",
+  deck: "Karpenter on Azure, run by AKS for you: where it stands in October 2026, what it needs, and how to turn it on and off.",
   card: "What AKS node auto provisioning is, its October 2026 status, and how to enable or disable it.",
   product: "coral",
   hub: "Kubernetes",
@@ -224,7 +224,11 @@ export const article: Article = {
             ".",
           ],
         },
-        { kind: "h3", id: "clusters-on-kubenet", title: "Clusters on kubenet" },
+        {
+          kind: "h3",
+          id: "clusters-on-kubenet",
+          title: "Clusters on kubenet: NAP needs Azure CNI Overlay first",
+        },
         {
           kind: "p",
           text: "NAP won’t run on kubenet, so the cluster has to move to Azure CNI Overlay first. Microsoft calls that move “a one-way, irreversible operation.” It needs:",
@@ -257,7 +261,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "clusters-running-the-cluster-autoscaler",
-          title: "Clusters running the cluster autoscaler",
+          title: "Clusters running the cluster autoscaler: migrate to NAP",
         },
         { kind: "p", text: "Microsoft gives two paths. The simple one takes three steps:" },
         {
@@ -309,7 +313,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "clusters-running-self-hosted-karpenter",
-          title: "Clusters running self-hosted Karpenter",
+          title: "Clusters running self-hosted Karpenter on AKS",
         },
         {
           kind: "p",
@@ -580,74 +584,9 @@ export const article: Article = {
           kind: "p",
           text: "Coral rebalances each container’s CPU and memory requests to what it uses. With smaller requests, NAP can run fewer or smaller nodes. Coral never adds nodes for demand, so scale-up stays with NAP.",
         },
-        { kind: "h3", id: "what-connect-turns-on", title: "What connect turns on" },
         {
           kind: "p",
-          text: [
-            "With your approval, ",
-            {
-              a: "connecting an AKS cluster with no node autoscaler",
-              href: "/coral-guide#what-connect-asks-to-change",
-            },
-            " to Coral turns on NAP. It also adds Coral’s node class, ",
-            { code: "zoorik-base" },
-            ". Connect lists every cloud change and asks once, and ",
-            { code: "--dry-run" },
-            " prints them all without changing anything.",
-          ],
-        },
-        { kind: "p", text: "A few cases go differently:" },
-        {
-          kind: "ul",
-          items: [
-            [
-              { b: "Kubenet." },
-              " NAP needs Azure CNI, so a kubenet cluster gets no autoscaler this way. Nothing adds nodes until one exists.",
-            ],
-            [
-              { b: "The Cluster Autoscaler." },
-              " Connect leaves it in place and doesn’t turn on NAP.",
-            ],
-            [
-              { b: "Later." },
-              " If you decline the cloud changes, ",
-              { code: "zoorikctl cluster prepare" },
-              " sets up NAP when you’re ready.",
-            ],
-            [{ b: "Disconnect." }, " NAP stays."],
-          ],
-        },
-        {
-          kind: "h3",
-          id: "consolidation-and-rebalancing-with-nap",
-          title: "Consolidation and rebalancing with NAP",
-        },
-        {
-          kind: "ul",
-          items: [
-            [
-              { b: "Pools NAP consolidates." },
-              " Coral leaves them to NAP. It deletes machines itself only in fixed-size pools that nothing else manages.",
-            ],
-            [
-              { b: "Cheaper machines." },
-              " With NAP in place, Coral can rebalance work onto smaller or cheaper machines. It creates fixed-size NodePools for the move, and NAP launches the new machines. The old nodes are then drained and removed one by one.",
-            ],
-            [
-              { b: "Disruption." },
-              " A rebalance never goes past a PodDisruptionBudget. Where Coral starts a new copy of a pod first, that copy must be Ready and serving before the old one goes. Other pods are evicted, so an app with a single copy gets a short restart.",
-            ],
-            [
-              { b: "Protected pods." },
-              " A pod annotated ",
-              { code: 'karpenter.sh/do-not-disrupt: "true"' },
-              " is never moved, and its node is kept. A node Coral can’t empty in time is kept too.",
-            ],
-          ],
-        },
-        {
-          kind: "p",
-          text: "On our own AKS development cluster, Coral removed one of two 4-CPU workers. It then rebalanced the remaining worker onto a cheaper machine of the same size. Eight days after we connected it, the cluster cost $154.76 a month instead of $368.65.",
+          text: "On our own AKS development cluster, Coral removed one of two 4-CPU workers. It then rebalanced the remaining worker onto a cheaper machine of the same size. Eight days after we connected it, the cluster’s machines cost $154.76 a month instead of $368.65.",
         },
         {
           kind: "p",
@@ -660,8 +599,8 @@ export const article: Article = {
             },
             ". For where NAP sits beside the HPA, the VPA and the Cluster Autoscaler, see ",
             {
-              a: "HPA vs VPA vs Cluster Autoscaler",
-              href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+              a: "Kubernetes autoscaling",
+              href: "/learn/kubernetes-autoscaling",
             },
             ".",
           ],
@@ -740,14 +679,14 @@ export const article: Article = {
       href: "/learn/karpenter-vs-cluster-autoscaler",
     },
     {
-      title: "How to choose AKS node sizes",
+      title: "How to choose AKS VM sizes",
       where: "Learn",
       href: "/learn/how-to-choose-aks-node-sizes",
     },
     {
-      title: "HPA vs VPA vs Cluster Autoscaler: what each one scales",
+      title: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
       where: "Learn",
-      href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+      href: "/learn/kubernetes-autoscaling",
     },
   ],
 };

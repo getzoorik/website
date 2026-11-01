@@ -84,7 +84,7 @@ export const article: Article = {
     },
     {
       id: "ten-strategies-and-only-two-of-them",
-      title: "Ten strategies, and only two of them look at how full a node is",
+      title: "Descheduler strategies: only two of the ten look at how full a node is",
       blocks: [
         {
           kind: "p",
@@ -457,16 +457,10 @@ export const article: Article = {
           ],
         },
         {
-          kind: "callout",
-          label: "For engineers",
-          text: "In October 2026 Microsoft’s setup guide asks for Azure CLI 2.90.0 or later, with no extension or feature flag. Its bin-packing guide still lists the preview-era prerequisites:",
-        },
-        {
-          kind: "ul",
-          items: [
-            "Azure CLI 2.76.0 or later",
-            "the aks-preview CLI extension version 18.0.0b27 or later",
-            ["the ", { code: "UserDefinedSchedulerConfigurationPreview" }, " feature flag"],
+          kind: "p",
+          text: [
+            { a: "Kubernetes bin packing", href: "/learn/kubernetes-bin-packing" },
+            " has the setup steps for AKS and EKS.",
           ],
         },
         {
@@ -497,7 +491,7 @@ export const article: Article = {
               ", the default, removes or replaces any node it can to reduce cost. ",
               { code: "WhenEmpty" },
               " removes only empty nodes. On AKS, ",
-              { a: "node auto-provisioning (NAP)", href: "/learn/aks-node-auto-provisioning" },
+              { a: "node auto provisioning (NAP)", href: "/learn/aks-node-auto-provisioning" },
               " is based on Karpenter.",
             ],
             [
@@ -547,24 +541,19 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS. Its ",
-            { a: "Evictor", href: "/coral-guide#the-evictor" },
-            " does the node-emptying part of this job inside your cluster.",
+            " optimizes Kubernetes on AKS and EKS, and ",
+            { a: "empties lightly used nodes", href: "/coral-guide#the-evictor" },
+            " inside your cluster:",
           ],
-        },
-        {
-          kind: "p",
-          text: "Despite the name, it’s a part of Coral, not the descheduler’s DefaultEvictor plugin. The Evictor:",
         },
         {
           kind: "ul",
           items: [
-            "moves pods off lightly used nodes and leaves your autoscaler to remove each empty node",
-            "drains only in node pools whose setting allows it, which is off by default",
-            "never deletes a machine and never overrides a PDB",
-            "has a “Dry run” that lists the nodes it would empty in the Event log, without moving any pod",
+            "it moves pods off lightly used nodes and leaves each empty node to your autoscaler",
+            "it has a “Dry run” that lists the nodes it would empty in the Event log, without moving any pod",
           ],
         },
+        { kind: "p", text: "The Coral guide lists its switches and their defaults." },
         {
           kind: "p",
           text: "Node optimization handles the rest. Before it drains a node, Coral checks on the live cluster that every pod fits on another Ready node. The check takes in affinity, taints, spread, ports and zones.",
@@ -579,7 +568,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Coral waits for the time set in “Wait before removing empty nodes”, then hands the empty node to your autoscaler. It deletes the machine itself only in fixed-size pools that nothing else manages. Pools that Karpenter or NAP already consolidate are left to them.",
+          text: "Coral hands each empty node to your autoscaler, and removes the machine itself only in fixed-size pools that nothing else manages. It never overrides a PDB. Pools that Karpenter or NAP already consolidate are left to them.",
         },
         {
           kind: "p",
@@ -591,7 +580,10 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: [{ a: "The case study", href: "/coral-value-lab" }, " has the full run."],
+          text: [
+            { a: "The Coral Value Lab study", href: "/coral-value-lab" },
+            " has the full run.",
+          ],
         },
       ],
     },

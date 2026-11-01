@@ -5,8 +5,8 @@ import { figure as figure2 } from "@/features/learn/figures/poor-architecture-cl
 export const article: Article = {
   slug: "poor-architecture-cloud-bill",
   title: "How poor architecture increases your cloud costs",
-  meta: "High cloud costs are often an architecture problem, not a pricing problem: VMs vs containers, where design adds cost, and how one client reduced compute 44%.",
-  h1: "How Poor Infra Architecture Quietly Increases Your Cloud Costs",
+  meta: "High cloud costs are often an architecture problem, not a pricing problem: VMs vs containers, where design adds cost, and how to size from measured use.",
+  h1: "How poor architecture increases your cloud costs",
   deck: "Why high cloud costs are often an architecture problem, not a pricing problem.",
   card: "Why high cloud costs are often an architecture problem, not a pricing problem.",
   product: "coral",
@@ -30,7 +30,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Picture one of those applications. Its VM has 8\u00a0vCPUs and 32\u00a0GB of RAM to handle peak traffic, but for most of the day it uses a fraction of that, and you pay for the provisioned capacity all the same. Now repeat that for every application, each with its own allocation and little room to scale.",
+          text: "Picture one of those applications. Its VM has 4\u00a0vCPUs and 16\u00a0GB of RAM to handle peak traffic, but for most of the day it uses a fraction of that, and you pay for the provisioned capacity all the same. Now repeat that for every application, each with its own allocation and little room to scale.",
         },
         {
           kind: "p",
@@ -40,7 +40,7 @@ export const article: Article = {
     },
     {
       id: "vms-versus-containers-understanding-the-architectural-trade-off",
-      title: "VMs versus containers: the architectural trade-off",
+      title: "Containers vs virtual machines: the architectural trade-off",
       blocks: [
         {
           kind: "p",
@@ -151,16 +151,16 @@ export const article: Article = {
     },
     {
       id: "how-we-approach-cloud-cost-optimization-as",
-      title: "How we approach cloud cost optimization as engineers",
+      title: "How we review an architecture for cost",
       blocks: [
         {
           kind: "p",
-          text: "Don’t start by changing VM sizes or migrating applications: start by understanding how the architecture, the workloads’ behaviour and the spending relate. We follow six steps.",
+          text: "Don’t start by changing VM sizes or migrating applications: start by understanding how the architecture, the workloads’ behaviour and the cost relate. We follow six steps.",
         },
         { kind: "h3", id: "establish-a-baseline", title: "1. Establish a baseline" },
         {
           kind: "p",
-          text: "Review spending, compute use, CPU and memory metrics, traffic patterns, storage, network charges and spending per environment. Then find which workloads drive the cost and when their use actually happens.",
+          text: "Review cost, compute use, CPU and memory metrics, traffic patterns, storage, network charges and cost per environment. Then find which workloads drive the cost and when their use actually happens.",
         },
         { kind: "h3", id: "understand-the-workload", title: "2. Understand the workload" },
         {
@@ -271,7 +271,7 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS. Once workloads share a cluster, the next cost is the one in the Watch out above: requests set far above use. Coral rebalances CPU and memory requests to measured use, works with your HPA, and drains spare nodes so your Cluster Autoscaler, AKS node auto-provisioning or Karpenter can remove them.",
+            " optimizes Kubernetes on AKS and EKS. Once workloads share a cluster, the next cost is the one in the Watch out above: requests set far above use. Coral rebalances CPU and memory requests to measured use, works with your HPA, and drains spare nodes so your Cluster Autoscaler, AKS node auto provisioning or Karpenter can remove them.",
           ],
         },
         {
@@ -322,8 +322,8 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "How we reduced our own cluster’s machine bill by 58%",
-      where: "Case study",
+      title: "How we reduced our own AKS cluster’s machine cost by 58%",
+      where: "Coral Value Lab",
       href: "/coral-value-lab",
     },
     {
@@ -337,7 +337,7 @@ export const article: Article = {
       href: "/learn/shrink-azure-managed-disk",
     },
     {
-      title: "VPA vs HPA: when to use which, and why to rebalance first",
+      title: "VPA vs HPA: when to use which",
       where: "Learn",
       href: "/learn/vpa-vs-hpa",
     },

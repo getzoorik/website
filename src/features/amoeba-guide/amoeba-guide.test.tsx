@@ -186,7 +186,8 @@ describe("/amoeba-guide groups and rows", () => {
 
   it("stays at product level: no day counts, session timings, quiet hour or internal command names", () => {
     const words = text(page().querySelector("article.gd-main"));
-    expect(words).not.toMatch(
+    /* The one day count is the safety snapshots' 7 days, which /security and the terms print (1 Nov 2026). */
+    expect(words.replace(/\b7 days\b/g, "")).not.toMatch(
       /\b\d+ days\b|\bminutes\b|\b12 hours\b|quietest|device remove|governance/i,
     );
     expect(words).toContain("The kernel must be recent and support btrfs");
@@ -287,7 +288,7 @@ describe("/amoeba-guide page", () => {
   it("opens the column on the Updated line and the summary: the product page first", () => {
     const container = page();
     const top = container.querySelector("article.gd-main > .fq-upd")!;
-    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 27 October 2026");
+    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 1 November 2026");
     const list = top.querySelector("dl.doc-sum")!;
     expect([...list.querySelectorAll("dt")].map(text)).toEqual([
       "Product page",
@@ -489,7 +490,7 @@ describe("the /amoeba-guide route", () => {
   it("titles, describes and canonicalises the page", () => {
     expect(metadata.title).toBe("Amoeba product guide");
     expect(metadata.description).toBe(
-      "Onboard a VM to Amoeba on Azure or AWS. See how its data moves onto one btrfs pool, how that pool grows and shrinks, and how you stay in control.",
+      "Amoeba product guide: onboard a VM on Azure or AWS, see how its data moves onto one btrfs pool, how that pool grows and shrinks, and how you stay in control.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/amoeba-guide" });
     expect(metadata).not.toHaveProperty("robots");

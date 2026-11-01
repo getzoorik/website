@@ -6,7 +6,7 @@ import { figure as figure3 } from "@/features/learn/figures/ebs-elastic-volumes/
 export const article: Article = {
   slug: "ebs-elastic-volumes",
   title: "EBS Elastic Volumes: what you can and can’t change",
-  meta: "EBS Elastic Volumes change an attached volume’s size, type, IOPS and throughput. The optimizing state, the four-a-day limit and the change they can’t make.",
+  meta: "EBS Elastic Volumes change a volume’s size, type, IOPS and throughput with aws ec2 modify-volume. The optimizing state, four-a-day limit and what can’t change.",
   h1: "EBS Elastic Volumes: what you can change, and what you can’t",
   deck: "Size, type, IOPS and throughput change while the volume stays in use. Size is the one that only goes up.",
   card: "What an EBS modification can change, the optimizing state, the four-a-day limit and why size only grows.",
@@ -121,7 +121,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "2-submit-the-change-naming-every-value",
-          title: "2. Submit the change, naming every value",
+          title: "2. Run aws ec2 modify-volume, naming every value",
         },
         {
           kind: "p",
@@ -250,7 +250,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "No. Search suggestions and older guides still pair EBS volume modification with 6\u00a0hours. That comes from an old rule of six hours between changes.",
+          text: "No. Older guides still pair EBS volume modification with 6\u00a0hours. That comes from an old rule of six hours between changes.",
         },
         {
           kind: "p",
@@ -351,7 +351,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "For example, gp3 costs 20 percent less per GiB than gp2. Our ",
+            "For example, gp3 costs 20 percent less per GB than gp2. Our ",
             { a: "EBS pricing calculator", href: "/ebs-and-azure-disk-pricing" },
             " shows what a volume costs a month at list price, and what its empty space costs.",
           ],
@@ -426,7 +426,7 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
+              " The services that use those mounts restart once, at the switch onto the pool.",
             ],
             [
               { b: "Growing." },
@@ -438,7 +438,7 @@ export const article: Article = {
             ],
             [
               { b: "The old volumes." },
-              " Once the switch is checked, Amoeba snapshots and deletes each old volume. It deletes each snapshot a few days later.",
+              " Once the switch is checked, Amoeba snapshots and deletes each old volume. It deletes each snapshot 7 days later.",
             ],
           ],
         },
@@ -463,7 +463,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves an EC2 instance’s EBS data volumes onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one volume at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage cost optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
@@ -531,7 +531,7 @@ export const article: Article = {
       href: "/learn/io2-vs-gp3",
     },
     {
-      title: "EBS volume types: pricing and how to choose",
+      title: "EBS volume types compared: how to choose one",
       where: "Learn",
       href: "/learn/ebs-volume-types",
     },

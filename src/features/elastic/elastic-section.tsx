@@ -11,7 +11,7 @@ import { ProductFilm } from "@/features/products/product-film";
  * film after the copy, so on a phone both blocks read copy, then film.
  *
  * ─── THE CAPTION SAYS WHAT THE FIGURES ARE ─────────────────────────────────
- * "Product preview with example figures." under the screen, as under Coral's.
+ * "Amoeba product preview with example figures." under the screen, as Coral's names Coral.
  * `/amoeba` prints its own line, "Example at Azure list price.", under its How
  * it works cards.
  *

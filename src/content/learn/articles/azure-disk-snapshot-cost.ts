@@ -4,9 +4,9 @@ import { figure as figure2 } from "@/features/learn/figures/azure-disk-snapshot-
 
 export const article: Article = {
   slug: "azure-disk-snapshot-cost",
-  title: "Azure disk snapshot cost: incremental vs full",
-  meta: "Azure disk snapshot cost explained: full snapshots hold all used data each time, incremental ones only the changes. October 2026 rates and a size check.",
-  h1: "Azure disk snapshot cost: incremental vs full snapshots",
+  title: "Azure snapshot pricing: incremental vs full cost",
+  meta: "Azure snapshot pricing explained: full snapshots hold all used data each time, incremental ones only the changes. October 2026 rates and how to estimate cost.",
+  h1: "Azure snapshot pricing and cost: incremental vs full snapshots",
   deck: "What you pay for in a managed disk snapshot, why incremental ones cost less, and how to find forgotten ones.",
   card: "What full and incremental snapshots cost, with October 2026 rates and a way to check what each one holds.",
   product: "amoeba",
@@ -19,7 +19,7 @@ export const article: Article = {
   coverAlt:
     "Azure disk snapshot cost: a full snapshot copies everything each time, an incremental one stores changes only",
   short: [
-    "Azure disk snapshot cost is the ",
+    "Azure snapshot pricing is the ",
     { a: "snapshot", href: "/learn/glossary/disk-snapshot" },
     "’s used size times a per-GB monthly rate, on top of the disk, until you delete the snapshot. Each full snapshot holds all the disk’s data, but an incremental chain holds it once, then only changes. Incremental ones always sit on ",
     { a: "Standard HDD", href: "/learn/glossary/azure-standard-hdd" },
@@ -245,7 +245,7 @@ export const article: Article = {
     },
     {
       id: "you-pay-for-a-snapshot-until-you",
-      title: "You pay for a snapshot until you delete it",
+      title: "You pay for a snapshot until you delete it, even after its disk is gone",
       blocks: [
         {
           kind: "p",
@@ -382,7 +382,7 @@ export const article: Article = {
             ],
             [
               { b: "Cleanup." },
-              " Amoeba keeps each snapshot for a few days, then deletes it. It deletes only the snapshots it created.",
+              " Amoeba keeps each snapshot for 7 days, then deletes it. It deletes only the snapshots it created.",
             ],
           ],
         },
@@ -466,9 +466,9 @@ export const article: Article = {
       href: "/learn/shrink-azure-managed-disk",
     },
     {
-      title: "Azure disk cost optimization: stop paying for empty space",
+      title: "Azure disk reservations: are they worth it?",
       where: "Learn",
-      href: "/learn/azure-disk-cost-optimization",
+      href: "/learn/azure-disk-reservations",
     },
     {
       title: "EBS snapshot cost: what you pay for and how to reduce it",
@@ -481,7 +481,7 @@ export const article: Article = {
       href: "/learn/find-unattached-disks-azure",
     },
     {
-      title: "In your Azure subscription",
+      title: "What Amoeba creates in your Azure subscription",
       where: "Amoeba product guide",
       href: "/amoeba-guide#in-your-azure-subscription",
     },

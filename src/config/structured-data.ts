@@ -37,7 +37,13 @@ import { cloudPages } from "@/content/cloud-pages";
 import { communityPage } from "@/content/community";
 import { contactPage } from "@/content/contact";
 import { designPartnersPage } from "@/content/design-partners";
-import { amoebaStudy, caseStudiesHub, caseStudy } from "@/content/case-studies";
+import {
+  amoebaStudy,
+  amoebaStudyLastUpdated,
+  caseStudiesHub,
+  caseStudy,
+  caseStudyLastUpdated,
+} from "@/content/case-studies";
 import { coralFaqPage } from "@/content/coral-faq";
 import { coralGuide } from "@/content/coral-guide";
 import { coralPageContent } from "@/content/coral-page";
@@ -275,6 +281,11 @@ interface PageEntry {
   readonly trail: readonly Crumb[];
   /** What the page is about: its product, or the organisation (/about, /careers). */
   readonly about?: ProductId | "organization";
+  /**
+   * A Learn article's own topic, from its h1 ("OOMKilled exit code 137"). The page and the article are then about
+   * that topic, and only mention the product in `about`.
+   */
+  readonly subject?: string;
   /** The apps the page carries in full: the home page's both, a product page's own. */
   readonly apps?: readonly ProductId[];
   readonly article?: {
@@ -288,6 +299,8 @@ interface PageEntry {
       readonly jobTitle: string;
       readonly url?: string;
       readonly worksForZoorik: boolean;
+      /** A guest's employer, where their byline names one. */
+      readonly employer?: string;
     };
     /** The day it was published, as an ISO day. */
     readonly published?: string;
@@ -383,30 +396,48 @@ function osGuideEntry(
 }
 
 /**
- * A Learn article: its h1 as the headline, its published and updated days, the
- * product it is about (none for an article about both), the card its page
- * shows, and its author where it is published under a person.
+ * A byline's role as a job title alone, and the employer it names: "Guest author · SDE II at Expedia" is "SDE II" at
+ * Expedia, "Software development manager, Zoorik · 11 years’ experience" is "Software development manager". The byline
+ * keeps its words; the structured data takes the title, and Zoorik or the named employer as `worksFor`.
+ */
+export function authorJob(role: string): { readonly jobTitle: string; readonly employer?: string } {
+  const plain = role
+    .replace(/^Guest author · /, "")
+    .replace(/ · \d+ years’ experience$/, "")
+    .replace(/, Zoorik$/, "");
+  const at = plain.match(/^(.+?)(?: at |, )(.+)$/);
+  return at ? { jobTitle: at[1]!, employer: at[2]! } : { jobTitle: plain };
+}
+
+/**
+ * A Learn article: its h1 as the headline, its published and updated days, its
+ * own topic (its h1 before the colon) with the product it mentions (none for an
+ * article about both), the card its page shows, and its author where it is
+ * published under a person.
  */
 function articleEntry(article: Article): PageEntry {
   const author = articleAuthor(article);
+  const job = author ? authorJob(author.role) : undefined;
   return {
     kind: "WebPage",
     name: titled(article.title),
     description: article.meta,
     trail: [step(routes.learn), { name: article.h1, path: articleRoute(article) }],
     ...(article.product === "both" ? {} : { about: article.product }),
+    subject: article.h1.split(":")[0]!.trim(),
     article: {
       headline: article.h1,
       published: article.published,
       modified: article.updated,
       image: articleCard(article),
-      ...(author
+      ...(author && job
         ? {
             author: {
               name: author.name,
-              jobTitle: author.role,
+              jobTitle: job.jobTitle,
               ...(author.linkedin ? { url: author.linkedin } : {}),
               worksForZoorik: !author.guest,
+              ...(author.guest && job.employer ? { employer: job.employer } : {}),
             },
           }
         : {}),
@@ -451,8 +482,10 @@ const termSetRef = {
 
 const studyHeadline = `${caseStudy.hero.title} ${caseStudy.hero.titleGreen}`;
 const studyDate = isoDay(caseStudy.band.date);
+const studyModified = isoDay(caseStudyLastUpdated);
 const amoebaStudyHeadline = `${amoebaStudy.hero.title} ${amoebaStudy.hero.titleGreen}`;
 const amoebaStudyDate = isoDay(amoebaStudy.band.date);
+const amoebaStudyModified = isoDay(amoebaStudyLastUpdated);
 
 /** Every indexed page, by its route: the sitemap's list. */
 const pages: Readonly<Record<string, PageEntry>> = {
@@ -585,7 +618,8 @@ const pages: Readonly<Record<string, PageEntry>> = {
     description: caseStudiesHub.meta.description,
     trail: [valueLabStep],
   },
-  /* The study prints one date, "12 October 2026 · Published by Zoorik": published, and not changed since. */
+  /* The study prints one date, "12 October 2026 · Published by Zoorik": published. Its content last changed on the
+     sitemap's day (`caseStudyLastUpdated`), which a change moves and the printed day does not. */
   [routes.caseStudyCoralDevCluster]: {
     kind: "WebPage",
     name: titled(caseStudy.meta.title),
@@ -595,11 +629,12 @@ const pages: Readonly<Record<string, PageEntry>> = {
     article: {
       headline: studyHeadline,
       published: studyDate,
-      modified: studyDate,
+      modified: studyModified,
       image: cardFor(routes.caseStudyCoralDevCluster),
     },
   },
-  /* The Amoeba study prints one date, "19 October 2026 · Published by Zoorik": published, and not changed since. */
+  /* The Amoeba study prints one date, "19 October 2026 · Published by Zoorik": published. Its content last changed on
+     the sitemap's day (`amoebaStudyLastUpdated`), as above. */
   [routes.caseStudyAmoebaLabVms]: {
     kind: "WebPage",
     name: titled(amoebaStudy.meta.title),
@@ -609,7 +644,7 @@ const pages: Readonly<Record<string, PageEntry>> = {
     article: {
       headline: amoebaStudyHeadline,
       published: amoebaStudyDate,
-      modified: amoebaStudyDate,
+      modified: amoebaStudyModified,
       image: cardFor(routes.caseStudyAmoebaLabVms),
     },
   },
@@ -724,12 +759,15 @@ export function pageStructuredData(path: string) {
   const url = pageUrl(path);
   const pageId = `${url}#webpage`;
   const trailId = `${url}#breadcrumb`;
-  const about =
+  const product =
     page.about === "organization"
       ? ref(organizationId)
       : page.about
         ? ref(appId(page.about))
         : undefined;
+  /* A Learn article is about its own topic and mentions its product; every other page is about its product. */
+  const about = page.subject ? { "@type": "Thing", name: page.subject } : product;
+  const mentions = page.subject ? product : undefined;
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -744,6 +782,7 @@ export function pageStructuredData(path: string) {
         isPartOf: ref(websiteId),
         ...(page.trail.length > 0 ? { breadcrumb: ref(trailId) } : {}),
         ...(about ? { about } : {}),
+        ...(mentions ? { mentions } : {}),
         ...(page.kind === "AboutPage" ? { mainEntity: ref(organizationId) } : {}),
         /* A glossary term's page carries its days, as its Updated line prints the later one. */
         ...(page.term
@@ -784,11 +823,19 @@ export function pageStructuredData(path: string) {
                     ...(page.article.author.url ? { url: page.article.author.url } : {}),
                     ...(page.article.author.worksForZoorik
                       ? { worksFor: ref(organizationId) }
-                      : {}),
+                      : page.article.author.employer
+                        ? {
+                            worksFor: {
+                              "@type": "Organization",
+                              name: page.article.author.employer,
+                            },
+                          }
+                        : {}),
                   }
                 : ref(organizationId),
               publisher: ref(organizationId),
               ...(about ? { about } : {}),
+              ...(mentions ? { mentions } : {}),
               image: `${site.url}${page.article.image.url}`,
             },
           ]

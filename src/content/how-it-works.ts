@@ -7,7 +7,9 @@ import type { ProductId } from "@/content/products";
  * than anywhere else on the page, because the copy is not description: the
  * figures are worked examples (Coral's from our own cluster; Amoeba's the
  * one-pager's, at Azure list price), and the marks beside them are drawn to
- * those exact proportions.
+ * those exact proportions. The words moved off the mock's in the clean-page
+ * pass (owner, 1 Nov 2026): "Cost", never "Bill"; "btrfs pool"; "Resize without
+ * any downtime"; "See the idle capacity". Every figure is the mock's.
  *
  *   Coral   6 nodes, 77 workloads, 22 CPU held, 15.53 requested, 3.09 of real
  *           work, $608.76 a month becoming $194.88, which is 67.99% removed.
@@ -116,7 +118,7 @@ const amoebaSteps: readonly Step[] = [
     title: "Move onto one pool",
     note: "Services restart at the switch",
     description:
-      "The data mounts move onto one elastic pool sized to the data plus 20 percent, and the systemd services using those mounts are restarted. 1,000 GiB of data on a 1,208 GiB pool releases 840 GiB.",
+      "The data mounts move onto one btrfs pool sized to the data plus 20 percent, and the systemd services using those mounts are restarted. 1,000 GiB of data on a 1,208 GiB pool releases 840 GiB.",
     mark: { kind: "rule", split: "48.83fr 10.16fr 41.02fr" },
     figure: {
       caption: "Moved onto one pool",
@@ -128,12 +130,12 @@ const amoebaSteps: readonly Step[] = [
   },
   {
     ordinal: "03",
-    title: "Resize online",
+    title: "Resize without any downtime",
     description:
-      "The pool expands and shrinks online, without unmounting. At Azure list price in East US the worked example goes from $292.88 a month to $97.00, 66.88 percent less.",
+      "The pool expands and shrinks while it stays mounted. At Azure list price in East US the worked example goes from $292.88 a month to $97.00, 66.88 percent less.",
     mark: { kind: "donut", keep: "33.12%" },
     figure: {
-      caption: "Bill at list price",
+      caption: "Cost at list price",
       value: "$97.00",
       unit: "/mo",
       sub: "down from $292.88 /mo",
@@ -159,7 +161,7 @@ const coralSteps: readonly Step[] = [
   },
   {
     ordinal: "02",
-    title: "See the waste",
+    title: "See the idle capacity",
     description:
       "Every node, workload and volume, priced. The gap between what you hold and what runs: 22 CPU held, and 3.09 CPU carrying the real work.",
     mark: { kind: "rule" },
@@ -178,7 +180,7 @@ const coralSteps: readonly Step[] = [
       "Capacity moves to match demand and keeps moving. In this cluster $608.76 a month on 22 CPU becomes $194.88 on 16.",
     mark: { kind: "donut" },
     figure: {
-      caption: "Bill at the optimum",
+      caption: "Cost at the optimum",
       value: "$194.88",
       unit: "/mo",
       sub: "down from $608.76 /mo",

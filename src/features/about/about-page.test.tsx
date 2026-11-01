@@ -59,7 +59,7 @@ describe("/about", () => {
     expect(text(h1)).toBe("About Zoorik");
     expect(h1.querySelector('span[translate="no"]')).toHaveTextContent("Zoorik");
     expect(text(hero.querySelector(".doc-deck"))).toBe(
-      "We build Coral and Amoeba to reduce your cloud bill, autonomously, without any downtime.",
+      "We build Coral and Amoeba to reduce your cloud cost, autonomously, without any downtime.",
     );
     expect(hero.querySelectorAll('.doc-deck span[translate="no"]')).toHaveLength(2);
   });
@@ -106,8 +106,6 @@ describe("/about", () => {
       "Follow us",
       "Published on",
       "Zoorik on the web",
-      "Find your own number",
-      "Talk to the builders",
     ]);
   });
 
@@ -223,7 +221,7 @@ describe("/about", () => {
         "2026-10-12",
         "12 Oct 2026",
         "Value Lab: −58% on our own cluster",
-        "Coral reduced our own AKS development cluster’s machine bill from $368.65 to $154.76 a month in eight days. Read the case study.",
+        "Coral reduced our own AKS development cluster’s machine cost from $368.65 to $154.76 a month in eight days. Read the Coral Value Lab study.",
       ],
       [
         "2026-10-16",
@@ -251,7 +249,7 @@ describe("/about", () => {
       }),
     ).toEqual([
       null,
-      ["Read the case study", routes.caseStudyCoralDevCluster, null],
+      ["Read the Coral Value Lab study", routes.caseStudyCoralDevCluster, null],
       ["See open source", routes.openSource, null],
       ["Run it", routes.assessment, null],
       null,
@@ -299,8 +297,8 @@ describe("/about", () => {
     expect(about.what.lede).toMatch(/^Zoorik reduces cloud cost, autonomously\. /);
   });
 
-  it("moves its sitemap date to the day Bluesky and Substack joined the social row", () => {
-    expect(aboutLastUpdated).toBe("29 October 2026");
+  it("moves its sitemap date to the day its words were cleaned (1 Nov 2026)", () => {
+    expect(aboutLastUpdated).toBe("1 November 2026");
   });
 
   it("puts the two stores as buttons under Available on, naming no product", () => {

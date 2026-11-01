@@ -86,15 +86,15 @@ const months = [
 export const eventsPage = {
   /** The page's `<title>` (through the site's "%s | Zoorik" template) and description. */
   meta: {
-    title: "Kubernetes, FinOps and cloud cost events",
+    title: "Kubernetes conferences and FinOps events",
     description:
-      "Conferences and community days on Kubernetes, FinOps, cloud cost and block storage, with dates, places and a link to each event's own page.",
+      "Kubernetes conferences such as KubeCon, FinOps conferences such as FinOps X, and cloud cost and storage events, with dates, places and each event’s page.",
   },
   hero: {
-    title: "Cloud cost, FinOps and Kubernetes events",
+    title: "Kubernetes conferences, FinOps and cloud cost events",
     /** Its last sentence names the day the list was last checked (`eventsListUpdated`). */
     deck: (updated: string) =>
-      `Conferences and community days worth the trip, with dates, places and each event’s own page. Updated ${updated}.`,
+      `Kubernetes conferences, FinOps events and community days worth the trip, with dates, places and each event’s own page. Updated ${updated}.`,
   },
   /** The search box and the two date menus above the filters. */
   find: {
@@ -157,7 +157,7 @@ export const eventsPage = {
 } as const;
 
 /* ─── THE LIST ─────────────────────────────────────────────────────────────────────────────────────────────────
- * Generated from the radar's list (76 events, each checked twice on its organizer's page), carrying its public
+ * Generated from the radar's list (75 events, each checked twice on its organizer's page), carrying its public
  * fields only: never its prices (`price_note`), sources, check notes or dropped events. The weekly radar refreshes
  * it: replace the list and `eventsListUpdated` with the new file's, and move `eventsLastUpdated` to the same day. Its
  * order does not matter: the page sorts by date, then by name, and leaves out what has ended. `organizerUrl` is the
@@ -323,7 +323,7 @@ export const events: readonly EventEntry[] = [
     description:
       "HashiCorp's conference on infrastructure automation, now held as part of IBM TechXchange. Sessions, labs and certification testing cover Terraform, Vault and related tooling.",
     whyItMatters:
-      "Infrastructure-as-code teams decide how clusters and node pools are provisioned, which drives much of the cloud bill.",
+      "Infrastructure-as-code teams decide how clusters and node pools are provisioned, which drives much of the cloud cost.",
     officialUrl: "https://www.hashicorp.com/conferences/hashiconf",
     organizerUrl: "https://www.hashicorp.com",
     cfp: "",
@@ -616,7 +616,7 @@ export const events: readonly EventEntry[] = [
     dateStatus: "confirmed",
     city: "Las Vegas",
     country: "United States",
-    venue: "Several venues in Las Vegas (see the official venues and hotels page)",
+    venue: "Several venues in Las Vegas",
     format: "in person",
     description:
       "AWS's largest annual conference, with keynotes, service launches, an expo and over 2,200 sessions across five days.",
@@ -639,8 +639,7 @@ export const events: readonly EventEntry[] = [
     format: "hybrid",
     description:
       "A commercial conference on CI/CD, Kubernetes, platform engineering and DevSecOps: two conference days (1 to 2 Dec) surrounded by workshop, AI platform engineering and bootcamp days. On-site and remote tickets are offered.",
-    whyItMatters:
-      "Its Kubernetes and cloud-platform tracks draw the DACH teams that run and pay for clusters.",
+    whyItMatters: "Its Kubernetes and cloud-platform tracks draw the DACH teams that run clusters.",
     officialUrl: "https://devopscon.io/munich/",
     organizerUrl: "https://devopscon.io",
     cfp: "",
@@ -699,8 +698,7 @@ export const events: readonly EventEntry[] = [
     format: "in person",
     description:
       "Gartner's annual conference for infrastructure and operations leaders, with analyst-led sessions on cloud and hybrid infrastructure, operations, resilience and AI. Optimizing cost and value is one of its featured themes.",
-    whyItMatters:
-      "Reaches the infrastructure and cloud leaders who own infrastructure budgets and buy cost tooling.",
+    whyItMatters: "For infrastructure and cloud leaders who own infrastructure budgets.",
     officialUrl: "https://www.gartner.com/en/conferences/na/infrastructure-operations-cloud-us",
     organizerUrl: "https://www.gartner.com",
     cfp: "",
@@ -719,7 +717,7 @@ export const events: readonly EventEntry[] = [
     format: "in person",
     description:
       "A two-day community event on cloud native projects for French-speaking Switzerland: a warm-up workshop day on 9 December, then the main conference day on 10 December at the CERN Science Gateway. Talks are in French and English.",
-    whyItMatters: "Reaches Swiss enterprise and research platform teams in one place.",
+    whyItMatters: "Meet Swiss enterprise and research platform teams in one place.",
     officialUrl:
       "https://community2.cncf.io/events/details/cncf-kcd-suisse-romande-presents-kcd-suisse-romande-2026/",
     organizerUrl: "https://cloud-native-romandy.ch",
@@ -739,7 +737,7 @@ export const events: readonly EventEntry[] = [
     format: "in person",
     description:
       "A first Kubernetes Community Day in Provence, with sessions in French and English on Kubernetes and cloud native practice.",
-    whyItMatters: "Community access to French platform and DevOps teams outside Paris.",
+    whyItMatters: "Meet French platform and DevOps teams outside Paris.",
     officialUrl:
       "https://community2.cncf.io/events/details/cncf-kcd-provence-presents-kcd-provence-2026/",
     organizerUrl: "https://community2.cncf.io/kcd-provence/",
@@ -759,8 +757,7 @@ export const events: readonly EventEntry[] = [
     format: "virtual",
     description:
       "A one-hour virtual call for the India FinOps community looking back at 2026 and ahead to 2027, from 11:00 AM to 12:00 PM IST. It is open to approved FinOps Foundation practitioners or members.",
-    whyItMatters:
-      "Shows what Indian FinOps teams plan to focus on in 2027, useful input for articles and outreach.",
+    whyItMatters: "Shows what Indian FinOps teams plan to focus on in 2027.",
     officialUrl: "https://community.finops.org/meeting/2026-year-end-recap-and-vision-for-2027",
     organizerUrl: "https://www.finops.org",
     cfp: "",
@@ -775,11 +772,11 @@ export const events: readonly EventEntry[] = [
     dateStatus: "confirmed",
     city: "Miami",
     country: "United States",
-    venue: "Convention Center, Miami, FL 33142 (as listed on the page)",
+    venue: "Convention Center, Miami, FL 33142",
     format: "in person",
     description:
       "A one-day Kubernetes Community Day in Miami covering Kubernetes, platform engineering, DevOps, AI infrastructure, security, observability and FinOps.",
-    whyItMatters: "Lists FinOps among its topics, so cost talks have a natural home there.",
+    whyItMatters: "Lists FinOps among its topics.",
     officialUrl:
       "https://community2.cncf.io/events/details/cncf-kcd-florida-presents-kcd-florida-2026-miami/",
     organizerUrl: "https://community2.cncf.io/kcd-florida/",
@@ -799,7 +796,7 @@ export const events: readonly EventEntry[] = [
     format: "in person",
     description: "A one-day devopsdays conference for Israel's DevOps and cloud community.",
     whyItMatters:
-      "A dense cloud native community with many cloud-first startups that watch their infrastructure bills closely.",
+      "A dense cloud native community with many cloud-first startups that watch their infrastructure cost closely.",
     officialUrl: "https://devopsdays.org/events/2026-tel-aviv/welcome/",
     organizerUrl: "https://devopsdays.org",
     cfp: "",
@@ -857,7 +854,7 @@ export const events: readonly EventEntry[] = [
     format: "virtual",
     description:
       "A one-day online conference on FinOps for engineers and practitioners. Talks premiere on YouTube on the day and stay available on demand.",
-    whyItMatters: "A free, cost-focused online stage that matches Zoorik's topic directly.",
+    whyItMatters: "A free online conference on FinOps for engineers and practitioners.",
     officialUrl: "https://www.conf42.com/finops2027",
     organizerUrl: "https://www.conf42.com",
     cfp: "Open; no deadline stated",
@@ -957,8 +954,7 @@ export const events: readonly EventEntry[] = [
     format: "in person",
     description:
       "A peer-reviewed research conference on storage systems, from devices to distributed storage and data management, with papers from academia and industry.",
-    whyItMatters:
-      "Where new ideas in block and distributed storage first appear; useful background for storage cost work and technical articles.",
+    whyItMatters: "Where new ideas in block and distributed storage first appear.",
     officialUrl: "https://www.usenix.org/conference/fast27",
     organizerUrl: "https://www.usenix.org",
     cfp: "Closed (fall paper submissions were due 15 Sep 2026)",
@@ -981,7 +977,7 @@ export const events: readonly EventEntry[] = [
       "Bay Area platform teams set the defaults for how workloads are sized and scheduled on Kubernetes.",
     officialUrl: "https://sanfrancisco.platformcon.com/",
     organizerUrl: "https://platformcon.com",
-    cfp: "Call for proposals linked; status and deadline not stated",
+    cfp: "",
     tickets: "Paid",
   },
   {
@@ -1017,8 +1013,7 @@ export const events: readonly EventEntry[] = [
     format: "in person",
     description:
       "A two-day community conference held the weekend before KubeCon Europe, giving a stage to strong talks that did not make the KubeCon programme.",
-    whyItMatters:
-      "A low-cost way to reach the KubeCon crowd early and to speak on Kubernetes cost topics.",
+    whyItMatters: "Community talks the weekend before KubeCon Europe, at low cost.",
     officialUrl: "https://cloud-native.rejekts.io/",
     organizerUrl: "https://cloud-native.rejekts.io",
     cfp: "Opens 7 Dec 2026, closes 3 Jan 2027",
@@ -1038,7 +1033,7 @@ export const events: readonly EventEntry[] = [
     description:
       "CNCF's main European conference for Kubernetes and cloud native technology. Keynotes, breakouts and the solutions showcase run 16 to 18 March; Monday 15 March holds co-located events such as ArgoCon, Observability Day, OpenTofu Day and Platform Engineering Day.",
     whyItMatters:
-      "The largest Kubernetes event of the year and the main European place to meet platform teams, maintainers and buyers working on cluster efficiency and cost.",
+      "The largest Kubernetes event of the year and the main European place to meet platform teams and maintainers working on cluster efficiency and cost.",
     officialUrl: "https://events.linuxfoundation.org/kubecon-cloudnativecon-europe/",
     organizerUrl: "https://www.cncf.io",
     cfp: "Main CFP closed 11 Oct 2026; speaker notifications 7 Dec 2026, schedule 9 Dec 2026",
@@ -1095,7 +1090,7 @@ export const events: readonly EventEntry[] = [
     format: "virtual",
     description:
       "A one-day online conference on cloud native engineering. Talks premiere on YouTube on the day and stay available on demand.",
-    whyItMatters: "A free online slot for publishing a Kubernetes cost talk to a global audience.",
+    whyItMatters: "A free online conference whose talks stay available on demand.",
     officialUrl: "https://www.conf42.com/cloud2027",
     organizerUrl: "https://www.conf42.com",
     cfp: "Open; no deadline stated",
@@ -1115,7 +1110,7 @@ export const events: readonly EventEntry[] = [
     description:
       "USENIX's conference for site reliability engineers, on reliability, systems engineering and running large production systems.",
     whyItMatters:
-      "SREs own capacity planning and autoscaling, the levers that set Kubernetes spend.",
+      "SREs own capacity planning and autoscaling, the levers that set Kubernetes cost.",
     officialUrl: "https://www.usenix.org/conference/srecon27americas",
     organizerUrl: "https://www.usenix.org",
     cfp: "Open: talk proposals due 19 Nov 2026, 11:59 pm PT; notifications 12 Dec 2026; lightning-talk call opens January 2027",
@@ -1134,31 +1129,12 @@ export const events: readonly EventEntry[] = [
     format: "in person",
     description:
       "A Kubernetes Community Day co-located with DC State of the Stack (formerly DevOpsDays DC), moved from September 2026 to this date.",
-    whyItMatters: "Reaches public sector and enterprise platform teams around Washington.",
+    whyItMatters: "Meet public sector and enterprise platform teams around Washington.",
     officialUrl:
       "https://community2.cncf.io/events/details/cncf-kcd-washington-dc-presents-kcd-washington-dc-1/",
     organizerUrl: "https://community2.cncf.io/kcd-washington-dc/",
-    cfp: "Not stated on the page",
-    tickets: "Paid",
-  },
-  {
-    name: "Google Cloud Next 2027",
-    organizer: "Google Cloud",
-    topic: "cloud-provider",
-    startDate: "2027-04-13",
-    endDate: "2027-04-15",
-    dateStatus: "confirmed",
-    city: "Las Vegas",
-    country: "United States",
-    venue: "Mandalay Bay Convention Center",
-    format: "in person",
-    description:
-      "Google Cloud's flagship annual conference, with keynotes, product launches and technical sessions on Google Cloud infrastructure, data and AI. Some programming starts on 12 April; registration has not opened yet.",
-    whyItMatters: "GKE and Google Cloud pricing and infrastructure launches are announced here.",
-    officialUrl: "https://www.googlecloudevents.com/next-vegas",
-    organizerUrl: "https://cloud.google.com",
     cfp: "",
-    tickets: "",
+    tickets: "Paid",
   },
   {
     name: "DevOpsDays Zurich 2027",
@@ -1174,7 +1150,7 @@ export const events: readonly EventEntry[] = [
     description:
       "A two-day devopsdays conference for the Swiss DevOps community, with talks on delivery, operations and culture.",
     whyItMatters:
-      "Reaches platform and operations engineers in Switzerland's finance and enterprise sector.",
+      "Meet platform and operations engineers in Switzerland's finance and enterprise sector.",
     officialUrl: "https://devopsdays.org/events/2027-zurich/welcome/",
     organizerUrl: "https://devopsdays.ch",
     cfp: "Open via Sessionize; deadline not stated",
@@ -1213,8 +1189,7 @@ export const events: readonly EventEntry[] = [
     format: "in person",
     description:
       "A Kubernetes Community Day for the Hyderabad cloud native community. The exact date and venue are not published yet.",
-    whyItMatters:
-      "Hyderabad has a large base of cloud and platform engineers; a strong India community event to attend or speak at.",
+    whyItMatters: "Hyderabad has a large base of cloud and platform engineers.",
     officialUrl: "https://kcdhyd.in/",
     organizerUrl: "https://community2.cncf.io/kcd-hyderabad/",
     cfp: "",
@@ -1271,7 +1246,7 @@ export const events: readonly EventEntry[] = [
     venue: "",
     format: "in person",
     description:
-      "The Linux Foundation's main North American conference for open source developers and technologists, covering Linux, cloud, security and AI. The page is currently a save-the-date.",
+      "The Linux Foundation's main North American conference for open source developers and technologists, covering Linux, cloud, security and AI.",
     whyItMatters:
       "A large vendor-neutral open source audience, including Linux, storage and cloud infrastructure maintainers.",
     officialUrl: "https://events.linuxfoundation.org/open-source-summit-north-america/",
@@ -1292,7 +1267,7 @@ export const events: readonly EventEntry[] = [
     format: "in person",
     description:
       "A Kubernetes Community Day for the Finnish cloud native community. Date and venue are not published yet.",
-    whyItMatters: "Community access to Nordic platform teams.",
+    whyItMatters: "Meet Nordic platform teams.",
     officialUrl: "https://community2.cncf.io/kcd-helsinki/",
     organizerUrl: "https://community2.cncf.io/kcd-helsinki/",
     cfp: "",
@@ -1311,7 +1286,7 @@ export const events: readonly EventEntry[] = [
     format: "in person",
     description:
       "A Kubernetes Community Day shared by the Czech and Slovak communities; recent editions were in Bratislava (2025) and Prague (2026). City, date and venue for 2027 are not published yet.",
-    whyItMatters: "Community-scale access to Central European Kubernetes users.",
+    whyItMatters: "Meet Central European Kubernetes users.",
     officialUrl: "https://community2.cncf.io/kcd-czech-slovak/",
     organizerUrl: "https://community2.cncf.io/kcd-czech-slovak/",
     cfp: "",
@@ -1349,8 +1324,7 @@ export const events: readonly EventEntry[] = [
     format: "in person",
     description:
       "A one-day community event on DevOps and cloud native for the French-speaking community, built around experience reports.",
-    whyItMatters:
-      "The main French cloud native community event, useful for reaching French platform teams.",
+    whyItMatters: "The main French cloud native community event.",
     officialUrl: "https://www.cloudnativedays.fr/",
     organizerUrl: "https://www.cloudnativedays.fr",
     cfp: "Not yet open",
@@ -1370,7 +1344,7 @@ export const events: readonly EventEntry[] = [
     description:
       "The FinOps Foundation's flagship conference (FinOps X), now held together with Tokenomicon on AI economics. A pre-conference day with the FOCUS User Conference and ITAM and ITFM/TBM tracks comes first, then two main days of keynotes, breakouts and an expo; the organizer states 3,000+ attendees.",
     whyItMatters:
-      "The largest vendor-neutral FinOps conference, with buyers, practitioners and FOCUS spec contributors; its call for talks is open.",
+      "The largest vendor-neutral FinOps conference, with practitioners and FOCUS spec contributors.",
     officialUrl: "https://www.tokenomicon.com/us/",
     organizerUrl: "https://www.tokeneconomics.com",
     cfp: "Open; submissions close 31 Dec 2026",
@@ -1424,7 +1398,7 @@ export const events: readonly EventEntry[] = [
     dateStatus: "confirmed",
     city: "London",
     country: "United Kingdom",
-    venue: "St Paul's, London (building not named)",
+    venue: "St Paul's, London",
     format: "in person",
     description:
       "An in-person day during PlatformCon's June Flagship Week, with keynotes, talks, demos and hands-on platform engineering workshops.",
@@ -1444,12 +1418,12 @@ export const events: readonly EventEntry[] = [
     dateStatus: "confirmed",
     city: "New York",
     country: "United States",
-    venue: "Hudson Yards, New York (exact venue not named)",
+    venue: "Hudson Yards, New York",
     format: "in person",
     description:
       "PlatformCon's New York in-person day during Flagship Week, with keynotes, talks, demos and workshops on platform engineering.",
     whyItMatters:
-      "Brings together US enterprise platform teams, many from large companies with big cloud bills.",
+      "Brings together US enterprise platform teams, many from large companies with high cloud cost.",
     officialUrl: "https://platformcon.com/live-day-nyc",
     organizerUrl: "https://platformcon.com",
     cfp: "",
@@ -1464,12 +1438,11 @@ export const events: readonly EventEntry[] = [
     dateStatus: "announced month",
     city: "",
     country: "",
-    venue: "Online (streamed live, on demand afterwards)",
+    venue: "Online, with in-person days in London and New York",
     format: "hybrid",
     description:
       "PlatformCon's main annual event: a week of platform engineering talks streamed live and free, anchored by in-person days in London and New York.",
-    whyItMatters:
-      "A large free platform engineering event that a whole team can follow, and a good source of article topics.",
+    whyItMatters: "A large free platform engineering event that a whole team can follow.",
     officialUrl: "https://platformcon.com/",
     organizerUrl: "https://platformcon.com",
     cfp: "",
@@ -1488,7 +1461,7 @@ export const events: readonly EventEntry[] = [
     format: "in person",
     description:
       "A Kubernetes Community Day for the New York cloud native community. Date and venue are not published yet.",
-    whyItMatters: "Reaches finance and enterprise platform teams with large cloud bills.",
+    whyItMatters: "Meet finance and enterprise platform teams with high cloud cost.",
     officialUrl: "https://community2.cncf.io/kcd-new-york/",
     organizerUrl: "https://community2.cncf.io/kcd-new-york/",
     cfp: "",
@@ -1507,8 +1480,7 @@ export const events: readonly EventEntry[] = [
     format: "in person",
     description:
       "A Kubernetes Community Day for the Bay Area cloud native community. Date and venue are not published yet.",
-    whyItMatters:
-      "Close to many cloud native startups and vendors, useful for networking and partnerships.",
+    whyItMatters: "Close to many cloud native startups.",
     officialUrl: "https://community2.cncf.io/kcd-sf-bay-area/",
     organizerUrl: "https://community2.cncf.io/kcd-sf-bay-area/",
     cfp: "",
@@ -1551,7 +1523,7 @@ export const events: readonly EventEntry[] = [
       "A large Midwest crowd of operations and platform engineers who run enterprise cloud workloads.",
     officialUrl: "https://devopsdays.org/events/2027-chicago/welcome/",
     organizerUrl: "https://devopsdays.org",
-    cfp: "Not yet open (call for proposals TBD)",
+    cfp: "Not yet open",
     tickets: "",
   },
   {
@@ -1566,7 +1538,7 @@ export const events: readonly EventEntry[] = [
     venue: "",
     format: "in person",
     description:
-      "The Japan edition of CNCF's Kubernetes and cloud native conference, two days for the Japanese and wider Asia-Pacific community. The page is currently a save-the-date.",
+      "The Japan edition of CNCF's Kubernetes and cloud native conference, two days for the Japanese and wider Asia-Pacific community.",
     whyItMatters:
       "The main Kubernetes conference in Japan, for meeting Asia-Pacific platform teams.",
     officialUrl: "https://events.linuxfoundation.org/kubecon-cloudnativecon-japan/",
@@ -1586,7 +1558,7 @@ export const events: readonly EventEntry[] = [
     venue: "",
     format: "in person",
     description:
-      "The Linux Foundation's European conference for open source developers and technologists, with Linux, cloud, security and AI tracks. The page is currently a save-the-date.",
+      "The Linux Foundation's European conference for open source developers and technologists, with Linux, cloud, security and AI tracks.",
     whyItMatters:
       "The main European open source infrastructure event, useful for meeting Linux storage and cloud platform contributors.",
     officialUrl: "https://events.linuxfoundation.org/open-source-summit-europe-2027/",
@@ -1625,9 +1597,8 @@ export const events: readonly EventEntry[] = [
     country: "South Korea",
     venue: "",
     format: "in person",
-    description:
-      "A Linux Foundation open source conference for the Korean ecosystem. The page is currently a save-the-date.",
-    whyItMatters: "Reaches the Korean open source and cloud infrastructure community in one place.",
+    description: "A Linux Foundation open source conference for the Korean ecosystem.",
+    whyItMatters: "Meet the Korean open source and cloud infrastructure community in one place.",
     officialUrl: "https://events.linuxfoundation.org/open-source-summit-korea/",
     organizerUrl: "https://www.linuxfoundation.org",
     cfp: "Not yet announced",
@@ -1665,9 +1636,9 @@ export const events: readonly EventEntry[] = [
     venue: "",
     format: "in person",
     description:
-      "The 2027 North American edition of CNCF's flagship Kubernetes and cloud native conference. The page is currently a save-the-date with sponsorship details.",
+      "The 2027 North American edition of CNCF's flagship Kubernetes and cloud native conference.",
     whyItMatters:
-      "The year-end North American meeting point for Kubernetes operators, maintainers and buyers of optimization tooling.",
+      "The year-end North American meeting point for Kubernetes operators and maintainers.",
     officialUrl: "https://events.linuxfoundation.org/kubecon-cloudnativecon-north-america-2027/",
     organizerUrl: "https://www.cncf.io",
     cfp: "Not yet announced",

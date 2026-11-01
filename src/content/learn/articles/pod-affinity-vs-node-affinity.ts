@@ -6,7 +6,7 @@ import { figure as figure3 } from "@/features/learn/figures/pod-affinity-vs-node
 export const article: Article = {
   slug: "pod-affinity-vs-node-affinity",
   title: "Pod affinity vs node affinity: what each decides",
-  meta: "Pod affinity vs node affinity: node affinity reads node labels, pod affinity reads the pods already running. Hard vs soft rules, and how they hold nodes.",
+  meta: "Pod affinity vs node affinity: node affinity reads node labels, pod affinity and anti-affinity read running pods. Hard vs soft rules, and how they hold nodes.",
   h1: "Pod affinity vs node affinity: what each rule decides",
   deck: "What each rule matches, when it’s hard or soft, and how a strict rule keeps a node, and its cost, in the cluster.",
   card: "Node affinity reads node labels, pod affinity reads other pods. Hard and soft rules, and the nodes they hold.",
@@ -159,6 +159,11 @@ export const article: Article = {
           kind: "p",
           text: "If a pod sets both nodeSelector and node affinity, a node has to satisfy both.",
         },
+        {
+          kind: "h3",
+          id: "kubernetes-node-affinity-example-one-pool-one",
+          title: "Kubernetes node affinity example: one pool, one preferred zone",
+        },
         { kind: "p", text: "List your nodes’ labels first:" },
         { kind: "code", lang: "bash", code: "kubectl get nodes --show-labels" },
         {
@@ -218,7 +223,7 @@ export const article: Article = {
     },
     {
       id: "pod-affinity-and-anti-affinity-place-a",
-      title: "Pod affinity and anti-affinity place a pod next to, or away from, other pods",
+      title: "Pod affinity and pod anti-affinity place a pod next to, or away from, other pods",
       blocks: [
         {
           kind: "p",
@@ -549,7 +554,7 @@ export const article: Article = {
             ],
             [
               { b: "The limits." },
-              " It respects PodDisruptionBudgets, do-not-disrupt and your autoscaler’s minimum pool size. Every pool keeps at least one node.",
+              " It respects PodDisruptionBudgets and do-not-disrupt. By default, Coral may reduce a pool’s minimum when that minimum alone keeps a node it has emptied, and disconnect puts the old minimum back. Every pool keeps at least one node.",
             ],
             [
               { b: "The drain." },

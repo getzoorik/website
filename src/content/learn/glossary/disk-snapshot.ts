@@ -4,18 +4,18 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/disk-snapsh
 export const term: GlossaryTerm = {
   slug: "disk-snapshot",
   term: "Disk snapshot (Azure managed disk and EBS)",
-  title: "What is a disk snapshot in Azure and AWS?",
-  meta: "A disk snapshot in Azure or AWS is a point-in-time copy of one disk. See how Azure and EBS snapshots work, what one covers in a VM, and how each is charged.",
-  h1: "What is a disk snapshot in Azure and AWS?",
-  card: "A disk snapshot in Azure or AWS is a point-in-time copy of one disk.",
+  title: "What is an AWS EBS snapshot or Azure disk snapshot?",
+  meta: "An EBS snapshot in AWS or a disk snapshot in Azure is a point-in-time copy of one disk. See how each works and is charged, and what an Azure VM snapshot covers.",
+  h1: "What is an AWS EBS snapshot or Azure disk snapshot?",
+  card: "An EBS snapshot in AWS, or a disk snapshot in Azure, is a point-in-time copy of one disk.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-26",
-  updated: "2026-10-27",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
-      text: "A disk snapshot in Azure or AWS is a point-in-time copy of one disk. You can keep it as a backup, or create a new disk from it.",
+      text: "An EBS snapshot in AWS, or a disk snapshot in Azure, is a point-in-time copy of one disk. You can keep it as a backup, or create a new disk from it.",
     },
   ],
   sections: [
@@ -35,7 +35,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "snapshots-of-an-azure-vm",
-      title: "Snapshots of an Azure VM",
+      title: "Azure VM snapshots: one snapshot per disk",
       blocks: [
         {
           kind: "p",
@@ -50,7 +50,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why disk snapshots matter for your cloud cost",
       blocks: [
         {
           kind: "ul",
@@ -76,7 +76,7 @@ export const term: GlossaryTerm = {
           text: [
             "Once the switch to the pool is checked, Amoeba snapshots each old disk and deletes the disk. On Azure it’s an ",
             { a: "incremental snapshot", href: "/learn/azure-disk-snapshot-cost" },
-            ", and on AWS an EBS snapshot. Amoeba keeps each snapshot for a few days, then deletes it too.",
+            ", and on AWS an EBS snapshot. Amoeba keeps each snapshot for 7 days, then deletes it too.",
           ],
         },
         {

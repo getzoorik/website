@@ -93,7 +93,7 @@ export const cin = "U62011KA2026PTC228102";
  * page does not print it. Whoever changes /about's content moves this to that
  * day in the same PR; never the build's date.
  */
-export const aboutLastUpdated = "29 October 2026";
+export const aboutLastUpdated = "1 November 2026";
 
 /** The year Zoorik Private Limited was incorporated: the Company facts' and the first milestone's. */
 const incorporated = "2026";
@@ -139,7 +139,7 @@ const programs = { id: "programs", title: "Programs" } as const;
 const inception = announced(`${routes.about}#${programs.id}`);
 
 /* The case study's own figures: its label (the first part of its kicker, "Value Lab"), its headline figure
-   (−58%), the bill on the day Coral was connected and today's, and the day it was published. */
+   (−58%), the machine cost on the day Coral was connected and today's, and the day it was published. */
 const studyLabel = caseStudy.hero.kicker.split(" · ")[0]!;
 const studySteps = caseStudy.result.costs.steps;
 const studyBefore = studySteps[0]!.label;
@@ -154,7 +154,7 @@ export const about = {
   },
   hero: {
     title: "About Zoorik",
-    deck: "We build Coral and Amoeba to reduce your cloud bill, autonomously, without any downtime.",
+    deck: "We build Coral and Amoeba to reduce your cloud cost, autonomously, without any downtime.",
   },
   what: {
     section: { id: "what-we-build", title: "What we build" },
@@ -221,8 +221,11 @@ export const about = {
       {
         date: day(caseStudy.band.date),
         title: `${studyLabel}: ${caseStudy.band.stats[0].value} on our own cluster`,
-        line: `${products.coral.name} reduced our own ${platformLabel.aks} development cluster’s machine bill from ${studyBefore} to ${studyAfter} a month in eight days.`,
-        link: { text: "Read the case study", href: caseStudy.route },
+        line: `${products.coral.name} reduced our own ${platformLabel.aks} development cluster’s machine cost from ${studyBefore} to ${studyAfter} a month in eight days.`,
+        link: {
+          text: `Read the ${products.coral.name} ${studyLabel} study`,
+          href: caseStudy.route,
+        },
       },
       {
         date: dayOf(installs.date),

@@ -5,7 +5,7 @@ export const term: GlossaryTerm = {
   slug: "ebs-gp3",
   term: "gp3 (EBS General Purpose SSD)",
   title: "What is gp3 in AWS?",
-  meta: "gp3 in AWS is a General Purpose SSD type of EBS volume. See what every gp3 volume includes at any size, and how AWS charges for extra IOPS and throughput.",
+  meta: "gp3 in AWS is a General Purpose SSD type of EBS volume. See the IOPS and throughput every volume includes at any size, and how AWS charges for more.",
   h1: "What is gp3 in AWS?",
   card: "gp3 in AWS is a General Purpose SSD (solid-state drive) volume type in Amazon Elastic Block Store (EBS).",
   group: "block-storage",
@@ -21,7 +21,7 @@ export const term: GlossaryTerm = {
   sections: [
     {
       id: "what-a-gp3-ebs-volume-includes",
-      title: "What a gp3 EBS volume includes",
+      title: "gp3 IOPS and throughput: what every volume includes",
       blocks: [
         {
           kind: "p",
@@ -73,7 +73,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why gp3 matters for your cloud cost",
       blocks: [
         {
           kind: "p",

@@ -29,6 +29,7 @@ import {
   type CoralCloudPage,
 } from "@/content/cloud-pages";
 import { coralGuideSectionIds } from "@/content/coral-guide";
+import { coralInstall } from "@/content/coral-install";
 import { howItWorksSteps } from "@/content/how-it-works";
 import { findTerm, glossarySlugOf } from "@/content/learn/glossary";
 import { findArticle, learnSlugOf } from "@/content/learn/published";
@@ -76,9 +77,7 @@ interface Case {
 }
 
 const closing = (product: "coral" | "amoeba"): readonly (readonly [string, string])[] => [
-  [`read-${product}`, "Read more"],
-  ["assess", "Find your own number"],
-  ["assess", "Talk to the builders"],
+  [`read-${product}`, `${product === "coral" ? "Coral" : "Amoeba"} docs and guides`],
 ];
 
 const coralOrder = [
@@ -103,12 +102,12 @@ const cases: readonly (readonly [string, Case])[] = [
       content: aksCostOptimizationPage,
       title: "AKS cost optimization",
       description:
-        "AKS cost optimization with Coral: it rebalances your cluster, sizes pods to real use, and empties spare nodes for the Cluster Autoscaler or NAP to remove.",
+        "AKS cost optimization with Coral. Reduce AKS costs: Coral rebalances your Azure Kubernetes Service cluster, sizes pods to real use and empties spare nodes.",
       eyebrow: "Coral for AKS",
       chips: ["AKS"],
       order: coralOrder,
       h2s: [
-        ["about", "What Coral does on AKS"],
+        ["about", "How Coral reduces AKS costs"],
         ["how", "How it works on AKS"],
         ["setup", "What connect sets up on AKS"],
         ["works-with", "Works with"],
@@ -116,7 +115,7 @@ const cases: readonly (readonly [string, Case])[] = [
         ["questions", "Questions about Coral on AKS"],
         ...closing("coral"),
       ],
-      cards: ["Connect a cluster", "See the waste", "Optimize"],
+      cards: ["Connect a cluster", "See the idle capacity", "Optimize"],
       setupRows: 4,
       worksWith: [
         routes.coralWorksWithNodeAutoProvisioning,
@@ -143,6 +142,7 @@ const cases: readonly (readonly [string, Case])[] = [
         "/coral-faq",
         "/kubernetes-cost-optimization",
         "/learn/cluster-autoscaler-not-scaling-down",
+        "/eks-and-aks-pricing-calculator",
       ],
     },
   ],
@@ -154,12 +154,12 @@ const cases: readonly (readonly [string, Case])[] = [
       content: eksCostOptimizationPage,
       title: "EKS cost optimization",
       description:
-        "EKS cost optimization with Coral: it rebalances your cluster, sizes pods to real use, and empties spare nodes for Karpenter or the Cluster Autoscaler to remove.",
+        "EKS cost optimization with Coral: it rebalances your cluster to reduce EKS costs, sizes pods to real use, and its EKS node optimization empties spare nodes.",
       eyebrow: "Coral for EKS",
       chips: ["EKS"],
       order: coralOrder,
       h2s: [
-        ["about", "What Coral does on EKS"],
+        ["about", "How Coral reduces EKS costs"],
         ["how", "How it works on EKS"],
         ["setup", "What connect sets up on EKS"],
         ["works-with", "Works with"],
@@ -167,7 +167,7 @@ const cases: readonly (readonly [string, Case])[] = [
         ["questions", "Questions about Coral on EKS"],
         ...closing("coral"),
       ],
-      cards: ["Connect a cluster", "See the waste", "Optimize"],
+      cards: ["Connect a cluster", "See the idle capacity", "Optimize"],
       setupRows: 4,
       worksWith: [
         routes.coralWorksWithKarpenter,
@@ -202,12 +202,12 @@ const cases: readonly (readonly [string, Case])[] = [
       content: azureManagedDiskCostOptimizationPage,
       title: "Azure managed disk cost optimization",
       description:
-        "Reduce Azure managed disk cost on Windows and Linux VMs. Amoeba moves data disks onto one pool sized to your data, then grows and shrinks it with your data.",
+        "Azure managed disk cost optimization, the disk side of Azure storage cost optimization: reduce Azure disk costs on Windows and Linux VMs, autonomously.",
       eyebrow: "Amoeba for Azure",
       chips: ["Azure", "Windows", "Linux"],
       order: amoebaOrder,
       h2s: [
-        ["about", "What Amoeba does on Azure"],
+        ["about", "How Amoeba reduces Azure disk cost"],
         ["how", "How it works on Azure"],
         ["setup", "What onboarding sets up on Azure"],
         ["needs", "What your VMs need"],
@@ -229,7 +229,7 @@ const cases: readonly (readonly [string, Case])[] = [
       readMore: [
         "/amoeba-guide",
         "/amoeba-faq",
-        "/learn/azure-disk-cost-optimization",
+        "/learn/azure-disk-reservations",
         "/learn/shrink-azure-managed-disk",
       ],
     },
@@ -242,7 +242,7 @@ const cases: readonly (readonly [string, Case])[] = [
       content: ebsCostOptimizationPage,
       title: "EBS cost optimization",
       description:
-        "Reduce Amazon EBS cost on EC2 instances. Amoeba moves data volumes onto one pool of gp3 volumes sized to your data, then grows and shrinks it with your data.",
+        "EBS cost optimization on EC2 instances. Reduce EBS costs: Amoeba moves data volumes onto one pool of gp3 volumes sized to your data, then grows and shrinks it.",
       eyebrow: "Amoeba for AWS",
       chips: ["AWS", "Windows", "Linux"],
       order: amoebaOrder,
@@ -265,6 +265,8 @@ const cases: readonly (readonly [string, Case])[] = [
         ["do-my-services-on-ec2-go-down", "Do my services on EC2 go down during the move?"],
         ["do-i-pay-for-both-sets-of", "Do I pay for both sets of volumes during the move?"],
         ["how-is-the-saving-worked-out-on", "How is the saving worked out on AWS?"],
+        ["do-you-pay-for-unused-space-on", "Do you pay for unused space on an EBS volume?"],
+        ["can-ebs-volumes-shrink-automatically", "Can EBS volumes shrink automatically?"],
       ],
       readMore: [
         "/amoeba-guide",
@@ -289,7 +291,7 @@ describe("the four per-cloud pages", () => {
       routes.azureManagedDiskCostOptimization,
       routes.ebsCostOptimization,
     ]);
-    expect(cloudPages.map((page) => page.lastUpdated)).toEqual(Array(4).fill("31 October 2026"));
+    expect(cloudPages.map((page) => page.lastUpdated)).toEqual(Array(4).fill("1 November 2026"));
     /* Product pages, not documents: the header marks nothing, and an in-page link leaves the address clean, as on
        /coral and /amoeba (their mocks carry no data-keep-hash). */
     for (const page of cloudPages) {
@@ -490,6 +492,12 @@ describe.each(cases)("%s", (path, c) => {
           expect(line.querySelector("span[translate='no']")).toHaveTextContent("Coral");
       }
     });
+
+    it("shows only its own cloud's Terraform module in Install your way", () => {
+      const { cloud } = content as CoralCloudPage;
+      const well = renderPage(path, c).querySelector("#install .iw-card:nth-child(3) pre")!;
+      expect(well.textContent).toBe(coralInstall.terraform.modules[cloud].join("\n"));
+    });
   }
 
   it("ends on Read more and the closing row, for its product alone", () => {
@@ -504,6 +512,12 @@ describe.each(cases)("%s", (path, c) => {
     expect(text(assess.querySelector(".as-cal p"))).toBe(
       `Thirty minutes with the people who build ${name}.`,
     );
+    /* The EKS page alone adds a line under the assessment card's paragraph, to the pricing calculator. */
+    const calculator = assess.querySelector(".as-mini p a");
+    if (path === "/eks-cost-optimization") {
+      expect(calculator).toHaveAttribute("href", "/eks-and-aks-pricing-calculator");
+      expect(calculator).toHaveTextContent("EKS cost");
+    } else expect(calculator).toBeNull();
   });
 
   it("links only pages and anchors that exist", () => {
@@ -535,8 +549,9 @@ describe.each(cases)("%s", (path, c) => {
     main.querySelector("#install")?.remove();
     for (const numeral of main.querySelectorAll(".stepn")) numeral.remove();
     const all = text(main);
-    /* The only digits are in names: EC2, gp3 and Premium SSD v2. */
-    for (const token of all.match(/\S*\d\S*/g) ?? []) {
+    /* The only digits are in names: EC2, gp3 and Premium SSD v2, and the safety snapshots' 7 days, which /security and
+       the terms print (1 Nov 2026). */
+    for (const token of all.replace(/\b7 days\b/g, "days").match(/\S*\d\S*/g) ?? []) {
       expect(token.replace(/[,.:;)]+$/, "")).toMatch(/^(EC2|gp3|v2)$/);
     }
     expect(all).not.toMatch(/[$€£₹%]|\b(USD|EUR|INR)\b/);

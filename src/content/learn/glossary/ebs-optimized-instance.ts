@@ -5,7 +5,7 @@ export const term: GlossaryTerm = {
   slug: "ebs-optimized-instance",
   term: "EBS-optimized instance",
   title: "What is an EBS-optimized instance?",
-  meta: "An EBS-optimized instance gives Amazon EBS its own bandwidth. See which EC2 types include it at no extra cost, and how its limit caps what volumes deliver.",
+  meta: "An EBS-optimized instance gives Amazon EBS its own bandwidth. See which EC2 types get EBS optimization at no extra cost, and how its limit caps your volumes.",
   h1: "What is an EBS-optimized instance?",
   card: "An EBS-optimized instance is an Amazon EC2 instance, usually a virtual machine (VM), with its own bandwidth for Amazon Elastic Block Store (EBS).",
   group: "block-storage",
@@ -72,7 +72,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why EBS-optimized instances matter for your cloud cost",
       blocks: [
         {
           kind: "ul",

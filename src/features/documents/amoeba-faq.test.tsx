@@ -179,7 +179,7 @@ describe("the body", () => {
   it("opens its column on the Updated line, over the questions", () => {
     const top = page.querySelector("article.fq-main > .fq-upd")!;
     expect(top).toBe(page.querySelector("article.fq-main")!.firstElementChild);
-    expect(text(top)).toBe("Updated 27 October 2026");
+    expect(text(top)).toBe("Updated 1 November 2026");
   });
 
   it("ends after question 29: no download line, no PDF, and links out only from About Amoeba", () => {

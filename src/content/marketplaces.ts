@@ -22,7 +22,7 @@ import { channels, type ChannelId } from "@/config/open-source";
  * The day /marketplaces's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /marketplaces's content moves this to that day in the same PR; never the build's date.
  */
-export const marketplacesLastUpdated = "21 October 2026";
+export const marketplacesLastUpdated = "1 November 2026";
 
 /**
  * The assessment's package on npm, `zoorik` (unscoped; `npx zoorik assess coral`). The tile points at the package, as
@@ -63,7 +63,7 @@ export const marketplacesPage = {
     /** The white card: every listing as a row, "<product> on <store>", Coral's first, each in a new tab. */
     buy: {
       title: "Cloud marketplaces",
-      line: "Buy through the account you already pay your cloud bill with.",
+      line: "Buy through the account you already use to pay for AWS or Azure.",
       on: " on ",
     },
     /** The navy card: a private offer, by a ready email to the founders. */

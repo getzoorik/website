@@ -13,8 +13,8 @@ import type { OpenSourceGuide } from "@/content/open-source";
  * names, no slot counts. Re-read those sources before changing a line.
  */
 
-/** The two pages' printed date ("Updated 29 October 2026"), which the sitemap gives them too. */
-export const troubleshootingUpdated = "29 October 2026";
+/** The two pages' printed date ("Updated 1 November 2026"), which the sitemap gives them too. */
+export const troubleshootingUpdated = "1 November 2026";
 
 export type TroubleshootingId = "coral" | "amoeba";
 
@@ -170,7 +170,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "p",
             text: "**What to do:** Keep the page open: it updates by itself. Until data arrives, figures read “Calculating” or “Fetching prices”, never a guess. If the page keeps waiting, check the network again.",
           },
-          { kind: "h3", text: "Check your Helm install" },
+          { kind: "h3", text: "Check your Helm install if it says a resource already exists" },
           { kind: "p", text: "**Look at:** your `helm install` command and its values." },
           {
             kind: "p",
@@ -335,11 +335,11 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "**What it means:** Every pool keeps at least one node. Coral also respects your autoscaler’s minimum pool size.",
+            text: "**What it means:** Every pool keeps at least one node. Coral never raises your autoscaler’s minimum. By default it may reduce a minimum that alone keeps an emptied node.",
           },
           {
             kind: "p",
-            text: "By default, the agent may reduce a pool’s minimum. With the Terraform module’s `lower_minimums = false`, it can’t.",
+            text: "With the Terraform module’s `lower_minimums = false`, it can’t.",
           },
           { kind: "p", text: "**What to do:** The last node in a pool stays." },
           {
@@ -451,7 +451,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
     meta: {
       title: "Amoeba troubleshooting",
       description:
-        "Amoeba is not showing your VM, or has not rightsized its disks yet? The checks to run in order, what each one means and what to do.",
+        "Amoeba troubleshooting: why a VM or EC2 instance is not showing, or its disks are not rightsized yet. The checks to run in order, and what to do.",
     },
     hero: {
       title: "Amoeba troubleshooting",
@@ -537,7 +537,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             text: "**What it means:** The list comes from Azure Resource Graph, which can take a little while to catch up with changes.",
           },
           { kind: "p", text: "**What to do:** Open “Onboard VMs” again a little later." },
-          { kind: "h3", text: "On AWS, check the instance" },
+          { kind: "h3", text: "On AWS, check the instance and Systems Manager" },
           { kind: "p", text: "**Look at:** the EC2 instance, and how the account is connected." },
           {
             kind: "p",
@@ -600,7 +600,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "**What it means:** During the move, the pool’s disks attach beside the old disks, so the VM needs a few free disk slots. A VM Amoeba declines, for example one with too few slots, shows why and stays on its own disks. Amoeba doesn’t move a VM that uses Azure Disk Encryption as it is.",
+            text: "**What it means:** During the move, the pool’s disks attach beside the source disks, so the VM needs a few free disk slots. A VM Amoeba declines, for example one with too few slots, shows why and stays on its own disks. Amoeba doesn’t move a VM that uses Azure Disk Encryption as it is.",
           },
           {
             kind: "p",

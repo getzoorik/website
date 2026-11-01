@@ -8,6 +8,7 @@ import type { ProseBlock, ProseTile } from "@/content/prose-blocks";
 import { LinkTile } from "@/features/documents/link-tile";
 import { DocTable } from "@/features/documents/prose";
 import { richText } from "@/features/documents/rich-text";
+import { named } from "@/features/legal/named";
 import { isOffSite, offSiteProps } from "@/lib/links";
 
 /**
@@ -109,7 +110,7 @@ export function ReadMoreRow({
     <section className="sec" id="read-more" aria-labelledby="read-more-h">
       <div className="wrap">
         <div className="sec-hrow">
-          <h2 id="read-more-h">{title}</h2>
+          <h2 id="read-more-h">{named(title)}</h2>
         </div>
         <div className="dt-grid">
           {tiles.map((tile) => (

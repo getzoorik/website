@@ -5,8 +5,8 @@ import { figure as figure3 } from "@/features/learn/figures/kubernetes-drain-nod
 
 export const article: Article = {
   slug: "kubernetes-drain-node-without-downtime",
-  title: "How to drain a Kubernetes node without downtime",
-  meta: "Drain a Kubernetes node without downtime: why kubectl drain restarts single-replica apps, the replicas and PDBs that avoid it, and the flags to use.",
+  title: "kubectl drain node without downtime, step by step",
+  meta: "kubectl drain node without downtime: why a plain drain restarts single-replica apps, how kubectl rollout restart and PDBs avoid it, and the flags to use.",
   h1: "How to drain a Kubernetes node without downtime",
   deck: "Why a plain drain takes single-replica apps down, and the replicas, budgets and rolling restarts that keep them serving.",
   card: "The replicas, PDBs and kubectl drain flags that keep apps serving while a node drains on AKS or EKS.",
@@ -212,7 +212,11 @@ export const article: Article = {
             ],
           ],
         },
-        { kind: "h3", id: "the-kubectl-drain-flags", title: "The kubectl drain flags" },
+        {
+          kind: "h3",
+          id: "the-kubectl-drain-flags",
+          title: "kubectl drain flags: --ignore-daemonsets and --delete-emptydir-data",
+        },
         {
           kind: "p",
           text: [
@@ -277,7 +281,7 @@ export const article: Article = {
     },
     {
       id: "a-rolling-restart-moves-a-single-replica",
-      title: "A rolling restart moves a single-replica Deployment first",
+      title: "kubectl rollout restart moves a single-replica Deployment first",
       blocks: [
         {
           kind: "p",
@@ -329,7 +333,7 @@ export const article: Article = {
     },
     {
       id: "when-a-drain-hangs-and-whether-to",
-      title: "When a drain hangs, and whether to ignore the PDB",
+      title: "When kubectl drain is stuck, and whether to ignore the PDB",
       blocks: [
         {
           kind: "p",
@@ -475,9 +479,9 @@ export const article: Article = {
             ],
             [
               { b: "Held nodes:" },
-              " a node stays when a pod on it can’t move safely. Examples are a PDB that allows no disruption, emptyDir or hostPath data, or a pod ",
+              " a node stays when a pod on it can’t move safely. Examples are a PDB that allows no disruption, hostPath data, or a pod ",
               { a: "marked do-not-disrupt", href: "/learn/safe-to-evict-do-not-disrupt" },
-              ". Node list → “What’s holding them” names ",
+              ". Coral’s console names ",
               { a: "each reason and its fix", href: "/coral-guide#nodes-held" },
               ".",
             ],

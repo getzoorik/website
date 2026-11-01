@@ -21,7 +21,7 @@ import { printedDay } from "@/lib/content-date";
  * sources and the Related row are drawn by the article's own parts (`Block`, `Sources`, `RelatedRow`), so a term
  * reads as an article does.
  *
- * No help box (the product sentence is in "Why it matters for your cloud cost"), no author and no cover. Related terms are
+ * No help box (the product sentence is in its why-it-matters section, `#why-it-matters-for-your-cloud-cost`), no author and no cover. Related terms are
  * the article's Related tiles, each a term's words and the line the draft gives it. A link to an article or a term that
  * is not published stands as plain text (`isLiveHref`); Read next uses the draft's words, linked once its article is
  * published.

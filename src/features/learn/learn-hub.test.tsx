@@ -109,7 +109,7 @@ describe("/learn's metadata", () => {
   it("titles and describes the hub as its mock does, with the /learn card", () => {
     expect(metadata.title).toBe("Cloud cost optimization guides");
     expect(metadata.description).toBe(
-      "Guides and comparisons for Kubernetes, block storage and the whole cloud bill on Azure and AWS, from where the money goes to the right fix.",
+      "Cloud cost optimization guides and comparisons for Kubernetes and block storage on Azure and AWS, from where the money goes to the right fix.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/learn" });
     expect(metadata).not.toHaveProperty("robots");

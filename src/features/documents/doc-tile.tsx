@@ -37,7 +37,7 @@ function TileText({
 }) {
   return (
     <span>
-      <span className="dt-t">{title}</span>
+      <span className="dt-t">{title}</span>{" "}
       <span className="dt-l">{named ? <NamedText text={line} name={named} /> : line}</span>
     </span>
   );

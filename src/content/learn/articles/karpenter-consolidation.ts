@@ -200,7 +200,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Microsoft’s page on node auto-provisioning (NAP), which runs Karpenter inside Azure Kubernetes Service (AKS), lists only ",
+            "Microsoft’s page on node auto provisioning (NAP), which runs Karpenter inside Azure Kubernetes Service (AKS), lists only ",
             { code: "WhenEmpty" },
             " and ",
             { code: "WhenEmptyOrUnderutilized" },
@@ -356,7 +356,7 @@ export const article: Article = {
     },
     {
       id: "limits-and-expiry-sit-beside-consolidation",
-      title: "Limits and expiry sit beside consolidation",
+      title: "Limits and expireAfter sit beside consolidation",
       blocks: [
         {
           kind: "p",
@@ -659,7 +659,11 @@ export const article: Article = {
       where: "Learn",
       href: "/learn/pod-disruption-budget-best-practices",
     },
-    { title: "Nodes held", where: "Coral product guide", href: "/coral-guide#nodes-held" },
+    {
+      title: "Why Coral holds a node, and each fix",
+      where: "Coral product guide",
+      href: "/coral-guide#nodes-held",
+    },
     {
       title: "Do I need Coral with Karpenter or NAP?",
       where: "Coral FAQ",

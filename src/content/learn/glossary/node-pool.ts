@@ -21,7 +21,7 @@ export const term: GlossaryTerm = {
   sections: [
     {
       id: "node-pool-vs-node-group",
-      title: "Node pool vs node group",
+      title: "AKS node pool vs EKS managed node group",
       blocks: [
         {
           kind: "ul",
@@ -62,7 +62,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why node pools matter for your cloud cost",
       blocks: [
         {
           kind: "p",

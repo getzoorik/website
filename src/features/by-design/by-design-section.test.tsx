@@ -8,7 +8,7 @@ import { byDesignCards } from "@/content/by-design";
 import { ByDesignSection } from "./by-design-section";
 
 /**
- * "Cloud cost optimization, without the risk": four drawings, each captioned
+ * "Autonomous cloud cost optimization, without the risk": four drawings, each captioned
  * by its title, looping only while the band is on screen (`why_visuals.py`).
  */
 
@@ -52,9 +52,9 @@ describe("without the risk", () => {
   it("links its heading's first words to the cloud cost pillar, inside the line mask's inner span", () => {
     const section = band(render(<ByDesignSection />).container);
     const h2 = section.querySelector(".sec-head h2")!;
-    expect(h2.textContent).toBe("Cloud cost optimization, without the risk");
+    expect(h2.textContent).toBe("Autonomous cloud cost optimization, without the risk");
     const link = h2.querySelector(":scope > span.lm > span > a")!;
-    expect(link.textContent).toBe("Cloud cost optimization");
+    expect(link.textContent).toBe("cloud cost optimization");
     expect(link).toHaveAttribute("href", "/cloud-cost-optimization");
     expect(link).not.toHaveAttribute("class");
     expect(h2.querySelectorAll("a")).toHaveLength(1);
@@ -86,7 +86,7 @@ describe("without the risk", () => {
     expect(cards.map((card) => card.querySelector("h3")!.textContent)).toEqual([
       "Reduce cloud cost",
       "Drains nodes safely, one at a time",
-      "No code changes, no downtime",
+      "Without any downtime or code changes",
       "Full control and visibility",
     ]);
     expect(section.querySelector("p")).toBeNull();

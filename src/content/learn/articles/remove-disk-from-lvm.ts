@@ -5,7 +5,7 @@ import { figure as figure2 } from "@/features/learn/figures/remove-disk-from-lvm
 export const article: Article = {
   slug: "remove-disk-from-lvm",
   title: "Remove a disk from LVM without losing data",
-  meta: "Remove a disk from LVM without losing data: pvmove, vgreduce and pvremove while mounted, what to do when the other disks are full, and the cloud delete.",
+  meta: "Remove a disk from LVM without losing data: pvmove, vgreduce and pvremove while mounted, lvreduce when the LV fills the VG, and the cloud delete.",
   h1: "How to remove a disk from LVM without losing data",
   deck: "Move its extents with pvmove, take it out of the volume group, then detach and delete the cloud disk.",
   card: "pvmove, vgreduce and pvremove while mounted, the case where the other disks are full, and the cloud delete.",
@@ -39,6 +39,11 @@ export const article: Article = {
         {
           kind: "p",
           text: "You want disk C gone while the application runs. You pay for disk C until you delete it.",
+        },
+        {
+          kind: "h3",
+          id: "how-lvm-works-physical-volumes-volume-groups",
+          title: "How LVM works: physical volumes, volume groups and extents",
         },
         { kind: "p", text: "The Logical Volume Manager (LVM) builds storage in three layers:" },
         {
@@ -77,15 +82,16 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            { a: "Shrinking an EBS volume", href: "/learn/shrink-ebs-volume" },
-            " covers the AWS side. So the unit you can stop paying for is a whole disk, and LVM’s job here is to empty one.",
+            "AWS won’t shrink an EBS volume in place either, as ",
+            { a: "shrinking an EBS volume", href: "/learn/shrink-ebs-volume" },
+            " explains. So the unit you can stop paying for is a whole disk, and LVM’s job here is to empty one.",
           ],
         },
       ],
     },
     {
       id: "check-that-the-other-disks-have-room",
-      title: "Check that the other disks have room first",
+      title: "Check with pvs that the other disks have room first",
       blocks: [
         { kind: "p", text: "Two commands show whether the move fits:" },
         { kind: "code", lang: "bash", code: "sudo pvs\nsudo lvs -a -o +devices" },
@@ -299,7 +305,7 @@ export const article: Article = {
     },
     {
       id: "how-to-reduce-lvm-size-in-linux",
-      title: "How to reduce LVM size in Linux when the LV fills the VG",
+      title: "How to reduce LVM size with lvreduce when the LV fills the VG",
       blocks: [
         {
           kind: "p",
@@ -513,10 +519,6 @@ export const article: Article = {
             { a: "whether a shrink can lose data", href: "/amoeba-faq#can-a-shrink-lose-data" },
             ".",
           ],
-        },
-        {
-          kind: "p",
-          text: "On Linux, the VM needs a recent kernel with btrfs. Every service that keeps a data mount open must run under systemd. The VM also needs a few free disk slots for the pool.",
         },
       ],
     },

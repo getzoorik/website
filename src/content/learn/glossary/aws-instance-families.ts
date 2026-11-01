@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "aws-instance-families",
   term: "AWS instance families",
   title: "What are AWS instance families?",
-  meta: "AWS instance families are sets of EC2 instance types that differ only in size. Read a name like c7gn.xlarge and see how memory per vCPU shapes your cost.",
+  meta: "AWS instance families, or EC2 instance families, are sets of instance types that differ only in size. How to read c7gn.xlarge, and how a family shapes cost.",
   h1: "What are AWS instance families?",
   card: "AWS instance families are sets of EC2 instance types that differ only in size.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -25,7 +25,7 @@ export const term: GlossaryTerm = {
   sections: [
     {
       id: "aws-instance-family-vs-type",
-      title: "AWS instance family vs type",
+      title: "AWS instance family vs EC2 instance type",
       blocks: [
         {
           kind: "p",
@@ -48,7 +48,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "three-ec2-instance-families-at-one-size",
-      title: "Three EC2 instance families at one size",
+      title: "Compute optimized vs memory optimized: three EC2 instance families at one size",
       blocks: [
         { kind: "p", text: "At the large size, each has 2\u00a0vCPUs but different memory:" },
         {
@@ -64,7 +64,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why AWS instance families matter for your cloud cost",
       blocks: [
         {
           kind: "p",

@@ -179,7 +179,7 @@ describe("Our values", () => {
     });
     expect(panels.map((panel) => text(panel.querySelector(".cq-mean")))).toEqual([
       "We get further together than alone.",
-      "We reduce our customers’ cloud bills without breaking anything.",
+      "We reduce our customers’ cloud cost without breaking anything.",
       "We spend time and money on what matters, and we do it once.",
       "Good ideas come from everywhere.",
       "Small steps add up faster than big plans.",

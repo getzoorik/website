@@ -3,7 +3,7 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/savings-pla
 
 export const term: GlossaryTerm = {
   slug: "savings-plan-coverage-vs-utilization",
-  term: "Savings plan and reservation coverage vs utilization",
+  term: "Savings plan coverage vs utilization (reservation coverage and utilization)",
   title: "What is savings plan coverage vs utilization?",
   meta: "Savings plan coverage vs utilization: coverage is how much usage your commitments cover, utilization how much of a commitment you use. See AWS’s examples.",
   h1: "What is savings plan coverage vs utilization?",
@@ -44,6 +44,7 @@ export const term: GlossaryTerm = {
           ],
         },
         { kind: "svg", figure: figure1 },
+        { kind: "h3", id: "ri-utilization-and-coverage", title: "RI utilization and coverage" },
         {
           kind: "p",
           text: [
@@ -73,7 +74,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why coverage and utilization matter for your cloud cost",
       blocks: [
         {
           kind: "ul",

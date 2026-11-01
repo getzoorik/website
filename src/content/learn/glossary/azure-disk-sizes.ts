@@ -5,7 +5,7 @@ export const term: GlossaryTerm = {
   slug: "azure-disk-sizes",
   term: "Azure disk sizes (P10, P30, E10, S10 size names)",
   title: "What are Azure disk sizes (P10, P30, E10)?",
-  meta: "Azure disk sizes have names like P10, P30 and E10. See what each letter and number means, and why you pay for the whole size, not the data you store.",
+  meta: "Azure disk sizes have names like P10, P30 and E10: a P10 is 128 GiB, a P30 1 TiB. Azure managed disk sizes from P1 to P80, and why you pay for the whole size.",
   h1: "What are Azure disk sizes (P10, P30, E10)?",
   card: "Azure disk sizes are the fixed sizes Azure offers for three types of managed disk, the disks that Azure virtual machines (VMs) use.",
   group: "block-storage",
@@ -21,7 +21,14 @@ export const term: GlossaryTerm = {
         ", the disks that Azure virtual machines (VMs) use. Each size has a short name, such as P10, E10 or S10.",
       ],
     },
-    { kind: "p", text: "The letter gives the disk type, and the number gives the size:" },
+    {
+      kind: "p",
+      text: [
+        "The letter gives the ",
+        { a: "disk type", href: "/learn/azure-managed-disk-types" },
+        ", and the number gives the size:",
+      ],
+    },
     {
       kind: "ul",
       items: [
@@ -86,7 +93,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why Azure disk sizes matter for your cloud cost",
       blocks: [
         {
           kind: "ul",
@@ -112,7 +119,7 @@ export const term: GlossaryTerm = {
         {
           kind: "p",
           text: [
-            { a: "Azure disk cost optimization", href: "/learn/azure-disk-cost-optimization" },
+            { a: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
             " shows ways to reduce this cost.",
           ],
         },
@@ -156,7 +163,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/azure-ultra-disk",
     },
   ],
-  next: { title: "Azure disk cost optimization", href: "/learn/azure-disk-cost-optimization" },
+  next: { title: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
   sources: [
     {
       publisher: "Microsoft Learn",

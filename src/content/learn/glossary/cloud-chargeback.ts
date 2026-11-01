@@ -4,10 +4,10 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/cloud-charg
 export const term: GlossaryTerm = {
   slug: "cloud-chargeback",
   term: "Chargeback (cloud / IT chargeback)",
-  title: "What is chargeback in cloud computing?",
-  meta: "Chargeback in cloud computing charges each team’s budget for its share of the cloud cost. See three common AWS models and how to plan one with finance.",
-  h1: "What is chargeback in cloud computing?",
-  card: "Chargeback in cloud computing means charging each team its share of the cloud cost.",
+  title: "What is cloud chargeback? Chargeback models",
+  meta: "Cloud chargeback charges each team’s budget for its share of the cloud cost. See three common AWS chargeback models and how to plan one with finance.",
+  h1: "What is cloud chargeback? Chargeback models",
+  card: "Cloud chargeback, or chargeback in cloud computing, means charging each team its share of the cloud cost.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-25",
@@ -15,21 +15,21 @@ export const term: GlossaryTerm = {
   definition: [
     {
       kind: "p",
-      text: "Chargeback in cloud computing means charging each team its share of the cloud cost. Your company pays the provider’s invoice, then charges each team through internal accounting.",
+      text: "Cloud chargeback, or chargeback in cloud computing, means charging each team its share of the cloud cost. Your company pays the provider’s invoice, then charges each team through internal accounting.",
     },
     { kind: "svg", figure: figure1 },
   ],
   sections: [
     {
       id: "an-example-from-aws",
-      title: "An example from AWS",
+      title: "An AWS chargeback example",
       blocks: [
         {
           kind: "p",
           text: [
             "A ",
             { a: "showback", href: "/learn/glossary/showback" },
-            " report says the infrastructure engineering team spent $X on AWS last month. Cloud chargeback takes that $X out of the team’s AWS budget.",
+            " report tells the infrastructure engineering team what it spent on AWS last month. Cloud chargeback takes that amount out of the team’s AWS budget.",
           ],
         },
       ],
@@ -64,7 +64,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why chargeback matters for your cloud cost",
       blocks: [
         {
           kind: "ul",

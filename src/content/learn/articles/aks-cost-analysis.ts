@@ -241,6 +241,11 @@ export const article: Article = {
           text: "Every view shows actual cost by default. If you hold reservations or a savings plan, Customize → “Amortize reservation and savings plan purchases” switches the view to amortized cost.",
         },
         {
+          kind: "h3",
+          id: "what-idle-system-service-and-unallocated-charges",
+          title: "What idle, system, service and unallocated charges mean",
+        },
+        {
           kind: "p",
           text: "In the namespaces and assets views, the add-on can show four kinds of charge. Microsoft’s definitions are short, and each one points somewhere different:",
         },
@@ -426,7 +431,7 @@ export const article: Article = {
           items: [
             [
               { b: "The figures:" },
-              " Overview shows each cluster’s running cost today, its cost at the optimum, and the difference as Recoverable, all monthly. The Node list adds every node’s monthly price and the capacity no pod has claimed. It also lists the nodes Coral can’t empty, with the reason for each.",
+              " Coral shows each cluster’s monthly cost today and at the optimum, and lists the nodes it can’t empty, with the reason for each.",
             ],
             [
               { b: "The prices:" },
@@ -436,7 +441,7 @@ export const article: Article = {
             ],
             [
               { b: "Requests:" },
-              " Coral rebalances each container’s CPU and memory requests to what it really uses. Where a CPU-based HPA scales the workload, Coral picks the CPU request by replaying past load through that HPA’s own settings. Pod sizing starts when you switch on “Automatically optimize” for a policy or a workload.",
+              " Coral rebalances each container’s CPU and memory requests to what it really uses. Where a CPU-based HPA scales the workload, Coral picks the CPU request by replaying past load through that HPA’s own settings.",
             ],
             [
               { b: "Nodes:" },
@@ -447,8 +452,8 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Eight days after we connected Coral to our own AKS development cluster, the cluster cost $154.76 a month instead of $368.65. That is 58% less, and ",
-            { a: "the case study", href: "/coral-value-lab" },
+            "Eight days after we connected Coral to our own AKS development cluster, the cluster’s machines cost $154.76 a month instead of $368.65. That is 58% less, and ",
+            { a: "the Coral Value Lab study", href: "/coral-value-lab" },
             " walks through each step.",
           ],
         },
@@ -531,7 +536,7 @@ export const article: Article = {
       href: "/learn/kubernetes-pod-right-sizing",
     },
     {
-      title: "How to choose AKS node sizes",
+      title: "How to choose AKS VM sizes",
       where: "Learn",
       href: "/learn/how-to-choose-aks-node-sizes",
     },

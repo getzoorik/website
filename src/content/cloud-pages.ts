@@ -1,6 +1,7 @@
 import { amoebaDocs, glossaryPath, learnPath, routes } from "@/config/site";
 import { amoebaGuideAndFaq } from "@/content/amoeba-page";
 import { assessContent, assessmentHref } from "@/content/assess";
+import type { InstallCloud } from "@/content/coral-install";
 import { coralFaqTile } from "@/content/coral-page";
 import { howItWorksSteps, type Step } from "@/content/how-it-works";
 import type { ProductPageContent } from "@/content/product-page";
@@ -13,9 +14,10 @@ import type { Platform, ProductId } from "@/content/products";
  * traced in its ledger.md; TEMPLATES.md's Cloud template, CONSISTENCY.md's cross-page pass) and their mocks
  * (ux-design/website/<its address>.html). Each moved to the address of its search on 1 Nov 2026 (D230).
  *
- * 🔴 NO FIGURE, PRICE, VERSION, THRESHOLD, TIMING OR COUNT. A page with a gap says how the product works on that cloud
- * and claims no test. The step cards keep each product's own card names (`how-it-works.ts`, read, never copied), and
- * each says one line about the cloud in place of the figure, mark and key.
+ * 🔴 NO FIGURE, PRICE, VERSION, THRESHOLD, TIMING OR COUNT, but for the safety snapshots' 7 days, which /security and
+ * the terms print (1 Nov 2026). A page with a gap says how the product works on that cloud and claims no test. The
+ * step cards keep each product's own card names (`how-it-works.ts`, read, never copied), and each says one line about
+ * the cloud in place of the figure, mark and key.
  *
  * Coral is AKS and EKS, never Windows or Linux; Amoeba is Windows and Linux VMs on Azure and AWS.
  *
@@ -100,7 +102,11 @@ interface CloudPageBase {
 /** Coral's pages: the works-with tiles, then /coral's Install your way. */
 export interface CoralCloudPage extends CloudPageBase {
   readonly product: "coral";
+  /** The cluster's cloud: Install your way's Terraform card shows only its module (`coralInstall.terraform.modules`). */
+  readonly cloud: InstallCloud;
   readonly worksWith: { readonly title: string; readonly tiles: readonly CloudTile[] };
+  /** A line under the closing row's "One PDF report…", to the pricing calculator. */
+  readonly calculator?: string;
 }
 
 /** Amoeba's pages: what the VMs need, in the guides' frame with the setup and the questions. */
@@ -115,8 +121,8 @@ export interface AmoebaCloudPage extends CloudPageBase {
 
 export type CloudPageContent = CoralCloudPage | AmoebaCloudPage;
 
-/** The four pages' date: built 31 Oct 2026. */
-const BUILT = "31 October 2026";
+/** The four pages' date: built 31 Oct 2026, then their search pass of 1 Nov 2026 (titles, lines, links and questions). */
+const NOV_1 = "1 November 2026";
 
 /** The hero's button: the closing row's own words, to this product's assessment. */
 const estimate = (product: ProductId) => ({
@@ -168,21 +174,22 @@ const helmTile: CloudTile = {
 export const aksCostOptimizationPage: CoralCloudPage = {
   product: "coral",
   path: routes.aksCostOptimization,
-  lastUpdated: BUILT,
+  lastUpdated: NOV_1,
+  cloud: "aks",
   meta: {
     title: "AKS cost optimization",
     description:
-      "AKS cost optimization with Coral: it rebalances your cluster, sizes pods to real use, and empties spare nodes for the Cluster Autoscaler or NAP to remove.",
+      "AKS cost optimization with Coral. Reduce AKS costs: Coral rebalances your Azure Kubernetes Service cluster, sizes pods to real use and empties spare nodes.",
   },
   hero: {
     eyebrow: "Coral for AKS",
     title: "AKS cost optimization",
-    line: "Stop paying for idle AKS capacity. Coral rebalances your workloads and removes the spare nodes in your node pools, with no code changes.",
+    line: "Stop paying for idle AKS capacity. Coral reduces AKS costs: it rebalances your workloads and removes the spare nodes in your node pools, with no code changes.",
     cta: estimate("coral"),
     runsOn: { label: "Runs on", platforms: ["aks"] },
   },
   about: {
-    title: "What Coral does on AKS",
+    title: "How Coral reduces AKS costs",
     paragraphs: [
       "Coral rebalances Azure Kubernetes Service (AKS) clusters. It sizes CPU and memory requests to what your containers really use. It also empties spare nodes one at a time, so the Cluster Autoscaler or AKS node auto provisioning (NAP) can remove them.",
       "Adding nodes for demand stays with the Cluster Autoscaler or NAP, and Coral never creates machines itself. With NAP, Coral can also move work onto cheaper machines that NAP launches. The Horizontal Pod Autoscaler and KEDA keep setting how many pods run.",
@@ -276,7 +283,7 @@ export const aksCostOptimizationPage: CoralCloudPage = {
     ],
   },
   readMore: {
-    title: "Read more",
+    title: "Coral docs and guides",
     allDocs: { label: "All docs", href: `${routes.docs}#coral` },
     tiles: [
       {
@@ -289,7 +296,7 @@ export const aksCostOptimizationPage: CoralCloudPage = {
       coralFaqTile,
       {
         kind: "page",
-        title: "How to reduce Kubernetes cost",
+        title: "Kubernetes cost optimization",
         line: "Rebalance requests to real use, then let spare nodes go",
         href: routes.kubernetesCostOptimization,
       },
@@ -299,6 +306,12 @@ export const aksCostOptimizationPage: CoralCloudPage = {
         line: "Why a node stays on AKS or EKS, and the fix",
         href: learnPath("cluster-autoscaler-not-scaling-down"),
       },
+      {
+        kind: "page",
+        title: "AKS cost",
+        line: "What an AKS node costs a month, at list price",
+        href: routes.eksAndAksPricingCalculator,
+      },
     ],
   },
 };
@@ -307,21 +320,22 @@ export const aksCostOptimizationPage: CoralCloudPage = {
 export const eksCostOptimizationPage: CoralCloudPage = {
   product: "coral",
   path: routes.eksCostOptimization,
-  lastUpdated: BUILT,
+  lastUpdated: NOV_1,
+  cloud: "eks",
   meta: {
     title: "EKS cost optimization",
     description:
-      "EKS cost optimization with Coral: it rebalances your cluster, sizes pods to real use, and empties spare nodes for Karpenter or the Cluster Autoscaler to remove.",
+      "EKS cost optimization with Coral: it rebalances your cluster to reduce EKS costs, sizes pods to real use, and its EKS node optimization empties spare nodes.",
   },
   hero: {
     eyebrow: "Coral for EKS",
     title: "EKS cost optimization",
-    line: "Stop paying for idle EC2 instances in your EKS clusters. Coral rebalances your workloads so spare nodes can go, with no code changes.",
+    line: "Reduce EKS costs: stop paying for idle EC2 instances in your EKS clusters. Coral rebalances your workloads so spare nodes can go, with no code changes.",
     cta: estimate("coral"),
     runsOn: { label: "Runs on", platforms: ["eks"] },
   },
   about: {
-    title: "What Coral does on EKS",
+    title: "How Coral reduces EKS costs",
     paragraphs: [
       "Coral rebalances Amazon Elastic Kubernetes Service (EKS) clusters. It sizes pod requests to real use, so fewer EC2 instances can carry the same work. It also empties spare instances one at a time.",
       "On EKS, Karpenter or the Cluster Autoscaler still adds instances when demand grows. Coral never creates machines itself. With Karpenter, a rebalance can also move work onto cheaper EC2 instances that Karpenter launches.",
@@ -384,6 +398,7 @@ export const eksCostOptimizationPage: CoralCloudPage = {
       },
     ],
   },
+  calculator: `Or see what one node adds to your [EKS cost](${routes.eksAndAksPricingCalculator}), at list price, in our pricing calculator.`,
   questions: {
     title: "Questions about Coral on EKS",
     rows: [
@@ -414,7 +429,7 @@ export const eksCostOptimizationPage: CoralCloudPage = {
     ],
   },
   readMore: {
-    title: "Read more",
+    title: "Coral docs and guides",
     allDocs: { label: "All docs", href: `${routes.docs}#coral` },
     tiles: [
       {
@@ -449,21 +464,21 @@ const AMOEBA_03 = "Rightsize the pool";
 export const azureManagedDiskCostOptimizationPage: AmoebaCloudPage = {
   product: "amoeba",
   path: routes.azureManagedDiskCostOptimization,
-  lastUpdated: BUILT,
+  lastUpdated: NOV_1,
   meta: {
     title: "Azure managed disk cost optimization",
     description:
-      "Reduce Azure managed disk cost on Windows and Linux VMs. Amoeba moves data disks onto one pool sized to your data, then grows and shrinks it with your data.",
+      "Azure managed disk cost optimization, the disk side of Azure storage cost optimization: reduce Azure disk costs on Windows and Linux VMs, autonomously.",
   },
   hero: {
     eyebrow: "Amoeba for Azure",
     title: "Azure managed disk cost optimization",
-    line: "Stop paying for empty disk space. Amoeba rightsizes the Azure managed data disks on your Windows and Linux VMs, autonomously.",
+    line: "Stop paying for empty disk space. Amoeba reduces your Azure disk costs: it rightsizes the managed data disks on your Windows and Linux VMs, autonomously.",
     cta: estimate("amoeba"),
     runsOn: { label: "Runs on", platforms: ["azure", "windows", "linux"] },
   },
   about: {
-    title: "What Amoeba does on Azure",
+    title: "How Amoeba reduces Azure disk cost",
     paragraphs: [
       "Amoeba rightsizes your data disks to reduce your Azure managed disk cost. A managed disk can be made larger, but not smaller. So you pay for the size you provisioned, however much data it holds.",
       "Amoeba moves a VM's data disks onto one pool of Premium SSD v2 disks. Where the region or zone doesn't offer Premium SSD v2, it uses Premium SSD. It sizes the pool from your peak use and recent growth, with room to grow, not from the size of the old disks.",
@@ -506,7 +521,7 @@ export const azureManagedDiskCostOptimizationPage: AmoebaCloudPage = {
         ],
         [
           "Safety snapshots",
-          "One incremental snapshot of each source disk, in the disk's own resource group. Taken before Amoeba deletes the disk, and deleted after a few days.",
+          "One incremental snapshot of each source disk, in the disk's own resource group. Taken before Amoeba deletes the disk, and deleted after 7 days.",
         ],
       ],
     },
@@ -514,6 +529,7 @@ export const azureManagedDiskCostOptimizationPage: AmoebaCloudPage = {
       "The role is the limit on what Zoorik can do in your Azure. A permission added to the role later reaches your subscription only when you run the script again.",
       "Onboarding is your go-ahead. After the agent's first report, the move starts by itself.",
       "A move only goes forward. Amoeba deletes a source disk only after its own snapshot has succeeded.",
+      "You pay for both sets of disks only while the move runs, and then for the snapshots while they’re kept.",
     ],
   },
   needs: {
@@ -532,7 +548,7 @@ export const azureManagedDiskCostOptimizationPage: AmoebaCloudPage = {
     rows: [
       {
         question: "Which Azure disks does Amoeba work on?",
-        answer: `The managed data disks of running Windows and Linux VMs. Amoeba never touches the OS disk. On AWS, it works with Amazon EBS volumes: see [Amoeba for AWS](${routes.ebsCostOptimization}).`,
+        answer: `The managed data disks of running Windows and Linux VMs. Amoeba never touches the OS disk. On AWS, it works with Amazon EBS volumes: see [EBS cost optimization](${routes.ebsCostOptimization}).`,
       },
       {
         question: "Which Azure disk type does Amoeba's pool use?",
@@ -557,16 +573,16 @@ export const azureManagedDiskCostOptimizationPage: AmoebaCloudPage = {
     ],
   },
   readMore: {
-    title: "Read more",
+    title: "Amoeba docs and guides",
     allDocs: { label: "All docs", href: `${routes.docs}#amoeba` },
     tiles: [
       /* /amoeba's guide and FAQ tiles, behind its flag: drawn only while both are published. */
       ...(amoebaDocs ? amoebaGuideAndFaq : []),
       {
         kind: "page",
-        title: "Azure disk cost optimization",
+        title: "Azure disk reservations: are they worth it?",
         line: "What a managed disk is charged for, and how to pay for your data",
-        href: learnPath("azure-disk-cost-optimization"),
+        href: learnPath("azure-disk-reservations"),
       },
       {
         kind: "page",
@@ -583,11 +599,11 @@ export const azureManagedDiskCostOptimizationPage: AmoebaCloudPage = {
 export const ebsCostOptimizationPage: AmoebaCloudPage = {
   product: "amoeba",
   path: routes.ebsCostOptimization,
-  lastUpdated: BUILT,
+  lastUpdated: NOV_1,
   meta: {
     title: "EBS cost optimization",
     description:
-      "Reduce Amazon EBS cost on EC2 instances. Amoeba moves data volumes onto one pool of gp3 volumes sized to your data, then grows and shrinks it with your data.",
+      "EBS cost optimization on EC2 instances. Reduce EBS costs: Amoeba moves data volumes onto one pool of gp3 volumes sized to your data, then grows and shrinks it.",
   },
   hero: {
     eyebrow: "Amoeba for AWS",
@@ -636,7 +652,7 @@ export const ebsCostOptimizationPage: AmoebaCloudPage = {
         ],
         [
           "Safety snapshots",
-          "An EBS snapshot of each source volume. Taken before Amoeba deletes the volume, and kept for a few days.",
+          "An EBS snapshot of each source volume. Taken before Amoeba deletes the volume, and kept for 7 days.",
         ],
       ],
     },
@@ -663,7 +679,7 @@ export const ebsCostOptimizationPage: AmoebaCloudPage = {
     rows: [
       {
         question: "Which EBS volumes does Amoeba work on?",
-        answer: `The non-root EBS data volumes of running EC2 instances, on Windows and Linux. Amoeba never touches the root volume. On Azure, it works with managed disks: see [Amoeba for Azure](${routes.azureManagedDiskCostOptimization}).`,
+        answer: `The non-root EBS data volumes of running EC2 instances, on Windows and Linux. Amoeba never touches the root volume. On Azure, it works with managed disks: see [Azure managed disk cost optimization](${routes.azureManagedDiskCostOptimization}).`,
       },
       {
         question: "Which EBS volume type does Amoeba's pool use?",
@@ -678,17 +694,27 @@ export const ebsCostOptimizationPage: AmoebaCloudPage = {
       {
         question: "Do I pay for both sets of volumes during the move?",
         answer:
-          "Yes, but only while the move runs. The source volumes are deleted once the switch is checked. Then you pay for their snapshots for the few days they're kept.",
+          "Yes, but only while the move runs. The source volumes are deleted once the switch is checked. Then you pay for their snapshots for the 7 days they're kept.",
       },
       {
         question: "How is the saving worked out on AWS?",
         answer:
           "At list price from the AWS Price List API, measured against the source volumes. AWS charges for EBS per GB-month. A saving can be negative, and Amoeba shows it as it is.",
       },
+      {
+        question: "Do you pay for unused space on an EBS volume?",
+        answer:
+          "Yes. AWS charges per GB-month for a volume's full size, so a volume costs the same, however little data it holds. Amoeba's pool is sized to your data, with room to grow.",
+      },
+      {
+        question: "Can EBS volumes shrink automatically?",
+        answer:
+          "No. AWS lets you grow an EBS volume but never shrink it. Amoeba's pool can: if your data shrinks and stays smaller, Amoeba removes one gp3 volume at a time, and the pool stays mounted throughout.",
+      },
     ],
   },
   readMore: {
-    title: "Read more",
+    title: "Amoeba docs and guides",
     allDocs: { label: "All docs", href: `${routes.docs}#amoeba` },
     tiles: [
       /* /amoeba's guide and FAQ tiles, behind its flag: drawn only while both are published. */

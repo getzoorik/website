@@ -1,5 +1,7 @@
 "use client";
 
+import { Fragment } from "react";
+
 import { ExternalArrow } from "@/components/primitives/external-arrow";
 import { NewTabHint } from "@/components/primitives/new-tab-hint";
 import { assessmentCopy, assessmentProducts } from "@/content/assessment";
@@ -56,7 +58,8 @@ function OffSite({
  * section of the README).
  *
  * The mail button and the estimate link read the same for both products, so they are one link whose address follows
- * the product; the booking line names the product, so before hydration it is drawn once per product (`ByChoice`).
+ * the product. The booking line names both products whatever the switch says (`book.both`), so it is static text
+ * before hydration.
  */
 export function AssessmentAfter(): React.JSX.Element {
   const { product } = useAssessment();
@@ -77,7 +80,13 @@ export function AssessmentAfter(): React.JSX.Element {
           <h3 className="as-h">{book.title}</h3>
           <p>
             {book.line}
-            <ByChoice render={(item) => <span translate="no">{products[item].name}</span>} />.
+            {book.both.map((id, index) => (
+              <Fragment key={id}>
+                {index > 0 ? " and " : null}
+                <span translate="no">{products[id].name}</span>
+              </Fragment>
+            ))}
+            .
           </p>
           <a className="cta-go" href={book.href} {...offSiteProps(book.href)}>
             {book.cta}

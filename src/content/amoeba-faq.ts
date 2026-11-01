@@ -65,14 +65,14 @@ export const amoebaFaqPage = {
   meta: {
     title: "Amoeba FAQ",
     description:
-      "Answers on how Amoeba keeps data safe, what restarts and when, how pools expand and shrink, and how it runs on Azure managed disks and Amazon EBS.",
+      "Amoeba FAQ: how it keeps data safe, what restarts and when, what happens to your original disks, how pools grow and shrink, and how it runs on Azure and AWS.",
   },
   /* The deck is the Docs hub tile's line, with a period. */
   hero: {
     title: "Amoeba FAQ",
     deck: "Safety, downtime, expanding, agent and costs.",
   },
-  updated: "Updated 27 October 2026",
+  updated: "Updated 1 November 2026",
 } as const;
 
 /** The 8 groups and 29 questions, in the mock's order. */
@@ -109,7 +109,7 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         short: [
           "Amoeba installs its agent through Azure Run Command or AWS Systems Manager. It builds the pool beside your disks and copies your data while your services run.",
           "Then it switches each mount to the pool at the same path, with a short restart of the services that use it.",
-          "Once the switch is checked, Amoeba snapshots each source disk and deletes the disk. It keeps each snapshot for a few days, then deletes it too.",
+          "Once the switch is checked, Amoeba snapshots each source disk and deletes the disk. It keeps each snapshot for 7\u00a0days, then deletes it too.",
         ],
       },
       {
@@ -175,7 +175,7 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         short: [
           "A move only goes forward. Once the switch is checked, Amoeba detaches each source disk and takes a snapshot of it.",
           "It deletes a source disk only after that disk’s own snapshot is complete.",
-          "It keeps each safety snapshot for a few days, then deletes it too.",
+          "It keeps each safety snapshot for 7\u00a0days, then deletes it too.",
         ],
       },
       {
@@ -185,7 +185,7 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
           "A pool disk it emptied in a shrink.",
           "A source disk after the switch is checked, once its snapshot is complete.",
           "A disk an expand created and gave up on.",
-          "A safety snapshot, a few days after its source disk is deleted.",
+          "A safety snapshot, 7\u00a0days after its source disk is deleted.",
         ],
       },
     ],
@@ -349,7 +349,7 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         question: "Do I pay for both sets of disks during the move?",
         short: [
           "Yes, but only while the move runs. The source disks are deleted once the switch is checked.",
-          "Then you pay for the safety snapshots for the few days they’re kept.",
+          "Then you pay for the safety snapshots for the 7\u00a0days they’re kept.",
           "The console’s disk spend counts both sets while the move runs.",
         ],
       },
@@ -371,7 +371,7 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         id: "how-do-i-see-what-my",
         question: "How do I see what my VMs could save?",
         short: [
-          "Run the free block storage assessment in your terminal or Cloud Shell, on Azure or AWS. It writes one PDF report with each VM’s estimated saving at list price.",
+          "Run the free block storage cost assessment in your terminal or Cloud Shell, on Azure or AWS. It writes one PDF report with each VM’s estimated saving at list price.",
           "It sends nothing to Zoorik, and asks once before it reads inside your VMs.",
         ],
       },

@@ -21,11 +21,11 @@ export const term: GlossaryTerm = {
   sections: [
     {
       id: "an-example-from-aws",
-      title: "An example from AWS",
+      title: "Three showback models, from AWS",
       blocks: [
         {
           kind: "p",
-          text: "In AWS’s example, the infrastructure engineering team learns its share of last month’s spend. A showback model is how you split the cost. AWS describes three common ones, from least to most effort:",
+          text: "In AWS’s example, the infrastructure engineering team learns its share of last month’s cost. A showback model is how you split the cost. AWS describes three common ones, from least to most effort:",
         },
         {
           kind: "ul",
@@ -34,6 +34,11 @@ export const term: GlossaryTerm = {
             "By team or business unit: each team’s accounts are grouped together.",
             "By tag: a label on each resource names its team. Tags count only once activated for cost allocation.",
           ],
+        },
+        {
+          kind: "h3",
+          id: "kubernetes-showback-needs-cost-allocation",
+          title: "Kubernetes showback needs cost allocation",
         },
         {
           kind: "p",
@@ -64,7 +69,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why showback matters for your cloud cost",
       blocks: [
         {
           kind: "ul",

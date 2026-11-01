@@ -12,11 +12,11 @@ import type { ProductId } from "@/content/products";
  * the zoorikctl README, and the assessment's and kubernetes-scenarios' CONTRIBUTING files.
  */
 
-/** The guides' printed date ("Updated 16 October 2026"), which the sitemap gives them too. */
-export const openSourceUpdated = "16 October 2026";
+/** The guides' printed date ("Updated 1 November 2026"), which the sitemap gives them too. */
+export const openSourceUpdated = "1 November 2026";
 
 /** /open-source prints no date: the day its content last changed, for the sitemap. Move it in the PR that changes it. */
-export const openSourceLastUpdated = "21 October 2026";
+export const openSourceLastUpdated = "1 November 2026";
 
 export type GuideBlock =
   | { readonly kind: "p"; readonly text: string }
@@ -50,7 +50,14 @@ export interface OpenSourceGuide {
   readonly hero: { readonly title: string; readonly deck: string };
   /** The short answer under the byline, where the guide has one. */
   readonly short?: string;
-  readonly sections: readonly { readonly title: string; readonly blocks: readonly GuideBlock[] }[];
+  readonly sections: readonly {
+    readonly title: string;
+    /** Its address, where links still point at an older heading's; `sectionSlug(title)` when none. */
+    readonly id?: string;
+    /** Its chip on a phone, where that is shorter than the heading; the heading when none. */
+    readonly chip?: string;
+    readonly blocks: readonly GuideBlock[];
+  }[];
   readonly related: readonly { readonly text: string; readonly href: string }[];
 }
 
@@ -62,7 +69,7 @@ export const openSourceGuides: Readonly<Record<OpenSourceGuideId, OpenSourceGuid
     meta: {
       title: "Install Coral with Helm",
       description:
-        "Install the Coral agent with the coral-agent Helm chart: the values, the cloud identity on AKS and EKS, upgrades, GitOps with Argo CD, and uninstalling.",
+        "Install Coral with Helm: the coral-agent Helm chart, its values, the cloud identity on AKS and EKS, upgrades, Argo CD ignoreDifferences, and uninstalling.",
     },
     hero: {
       title: "Install Coral with Helm",
@@ -76,9 +83,9 @@ export const openSourceGuides: Readonly<Record<OpenSourceGuideId, OpenSourceGuid
             kind: "ul",
             items: [
               "Kubernetes 1.30 or later, with nodes on amd64 or arm64.",
-              "A connect token from the Connect dialog in the Zoorik console. A token works once, within an hour of being issued. Coral is in early access — [book a demo](https://cal.com/zoorik/talk) for a console account.",
+              "A connect token from the Connect dialog in the Coral console. A token works once, within an hour of being issued. Coral is in early access — [book a demo](https://cal.com/zoorik/talk) for a console account.",
               "The control plane origin the console names. It is the origin only: no path and no trailing slash.",
-              "The cloud identity, if Zoorik is to remove nodes. [Install Coral with Terraform + Helm](/docs/install-coral-with-terraform) creates it as code, or `zoorikctl cluster grant-node-deletion` creates it from the command line.",
+              "The cloud identity, if Coral is to remove nodes. [Install Coral with Terraform + Helm](/docs/install-coral-with-terraform) creates it as code, or `zoorikctl cluster grant-node-deletion` creates it from the command line.",
             ],
           },
         ],
@@ -227,7 +234,8 @@ export const openSourceGuides: Readonly<Record<OpenSourceGuideId, OpenSourceGuid
         ],
       },
       {
-        title: "With Argo CD or Flux",
+        title: "Argo CD ignoreDifferences and Flux",
+        id: "with-argo-cd-or-flux",
         blocks: [
           {
             kind: "p",
@@ -266,7 +274,7 @@ export const openSourceGuides: Readonly<Record<OpenSourceGuideId, OpenSourceGuid
         blocks: [
           {
             kind: "p",
-            text: "`helm uninstall` removes the objects this chart installed, including both namespaces. It does not undo what the agent changed on nodes and workloads (Zoorik cordons and taints, HPA and VPA holds, rollout markers and deletion-cost settings); `zoorikctl cluster disconnect` does. Helm leaves the custom resource definitions in place.",
+            text: "`helm uninstall` removes the objects this chart installed, including both namespaces. It does not undo what the agent changed on nodes and workloads (Coral’s cordons and taints, HPA and VPA holds, rollout markers and deletion-cost settings); `zoorikctl cluster disconnect` does. Helm leaves the custom resource definitions in place.",
           },
         ],
       },
@@ -281,7 +289,7 @@ export const openSourceGuides: Readonly<Record<OpenSourceGuideId, OpenSourceGuid
     meta: {
       title: "Install Coral with Terraform + Helm",
       description:
-        "Create the cloud permissions the Coral agent needs with Zoorik's Terraform modules for AKS and EKS, then install the agent with the coral-agent Helm chart.",
+        "Install Coral with Terraform: Zoorik's Terraform modules create the agent's permissions with AKS workload identity or EKS Pod Identity. Helm installs the agent.",
     },
     hero: {
       title: "Install Coral with Terraform + Helm",
@@ -291,7 +299,9 @@ export const openSourceGuides: Readonly<Record<OpenSourceGuideId, OpenSourceGuid
       "Each module creates the same identity, role and permissions that `zoorikctl connect` creates, with the same names, so zoorikctl sees them as already done. Both modules are on the Terraform Registry under Apache-2.0.",
     sections: [
       {
-        title: "AKS",
+        title: "AKS workload identity with Terraform",
+        id: "aks",
+        chip: "AKS",
         blocks: [
           { kind: "h3", text: "Before you apply" },
           {
@@ -362,11 +372,12 @@ export const openSourceGuides: Readonly<Record<OpenSourceGuideId, OpenSourceGuid
         ],
       },
       {
-        title: "Machine deletion",
+        title: "Node removal and pool minimums",
+        id: "machine-deletion",
         blocks: [
           {
             kind: "p",
-            text: "Machine deletion and pool-minimum lowering are on by default (`lower_minimums = true`), the same as zoorikctl’s default Yes. With `lower_minimums = false`, the agent cannot lower a pool’s or group’s minimum.",
+            text: "Node removal and pool-minimum reduction are on by default (`lower_minimums = true`), the same as zoorikctl’s default Yes. With `lower_minimums = false`, the agent cannot reduce a pool’s or group’s minimum.",
           },
           {
             kind: "p",
@@ -379,7 +390,7 @@ export const openSourceGuides: Readonly<Record<OpenSourceGuideId, OpenSourceGuid
         blocks: [
           {
             kind: "p",
-            text: "If Terraform manages your node pools, ignore what the agent changes, or each apply undoes it. On AKS:",
+            text: "If Terraform manages your node pools, ignore what the agent changes, or each apply undoes it. See how to [stop Terraform from reverting node pool changes](/coral-works-with-terraform). On AKS:",
           },
           {
             kind: "code",
@@ -387,7 +398,7 @@ export const openSourceGuides: Readonly<Record<OpenSourceGuideId, OpenSourceGuid
           },
           {
             kind: "p",
-            text: "On the cluster’s default pool, the same fields sit under `default_node_pool[0]`. On EKS, each node the agent removes also lowers the group’s desired size. For `aws_eks_node_group`:",
+            text: "On the cluster’s default pool, the same fields sit under `default_node_pool[0]`. On EKS, each node the agent removes also reduces the group’s desired size. For `aws_eks_node_group`:",
           },
           {
             kind: "code",
@@ -601,7 +612,7 @@ export const openSourcePage = {
       },
       {
         name: "assessment",
-        line: "The free savings assessment for Kubernetes and cloud disks.",
+        line: "The free assessment for Kubernetes and block storage.",
         licence: "Apache-2.0",
         links: [
           {

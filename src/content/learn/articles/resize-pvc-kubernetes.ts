@@ -6,7 +6,7 @@ import { figure as figure3 } from "@/features/learn/figures/resize-pvc-kubernete
 export const article: Article = {
   slug: "resize-pvc-kubernetes",
   title: "Resize a PVC in Kubernetes, and why it can’t shrink",
-  meta: "Resize a PVC in Kubernetes by raising its storage request once the StorageClass sets allowVolumeExpansion. Steps for AKS, EKS gp3, StatefulSets and shrinking.",
+  meta: "Resize a PVC in Kubernetes: expand it by raising its storage request once allowVolumeExpansion is set. Steps for AKS, EKS gp3, StatefulSets and shrinking.",
   h1: "How to resize a PVC in Kubernetes, and why it can’t shrink",
   deck: "Raise the storage request and the disk grows. Steps for AKS, EKS and StatefulSets, and the route to a smaller claim.",
   card: "Grow a PVC on AKS and EKS, resize a StatefulSet’s claims, and what to do when a claim is too big.",
@@ -19,7 +19,7 @@ export const article: Article = {
   cover: "/learn-covers/zoorik-learn-resize-pvc-kubernetes-1200x630.webp",
   coverAlt: "Resize a PVC: you can grow it, but not shrink it",
   short: [
-    "To resize a PVC (PersistentVolumeClaim) in Kubernetes, raise its storage request once its StorageClass sets ",
+    "To expand or resize a PVC (PersistentVolumeClaim) in Kubernetes, raise its storage request once its StorageClass sets ",
     { code: "allowVolumeExpansion: true" },
     " and its storage driver supports expansion. The disk and its filesystem grow, and the pod can keep running, but a PVC can’t shrink: a smaller claim means copying the data.",
   ],
@@ -517,15 +517,6 @@ export const article: Article = {
             " and ",
             { a: "EBS cost optimization", href: "/ebs-cost-optimization" },
             " cover Amoeba on each cloud.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            { a: "Coral", href: "/coral" },
-            ", Zoorik’s Kubernetes optimization product, rebalances CPU and memory requests and drains spare nodes on AKS and EKS. For the compute side of a cluster’s cost, see ",
-            { a: "Kubernetes cost optimization", href: "/kubernetes-cost-optimization" },
-            ".",
           ],
         },
       ],

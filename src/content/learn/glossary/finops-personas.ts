@@ -29,7 +29,7 @@ export const term: GlossaryTerm = {
   sections: [
     {
       id: "core-and-allied-personas",
-      title: "Core and allied personas",
+      title: "FinOps roles and responsibilities: core and allied personas",
       blocks: [
         { kind: "p", text: "Microsoft lists 7 FinOps core personas:" },
         {
@@ -52,7 +52,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "who-owns-which-lever",
-      title: "Who owns which lever",
+      title: "Who owns cloud cost: usage and rates",
       blocks: [
         {
           kind: "p",
@@ -71,7 +71,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why FinOps personas matter for your cloud cost",
       blocks: [
         {
           kind: "ul",

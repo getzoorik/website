@@ -7,6 +7,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { rootArticlePaths, routes } from "@/config/site";
 import {
   learnTopics,
+  relatedTitle,
   type Article,
   type ArticleBlock,
   type ArticleItem,
@@ -209,7 +210,9 @@ const bylineOf = (article: Article): string => {
   const by = author
     ? ` · By ${author.name}${author.linkedin ? " (opens in a new tab)" : ""}, ${author.role}`
     : "";
-  return `Published ${printedDay(article.published)}${updated}${by} · Published by Zoorik`;
+  /* A Zoorik author's role already names Zoorik, so only a guest's byline or no one's ends on the publisher. */
+  const publisher = author && !author.guest ? "" : " · Published by Zoorik";
+  return `Published ${printedDay(article.published)}${updated}${by}${publisher}`;
 };
 
 /** The product the closing row offers: the help box's, else the article's own. */
@@ -331,10 +334,10 @@ describe.each(learnArticles.map((article) => [articleRoute(article), article.slu
       const top = (await main(slug)).querySelector(".ar-frame > .fq-upd.doc-prose:first-child")!;
       const byline = top.querySelector(":scope > p.doc-updated:first-child")!;
       expect(text(byline)).toBe(bylineOf(article));
-      const publisher = [...byline.querySelectorAll("a")].at(-1)!;
-      expect(publisher).toHaveAttribute("href", "/about");
-      expect(publisher.querySelector("span[translate='no']")).toHaveTextContent(/^Zoorik$/);
       const author = articleAuthor(article);
+      const publisher = byline.querySelector("a[href='/about']");
+      if (author && !author.guest) expect(publisher).toBeNull();
+      else expect(publisher!.querySelector("span[translate='no']")).toHaveTextContent(/^Zoorik$/);
       const profile = byline.querySelector("a[href^='https://']");
       if (author?.linkedin) {
         expect(profile).toHaveAttribute("href", author.linkedin);
@@ -447,19 +450,36 @@ describe.each(learnArticles.map((article) => [articleRoute(article), article.slu
       const container = await main(slug);
       const foot = container.querySelector(".ar-frame > .fq-upd.ar-foot");
       const sources = article.sources ?? [];
-      if (!article.help && sources.length === 0) {
-        /* An essay has neither, so the frame has no closing block. */
+      /* An article that ends on its own product's section carries the help box's links there, and no box. */
+      const helpNames = article.help?.product
+        ? [products[article.help.product].name]
+        : ["Coral", "Amoeba"];
+      const lastTitle = article.sections.at(-1)!.title;
+      const inLast = Boolean(article.help && helpNames.some((name) => lastTitle.includes(name)));
+      const lastSection = container.querySelector(`#${article.sections.at(-1)!.id}`)!;
+      const moved = lastSection.querySelector("p.ar-help-a");
+      if (inLast) {
+        expect([...moved!.querySelectorAll("a.alink")].map((a) => a.getAttribute("href"))).toEqual(
+          article.help!.links.map((link) => link.href),
+        );
+        expect(text(moved)).not.toMatch(/[a-z]Estimate/);
+      } else {
+        expect(moved).toBeNull();
+      }
+      const box = article.help && !inLast ? article.help : undefined;
+      if (!box && sources.length === 0) {
+        /* An essay has neither, or its help is in its last section, so the frame has no closing block. */
         expect(foot).toBeNull();
         return;
       }
       const prose = container.querySelector(".ar-frame > .fq-upd.ar-foot.doc-prose:last-child")!;
       const help = prose.querySelector(":scope > aside.doc-call.doc-help");
-      if (article.help) {
+      if (box) {
         expect(text(help!.querySelector(".doc-call-t"))).toBe(
-          `How ${products[article.help.product].name} helps`,
+          box.product ? `How ${products[box.product].name} helps` : "How Coral and Amoeba help",
         );
         expect([...help!.querySelectorAll("a.alink")].map((a) => a.getAttribute("href"))).toEqual(
-          article.help.links.map((link) => link.href),
+          box.links.map((link) => link.href),
         );
       } else {
         expect(help).toBeNull();
@@ -483,7 +503,7 @@ describe.each(learnArticles.map((article) => [articleRoute(article), article.slu
     it("relates three to five pages, each named as its page names it, each anchor one its page still has", async () => {
       const related = (await main(slug)).querySelector("section.sec.ar-rel#related")!;
       expect(related).toHaveAttribute("aria-labelledby", "related-h");
-      expect(text(related.querySelector("h2#related-h"))).toBe("Related");
+      expect(text(related.querySelector("h2#related-h"))).toBe(relatedTitle[article.topic]);
       expect(article.related.length).toBeGreaterThanOrEqual(3);
       expect(article.related.length).toBeLessThanOrEqual(5);
       const tiles = [...related.querySelectorAll("article.dt > .dt-a")];
@@ -511,7 +531,7 @@ describe.each(learnArticles.map((article) => [articleRoute(article), article.slu
       /* The links of the short answer, the opening and the sections, to pages of this site: not the byline's, nor the
        help box's and the sources'. */
       const drawn = [...frame.querySelectorAll("a")]
-        .filter((a) => !a.closest("p.doc-updated, .ar-foot"))
+        .filter((a) => !a.closest("p.doc-updated, .ar-foot, p.ar-help-a"))
         .map((a) => a.getAttribute("href")!)
         .filter((href) => href.startsWith("/"));
       const pieces = bodyLinksOf(article).filter((piece) => piece.href.startsWith("/"));
@@ -524,7 +544,7 @@ describe.each(learnArticles.map((article) => [articleRoute(article), article.slu
     it("opens a link to another site in a new tab, with its arrow and its hint", async () => {
       const frame = (await main(slug)).querySelector(".ar-frame")!;
       const away = [...frame.querySelectorAll("a[href^='https://']")].filter(
-        (a) => !a.closest("p.doc-updated, .ar-foot"),
+        (a) => !a.closest("p.doc-updated, .ar-foot, p.ar-help-a"),
       );
       expect(away.map((a) => a.getAttribute("href"))).toEqual(
         bodyLinksOf(article)
@@ -650,9 +670,9 @@ describe("/learn/poor-architecture-cloud-bill, against its draft", () => {
     const frame = (await main(slug)).querySelector(".ar-frame")!;
     expect([...frame.querySelectorAll("section.fq-sec > h2")].map(text)).toEqual([
       "The hidden cost of architectural decisions",
-      "VMs versus containers: the architectural trade-off",
+      "Containers vs virtual machines: the architectural trade-off",
       "Five places poor architecture adds cost",
-      "How we approach cloud cost optimization as engineers",
+      "How we review an architecture for cost",
       "What we found in that engagement",
       "Cloud cost is an engineering discipline",
       "Where Coral fits",
@@ -695,10 +715,11 @@ describe("/learn/poor-architecture-cloud-bill, against its draft", () => {
   });
 
   it("links only words already in the text", async () => {
-    const links = [...(await main(slug)).querySelectorAll(".ar-frame .fq-sec-b a")].map((a) => [
-      text(a),
-      a.getAttribute("href"),
-    ]);
+    /* Not the help box's links, which close its own product section, Where Coral fits (1 Nov 2026): every article's
+       help is checked with the frame's close. */
+    const links = [...(await main(slug)).querySelectorAll(".ar-frame .fq-sec-b a")]
+      .filter((a) => !a.closest("p.ar-help-a"))
+      .map((a) => [text(a), a.getAttribute("href")]);
     expect(links).toEqual([
       [
         "Azure managed disks and Amazon EBS volumes can grow but can’t shrink in place",

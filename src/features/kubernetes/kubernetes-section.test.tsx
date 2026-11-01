@@ -60,7 +60,7 @@ describe("KubernetesSection", () => {
       /^Coral product preview with example figures: the Overview, /,
     );
     expect(film.querySelector("figcaption.mo-cap")!.textContent).toBe(
-      "Product preview with example figures.",
+      "Coral product preview with example figures.",
     );
   });
 

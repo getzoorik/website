@@ -185,10 +185,11 @@ describe("the glossary index", () => {
         true,
       );
       expect(term.sections.length, term.slug).toBeGreaterThanOrEqual(1);
-      expect(term.sections.length, term.slug).toBeLessThanOrEqual(3);
-      expect(term.sections.map((section) => section.title)).toContain(
-        "Why it matters for your cloud cost",
-      );
+      expect(term.sections.length, term.slug).toBeLessThanOrEqual(4);
+      expect(
+        term.sections.map((section) => section.id),
+        term.slug,
+      ).toContain("why-it-matters-for-your-cloud-cost");
     }
   });
 
@@ -270,7 +271,7 @@ describe.each(glossaryTerms.map((term) => term.slug))("/learn/glossary/%s", (slu
     }
     /* Related terms are the tiles under the frame, not a section of it. */
     expect(sections.map((section) => text(section.querySelector("h2")))).not.toContain(
-      "Related terms",
+      "More cloud cost terms",
     );
     expect(frame.querySelector("details")).toBeNull();
     expect(
@@ -384,7 +385,7 @@ describe.each(glossaryTerms.map((term) => term.slug))("/learn/glossary/%s", (slu
   it("draws its Related terms as the articles' Related tiles, each a term with its line", async () => {
     const related = (await main(slug)).querySelector("section.sec.ar-rel#related")!;
     expect(related).toHaveAttribute("aria-labelledby", "related-h");
-    expect(text(related.querySelector("h2#related-h"))).toBe("Related terms");
+    expect(text(related.querySelector("h2#related-h"))).toBe("More cloud cost terms");
     const tiles = [...related.querySelectorAll("article.dt > .dt-a")];
     expect(
       tiles.map((tile) => [

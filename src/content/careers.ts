@@ -35,11 +35,11 @@ import type { ProductId } from "@/content/products";
  * the page does not print it. Whoever changes the page's content moves this to
  * that day in the same PR; never the build's date.
  */
-export const careersLastUpdated = "25 October 2026";
+export const careersLastUpdated = "1 November 2026";
 
 /**
  * A tool's mark (`careers-marks.tsx`): the site's own for Kubernetes, Azure,
- * AWS and Linux, Install your way's for Helm and Terraform, Simple Icons' for
+ * AWS, Linux and Windows, Install your way's for Helm and Terraform, Simple Icons' for
  * the rest.
  */
 export type CareersToolMark =
@@ -47,6 +47,7 @@ export type CareersToolMark =
   | "azure"
   | "aws"
   | "linux"
+  | "windows"
   | "go"
   | "python"
   | "typescript"
@@ -64,6 +65,8 @@ export type CareersToolMark =
 export interface CareersTool {
   readonly name: string;
   readonly mark?: CareersToolMark;
+  /** A second mark drawn before `mark`: Amoeba’s VMs, Windows beside Linux. */
+  readonly markBefore?: CareersToolMark;
 }
 
 /** The six CREDIT values, in their order; each has its scene (`careers-scenes.tsx`). */
@@ -113,7 +116,7 @@ const innerRing = [
   { name: "Azure", mark: "azure" },
   { name: "AWS", mark: "aws" },
   { name: "Linux", mark: "linux" },
-] as const satisfies readonly Required<CareersTool>[];
+] as const satisfies readonly Required<Pick<CareersTool, "name" | "mark">>[];
 
 /** The hero's middle ring: what they are written in and on. */
 const middleRing = [
@@ -122,7 +125,7 @@ const middleRing = [
   { name: "TypeScript", mark: "typescript" },
   { name: "PostgreSQL", mark: "postgresql" },
   { name: "Docker", mark: "docker" },
-] as const satisfies readonly Required<CareersTool>[];
+] as const satisfies readonly Required<Pick<CareersTool, "name" | "mark">>[];
 
 /** The hero's outer ring: how they are built, shipped and served. */
 const outerRing = [
@@ -133,7 +136,7 @@ const outerRing = [
   { name: "Argo CD", mark: "argocd" },
   { name: "GitHub", mark: "github" },
   { name: "Cloudflare", mark: "cloudflare" },
-] as const satisfies readonly Required<CareersTool>[];
+] as const satisfies readonly Required<Pick<CareersTool, "name" | "mark">>[];
 
 /**
  * Follow us on LinkedIn, in the hero's quiet line and on the close's wire button: "Follow us on", then LinkedIn's
@@ -170,7 +173,7 @@ const values = [
     id: "results",
     letter: "R",
     name: "Results for customers",
-    meaning: "We reduce our customers’ cloud bills without breaking anything.",
+    meaning: "We reduce our customers’ cloud cost without breaking anything.",
     behaviours: [
       "Measure impact, not activity",
       "Know the people we serve",
@@ -301,7 +304,7 @@ export const careers = {
         src: "/motion/amoeba-overview-5s.mp4",
         label: "Amoeba’s Overview with example figures",
         stack: [
-          { name: "Linux VMs", mark: "linux" },
+          { name: "Windows and Linux VMs", markBefore: "windows", mark: "linux" },
           { name: "btrfs" },
           { name: "systemd" },
           { name: "Azure", mark: "azure" },

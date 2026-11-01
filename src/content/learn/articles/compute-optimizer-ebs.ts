@@ -6,7 +6,7 @@ import { figure as figure3 } from "@/features/learn/figures/compute-optimizer-eb
 export const article: Article = {
   slug: "compute-optimizer-ebs",
   title: "AWS Compute Optimizer for EBS: what it recommends",
-  meta: "Compute Optimizer EBS recommendations read 14 days of I/O metrics, not used space. See what each finding covers and how Trusted Advisor’s checks compare.",
+  meta: "AWS Compute Optimizer EBS recommendations read 14 days of I/O metrics, not used space. See what each finding covers and how Trusted Advisor’s checks compare.",
   h1: "What AWS Compute Optimizer recommends for EBS volumes",
   deck: "Type, size, IOPS and throughput from 14\u00a0days of I/O metrics, how Trusted Advisor differs, and what you apply yourself.",
   card: "What Compute Optimizer recommends for EBS volumes, the metrics behind it, and how Trusted Advisor differs.",
@@ -256,7 +256,7 @@ export const article: Article = {
     },
     {
       id: "is-aws-compute-optimizer-free",
-      title: "Is AWS Compute Optimizer free?",
+      title: "Are Compute Optimizer’s EBS recommendations free?",
       blocks: [
         {
           kind: "p",
@@ -294,10 +294,6 @@ export const article: Article = {
         {
           kind: "p",
           text: "The rest stops at the recommendation. A new size, IOPS or throughput is yours to request. Compute Optimizer’s guidance on performance risk points you to the EBS steps for requesting a volume modification.",
-        },
-        {
-          kind: "p",
-          text: "Each Trusted Advisor action in the table also begins with “Consider.”",
         },
         { kind: "svg", figure: figure3 },
         { kind: "h3", id: "new-type-iops-or-throughput", title: "New type, IOPS or throughput" },
@@ -374,11 +370,11 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
+              " The services that use those mounts restart once, at the switch onto the pool.",
             ],
             [
               { b: "The old volumes." },
-              " Once the switch is checked, Amoeba snapshots each old volume and deletes it. It keeps each snapshot for a few days, then deletes it too. You pay for both sets of volumes only while the move runs, then for the snapshots while they’re kept.",
+              " Once the switch is checked, Amoeba snapshots each old volume and deletes it. It keeps each snapshot for 7 days, then deletes it too. You pay for both sets of volumes only while the move runs, then for the snapshots while they’re kept.",
             ],
             [
               { b: "Your control." },
@@ -404,7 +400,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves an EC2 instance’s EBS data volumes onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one volume at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage cost optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
@@ -470,7 +466,7 @@ export const article: Article = {
       href: "/learn/ebs-elastic-volumes",
     },
     {
-      title: "EBS volume types: pricing and how to choose",
+      title: "EBS volume types compared: how to choose one",
       where: "Learn",
       href: "/learn/ebs-volume-types",
     },

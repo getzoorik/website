@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "azure-hybrid-benefit",
   term: "Azure Hybrid Benefit",
   title: "What is Azure Hybrid Benefit?",
-  meta: "Azure Hybrid Benefit lets you use Windows Server, SQL Server, RHEL and SLES licenses you own on Azure. See who qualifies, what it removes and how AKS uses it.",
+  meta: "Azure Hybrid Benefit (AHB) lets you use Windows Server, SQL Server, RHEL and SLES licenses you own on Azure. Who qualifies, what it removes and how AKS uses it.",
   h1: "What is Azure Hybrid Benefit?",
   card: "Azure Hybrid Benefit is an Azure offer that lets you use licenses you own on Azure.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -36,7 +36,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "windows-server-linux-and-aks",
-      title: "Windows Server, Linux and AKS",
+      title: "Azure Hybrid Benefit for Windows Server, Linux and AKS",
       blocks: [
         {
           kind: "ul",
@@ -52,7 +52,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why Azure Hybrid Benefit matters for your cloud cost",
       blocks: [
         {
           kind: "ul",

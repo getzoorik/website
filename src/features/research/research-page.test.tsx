@@ -38,7 +38,7 @@ describe("/cloud-cost-optimization-research-papers", () => {
   it("opens on Learn's hero, then the five groups, each its name, its line and its papers two by two", () => {
     const root = render(<Research />).container;
     expect(root.querySelector("main > header.hero.doc-hero.lv-hero#top h1")).toHaveTextContent(
-      "Cloud cost optimization research",
+      "Cloud cost optimization research papers",
     );
     const papers = root.querySelector("main > section.sec#papers")!;
     expect(papers).toHaveAttribute("aria-label", "Research papers");
@@ -54,15 +54,20 @@ describe("/cloud-cost-optimization-research-papers", () => {
       expect(group).toHaveAttribute("aria-labelledby", `${group.id}-h`);
       expect(group.querySelector(".dt-grid.dt-2x2")).not.toBeNull();
     }
-    const tiles = [...papers.querySelectorAll("article.dt > a.dt-a")];
+    /* Only the paper's name is the link; the sheet stretches it over the whole tile. */
+    const tiles = [...papers.querySelectorAll("article.dt > div.dt-a")];
     expect(tiles).toHaveLength(researchPage.groups.flatMap((group) => group.papers).length);
     for (const tile of tiles) {
-      expect(tile.getAttribute("href")).toMatch(/^https:\/\//);
-      expect(tile).toHaveAttribute("target", "_blank");
-      expect(tile).toHaveAttribute("rel", "noopener noreferrer");
-      expect(tile.querySelectorAll(".dt-l")).toHaveLength(2);
+      const link = tile.querySelector(":scope > div > h3.dt-t > a")!;
+      expect(tile.querySelectorAll("a")).toHaveLength(1);
+      expect(link.getAttribute("href")).toMatch(/^https:\/\//);
+      expect(link).toHaveAttribute("target", "_blank");
+      expect(link).toHaveAttribute("rel", "noopener noreferrer");
+      expect(tile.querySelectorAll("p.dt-l")).toHaveLength(2);
       expect(tile.querySelector("svg.dt-go")).toHaveAttribute("aria-hidden", "true");
-      expect(tile.querySelector(".sr-only")).toHaveTextContent("(opens in a new tab)");
+      /* The h3 holds the paper's name alone; a screen reader still hears that the link opens a new tab. */
+      expect(link.querySelector(".sr-only")).toBeNull();
+      expect(link).toHaveAccessibleName(`${text(link)} (opens in a new tab)`);
     }
     expect(text(tiles[0]!.querySelector(".dt-t"))).toBe(
       "Large-scale cluster management at Google with Borg",

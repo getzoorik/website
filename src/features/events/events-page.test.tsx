@@ -97,15 +97,15 @@ function expected(day: string) {
 
 describe("/events's metadata", () => {
   it("has the mock's title through the template, its description and its canonical", () => {
-    expect(metadata.title).toBe("Kubernetes, FinOps and cloud cost events");
+    expect(metadata.title).toBe("Kubernetes conferences and FinOps events");
     expect(metadata.description).toBe(
-      "Conferences and community days on Kubernetes, FinOps, cloud cost and block storage, with dates, places and a link to each event's own page.",
+      "Kubernetes conferences such as KubeCon, FinOps conferences such as FinOps X, and cloud cost and storage events, with dates, places and each event’s page.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/events" });
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/events",
-      title: "Kubernetes, FinOps and cloud cost events | Zoorik",
+      title: "Kubernetes conferences and FinOps events | Zoorik",
     });
   });
 });
@@ -114,9 +114,11 @@ describe("/events", () => {
   it("opens on the utility hero and ends on where the dates come from, with no closing row", () => {
     const main = page().querySelector("main#main")!;
     const hero = main.querySelector(":scope > header.hero.doc-hero#top")!;
-    expect(text(hero.querySelector("h1"))).toBe("Cloud cost, FinOps and Kubernetes events");
+    expect(text(hero.querySelector("h1"))).toBe(
+      "Kubernetes conferences, FinOps and cloud cost events",
+    );
     expect(text(hero.querySelector(".doc-deck"))).toBe(
-      `Conferences and community days worth the trip, with dates, places and each event’s own page. Updated ${eventsListUpdated}.`,
+      `Kubernetes conferences, FinOps events and community days worth the trip, with dates, places and each event’s own page. Updated ${eventsListUpdated}.`,
     );
     const wrap = main.querySelector(":scope > .sec.doc-body > .wrap")!;
     expect(wrap.firstElementChild).toHaveClass("ev-find");
@@ -191,8 +193,8 @@ describe("/events", () => {
     const root = page();
     const { lead, all, names, months } = expected("2026-10-19");
     const next = root.querySelector("section.ev-next[aria-labelledby='next-h']")!;
-    expect(text(next.querySelector(".ev-next-in > .ev-eyebrow"))).toBe("Next up");
-    expect(text(next.querySelector("h2#next-h"))).toBe(lead.name);
+    expect(text(next.querySelector("h2#next-h"))).toBe("Next up");
+    expect(text(next.querySelector(".ev-next-n"))).toBe(lead.name);
     expect(text(next.querySelector(".ev-next-when"))).toBe(`${when(lead).text} · ${place(lead)}`);
     expect(text(next.querySelector(".ev-next-d"))).toBe(split(lead.description)[0]);
     expect(next.querySelector("a.ev-out.ev-out-lg")).toHaveAttribute("href", lead.officialUrl);
@@ -336,7 +338,7 @@ describe("/events's filters", () => {
     expect(text(count)).toBe(`${online.length} events`);
 
     /* "Next up" stands whatever the filters say. */
-    expect(text(root.querySelector("#next-h"))).toBe(expected("2026-10-19").lead.name);
+    expect(text(root.querySelector(".ev-next-n"))).toBe(expected("2026-10-19").lead.name);
   });
 
   it("say 1 event for one, and with none the empty state, every month hidden, and the way back", () => {
@@ -403,7 +405,7 @@ describe("/events's past events", () => {
     expect(cardNames(root)).toEqual(all);
     expect(shownNames(root)).toEqual(names);
     expect(headings(root)).toEqual(months);
-    expect(text(root.querySelector("#next-h"))).toBe(lead.name);
+    expect(text(root.querySelector(".ev-next-n"))).toBe(lead.name);
     expect(text(root.querySelector(".ev-count"))).toBe(`${list.length} events`);
     for (const event of events.filter((e) => ended(e, day))) expect(all).not.toContain(event.name);
   }

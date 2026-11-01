@@ -5,7 +5,7 @@ import { figure as figure2 } from "@/features/learn/figures/oomkilled-exit-code-
 export const article: Article = {
   slug: "oomkilled-exit-code-137",
   title: "OOMKilled exit code 137 in Kubernetes: how to fix",
-  meta: "OOMKilled exit code 137 means the OOM killer stopped your container with SIGKILL. Confirm it with kubectl, tell it from eviction, and fix it on AKS and EKS.",
+  meta: "OOMKilled exit code 137 means the OOM killer stopped your container with SIGKILL. Confirm it with kubectl, tell it from pod eviction, and fix it on AKS and EKS.",
   h1: "OOMKilled exit code 137: why Kubernetes kills a container",
   deck: "What 137 means, how to tell an OOM kill from the other kills, and how to size memory so it stops.",
   card: "Read the Reason field, tell an OOM kill from eviction and probe kills, then fix the memory or the leak.",
@@ -191,13 +191,16 @@ export const article: Article = {
         {
           kind: "h3",
           id: "when-the-kubelet-evicts-the-pod",
-          title: "When the kubelet evicts the pod",
+          title: "Pod evicted: when the kubelet acts on node memory pressure",
         },
         {
           kind: "p",
           text: [
             "Eviction works on the whole pod. The kubelet watches the node’s available memory and acts when it falls below ",
-            { a: "a threshold", href: "/learn/kubernetes-allocatable-vs-capacity" },
+            {
+              a: "its hard eviction threshold",
+              href: "/learn/kubernetes-allocatable-vs-capacity",
+            },
             ". Its built-in default is ",
             { code: "memory.available<100Mi" },
             " on Linux nodes, and its configuration can set another.",
@@ -497,7 +500,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "One app needed more memory, and Coral gave it more. The memory the apps reserve went from 6.4 to 5.4\u00a0GiB, 16% less. ",
-            { a: "Our case study", href: "/coral-value-lab" },
+            { a: "The Coral Value Lab study", href: "/coral-value-lab" },
             " has the full run.",
           ],
         },

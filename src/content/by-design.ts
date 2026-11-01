@@ -2,7 +2,7 @@ import { routes } from "@/config/site";
 import type { ArticleText } from "@/content/learn/article";
 
 /**
- * By design — "Cloud cost optimization, without the risk", the home page's one
+ * By design — "Autonomous cloud cost optimization, without the risk", the home page's one
  * band: four promises, each a drawing with its title as the caption.
  *
  * The band says what both products have in common, so a promise only belongs
@@ -33,12 +33,14 @@ export interface ByDesignCard {
 }
 
 /**
- * The band's heading. Its first words link to the cloud cost pillar, which owns that search (owner, 1 Nov 2026), in
- * the heading's own ink, the accent on hover (`.sec-head h2 a`, the site system).
+ * The band's heading, on the search "autonomous cloud cost optimization" (owner, 1 Nov 2026). Its words "cloud cost
+ * optimization" link to the cloud cost pillar, which owns that search, in the heading's own ink, the accent on hover
+ * (`.sec-head h2 a`, the site system).
  */
 export const byDesignHeader: { readonly title: ArticleText } = {
   title: [
-    { a: "Cloud cost optimization", href: routes.cloudCostOptimization },
+    "Autonomous ",
+    { a: "cloud cost optimization", href: routes.cloudCostOptimization },
     ", without the risk",
   ],
 };
@@ -58,7 +60,7 @@ export const byDesignCards: readonly ByDesignCard[] = [
   },
   {
     id: "reliable",
-    title: "No code changes, no downtime",
+    title: "Without any downtime or code changes",
     drawing: "resize",
     description: "No code changes. Resizes happen while you keep serving.",
   },

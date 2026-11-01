@@ -15,9 +15,10 @@ const rowOf = (props: AssessSectionProps = {}) => render(<AssessSection {...prop
 const text = (el: Element | null) => el?.textContent ?? "";
 
 describe("the closing row's copy", () => {
-  it("is the mocks' words, with no period on either heading", () => {
+  it("is the mocks' words, with no period on either label, and no heading", () => {
     const row = rowOf();
-    expect([...row.querySelectorAll("h2.as-h")].map(text)).toEqual([
+    expect(row.querySelector("h2")).toBeNull();
+    expect([...row.querySelectorAll("div.as-h")].map(text)).toEqual([
       "Find your own number",
       "Talk to the builders",
     ]);
@@ -99,8 +100,11 @@ describe("the closing row's shape", () => {
     expect([...grid.children].map((card) => card.classList[0])).toEqual(["as-card", "as-cal"]);
     expect(grid.children[0]).toHaveClass("as-mini");
     expect(row.querySelector("#contact")).toBe(grid.children[1]);
-    /* Each card opens on its heading: no eyebrow label above it. */
-    for (const card of grid.children) expect(card.firstElementChild!.tagName).toBe("H2");
+    /* Each card opens on its label, `div.as-h`: no eyebrow label above it. */
+    for (const card of grid.children) {
+      expect(card.firstElementChild!.tagName).toBe("DIV");
+      expect(card.firstElementChild).toHaveClass("as-h");
+    }
   });
 
   /* One render per case: the cards share their ids from page to page, and a

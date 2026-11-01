@@ -14,7 +14,7 @@ import { socialProfiles } from "@/content/footer";
  * The day /community's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /community's content moves this to that day in the same PR; never the build's date.
  */
-export const communityLastUpdated = "21 October 2026";
+export const communityLastUpdated = "1 November 2026";
 
 /** A profile of the footer's list, by its platform. */
 const profile = (platform: (typeof socialProfiles)[number]["platform"]): string =>
@@ -155,7 +155,7 @@ export const communityPage = {
         communities: [
           {
             name: "r/aws",
-            what: "AWS subreddit; surprise bills and cost optimization are regular threads.",
+            what: "AWS subreddit; surprise charges and cost optimization are regular threads.",
             href: "https://www.reddit.com/r/aws/",
             logo: "reddit",
           },

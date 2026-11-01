@@ -48,7 +48,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "an-example-a-first-round",
-      title: "An example: a first round",
+      title: "How to assess FinOps maturity: a first round",
       blocks: [
         {
           kind: "p",
@@ -62,13 +62,12 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why the FinOps maturity model matters for your cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
             "At crawl, some major teams skip the process, so their spend gets fewer checks.",
-            "Start the FinOps crawl, walk, run rating with the capabilities that matter most.",
             [
               "A stage alone doesn’t ",
               { a: "reduce your cloud cost", href: "/cloud-cost-optimization" },

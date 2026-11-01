@@ -38,9 +38,9 @@ import { marketTool } from "./market-rows";
  * the four live pages exist (one per product, then since 1 Nov 2026 two more for Coral, against the clouds' own
  * tools), each prints its rows from the market data with every claim about the other tool linked to its source,
  * the day it was checked, and no SOC 2 row; the two newer print the template's optional parts too (the short answer,
- * the Learn frame, the questions, the sources and Read more), the other two exactly as before; any other slug, a held
- * page among them, is a 404, and each live page's old address under /learn redirects here. Competitors' names are
- * read from the data, never typed here. The sitemap entries are in `src/app/sitemap.test.ts`, the page graphs in
+ * the Learn frame, the questions, the sources and Read more), the other two as before, but for coral-vs-stormforge's
+ * questions (1 Nov 2026); any other slug, a held page among them, is a 404, and each live page's old address under
+ * /learn redirects here. Competitors' names are read from the data, never typed here. The sitemap entries are in `src/app/sitemap.test.ts`, the page graphs in
  * `src/config/structured-data.test.ts`.
  */
 
@@ -75,8 +75,8 @@ const checkedOf = (entry: VersusPage): string => entry.checked ?? "19 October 20
 
 /** Each page's rows with the pricing row: the two first pages' counts as they were, the newer pages' from their drafts. */
 const rowCounts: Readonly<Record<string, number>> = {
-  "coral-vs-stormforge": 14,
-  "amoeba-vs-zesty-disk": 11,
+  "coral-vs-stormforge": 13,
+  "amoeba-vs-zesty-disk": 10,
   "coral-vs-azure-advisor": 11,
   "coral-vs-aws-compute-optimizer": 12,
 };
@@ -190,8 +190,12 @@ describe.each(versusPages.map((entry) => [entry.slug, entry] as const))("%s", (_
     if (entry.card) expect(pageCards[versusRoute(entry)]!.alt).toBe(`Zoorik. ${entry.meta.title}.`);
     expect(`${entry.meta.title} | Zoorik`.length).toBeLessThanOrEqual(60);
     expect(entry.meta.description.length).toBeLessThanOrEqual(158);
-    /* "Coral vs AWS Compute Optimizer for EKS": the draft's title names the cluster it is about. */
-    expect(entry.meta.title.startsWith(`${ours} vs ${facts.name}`)).toBe(true);
+    /* "AWS Compute Optimizer vs Coral for EKS": the title names both, either way round (theirs first where that is the
+       search, 1 Nov 2026), and the cluster it is about where the draft's does. */
+    expect(
+      entry.meta.title.startsWith(`${ours} vs ${facts.name}`) ||
+        entry.meta.title.startsWith(`${facts.name} vs ${ours}`),
+    ).toBe(true);
   });
 
   it("draws the hero: the kicker with the checked day, the h1 and the deck", async () => {
@@ -200,7 +204,7 @@ describe.each(versusPages.map((entry) => [entry.slug, entry] as const))("%s", (_
     expect(text(root.querySelector(".vp-kick"))).toBe(`Compare · checked ${checkedOf(entry)}`);
     expect(marketChecked).toBe("19 October 2026");
     expect(text(root.querySelector("h1"))).toBe(entry.meta.title);
-    expect(text(root.querySelector(".doc-deck"))).toBe(entry.meta.description);
+    expect(text(root.querySelector(".doc-deck"))).toBe(entry.deck ?? entry.meta.description);
     expect(root.querySelector("header.hero.doc-hero.lv-hero")).not.toBeNull();
   });
 
@@ -217,18 +221,21 @@ describe.each(versusPages.map((entry) => [entry.slug, entry] as const))("%s", (_
         ? `[${[...el.querySelectorAll(".fq-sec")].map((section) => section.id).join(" ")}]`
         : el.id,
     );
-    expect(order).toEqual(
-      entry.sections
-        ? [
-            "top",
-            "glance",
-            "side-by-side",
-            `[${[...entry.sections.map((section) => section.id), "questions", "sources"].join(" ")}]`,
-            "read-more",
-            "assess",
-          ]
-        : ["top", "glance", "side-by-side", "assess"],
-    );
+    /* The Learn frame holds the parts a page has, in this order: its sections, its questions and its sources
+       (coral-vs-stormforge's questions alone, 1 Nov 2026). */
+    const frame = [
+      ...(entry.sections ?? []).map((section) => section.id),
+      ...(entry.questions ? ["questions"] : []),
+      ...(entry.sources ? ["sources"] : []),
+    ];
+    expect(order).toEqual([
+      "top",
+      "glance",
+      "side-by-side",
+      ...(frame.length > 0 ? [`[${frame.join(" ")}]`] : []),
+      ...(entry.readMore ? ["read-more"] : []),
+      "assess",
+    ]);
     expect(root.querySelector("#side-by-side")).toHaveClass("sec", "lv-sec", "sec-band");
     expect([...root.querySelectorAll("main .sec-band")].map((el) => el.id)).toEqual([
       "side-by-side",
@@ -319,6 +326,7 @@ describe.each(versusPages.map((entry) => [entry.slug, entry] as const))("%s", (_
 /** Each newer page's question rows' ids, as its mock writes them (`sectionSlug`: the question's first seven words). */
 const questionIds: Readonly<Record<string, readonly string[]>> = {
   "coral-vs-azure-advisor": [
+    "what-is-azure-advisor",
     "is-azure-advisor-free",
     "does-azure-advisor-rightsize-aks-pods",
     "does-coral-replace-azure-advisor",
@@ -326,6 +334,8 @@ const questionIds: Readonly<Record<string, readonly string[]>> = {
     "how-do-you-see-what-coral-would",
   ],
   "coral-vs-aws-compute-optimizer": [
+    "what-is-aws-compute-optimizer",
+    "is-aws-compute-optimizer-free",
     "does-aws-compute-optimizer-support-eks",
     "can-coral-and-aws-compute-optimizer-run",
     "does-coral-change-eks-managed-node-groups",
@@ -351,22 +361,66 @@ describe("the template's optional parts", () => {
     }
   });
 
-  it.each(versusPages.filter((entry) => !entry.sections).map((entry) => [entry.slug, entry]))(
-    "leave %s exactly as it was",
-    async (_slug, entry) => {
-      const root = await page(entry);
-      expect(root.querySelector(".ar-short, .doc-body, .fq-chips, #read-more")).toBeNull();
-      expect([
-        entry.checked,
-        entry.lastUpdated,
-        entry.card,
-        entry.short,
-        entry.questions,
-        entry.sources,
-        entry.readMore,
-      ]).toEqual(Array(7).fill(undefined));
-    },
-  );
+  it.each(
+    versusPages
+      .filter((entry) => !entry.sections && !entry.questions)
+      .map((entry) => [entry.slug, entry]),
+  )("leave %s exactly as it was", async (_slug, entry) => {
+    const root = await page(entry);
+    expect(root.querySelector(".ar-short, .doc-body, .fq-chips, #read-more")).toBeNull();
+    expect([
+      entry.checked,
+      entry.lastUpdated,
+      entry.card,
+      entry.short,
+      entry.questions,
+      entry.sources,
+      entry.readMore,
+    ]).toEqual(Array(7).fill(undefined));
+  });
+
+  /* The keyword map's three questions about the other tool, each answered from a row the page already prints: the one
+     part coral-vs-stormforge gained on 1 Nov 2026. */
+  it("add only its questions to coral-vs-stormforge: closed, in the Learn frame, and nothing else", async () => {
+    const entry = versusPages.find((candidate) => candidate.slug === "coral-vs-stormforge")!;
+    const { name } = factsOf(entry);
+    const root = await page(entry);
+    expect(root.querySelector(".ar-short, #sources, #read-more")).toBeNull();
+    expect([
+      entry.checked,
+      entry.lastUpdated,
+      entry.card,
+      entry.short,
+      entry.sections,
+      entry.sources,
+      entry.readMore,
+    ]).toEqual(Array(7).fill(undefined));
+    const frame = root.querySelector("main > div.sec.doc-body")!;
+    expect(
+      [...frame.querySelectorAll("nav.fq-chips a")].map((a) => [a.getAttribute("href"), text(a)]),
+    ).toEqual([["#questions", `Questions about ${name} and Coral`]]);
+    const section = frame.querySelector("section.fq-sec.pr-faq#questions")!;
+    expect(text(section.querySelector("h2#questions-h"))).toBe(`Questions about ${name} and Coral`);
+    const rows = [...section.querySelectorAll(".fq-list > details.fq")];
+    const id = name.toLowerCase();
+    expect(rows.map((row) => row.id)).toEqual([
+      `what-is-${id}`,
+      `how-much-does-${id}-cost`,
+      `does-${id}-manage-nodes`,
+    ]);
+    expect(rows.map((row) => text(row.querySelector("summary > h3")))).toEqual([
+      `What is ${name}?`,
+      `How much does ${name} cost?`,
+      `Does ${name} manage nodes?`,
+    ]);
+    expect(rows.map((row) => text(row.querySelector(".fq-body.doc-prose > p")))).toEqual(
+      entry.questions!.rows.map((row) => plain(row.answer)),
+    );
+    for (const row of rows) {
+      expect(row).not.toHaveAttribute("open");
+      expect(row.querySelector(".fq-n")).toBeNull();
+    }
+  });
 });
 
 describe.each(
@@ -458,7 +512,9 @@ describe.each(
   it("ends on Read more, its sibling page last but one, before the closing row", async () => {
     const read = (await page(entry)).querySelector("main > section.sec#read-more")!;
     expect(read).toHaveAttribute("aria-labelledby", "read-more-h");
-    expect(text(read.querySelector(".sec-hrow > h2#read-more-h"))).toBe("Read more");
+    expect(text(read.querySelector(".sec-hrow > h2#read-more-h"))).toBe(
+      `${entry.product === "coral" ? "Coral" : "Amoeba"} docs and guides`,
+    );
     const tiles = [...read.querySelectorAll(".dt-grid > article.dt")];
     const expected = readMore.map((tile) => {
       if (!("versus" in tile)) return tile;

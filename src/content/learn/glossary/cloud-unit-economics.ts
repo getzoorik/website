@@ -5,17 +5,17 @@ export const term: GlossaryTerm = {
   slug: "cloud-unit-economics",
   term: "Cloud unit economics",
   title: "What is cloud unit economics?",
-  meta: "Cloud unit economics divides your cloud spend by a business unit, like a sale or a user, so you can see what each unit costs and track it as you grow.",
+  meta: "Cloud unit economics divides your cloud cost by a business unit, like a sale or a user, to find your cloud unit cost. See how FinOps tracks it as you grow.",
   h1: "What is cloud unit economics?",
   card: "Cloud unit economics means working out the cloud cost of one business unit, such as one sale or one user.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
-      text: "Cloud unit economics means working out the cloud cost of one business unit, such as one sale or one user. You divide cloud spend by the number of units. That ties your cloud cost to business value.",
+      text: "Cloud unit economics means working out the cloud cost of one business unit, such as one sale or one user. You divide cloud cost by the number of units. That ties your cloud cost to business value.",
     },
     {
       kind: "p",
@@ -53,17 +53,12 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why unit economics matter for your cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            "Spend is the top of the ratio, so reducing it makes each unit cheaper if units hold steady.",
-            [
-              "On AKS or EKS, you can ",
-              { a: "estimate a cluster’s spend", href: "/learn/kubernetes-cost-estimation" },
-              ".",
-            ],
+            "Cloud cost is the top of the ratio, so reducing it makes each unit cheaper if units hold steady.",
             [
               { a: "Coral", href: "/coral" },
               " rebalances CPU and memory requests on AKS and EKS to match real use. With requests that match use, the same pods fit on fewer nodes.",
@@ -101,7 +96,7 @@ export const term: GlossaryTerm = {
     },
   ],
   next: {
-    title: "Kubernetes cost estimation for AKS and EKS",
+    title: "Kubernetes cost estimation: what a cluster costs",
     href: "/learn/kubernetes-cost-estimation",
   },
   sources: [

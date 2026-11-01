@@ -5,9 +5,9 @@ export const term: GlossaryTerm = {
   slug: "cloud-cost-governance",
   term: "Cloud cost governance",
   title: "What is cloud cost governance?",
-  meta: "Cloud cost governance is the set of budgets, tag rules and limits on what teams deploy that keeps cloud spend in bounds. See real rules for Azure and AWS.",
+  meta: "Cloud cost governance is the budgets, tag rules and deploy limits that keep cloud cost in bounds. See FinOps governance, Azure Policy and AWS budget alerts.",
   h1: "What is cloud cost governance?",
-  card: "Cloud cost governance is the set of rules that keeps your cloud spend inside agreed limits.",
+  card: "Cloud cost governance is the set of rules that keeps your cloud cost inside agreed limits.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
@@ -15,7 +15,7 @@ export const term: GlossaryTerm = {
   definition: [
     {
       kind: "p",
-      text: "Cloud cost governance is the set of rules that keeps your cloud spend inside agreed limits. It covers budgets, tag rules, approvals and limits on what teams can deploy. You define the rules, apply them, then monitor them.",
+      text: "Cloud cost governance is the set of rules that keeps your cloud cost inside agreed limits. It covers budgets, tag rules, approvals and limits on what teams can deploy. You define the rules, apply them, then monitor them.",
     },
     { kind: "svg", figure: figure1 },
   ],
@@ -65,6 +65,11 @@ export const term: GlossaryTerm = {
           text: "To test it, assign it with enforcement off (DoNotEnforce). It then reports rule breaks but blocks nothing.",
         },
         {
+          kind: "h3",
+          id: "aws-budget-alerts-and-budget-actions",
+          title: "AWS budget alerts and budget actions",
+        },
+        {
           kind: "p",
           text: "On AWS, AWS Budgets alerts you when spend goes outside your policy. A budget action can also apply an access policy or stop chosen Amazon EC2 or Amazon RDS instances. It runs on its own or after your approval.",
         },
@@ -72,7 +77,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why cloud cost governance matters",
       blocks: [
         {
           kind: "ul",

@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -21,7 +21,7 @@ export const term: GlossaryTerm = {
   sections: [
     {
       id: "requests-or-use",
-      title: "Requests or use",
+      title: "How to measure Kubernetes cluster utilization",
       blocks: [
         {
           kind: "ul",
@@ -30,7 +30,7 @@ export const term: GlossaryTerm = {
             [
               "By use: the CPU and memory in use, divided by the same capacity. Metrics Server collects it. Run ",
               { code: "kubectl top" },
-              " to see this Kubernetes cluster usage per node and pod.",
+              " to see Kubernetes cluster usage per node and pod.",
             ],
           ],
         },
@@ -61,7 +61,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why cluster utilization matters for your cloud cost",
       blocks: [
         {
           kind: "ul",

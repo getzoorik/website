@@ -121,11 +121,12 @@ describe("sitemap.xml", () => {
       /* The two Topic pages print no day: the day their content was written (1 Nov 2026). */
       "/azure-cost-optimization": "2026-11-01",
       "/aws-cost-optimization": "2026-11-01",
-      /* The four cloud pages of 31 Oct 2026 print no day: the day their content was written. */
-      "/aks-cost-optimization": "2026-10-31",
-      "/eks-cost-optimization": "2026-10-31",
-      "/azure-managed-disk-cost-optimization": "2026-10-31",
-      "/ebs-cost-optimization": "2026-10-31",
+      /* The four cloud pages print no day: the day their content last changed (their titles and headings,
+         1 Nov 2026). */
+      "/aks-cost-optimization": "2026-11-01",
+      "/eks-cost-optimization": "2026-11-01",
+      "/azure-managed-disk-cost-optimization": "2026-11-01",
+      "/ebs-cost-optimization": "2026-11-01",
       /* The six works-with pages print no day: the day their content last changed (their D230 links, and the NAP
          article in Read more, 1 Nov 2026). */
       "/coral-works-with-cluster-autoscaler": "2026-11-01",
@@ -135,22 +136,22 @@ describe("sitemap.xml", () => {
       "/coral-works-with-helm": "2026-11-01",
       "/coral-works-with-terraform": "2026-11-01",
       "/assessment": "2026-11-01",
-      "/marketplaces": "2026-10-21",
-      /* The guide PDF's new page count (30 Oct 2026). */
-      "/docs": "2026-10-30",
+      "/marketplaces": "2026-11-01",
+      /* The docs hub's own words (1 Nov 2026). */
+      "/docs": "2026-11-01",
       /* The Coral link's new words (O1), 1 Nov 2026. */
       "/coral-guide": "2026-11-01",
       "/coral-faq": "2026-11-01",
-      /* The Amoeba guide and FAQ, rewritten at product level on 27 Oct 2026. */
-      ...(amoebaDocs ? { "/amoeba-guide": "2026-10-27", "/amoeba-faq": "2026-10-27" } : {}),
-      /* The three guides print "Updated 16 October 2026"; /open-source gives its content file's date. */
-      "/docs/install-coral-with-helm": "2026-10-16",
-      "/docs/install-coral-with-terraform": "2026-10-16",
-      "/docs/contributing": "2026-10-16",
-      /* The two troubleshooting pages print "Updated 29 October 2026". */
-      "/coral-troubleshooting": "2026-10-29",
-      ...(amoebaDocs ? { "/amoeba-troubleshooting": "2026-10-29" } : {}),
-      "/open-source": "2026-10-21",
+      /* The Amoeba guide and FAQ print "Updated 1 November 2026". */
+      ...(amoebaDocs ? { "/amoeba-guide": "2026-11-01", "/amoeba-faq": "2026-11-01" } : {}),
+      /* The three guides print "Updated 1 November 2026"; /open-source gives its content file's date. */
+      "/docs/install-coral-with-helm": "2026-11-01",
+      "/docs/install-coral-with-terraform": "2026-11-01",
+      "/docs/contributing": "2026-11-01",
+      /* The two troubleshooting pages print "Updated 1 November 2026". */
+      "/coral-troubleshooting": "2026-11-01",
+      ...(amoebaDocs ? { "/amoeba-troubleshooting": "2026-11-01" } : {}),
+      "/open-source": "2026-11-01",
       /* The hub: its own day or its newest article's, whichever is later. Each article: the day it last changed. */
       "/learn": learnArticles.reduce(
         (day, article) => (article.updated > day ? article.updated : day),
@@ -168,46 +169,45 @@ describe("sitemap.xml", () => {
       ...Object.fromEntries(glossaryTerms.map((term) => [glossaryPath(term.slug), term.updated])),
       /* Cloud cost optimization tools: the day its content last changed (Part 4's title and deck, 1 Nov 2026). */
       "/cloud-cost-optimization-library": "2026-11-01",
-      /* The comparison pages: the day the versus pages were checked and published (the first two 19 Oct 2026, the
-         two against the clouds' own tools 1 Nov 2026), and the day the alternatives pages were retitled
-         (1 Nov 2026). */
+      /* The comparison pages: the day their content last changed (the first two versus pages' titles and decks,
+         the two against the clouds' own tools published, and the alternatives pages retitled, all 1 Nov 2026). */
       "/cloud-cost-optimization-library/coral-alternatives": "2026-11-01",
       "/cloud-cost-optimization-library/amoeba-alternatives": "2026-11-01",
       ...Object.fromEntries(
         versusPages
           .filter((page) => page.lastUpdated === undefined)
-          .map((page) => [versusRoute(page), "2026-10-19"]),
+          .map((page) => [versusRoute(page), "2026-11-01"]),
       ),
       "/cloud-cost-optimization-library/coral-vs-azure-advisor": "2026-11-01",
       "/cloud-cost-optimization-library/coral-vs-aws-compute-optimizer": "2026-11-01",
       /* The two calculators: the day their content last changed (Part 4's titles, 1 Nov 2026). */
       "/eks-and-aks-pricing-calculator": "2026-11-01",
       "/ebs-and-azure-disk-pricing": "2026-11-01",
-      /* Value Lab: the Amoeba study's card beside the Coral one (29 Oct 2026). Each study: the day it prints. */
-      "/value-lab": "2026-10-29",
-      "/coral-value-lab": "2026-10-12",
-      "/amoeba-value-lab": "2026-10-19",
+      /* Value Lab and each study: the day its content last changed (1 Nov 2026). */
+      "/value-lab": "2026-11-01",
+      "/coral-value-lab": "2026-11-01",
+      "/amoeba-value-lab": "2026-11-01",
       /* The research papers print no day: the day their content last changed. */
       "/cloud-cost-optimization-research-papers": "2026-11-01",
       "/events": "2026-11-01",
-      /* Zoorik News: the week of its latest Radar. */
-      "/news": "2026-10-19",
-      "/community": "2026-10-21",
+      /* Zoorik News: the day its words last changed, after the week of its latest Radar. */
+      "/news": "2026-11-01",
+      "/community": "2026-11-01",
       /* /pricing and /contact print no day: the day their content last changed. */
-      "/pricing": "2026-10-30",
-      "/contact": "2026-10-30",
-      "/about": "2026-10-29",
-      "/careers": "2026-10-25",
-      "/brand-assets": "2026-10-21",
+      "/pricing": "2026-11-01",
+      "/contact": "2026-11-01",
+      "/about": "2026-11-01",
+      "/careers": "2026-11-01",
+      "/brand-assets": "2026-11-01",
       "/referrals": "2026-10-21",
-      "/partners": "2026-10-21",
-      "/design-partners": "2026-10-21",
+      "/partners": "2026-11-01",
+      "/design-partners": "2026-11-01",
       "/privacy": "2026-10-19",
       "/terms": "2026-10-06",
-      /* /security prints "Updated 30 October 2026": the Trust center's link in Report a security issue. */
-      "/security": "2026-10-30",
-      /* The Trust center prints "Updated 30 October 2026". */
-      "/trust": "2026-10-30",
+      /* /security prints "Updated 1 November 2026". */
+      "/security": "2026-11-01",
+      /* The Trust center prints "Updated 1 November 2026". */
+      "/trust": "2026-11-01",
     });
     for (const entry of sitemap()) {
       expect(Object.keys(entry).filter((key) => key !== "lastModified")).toEqual(["url"]);

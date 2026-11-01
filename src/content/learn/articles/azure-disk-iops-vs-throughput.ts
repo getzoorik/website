@@ -24,7 +24,7 @@ export const article: Article = {
   sections: [
     {
       id: "azure-disk-iops-vs-throughput",
-      title: "Azure disk IOPS vs throughput: the smaller limit sets your speed",
+      title: "Azure VM IOPS and disk IOPS: the smaller limit sets your speed",
       blocks: [
         {
           kind: "p",
@@ -122,7 +122,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "how-each-disk-type-sets-its-limits",
-          title: "How each disk type sets its limits",
+          title: "Azure disk IOPS and max IOPS by disk type",
         },
         {
           kind: "p",
@@ -384,7 +384,7 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it.",
+              " The services that use those mounts restart once, at the switch onto the pool.",
             ],
           ],
         },

@@ -32,7 +32,7 @@ export const caseBand = {
   titleGreen: caseStudy.hero.titleGreen,
   line: "On Zoorik’s own development cluster, eight days from connecting Coral to the result.",
   /** Same tab, to the study, ending on the plain arrow. */
-  cta: { label: "Read the case study", href: routes.caseStudyCoralDevCluster },
+  cta: { label: "Read the Coral Value Lab study", href: routes.caseStudyCoralDevCluster },
   chart: {
     caption: costs.caption,
     unit: costs.unit,

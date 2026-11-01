@@ -5,9 +5,9 @@ import { figure as figure3 } from "@/features/learn/figures/ebs-volume-types/3";
 
 export const article: Article = {
   slug: "ebs-volume-types",
-  title: "EBS volume types: pricing and how to choose",
-  meta: "EBS volume types compared: gp3, gp2, io2, io1, st1 and sc1, what each one charges for at US East list prices, and the checks, in order, that pick one.",
-  h1: "EBS volume types: pricing and how to choose",
+  title: "EBS volume types compared: how to choose one",
+  meta: "EBS volume types compared: gp3, gp2, io2, io1, st1 and sc1 by size, IOPS and throughput, and the checks, in order, that pick one for your data.",
+  h1: "EBS volume types compared: how to choose one",
   deck: "Six current types in two families, what each one charges for, and the checks that pick one for your data.",
   card: "gp3, gp2, io2, io1, st1 and sc1 side by side on limits and list price, with the checks that pick one.",
   product: "amoeba",
@@ -18,7 +18,7 @@ export const article: Article = {
   author: "rupeshankar",
   cover: "/learn-covers/zoorik-learn-ebs-volume-types-1200x630.webp",
   coverAlt:
-    "EBS volume types: gp3, gp2 and io2 by price per GB-month, with gp3 the cheapest and ticked",
+    "EBS volume types: gp3, gp2 and io2 by price per GB-month, with gp3 the cheapest SSD type",
   short:
     "Amazon EBS volume types come in two families, SSD (gp3, gp2, io2 and io1) and HDD (st1 and sc1). Use gp3 by default, with 3,000\u00a0IOPS included, io2 only past gp3’s limits, and st1 or sc1 only for large, sequential data.",
   sections: [
@@ -161,7 +161,7 @@ export const article: Article = {
     },
     {
       id: "ebs-volume-types-pricing-what-each-type",
-      title: "EBS volume types pricing: what each type charges for",
+      title: "What each EBS volume type charges for",
       blocks: [
         {
           kind: "p",
@@ -255,14 +255,18 @@ export const article: Article = {
           ],
         },
         { kind: "svg", figure: figure1 },
-        { kind: "h3", id: "volumes-you-already-have", title: "Volumes you already have" },
+        {
+          kind: "h3",
+          id: "volumes-you-already-have",
+          title: "Volumes you already have: gp2 to gp3, and io1 vs io2",
+        },
         { kind: "p", text: "Two types are worth moving away from:" },
         {
           kind: "ul",
           items: [
             [
               { b: "gp2 to gp3." },
-              " gp3 costs 20% less per GiB and includes 3,000\u00a0IOPS at any size. A gp2\u00a0volume of 334\u00a0GiB or more has 250\u00a0MiB/s, though, so set gp3’s throughput to match. ",
+              " gp3 costs 20% less per GB and includes 3,000\u00a0IOPS at any size. A gp2\u00a0volume of 334\u00a0GiB or more has 250\u00a0MiB/s, though, so set gp3’s throughput to match. ",
               { a: "gp2 vs gp3", href: "/learn/gp2-vs-gp3" },
               " has the steps.",
             ],
@@ -414,7 +418,7 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it.",
+              " The services that use those mounts restart once, at the switch onto the pool.",
             ],
             [
               { b: "Rightsizing." },
@@ -422,7 +426,7 @@ export const article: Article = {
             ],
             [
               { b: "The old volumes." },
-              " Once the switch is checked, Amoeba snapshots and deletes each old volume, then deletes the snapshots a few days later. You pay for both sets of volumes only while the move runs, then for the snapshots while they’re kept.",
+              " Once the switch is checked, Amoeba snapshots and deletes each old volume, then deletes the snapshots 7 days later. You pay for both sets of volumes only while the move runs, then for the snapshots while they’re kept.",
             ],
           ],
         },
@@ -451,7 +455,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves an EC2 instance’s EBS data volumes onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one volume at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage cost optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },

@@ -22,14 +22,14 @@ describe("the open-source guides", () => {
     const root = render(<InstallCoralWithHelm />).container;
     expect(text(root.querySelector("h1"))).toBe("Install Coral with Helm");
     expect(text(root.querySelector(".doc-updated"))).toBe(
-      "Updated 16 October 2026 · Published by Zoorik",
+      "Updated 1 November 2026 · Published by Zoorik",
     );
     expect(sections(root)).toEqual([
       "Before you install",
       "Install",
       "Values",
       "Cloud identity",
-      "With Argo CD or Flux",
+      "Argo CD ignoreDifferences and Flux",
       "Upgrade",
       "Uninstall",
     ]);
@@ -60,7 +60,12 @@ describe("the open-source guides", () => {
       expect(block.querySelector("pre i, button")).toBeNull();
     }
     expect(text(root.querySelector(".ar-short"))).toMatch(/^Each module creates the same identity/);
-    expect(sections(root)).toEqual(["AKS", "EKS", "Machine deletion", "Your own node pool code"]);
+    expect(sections(root)).toEqual([
+      "AKS workload identity with Terraform",
+      "EKS",
+      "Node removal and pool minimums",
+      "Your own node pool code",
+    ]);
   });
 
   it("Contributing: its sections, the numbered steps and the private report line", () => {

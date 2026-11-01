@@ -5,7 +5,7 @@ import { figure as figure2 } from "@/features/learn/figures/change-aks-node-pool
 export const article: Article = {
   slug: "change-aks-node-pool-vm-size",
   title: "How to change an AKS node pool VM size",
-  meta: "To change an AKS node pool VM size, add a pool at the new size, then cordon, drain and delete the old one. Plus the in-place preview and system pool rules.",
+  meta: "Change an AKS node pool VM size with az aks nodepool add, then cordon, drain and delete the old pool. The same steps change the AKS system node pool VM size.",
   h1: "How to change an AKS node pool VM size",
   deck: "Outside a preview, a Scale Set node pool keeps its VM size. How to move to a new size, one node at a time.",
   card: "New pool, cordon, drain, delete: the route to a new AKS VM size, with the system pool rules and the preview.",
@@ -69,7 +69,7 @@ export const article: Article = {
         {
           kind: "ul",
           items: [
-            "With node auto-provisioning (NAP), you change what NAP may launch.",
+            "With node auto provisioning (NAP), you change what NAP may launch.",
             "A Virtual Machines node pool can hold several VM sizes, which Microsoft says you can update “using a single Azure CLI command”.",
             "A VMSS pool can be resized in place, in preview, within limits.",
           ],
@@ -183,10 +183,14 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "The steps to change an Azure AKS node pool VM size are the same for app and system pools. New nodes come first, then the pods, then the old pool.",
+          text: "The steps to change an Azure AKS node pool VM size are the same for user and system pools. New nodes come first, then the pods, then the old pool.",
         },
         { kind: "svg", figure: figure2 },
-        { kind: "h3", id: "prepare-the-new-pool", title: "Prepare the new pool" },
+        {
+          kind: "h3",
+          id: "prepare-the-new-pool",
+          title: "Prepare the new pool with az aks nodepool add",
+        },
         {
           kind: "ol",
           items: [
@@ -339,7 +343,7 @@ export const article: Article = {
     },
     {
       id: "the-aks-system-node-pool-vm-size",
-      title: "The AKS system node pool VM size has stricter rules",
+      title: "How to change the AKS system node pool VM size",
       blocks: [
         {
           kind: "p",
@@ -363,6 +367,17 @@ export const article: Article = {
             ],
             "The pool supports at least 30\u00a0pods and runs Linux.",
             "A production cluster with a single system pool needs at least 2\u00a0nodes, and Microsoft recommends 3.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "Which size to pick within these rules: ",
+            {
+              a: "how to choose the AKS system node pool size",
+              href: "/learn/how-to-choose-aks-node-sizes",
+            },
+            ".",
           ],
         },
         {
@@ -454,7 +469,7 @@ export const article: Article = {
           kind: "p",
           text: "It also rejects one that comes with a Kubernetes version upgrade or a node count change.",
         },
-        { kind: "h3", id: "node-auto-provisioning-nap", title: "Node auto-provisioning (NAP)" },
+        { kind: "h3", id: "node-auto-provisioning-nap", title: "Node auto provisioning (NAP)" },
         {
           kind: "p",
           text: [
@@ -525,7 +540,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "A rebalance needs Node optimization on and the permission to remove nodes. Every AKS connect asks to set up that permission: a managed identity with the role “Zoorik Node Removal v1” on that cluster only. It also asks to turn on the OIDC issuer if it’s off, which can’t be turned off again.",
+          text: "A rebalance needs Node optimization on and the permission to remove nodes, which connect asks to set up.",
         },
         {
           kind: "p",
@@ -536,8 +551,8 @@ export const article: Article = {
           text: [
             "Other pods are evicted within their PDB, and single-copy ones restart. ",
             {
-              a: "HPA vs VPA vs Cluster Autoscaler",
-              href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+              a: "Kubernetes autoscaling",
+              href: "/learn/kubernetes-autoscaling",
             },
             " shows where request sizing sits beside the autoscalers. ",
             { a: "AKS cost optimization", href: "/aks-cost-optimization" },
@@ -615,7 +630,7 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "How to choose AKS node sizes",
+      title: "How to choose AKS VM sizes",
       where: "Learn",
       href: "/learn/how-to-choose-aks-node-sizes",
     },

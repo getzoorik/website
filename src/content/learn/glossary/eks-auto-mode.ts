@@ -5,7 +5,7 @@ export const term: GlossaryTerm = {
   slug: "eks-auto-mode",
   term: "EKS Auto Mode",
   title: "What is EKS Auto Mode?",
-  meta: "EKS Auto Mode lets AWS run your EKS nodes for a fee on top of the EC2 price. See what it manages, how it compares to managed node groups, and what it costs.",
+  meta: "EKS Auto Mode lets AWS run your EKS nodes for a fee on top of the EC2 price. See what it manages, how it compares to managed node groups, and its pricing.",
   h1: "What is EKS Auto Mode?",
   card: "EKS Auto Mode is a mode of Amazon Elastic Kubernetes Service (EKS), where AWS runs your nodes, not just the control plane.",
   group: "kubernetes",
@@ -71,8 +71,13 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why EKS Auto Mode matters for your cloud cost",
       blocks: [
+        {
+          kind: "h3",
+          id: "eks-auto-mode-pricing",
+          title: "EKS Auto Mode pricing: a fee on top of EC2",
+        },
         {
           kind: "p",
           text: "EKS Auto Mode isn’t free. EKS Auto Mode pricing adds a fee per instance, on top of the EC2 price.",

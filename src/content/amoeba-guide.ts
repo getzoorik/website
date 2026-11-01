@@ -82,14 +82,14 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
   meta: {
     title: "Amoeba product guide",
     description:
-      "Onboard a VM to Amoeba on Azure or AWS. See how its data moves onto one btrfs pool, how that pool grows and shrinks, and how you stay in control.",
+      "Amoeba product guide: onboard a VM on Azure or AWS, see how its data moves onto one btrfs pool, how that pool grows and shrinks, and how you stay in control.",
   },
   hero: {
     title: "Amoeba product guide",
     deck: "How to onboard a VM, what Amoeba changes, and how you stay in control.",
     downloads: [{ label: "PDF", document: "amoeba-guide" }],
   },
-  updated: "Updated 27 October 2026",
+  updated: "Updated 1 November 2026",
   summary: [
     {
       term: "Product page",
@@ -159,12 +159,12 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                   body: [
                     {
                       kind: "p",
-                      text: "Amoeba copies your data onto one btrfs pool, sized to your data with room to grow, while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. Once the switch is checked, it snapshots and deletes each old disk.",
+                      text: "Amoeba copies your data onto one btrfs pool, sized to your data with room to grow, while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. Once the switch is checked, it snapshots and deletes each source disk.",
                     },
                   ],
                 },
                 {
-                  title: "Optimize",
+                  title: "Autopilot",
                   body: [
                     {
                       kind: "p",
@@ -194,7 +194,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
               rows: [
                 [
                   "The move onto a pool",
-                  "Copies your data onto the pool while your services run, then switches each mount to it. Once the switch is checked, it snapshots and deletes each old disk.",
+                  "Copies your data onto the pool while your services run, then switches each mount to it. Once the switch is checked, it snapshots and deletes each source disk.",
                   "By itself, after the agent’s first report. A move only goes forward.",
                 ],
                 [
@@ -252,7 +252,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                 ],
                 [
                   "Data-disk slots",
-                  "During the move, the pool’s disks attach beside the old disks. So the VM needs a few free disk slots for the pool. If it has too few, Amoeba declines it and says why.",
+                  "During the move, the pool’s disks attach beside the source disks. So the VM needs a few free disk slots for the pool. If it has too few, Amoeba declines it and says why.",
                 ],
                 [
                   "Linux",
@@ -497,7 +497,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                 ],
                 [
                   ["Safety snapshots", { sub: "zoorik-amoeba-snap-…" }],
-                  "One incremental snapshot of each source disk, taken before the disk is deleted, in the disk’s own resource group. Deleted after a few days.",
+                  "One incremental snapshot of each source disk, taken before the disk is deleted, in the disk’s own resource group. Deleted after 7 days.",
                 ],
                 [
                   "Zoorik Storage Operator",
@@ -513,7 +513,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
           body: [
             {
               kind: "p",
-              text: "The IAM role ZoorikStorageOperator, the pool’s gp3 volumes, and an EBS snapshot of each source volume, kept for a few days.",
+              text: "The IAM role ZoorikStorageOperator, the pool’s gp3 volumes, and an EBS snapshot of each source volume, kept for 7 days.",
             },
           ],
         },
@@ -635,9 +635,9 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
             {
               kind: "ul",
               items: [
-                "Amoeba sizes the pool to your data, with room to grow. It looks at your peak use and recent growth, not at the size the old disks were given.",
+                "Amoeba sizes the pool to your data, with room to grow. It looks at your peak use and recent growth, not at the size the source disks were given.",
                 "It picks the cheapest layout of disks that holds your data and carries your VM’s disk load.",
-                "Each VM gets one pool, on one disk type. On Azure the pool uses Premium SSD v2 where your region offers it, and Premium SSD otherwise.",
+                "Each VM gets one pool, on one disk type. On Azure the pool uses Premium SSD v2 where your VM’s region and zone offer it, and Premium SSD otherwise.",
                 "On AWS the pool uses gp3 volumes, in the instance’s Availability Zone.",
                 "Data on Standard SSD, Standard HDD or Ultra Disk also moves to Premium SSD v2 or Premium SSD. Per GiB, Premium disks can cost more than Standard ones. Zone-redundant (ZRS) disks map to a locally redundant (LRS) pool, so the data loses zone redundancy.",
               ],
@@ -661,7 +661,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                 ],
                 [
                   "Build the pool",
-                  "It creates the pool’s disks and attaches them beside the old disks.",
+                  "It creates the pool’s disks and attaches them beside the source disks.",
                 ],
                 [
                   "Copy",
@@ -678,7 +678,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                 ],
                 [
                   "Clean up",
-                  "Amoeba snapshots each old disk, deletes the disk, and keeps the snapshot for a few days before deleting it too.",
+                  "Amoeba snapshots each source disk, deletes the disk, and keeps the snapshot for 7 days before deleting it too.",
                 ],
               ],
             },
@@ -711,7 +711,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
             {
               kind: "ul",
               items: [
-                "A move only goes forward. Once the switch is checked, Amoeba snapshots each old disk, deletes the disk, and keeps the snapshot for a few days before deleting it too.",
+                "A move only goes forward. Once the switch is checked, Amoeba snapshots each source disk, deletes the disk, and keeps the snapshot for 7 days before deleting it too.",
                 "A disk is deleted only after its own snapshot succeeded, and only when its tag names this move.",
                 [{ ph: "how to restore from a safety snapshot, and who does it" }],
                 "You pay for both sets of disks only while the move runs, and then for the snapshots while they’re kept.",
@@ -915,7 +915,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
             {
               kind: "ol",
               items: [
-                "Run the free disk assessment first, to see what your own VMs could save.",
+                "Run the free block storage cost assessment first, to see what your own VMs could save.",
                 "Onboard one VM whose services run under systemd, and set “When Zoorik shrinks” to “Manual” on its Settings page.",
                 "Watch the move on Pool → Migration, and check your services after the switch.",
                 "When a shrink waits for you, start it yourself from Operations, and read its log entry.",
@@ -1042,7 +1042,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                     { br: true },
                     { code: "Microsoft.Compute/snapshots/delete" },
                   ],
-                  "Taking safety snapshots, and deleting them after a few days.",
+                  "Taking safety snapshots, and deleting them after 7 days.",
                 ],
               ],
             },
@@ -1148,7 +1148,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
           body: [
             {
               kind: "p",
-              text: "Sign in with a Microsoft or Google account, as for Coral.",
+              text: "Sign in with a Microsoft or Google account.",
             },
           ],
         },
@@ -1181,7 +1181,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
           body: [
             {
               kind: "p",
-              text: "A move only goes forward. Once the switch is checked, Amoeba snapshots each old disk and deletes it. It keeps each snapshot for a few days, then deletes it too.",
+              text: "A move only goes forward. Once the switch is checked, Amoeba snapshots each source disk and deletes it. It keeps each snapshot for 7 days, then deletes it too.",
             },
           ],
         },

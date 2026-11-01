@@ -4,9 +4,9 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/reserved-in
 export const term: GlossaryTerm = {
   slug: "reserved-instance",
   term: "Reserved instance (AWS RIs, Azure reservations)",
-  title: "What is a reserved instance?",
-  meta: "A reserved instance trades a one- or three-year VM commitment for a discount. See what AWS RIs and Azure Reservations cost, and why to shrink before you buy.",
-  h1: "What is a reserved instance?",
+  title: "What are reserved instances in AWS and Azure?",
+  meta: "AWS reserved instances (RIs) and Azure reservations trade a 1- or 3-year VM commitment for a discount. See how each works and why to reduce cloud costs first.",
+  h1: "What are reserved instances in AWS and Azure?",
   card: "A reserved instance is a one-year or three-year commitment to a virtual machine (VM) setup, in return for a discount.",
   group: "finops-pricing",
   product: "coral",
@@ -23,7 +23,7 @@ export const term: GlossaryTerm = {
       id: "how-reserved-instances-work-in-aws-and",
       title: "How reserved instances work in AWS and Azure",
       blocks: [
-        { kind: "p", text: "On AWS:" },
+        { kind: "h3", id: "aws-reserved-instances-ris", title: "AWS Reserved Instances (RIs)" },
         {
           kind: "ul",
           items: [
@@ -37,7 +37,7 @@ export const term: GlossaryTerm = {
             ],
           ],
         },
-        { kind: "p", text: "With Azure Reservations:" },
+        { kind: "h3", id: "azure-reservations", title: "Azure Reservations" },
         {
           kind: "ul",
           items: [
@@ -53,7 +53,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "reserved-instance-meaning-in-kubernetes",
-      title: "Reserved instance meaning in Kubernetes",
+      title: "Reserved instances for Kubernetes nodes on AKS and EKS",
       blocks: [
         { kind: "p", text: "A reservation covers the VMs under your AKS or EKS nodes, not pods." },
         {
@@ -65,7 +65,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why reserved instances matter for your cloud cost",
       blocks: [
         {
           kind: "ul",

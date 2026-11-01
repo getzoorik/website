@@ -6,7 +6,7 @@ import { figure as figure3 } from "@/features/learn/figures/premium-ssd-v2-vs-pr
 export const article: Article = {
   slug: "premium-ssd-v2-vs-premium-ssd",
   title: "Premium SSD v2 vs Premium SSD: which costs less",
-  meta: "Premium SSD v2 vs Premium SSD: size tiers against per-GiB pricing, worked East US list prices, when v2 costs less, when Premium SSD fits, and Ultra Disk.",
+  meta: "Azure Premium SSD v2 vs Premium SSD: size tiers against per-GiB pricing, East US list prices, when v2 costs less, when Premium SSD fits, and Ultra Disk.",
   h1: "Premium SSD v2 vs Premium SSD: which one costs less?",
   deck: "Fixed size tiers against capacity, IOPS and throughput charged apart, worked through at East US list prices.",
   card: "How Premium SSD and Premium SSD v2 charge, when v2 costs less for the same data, and where Ultra Disk fits.",
@@ -81,7 +81,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Every Azure Premium SSD vs Premium SSD v2 pricing figure here is a pay-as-you-go list price. Each is for East US with locally redundant storage (LRS), from Microsoft’s Azure Retail Prices API in October 2026.",
+          text: "Every price here is a pay-as-you-go list price. Each is for East US with locally redundant storage (LRS), from Microsoft’s Azure Retail Prices API in October 2026.",
         },
         {
           kind: "p",
@@ -163,7 +163,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "Disk type is one way to reduce disk cost. ",
-            { a: "Azure disk cost optimization", href: "/learn/azure-disk-cost-optimization" },
+            { a: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
             " covers the others.",
           ],
         },
@@ -198,7 +198,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "In the Premium SSD vs SSD v2 decision, the list price rarely points to Premium SSD. The limits of v2 decide it.",
+          text: "Between the two, the list price rarely points to Premium SSD. The limits of v2 decide it.",
         },
         {
           kind: "table",
@@ -411,12 +411,11 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Amoeba’s Azure page is ",
             {
               a: "Azure managed disk cost optimization",
               href: "/azure-managed-disk-cost-optimization",
             },
-            ". Amoeba is in early access.",
+            " covers Amoeba on Azure in full. Amoeba is in early access.",
           ],
         },
       ],
@@ -479,9 +478,9 @@ export const article: Article = {
       href: "/learn/azure-managed-disk-types",
     },
     {
-      title: "Azure disk cost optimization: stop paying for empty space",
+      title: "Azure disk reservations: are they worth it?",
       where: "Learn",
-      href: "/learn/azure-disk-cost-optimization",
+      href: "/learn/azure-disk-reservations",
     },
     {
       title: "Premium SSD vs Standard SSD on Azure: what you pay for",

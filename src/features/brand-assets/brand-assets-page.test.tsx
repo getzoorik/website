@@ -186,10 +186,24 @@ describe("/brand-assets", () => {
     ]);
     for (const tile of [...logos, ...marks]) {
       const img = tile.querySelector(".bk-prev > img")!;
-      expect(img).toHaveAttribute("alt", text(tile.querySelector("h3")));
       expect(img).toHaveAttribute("loading", "lazy");
       expect(img.getAttribute("src")).toMatch(/^\/brand-kit\/zoorik-[a-z-]+\.svg$/);
     }
+    /* Each preview's alt says what the file is, "Zoorik" first, never just the name under it. */
+    expect(
+      [...logos, ...marks].map((tile) => tile.querySelector(".bk-prev > img")!.getAttribute("alt")),
+    ).toEqual([
+      "Zoorik logo, bone on navy",
+      "Zoorik logo, navy on white",
+      "Zoorik logo, bone, transparent background",
+      "Zoorik logo, navy, transparent background",
+      "Zoorik logo with tagline, bone",
+      "Zoorik logo with tagline, navy",
+      "Zoorik mark, bone",
+      "Zoorik mark, navy",
+      "Zoorik small mark, bone",
+      "Zoorik small mark, navy",
+    ]);
     expect(text(logos[4]!.querySelector("p"))).toBe(`The logo over “${brandTagline}”`);
   });
 

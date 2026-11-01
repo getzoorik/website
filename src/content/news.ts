@@ -15,10 +15,11 @@ import { nvidiaInceptionLegal } from "@/content/memberships";
  */
 
 /**
- * The day /news's content last changed (the week of the latest Radar), for the sitemap's `lastmod` only. A refresh moves
- * it in the same PR; never the build's date.
+ * The day /news's content last changed (the week of the latest Radar, or a change to its own words: the Value Lab
+ * announcement, 1 Nov 2026), for the sitemap's `lastmod` only. A refresh moves it in the same PR; never the build's
+ * date.
  */
-export const newsLastUpdated = "19 October 2026";
+export const newsLastUpdated = "1 November 2026";
 
 /* The month names the page's dates print: "17 October 2026" on the latest announcement, "16 Oct" on a tile. */
 const months = [
@@ -280,9 +281,9 @@ export const newsFromZoorik: readonly NewsAnnouncement[] = [
   {
     date: "2026-10-12",
     tag: "Value Lab",
-    title: "How we reduced our own cluster’s machine bill by 58%",
-    line: "Eight days after we connected Coral to our own AKS development cluster, it cost $154.76 a month instead of $368.65.",
+    title: "How we reduced our own AKS cluster’s machine cost by 58%",
+    line: "Eight days after we connected Coral to our own AKS development cluster, its machines cost $154.76 a month instead of $368.65.",
     href: routes.caseStudyCoralDevCluster,
-    cta: "Read the case study",
+    cta: "Read the Coral Value Lab study",
   },
 ];

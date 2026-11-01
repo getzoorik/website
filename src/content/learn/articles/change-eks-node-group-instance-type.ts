@@ -5,7 +5,7 @@ import { figure as figure2 } from "@/features/learn/figures/change-eks-node-grou
 export const article: Article = {
   slug: "change-eks-node-group-instance-type",
   title: "How to change an EKS node group instance type",
-  meta: "To change an EKS node group instance type, create a new node group, drain the old nodes within their PDBs, then delete the old group. Commands included.",
+  meta: "Change an EKS node group instance type: create a group with aws eks create-nodegroup and drain the old one, or a launch template version replaces the nodes.",
   h1: "How to change an EKS node group instance type",
   deck: "A managed node group keeps the instance types it was created with. How to move to new ones, one node at a time.",
   card: "New node group, cordon, drain within PDBs, delete: the route to new EKS instance types, step by step.",
@@ -113,7 +113,7 @@ export const article: Article = {
             },
             " covers the family and the size. The ",
             { a: "EKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
-            " gives the monthly list price of an EKS node pool.",
+            " gives the monthly list price of an EKS node group.",
           ],
         },
       ],
@@ -369,7 +369,7 @@ export const article: Article = {
           items: [
             [
               { b: "With Karpenter:" },
-              " Coral can rebalance the nodes you choose onto cheaper machines that still fit the work, and you compare current and rebalanced cost before it starts. It creates fixed-size NodePools named zoorik-rb-…, your Karpenter launches the new machines, and the old nodes are drained and removed one by one.",
+              " Coral can rebalance the nodes you choose onto cheaper machines that still fit the work, and you compare current and rebalanced cost before it starts. It creates fixed-size NodePools for the move, your Karpenter launches the new machines, and the old nodes are drained and removed one by one.",
             ],
             [
               { b: "With only the Cluster Autoscaler:" },
@@ -396,7 +396,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "A rebalance never goes past a PDB, and a node that can’t be emptied within 45\u00a0minutes is kept. Where a warm handover applies, Coral starts a new copy on another node first, and it must be Ready and serving for 5\u00a0minutes with no restarts before the old pod goes. Pods that don’t qualify, such as StatefulSet pods or pods with ReadWriteOnce volumes, are evicted instead, and a single-replica app among them gets a short restart. The ",
+            "A rebalance never goes past a PDB, and a node that can’t be emptied in time is kept. Where a warm handover applies, Coral starts a new copy on another node first, and it must stay Ready and serving, with no restarts, before the old pod goes. Pods that don’t qualify, such as StatefulSet pods or pods with ReadWriteOnce volumes, are evicted instead, and a single-replica app among them gets a short restart. The ",
             { a: "Kubernetes cost optimization guide", href: "/kubernetes-cost-optimization" },
             " puts rebalancing and node removal in order.",
           ],

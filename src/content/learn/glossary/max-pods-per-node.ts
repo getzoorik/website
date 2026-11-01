@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "max-pods-per-node",
   term: "Max pods per node",
   title: "Max pods per node: meaning and cost impact",
-  meta: "Max pods per node caps how many pods one node can run. See the EKS and AKS defaults, how to change them, and why the cap can add nodes you pay for.",
+  meta: "Max pods per node caps how many pods one node can run. See the EKS and AKS defaults, how to change the cap on AKS, and why it can add nodes you pay for.",
   h1: "Max pods per node: meaning and cost impact",
   card: "Max pods per node is the most pods one Kubernetes node can run.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -23,11 +23,22 @@ export const term: GlossaryTerm = {
       id: "max-pods-per-node-on-eks-and",
       title: "Max pods per node on EKS and AKS",
       blocks: [
+        { kind: "h3", id: "how-eks-works-out-max-pods", title: "How EKS works out max pods" },
         {
           kind: "ul",
           items: [
             "On EKS, most pods take an IP address from the node, so by default the cap is interfaces × (addresses per interface minus 1) + 2.",
             "Without a custom machine image, managed node groups cap it at 110 below 30 virtual CPUs and 250 above.",
+          ],
+        },
+        {
+          kind: "h3",
+          id: "how-to-change-max-pods-per-node",
+          title: "How to change max pods per node on AKS",
+        },
+        {
+          kind: "ul",
+          items: [
             "On AKS, each node pool sets it, up to 250. The default is 30 to 250, by network plugin.",
             "To change max pods per node on AKS, add a pool with the new value and move your pods.",
           ],
@@ -51,7 +62,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why max pods per node matters for your cloud cost",
       blocks: [
         {
           kind: "p",

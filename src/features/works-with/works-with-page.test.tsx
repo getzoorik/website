@@ -57,6 +57,7 @@ const pages = [
     Page: CoralWorksWithClusterAutoscaler,
     meta: clusterAutoscalerMeta,
     copy: worksWithPages.clusterAutoscaler,
+    title: "Cluster Autoscaler and Coral on AKS and EKS",
     h1: "Coral works with Cluster Autoscaler",
     description:
       "On AKS and EKS, Coral rebalances pod requests and empties spare nodes one at a time. The Cluster Autoscaler adds nodes and removes the ones Coral empties.",
@@ -64,6 +65,7 @@ const pages = [
     rows: 5,
     leaves: "What Coral leaves to the Cluster Autoscaler",
     questions: [
+      "Does the Cluster Autoscaler use requests or actual usage?",
       "Will Coral fight my Cluster Autoscaler?",
       "Can Coral move work to cheaper machines with only the Cluster Autoscaler?",
       "Does Coral change my Cluster Autoscaler’s minimums?",
@@ -83,6 +85,7 @@ const pages = [
     Page: CoralWorksWithKarpenter,
     meta: karpenterMeta,
     copy: worksWithPages.karpenter,
+    title: "Coral works with Karpenter",
     h1: "Coral works with Karpenter",
     description:
       "Karpenter picks machines; Coral rebalances pod requests so Karpenter can run fewer or smaller nodes. How they work together on EKS, and what Coral leaves alone.",
@@ -109,11 +112,12 @@ const pages = [
     Page: CoralWorksWithNodeAutoProvisioning,
     meta: napMeta,
     copy: worksWithPages.nodeAutoProvisioning,
+    title: "Coral works with AKS node auto provisioning",
     h1: "Coral works with AKS node auto provisioning",
     description:
-      "AKS node auto provisioning (NAP) launches machines, and Coral rebalances the pod requests that NAP reads. What connect turns on, and how rebalancing uses NAP.",
+      "AKS node auto provisioning (NAP) launches nodes; Coral rebalances the pod requests NAP reads. What connect turns on, and how Coral moves work to cheaper nodes.",
     tool: "NAP",
-    rows: 4,
+    rows: 5,
     leaves: "What Coral leaves to NAP",
     questions: [
       "Do I need Coral if I run NAP?",
@@ -126,7 +130,7 @@ const pages = [
       "/coral-guide#rebalancing",
       "/coral-faq#do-i-need-coral-with-karpenter",
       "/learn/aks-node-auto-provisioning",
-      "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+      "/learn/kubernetes-autoscaling",
       "/coral-works-with-cluster-autoscaler",
       "/coral-works-with-karpenter",
     ],
@@ -136,6 +140,7 @@ const pages = [
     Page: CoralWorksWithKeda,
     meta: kedaMeta,
     copy: worksWithPages.keda,
+    title: "Coral works with KEDA",
     h1: "Coral works with KEDA",
     description:
       "On AKS and EKS, KEDA sets how many pods run and Coral rebalances each pod's CPU and memory requests. See how they work together and what Coral leaves to KEDA.",
@@ -162,6 +167,7 @@ const pages = [
     Page: CoralWorksWithHelm,
     meta: helmMeta,
     copy: worksWithPages.helm,
+    title: "Coral works with Helm",
     h1: "Coral works with Helm",
     description:
       "Install Coral's agent with Helm, Argo CD or Flux, and upgrade it when you choose. Coral rebalances what your charts deploy and never edits your templates.",
@@ -188,6 +194,7 @@ const pages = [
     Page: CoralWorksWithTerraform,
     meta: terraformMeta,
     copy: worksWithPages.terraform,
+    title: "Coral works with Terraform",
     h1: "Coral works with Terraform",
     description:
       "Create Coral's cloud permissions for AKS and EKS with our Terraform modules. See which node pool fields Coral changes, so each apply doesn't undo them.",
@@ -248,12 +255,12 @@ const idsOn = (route: string): ReadonlySet<string> | undefined => {
 
 /** The six sections, in the template's order, at their anchors; the third is the page's own. */
 const sectionsOf = (page: (typeof pages)[number]) => [
-  ["who-does-what", "Who does what"],
-  ["together", "How they work together"],
+  ["who-does-what", page.copy.sections.who],
+  ["together", page.copy.sections.together],
   ["leaves", page.leaves],
-  ["setup", "Set up"],
-  ["questions", "Questions"],
-  ["read-more", "Read more"],
+  ["setup", page.copy.sections.setup],
+  ["questions", page.copy.sections.questions],
+  ["read-more", page.copy.sections.readMore],
 ];
 
 describe("the works-with pages", () => {
@@ -295,14 +302,15 @@ describe("the works-with pages", () => {
   });
 
   it.each(pages)("$route: titled, described and canonicalised as its draft", (page) => {
-    expect(page.meta.title).toBe(page.h1);
-    expect(`${page.h1} | Zoorik`.length).toBeLessThanOrEqual(60);
+    /* The <title> leads with the search where it differs from the h1 (1 Nov 2026). */
+    expect(page.meta.title).toBe(page.title);
+    expect(`${page.title} | Zoorik`.length).toBeLessThanOrEqual(60);
     expect(page.description.length).toBeLessThanOrEqual(160);
     expect(page.meta.description).toBe(page.description);
     expect(page.meta.alternates).toEqual({ canonical: page.route });
     expect(page.meta.openGraph).toMatchObject({
       url: page.route,
-      title: `${page.h1} | Zoorik`,
+      title: `${page.title} | Zoorik`,
       description: page.description,
     });
   });

@@ -59,8 +59,8 @@ describe("/trust", () => {
     for (const [href] of parts) expect(root.querySelector(`h3${href}`), href!).not.toBeNull();
     expect(root.querySelectorAll("details.doc-toc ol.rl-sub a")).toHaveLength(6);
     const column = root.querySelector("article.doc-main")!;
-    expect(text(column.querySelector(":scope > p.doc-updated"))).toBe("Updated 30 October 2026");
-    expect(trustUpdated).toBe("Updated 30 October 2026");
+    expect(text(column.querySelector(":scope > p.doc-updated"))).toBe("Updated 1 November 2026");
+    expect(trustUpdated).toBe("Updated 1 November 2026");
     const sections = [...column.querySelectorAll(".pp-prose.tr-prose > section")];
     expect(
       sections.map((s) => [s.id, s.getAttribute("aria-labelledby"), text(s.querySelector("h2"))]),

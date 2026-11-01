@@ -41,8 +41,8 @@ export const researchPage = {
       "Research papers on cloud cost optimization: cluster scheduling, resource sizing, spot pricing, block storage and live migration, with a short note on each.",
   },
   hero: {
-    title: "Cloud cost optimization research",
-    deck: "These research papers explain the main ideas behind reducing cloud cost. They cover cluster scheduling, resource sizing, cloud pricing, block storage and live migration.",
+    title: "Cloud cost optimization research papers",
+    deck: "These cloud cost optimization research papers cover the main ideas: cluster scheduling, resource sizing, cloud pricing, block storage and live migration.",
   },
   /** The section's name for a screen reader. */
   label: "Research papers",

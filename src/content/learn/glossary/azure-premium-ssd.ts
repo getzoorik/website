@@ -5,9 +5,9 @@ export const term: GlossaryTerm = {
   slug: "azure-premium-ssd",
   term: "Premium SSD (Azure)",
   title: "What is Premium SSD in Azure?",
-  meta: "Premium SSD in Azure is a fast managed disk for production VMs. See what Premium SSD LRS means, how its IOPS work and why you pay for its whole size tier.",
+  meta: "Premium SSD in Azure, or Azure premium storage, is a fast managed disk for production VMs. See what Premium SSD LRS means and why you pay its whole size tier.",
   h1: "What is Premium SSD in Azure?",
-  card: "Premium SSD in Azure is a solid-state drive (SSD) type of Azure managed disk.",
+  card: "Premium SSD in Azure, also called Azure premium storage, is a solid-state drive (SSD) type of Azure managed disk.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-26",
@@ -16,7 +16,7 @@ export const term: GlossaryTerm = {
     {
       kind: "p",
       text: [
-        "Premium SSD in Azure is a solid-state drive (SSD) type of ",
+        "Premium SSD in Azure, also called Azure premium storage, is a solid-state drive (SSD) type of ",
         { a: "Azure managed disk", href: "/learn/glossary/azure-managed-disk" },
         ". It’s for production apps needing high performance and low ",
         { a: "latency", href: "/learn/glossary/disk-latency" },
@@ -85,7 +85,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why Premium SSD matters for your cloud cost",
       blocks: [
         {
           kind: "ul",
@@ -107,7 +107,7 @@ export const term: GlossaryTerm = {
             "Our ",
             { a: "Azure disk pricing calculator", href: "/ebs-and-azure-disk-pricing" },
             " gives a Premium SSD’s monthly list price. ",
-            { a: "Azure disk cost optimization", href: "/learn/azure-disk-cost-optimization" },
+            { a: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
             " shows ways to reduce it.",
           ],
         },

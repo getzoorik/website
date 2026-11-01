@@ -5,7 +5,7 @@ import { figure as figure2 } from "@/features/learn/figures/aks-storage-classes/
 export const article: Article = {
   slug: "aks-storage-classes",
   title: "AKS storage classes: which Azure disk each creates",
-  meta: "AKS storage classes decide the Azure disk behind each PVC: its type, LRS or ZRS, and price. See what managed-csi and the others create, and write your own.",
+  meta: "AKS storage classes decide the Azure disk behind each PVC: its type, LRS or ZRS, and price. See what each Kubernetes storage class creates, and write your own.",
   h1: "AKS storage classes: which Azure disk each one creates",
   deck: "What managed-csi and the other built-in classes create in Azure, and how the class sets a volume’s price.",
   card: "What each built-in AKS storage class creates in Azure, what it costs, and how to write a ZRS or LRS class.",
@@ -45,6 +45,11 @@ export const article: Article = {
           text: "So the chart set only the size. Its class picked the disk type and redundancy. Azure’s size tier added 56\u00a0GiB (256 − 200) that the claim never asked for.",
         },
         { kind: "svg", figure: figure1 },
+        {
+          kind: "h3",
+          id: "what-a-kubernetes-storage-class-is",
+          title: "What a Kubernetes storage class is",
+        },
         {
           kind: "p",
           text: [
@@ -111,7 +116,11 @@ export const article: Article = {
             ],
           ],
         },
-        { kind: "h3", id: "the-aks-storage-class-default", title: "The AKS storage class default" },
+        {
+          kind: "h3",
+          id: "the-aks-storage-class-default",
+          title: "The default storage class in AKS",
+        },
         {
           kind: "p",
           text: [
@@ -209,7 +218,7 @@ export const article: Article = {
         { kind: "svg", figure: figure2 },
         {
           kind: "p",
-          text: "Microsoft’s pages word the zone condition slightly differently, so check your cluster’s classes with the commands below.",
+          text: "Check your cluster’s classes with the commands below.",
         },
         {
           kind: "p",
@@ -425,7 +434,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "write-your-own-zrs-or-lrs-class",
-          title: "Write your own ZRS or LRS class",
+          title: "Create your own Kubernetes storage class: ZRS or LRS",
         },
         {
           kind: "p",
@@ -544,7 +553,7 @@ export const article: Article = {
     },
     {
       id: "which-class-to-name-in-a-pvc",
-      title: "Which class to name in a PVC",
+      title: "Which StorageClass to name in a PVC",
       blocks: [
         {
           kind: "p",
@@ -617,14 +626,10 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "When Coral drains a node, it first tries a warm handover for Deployment and Argo Rollout pods. It starts a Ready copy on another node before the old pod goes. A pod with a ReadWriteOnce volume doesn’t get one.",
-        },
-        {
-          kind: "p",
           text: [
-            "That pod is evicted within its ",
+            "Each Azure disk mounts ReadWriteOnce, so when Coral drains a node, a single-replica pod that uses one is evicted within its ",
             { a: "PodDisruptionBudget", href: "/learn/glossary/pod-disruption-budget" },
-            " instead, so a single-replica app gets a short restart. Before it drains, Coral simulates the scheduler to check that every pod fits elsewhere, with its zones. To reduce what requests and nodes cost, see the ",
+            " and gets a short restart. To reduce what requests and nodes cost, see the ",
             { a: "Kubernetes cost optimization guide", href: "/kubernetes-cost-optimization" },
             ".",
           ],
@@ -648,14 +653,6 @@ export const article: Article = {
       ],
     },
   ],
-  help: {
-    product: "amoeba",
-    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
-    links: [
-      { label: "Block storage cost optimization with Amoeba", href: "/amoeba" },
-      { label: "Estimate your saving", href: "/assessment?p=amoeba" },
-    ],
-  },
   sources: [
     {
       publisher: "Microsoft Learn",

@@ -4,19 +4,19 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/azure-tempo
 export const term: GlossaryTerm = {
   slug: "azure-temporary-disk",
   term: "Azure temporary disk",
-  title: "What is the Azure temporary disk?",
-  meta: "The Azure temporary disk is short-term storage that comes with most Azure VMs. See what it holds, when its data can be lost, and why it adds no disk charge.",
-  h1: "What is the Azure temporary disk?",
-  card: "The Azure temporary disk, or Azure temp disk, is short-term storage that comes with most Azure virtual machines (VMs).",
+  title: "What is temporary storage in an Azure VM?",
+  meta: "Temporary storage in an Azure VM is the Azure temporary disk, or temp disk. See what it holds, when its data can be lost, and why it adds no disk charge.",
+  h1: "What is temporary storage in an Azure VM?",
+  card: "The Azure temporary disk, or Azure temp disk, is the temporary storage that comes with most Azure virtual machines (VMs).",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
       text: [
-        "The Azure temporary disk, or Azure temp disk, is short-term storage that comes with most Azure virtual machines (VMs). Microsoft says it isn’t a ",
+        "The Azure temporary disk, or Azure temp disk, is the temporary storage that comes with most Azure virtual machines (VMs). Microsoft says it isn’t a ",
         { a: "managed disk", href: "/learn/glossary/azure-managed-disk" },
         " and should hold only data such as page files, swap files or SQL Server tempdb files.",
       ],
@@ -25,7 +25,7 @@ export const term: GlossaryTerm = {
   sections: [
     {
       id: "when-its-data-can-be-lost",
-      title: "When its data can be lost",
+      title: "When data on the Azure temp disk can be lost",
       blocks: [
         { kind: "p", text: "Data on the temporary disk in an Azure VM might be lost when:" },
         {
@@ -59,7 +59,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why Azure temporary storage matters for your cloud cost",
       blocks: [
         {
           kind: "ul",

@@ -180,7 +180,7 @@ export function VersusPage({ page }: { readonly page: VersusEntry }): React.JSX.
       hero={{
         kicker: versusCopy.kicker(checked),
         title: named(page.meta.title),
-        deck: named(page.meta.description),
+        deck: named(page.deck ?? page.meta.description),
         after: page.short ? (
           <p className="ar-short">
             <b>{versusFrameCopy.short}</b> {richText(page.short)}
@@ -257,7 +257,10 @@ export function VersusPage({ page }: { readonly page: VersusEntry }): React.JSX.
       </LearnSection>
       <VersusFrame page={page} />
       {page.readMore ? (
-        <ReadMoreRow title={versusFrameCopy.readMore} tiles={page.readMore.map(readMoreTile)} />
+        <ReadMoreRow
+          title={versusFrameCopy.readMore(products[page.product].name)}
+          tiles={page.readMore.map(readMoreTile)}
+        />
       ) : null}
     </LearnFrame>
   );

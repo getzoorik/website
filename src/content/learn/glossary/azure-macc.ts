@@ -4,9 +4,9 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/azure-macc/
 export const term: GlossaryTerm = {
   slug: "azure-macc",
   term: "Azure MACC (Microsoft Azure Consumption Commitment)",
-  title: "What is Azure MACC?",
-  meta: "Azure MACC is a contract to spend a set amount on Azure over a set period. See what counts toward it, and what you pay if you miss it by the end date.",
-  h1: "What is Azure MACC?",
+  title: "What is Microsoft Azure MACC?",
+  meta: "Azure MACC, the Microsoft Azure Consumption Commitment, is a contract to spend a set amount on Azure. What counts toward it, and the shortfall if you miss it.",
+  h1: "What is Microsoft Azure MACC?",
   card: "Azure MACC, the Microsoft Azure Consumption Commitment, is a contract to spend a set amount on Azure over a set period.",
   group: "finops-pricing",
   product: "both",
@@ -33,7 +33,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "what-counts-toward-it",
-      title: "What counts toward it",
+      title: "What counts toward Azure MACC: eligible services and Marketplace offers",
       blocks: [
         { kind: "p", text: "Only Azure MACC-eligible spend counts." },
         {
@@ -49,8 +49,9 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why Azure MACC matters for your cloud cost",
       blocks: [
+        { kind: "h3", id: "the-macc-shortfall-charge", title: "The MACC shortfall charge" },
         {
           kind: "ul",
           items: [

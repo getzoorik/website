@@ -1,6 +1,12 @@
 import type { JSX } from "react";
 
-import { AwsMark, AzureMark, KubernetesMark, LinuxMark } from "@/components/brand/cloud-marks";
+import {
+  AwsMark,
+  AzureMark,
+  KubernetesMark,
+  LinuxMark,
+  WindowsMark,
+} from "@/components/brand/cloud-marks";
 import type { CareersToolMark } from "@/content/careers";
 import { HelmMark, TerraformMark } from "@/features/product-page/install-marks";
 
@@ -8,7 +14,7 @@ import { HelmMark, TerraformMark } from "@/features/product-page/install-marks";
  * The marks of the tools we build with: the hero's three rings and each
  * product's stack in What you will build.
  *
- * Kubernetes, Azure, AWS and Linux are the site's own (`cloud-marks.tsx`), and
+ * Kubernetes, Azure, AWS, Linux and Windows are the site's own (`cloud-marks.tsx`), and
  * Helm and Terraform Install your way's (`install-marks.tsx`); the sheet gives
  * those two their colours, #0F1689 and #844FBA (careers.css), as the mock's
  * `fill` does.
@@ -109,6 +115,8 @@ export function ToolMark({
       return <AwsMark />;
     case "linux":
       return <LinuxMark />;
+    case "windows":
+      return <WindowsMark />;
     case "go":
       return <SimpleIcon mark={mark} d={GO_PATH} fill="#00ADD8" />;
     case "python":

@@ -445,7 +445,7 @@ export const article: Article = {
           items: [
             [
               { b: "The move." },
-              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it.",
+              " The services that use those mounts restart once, at the switch onto the pool.",
             ],
             [
               { b: "Rightsizing." },

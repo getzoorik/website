@@ -6,7 +6,7 @@ import { figure as figure3 } from "@/features/learn/figures/in-place-pod-resize/
 export const article: Article = {
   slug: "in-place-pod-resize",
   title: "In-place pod resize on Kubernetes, AKS and EKS",
-  meta: "In-place pod resize changes a running container’s CPU and memory without recreating its pod. Versions, resizePolicy, limits and what AKS and EKS support.",
+  meta: "In-place pod resize, also called in-place pod vertical scaling, changes a running pod’s CPU and memory without a restart. Versions, resizePolicy, AKS and EKS.",
   h1: "In-place pod resize: change CPU and memory without a restart",
   deck: "Stable since Kubernetes 1.35. How a resize works, when it still restarts a container, and what AKS and EKS need.",
   card: "Change a running pod’s CPU and memory without recreating it: versions, restart rules, limits, AKS and EKS.",
@@ -39,6 +39,11 @@ export const article: Article = {
         {
           kind: "p",
           text: "In-place pod resize, also called in-place pod vertical scaling, lets you patch the running pod instead. With the default resize policy, its container keeps running on the same node, now at 300m.",
+        },
+        {
+          kind: "h3",
+          id: "podresizepending-deferred-or-infeasible",
+          title: "PodResizePending: Deferred or Infeasible",
         },
         {
           kind: "p",
@@ -482,7 +487,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "On our own AKS development cluster, Coral rebalanced 14 apps by 12 October. The CPU they reserve went from 0.78 to 0.43\u00a0cores, and their memory from 6.4 to 5.4\u00a0GiB (",
-            { a: "the case study", href: "/coral-value-lab" },
+            { a: "the Coral Value Lab study", href: "/coral-value-lab" },
             "). The ",
             { a: "Coral guide", href: "/coral-guide#how-sizes-are-worked-out" },
             " shows how each size is worked out.",
@@ -548,7 +553,7 @@ export const article: Article = {
       href: "/learn/kubernetes-pod-right-sizing",
     },
     {
-      title: "VPA vs HPA: when to use which, and why to rebalance first",
+      title: "VPA vs HPA: when to use which",
       where: "Learn",
       href: "/learn/vpa-vs-hpa",
     },

@@ -27,7 +27,7 @@ export const site = {
   /** The home page's description, which its card and its structured data repeat.
       It opens with the name, for the same reason as the title. */
   homeDescription:
-    "Zoorik reduces cloud cost, autonomously, without any downtime. Coral rebalances Kubernetes on AKS and EKS. Amoeba rightsizes Azure disks and Amazon EBS.",
+    "Zoorik is a cloud cost optimization company. Coral rebalances Kubernetes on AKS and EKS. Amoeba rightsizes Azure managed disks and Amazon EBS, autonomously.",
   /** The company sentence (owner, 1 Nov 2026, O12): the layout's description,
       the organisation's in the structured data, and the home hero's line
       under its pitch (`heroContent.company`). The home page's meta
@@ -499,7 +499,7 @@ export const navMenus: readonly NavMenu[] = [
     learn: {
       label: "Zoorik Learn",
       href: routes.learn,
-      line: "Articles on Kubernetes and block storage cost",
+      line: "Cloud cost optimization guides for Kubernetes and block storage",
     },
     open: {
       label: "Open source",

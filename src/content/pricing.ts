@@ -9,7 +9,8 @@ import { assessmentHref } from "@/content/assess";
  * 🔴 NO PRICE, RATE, CURRENCY OR FIGURE (D193, 9 Oct 2026: "no prices on the site, only one true sentence about
  * pricing"). The one sentence is the owner's, word for word (D226, 30 Oct 2026), and it is the hero's deck. Nothing
  * here says what a vCPU or a GB "it manages" is beyond that line. The page's text holds no digit at all, and its
- * structured data no offer (`pricing-page.test.tsx`); the shared closing row's "Thirty minutes" is spelled out.
+ * structured data no offer (`pricing-page.test.tsx`); the shared closing row's "Thirty minutes" and the safety
+ * snapshots' "seven days" (the 7 days /security prints) are spelled out.
  *
  * The text is the draft's small markup, drawn by `RichText`: `code`, [text](href), the address as a mailto.
  */
@@ -18,7 +19,7 @@ import { assessmentHref } from "@/content/assess";
  * The day /pricing's content last changed, for the sitemap's `lastmod` only: the page prints no date. Whoever changes
  * the page moves it in the same PR; never the build's date.
  */
-export const pricingLastUpdated = "30 October 2026";
+export const pricingLastUpdated = "1 November 2026";
 
 /** The owner's line (D226), the page's lead: word for word, never paraphrased. */
 export const pricingLine =
@@ -122,10 +123,6 @@ export const pricingPage = {
         kind: "p",
         text: "Your order, or your marketplace purchase, sets the price, how often you pay and the payment terms.",
       },
-      {
-        kind: "p",
-        text: "Your cloud provider charges you directly for the disks and snapshots Amoeba creates or keeps.",
-      },
     ] satisfies readonly PricingBlock[] as readonly PricingBlock[],
   },
   /** The four listings by name, text only (`marketplaces[].listings`), then the private offer and every listing. */
@@ -186,7 +183,7 @@ export const pricingPage = {
         answer: [
           {
             kind: "p",
-            text: "Amoeba is in early access. Book a demo for early access, or run the free assessment first.",
+            text: "Amoeba is available in AWS Marketplace and Microsoft Marketplace, and is in early access. Book a demo for early access, or run the free assessment first.",
           },
         ],
       },
@@ -211,7 +208,7 @@ export const pricingPage = {
         answer: [
           {
             kind: "p",
-            text: "Yes, but only while the move runs. The source disks are deleted once the switch is checked. Then you pay for the safety snapshots for the few days they're kept.",
+            text: "Yes, but only while the move runs. The source disks are deleted once the switch is checked. Then you pay for the safety snapshots for the seven days they're kept.",
           },
         ],
       },

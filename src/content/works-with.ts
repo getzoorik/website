@@ -5,7 +5,8 @@ import { routes } from "@/config/site";
  * works with, each in the footer's "Works with" list: /coral-works-with-cluster-autoscaler, -karpenter,
  * -aks-node-auto-provisioning, -keda, -helm and -terraform. One template draws all six (`WorksWithPage`): the eyebrow,
  * the h1 and the short answer, then Who does what, How they work together, what Coral leaves to the tool (What stays
- * yours on Helm and Terraform), Set up, Questions and Read more, then the closing row on Coral.
+ * yours on Helm and Terraform), Set up, Questions and Read more, each named after its pair ("Set up Coral with
+ * Karpenter"; owner, 1 Nov 2026), then the closing row on Coral.
  *
  * Generated once from the checked drafts in `docs/website-seo/new-pages-2026-10-31/<slug>/page.md` through the mock's
  * own parser (`ux-design/website/_tools/ten_pages_mock.py`), so every string is the mock's: quotes and apostrophes as
@@ -21,14 +22,10 @@ import { routes } from "@/config/site";
  * changes it. */
 export const worksWithLastUpdated = "1 November 2026";
 
-/** The words every works-with page shares: the eyebrow over the h1, and the names of the sections the six share. */
+/** The words every works-with page shares: the eyebrow over the h1, and Who does what's first column. */
 export const worksWith = {
   eyebrow: "Works with",
-  who: { title: "Who does what", job: "Job" },
-  together: "How they work together",
-  setup: "Set up",
-  questions: "Questions",
-  readMore: "Read more",
+  job: "Job",
 } as const;
 
 /** A question and its answer's paragraphs. */
@@ -45,6 +42,14 @@ export interface WorksWithCopy {
   readonly meta: { readonly title: string; readonly description: string };
   /** The h1 ("Coral works with Karpenter") and the short answer under it. */
   readonly hero: { readonly title: string; readonly deck: string };
+  /** The names of the sections every page has, each naming its pair; the third's is `leaves.title`. */
+  readonly sections: {
+    readonly who: string;
+    readonly together: string;
+    readonly setup: string;
+    readonly questions: string;
+    readonly readMore: string;
+  };
   /** Who does what: the tool's column ("Cluster Autoscaler", "NAP"), and each row's job, the tool's part and
    * Coral's. */
   readonly who: {
@@ -70,13 +75,20 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
     route: routes.coralWorksWithClusterAutoscaler,
     lastUpdated: worksWithLastUpdated,
     meta: {
-      title: "Coral works with Cluster Autoscaler",
+      title: "Cluster Autoscaler and Coral on AKS and EKS",
       description:
         "On AKS and EKS, Coral rebalances pod requests and empties spare nodes one at a time. The Cluster Autoscaler adds nodes and removes the ones Coral empties.",
     },
     hero: {
       title: "Coral works with Cluster Autoscaler",
       deck: "The Cluster Autoscaler adds nodes for pods that can’t be scheduled, and removes underused nodes whose pods fit elsewhere. To reduce cost, Coral rebalances CPU and memory requests to real use and empties spare nodes one at a time. The autoscaler removes them, and Coral never adds nodes for demand, so the two don’t fight.",
+    },
+    sections: {
+      who: "What the Kubernetes Cluster Autoscaler does, and what Coral does",
+      together: "How Coral and the Cluster Autoscaler work together",
+      setup: "Set up Coral with the Cluster Autoscaler",
+      questions: "Questions about Coral and the Cluster Autoscaler",
+      readMore: "More on the Cluster Autoscaler and Coral",
     },
     who: {
       tool: "Cluster Autoscaler",
@@ -133,6 +145,12 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
     ],
     questions: [
       {
+        question: "Does the Cluster Autoscaler use requests or actual usage?",
+        answer: [
+          "Requests. It adds nodes for pods that can’t be scheduled, and removes underused nodes whose pods fit elsewhere, judging both from the pods’ CPU and memory requests, not their real use. It doesn’t change the requests: Coral rebalances them to real use.",
+        ],
+      },
+      {
         question: "Will Coral fight my Cluster Autoscaler?",
         answer: [
           "No. Scale-up stays the autoscaler’s job, and Coral never adds nodes for demand. Coral empties spare nodes, and the autoscaler’s own timers decide when each one goes.",
@@ -182,6 +200,13 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
     hero: {
       title: "Coral works with Karpenter",
       deck: "On EKS, Karpenter chooses, launches and removes the machines your pods need. To reduce cost, Coral rebalances each pod’s CPU and memory requests to real use, so Karpenter can run fewer or smaller nodes. Coral never changes your Karpenter settings and never adds nodes for demand, so the two don’t fight.",
+    },
+    sections: {
+      who: "Who does what: Coral and Karpenter",
+      together: "How Coral and Karpenter work together",
+      setup: "Set up Coral with Karpenter",
+      questions: "Questions about Coral and Karpenter",
+      readMore: "More on Karpenter and Coral",
     },
     who: {
       tool: "Karpenter",
@@ -282,11 +307,18 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
     meta: {
       title: "Coral works with AKS node auto provisioning",
       description:
-        "AKS node auto provisioning (NAP) launches machines, and Coral rebalances the pod requests that NAP reads. What connect turns on, and how rebalancing uses NAP.",
+        "AKS node auto provisioning (NAP) launches nodes; Coral rebalances the pod requests NAP reads. What connect turns on, and how Coral moves work to cheaper nodes.",
     },
     hero: {
       title: "Coral works with AKS node auto provisioning",
       deck: "AKS node auto provisioning (NAP) adds nodes from pod requests, picks each machine, and consolidates the pools it runs. To reduce cost, Coral rebalances those requests to real use, so NAP can run fewer or smaller nodes. Coral leaves NAP to consolidate its own pools and never adds nodes for demand, so the two don’t fight.",
+    },
+    sections: {
+      who: "Who does what: Coral and NAP",
+      together: "How Coral and NAP work together",
+      setup: "Set up Coral with NAP",
+      questions: "Questions about Coral and NAP",
+      readMore: "More on NAP and Coral",
     },
     who: {
       tool: "NAP",
@@ -310,6 +342,11 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
           "Moving work to cheaper machines",
           "Launches the new machines.",
           "Plans the move, creates fixed-size NodePools for it, then drains and removes the old nodes.",
+        ],
+        [
+          "Keeping a marked pod or node",
+          "Honours `karpenter.sh/do-not-disrupt`.",
+          "Honours it on pods and nodes: a marked pod is never moved and keeps its node, and a marked node is kept.",
         ],
       ],
     },
@@ -372,7 +409,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
       "[Coral product guide: Rebalancing](/coral-guide#rebalancing): what a rebalance needs, and how it runs.",
       "[Coral FAQ: Do I need Coral with Karpenter or NAP?](/coral-faq#do-i-need-coral-with-karpenter): the short answer, with more on autoscalers.",
       "[AKS node auto provisioning (NAP): how to enable it](/learn/aks-node-auto-provisioning): what NAP is, and how to enable or disable it.",
-      "[HPA vs VPA vs Cluster Autoscaler: what each one scales](/learn/hpa-vs-vpa-vs-cluster-autoscaler): pods, requests and nodes, plus Karpenter.",
+      "[Kubernetes autoscaling: HPA and Cluster Autoscaler](/learn/kubernetes-autoscaling): pods, requests and nodes, plus Karpenter.",
       "[Coral works with Cluster Autoscaler](/coral-works-with-cluster-autoscaler): Coral empties spare nodes, and the Cluster Autoscaler removes them.",
       "[Coral works with Karpenter](/coral-works-with-karpenter): the same story on EKS, with Karpenter itself.",
     ],
@@ -388,6 +425,13 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
     hero: {
       title: "Coral works with KEDA",
       deck: "On AKS and EKS, KEDA decides how many pods run, from events or from CPU and memory. Coral rebalances how much CPU and memory each pod requests, so your pods fit on fewer or smaller nodes. The two don’t fight: Coral never takes over or changes KEDA’s HPA, and changes your ScaledObject only in a rebalance onto cheaper machines.",
+    },
+    sections: {
+      who: "Who does what: Coral and KEDA",
+      together: "How Coral and KEDA work together",
+      setup: "Set up Coral with KEDA",
+      questions: "Questions about Coral and KEDA",
+      readMore: "More on KEDA and Coral",
     },
     who: {
       tool: "KEDA",
@@ -408,7 +452,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
           "Creates none of its own for a workload KEDA scales.",
         ],
         [
-          "Starting a new copy before a pod moves in a rebalance",
+          "Starting a new copy before a pod moves in a rebalance onto cheaper machines",
           "Passes Coral’s raised minimum to its HPA, which adds the new copy.",
           "Can raise the ScaledObject’s minimum while a pod moves, so a new copy runs healthy on another node first.",
         ],
@@ -424,20 +468,20 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
       "Coral reads your ScaledObjects, so it knows which HPAs KEDA owns and leaves them alone.",
       "Once you switch on “Automatically optimize”, Coral rebalances each pod’s CPU and memory requests to real use.",
       "With a CPU trigger, unless the ScaledObject is paused, Coral replays recent load through its settings before it picks the CPU request.",
-      "In a rebalance, Coral can raise the ScaledObject’s minimum, so a new copy runs healthy on another node before the old pod stops.",
+      "In a rebalance onto cheaper machines, Coral can raise the ScaledObject’s minimum, so a new copy runs healthy on another node before the old pod stops.",
     ],
     leaves: {
       title: "What Coral leaves to KEDA",
       items: [
         "**How many pods run, scaling to zero included.** Coral never takes over, converts or changes the HPA that KEDA creates.",
-        "**Your triggers and every other ScaledObject setting.** Coral changes only the minimum and maximum, and only during a rebalance.",
+        "**Your triggers and every other ScaledObject setting.** Coral changes only the minimum and maximum, and only during a rebalance onto cheaper machines.",
         "**Your Git.** Coral never edits Git or your workload’s template.",
       ],
     },
     setup: [
-      "**Nothing to install for KEDA.** Connect lets the agent read your ScaledObjects and, in a rebalance, change only their minimum and maximum. Admission policies limit what the agent may change.",
+      "**Nothing to install for KEDA.** Connect lets the agent read your ScaledObjects and, in a rebalance onto cheaper machines, change only their minimum and maximum. Admission policies limit what the agent may change.",
       "**Pod sizing is opt-in.** Coral only recommends until you switch on “Automatically optimize” for a policy or a workload.",
-      "**Rebalancing needs [Karpenter](/coral-works-with-karpenter) or [AKS node auto provisioning (NAP)](/coral-works-with-aks-node-auto-provisioning).** It also needs Node optimization on and the permission to remove nodes.",
+      "**A rebalance onto cheaper machines needs [Karpenter](/coral-works-with-karpenter) or [AKS node auto provisioning (NAP)](/coral-works-with-aks-node-auto-provisioning).** It also needs Node optimization on and the permission to remove nodes.",
     ],
     questions: [
       {
@@ -449,7 +493,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
       {
         question: "Does Coral ever change my ScaledObject?",
         answer: [
-          "Only during a rebalance, and only its minimum and maximum. To move a pod, Coral can raise the minimum, so a new copy runs healthy on another node before the old pod stops. Then it puts your values back.",
+          "Only during a rebalance onto cheaper machines, and only its minimum and maximum. To move a pod, Coral can raise the minimum, so a new copy runs healthy on another node before the old pod stops. Then it puts your values back.",
         ],
       },
       {
@@ -467,7 +511,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
       {
         question: "What happens to KEDA’s pods when Coral empties a spare node?",
         answer: [
-          "Outside a rebalance, Coral moves them without starting a new copy first, so a pod can get a short restart. To prevent that, mark the pod `karpenter.sh/do-not-disrupt`, which also keeps its node.",
+          "Outside a rebalance onto cheaper machines, Coral moves them without starting a new copy first, so a pod can get a short restart. To prevent that, mark the pod `karpenter.sh/do-not-disrupt`, which also keeps its node.",
         ],
       },
     ],
@@ -475,7 +519,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
       "[Coral product guide: HPAs and VPAs](/coral-guide#hpas-and-vpas): which HPAs Coral creates, takes over or leaves alone.",
       "[Coral FAQ: Working with HPA](/coral-faq#working-with-hpa): who wins when the HPA and Coral both act.",
       "[KEDA vs Karpenter: pods, nodes and the requests in between](/learn/keda-vs-karpenter): what each one scales, and where Coral fits.",
-      "[What is HPA (Horizontal Pod Autoscaler)?](/learn/glossary/horizontal-pod-autoscaler): the autoscaler that KEDA creates and drives.",
+      "[What is Kubernetes HPA (Horizontal Pod Autoscaler)?](/learn/glossary/horizontal-pod-autoscaler): the autoscaler that KEDA creates and drives.",
       "[Coral works with Karpenter](/coral-works-with-karpenter): how Coral and Karpenter share the nodes on EKS.",
     ],
   },
@@ -490,6 +534,13 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
     hero: {
       title: "Coral works with Helm",
       deck: "Helm installs your charts and can install Coral’s agent, which then upgrades only when you choose. Coral rebalances the workloads your charts deploy and never edits your templates. Once you switch on “Automatically optimize”, it sizes each pod as it starts.",
+    },
+    sections: {
+      who: "Who does what: Coral and Helm",
+      together: "How Coral and Helm work together",
+      setup: "Set up Coral with Helm",
+      questions: "Questions about Coral and Helm",
+      readMore: "More on Helm and Coral",
     },
     who: {
       tool: "Helm",
@@ -508,7 +559,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
         [
           "Pod CPU and memory requests",
           "Your templates set them.",
-          "Sizes each pod to real use, once you switch on “Automatically optimize”.",
+          "Rebalances each container’s CPU and memory requests to real use, once you switch on “Automatically optimize”.",
         ],
         ["HPAs in your charts", "Creates and updates them.", "Never takes one over."],
       ],
@@ -589,6 +640,13 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
       title: "Coral works with Terraform",
       deck: "Terraform keeps your cloud as code, and our modules add Coral’s cloud permissions to it. Coral then rebalances your workloads and nodes, without editing your workloads’ templates. Where Coral changes a node pool field that Terraform manages, you tell Terraform to ignore it.",
     },
+    sections: {
+      who: "Who does what: Coral and Terraform",
+      together: "How Coral and Terraform work together",
+      setup: "Set up Coral with Terraform",
+      questions: "Questions about Coral and Terraform",
+      readMore: "More on Terraform and Coral",
+    },
     who: {
       tool: "Terraform",
       rows: [
@@ -605,7 +663,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
         [
           "Node pools",
           "Creates them and sets each pool’s minimum.",
-          "Empties spare nodes, and may reduce a minimum that alone keeps an empty machine.",
+          "Empties spare nodes, and may reduce a minimum that alone keeps an emptied node.",
         ],
         ["Adding nodes", "Can set up the autoscaler that does it.", "Never adds nodes for demand."],
         ["Your workload specs", "Applies them as you wrote them.", "Never edits them."],
@@ -616,7 +674,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
       "You install the agent with the Helm chart, with the module’s output in its values.",
       "Coral empties the nodes you don’t need, one at a time, and sizes pods to real use once you switch on “Automatically optimize”.",
       "Your autoscaler removes each emptied node, and Coral deletes a machine itself only in fixed-size pools that nothing else manages.",
-      "If a pool’s minimum alone keeps an empty machine, Coral can reduce that minimum, and it records the old one in tags.",
+      "If a pool’s minimum alone keeps an emptied node, Coral can reduce that minimum, and it records the old one in tags.",
     ],
     leaves: {
       title: "What stays yours",
@@ -633,7 +691,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
       "**On AKS,** turn on the cluster’s OIDC issuer and workload identity before you apply.",
       "**On EKS,** choose Pod Identity or IRSA. With Pod Identity, apply the module before you install the agent, so the agent gets its credentials when it starts.",
       "**Install the agent** with the Helm chart and the module’s output, as [Install Coral with Terraform + Helm](/docs/install-coral-with-terraform) shows.",
-      "**Ignore Coral’s fields** in your own node pool code, as the [Terraform install guide](/docs/install-coral-with-terraform#your-own-node-pool-code) shows. Otherwise each apply undoes them.",
+      "**Ignore Coral’s fields** in your own node pool code, as [Install Coral with Terraform + Helm](/docs/install-coral-with-terraform#your-own-node-pool-code) shows. Otherwise each apply undoes them.",
     ],
     questions: [
       {
@@ -645,7 +703,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
       {
         question: "Will `terraform apply` undo what Coral changes?",
         answer: [
-          "It can, on node pools that Terraform manages. Coral may reduce a pool’s minimum and, on EKS, a group’s desired size, and it records the old minimum in tags. Tell Terraform to ignore those fields, as the [Terraform guide](/docs/install-coral-with-terraform#your-own-node-pool-code) shows.",
+          "It can, on node pools that Terraform manages. Coral may reduce a pool’s minimum and, on EKS, a group’s desired size, and it records the old minimum in tags. Tell Terraform to ignore those fields, as [Install Coral with Terraform + Helm](/docs/install-coral-with-terraform#your-own-node-pool-code) shows.",
         ],
       },
       {

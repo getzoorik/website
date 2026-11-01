@@ -5,7 +5,7 @@ import { WhyMotion } from "@/features/by-design/why-motion";
 import { Text } from "@/features/learn/article-page";
 
 /**
- * By design — "Cloud cost optimization, without the risk": the home page's one
+ * By design — "Autonomous cloud cost optimization, without the risk": the home page's one
  * band, four cards on `--surface-2`.
  *
  * Each card is one drawing with its title as the caption (owner, 23 Oct 2026:

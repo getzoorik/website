@@ -5,8 +5,8 @@ import { figure as figure3 } from "@/features/learn/figures/increase-ebs-volume-
 
 export const article: Article = {
   slug: "increase-ebs-volume-size",
-  title: "Increase EBS volume size without downtime on Linux",
-  meta: "Increase EBS volume size without downtime: modify-volume, then growpart and xfs_growfs or resize2fs while it stays mounted, and why you keep paying for it.",
+  title: "Increase EC2 volume size without downtime on Linux",
+  meta: "Increase EC2 volume size without downtime: modify the EBS volume, then growpart and xfs_growfs or resize2fs while mounted, and why you keep paying for it.",
   h1: "How to increase EBS volume size without downtime on Linux",
   deck: "Grow the volume with Elastic Volumes, then its partition and filesystem, while the instance keeps running.",
   card: "Grow an attached EBS volume and its filesystem on Linux, the limits on changes, and why the new size stays.",
@@ -246,7 +246,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "5-grow-the-partition-if-there-is",
-          title: "5. Grow the partition, if there is one",
+          title: "5. Grow the partition with growpart",
         },
         {
           kind: "p",
@@ -279,7 +279,7 @@ export const article: Article = {
             " should show the partition at the volume’s size.",
           ],
         },
-        { kind: "h3", id: "6-grow-the-filesystem", title: "6. Grow the filesystem" },
+        { kind: "h3", id: "6-grow-the-filesystem", title: "6. Grow the XFS or ext4 filesystem" },
         {
           kind: "p",
           text: [
@@ -323,7 +323,7 @@ export const article: Article = {
           kind: "p",
           text: "If the volume holds Logical Volume Manager (LVM) logical volumes, the last step differs, and AWS says you must extend the logical volume with LVM.",
         },
-        { kind: "h3", id: "when-a-layer-doesnt-grow", title: "When a layer doesn’t grow" },
+        { kind: "h3", id: "when-a-layer-doesnt-grow", title: "When df doesn’t show the new size" },
         { kind: "p", text: "Three messages tell you which layer didn’t move:" },
         {
           kind: "table",
@@ -431,7 +431,7 @@ export const article: Article = {
           kind: "callout",
           label: "Worked example",
           text: [
-            "The volume is now 450 ÷ 1,000 = 45% full, leaving 550\u00a0GiB empty, and the data would fit in the old 500\u00a0GiB. The EBS pricing page’s ",
+            "The volume is now 450 ÷ 1,000 = 45% full, leaving 550\u00a0GiB empty, and the data would fit in the old 500\u00a0GiB. The Amazon EBS pricing page’s ",
             { a: "gp3", href: "/learn/glossary/ebs-gp3" },
             " example uses a Region that charges $0.08 per GB-month (October 2026).",
           ],
@@ -514,7 +514,7 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
+              " The services that use those mounts restart once, at the switch onto the pool.",
             ],
             [
               { b: "Growing." },
@@ -526,7 +526,7 @@ export const article: Article = {
             ],
             [
               { b: "The old volumes." },
-              " Once the switch is checked, Amoeba snapshots each old volume and deletes it. It keeps the snapshot for a few days, then deletes that too.",
+              " Once the switch is checked, Amoeba snapshots each old volume and deletes it. It keeps the snapshot for 7 days, then deletes that too.",
             ],
             [
               { b: "Cost during the move." },
@@ -565,7 +565,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves an EC2 instance’s EBS data volumes onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one volume at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage cost optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
@@ -627,7 +627,7 @@ export const article: Article = {
       href: "/learn/check-ebs-volume-usage",
     },
     {
-      title: "EBS volume types: pricing and how to choose",
+      title: "EBS volume types compared: how to choose one",
       where: "Learn",
       href: "/learn/ebs-volume-types",
     },

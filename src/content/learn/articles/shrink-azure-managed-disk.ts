@@ -22,7 +22,7 @@ export const article: Article = {
   short: [
     "No, you can’t shrink an ",
     { a: "Azure managed disk", href: "/learn/glossary/azure-managed-disk" },
-    " in place. A managed disk can grow but never get smaller: Microsoft Learn says shrinking an existing disk “isn’t supported and might result in data loss.” To reduce Azure disk size, you copy the data to a new, smaller disk, move the mount and delete the old disk. That works for data disks, but an OS disk needs a new VM. Amazon Elastic Block Store (EBS) volumes can’t shrink either.",
+    " in place. A managed disk can grow but never get smaller: Microsoft Learn says shrinking an existing disk “isn’t supported and might result in data loss.” To reduce Azure disk size, you copy the data to a new, smaller disk, move the mount and delete the old disk. That works for data disks, but an OS disk needs a new VM.",
   ],
   sections: [
     {
@@ -70,7 +70,7 @@ export const article: Article = {
               href: "/learn/azure-disk-expand-without-downtime",
             },
             ", with exceptions such as taking a Premium SSD past 4\u00a0TiB. But when the data shrinks again, the space and its charge both stay. ",
-            { a: "Azure disk cost optimization", href: "/learn/azure-disk-cost-optimization" },
+            { a: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
             " covers the rest of what you pay for disks.",
           ],
         },
@@ -274,6 +274,14 @@ export const article: Article = {
           ],
         },
         { kind: "svg", figure: figure3 },
+        {
+          kind: "p",
+          text: [
+            "EBS volumes can’t shrink in place either: ",
+            { a: "how to shrink an EBS volume", href: "/learn/shrink-ebs-volume" },
+            " walks through the AWS side.",
+          ],
+        },
       ],
     },
     {
@@ -332,11 +340,11 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
+              " The services that use those mounts restart once, at the switch onto the pool.",
             ],
             [
               { b: "The old disks." },
-              " Once the switch is checked, Amoeba snapshots each old disk and deletes the disk. It keeps each snapshot for a few days, then deletes it too.",
+              " Once the switch is checked, Amoeba snapshots each old disk and deletes the disk. It keeps each snapshot for 7 days, then deletes it too.",
             ],
             [
               { b: "Rightsizing." },
@@ -354,27 +362,13 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "On Linux, the VM needs a recent kernel with btrfs. Every service that keeps a data mount open must run under systemd. The VM also needs a few free disk slots for the pool.",
-        },
-      ],
-    },
-    {
-      id: "what-about-amazon-ebs",
-      title: "What about Amazon EBS?",
-      blocks: [
-        {
-          kind: "p",
           text: [
-            "The same rule holds on AWS, where Elastic Volumes let you increase an EBS volume’s size, change its type or adjust its performance, without detaching it if the instance supports Elastic Volumes. AWS says: “You can’t decrease the volume size.” Its suggested route is the copy above: create a smaller volume and migrate the data to it with an application-level tool such as ",
-            { code: "rsync" },
-            ". ",
-            { a: "How to shrink an EBS volume", href: "/learn/shrink-ebs-volume" },
-            " walks through the AWS side.",
+            {
+              a: "Azure managed disk cost optimization",
+              href: "/azure-managed-disk-cost-optimization",
+            },
+            " covers the move and what a VM needs in full.",
           ],
-        },
-        {
-          kind: "p",
-          text: "Amoeba does the same job on AWS. It moves the EBS data volumes of running EC2 instances onto one btrfs pool built from gp3\u00a0volumes, and never touches the root volume. Once the switch is checked, it snapshots each old volume before deleting it, as on Azure.",
         },
       ],
     },
@@ -441,9 +435,9 @@ export const article: Article = {
       href: "/amoeba-faq#can-a-shrink-lose-data",
     },
     {
-      title: "Azure disk cost optimization: stop paying for empty space",
+      title: "Azure disk reservations: are they worth it?",
       where: "Learn",
-      href: "/learn/azure-disk-cost-optimization",
+      href: "/learn/azure-disk-reservations",
     },
     {
       title: "How to shrink an EBS volume when AWS only lets it grow",

@@ -4,10 +4,10 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/ebs-volume/
 export const term: GlossaryTerm = {
   slug: "ebs-volume",
   term: "EBS volume",
-  title: "What is an EBS volume?",
-  meta: "An EBS volume is block storage you attach to an EC2 instance. See how AWS charges for it by provisioned size, and why it can grow in place but never shrink.",
-  h1: "What is an EBS volume?",
-  card: "An EBS volume is a block-level storage device you attach to an EC2 instance, an AWS server, usually a virtual machine (VM).",
+  title: "What is an AWS EBS volume?",
+  meta: "EBS stands for Amazon Elastic Block Store. An AWS EBS volume is block storage for an EC2 instance. See how it’s charged, and why it can grow but never shrink.",
+  h1: "What is an AWS EBS volume?",
+  card: "An AWS EBS volume is a block-level storage device you attach to an EC2 instance, usually a virtual machine (VM).",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
@@ -16,9 +16,9 @@ export const term: GlossaryTerm = {
     {
       kind: "p",
       text: [
-        "An EBS volume is a ",
+        "An AWS EBS volume is a ",
         { a: "block-level storage", href: "/learn/glossary/block-storage" },
-        " device you attach to an EC2 instance, an AWS server, usually a virtual machine (VM). Once attached, the volume works like a physical hard drive. EBS stands for Amazon Elastic Block Store.",
+        " device you attach to an EC2 instance, usually a virtual machine (VM). Once attached, the volume works like a physical hard drive. EBS stands for Amazon Elastic Block Store.",
       ],
     },
     {
@@ -48,7 +48,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why EBS volumes matter for your cloud cost",
       blocks: [
         {
           kind: "p",

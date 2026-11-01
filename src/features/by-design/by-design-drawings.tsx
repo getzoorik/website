@@ -118,7 +118,7 @@ const TICKS = Array.from({ length: 40 }, (_, i) => ({
   height: TICK_HEIGHTS[i % TICK_HEIGHTS.length]!,
 }));
 
-/** No code changes, no downtime: live traffic runs on without a break while the disk under it
+/** Without any downtime or code changes: live traffic runs on without a break while the disk under it
  *  resizes to two thirds and back. */
 function ResizeDrawing(): React.JSX.Element {
   return (

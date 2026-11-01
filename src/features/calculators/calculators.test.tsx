@@ -84,7 +84,7 @@ describe("the calculators' metadata", () => {
     ]);
     expect(diskCalculator.hero.title).toBe("AWS EBS pricing and Azure disk pricing calculator");
     expect(diskCalculator.intro[0]).toBe(
-      "Under AWS EBS pricing and Azure disk pricing, you pay for a disk's full size every month, however little data it holds. AWS prices an EBS volume by the GB you provision. Azure prices a Premium SSD or Standard SSD at the smallest size tier that holds it.",
+      "On AWS and Azure, you pay for a disk's full size every month, however little data it holds. AWS prices an EBS volume by the GB you provision. Azure prices a Premium SSD or Standard SSD at the smallest size tier that holds it.",
     );
     /* The node page's first sentence rests on AWS's EKS pricing page, which its Sources names. */
     const sources = nodeCalculator.frame.find((section) => section.title === "Sources")!;
@@ -190,7 +190,7 @@ describe("/eks-and-aks-pricing-calculator", () => {
     });
     const section = root.querySelector("#calculator")!;
     expect(section).toHaveAttribute("aria-labelledby", "calculator-h");
-    expect(text(root.querySelector("#calculator-h"))).toBe("Calculator");
+    expect(text(root.querySelector("#calculator-h"))).toBe("EKS and AKS pricing calculator");
     expect(root.querySelector("#nodes")).toHaveAttribute("inputmode", "numeric");
     expect(root.querySelector("#maxpods")).toHaveAttribute("inputmode", "numeric");
   });
@@ -225,6 +225,11 @@ describe("/eks-and-aks-pricing-calculator", () => {
     );
     expect(root.querySelector("#sources details#list-prices")).not.toHaveAttribute("open");
     expect(root.querySelectorAll("#list-prices table.doc-tbl")).toHaveLength(4);
+    /* Each cloud's price table under an h3 named for its search (owner, 1 Nov 2026). */
+    expect([...root.querySelectorAll("#list-prices .fq-body > h3")].map(text)).toEqual([
+      "Azure VM pricing for AKS nodes, per month",
+      "EC2 instance pricing for EKS nodes, per month",
+    ]);
   });
 
   it("ends on Coral's closing row, its line over the cards", () => {

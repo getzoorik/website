@@ -5,8 +5,8 @@ import { figure as figure3 } from "@/features/learn/figures/kubernetes-cost-esti
 
 export const article: Article = {
   slug: "kubernetes-cost-estimation",
-  title: "Kubernetes cost estimation for AKS and EKS",
-  meta: "Kubernetes cost estimation, step by step: count the nodes your pod requests need on AKS or EKS, price them at list, and see what the free assessment reads.",
+  title: "Kubernetes cost estimation: what a cluster costs",
+  meta: "Kubernetes cost estimation in six steps. Is Kubernetes free? Running it isn’t: Kubernetes pricing covers the nodes, plus the control plane, disks and network.",
   h1: "Kubernetes cost estimation: count the nodes, then price them",
   deck: "Why requests set the node count, how to price AKS and EKS, and what the free assessment reads.",
   card: "Count the nodes your requests need, price them at list, and see what the free assessment reads.",
@@ -126,6 +126,14 @@ export const article: Article = {
           kind: "p",
           text: "Two details change the node count. Every cluster needs a system node pool for system pods such as CoreDNS and metrics-server, and in production it needs at least two nodes (Microsoft recommends three), each with at least 4\u00a0vCPUs and 4\u00a0GB of memory. Reservations also grow with the machine, though more slowly: AKS reserves 140\u00a0millicores of CPU on a 4-core host (3.5%) and 260 on a 16-core host (1.6%).",
         },
+        {
+          kind: "p",
+          text: [
+            "To price the nodes at list price, use our ",
+            { a: "AKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
+            ".",
+          ],
+        },
         { kind: "h3", id: "eks-cost-estimation", title: "EKS cost estimation" },
         {
           kind: "p",
@@ -146,6 +154,14 @@ export const article: Article = {
               { b: "Public IPv4 addresses and cross-zone traffic." },
               " Both are charged: each public IPv4 address, and traffic from nodes to the control plane across Availability Zones.",
             ],
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "To price the nodes at list price, use our ",
+            { a: "EKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
+            ".",
           ],
         },
         {
@@ -340,14 +356,14 @@ export const article: Article = {
         {
           kind: "callout",
           label: "For engineers",
-          text: "A recommended request is the peak sampled use × 1.3, at least 10m of CPU and 32\u00a0MiB, and never above today’s request unless that request is zero. Nodes are counted for each pool and machine type, against the smallest allocatable among those nodes, less DaemonSet and static pods, for CPU, memory and pod slots, packed to 85%. The count never drops below the pool’s autoscaler minimum or 1\u00a0node, and never rises above today’s count. Without Metrics Server there’s no usage reading, so requests stay as they are and only surplus nodes count.",
+          text: "A recommended request is the peak sampled use plus headroom, and never above today’s request unless that request is zero. Nodes are counted for each pool against allocatable, less DaemonSet and static pods, for CPU, memory and pod slots. The count never drops below the pool’s autoscaler minimum or one node, and never rises above today’s count. Without Metrics Server there’s no usage reading, so requests stay as they are and only surplus nodes count.",
         },
         {
           kind: "p",
           text: [
             "Three minutes of samples can miss a daily or weekly peak, so treat the recommended requests, and the saving counted from them, as a first look. A cluster connected to ",
             { a: "Coral", href: "/coral" },
-            " sizes from days of data instead. On the balanced policy, the default for Deployments, DaemonSets and Argo Rollouts, CPU is the 80th percentile of the last 3\u00a0days and memory the highest use in the last 8\u00a0days, each plus 10%.",
+            " sizes from days of data instead.",
           ],
         },
       ],
@@ -421,8 +437,8 @@ export const article: Article = {
       href: "/coral-faq#how-is-the-saving-worked-out",
     },
     {
-      title: "How we reduced our own cluster’s machine bill by 58%",
-      where: "Case study",
+      title: "How we reduced our own AKS cluster’s machine cost by 58%",
+      where: "Coral Value Lab",
       href: "/coral-value-lab",
     },
   ],

@@ -4,9 +4,9 @@ import { figure as figure2 } from "@/features/learn/figures/kubernetes-overprovi
 
 export const article: Article = {
   slug: "kubernetes-overprovisioning",
-  title: "Kubernetes overprovisioning: how to measure it",
-  meta: "Kubernetes overprovisioning is requests set above real use. The scheduler and autoscalers count requests, so idle nodes stay. How to measure and reduce it.",
-  h1: "Kubernetes overprovisioning: what it is and how to measure it",
+  title: "Kubernetes requests vs usage: measure the gap",
+  meta: "Kubernetes requests vs usage: the gap is Kubernetes overprovisioning, and idle nodes stay. Measure it with kubectl top pod and Prometheus, then reduce it.",
+  h1: "Kubernetes requests vs usage: how to measure the gap",
   deck: "Pods that request more CPU and memory than they use keep nodes running. Why it happens, and how to reduce it.",
   card: "Requests set above real use keep nodes running at your cost. How to measure the gap and reduce it safely.",
   product: "coral",
@@ -208,7 +208,11 @@ export const article: Article = {
           ],
         },
         { kind: "code", lang: "bash", code: "kubectl describe nodes <node-name>" },
-        { kind: "h3", id: "2-see-what-they-use-now", title: "2. See what they use now" },
+        {
+          kind: "h3",
+          id: "2-see-what-they-use-now",
+          title: "2. See what they use now with kubectl top pod",
+        },
         {
           kind: "p",
           text: [
@@ -374,7 +378,7 @@ export const article: Article = {
             ],
             [
               { b: "Spare nodes." },
-              " Node optimization is on from install and uses pod requests to work out how many nodes each pool needs. It checks on the live cluster that every pod on a node fits on another Ready node. It then cordons and drains one node at a time for your Cluster Autoscaler, Karpenter or AKS node auto-provisioning (NAP) to remove.",
+              " Node optimization is on from install and uses pod requests to work out how many nodes each pool needs. It checks on the live cluster that every pod on a node fits on another Ready node. It then cordons and drains one node at a time for your Cluster Autoscaler, Karpenter or AKS node auto provisioning (NAP) to remove.",
             ],
             [
               { b: "What it leaves alone." },
@@ -416,7 +420,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "All $213.89 of that monthly reduction came from one machine removed and one swapped for a cheaper one, as ",
-            { a: "the case study", href: "/coral-value-lab" },
+            { a: "the Coral Value Lab study", href: "/coral-value-lab" },
             " shows.",
           ],
         },
@@ -495,7 +499,7 @@ export const article: Article = {
       href: "/learn/cluster-autoscaler-not-scaling-down",
     },
     {
-      title: "VPA vs HPA: when to use which, and why to rebalance first",
+      title: "VPA vs HPA: when to use which",
       where: "Learn",
       href: "/learn/vpa-vs-hpa",
     },

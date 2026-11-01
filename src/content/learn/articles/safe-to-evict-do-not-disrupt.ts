@@ -6,7 +6,7 @@ import { figure as figure3 } from "@/features/learn/figures/safe-to-evict-do-not
 export const article: Article = {
   slug: "safe-to-evict-do-not-disrupt",
   title: "Safe-to-evict and do-not-disrupt annotations",
-  meta: "What safe-to-evict and karpenter.sh/do-not-disrupt do, which autoscaler reads each, where emptyDir and hostPath pods hold nodes, and when to drop a marker.",
+  meta: "What the Kubernetes safe-to-evict annotation and karpenter.sh/do-not-disrupt do, which autoscaler reads each, and where emptyDir and hostPath pods hold nodes.",
   h1: "The safe-to-evict and do-not-disrupt annotations explained",
   deck: "One annotation on one pod can keep its whole node running, so it pays to know which autoscaler reads which.",
   card: "What safe-to-evict and do-not-disrupt do, which autoscaler reads each, and why you keep paying for a held node.",
@@ -28,7 +28,7 @@ export const article: Article = {
     { code: '"false"' },
     " holds the node, and ",
     { code: '"true"' },
-    " releases pods it would otherwise keep, such as emptyDir or hostPath pods. Karpenter, AKS node auto-provisioning and ",
+    " releases pods it would otherwise keep, such as emptyDir or hostPath pods. Karpenter, AKS node auto provisioning and ",
     { a: "EKS Auto Mode", href: "/learn/glossary/eks-auto-mode" },
     " read do-not-disrupt, which keeps the node out of consolidation.",
   ],
@@ -67,13 +67,13 @@ export const article: Article = {
           kind: "p",
           text: [
             "The Cluster Autoscaler’s FAQ documents safe-to-evict and never mentions Karpenter’s annotation, while Karpenter’s disruption docs never mention safe-to-evict, so don’t count on it there. On Azure Kubernetes Service (AKS), ",
-            { a: "node auto-provisioning (NAP)", href: "/learn/aks-node-auto-provisioning" },
+            { a: "node auto provisioning (NAP)", href: "/learn/aks-node-auto-provisioning" },
             " documents ",
             { code: "karpenter.sh/do-not-disrupt" },
             " too, and so does EKS Auto Mode on Amazon Elastic Kubernetes Service (EKS). ",
             {
               a: "How the native autoscalers fit together",
-              href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+              href: "/learn/kubernetes-autoscaling",
             },
             " covers which one runs where.",
           ],
@@ -506,7 +506,7 @@ export const article: Article = {
             ],
             [
               { b: "Nodes held." },
-              " Node list → “What’s holding them” shows each held node with its reason and fix, so a marker that outlived its reason turns up as a node you can release.",
+              " Coral shows each held node with its reason and fix, so a marker that outlived its reason turns up as a node you can release.",
             ],
             [
               { b: "Short restarts." },
@@ -605,6 +605,10 @@ export const article: Article = {
       where: "Learn",
       href: "/learn/change-eks-node-group-instance-type",
     },
-    { title: "Nodes held", where: "Coral product guide", href: "/coral-guide#nodes-held" },
+    {
+      title: "Why Coral holds a node, and each fix",
+      where: "Coral product guide",
+      href: "/coral-guide#nodes-held",
+    },
   ],
 };

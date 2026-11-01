@@ -370,7 +370,7 @@ export const article: Article = {
     },
     {
       id: "can-you-resize-an-ebs-volume-with",
-      title: "Can you resize an EBS volume with no downtime?",
+      title: "Can you resize an EBS volume without any downtime?",
       blocks: [
         {
           kind: "p",
@@ -419,15 +419,15 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
+              " The services that use those mounts restart once, at the switch onto the pool.",
             ],
             [
               { b: "The old volumes." },
-              " Once the switch is checked, Amoeba snapshots each old volume and deletes the volume. Amoeba keeps each snapshot for a few days, then deletes it too.",
+              " Once the switch is checked, Amoeba snapshots each old volume and deletes the volume. Amoeba keeps each snapshot for 7 days, then deletes it too.",
             ],
             [
               { b: "Rightsizing." },
-              " Amoeba grows the pool before it fills, and sooner when data arrives fast. When your data goes down and stays down, it shrinks the pool one volume at a time. So you pay for close to what you use. Shrinks run on their own in “Auto”, or when you start them in “Manual”.",
+              " Amoeba grows the pool before it fills, and sooner when data arrives fast. When your data goes down and stays down, it shrinks the pool one volume at a time. So you pay for close to what you use.",
             ],
           ],
         },
@@ -456,7 +456,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves an EC2 instance’s EBS data volumes onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one volume at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage cost optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
@@ -522,7 +522,7 @@ export const article: Article = {
       href: "/learn/combine-ebs-volumes",
     },
     {
-      title: "EBS volume types: pricing and how to choose",
+      title: "EBS volume types compared: how to choose one",
       where: "Learn",
       href: "/learn/ebs-volume-types",
     },

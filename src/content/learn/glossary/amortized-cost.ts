@@ -5,7 +5,7 @@ export const term: GlossaryTerm = {
   slug: "amortized-cost",
   term: "Amortized cost (cloud cost view)",
   title: "What is amortized cost in Azure and AWS?",
-  meta: "Amortized cost in Azure spreads a reservation or savings plan purchase over its term. See Microsoft’s $365 example, the unused line and the AWS views.",
+  meta: "Azure amortized cost spreads a reservation or savings plan purchase over its term. Amortized vs actual cost, Microsoft’s $365 example, AWS net amortized cost.",
   h1: "What is amortized cost in Azure and AWS?",
   card: "Amortized cost in Azure is a Microsoft Cost Management view that spreads each reservation or savings plan purchase over its term.",
   group: "finops-pricing",
@@ -51,7 +51,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "what-is-amortized-cost-in-aws",
-      title: "What is amortized cost in AWS?",
+      title: "What is amortized cost in AWS? Unblended vs net amortized cost",
       blocks: [
         { kind: "p", text: "In AWS Cost Explorer, unblended vs amortized cost looks like this:" },
         {
@@ -67,18 +67,14 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why amortized cost matters",
       blocks: [
         {
           kind: "ul",
           items: [
             "Neither view changes what you pay, only when and where each cost shows.",
             "A purchase month usually looks smaller in amortized cost, and later months look bigger.",
-            [
-              "With purchase spikes flattened, ",
-              { a: "cloud cost optimization", href: "/cloud-cost-optimization" },
-              " spots other cost changes.",
-            ],
+            "With purchase spikes flattened, other cost changes are easier to spot.",
             "An unused line is commitment you paid for but didn’t use.",
             [
               "The ",

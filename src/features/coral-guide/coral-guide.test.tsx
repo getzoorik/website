@@ -87,7 +87,7 @@ const ROWS: Record<string, readonly (readonly [string, string])[]> = {
   "node-optimization": [
     ["consolidation", "Consolidation"],
     ["the-evictor", "The Evictor"],
-    ["how-pods-are-moved", "How pods are moved"],
+    ["how-pods-are-moved", "How pods are moved: warm handover, live migration or eviction"],
     ["nodes-held", "Nodes held"],
     ["rebalancing", "Rebalancing"],
   ],

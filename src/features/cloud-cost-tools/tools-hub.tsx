@@ -34,12 +34,13 @@ import { named } from "@/features/legal/named";
 import { offSiteProps } from "@/lib/links";
 
 /**
- * `/cloud-cost-optimization-library`, Cloud cost optimization tools, on Learn's frame:
+ * `/cloud-cost-optimization-library`, Cloud cost management tools and FinOps tools, on Learn's frame:
  *
  *   hero    the page's name and its line
- *   tools   Tools that reduce cloud cost: the kind and cloud chips, then each kind's name over its tiles (Coral and
- *           Amoeba first in theirs, with their marks; every other tool by name, with its initial in place of a logo),
- *           each with its short line, how it acts and its clouds; then the note with the day they were checked
+ *   tools   Cloud cost optimization tools for Azure and AWS: the kind and cloud chips, then each kind's heading over
+ *           its tiles (Coral and Amoeba first in theirs, with their marks; every other tool by name, with its initial
+ *           in place of a logo, drawn by CSS so the link's text starts with the name), each with its short line, how
+ *           it acts and its clouds; then the note with the day they were checked
  *   ours    Compare Coral and Amoeba, on the band: the live versus pages and the alternatives pages, two by two
  *   calculators  Free calculators: the node and disk cost calculators, in the same tiles, two by two
  *   closing row
@@ -111,7 +112,7 @@ const groups = shownGroups.map((group) => {
       googleCloud: shown.googleCloud,
     });
   }
-  return { kind: group.kind, label: group.label, tiles };
+  return { kind: group.kind, label: group.label, heading: group.heading ?? group.label, tiles };
 });
 
 const everyTile: readonly Tile[] = groups.flatMap((group) => group.tiles);
@@ -130,9 +131,9 @@ function ToolTileBody({
       {tile.product ? (
         <ProductMark product={tile.product} className="tl-ours" />
       ) : (
-        <span className="tl-mono" aria-hidden="true">
-          {tile.name[0]}
-        </span>
+        /* The initial is the attribute's, drawn by `::before`: as text it would double the first letter of the link's
+           name. */
+        <span className="tl-mono" aria-hidden="true" data-initial={tile.name[0]} />
       )}
       <span>
         <span className="dt-t">{tile.product ? named(tile.name) : tile.name}</span>
@@ -163,7 +164,7 @@ function ToolTileBody({
   );
 }
 
-/** Tools that reduce cloud cost: the chips, each kind's tiles, the empty line and the note. */
+/** Cloud cost optimization tools: the chips, each kind's tiles, the empty line and the note. */
 function Tools(): React.JSX.Element {
   const note = tools.note(marketChecked);
   const kinds: { kind: ToolKind; label: string }[] = groups.map(({ kind, label }) => ({
@@ -184,7 +185,7 @@ function Tools(): React.JSX.Element {
             />
             {groups.map((group) => (
               <ToolGroup kind={group.kind} tiles={group.tiles} key={group.kind}>
-                <h3 className="cm-sl">{group.label}</h3>
+                <h3 className="cm-sl">{group.heading}</h3>
                 <div className="dt-grid">
                   {group.tiles.map((tile) => (
                     <ToolTile tile={tile} key={tile.key}>

@@ -6,7 +6,7 @@ import { figure as figure3 } from "@/features/learn/figures/cluster-autoscaler-o
 export const article: Article = {
   slug: "cluster-autoscaler-overprovisioning",
   title: "Cluster Autoscaler overprovisioning with pause pods",
-  meta: "Cluster Autoscaler overprovisioning keeps node capacity warm with low-priority placeholder pods. The priority to set, a manifest, sizing and Karpenter notes.",
+  meta: "Cluster Autoscaler overprovisioning keeps node capacity warm with placeholder pods. The PriorityClass to set, a manifest, sizing and Karpenter notes.",
   h1: "Cluster Autoscaler overprovisioning with placeholder pods",
   deck: "Placeholder pods hold spare node capacity that real pods preempt. The priority, manifest and sizing that make it work.",
   card: "Keep warm node capacity with low-priority placeholder pods: the -10 rule, a manifest and how to size it.",
@@ -20,7 +20,7 @@ export const article: Article = {
   coverAlt:
     "Cluster Autoscaler overprovisioning: a real pod takes a placeholder’s place, and the placeholder goes to a new node",
   short:
-    "Cluster Autoscaler overprovisioning keeps spare node capacity warm with placeholder pods: a pending real pod preempts one instead of waiting for a node. Give them a priority from -10 to -1, because the Cluster Autoscaler adds nodes for their Pending replacements only at -10 or above.",
+    "Cluster Autoscaler overprovisioning keeps spare node capacity warm with placeholder pods, also called pause pods: a pending real pod preempts one instead of waiting for a node. Give them a priority from -10 to -1, because the Cluster Autoscaler adds nodes for their Pending replacements only at -10 or above.",
   sections: [
     {
       id: "cluster-autoscaler-overprovisioning",
@@ -30,7 +30,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "This page is about headroom you reserve on purpose. Requests set far above what containers use are the other kind, covered in ",
-            { a: "Kubernetes overprovisioning", href: "/learn/kubernetes-overprovisioning" },
+            { a: "Kubernetes requests vs usage", href: "/learn/kubernetes-overprovisioning" },
             ".",
           ],
         },
@@ -75,7 +75,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "kubernetes-pod-priority-and-preemption",
-          title: "Kubernetes pod priority and preemption",
+          title: "Kubernetes PriorityClass: pod priority and preemption",
         },
         {
           kind: "p",
@@ -256,6 +256,11 @@ export const article: Article = {
           text: "To improve zonal scheduling, the guide suggests overprovisioning as many nodes as your Auto Scaling group has Availability Zones. Then the scheduler can choose the best zone.",
         },
         {
+          kind: "h3",
+          id: "grow-headroom-with-the-cluster-proportional-autoscaler",
+          title: "Grow headroom with the cluster-proportional-autoscaler",
+        },
+        {
           kind: "p",
           text: "A fixed replica count doesn’t grow with the cluster. The Cluster Autoscaler FAQ pairs the placeholders with the cluster-proportional-autoscaler, for headroom set as a share of the cluster, such as 20%. That autoscaler raises the replica count as the cluster grows and reduces it when the cluster gets smaller.",
         },
@@ -267,7 +272,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "AKS overprovisioning with the Cluster Autoscaler works as described above. Node auto-provisioning (NAP) on AKS is different, and the Karpenter notes below apply to it too. Microsoft says NAP is based on the open-source Karpenter project and provisions nodes in response to pending pod pressure.",
+          text: "AKS overprovisioning with the Cluster Autoscaler works as described above. Node auto provisioning (NAP) on AKS is different, and the Karpenter notes below apply to it too. Microsoft says NAP is based on the open-source Karpenter project and provisions nodes in response to pending pod pressure.",
         },
         {
           kind: "p",
@@ -338,17 +343,9 @@ export const article: Article = {
               { b: "The Read-only policy." },
               " It gives recommendations only and never changes a workload. It’s also the one ",
               { a: "built-in policy", href: "/coral-guide#built-in-policies" },
-              " that doesn’t manage Horizontal Pod Autoscalers (HPAs), so Coral won’t create an HPA for the Deployment. Pick it on the workload’s page, or name it in the workload’s annotation, shown below.",
-            ],
-            [
-              { b: "The ignore label." },
-              " ",
-              { code: 'coral.zoorik.com/ignore: "true"' },
-              " on the namespace, workload or pod template also stops Coral changing the placeholders’ sizes or HPAs.",
-            ],
-            [
-              { b: "Node moves." },
-              " These work by node pool, not by namespace, and the ignore label doesn’t stop them. Before consolidation moves anything, Coral checks on the live cluster that every pod on the node fits on another Ready node.",
+              " that doesn’t manage Horizontal Pod Autoscalers (HPAs), so Coral won’t create an HPA for the Deployment. Pick it on the workload’s page, or name it in the workload’s annotation, as ",
+              { a: "the Coral guide", href: "/coral-guide#per-workload-settings" },
+              " shows.",
             ],
             [
               { b: "The namespace." },
@@ -357,24 +354,6 @@ export const article: Article = {
               ". That’s one more reason to give the placeholders a namespace of their own.",
             ],
           ],
-        },
-        {
-          kind: "h3",
-          id: "set-the-policy-in-the-manifest",
-          title: "Set the policy in the manifest",
-        },
-        {
-          kind: "p",
-          text: [
-            "To set the policy from the manifest, add Coral’s ",
-            { a: "per-workload annotation", href: "/coral-guide#per-workload-settings" },
-            " to the Deployment’s metadata. A workload with this annotation is managed from its manifest, so its console controls are locked.",
-          ],
-        },
-        {
-          kind: "code",
-          lang: "yaml",
-          code: "metadata:\n  name: capacity-reservation\n  namespace: headroom\n  annotations:\n    coral.zoorik.com/configuration: |\n      scalingPolicyName: readonly",
         },
       ],
     },

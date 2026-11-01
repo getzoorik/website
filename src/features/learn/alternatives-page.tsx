@@ -50,10 +50,10 @@ export function AlternativesPage({
       hero={{
         kicker: alternativesCopy.kicker(marketChecked),
         title: named(page.h1),
-        deck: named(page.meta.description),
+        deck: named(page.deck ?? page.meta.description),
       }}
     >
-      <LearnSection id={choose.id} title={choose.title} lede={choose.lede}>
+      <LearnSection id={choose.id} title={page.titles?.choose ?? choose.title} lede={choose.lede}>
         <div className="ap-q">
           {facts.questions.map((question, index) => (
             <article key={question.q}>
@@ -64,7 +64,12 @@ export function AlternativesPage({
           ))}
         </div>
       </LearnSection>
-      <LearnSection id={options.id} title={options.title} lede={options.lede} band>
+      <LearnSection
+        id={options.id}
+        title={page.titles?.options ?? options.title}
+        lede={options.lede}
+        band
+      >
         <MarketHead />
         <ol className="mk-list">
           <OursRow ours={marketOurs(page.product)} />

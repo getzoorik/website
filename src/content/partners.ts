@@ -1,5 +1,6 @@
 import { routes } from "@/config/site";
 import type { ProductId } from "@/content/products";
+import { savingsQualifier } from "@/content/savings";
 
 /**
  * `/partners`: every string the page prints, verbatim from the approved mock.
@@ -21,7 +22,7 @@ import type { ProductId } from "@/content/products";
  * The day /partners's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /partners's content moves this to that day in the same PR; never the build's date.
  */
-export const partnersLastUpdated = "21 October 2026";
+export const partnersLastUpdated = "1 November 2026";
 
 /** A tile's glyph: the Zoorik mark, a line glyph, or the document. */
 export type PartnerTileIcon = "zoorik" | "shield" | "eye" | "package" | "doc";
@@ -40,14 +41,14 @@ export const partnersPage = {
   /** The white card: what a partner brings, each product's estimated range, and our own result. */
   offer: {
     flag: "Coming soon",
-    title: "Reduce your customers’ cloud bill",
+    title: "Reduce your customers’ cloud cost",
     line: "Coral rebalances Kubernetes and Amoeba rightsizes block storage, autonomously, without any downtime.",
     /** Each range's name; the range itself is `savings.ts`'s. */
     ranges: [
       { product: "coral", name: "Coral · Kubernetes" },
       { product: "amoeba", name: "Amoeba · block storage" },
     ] satisfies readonly { product: ProductId; name: string }[],
-    fine: "Estimated ranges of the bill, not a promise.",
+    fine: savingsQualifier,
     /** The case study, by its own route (`case-studies.ts`). */
     go: "See our own result",
   },
@@ -69,7 +70,7 @@ export const partnersPage = {
       {
         icon: "eye",
         title: "Managed service providers",
-        line: "You run clusters and VMs for customers; Coral and Amoeba reduce their bill.",
+        line: "You run clusters and VMs for customers; Coral and Amoeba reduce their cloud cost.",
       },
       {
         icon: "package",
@@ -102,12 +103,12 @@ export const partnersPage = {
       },
     ] satisfies readonly { icon: PartnerTileIcon; title: string; line: string; href: string }[],
   },
-  /** The row under the tiles: where customers buy Coral, its two store buttons, and every marketplace. */
+  /** The row under the tiles: where customers buy Coral and Amoeba, Coral's store buttons, and every marketplace. */
   buy: {
     /** The heading's id, which names the section; the section itself has no address, as the mock draws it. */
     headingId: "buy-h",
     title: "Where your customers buy",
-    line: "Coral is on AWS Marketplace and Microsoft Marketplace, billed with the rest of their cloud.",
+    line: "Coral and Amoeba are on AWS Marketplace and Microsoft Marketplace, paid through the cloud account your customers already use.",
     all: { label: "All marketplaces", href: routes.marketplaces },
   },
 } as const;

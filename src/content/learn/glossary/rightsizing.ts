@@ -21,7 +21,7 @@ export const term: GlossaryTerm = {
   sections: [
     {
       id: "provisioned-vs-used-storage",
-      title: "Provisioned vs used storage",
+      title: "Right sizing cloud storage: provisioned vs used",
       blocks: [
         {
           kind: "p",
@@ -40,12 +40,12 @@ export const term: GlossaryTerm = {
     },
     {
       id: "rightsizing-in-aws-and-azure",
-      title: "Rightsizing in AWS and Azure",
+      title: "AWS rightsizing and Azure rightsizing",
       blocks: [
         {
           kind: "ul",
           items: [
-            "In AWS, the Well-Architected Framework says to right size instances whose peak CPU and memory stay under 40% for four weeks.",
+            "In AWS, the Well-Architected Framework says to rightsize instances whose peak CPU and memory stay under 40% for four weeks.",
             "AWS Compute Optimizer and AWS Trusted Advisor give rightsizing advice.",
             "For rightsizing in Azure, Azure Advisor suggests a cheaper VM size that fits the current load. It reads CPU, memory and outbound network use over 7\u00a0days by default, or up to 90.",
           ],
@@ -54,7 +54,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why rightsizing matters for your cloud cost",
       blocks: [
         {
           kind: "ul",

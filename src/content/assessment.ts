@@ -12,9 +12,9 @@ import type { ProductId } from "@/content/products";
  * The output is one PDF report. No curl line and no "one Python file" anywhere on the page.
  *
  * ─── THE PRODUCT IS THE ONE CHOICE ─────────────────────────────────────────
- * `?p=coral|amoeba` (Coral by default) sets the run line and its copy text, the two facts in What it does, the
- * booking line, the mail subject and the estimate link (`assessmentProducts`). What you get shows both products
- * whatever the switch says.
+ * `?p=coral|amoeba` (Coral by default) sets the run line and its copy text, the two facts in What it does, the mail
+ * subject and the estimate link (`assessmentProducts`). What you get and the booking line name both products whatever
+ * the switch says.
  */
 
 /**
@@ -113,12 +113,12 @@ export const assessmentCopy = {
   meta: {
     title: "Free cloud cost assessment for Azure and AWS",
     description:
-      "A free, read-only assessment for Kubernetes and block storage on Azure and AWS. Run it in Cloud Shell or your terminal and get one PDF report.",
+      "Free cloud cost assessment for Kubernetes and block storage on Azure and AWS: a read-only cloud cost analysis, run in Cloud Shell or your terminal, in one PDF.",
   },
   /** The h1, without "Free"; the page's `<title>` keeps it. */
   title: "Cloud cost assessment",
   /** Under the h1, before the line to choose: what the assessment is. The same on both products. */
-  lead: "The free assessment estimates what you could save on Kubernetes (AKS and EKS) or block storage on Azure and AWS. It’s read-only, runs in Cloud Shell or your terminal, and writes one PDF. It sends nothing to Zoorik.",
+  lead: "The free cloud cost assessment estimates what you could save on Kubernetes (AKS and EKS) or block storage on Azure and AWS. It’s read-only, runs in Cloud Shell or your terminal, and writes one PDF. It sends nothing to Zoorik.",
   /** Over the switch, set like the lines under the command. */
   sub: "Choose the assessment you want.",
   run: {
@@ -222,8 +222,10 @@ export const assessmentCopy = {
     },
     book: {
       title: "Book 30 minutes",
-      /** "Walk through your report with the people who build ‹product›." */
+      /** "Walk through your report with the people who build Coral and Amoeba.": both names, whatever the switch
+       *  says, in the order the closing row names them, so the line is one sentence before the page has arrived. */
       line: "Walk through your report with the people who build ",
+      both: ["coral", "amoeba"] as const satisfies readonly ProductId[],
       cta: "Book a demo",
       href: calendarUrl,
     },

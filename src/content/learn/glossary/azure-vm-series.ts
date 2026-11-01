@@ -5,33 +5,39 @@ export const term: GlossaryTerm = {
   slug: "azure-vm-series",
   term: "Azure VM series",
   title: "What is an Azure VM series?",
-  meta: "Azure VM series explained: how a series groups VM sizes, how to read a name like Standard_D4s_v5, and how the series sets the memory you pay for per vCPU.",
+  meta: "An Azure VM series is a group of VM sizes. See how Azure VM types and families relate, how to read Standard_D4s_v5, and the memory you get per vCPU.",
   h1: "What is an Azure VM series?",
   card: "An Azure VM series is a group of virtual machine (VM) sizes with similar hardware and features.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
       text: "An Azure VM series is a group of virtual machine (VM) sizes with similar hardware and features. Each size in a series sets its virtual CPUs (vCPUs) and memory. Standard_D4s_v5 is one size in the Dsv5 series.",
     },
-    {
-      kind: "p",
-      text: "Azure VM families sit one level up. Microsoft groups them into types, including:",
-    },
-    {
-      kind: "ul",
-      items: [
-        "General purpose (such as B and D): balanced CPU and memory.",
-        "Compute optimized (F family): more CPU for each GiB.",
-        "Memory optimized (such as E and M): more memory for each vCPU.",
-        "Storage optimized (L family): high disk throughput.",
-      ],
-    },
   ],
   sections: [
+    {
+      id: "azure-vm-types-and-families",
+      title: "Azure VM types and families",
+      blocks: [
+        {
+          kind: "p",
+          text: "Azure VM families sit one level above a series. Microsoft groups them into types, including:",
+        },
+        {
+          kind: "ul",
+          items: [
+            "General purpose (such as B and D): balanced CPU and memory.",
+            "Compute optimized (F family): more CPU for each GiB.",
+            "Memory optimized (such as E and M): more memory for each vCPU.",
+            "Storage optimized (L family): high disk throughput.",
+          ],
+        },
+      ],
+    },
     {
       id: "the-azure-vm-size-naming-convention",
       title: "The Azure VM size naming convention",
@@ -67,7 +73,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why the Azure VM series matters for your cloud cost",
       blocks: [
         {
           kind: "ul",

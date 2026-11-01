@@ -68,7 +68,7 @@ describe("/marketplaces's metadata", () => {
       title: "Marketplaces | Zoorik",
     });
     expect(routes.marketplaces).toBe("/marketplaces");
-    expect(marketplacesLastUpdated).toBe("21 October 2026");
+    expect(marketplacesLastUpdated).toBe("1 November 2026");
   });
 });
 
@@ -93,7 +93,7 @@ describe("/marketplaces", () => {
     const card = page().querySelector(".cp-pair .as-card")!;
     expect(text(card.querySelector("h2"))).toBe("Cloud marketplaces");
     expect(text(card.querySelector(":scope > p"))).toBe(
-      "Buy through the account you already pay your cloud bill with.",
+      "Buy through the account you already use to pay for AWS or Azure.",
     );
     const rows = [...card.querySelectorAll(".mp-list > li > a.mp-l")];
     expect(

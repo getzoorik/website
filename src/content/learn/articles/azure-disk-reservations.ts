@@ -1,13 +1,12 @@
 import type { Article } from "@/content/learn/article";
-import { figure as figure1 } from "@/features/learn/figures/azure-disk-cost-optimization/1";
-import { figure as figure2 } from "@/features/learn/figures/azure-disk-cost-optimization/2";
-import { figure as figure3 } from "@/features/learn/figures/azure-disk-cost-optimization/3";
+import { figure as figure1 } from "@/features/learn/figures/azure-disk-reservations/1";
+import { figure as figure2 } from "@/features/learn/figures/azure-disk-reservations/2";
 
 export const article: Article = {
-  slug: "azure-disk-cost-optimization",
-  title: "Azure disk cost optimization",
-  meta: "Azure disk cost optimization: a managed disk is charged by size tier every hour, however full. Delete unattached disks, reset performance, size to data.",
-  h1: "Azure disk cost optimization: stop paying for empty space",
+  slug: "azure-disk-reservations",
+  title: "Azure disk reservations: are they worth it?",
+  meta: "Are Azure disk reservations worth it? Only for Premium SSD, P30 to P80, that you’ll keep at one size for a year. Delete unused disks and size to data first.",
+  h1: "Azure disk reservations: reserve last, after you stop paying for empty space",
   deck: "What a managed disk is charged for, why you keep paying for the space you bought, and how to pay for your data instead.",
   card: "What Azure charges for a managed disk, why disks only grow, and how Amoeba sizes a pool to your data.",
   product: "amoeba",
@@ -16,12 +15,12 @@ export const article: Article = {
   published: "2026-10-21",
   updated: "2026-11-01",
   author: "sheldon",
-  cover: "/learn-covers/zoorik-learn-azure-disk-cost-optimization-1200x630.webp",
-  coverAlt: "Azure disk cost optimization: disks charged in full become one pool sized to data",
+  cover: "/learn-covers/zoorik-learn-azure-disk-reservations-1200x630.webp",
+  coverAlt: "Azure disk reservations: disks charged in full become one pool sized to data",
   short: [
-    "Azure disk cost optimization starts with one pricing rule. A ",
+    "An Azure disk reservation covers only Premium SSD from P30 to P80, for a one-year term, and it comes last, once disk sizes are settled. First stop paying for empty space: a ",
     { a: "managed disk", href: "/learn/glossary/azure-managed-disk" },
-    " is charged hourly on the size you provision, rounded up to the nearest size Azure offers, whatever it holds. Premium SSD v2 also charges for IOPS and throughput above a free baseline. Delete unattached disks, set raised performance back, then size disks to the data. Azure grows a disk in place but never shrinks it, so that last step takes a copy or a pool that resizes.",
+    " is charged hourly on the size you provision, whatever it holds. Premium SSD v2 also charges for IOPS and throughput above a free baseline. Delete unattached disks, set raised performance back, then size disks to the data. Azure grows a disk in place but never shrinks it, so that last step takes a copy or a pool that resizes.",
   ],
   sections: [
     {
@@ -127,9 +126,16 @@ export const article: Article = {
     },
     {
       id: "azure-disk-cost-optimization-one-lever-at",
-      title: "Azure disk cost optimization, one lever at a time",
+      title: "The levers, one at a time",
       blocks: [
-        { kind: "p", text: "Take the levers in order, and reserve last, once sizes are settled." },
+        {
+          kind: "p",
+          text: [
+            "To ",
+            { a: "reduce Azure disk costs", href: "/azure-managed-disk-cost-optimization" },
+            ", take the levers in order, and reserve last, once sizes are settled.",
+          ],
+        },
         { kind: "h3", id: "delete-the-disks-nobody-uses", title: "Delete the disks nobody uses" },
         {
           kind: "p",
@@ -244,7 +250,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "reserve-premium-ssd-that-wont-change-size",
-          title: "Reserve Premium SSD that won’t change size",
+          title: "Azure Premium SSD reservation: P30 to P80, one year, one disk size",
         },
         {
           kind: "p",
@@ -253,6 +259,11 @@ export const article: Article = {
         {
           kind: "p",
           text: "A reservation is bought per disk SKU. In Microsoft’s own example, a P40 reservation doesn’t pay for two P30\u00a0disks, even though 2 × 1,024\u00a0GiB adds up to the P40’s 2,048\u00a0GiB.",
+        },
+        {
+          kind: "h3",
+          id: "are-azure-disk-reservations-worth-it",
+          title: "Are Azure disk reservations worth it?",
         },
         {
           kind: "p",
@@ -323,56 +334,15 @@ export const article: Article = {
             ", Zoorik’s block storage optimization, keeps block storage sized to your data as the data changes. It works on the data disks of running VMs: Azure managed disks and Amazon EBS volumes, on Windows and Linux VMs. It never touches the OS disk or root volume.",
           ],
         },
-        { kind: "p", text: "On Linux, it works like this:" },
-        {
-          kind: "ul",
-          items: [
-            [
-              { b: "The pool." },
-              " Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. On Azure the pool uses Premium SSD v2 where your region and zone offer it, and Premium SSD otherwise. Each data mount keeps its old path, so application code needs no changes.",
-            ],
-            [
-              { b: "The move." },
-              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again, so services can restart more than once.",
-            ],
-            [
-              { b: "The source disks." },
-              " Once the switch is checked, Amoeba snapshots each source disk, deletes the disk, and keeps the snapshot for a few days before deleting it too.",
-            ],
-            [
-              { b: "Growing." },
-              " Amoeba grows the pool before it fills, and sooner when data arrives fast. It grows a disk in place or adds one while the pool stays mounted.",
-            ],
-            [
-              { b: "Shrinking." },
-              " When your data goes down and stays down, Amoeba shrinks the pool one disk at a time. It moves that disk’s data onto the others and deletes the empty disk, so you pay for close to what you use. With shrinks set to “Manual”, each one waits for you.",
-            ],
-          ],
-        },
-        { kind: "h3", id: "before-you-move-a-vm", title: "Before you move a VM" },
-        {
-          kind: "p",
-          text: "You pay for both sets of disks only while the move runs, and then for the snapshots while they’re kept. The overlap runs from when the pool’s disks are created until the source disks are deleted.",
-        },
-        { kind: "svg", figure: figure3 },
         {
           kind: "p",
           text: [
-            "Data on Standard HDD or Standard SSD moves to Premium SSD v2 or Premium SSD. Check the estimate for those VMs and for any Premium SSD reservation, which covers only its own SKU. Pool disks are locally redundant, so data on ",
-            { a: "zone-redundant (ZRS) disks", href: "/learn/azure-disk-lrs-vs-zrs" },
-            " loses zone redundancy.",
-          ],
-        },
-        {
-          kind: "p",
-          text: "On Linux, the kernel must be recent and support btrfs, and every service that keeps a data mount open must run under systemd. The running kernel decides, never the OS name. The VM also needs a few free disk slots for the pool.",
-        },
-        {
-          kind: "p",
-          text: [
-            "Amoeba prices disks from the Azure Retail Prices API for the disk type and region, with a 730-hour month. To see your own figure first, the ",
-            { a: "free block storage assessment", href: "/assessment?p=amoeba" },
-            " runs in your terminal, writes one PDF and sends nothing to Zoorik. Amoeba is in early access.",
+            "Amoeba moves a VM’s data disks onto one pool sized to your data, grows it before it fills, and shrinks it one disk at a time when your data goes down and stays down. ",
+            {
+              a: "Azure managed disk cost optimization",
+              href: "/azure-managed-disk-cost-optimization",
+            },
+            " covers Amoeba on Azure in full.",
           ],
         },
       ],
@@ -444,6 +414,10 @@ export const article: Article = {
       where: "Learn",
       href: "/learn/azure-disk-snapshot-cost",
     },
-    { title: "Block storage cost optimization with Amoeba", where: "Amoeba", href: "/amoeba" },
+    {
+      title: "Azure managed disk cost optimization",
+      where: "Amoeba",
+      href: "/azure-managed-disk-cost-optimization",
+    },
   ],
 };

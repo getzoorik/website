@@ -362,7 +362,7 @@ function Clash(): JSX.Element {
   );
 }
 
-/** "Rebalance first, then scale out": the order that works. */
+/** "Set requests from real use first, then scale out": the order that works. */
 function Order(): JSX.Element {
   /* smaller requests fit on fewer nodes: two nodes full, one half full, the empty one goes */
   const blocks = range(3).flatMap((j) =>

@@ -74,7 +74,7 @@ describe("/docs", () => {
     expect(link).toHaveClass("alink");
     expect(link).toHaveAttribute("href", "/learn");
     expect(link).not.toHaveAttribute("target");
-    expect(text(link)).toBe("Articles on Kubernetes and block storage cost");
+    expect(text(link)).toBe("Cloud cost optimization guides for Kubernetes and block storage");
     expect(link.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
   });
 
@@ -355,7 +355,7 @@ describe("the doc tile", () => {
 describe("the Read more rows' content", () => {
   it("lists the hub's tiles for a product, with All docs to its group", () => {
     const row = readMoreRows.coral!;
-    expect(row.title).toBe("Read more");
+    expect(row.title).toBe("Coral docs and guides");
     expect(row.allDocs).toEqual({ label: "All docs", href: "/docs#coral" });
     expect(row.tiles.map((tile) => tile.title)).toEqual(["Product guide", "FAQ", "One-pager"]);
   });

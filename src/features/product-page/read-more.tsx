@@ -11,8 +11,8 @@ import { formatSize, pageCount } from "@/lib/pdf-facts";
  * Read more (`#read-coral`, `#read-amoeba`): the product's documents as doc
  * tiles, after How it works and before the closing row.
  *
- * A heading row ("Read more", and "All docs" into this product's group on the
- * hub), then six tiles, two by two from 981px (`.dt-2x2`): the guide and the
+ * A heading row (the product's docs and guides, "Coral docs and guides", and "All
+ * docs" into this product's group on the hub), then six tiles, two by two from 981px (`.dt-2x2`): the guide and the
  * FAQ are pages and end on an arrow; the one-pager is a download and ends on
  * the download glyph; the fourth is the product's /learn article, and the last
  * two are its clouds' pages (owner, 1 Nov 2026). A product's
@@ -49,7 +49,7 @@ function Tile({ tile }: { readonly tile: ReadMoreTile }): React.JSX.Element {
           <span>
             <span className="dt-t">
               <NamedText text={tile.title} name={NAMES} />
-            </span>
+            </span>{" "}
             <span className="dt-l">
               <NamedText text={tile.line} name={NAMES} />
             </span>
@@ -73,7 +73,7 @@ function Tile({ tile }: { readonly tile: ReadMoreTile }): React.JSX.Element {
       >
         <DocGlyph className="dt-ic" />
         <span>
-          <span className="dt-t">{tile.title}</span>
+          <span className="dt-t">{tile.title}</span>{" "}
           <span className="dt-l">
             {pageCount(facts.pages, NBSP)} · {formatSize(facts.bytes, NBSP)}
           </span>
@@ -97,7 +97,9 @@ export function ReadMore({
     <section className="sec" id={`read-${product}`} aria-labelledby={headingId}>
       <div className="wrap">
         <div className="sec-hrow">
-          <h2 id={headingId}>{readMore.title}</h2>
+          <h2 id={headingId}>
+            <NamedText text={readMore.title} name={NAMES} />
+          </h2>
           <a className="alink" href={readMore.allDocs.href}>
             {readMore.allDocs.label}
             <Arrow />

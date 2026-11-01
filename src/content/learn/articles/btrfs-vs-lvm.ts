@@ -4,7 +4,7 @@ import { figure as figure2 } from "@/features/learn/figures/btrfs-vs-lvm/2";
 
 export const article: Article = {
   slug: "btrfs-vs-lvm",
-  title: "btrfs vs LVM: which one can shrink on a cloud VM?",
+  title: "btrfs vs LVM with ext4 or XFS: which can shrink?",
   meta: "btrfs vs LVM on a cloud VM: both grow while mounted. What decides whether you can take a disk back out and stop paying for it, with ext4, XFS or btrfs.",
   h1: "btrfs vs LVM: which one can shrink on a cloud VM?",
   deck: "Both grow while mounted. What decides whether a disk can leave again, and why the filesystem matters more than LVM.",
@@ -134,7 +134,7 @@ export const article: Article = {
     },
     {
       id: "btrfs-vs-lvm",
-      title: "btrfs vs LVM with ext4 or XFS: the filesystem decides the shrink",
+      title: "btrfs vs ext4 and XFS on LVM: the filesystem decides the shrink",
       blocks: [
         {
           kind: "p",
@@ -464,13 +464,9 @@ export const article: Article = {
             ],
             [
               { b: "The limit." },
-              " Amoeba never detaches a disk while the pool is nearly full, or while an urgent expand runs.",
+              " Amoeba never detaches a disk while the pool is nearly full, or while it’s growing the pool.",
             ],
           ],
-        },
-        {
-          kind: "p",
-          text: "On Linux, the VM needs a recent kernel with btrfs. Every service that keeps a data mount open must run under systemd, so Amoeba can stop it and start it again at the switch. The VM also needs a few free disk slots for the pool.",
         },
         {
           kind: "p",

@@ -4,9 +4,9 @@ import { figure as figure2 } from "@/features/learn/figures/vpa-vs-hpa/2";
 
 export const article: Article = {
   slug: "vpa-vs-hpa",
-  title: "HPA vs VPA in Kubernetes: when to use which",
+  title: "VPA vs HPA in Kubernetes: when to use which",
   meta: "VPA vs HPA: the VPA sets how much CPU and memory each pod requests, the HPA sets how many pods run. When to use each, why they clash, and what to do first.",
-  h1: "VPA vs HPA: when to use which, and why to rebalance first",
+  h1: "VPA vs HPA: when to use which",
   deck: "What each autoscaler changes, when to use which, why they clash on CPU, and the order that works.",
   card: "When to use the VPA or the HPA, why they clash on CPU, and why to rebalance requests first.",
   product: "coral",
@@ -37,7 +37,7 @@ export const article: Article = {
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
-          text: "Most production services need both jobs, so VPA or HPA is rarely a choice of one, and the question behind HPA vs VPA in Kubernetes is how to run both without two controllers reading the same signal. The node count follows from both.",
+          text: "Most production services need both jobs, so the real question is how to run both without two controllers reading the same signal. The node count follows from both.",
         },
         {
           kind: "ul",
@@ -60,7 +60,11 @@ export const article: Article = {
             ],
           ],
         },
-        { kind: "p", text: "Here is the difference between HPA and VPA, point by point." },
+        {
+          kind: "h3",
+          id: "the-difference-between-hpa-and-vpa",
+          title: "The difference between HPA and VPA",
+        },
         {
           kind: "table",
           columns: [
@@ -154,10 +158,18 @@ export const article: Article = {
           kind: "p",
           text: "Microsoft’s AKS documentation adds two limits. The recommender keeps at most 8\u00a0days of history. JVM-based workloads aren’t supported, because the VPA has limited visibility into their real memory use.",
         },
-        { kind: "h3", id: "vpa-update-modes", title: "VPA update modes" },
         {
           kind: "p",
-          text: ["The ", { code: "updateMode" }, " field decides what happens to running pods:"],
+          text: [
+            "The ",
+            {
+              a: "VPA update modes",
+              href: "/learn/glossary/vertical-pod-autoscaler#vpa-update-modes",
+            },
+            ", set in the ",
+            { code: "updateMode" },
+            " field, decide what happens to running pods:",
+          ],
         },
         {
           kind: "ul",
@@ -249,7 +261,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            { a: "Node autoscalers", href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler" },
+            { a: "Node autoscalers", href: "/learn/kubernetes-autoscaling" },
             " such as the Cluster Autoscaler and Karpenter count the same way. Kubernetes’ node autoscaling documentation says they provision nodes to fit pod requests and consolidate on requests rather than real use, so a request set too high can stop a node from being consolidated.",
           ],
         },
@@ -325,7 +337,7 @@ export const article: Article = {
     },
     {
       id: "rebalance-first-then-scale-out",
-      title: "Rebalance first, then scale out",
+      title: "Set requests from real use first, then scale out",
       blocks: [
         {
           kind: "p",
@@ -389,7 +401,7 @@ export const article: Article = {
             ],
             [
               { b: "HPAs it manages." },
-              " With automation on and the Optimization type “Both”, Coral creates an HPA, with ",
+              " With automation on and a policy that manages HPAs (every built-in policy except read-only does), Coral creates an HPA, with ",
               { code: "minReplicas" },
               " of 2 or more, for an ",
               { a: "eligible", href: "/coral-guide#hpas-and-vpas" },
@@ -401,11 +413,11 @@ export const article: Article = {
             ],
             [
               { b: "Nodes." },
-              " Coral drains spare nodes one at a time so your Cluster Autoscaler, AKS node auto-provisioning or Karpenter can remove them. Node optimization is on from install, and you can limit it to chosen node pools.",
+              " Coral drains spare nodes one at a time so your Cluster Autoscaler, AKS node auto provisioning or Karpenter can remove them. Node optimization is on from install, and you can limit it to chosen node pools.",
             ],
             [
               { b: "Opt-in." },
-              " Pod sizing waits for you: Coral only recommends until “Automatically optimize” is on for a policy or a workload.",
+              " Pod sizing waits for you: Coral only recommends until automation is on for a policy or a workload.",
             ],
           ],
         },
@@ -470,12 +482,12 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "HPA vs VPA vs Cluster Autoscaler: what each one scales",
+      title: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
       where: "Learn",
-      href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
+      href: "/learn/kubernetes-autoscaling",
     },
     {
-      title: "KEDA vs HPA vs VPA: where event-driven scaling fits",
+      title: "KEDA vs HPA: where event-driven scaling fits",
       where: "Learn",
       href: "/learn/keda-vs-hpa-vs-vpa",
     },
@@ -484,7 +496,15 @@ export const article: Article = {
       where: "Learn",
       href: "/learn/keda-vs-karpenter",
     },
-    { title: "Working with HPA", where: "Coral FAQ", href: "/coral-faq#working-with-hpa" },
-    { title: "HPAs and VPAs", where: "Coral product guide", href: "/coral-guide#hpas-and-vpas" },
+    {
+      title: "How Coral works with your HPA",
+      where: "Coral FAQ",
+      href: "/coral-faq#working-with-hpa",
+    },
+    {
+      title: "How Coral handles HPAs and VPAs",
+      where: "Coral product guide",
+      href: "/coral-guide#hpas-and-vpas",
+    },
   ],
 };
