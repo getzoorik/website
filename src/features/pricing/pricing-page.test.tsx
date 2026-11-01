@@ -128,7 +128,7 @@ describe("/pricing", () => {
     expect(
       selectors.filter(
         (s) =>
-          !/^(\.ct-|\.cp-w p\.ct-after|\.cp-buyrow|\.cp-more|\.cp-d \.cta-fine|\.pr-|#follow |\.hero-cta:where\(\.pr-cta\))/.test(
+          !/^(\.ct-|\.cp-w p\.ct-after|#buy \.cp-buyrow|\.cp-more|\.cp-d \.cta-fine|\.pr-|#follow |\.hero-cta:where\(\.pr-cta\))/.test(
             s,
           ),
       ),
