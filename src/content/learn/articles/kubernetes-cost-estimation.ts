@@ -14,11 +14,15 @@ export const article: Article = {
   hub: "Kubernetes",
   topic: "Kubernetes cost basics",
   published: "2026-10-21",
-  updated: "2026-10-21",
+  updated: "2026-11-01",
   author: "shubankar",
   cover: "/learn-covers/zoorik-learn-kubernetes-cost-estimation-1200x630.webp",
-  short:
-    "Kubernetes cost estimation means pricing the machines a cluster needs, plus its control plane, disks and network. The arithmetic is short: nodes × each machine’s hourly list price × 730\u00a0hours a month. The node count is the hard part, because the scheduler fills nodes by the CPU and memory pods request, not by what they use. Estimate from measured use plus headroom, and the same sum shows how many nodes you could do without.",
+  coverAlt: "Kubernetes cost estimation: nodes times hourly price times 730 hours",
+  short: [
+    "Kubernetes cost estimation means pricing the machines a cluster needs, plus its control plane, disks and network. The arithmetic is short: nodes × each machine’s hourly list price × 730\u00a0hours a month. The node count is the hard part, because the scheduler fills nodes by the CPU and memory pods request, not by what they use. Estimate from measured use plus ",
+    { a: "headroom", href: "/learn/glossary/kubernetes-headroom" },
+    ", and the same sum shows how many nodes you could do without.",
+  ],
   sections: [
     {
       id: "what-a-kubernetes-cluster-costs",
@@ -26,15 +30,15 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Picture a node pool whose pods request 30\u00a0CPU in all, on 9\u00a0nodes that each have 3.5\u00a0CPU left for pods after their reservations and DaemonSets. You pay for all 9 machines for every hour they run, however little of that CPU the pods use. Nodes are the line of the bill that moves with your workloads. Sized from measured use plus headroom, say to 11\u00a0CPU, those requests would fit on 4\u00a0nodes.",
+          text: "Picture a node pool whose pods request 30\u00a0CPU in all, on 9\u00a0nodes that each have 3.5\u00a0CPU left for pods after their reservations and DaemonSets. You pay for all 9 machines for every hour they run, however little of that CPU the pods use. Nodes are the part of your cloud cost that moves with your workloads. Sized from measured use plus headroom, say to 11\u00a0CPU, those requests would fit on 4\u00a0nodes.",
         },
-        { kind: "p", text: "A managed cluster’s bill has three parts:" },
+        { kind: "p", text: "A managed cluster’s cost has three parts:" },
         {
           kind: "ul",
           items: [
             [
               { b: "Worker nodes." },
-              " Virtual machines, billed like any other VM or EC2 instance for the time they run.",
+              " Virtual machines, charged like any other VM or EC2 instance for the time they run.",
             ],
             [
               { b: "The control plane." },
@@ -63,7 +67,9 @@ export const article: Article = {
           items: [
             [
               { b: "Add up the requests." },
-              " Multiply each workload’s CPU and memory requests by the replica count it runs most of the time, and add them up per node pool.",
+              " Multiply each workload’s CPU and memory requests by the replica count it runs most of the time, and add them up per ",
+              { a: "node pool", href: "/learn/glossary/node-pool" },
+              ".",
             ],
             [
               { b: "Pick a machine and use its allocatable, not its size." },
@@ -72,12 +78,20 @@ export const article: Article = {
               " is what’s left for pods after the node’s own reservations. In Microsoft’s example for AKS 1.29 and later, an 8\u00a0GB node that supports 30\u00a0pods reserves 0.65\u00a0GB for Kubernetes itself (kube-reserved) and 0.1\u00a0GB for the eviction threshold, which leaves 7.25\u00a0GB.",
             ],
             [
-              { b: "Take off what your DaemonSets request." },
+              {
+                b: [
+                  "Take off what your ",
+                  { a: "DaemonSets", href: "/learn/glossary/daemonset" },
+                  " request.",
+                ],
+              },
               " A DaemonSet puts a pod on every node it targets.",
             ],
             [
               { b: "Divide the requests by what’s left per node, and round up." },
-              " Keep the larger of the CPU and memory counts, and check the node’s maximum pod count too: a node can run out of pod slots before it runs out of CPU or memory.",
+              " Keep the larger of the CPU and memory counts, and check the node’s ",
+              { a: "maximum pod count", href: "/learn/glossary/max-pods-per-node" },
+              " too: a node can run out of pod slots before it runs out of CPU or memory.",
             ],
             [
               { b: "Leave slack." },
@@ -89,6 +103,14 @@ export const article: Article = {
               { b: "Price the nodes." },
               " Multiply them by the machine’s hourly price and 730\u00a0hours, then add the control plane and the parts around it.",
             ],
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "Our ",
+            { a: "EKS and AKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
+            " prices a node pool at list price, and shows how much of each node your pods can use.",
           ],
         },
         { kind: "h3", id: "aks-cost-estimation", title: "AKS cost estimation" },
@@ -117,13 +139,24 @@ export const article: Article = {
               " In the 12\u00a0months of extended support that follow, it’s $0.60 an hour, or $438 a month. A Provisioned Control Plane tier, if you choose one, adds its own hourly price on top.",
             ],
             [
-              { b: "EKS Auto Mode." },
-              " Its management fee varies with the instance type, comes on top of the EC2 price, and is billed per second with a one-minute minimum.",
+              { b: [{ a: "EKS Auto Mode", href: "/learn/glossary/eks-auto-mode" }, "."] },
+              " Its management fee varies with the instance type, comes on top of the EC2 price, and is charged per second with a one-minute minimum.",
             ],
             [
               { b: "Public IPv4 addresses and cross-zone traffic." },
-              " Both are billed: each public IPv4 address, and traffic from nodes to the control plane across Availability Zones.",
+              " Both are charged: each public IPv4 address, and traffic from nodes to the control plane across Availability Zones.",
             ],
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "To move a node group to a cheaper type, see ",
+            {
+              a: "how to change an EKS node group instance type",
+              href: "/learn/change-eks-node-group-instance-type",
+            },
+            ".",
           ],
         },
       ],
@@ -157,9 +190,18 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Cost allocation tools answer a different question. The ",
+            { a: "Cost allocation", href: "/learn/glossary/kubernetes-cost-allocation" },
+            " tools answer a different question. The ",
             { a: "AKS cost analysis add-on", href: "/learn/aks-cost-analysis" },
             ", built on OpenCost and available on the Standard and Premium tiers, maps cost to clusters and namespaces. Its idle charges are “the cost of available resource capacity that isn’t used by any workloads.” It doesn’t count the nodes you could do without.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "Our library lists ",
+            { a: "cloud cost management tools", href: "/cloud-cost-optimization-library" },
+            " and what each one does.",
           ],
         },
       ],
@@ -187,7 +229,11 @@ export const article: Article = {
             ],
             [
               { b: "Price the difference." },
-              " Multiply (nodes today − nodes needed) by the machine’s hourly list price and 730. List prices leave out reservations, savings plans and negotiated rates, so your saving in dollars can come in under the estimate.",
+              " Multiply (nodes today − nodes needed) by the machine’s hourly list price and 730. List prices leave out ",
+              { a: "reservations", href: "/learn/glossary/reserved-instance" },
+              ", ",
+              { a: "savings plans", href: "/learn/glossary/savings-plan" },
+              " and negotiated rates, so your saving in dollars can come in under the estimate.",
             ],
           ],
         },
@@ -311,7 +357,7 @@ export const article: Article = {
     product: "coral",
     text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and drains spare nodes so your autoscaler can remove them. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
-      { label: "Kubernetes cost optimization with Coral", href: "/coral" },
+      { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Estimate your saving", href: "/assessment?p=coral" },
     ],
   },
@@ -360,7 +406,7 @@ export const article: Article = {
       href: "/learn/kubernetes-pod-right-sizing",
     },
     {
-      title: "AKS vs EKS cost: what each cluster bill is made of",
+      title: "AKS vs EKS cost: what you pay for each cluster",
       where: "Learn",
       href: "/learn/aks-vs-eks-cost",
     },
@@ -375,7 +421,7 @@ export const article: Article = {
       href: "/coral-faq#how-is-the-saving-worked-out",
     },
     {
-      title: "How we reduced our own cluster’s machine bill by 58%",
+      title: "How We Reduced AKS Cluster Costs by 58%",
       where: "Case study",
       href: "/coral-value-lab",
     },

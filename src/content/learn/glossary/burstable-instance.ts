@@ -7,22 +7,22 @@ export const term: GlossaryTerm = {
   title: "What is a burstable instance?",
   meta: "A burstable instance is a VM with a baseline CPU and credits to burst above it. See how AWS T and Azure B-series VMs work, and when unlimited mode costs more.",
   h1: "What is a burstable instance?",
-  card: "A burstable instance is a cloud virtual machine (VM) with a baseline CPU level.",
+  card: "A burstable instance is a virtual machine (VM) with a baseline CPU level.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
-      text: "A burstable instance is a cloud virtual machine (VM) with a baseline CPU level. It earns CPU credits while it runs below that baseline, then spends them to burst above it.",
+      text: "A burstable instance is a virtual machine (VM) with a baseline CPU level. It earns CPU credits below that baseline and spends them to burst above it.",
     },
     {
       kind: "p",
       text: [
         "Kubernetes’ ",
         { a: "Burstable QoS class", href: "/learn/glossary/kubernetes-qos-class" },
-        " is a different thing: a pod class with no credits.",
+        " is different: a pod class with no credits.",
       ],
     },
   ],
@@ -37,20 +37,43 @@ export const term: GlossaryTerm = {
             [
               "A burstable instance in AWS is a ",
               { a: "T instance", href: "/learn/glossary/aws-instance-families" },
-              ", such as T3 or T4g.",
+              ", such as T3, T4g or the newest, T8i.",
             ],
             [
               "A burstable VM in Azure is a ",
               { a: "B-series VM", href: "/learn/glossary/azure-vm-series" },
               ", such as Bsv2.",
             ],
-            "CPU credits in AWS measure virtual CPU (vCPU) time. One credit is one vCPU at 100% for one minute.",
-            "T3 unlimited mode is the default. A T3 on a Dedicated Host can’t use it.",
+            "A CPU credit in AWS is one virtual CPU (vCPU) at 100% for one minute.",
+            "T3 unlimited mode is the default. Dedicated Hosts don’t support it.",
           ],
         },
         {
           kind: "p",
-          text: "Out of credits, an Azure B-series VM or an AWS instance in standard mode falls back to its baseline. In AWS unlimited mode, the instance keeps bursting.",
+          text: "Out of credits, a B-series VM or an AWS instance in standard mode drops to its baseline. In AWS unlimited mode, it keeps bursting.",
+        },
+        { kind: "p", text: "T3 baseline by size:" },
+        {
+          kind: "table",
+          columns: [
+            { label: "Size", width: "32%" },
+            { label: "vCPUs", width: "23%" },
+            { label: "Credits earned per hour", width: "23%" },
+            { label: "Baseline per vCPU", width: "22%" },
+          ],
+          rows: [
+            ["t3.nano", "2", "6", "5%"],
+            ["t3.micro", "2", "12", "10%"],
+            ["t3.small", "2", "24", "20%"],
+            ["t3.medium", "2", "24", "20%"],
+            ["t3.large", "2", "36", "30%"],
+            ["t3.xlarge", "4", "96", "40%"],
+            ["t3.2xlarge", "8", "192", "40%"],
+          ],
+        },
+        {
+          kind: "p",
+          text: "Watch the balance with CPUCreditBalance in Amazon CloudWatch, or CPU Credits Remaining for an Azure B-series VM.",
         },
       ],
     },
@@ -60,7 +83,7 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "A t3.large has 2\u00a0vCPUs and a baseline of 30% per vCPU. AWS’s example sets it to unlimited and runs it at a 24-hour average of 40% CPU. The hourly price covers the first 30%, and the extra 10% is charged at a flat rate per vCPU-hour.",
+          text: "AWS’s example runs an unlimited t3.large at a 24-hour average of 40% CPU. Only the 10% above its 30% baseline costs extra, at a flat rate per vCPU-hour.",
         },
         { kind: "svg", figure: figure1 },
       ],
@@ -72,8 +95,7 @@ export const term: GlossaryTerm = {
         {
           kind: "ul",
           items: [
-            "A steady load above the baseline runs slower, or costs extra in unlimited mode.",
-            "At AWS’s example prices, a t3.large costs less than a same-size fixed-CPU m5.large, up to a 42.5% daily average CPU. Above that, it costs more.",
+            "At AWS’s example prices, a t3.large costs less than a fixed-CPU m5.large below a 42.5% daily average CPU.",
             [
               "Check the baseline when you pick a ",
               { a: "node size", href: "/learn/kubernetes-node-size-best-practices" },
@@ -100,7 +122,7 @@ export const term: GlossaryTerm = {
     },
     {
       title: "Spot instance",
-      line: "Another purchase option AWS offers for T instances.",
+      line: "Also offered for T instances.",
       href: "/learn/glossary/spot-instance",
     },
     {
@@ -134,6 +156,11 @@ export const term: GlossaryTerm = {
       publisher: "Microsoft Learn",
       title: "“B family VM size series”",
       url: "https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/general-purpose/b-family",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“B Series CPU Credit Model”",
+      url: "https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/b-series-cpu-credit-model",
     },
   ],
 };

@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -35,7 +35,7 @@ export const term: GlossaryTerm = {
           kind: "ul",
           items: [
             "Blended cost: its average rate mixes on-demand, RI and Savings Plans usage.",
-            "Net unblended cost: the actual cost after discounts. Its report column appears only in months with a discount.",
+            "Net unblended cost: the actual cost after discounts. Its column appears only in months with a discount.",
             [
               { a: "Amortized cost", href: "/learn/glossary/amortized-cost" },
               ": Savings Plans and reservation fees spread evenly across the month.",
@@ -78,7 +78,7 @@ export const term: GlossaryTerm = {
             "AWS’s Cloud Financial Management blog says most customers need only unblended cost.",
             [
               "To reduce your cloud cost, see ",
-              { a: "what moves it", href: "/cloud-cost-optimization" },
+              { a: "cloud cost optimization", href: "/cloud-cost-optimization" },
               ".",
             ],
             [
@@ -113,7 +113,10 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/showback",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
+  next: {
+    title: "Cloud cost optimization: how to reduce cloud costs",
+    href: "/cloud-cost-optimization",
+  },
   sources: [
     {
       publisher: "AWS",

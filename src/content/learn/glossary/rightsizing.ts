@@ -11,11 +11,11 @@ export const term: GlossaryTerm = {
   group: "finops-pricing",
   product: "both",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
-      text: "Rightsizing in cloud cost optimization means matching a resource’s size to what it needs, based on measured use. It applies to virtual machines (VMs), disks and databases. You change the size, type or count, or shut down what sits idle.",
+      text: "Rightsizing in cloud cost optimization means matching a resource’s size to what it needs, based on measured use. It applies to virtual machines (VMs), disks and databases. You change the size, type or count, or shut down idle ones.",
     },
   ],
   sections: [
@@ -94,7 +94,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-resource-requests",
     },
   ],
-  next: { title: "Kubernetes pod rebalancing", href: "/learn/kubernetes-pod-right-sizing" },
+  next: { title: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
   sources: [
     {
       publisher: "AWS",

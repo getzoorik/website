@@ -13,13 +13,16 @@ export const article: Article = {
   hub: "Kubernetes",
   topic: "Kubernetes cost basics",
   published: "2026-10-21",
-  updated: "2026-10-21",
+  updated: "2026-11-01",
   author: "rupesh",
   cover: "/learn-covers/zoorik-learn-change-eks-node-group-instance-type-1200x630.webp",
+  coverAlt: "Change EKS instance types: create a new node group, drain the old one, then delete it",
   short: [
-    "You can’t change the instance type of an existing Amazon Elastic Kubernetes Service (EKS) managed node group in place. Its update API changes settings such as labels, taints and scaling, not instance types. To change it, create a new node group with the types you want, cordon and drain the old nodes within their ",
+    "You can’t change an Amazon Elastic Kubernetes Service (EKS) ",
+    { a: "managed node group", href: "/learn/glossary/node-pool" },
+    "’s instance type in place. Create a new node group with the types you want, cordon and drain the old nodes within their ",
     { a: "PodDisruptionBudgets (PDBs)", href: "/learn/pod-disruption-budget-best-practices" },
-    ", then delete the old group. If the type is set in your own launch template, a new template version replaces the nodes instead.",
+    ", then delete the old group. If your own launch template sets the type, a new template version replaces the nodes instead.",
   ],
   sections: [
     {
@@ -77,11 +80,17 @@ export const article: Article = {
           items: [
             [
               { b: "Match the architecture." },
-              " AWS Graviton types are Arm-based, so every image the group runs, DaemonSets included, needs an arm64 build, and the group needs an Arm AMI type.",
+              " ",
+              { a: "AWS Graviton types", href: "/learn/glossary/aws-instance-families" },
+              " are Arm-based, so every image the group runs, ",
+              { a: "DaemonSets", href: "/learn/glossary/daemonset" },
+              " included, needs an arm64 build, and the group needs an Arm AMI type.",
             ],
             [
               { b: "Count pod slots, not only vCPUs." },
-              " With the Amazon VPC CNI, each pod takes its own IP address, so a type’s address-based pod cap follows its elastic network interfaces (ENIs) and the IPs on each, not its vCPUs. Spread the same vCPUs over more, smaller nodes and the total of pod slots can change. Without a custom AMI, managed node groups also cap a node at 110\u00a0pods for types under 30\u00a0vCPUs, and on AWS Nitro System types, prefix delegation in VPC CNI 1.9.0 or later raises the IPs per node.",
+              " With the Amazon VPC CNI, each pod takes its own IP address, so a type’s address-based ",
+              { a: "pod cap", href: "/learn/glossary/max-pods-per-node" },
+              " follows its elastic network interfaces (ENIs) and the IPs on each, not its vCPUs. Spread the same vCPUs over more, smaller nodes and the total of pod slots can change. Without a custom AMI, managed node groups also cap a node at 110\u00a0pods for types under 30\u00a0vCPUs, and on AWS Nitro System types, prefix delegation in VPC CNI 1.9.0 or later raises the IPs per node.",
             ],
             [
               { b: "Find pinned pods." },
@@ -93,6 +102,14 @@ export const article: Article = {
               { b: "Confirm the Region." },
               " AWS doesn’t offer every type in every Region, so check that yours has it first.",
             ],
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "The ",
+            { a: "EKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
+            " gives the monthly list price of an EKS node pool.",
           ],
         },
       ],
@@ -244,7 +261,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "A group holds one capacity type, On-Demand or Spot, so to run both, create two groups. On-Demand groups use the ",
+            "A group holds one capacity type, On-Demand or ",
+            { a: "Spot", href: "/learn/glossary/spot-instance" },
+            ", so to run both, create two groups. On-Demand groups use the ",
             { code: "prioritized" },
             " allocation strategy: EKS tries the types in the exact order you list them. Spot groups created in clusters on Kubernetes 1.28 or later use ",
             { code: "price-capacity-optimized" },
@@ -313,7 +332,10 @@ export const article: Article = {
             " is held back from drift unless its NodeClaim sets a ",
             { code: "terminationGracePeriod" },
             ", as ",
-            { a: "the annotations guide", href: "/learn/safe-to-evict-do-not-disrupt" },
+            {
+              a: "the do-not-disrupt annotation guide",
+              href: "/learn/safe-to-evict-do-not-disrupt",
+            },
             " explains.",
           ],
         },
@@ -329,6 +351,13 @@ export const article: Article = {
             "A new instance type pays off only when the pods’ requests fit it well, and Karpenter chooses machines from pod requests without changing them. ",
             { a: "Coral", href: "/coral" },
             " optimizes Kubernetes on AKS and EKS: it rebalances each container’s CPU and memory requests to what it really uses, and what it can then do with your nodes depends on the autoscaler you run.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            { a: "EKS cost optimization", href: "/eks-cost-optimization" },
+            " covers what Coral does on EKS.",
           ],
         },
         {
@@ -363,8 +392,8 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "A rebalance never goes past a PDB, and a node that can’t be emptied within 45\u00a0minutes is kept. Where a warm handover applies, Coral starts a new copy on another node first, and it must be Ready and serving for 5\u00a0minutes with no restarts before the old pod goes. Pods that don’t qualify, such as StatefulSet pods or pods with ReadWriteOnce volumes, are evicted instead, and a single-replica app among them gets a short restart. ",
-            { a: "Reducing Kubernetes cost", href: "/kubernetes-cost-optimization" },
+            "A rebalance never goes past a PDB, and a node that can’t be emptied within 45\u00a0minutes is kept. Where a warm handover applies, Coral starts a new copy on another node first, and it must be Ready and serving for 5\u00a0minutes with no restarts before the old pod goes. Pods that don’t qualify, such as StatefulSet pods or pods with ReadWriteOnce volumes, are evicted instead, and a single-replica app among them gets a short restart. The ",
+            { a: "Kubernetes cost optimization guide", href: "/kubernetes-cost-optimization" },
             " puts rebalancing and node removal in order.",
           ],
         },
@@ -375,7 +404,7 @@ export const article: Article = {
     product: "coral",
     text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and drains spare nodes so your autoscaler can remove them. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
-      { label: "Kubernetes cost optimization with Coral", href: "/coral" },
+      { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Estimate your saving", href: "/assessment?p=coral" },
     ],
   },
@@ -437,6 +466,11 @@ export const article: Article = {
       title: "Karpenter vs Cluster Autoscaler: how each removes nodes",
       where: "Learn",
       href: "/learn/karpenter-vs-cluster-autoscaler",
+    },
+    {
+      title: "Cluster Autoscaler not scaling down: what keeps nodes running",
+      where: "Learn",
+      href: "/learn/cluster-autoscaler-not-scaling-down",
     },
     {
       title:

@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "finops-pricing",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -106,7 +106,10 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/reserved-instance",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
+  next: {
+    title: "Cloud cost optimization: how to reduce cloud costs",
+    href: "/cloud-cost-optimization",
+  },
   sources: [
     {
       publisher: "AWS",

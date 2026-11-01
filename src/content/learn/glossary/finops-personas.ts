@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -23,7 +23,7 @@ export const term: GlossaryTerm = {
     },
     {
       kind: "p",
-      text: "They come from the FinOps Foundation’s FinOps Framework. Microsoft’s guidance builds on it and calls them stakeholders.",
+      text: "They come from the FinOps Foundation’s FinOps Framework. Microsoft calls them stakeholders.",
     },
   ],
   sections: [
@@ -39,7 +39,7 @@ export const term: GlossaryTerm = {
             "Finance budgets, forecasts and reports on cloud cost.",
             "Leadership gets the most business value from the cloud.",
             "Business owners drive strategy and budgets.",
-            "Product owners rank product work by user needs and business value.",
+            "Product owners rank work by user needs and business value.",
             "Engineering teams deliver high-quality, cost-effective services.",
             "FinOps practitioners teach, standardize and promote FinOps practices.",
           ],
@@ -56,7 +56,7 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "Your cloud cost moves with what you use and the rate you pay. Microsoft’s principles spread usage decisions across teams and keep rate negotiations central.",
+          text: "Your cloud cost moves with what you use and the rate you pay. Microsoft gives each lever an owner.",
         },
         { kind: "svg", figure: figure1 },
         {
@@ -82,7 +82,12 @@ export const term: GlossaryTerm = {
               { a: "reduce your cloud cost", href: "/cloud-cost-optimization" },
               " by running less.",
             ],
-            "If engineers reduce usage below a commitment, it goes under-used. Microsoft warns that this can lose money, though rarely.",
+            "If engineers reduce usage below a commitment, it goes under-used. Microsoft warns this can lose money, though rarely.",
+            [
+              "Our library lists ",
+              { a: "FinOps tools", href: "/cloud-cost-optimization-library" },
+              " and other cloud cost optimization tools, with what each one does.",
+            ],
             [
               "The ",
               { a: "free assessment", href: "/assessment" },
@@ -97,12 +102,12 @@ export const term: GlossaryTerm = {
     { title: "FinOps", line: "The practice these personas share.", href: "/learn/glossary/finops" },
     {
       title: "FinOps maturity model",
-      line: "How a practice grows over time.",
+      line: "How a practice grows.",
       href: "/learn/glossary/finops-maturity-model",
     },
     {
       title: "Rightsizing",
-      line: "A usage lever in engineers’ hands.",
+      line: "A usage lever engineers hold.",
       href: "/learn/glossary/rightsizing",
     },
     {
@@ -111,7 +116,10 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/savings-plan",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
+  next: {
+    title: "Cloud cost optimization: how to reduce cloud costs",
+    href: "/cloud-cost-optimization",
+  },
   sources: [
     {
       publisher: "Microsoft Learn",

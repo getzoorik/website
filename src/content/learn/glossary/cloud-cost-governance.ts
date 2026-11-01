@@ -11,11 +11,11 @@ export const term: GlossaryTerm = {
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
-      text: "Cloud cost governance is the set of rules that keeps your cloud spend inside agreed limits. It covers budgets, tag rules, approvals and limits on what teams can deploy. You define the rules, apply them, then monitor whether teams follow them.",
+      text: "Cloud cost governance is the set of rules that keeps your cloud spend inside agreed limits. It covers budgets, tag rules, approvals and limits on what teams can deploy. You define the rules, apply them, then monitor them.",
     },
     { kind: "svg", figure: figure1 },
   ],
@@ -47,7 +47,7 @@ export const term: GlossaryTerm = {
               { a: "anomalies", href: "/learn/glossary/cloud-cost-anomaly-detection" },
               ").",
             ],
-            "Block or audit new resources in more expensive sizes, such as E-series virtual machines (VMs).",
+            "Block or audit new resources in costlier sizes, such as E-series virtual machines (VMs).",
           ],
         },
       ],
@@ -62,7 +62,7 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "To test it, assign it with enforcement off (DoNotEnforce). It then reports which VMs break the rule but blocks nothing.",
+          text: "To test it, assign it with enforcement off (DoNotEnforce). It then reports rule breaks but blocks nothing.",
         },
         {
           kind: "p",
@@ -77,12 +77,17 @@ export const term: GlossaryTerm = {
         {
           kind: "ul",
           items: [
-            "A deny rule blocks a resource before it exists, so it never adds to your cloud cost.",
+            "A deny rule blocks a resource before it exists, so it never adds cost.",
             "A forecast alert warns where spend is heading, not only what you’ve spent.",
             [
               "Rules and alerts set limits. To ",
-              { a: "reduce the cloud cost", href: "/cloud-cost-optimization" },
-              " you pay now, you change what runs.",
+              { a: "reduce cloud costs", href: "/cloud-cost-optimization" },
+              " now, you change what runs.",
+            ],
+            [
+              "Our library lists FinOps tools and other ",
+              { a: "cloud cost management tools", href: "/cloud-cost-optimization-library" },
+              ", with what each one does.",
             ],
             [
               "The ",
@@ -99,7 +104,7 @@ export const term: GlossaryTerm = {
     { title: "Showback", line: "Shows each team its costs.", href: "/learn/glossary/showback" },
     {
       title: "Cloud chargeback",
-      line: "Charges each team for its own costs.",
+      line: "Charges each team its costs.",
       href: "/learn/glossary/cloud-chargeback",
     },
     {
@@ -108,7 +113,10 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/cloud-tagging-strategy",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
+  next: {
+    title: "Cloud cost optimization: how to reduce cloud costs",
+    href: "/cloud-cost-optimization",
+  },
   sources: [
     {
       publisher: "Microsoft Learn",

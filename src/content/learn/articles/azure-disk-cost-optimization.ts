@@ -6,7 +6,7 @@ import { figure as figure3 } from "@/features/learn/figures/azure-disk-cost-opti
 export const article: Article = {
   slug: "azure-disk-cost-optimization",
   title: "Azure disk cost optimization",
-  meta: "Azure disk cost optimization: a managed disk is charged by size tier every hour, however full it is. Delete unattached disks, reset performance, then size to data.",
+  meta: "Azure disk cost optimization: a managed disk is charged by size tier every hour, however full. Delete unattached disks, reset performance, size to data.",
   h1: "Azure disk cost optimization: stop paying for empty space",
   deck: "What a managed disk is charged for, why you keep paying for the space you bought, and how to pay for your data instead.",
   card: "What Azure charges for a managed disk, why disks only grow, and how Amoeba sizes a pool to your data.",
@@ -14,14 +14,18 @@ export const article: Article = {
   hub: "Block storage",
   topic: "Azure block storage",
   published: "2026-10-21",
-  updated: "2026-10-27",
+  updated: "2026-11-01",
   author: "sheldon",
   cover: "/learn-covers/zoorik-learn-azure-disk-cost-optimization-1200x630.webp",
-  short:
-    "Azure disk cost optimization starts with one pricing rule. A managed disk is charged hourly on the size you provision, rounded up to the nearest size Azure offers, whatever it holds. Premium SSD v2 also charges for IOPS and throughput above a free baseline. Delete unattached disks, set raised performance back, then size disks to the data. Azure grows a disk in place but never shrinks it, so that last step takes a copy or a pool that resizes.",
+  coverAlt: "Azure disk cost optimization: disks charged in full become one pool sized to data",
+  short: [
+    "Azure disk cost optimization starts with one pricing rule. A ",
+    { a: "managed disk", href: "/learn/glossary/azure-managed-disk" },
+    " is charged hourly on the size you provision, rounded up to the nearest size Azure offers, whatever it holds. Premium SSD v2 also charges for IOPS and throughput above a free baseline. Delete unattached disks, set raised performance back, then size disks to the data. Azure grows a disk in place but never shrinks it, so that last step takes a copy or a pool that resizes.",
+  ],
   sections: [
     {
-      id: "a-managed-disk-bills-for-its-size",
+      id: "a-managed-disk-is-charged-for-its-size",
       title: "A managed disk is charged for its size, every hour",
       blocks: [
         {
@@ -44,13 +48,20 @@ export const article: Article = {
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
-          text: "Each size tier is named by its type’s letter and a number, P for Premium SSD, E for Standard SSD and S for Standard HDD. A 512\u00a0GiB Premium SSD is a P20, charged as one whether it holds 500\u00a0GiB or 5\u00a0GiB. On top of capacity, each type adds its own meters, and snapshots are charged separately.",
+          text: [
+            { a: "Azure disk sizes", href: "/learn/glossary/azure-disk-sizes" },
+            " are named by type letter and number: P for ",
+            { a: "Premium SSD", href: "/learn/glossary/azure-premium-ssd" },
+            ", E for Standard SSD, S for ",
+            { a: "Standard HDD", href: "/learn/glossary/azure-standard-hdd" },
+            ". A 512\u00a0GiB Premium SSD is a P20, charged as one whether it holds 500\u00a0GiB or 5\u00a0GiB. On top of capacity, each type adds its own meters, and snapshots are charged separately.",
+          ],
         },
         {
           kind: "table",
           columns: [
             { label: "Disk type", width: "14%" },
-            { label: "What you’re charged for", width: "84%" },
+            { label: "What you’re charged for", width: "80%" },
             { label: "Reservation discount", width: "10%" },
           ],
           rows: [
@@ -75,7 +86,7 @@ export const article: Article = {
               "None",
             ],
             [
-              "Ultra Disk",
+              [{ a: "Ultra Disk", href: "/learn/glossary/azure-ultra-disk" }],
               "Its provisioned capacity (4\u00a0GiB to 64\u00a0TiB), plus the IOPS and throughput you set",
               "None",
             ],
@@ -281,6 +292,14 @@ export const article: Article = {
               ],
             },
             "Use your region’s price on the day you plan, because Azure disk pricing differs by region and changes over time.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "Our ",
+            { a: "Azure disk pricing calculator", href: "/ebs-and-azure-disk-pricing" },
+            " shows one disk’s monthly list price and what its empty space costs.",
           ],
         },
         {

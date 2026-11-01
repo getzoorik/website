@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -50,7 +50,10 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: [
             "The Vertical Pod Autoscaler on AKS is preconfigured in AKS Automatic and optional in AKS Standard. The AKS docs don’t recommend using it with the ",
-            { a: "Horizontal Pod Autoscaler (HPA)", href: "/learn/vpa-vs-hpa" },
+            {
+              a: "Horizontal Pod Autoscaler (HPA)",
+              href: "/learn/glossary/horizontal-pod-autoscaler",
+            },
             ", which scales on the same CPU and memory use.",
           ],
         },

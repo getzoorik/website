@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -29,7 +29,7 @@ export const term: GlossaryTerm = {
       kind: "ul",
       items: [
         "It must share its instance’s Availability Zone.",
-        "Its “Delete on termination” setting decides if it’s deleted or kept when the instance is terminated.",
+        "Its “Delete on termination” setting decides if it’s deleted with the instance.",
       ],
     },
   ],
@@ -40,12 +40,9 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "Say your database runs on a 500\u00a0GiB data volume of type gp3, a General Purpose SSD (solid-state drive). The database writes 200\u00a0GiB.",
+          text: "Say your database runs on a 500\u00a0GiB gp3 data volume, a General Purpose SSD (solid-state drive). The database writes 200\u00a0GiB.",
         },
-        {
-          kind: "p",
-          text: "AWS charges for all 500\u00a0GiB. With EBS, you pay for what you provision, not what you write.",
-        },
+        { kind: "p", text: "AWS charges for all 500\u00a0GiB, not the 200\u00a0GiB written." },
         { kind: "svg", figure: figure1 },
       ],
     },
@@ -54,16 +51,25 @@ export const term: GlossaryTerm = {
       title: "Why it matters for your cloud cost",
       blocks: [
         {
+          kind: "p",
+          text: [
+            "EBS charges for each provisioned GB, every month, until you delete the volume. Our ",
+            { a: "EBS pricing calculator", href: "/ebs-and-azure-disk-pricing" },
+            " gives a volume’s monthly list price. To see how much of it holds data, ",
+            { a: "check EBS volume usage", href: "/learn/check-ebs-volume-usage" },
+            " inside the instance.",
+          ],
+        },
+        {
           kind: "ul",
           items: [
-            "EBS charges for each provisioned GB, every month, until you delete the volume.",
             "A volume kept after its instance ends is still charged.",
             "You can grow a volume in place, then extend its file system.",
             "AWS says “You can’t decrease the volume size.” So you keep paying for an old peak’s size.",
             [
               "To ",
               { a: "shrink an EBS volume", href: "/learn/shrink-ebs-volume" },
-              ", you copy the data to a new, smaller one with a tool like rsync or robocopy.",
+              ", you copy the data to a new, smaller one.",
             ],
           ],
         },
@@ -88,13 +94,13 @@ export const term: GlossaryTerm = {
   related: [
     {
       title: "Block storage",
-      line: "The wider type an EBS volume belongs to.",
+      line: "The storage type it belongs to.",
       href: "/learn/glossary/block-storage",
     },
     { title: "IOPS", line: "Input/output operations per second.", href: "/learn/glossary/iops" },
     {
       title: "Thin provisioning",
-      line: "Storage that takes space only as you write, not up front.",
+      line: "Space taken only as you write data.",
       href: "/learn/glossary/thin-provisioning",
     },
     {

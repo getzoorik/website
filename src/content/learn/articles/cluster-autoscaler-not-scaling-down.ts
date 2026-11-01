@@ -13,11 +13,18 @@ export const article: Article = {
   hub: "Kubernetes",
   topic: "Kubernetes autoscaling",
   published: "2026-10-21",
-  updated: "2026-10-21",
+  updated: "2026-11-01",
   author: "saurav",
   cover: "/learn-covers/zoorik-learn-cluster-autoscaler-not-scaling-down-1200x630.webp",
-  short:
-    "When the Cluster Autoscaler is not scaling down, each node it keeps misses one of its conditions. A node’s CPU and memory requests (not use) must each stay under the default 50% of allocatable, and every pod on it must be able to move. A PodDisruptionBudget that allows no disruption, a kube-system pod without one, a pod no controller manages, or a pod marked safe-to-evict “false” can hold its node. So can node pool minimums and the 10-minute timers.",
+  coverAlt:
+    "Cluster Autoscaler not scaling down: requests reach above the scale-down line while real use stays low",
+  short: [
+    "When the Cluster Autoscaler is not scaling down, either a node’s requests are too high or something holds it. CPU and memory requests (not use) must each stay under the default 50% of allocatable. A ",
+    { a: "PodDisruptionBudget", href: "/learn/glossary/pod-disruption-budget" },
+    " allowing no disruption, a kube-system pod without one, an unmanaged or safe-to-evict “false” pod, ",
+    { a: "node pool", href: "/learn/glossary/node-pool" },
+    " minimums and 10-minute timers can hold it.",
+  ],
   sections: [
     {
       id: "why-an-underused-node-still-isnt-removed",
@@ -48,7 +55,14 @@ export const article: Article = {
           items: [
             [
               { b: "Requests under half:" },
-              " its pods’ CPU and memory requests each add up to less than 50% of its allocatable, counting DaemonSet pods and mirror pods (static pods run from a manifest). That 50% is the Cluster Autoscaler’s scale-down utilization threshold, 0.5 by default.",
+              " its pods’ CPU and memory requests each add up to less than 50% of its allocatable, counting ",
+              { a: "DaemonSet", href: "/learn/glossary/daemonset" },
+              " pods and mirror pods (static pods run from a manifest). That 50% is the Cluster Autoscaler’s ",
+              {
+                a: "scale-down utilization threshold",
+                href: "/learn/glossary/kubernetes-cluster-utilization",
+              },
+              ", 0.5 by default.",
             ],
             [
               { b: "Pods that can move:" },
@@ -211,7 +225,14 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Fix: add a PDB for each kube-system workload that can safely move, as the FAQ advises. It warns that restarting Metrics Server loses metrics for more than a minute, and the Horizontal Pod Autoscaler (HPA) relies on them, so add a PDB there only if you accept that.",
+          text: [
+            "Fix: add a PDB for each kube-system workload that can safely move, as the FAQ advises. It warns that restarting Metrics Server loses metrics for more than a minute, and the ",
+            {
+              a: "Horizontal Pod Autoscaler (HPA)",
+              href: "/learn/glossary/horizontal-pod-autoscaler",
+            },
+            " relies on them, so add a PDB there only if you accept that.",
+          ],
         },
         {
           kind: "code",
@@ -471,6 +492,16 @@ export const article: Article = {
         {
           kind: "p",
           text: [
+            {
+              a: "Coral works with the Cluster Autoscaler",
+              href: "/coral-works-with-cluster-autoscaler",
+            },
+            " covers the setup.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
             "In Coral, Node list → “What’s holding them” names each ",
             { a: "held node", href: "/coral-guide#nodes-held" },
             " with its reason and fix.",
@@ -483,11 +514,8 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "On our own AKS development cluster, node optimization removed one 4-CPU worker: $147.46 a month of the $213.89 monthly saving in ",
-            {
-              a: "How we reduced our own cluster’s machine bill by 58%",
-              href: "/coral-value-lab",
-            },
+            "On our own AKS development cluster, node optimization removed one 4-CPU worker. That was $147.46 a month of the $213.89 monthly saving in ",
+            { a: "How we reduced AKS cluster costs by 58%", href: "/coral-value-lab" },
             ".",
           ],
         },
@@ -498,7 +526,7 @@ export const article: Article = {
     product: "coral",
     text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and drains spare nodes so your autoscaler can remove them. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
-      { label: "Kubernetes cost optimization with Coral", href: "/coral" },
+      { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Estimate your saving", href: "/assessment?p=coral" },
     ],
   },

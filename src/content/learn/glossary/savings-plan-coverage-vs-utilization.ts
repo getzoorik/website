@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -81,8 +81,8 @@ export const term: GlossaryTerm = {
             "Unused commitment is still a charge. The FinOps toolkit splits commitment cost into used and unused.",
             "Utilization falls when eligible usage drops below the hourly commitment, for example after you remove spare nodes.",
             [
-              "So ",
-              { a: "reduce your usage first", href: "/cloud-cost-optimization" },
+              "So reduce usage with ",
+              { a: "cloud cost optimization", href: "/cloud-cost-optimization" },
               ", then commit to what’s left.",
             ],
             [
@@ -117,7 +117,10 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/effective-savings-rate",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
+  next: {
+    title: "Cloud cost optimization: how to reduce cloud costs",
+    href: "/cloud-cost-optimization",
+  },
   sources: [
     {
       publisher: "AWS",

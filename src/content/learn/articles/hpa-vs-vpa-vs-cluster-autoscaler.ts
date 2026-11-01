@@ -14,11 +14,18 @@ export const article: Article = {
   topic: "Kubernetes autoscaling",
   versus: ["HPA · VPA", "Cluster Autoscaler"],
   published: "2026-10-22",
-  updated: "2026-10-22",
+  updated: "2026-11-01",
   author: "saurav",
   cover: "/learn-covers/zoorik-learn-hpa-vs-vpa-vs-cluster-autoscaler-1200x630.webp",
-  short:
-    "HPA vs VPA vs Cluster Autoscaler comes down to what each one changes. The Horizontal Pod Autoscaler (HPA) sets how many pods run, and the Vertical Pod Autoscaler (VPA) sets how much CPU and memory each pod requests. Nodes are the Cluster Autoscaler’s job: it adds them for pods that can’t be scheduled, and removes underused ones whose pods fit elsewhere. Karpenter, and node auto-provisioning (NAP) on AKS, do that node job with machines chosen to fit the pods.",
+  coverAlt:
+    "HPA vs VPA vs Cluster Autoscaler: the HPA adds pods, the VPA makes a pod bigger, the Cluster Autoscaler adds a node",
+  short: [
+    "HPA vs VPA vs Cluster Autoscaler comes down to what each changes: pod count, pod size or node count. The ",
+    { a: "Horizontal Pod Autoscaler (HPA)", href: "/learn/glossary/horizontal-pod-autoscaler" },
+    " sets how many pods run, the ",
+    { a: "Vertical Pod Autoscaler (VPA)", href: "/learn/glossary/vertical-pod-autoscaler" },
+    " what each requests, and the Cluster Autoscaler the nodes. Karpenter and AKS node auto-provisioning (NAP) do the node job, with machines chosen to fit the pods.",
+  ],
   sections: [
     {
       id: "what-each-autoscaler-does",
@@ -36,10 +43,10 @@ export const article: Article = {
           kind: "table",
           columns: [
             { label: "", width: "14%" },
-            { label: "HPA", width: "19%" },
+            { label: "HPA", width: "18%" },
             { label: "VPA", width: "22%" },
-            { label: "Cluster Autoscaler", width: "23%" },
-            { label: "Karpenter and NAP", width: "22%" },
+            { label: "Cluster Autoscaler", width: "22%" },
+            { label: "Karpenter and NAP", width: "24%" },
           ],
           rows: [
             [
@@ -61,7 +68,10 @@ export const article: Article = {
               "Yes, it’s a core API, with a controller in the control plane",
               "No, it’s an add-on you install",
               "No, it’s a standalone program",
-              "No. NAP runs Karpenter for you on AKS, and on EKS you install it or use EKS Auto Mode",
+              [
+                "No. NAP runs Karpenter for you on AKS, and on EKS you install it or use ",
+                { a: "EKS Auto Mode", href: "/learn/glossary/eks-auto-mode" },
+              ],
             ],
             [
               "Gives capacity back",
@@ -145,7 +155,9 @@ export const article: Article = {
             { a: "VPA vs HPA", href: "/learn/vpa-vs-hpa" },
             " walks through that loop on CPU, and ",
             { a: "KEDA vs HPA vs VPA", href: "/learn/keda-vs-hpa-vs-vpa" },
-            " covers event-driven scaling.",
+            " covers event-driven scaling. ",
+            { a: "KEDA vs Karpenter", href: "/learn/keda-vs-karpenter" },
+            " shows how event-driven pod scaling meets node scaling.",
           ],
         },
       ],
@@ -203,7 +215,10 @@ export const article: Article = {
             ],
             [
               "pods annotated ",
-              { code: 'cluster-autoscaler.kubernetes.io/safe-to-evict: "false"' },
+              {
+                a: { code: 'cluster-autoscaler.kubernetes.io/safe-to-evict: "false"' },
+                href: "/learn/safe-to-evict-do-not-disrupt",
+              },
             ],
           ],
         },
@@ -395,12 +410,13 @@ export const article: Article = {
         },
         {
           kind: "p",
+          text: "On our own AKS development cluster, Coral removed one of two 4-CPU workers, then rebalanced the remaining worker onto a cheaper machine of the same size. Eight days after we connected it, the cluster cost $154.76 a month instead of $368.65.",
+        },
+        {
+          kind: "p",
           text: [
-            "On our own AKS development cluster, Coral removed one of two 4-CPU workers, then rebalanced the remaining worker onto a cheaper machine of the same size. Eight days after we connected it, the cluster cost $154.76 a month instead of $368.65. The details are in ",
-            {
-              a: "How we reduced our own cluster’s machine bill by 58%",
-              href: "/coral-value-lab",
-            },
+            "The details are in ",
+            { a: "How we reduced AKS cluster costs by 58%", href: "/coral-value-lab" },
             ", and ",
             { a: "Coral’s FAQ", href: "/coral-faq#how-does-coral-interact-with-cluster" },
             " answers how it works with each node autoscaler.",
@@ -413,7 +429,7 @@ export const article: Article = {
     product: "coral",
     text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and drains spare nodes so your autoscaler can remove them. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
-      { label: "Kubernetes cost optimization with Coral", href: "/coral" },
+      { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Estimate your saving", href: "/assessment?p=coral" },
     ],
   },

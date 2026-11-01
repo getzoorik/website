@@ -4,28 +4,28 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/finops/1";
 export const term: GlossaryTerm = {
   slug: "finops",
   term: "FinOps",
-  title: "What is FinOps?",
-  meta: "FinOps is how finance, engineering and business teams share ownership of cloud spend. Learn its three phases, a Microsoft example and how it works in Azure.",
-  h1: "What is FinOps?",
-  card: "FinOps is a practice where finance, engineering and business teams share ownership of cloud spend.",
+  title: "What is FinOps? Cloud FinOps explained",
+  meta: "Cloud FinOps is how finance, engineering and business teams share ownership of cloud spend. Learn its three phases and how it works on Azure and AWS.",
+  h1: "What is FinOps? Cloud FinOps explained",
+  card: "FinOps, or cloud FinOps, is a practice where finance, engineering and business teams share ownership of cloud spend.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
-      text: "FinOps is a practice where finance, engineering and business teams share ownership of cloud spend. The FinOps meaning is in its name: finance plus DevOps. Microsoft says its goal isn’t to save money, but to get more business value from the cloud.",
+      text: "FinOps, or cloud FinOps, is a practice where finance, engineering and business teams share ownership of cloud spend. The FinOps meaning is in its name: finance plus DevOps. Microsoft says its goal isn’t to save money, but to get more business value from the cloud.",
     },
     {
       kind: "p",
-      text: "In simple terms, each team owns its cloud cost. The FinOps Framework, from the FinOps Foundation, splits the work into three phases that repeat:",
+      text: "In simple terms, each team owns its cloud cost. The FinOps Foundation’s FinOps Framework splits the work into three phases that repeat:",
     },
     {
       kind: "ul",
       items: [
         "Inform shows each team what it spends.",
-        "Optimize makes cloud use more efficient, for example by stopping idle resources.",
+        "Optimize makes cloud use more efficient.",
         "Operate tracks goals and sets rules.",
       ],
     },
@@ -45,18 +45,18 @@ export const term: GlossaryTerm = {
           items: [
             "Tag each resource with its environment, such as development.",
             "Stop each developer VM off-peak with a script if it wasn’t used in 2\u00a0hours.",
-            "Expect storage charges to continue while it’s stopped.",
+            "Expect storage charges while it’s stopped.",
           ],
         },
       ],
     },
     {
-      id: "finops-in-azure-and-aws",
-      title: "FinOps in Azure and AWS",
+      id: "cloud-finops-in-azure-and-aws",
+      title: "Cloud FinOps in Azure and AWS",
       blocks: [
         {
           kind: "p",
-          text: "Microsoft bases its Azure FinOps guidance largely on the FinOps Framework. To track spend, it points you to Microsoft Cost Management. AWS has a similar framework, Cloud Financial Management, with four pillars: see, save, plan and run.",
+          text: "Microsoft bases its Azure FinOps guidance largely on the FinOps Framework. For tracking spend, it points to Microsoft Cost Management. AWS has a similar framework, Cloud Financial Management, with four pillars: see, save, plan and run.",
         },
       ],
     },
@@ -70,7 +70,12 @@ export const term: GlossaryTerm = {
             [
               "Reports alone don’t ",
               { a: "reduce cloud costs", href: "/cloud-cost-optimization" },
-              ". Your cloud cost goes down when you change what runs, or the rate you pay for it.",
+              ". Cost falls when you change what runs, or the rate you pay.",
+            ],
+            [
+              "Our library lists ",
+              { a: "FinOps tools", href: "/cloud-cost-optimization-library" },
+              " that make or recommend those changes.",
             ],
             [
               { a: "Coral", href: "/coral" },
@@ -97,7 +102,7 @@ export const term: GlossaryTerm = {
     { title: "Showback", line: "Shows each team its costs.", href: "/learn/glossary/showback" },
     {
       title: "Cloud unit economics",
-      line: "The cloud cost of one sale or one user.",
+      line: "The cloud cost of one sale or user.",
       href: "/learn/glossary/cloud-unit-economics",
     },
     {
@@ -106,7 +111,10 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/cloud-chargeback",
     },
   ],
-  next: { title: "How to reduce cloud costs", href: "/cloud-cost-optimization" },
+  next: {
+    title: "Cloud cost optimization: how to reduce cloud costs",
+    href: "/cloud-cost-optimization",
+  },
   sources: [
     {
       publisher: "Microsoft Learn",

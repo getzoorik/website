@@ -11,11 +11,11 @@ export const term: GlossaryTerm = {
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
-      text: "EKS Auto Mode is a mode of Amazon Elastic Kubernetes Service (EKS), where AWS runs your nodes, not just the control plane. It picks, patches and removes the EC2 instances your pods run on, and replaces each within 21\u00a0days.",
+      text: "EKS Auto Mode is a mode of Amazon Elastic Kubernetes Service (EKS), where AWS runs your nodes, not just the control plane. It picks, patches and removes your EC2 instances, and replaces each within 21\u00a0days.",
     },
     {
       kind: "ul",
@@ -39,8 +39,11 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: [
             "Say a pod has the annotation ",
-            { code: "karpenter.sh/do-not-disrupt" },
-            " set to true. Auto Mode won’t consolidate its node while that pod runs, even when the node is mostly idle, so you keep paying for it.",
+            {
+              a: { code: "karpenter.sh/do-not-disrupt" },
+              href: "/learn/safe-to-evict-do-not-disrupt",
+            },
+            " set to true. Auto Mode won’t consolidate its node while that pod runs, so you keep paying for it, idle or not.",
           ],
         },
       ],
@@ -51,7 +54,14 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "In a managed node group, EKS runs your EC2 instances at no extra charge. But you pick the instance types and roll out patched node images.",
+          text: [
+            "In a managed node group, EKS runs your EC2 instances at no extra charge. But you pick the instance types and roll out patched node images. To switch them later, see ",
+            {
+              a: "how to change an EKS node group instance type",
+              href: "/learn/change-eks-node-group-instance-type",
+            },
+            ".",
+          ],
         },
         {
           kind: "p",
@@ -102,14 +112,14 @@ export const term: GlossaryTerm = {
   ],
   related: [
     {
-      title: "Kubernetes resource requests",
+      title: "Resource requests",
       line: "What Auto Mode sizes nodes to.",
       href: "/learn/glossary/kubernetes-resource-requests",
     },
     { title: "Node pool", line: "Covers managed node groups.", href: "/learn/glossary/node-pool" },
     {
       title: "Savings plan",
-      line: "It can reduce the EC2 price, but not the Auto Mode fee.",
+      line: "Reduces the EC2 price, not the fee.",
       href: "/learn/glossary/savings-plan",
     },
     {

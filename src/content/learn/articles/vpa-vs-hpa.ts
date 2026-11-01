@@ -4,7 +4,7 @@ import { figure as figure2 } from "@/features/learn/figures/vpa-vs-hpa/2";
 
 export const article: Article = {
   slug: "vpa-vs-hpa",
-  title: "VPA vs HPA",
+  title: "HPA vs VPA in Kubernetes: when to use which",
   meta: "VPA vs HPA: the VPA sets how much CPU and memory each pod requests, the HPA sets how many pods run. When to use each, why they clash, and what to do first.",
   h1: "VPA vs HPA: when to use which, and why to rebalance first",
   deck: "What each autoscaler changes, when to use which, why they clash on CPU, and the order that works.",
@@ -14,11 +14,17 @@ export const article: Article = {
   topic: "Kubernetes autoscaling",
   versus: ["VPA", "HPA"],
   published: "2026-10-22",
-  updated: "2026-10-22",
+  updated: "2026-11-01",
   author: "sonia",
   cover: "/learn-covers/zoorik-learn-vpa-vs-hpa-1200x630.webp",
-  short:
-    "The Vertical Pod Autoscaler (VPA) changes how much CPU and memory each pod requests, and the Horizontal Pod Autoscaler (HPA) changes how many pods run. VPA vs HPA is pod size against pod count. Use the HPA for load that rises and falls, and the VPA, or your own sizing, to keep requests near real use. Don’t run both on the same CPU or memory metric, because the HPA measures load against the request the VPA keeps moving.",
+  coverAlt: "VPA vs HPA: the VPA sets pod size, the HPA sets pod count",
+  short: [
+    "VPA vs HPA is pod size against pod count. The ",
+    { a: "Vertical Pod Autoscaler (VPA)", href: "/learn/glossary/vertical-pod-autoscaler" },
+    " keeps each pod’s requests near real use, and the ",
+    { a: "Horizontal Pod Autoscaler (HPA)", href: "/learn/glossary/horizontal-pod-autoscaler" },
+    " scales the pod count with load. Don’t run both on one CPU or memory metric: the HPA measures load against the request the VPA keeps moving.",
+  ],
   sections: [
     {
       id: "when-to-use-vpa-vs-hpa",
@@ -134,7 +140,9 @@ export const article: Article = {
             ],
             [
               { b: "Updater." },
-              " It evicts or resizes running pods whose requests are far from that target, within their PodDisruptionBudgets.",
+              " It evicts or resizes running pods whose requests are far from that target, within their ",
+              { a: "PodDisruptionBudgets", href: "/learn/glossary/pod-disruption-budget" },
+              ".",
             ],
             [
               { b: "Admission controller." },
@@ -142,6 +150,11 @@ export const article: Article = {
             ],
           ],
         },
+        {
+          kind: "p",
+          text: "Microsoft’s AKS documentation adds two limits. The recommender keeps at most 8\u00a0days of history. JVM-based workloads aren’t supported, because the VPA has limited visibility into their real memory use.",
+        },
+        { kind: "h3", id: "vpa-update-modes", title: "VPA update modes" },
         {
           kind: "p",
           text: ["The ", { code: "updateMode" }, " field decides what happens to running pods:"],
@@ -189,10 +202,6 @@ export const article: Article = {
             { code: "InPlace" },
             " feature gate.",
           ],
-        },
-        {
-          kind: "p",
-          text: "Microsoft’s AKS documentation adds two limits. The recommender keeps at most 8\u00a0days of history, and the VPA doesn’t support JVM-based workloads, because it has limited visibility into their real memory use.",
         },
         { kind: "h3", id: "what-is-the-hpa", title: "What is the HPA?" },
         {
@@ -248,7 +257,9 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Limits", href: "/learn/kubernetes-pod-right-sizing" },
-            " are a separate control: the kernel throttles a container at its CPU limit and may ",
+            " are a separate control: the kernel ",
+            { a: "throttles", href: "/learn/glossary/kubernetes-cpu-throttling" },
+            " a container at its CPU limit and may ",
             { a: "OOM-kill", href: "/learn/oomkilled-exit-code-137" },
             " one that goes past its memory limit.",
           ],
@@ -257,11 +268,11 @@ export const article: Article = {
     },
     {
       id: "why-they-clash-on-cpu",
-      title: "Why they clash on CPU, and how to run both",
+      title: "Can you use HPA and VPA together?",
       blocks: [
         {
           kind: "p",
-          text: "Run both on the same metric and they feed each other: the replica count follows the last request change more than real load. To the HPA, each request change from the VPA looks like a change in load.",
+          text: "Yes, if they don’t both act on CPU or on memory. Run both on the same metric and they feed each other: the replica count follows the last request change more than real load. To the HPA, each request change from the VPA looks like a change in load.",
         },
         {
           kind: "callout",
@@ -271,7 +282,12 @@ export const article: Article = {
         { kind: "svg", figure: figure2 },
         {
           kind: "p",
-          text: "On memory, the loop is the same. That’s why the VPA project says not to pair the VPA with an HPA on the same resource metric (CPU or memory). Microsoft’s AKS documentation doesn’t recommend that pair either. The VPA project allows both on different signals, as in the first two patterns below, and the third keeps the VPA out of running pods:",
+          text: "On memory, the loop is the same. That’s why the VPA project says not to pair the VPA with an HPA on the same resource metric (CPU or memory). Microsoft’s AKS documentation doesn’t recommend that pair either.",
+        },
+        { kind: "h3", id: "how-to-run-both", title: "How to run both" },
+        {
+          kind: "p",
+          text: "The VPA project allows both on different signals, as in the first two patterns below, and the third keeps the VPA out of running pods:",
         },
         {
           kind: "ol",
@@ -320,7 +336,9 @@ export const article: Article = {
           items: [
             [
               { b: "Size requests to measured use." },
-              " Take a high percentile of CPU over several days plus headroom, and the peak of memory. Leave limits alone until you know why they were set.",
+              " Take a high percentile of CPU over several days plus ",
+              { a: "headroom", href: "/learn/glossary/kubernetes-headroom" },
+              ", and the peak of memory. Leave limits alone until you know why they were set.",
             ],
             [
               { b: "Then set the HPA target." },
@@ -339,7 +357,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Where you pay for nodes, smaller requests don’t reduce the bill on their own: it goes down when a node is removed.",
+          text: "Where you pay for nodes, smaller requests don’t reduce your cloud cost on their own: it goes down when a node is removed.",
         },
       ],
     },
@@ -395,8 +413,8 @@ export const article: Article = {
           kind: "p",
           text: [
             "On our own AKS development cluster, Coral removed a spare worker, rebalanced the requests of 14 apps and swapped the remaining worker for a cheaper machine of the same size. Eight days after we connected it, ",
-            { a: "the machine bill", href: "/coral-value-lab" },
-            " was $154.76 a month instead of $368.65, 58% less.",
+            { a: "the cluster’s machines cost", href: "/coral-value-lab" },
+            " $154.76 a month instead of $368.65, 58% less.",
           ],
         },
       ],
@@ -406,7 +424,7 @@ export const article: Article = {
     product: "coral",
     text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and drains spare nodes so your autoscaler can remove them. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
-      { label: "Kubernetes cost optimization with Coral", href: "/coral" },
+      { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Estimate your saving", href: "/assessment?p=coral" },
     ],
   },
@@ -460,6 +478,11 @@ export const article: Article = {
       title: "KEDA vs HPA vs VPA: where event-driven scaling fits",
       where: "Learn",
       href: "/learn/keda-vs-hpa-vs-vpa",
+    },
+    {
+      title: "KEDA vs Karpenter: pods, nodes and the requests in between",
+      where: "Learn",
+      href: "/learn/keda-vs-karpenter",
     },
     { title: "Working with HPA", where: "Coral FAQ", href: "/coral-faq#working-with-hpa" },
     { title: "HPAs and VPAs", where: "Coral product guide", href: "/coral-guide#hpas-and-vpas" },

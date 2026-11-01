@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 
 import { render } from "@testing-library/react";
 import type { Metadata } from "next";
@@ -690,7 +690,7 @@ describe("/learn/poor-architecture-cloud-bill, against its draft", () => {
     const figures = [...(await main(slug)).querySelectorAll(".ar-frame figure svg[role='img']")];
     expect(figures.map((svg) => text(svg.querySelector("title")))).toEqual([
       "Apps that share nodes need fewer machines for the same use",
-      "Sharing nodes reduced the client’s compute bill by 44%",
+      "Sharing nodes reduced the client’s compute cost by 44%",
     ]);
   });
 
@@ -704,8 +704,12 @@ describe("/learn/poor-architecture-cloud-bill, against its draft", () => {
         "Azure managed disks and Amazon EBS volumes can grow but can’t shrink in place",
         "/learn/shrink-azure-managed-disk",
       ],
+      ["cost per request", "/learn/glossary/cloud-unit-economics"],
+      ["tagging", "/learn/glossary/cloud-tagging-strategy"],
+      ["on-demand", "/learn/glossary/on-demand-instance"],
+      ["FinOps", "/learn/glossary/finops"],
       ["Coral", "/coral"],
-      ["the machine bill", "/coral-value-lab"],
+      ["the cluster’s machines cost", "/coral-value-lab"],
     ]);
   });
 
@@ -717,15 +721,27 @@ describe("/learn/poor-architecture-cloud-bill, against its draft", () => {
 
 describe("an article's cover", () => {
   it("is named by its alt text where the article gives one (W31), and read as decoration where it gives none", () => {
-    const article = learnArticles.find((entry) => entry.cover && entry.coverAlt === undefined)!;
+    const article = learnArticles.find((entry) => entry.slug === "vpa-vs-hpa")!;
     pathname.current = articleRoute(article);
     const altOf = (shown: Article) =>
       render(<ArticlePage article={shown} />)
         .container.querySelector("figure.ar-cover img")!
         .getAttribute("alt");
-    expect(altOf(article)).toBe("");
-    expect(
-      altOf({ ...article, coverAlt: "VPA vs HPA: the VPA sets pod size, the HPA sets pod count" }),
-    ).toBe("VPA vs HPA: the VPA sets pod size, the HPA sets pod count");
+    expect(altOf(article)).toBe("VPA vs HPA: the VPA sets pod size, the HPA sets pod count");
+    const bare: Article = { ...article };
+    delete (bare as { coverAlt?: string }).coverAlt;
+    expect(altOf(bare)).toBe("");
+  });
+
+  it("ships with every article from the 1 Nov release: its cover file, named by its alt text", () => {
+    for (const article of learnArticles) {
+      expect(article.cover, article.slug).toBe(
+        `/learn-covers/zoorik-learn-${article.slug}-1200x630.webp`,
+      );
+      expect(existsSync(`public${article.cover}`), article.slug).toBe(true);
+      expect(article.coverAlt?.length, article.slug).toBeGreaterThan(0);
+      expect(article.coverAlt!.length, article.slug).toBeLessThanOrEqual(125);
+      expect(article.coverAlt, article.slug).not.toMatch(/\.$|^image of/i);
+    }
   });
 });

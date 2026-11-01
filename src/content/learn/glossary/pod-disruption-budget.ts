@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "kubernetes",
   product: "coral",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -75,18 +75,26 @@ export const term: GlossaryTerm = {
           items: [
             "The Cluster Autoscaler, which adds and removes nodes, checks PDBs before removing one. If any eviction fails, it keeps the node.",
             [
-              "So ",
+              "A PDB that allows no disruption, such as ",
               { code: "maxUnavailable: 0" },
               " or ",
               { code: "minAvailable: 100%" },
-              " blocks ",
-              { code: "kubectl drain" },
-              " and the Cluster Autoscaler from evicting its pods. You keep paying for the node.",
+              ", is one reason for ",
+              {
+                a: "Cluster Autoscaler not scaling down",
+                href: "/learn/cluster-autoscaler-not-scaling-down",
+              },
+              ". You keep paying for the node.",
             ],
             [
-              { a: "Coral", href: "/coral" },
-              " evicts pods only within each pod’s PDB. A rebalance never goes past a PDB, and a node it can’t empty within 45\u00a0minutes is kept.",
+              "The ",
+              {
+                a: "safe-to-evict and do-not-disrupt annotations",
+                href: "/learn/safe-to-evict-do-not-disrupt",
+              },
+              " can also keep a node running.",
             ],
+            [{ a: "Coral", href: "/coral" }, " never evicts a pod past its PDB."],
           ],
         },
         {

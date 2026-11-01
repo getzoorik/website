@@ -13,22 +13,36 @@ export const article: Article = {
   hub: "Block storage",
   topic: "Azure block storage",
   published: "2026-10-21",
-  updated: "2026-10-21",
+  updated: "2026-11-01",
   author: "sonu",
   cover: "/learn-covers/zoorik-learn-find-unattached-disks-azure-1200x630.webp",
+  coverAlt:
+    "Unattached Azure disks: attached disks sit under their VMs, and an unattached disk has no VM but is still charged",
   short: [
     "To find unattached disks in Azure, query Azure Resource Graph for managed disks whose disk state is ",
     { code: "Unattached" },
-    ". One query reads every subscription you can access, from the portal, the Azure CLI or PowerShell. Almost all of those disks still bill for their provisioned size, so price them, check who owns them, take an incremental snapshot of each, and delete the ones nobody needs, since a deleted disk can’t be recovered.",
+    ". One query reads every subscription you can access, from the portal, the Azure CLI or PowerShell. Almost all those disks are still charged for their provisioned size, so price them, check owners, take an ",
+    { a: "incremental snapshot", href: "/learn/glossary/disk-snapshot" },
+    ", then delete what nobody needs.",
   ],
   sections: [
     {
       id: "why-an-unattached-disk-stays-on-the",
-      title: "Why an unattached disk stays on the bill",
+      title: "Why an unattached disk keeps costing you",
       blocks: [
         {
           kind: "p",
-          text: "Picture a VM someone deleted last quarter. Its 1\u00a0TiB Premium SSD data disk wasn’t set to delete with it, so the disk still sits in its resource group. Nothing reads it now. At that size a Premium SSD is a P30 by default, the performance tier that sets its price, and it bills at the P30 tier with or without a VM until someone deletes it.",
+          text: "Picture a VM someone deleted last quarter. Its 1\u00a0TiB Premium SSD data disk wasn’t set to delete with it, so the disk still sits in its resource group. Nothing reads it now.",
+        },
+        {
+          kind: "p",
+          text: [
+            "At that size a ",
+            { a: "Premium SSD", href: "/learn/glossary/azure-premium-ssd" },
+            " is a P30 by default, one of the fixed ",
+            { a: "Azure disk sizes", href: "/learn/glossary/azure-disk-sizes" },
+            ". It is charged at the P30 tier, with or without a VM, until someone deletes it.",
+          ],
         },
         {
           kind: "p",
@@ -58,20 +72,20 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "One kind costs nothing: Microsoft’s billing guide says an empty disk that hasn’t been used incurs no storage charges, since its storage is allocated only on first use, such as its first attach or upload.",
+          text: "One kind costs nothing. Microsoft’s guide to disk charges says an empty disk that hasn’t been used incurs no storage charges. Its storage is allocated only on first use, such as its first attach or upload.",
         },
       ],
     },
     {
       id: "what-azure-disk-state-unattached-means-and",
-      title: "What Azure disk state Unattached means, and which states still bill",
+      title: "What Azure disk state Unattached means, and which states you still pay for",
       blocks: [
         {
           kind: "p",
           text: [
             "Every managed disk carries a ",
             { code: "diskState" },
-            " property, and the table gives each value in the API’s words. Attached, Reserved, Frozen and Unattached disks all bill on what was provisioned, apart from the empty, never-used kind above.",
+            " property, and the table gives each value in the API’s words. Attached, Reserved, Frozen and Unattached disks are all charged for what was provisioned, apart from the empty, never-used kind above.",
           ],
         },
         {
@@ -102,7 +116,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Reserved disks won’t appear in an unattached list, yet they bill like any other disk, so a VM left deallocated for months is worth its own review.",
+          text: "Reserved disks won’t appear in an unattached list, yet they’re charged like any other disk. A VM left deallocated for months is worth its own review.",
         },
         { kind: "svg", figure: figure1 },
       ],
@@ -137,7 +151,7 @@ export const article: Article = {
             { code: "createOption" },
             " set to ",
             { code: "Empty" },
-            " and a blank date may never have been attached, which would make it the unbilled kind, so confirm it in Cost analysis before you count it as free. To keep only disks detached more than 30\u00a0days ago, add ",
+            " and a blank date may never have been attached. That would make it the kind that costs nothing, so confirm it in Cost analysis before you count it as free. To keep only disks detached more than 30\u00a0days ago, add ",
             { code: "| where unattachedSince < ago(30d)" },
             " as the last line, and review the blank-date rows separately, since that filter drops them.",
           ],
@@ -277,22 +291,30 @@ export const article: Article = {
           text: "Multiply each row’s count by that tier’s monthly price in that region on the managed disks pricing page. Prices differ by region and change, so check them on the day.",
         },
         {
+          kind: "p",
+          text: [
+            "For one disk’s monthly list price, use our ",
+            { a: "Azure disk pricing calculator", href: "/ebs-and-azure-disk-pricing" },
+            ".",
+          ],
+        },
+        {
           kind: "ul",
           items: [
-            [{ b: "Premium SSD." }, " It bills at its performance tier."],
+            [{ b: "Premium SSD." }, " It’s charged at its performance tier."],
             [
               { b: "Standard SSD and Standard HDD." },
-              " They bill at the tier their provisioned size falls in. The billing guide’s example is a Standard SSD grown from 1\u00a0TiB to 3\u00a0TiB, which bills at E50.",
+              " They’re charged at the tier their provisioned size falls in. In Microsoft’s guide to disk charges, a Standard SSD grown from 1\u00a0TiB to 3\u00a0TiB is charged at E50.",
             ],
             [
               { b: "Ultra Disk and Premium SSD v2." },
-              " They have no tiers and bill per GiB, so price those from ",
+              " They have no tiers and are charged per GiB, so price those from ",
               { code: "sizeGiB" },
               ", plus the performance in the ",
               { code: "iops" },
               " and ",
               { code: "mbps" },
-              " columns. An Ultra Disk’s price rises with its provisioned IOPS and throughput, and a Premium SSD v2 bills for IOPS above 3,000 and throughput above 125\u00a0MB/s.",
+              " columns. An Ultra Disk’s price rises with its provisioned IOPS and throughput. A Premium SSD v2 is charged for IOPS above 3,000 and throughput above 125\u00a0MB/s.",
             ],
           ],
         },
@@ -300,7 +322,7 @@ export const article: Article = {
           kind: "callout",
           label: "Worked example",
           text: [
-            "The billing guide’s Premium SSD v2 example is 512\u00a0GiB set to 40,000\u00a0IOPS and 200\u00a0MB/s. It bills for 512\u00a0GiB, for 37,000\u00a0IOPS (40,000 minus the free 3,000) and for 75\u00a0MB/s (200 less the free 125). Detached, it bills on the same three meters. In the cost query its ",
+            "The same guide’s Premium SSD v2 example is 512\u00a0GiB set to 40,000\u00a0IOPS and 200\u00a0MB/s. It’s charged for 512\u00a0GiB, for 37,000\u00a0IOPS (40,000 minus the free 3,000) and for 75\u00a0MB/s (200 less the free 125). Detached, it’s charged on the same three meters. In the cost query its ",
             { code: "iops" },
             " reads 40000 and its ",
             { code: "mbps" },
@@ -370,10 +392,14 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
+          text: "Advisor’s recommendation spells out the routine: “Create a snapshot before deletion and confirm the data is no longer needed.” Make it incremental.",
+        },
+        {
+          kind: "p",
           text: [
-            "Advisor’s recommendation spells out the routine: “Create a snapshot before deletion and confirm the data is no longer needed.” Make it incremental. An incremental snapshot sits on Standard HDD storage whatever the disk type, bills for used size only, and is a resource of its own that stays when you delete the disk. The first incremental snapshot of a disk is a full copy, so expect it to bill for everything the disk holds, as the ",
-            { a: "snapshot cost guide", href: "/learn/azure-disk-snapshot-cost" },
-            " explains.",
+            "An incremental snapshot sits on Standard HDD storage whatever the disk type, and you pay for its used size only. It’s a resource of its own that stays when you delete the disk. As the ",
+            { a: "Azure disk snapshot cost guide", href: "/learn/azure-disk-snapshot-cost" },
+            " explains, the first incremental snapshot is a full copy, so you pay for everything the disk holds.",
           ],
         },
         { kind: "ol", items: ["Take the snapshot, in the same subscription as the disk."] },
@@ -465,14 +491,14 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "A query of disk states can’t show the rest of the space you pay for and don’t use: attached data disks on running VMs, provisioned past the data they hold. ",
+            "A query of disk states can’t show the rest of the space you pay for and don’t use. It sits on attached data disks of running VMs, provisioned past the data they hold. ",
             { a: "Amoeba", href: "/amoeba" },
             " works on that part.",
           ],
         },
         {
           kind: "p",
-          text: "Amoeba moves a VM’s data disks onto one btrfs pool, sized from the highest use of the last 7\u00a0days. The pool then grows as the data grows, and Amoeba removes disks when the data shrinks. On Linux, the systemd services that use the data mounts restart at the switch onto the pool, and again only if Amoeba retries a failed switch.",
+          text: "Amoeba moves a VM’s data disks onto one btrfs pool sized to your data. The pool then grows as the data grows, and Amoeba removes disks when the data shrinks. On Linux, the services that use the data mounts restart at the switch onto the pool, and again only if Amoeba retries a failed switch.",
         },
         { kind: "p", text: "Amoeba doesn’t leave the disks it frees behind as unattached disks:" },
         {
@@ -480,33 +506,31 @@ export const article: Article = {
           items: [
             [
               { b: "A disk a shrink empties." },
-              " The agent moves its data onto the other pool disks with ",
-              { code: "btrfs device remove" },
-              ". Amoeba then detaches the empty disk and deletes it, with no snapshot, since its data has already moved.",
+              " Amoeba first moves its data onto the other pool disks, then detaches and deletes the empty disk, with no snapshot.",
             ],
             [
               { b: "The source disks." },
-              " After the 2-hour soak, Amoeba detaches each source disk, takes an incremental snapshot of it, waits until the snapshot is complete and then deletes the disk. It deletes the snapshot 7\u00a0days after deleting the disk, and it deletes only snapshots tagged with its own move’s ID.",
+              " After the switch is checked, Amoeba detaches each source disk, takes an incremental snapshot and deletes the disk when the snapshot completes. It deletes the snapshot a few days later, and only ever deletes its own.",
             ],
             [
               { b: "Every other disk." },
-              " Amoeba works only on the data disks of running VMs, never the OS disk, so apart from its own source disks during cleanup, the disks your query found stay yours to review.",
+              " Amoeba works only on the data disks of running VMs, never the OS disk. Apart from its own source disks during cleanup, the disks your query found stay yours to review.",
             ],
           ],
         },
         {
           kind: "p",
-          text: "If you run the query while a move finishes, a source disk can show as Unattached between its detach and its deletion. During a move you pay for both sets of disks, from the moment the pool’s disks are created until the source disks are deleted after the soak.",
+          text: "If you run the query while a move finishes, a source disk can show as Unattached between its detach and its deletion. You pay for both sets of disks only while the move runs, and then for the snapshots while they’re kept.",
         },
         {
           kind: "p",
-          text: "Amoeba works on Windows and Linux VMs. On Linux, it needs systemd, kernel 5.14 or later, and btrfs loaded or loadable. The VM needs 3 free data-disk slots: 2 for the pool and 1 kept free for an urgent expand. VMs in the Red Hat family are not moved.",
+          text: "Amoeba works on Windows and Linux VMs. On Linux, the VM needs a recent kernel with btrfs, and services that keep a data mount open must run under systemd. The VM needs a few free disk slots for the pool.",
         },
         {
           kind: "p",
           text: [
-            "The rest of the disk bill is in ",
-            { a: "the guide to Azure disk costs", href: "/learn/azure-disk-cost-optimization" },
+            "For the rest of your disk cost, see ",
+            { a: "Azure disk cost optimization", href: "/learn/azure-disk-cost-optimization" },
             ".",
           ],
         },

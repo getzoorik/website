@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -44,7 +44,7 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "You can pay for more, up to 80,000\u00a0IOPS and 2,000\u00a0MiB/s. Past 3,000\u00a0IOPS, a volume needs 1\u00a0GiB per 500\u00a0IOPS.",
+          text: "You can pay for up to 80,000\u00a0IOPS and 2,000\u00a0MiB/s. Past 3,000\u00a0IOPS, a volume needs 1\u00a0GiB per 500\u00a0IOPS.",
         },
         {
           kind: "p",
@@ -76,11 +76,19 @@ export const term: GlossaryTerm = {
       title: "Why it matters for your cloud cost",
       blocks: [
         {
+          kind: "p",
+          text: [
+            "gp3 storage in AWS is priced per GB you provision each month, used or not. Our ",
+            { a: "EBS pricing calculator", href: "/ebs-and-azure-disk-pricing" },
+            " gives a volume’s monthly list price. To see how much of a gp3\u00a0volume holds data, ",
+            { a: "check EBS volume usage", href: "/learn/check-ebs-volume-usage" },
+            ".",
+          ],
+        },
+        {
           kind: "ul",
           items: [
-            "gp3 storage in AWS is priced per GB you provision each month, used or not.",
-            "Extra IOPS and throughput are charged separately until you release them.",
-            "Set for a busy hour, they cost the same in quiet hours too.",
+            "Extra IOPS and throughput are charged until you release them, even in quiet hours.",
             [
               "In October 2026, AWS says gp3 costs up to 20% less per GiB than ",
               { a: "gp2", href: "/learn/gp2-vs-gp3" },
@@ -92,7 +100,7 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously. On AWS, the pool is built from gp3\u00a0volumes. Each one gets at least 3,000\u00a0IOPS and 125\u00a0MiB/s, and more when the VM’s measured load needs it.",
+            " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously. On AWS, the pool uses gp3, with IOPS and throughput set from the VM’s measured load.",
           ],
         },
         {
@@ -107,7 +115,7 @@ export const term: GlossaryTerm = {
     },
   ],
   related: [
-    { title: "EBS volume", line: "The AWS disk itself.", href: "/learn/glossary/ebs-volume" },
+    { title: "EBS volume", line: "The AWS disk.", href: "/learn/glossary/ebs-volume" },
     { title: "IOPS", line: "Reads and writes per second.", href: "/learn/glossary/iops" },
     {
       title: "Disk throughput",

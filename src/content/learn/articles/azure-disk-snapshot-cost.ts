@@ -13,16 +13,31 @@ export const article: Article = {
   hub: "Block storage",
   topic: "Azure block storage",
   published: "2026-10-28",
-  updated: "2026-10-28",
+  updated: "2026-11-01",
   author: "pulkit",
   cover: "/learn-covers/zoorik-learn-azure-disk-snapshot-cost-1200x630.webp",
-  short:
-    "Azure disk snapshot cost is the snapshot’s used size times a per-GB monthly rate, on top of the disk, until you delete the snapshot. Each full snapshot holds all the disk’s data, but an incremental chain holds it once, then only changes. Incremental ones always sit on Standard HDD: $0.05 per GB per month in East US, October 2026.",
+  coverAlt:
+    "Azure disk snapshot cost: a full snapshot copies everything each time, an incremental one stores changes only",
+  short: [
+    "Azure disk snapshot cost is the ",
+    { a: "snapshot", href: "/learn/glossary/disk-snapshot" },
+    "’s used size times a per-GB monthly rate, on top of the disk, until you delete the snapshot. Each full snapshot holds all the disk’s data, but an incremental chain holds it once, then only changes. Incremental ones always sit on ",
+    { a: "Standard HDD", href: "/learn/glossary/azure-standard-hdd" },
+    ": $0.05 per GB per month in East US, October 2026.",
+  ],
   sections: [
     {
       id: "azure-disk-snapshot-cost-follows-the-data",
       title: "Azure disk snapshot cost follows the data a snapshot holds",
       blocks: [
+        {
+          kind: "p",
+          text: [
+            "To see each disk’s used size, check ",
+            { a: "Azure VM disk usage", href: "/learn/azure-vm-disk-usage" },
+            ".",
+          ],
+        },
         {
           kind: "p",
           text: "Take Microsoft’s own example: a full snapshot of a 500\u00a0GiB disk with 50\u00a0GiB in use. The disk is charged on the size you provisioned.",
@@ -276,8 +291,11 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Unattached disks are the same kind of leftover, with ",
-            { a: "their own clean-up guide", href: "/learn/find-unattached-disks-azure" },
+            "Unattached disks are the same kind of leftover; see ",
+            {
+              a: "how to find unattached disks in Azure",
+              href: "/learn/find-unattached-disks-azure",
+            },
             ".",
           ],
         },

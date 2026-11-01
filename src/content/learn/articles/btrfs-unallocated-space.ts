@@ -14,9 +14,11 @@ export const article: Article = {
   hub: "Block storage",
   topic: "Linux filesystems",
   published: "2026-10-28",
-  updated: "2026-10-28",
+  updated: "2026-11-01",
   author: "sourabh",
   cover: "/learn-covers/zoorik-learn-btrfs-unallocated-space-1200x630.webp",
+  coverAlt:
+    "btrfs unallocated space: free covers the unallocated end and the unused room just before it",
   short: [
     "btrfs unallocated space is raw device space no chunk holds yet, and free space also counts the room inside data chunks. Data chunks can’t hold metadata, so once nothing is unallocated and metadata fills, writes can fail with “No space left on device” despite that room. A filtered ",
     { code: "btrfs balance" },
@@ -68,7 +70,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "On a cloud VM, unallocated space still costs money. Azure charges for a managed disk’s provisioned capacity, so you pay for space btrfs never allocated too.",
+          text: [
+            "On a cloud VM, unallocated space still costs money. Azure charges for a ",
+            { a: "managed disk", href: "/learn/glossary/azure-managed-disk" },
+            "’s provisioned capacity, so you pay for space btrfs never allocated too.",
+          ],
         },
       ],
     },
@@ -103,7 +109,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Free (statfs, df) is what df prints as Avail. It comes from the statfs system call and may not match the estimate, for example with more than one profile.",
+          text: [
+            "Free (statfs, ",
+            { a: "df", href: "/learn/glossary/df-vs-du" },
+            ") is what df prints as Avail. It comes from the statfs system call and may not match the estimate, for example with more than one profile.",
+          ],
         },
         {
           kind: "callout",
@@ -402,8 +412,8 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "A managed disk can’t shrink to fit its data. Microsoft says shrinking an existing disk “isn’t supported and might result in data loss,” as ",
-            { a: "the managed disk shrink guide", href: "/learn/shrink-azure-managed-disk" },
+            "A managed disk can’t shrink to fit its data. Microsoft says shrinking an existing disk “isn’t supported and might result in data loss,” as the guide on ",
+            { a: "how to reduce Azure disk size", href: "/learn/shrink-azure-managed-disk" },
             " explains. Across several disks, you give space back by emptying one disk, taking it out of the filesystem and deleting it.",
           ],
         },

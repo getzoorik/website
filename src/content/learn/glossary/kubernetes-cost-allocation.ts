@@ -7,16 +7,16 @@ export const term: GlossaryTerm = {
   title: "What is Kubernetes cost allocation?",
   meta: "Kubernetes cost allocation splits a shared cluster’s cost across pods and teams. See how AWS charges each pod for the larger of its request and its use.",
   h1: "What is Kubernetes cost allocation?",
-  card: "Kubernetes cost allocation splits a shared cluster’s cost across its pods.",
+  card: "Kubernetes cost allocation splits a shared cluster’s cost across its pods, then adds up pod costs by namespace, label or team.",
   group: "finops-pricing",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
       text: [
-        "Kubernetes cost allocation splits a shared cluster’s cost across its pods. You then add up pod costs by namespace, label or team. A pod’s share follows its ",
+        "Kubernetes cost allocation splits a shared cluster’s cost across its pods, then adds up pod costs by namespace, label or team. A pod’s share follows its ",
         { a: "requests", href: "/learn/glossary/kubernetes-resource-requests" },
         ", or the larger of its requests and its use.",
       ],
@@ -48,9 +48,9 @@ export const term: GlossaryTerm = {
         {
           kind: "p",
           text: [
-            "AWS splits the idle cost among the pods by share size. Azure Kubernetes Service (AKS) cost allocation comes from its ",
+            "AWS splits idle cost among the pods by share size. Azure Kubernetes Service (AKS) cost allocation comes from its ",
             { a: "cost analysis add-on", href: "/learn/aks-cost-analysis" },
-            ", which shows idle cost as its own charge.",
+            ", which shows idle cost separately.",
           ],
         },
       ],
@@ -62,11 +62,16 @@ export const term: GlossaryTerm = {
         {
           kind: "ul",
           items: [
-            "A pod that requests more than it uses is charged for its full request. That shows which teams hold unused capacity.",
+            "Unused requests are charged too. That shows which teams hold spare capacity.",
             "Allocation splits the cost but doesn’t reduce it.",
             [
               { a: "Coral", href: "/coral" },
               " rebalances CPU and memory requests on AKS and EKS to match real use, so the same pods fit on fewer nodes.",
+            ],
+            [
+              "Our library lists FinOps tools and other ",
+              { a: "cloud cost optimization tools", href: "/cloud-cost-optimization-library" },
+              ", with what each one does.",
             ],
             [
               "The ",
@@ -86,7 +91,7 @@ export const term: GlossaryTerm = {
     },
     {
       title: "Cloud chargeback",
-      line: "Teams pay for their share.",
+      line: "Teams pay their share.",
       href: "/learn/glossary/cloud-chargeback",
     },
     {

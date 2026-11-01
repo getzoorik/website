@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -22,10 +22,7 @@ export const term: GlossaryTerm = {
       items: [
         [{ code: "df" }, " shows what a whole file system has used and has left."],
         [{ code: "du" }, " adds up the space your files take, folder by folder."],
-        [
-          { code: "du" },
-          " can’t see a file that no folder lists, such as a deleted file that’s still open.",
-        ],
+        [{ code: "du" }, " can’t see a deleted file that’s still open."],
       ],
     },
     { kind: "code", lang: "", code: "df -h /data\ndu -shx /data" },
@@ -60,7 +57,7 @@ export const term: GlossaryTerm = {
         {
           kind: "p",
           text: [
-            "The missing 20\u00a0GiB is a deleted log file. An app still has it open, and Linux keeps a deleted file until the last process using it closes it. So ",
+            "The missing 20\u00a0GiB is a deleted log file. An app still has it open, and Linux keeps a deleted file until the last process closes it. So ",
             { code: "df" },
             " counts it, and ",
             { code: "du" },
@@ -90,10 +87,14 @@ export const term: GlossaryTerm = {
         {
           kind: "p",
           text: [
-            "For a cloud virtual machine (VM), see how to check ",
+            "To check a cloud virtual machine (VM), see ",
             { a: "Azure VM disks", href: "/learn/azure-vm-disk-usage" },
             " and ",
             { a: "EBS volumes", href: "/learn/check-ebs-volume-usage" },
+            ". On a btrfs pool, plain ",
+            { code: "df" },
+            " can mislead; see ",
+            { a: "btrfs unallocated space vs free space", href: "/learn/btrfs-unallocated-space" },
             ".",
           ],
         },
@@ -118,7 +119,7 @@ export const term: GlossaryTerm = {
     { title: "EBS volume", line: "AWS block storage.", href: "/learn/glossary/ebs-volume" },
     {
       title: "Azure managed disk",
-      line: "The block storage volume Azure manages for a VM.",
+      line: "Azure’s block storage for a VM.",
       href: "/learn/glossary/azure-managed-disk",
     },
     { title: "Block storage", line: "What both disks are.", href: "/learn/glossary/block-storage" },

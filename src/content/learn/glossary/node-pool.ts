@@ -11,11 +11,11 @@ export const term: GlossaryTerm = {
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
-      text: "A node pool in Kubernetes is a group of nodes that share one configuration. On AKS each node is an Azure virtual machine (VM), and on EKS it’s an EC2 instance.",
+      text: "A node pool in Kubernetes is a group of nodes that share one configuration. Each node is an Azure virtual machine (VM) on AKS, or an EC2 instance on EKS.",
     },
   ],
   sections: [
@@ -28,9 +28,15 @@ export const term: GlossaryTerm = {
           items: [
             "An AKS node pool runs on a Virtual Machine Scale Set by default, with one VM size.",
             "An AKS Virtual Machines node pool can mix up to five sizes from one family.",
-            "EKS’s closest match is the managed node group.",
-            "Each one runs on an EC2 Auto Scaling group and can list several instance types.",
-            "All its nodes are on-demand, or all are spot.",
+            [
+              "EKS’s closest match, the managed node group, runs on an EC2 Auto Scaling group and can list several instance types. To switch them later, see ",
+              {
+                a: "how to change an EKS node group instance type",
+                href: "/learn/change-eks-node-group-instance-type",
+              },
+              ".",
+            ],
+            "Its nodes are all on-demand or all spot.",
           ],
         },
       ],
@@ -41,11 +47,7 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: [
-            "Every AKS cluster needs a system node pool for critical pods such as CoreDNS. By default, ",
-            { code: "az aks create" },
-            " builds one with three nodes.",
-          ],
+          text: "Every AKS cluster needs a system node pool for critical pods such as CoreDNS.",
         },
         {
           kind: "ul",
@@ -72,11 +74,17 @@ export const term: GlossaryTerm = {
             [
               "Each node’s price depends on its ",
               { a: "VM size or instance type", href: "/learn/kubernetes-node-size-best-practices" },
-              ", and whether it’s spot or on-demand.",
+              ", and whether it’s ",
+              { a: "spot", href: "/learn/glossary/spot-instance" },
+              " or ",
+              { a: "on-demand", href: "/learn/glossary/on-demand-instance" },
+              ". The ",
+              { a: "EKS and AKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
+              " gives one node’s monthly list price.",
             ],
             [
               { a: "Coral", href: "/coral" },
-              " rebalances CPU and memory requests on AKS and EKS to match real use. It drains the spare nodes left over, so your autoscaler can remove them.",
+              " rebalances CPU and memory requests on AKS and EKS to match real use. It drains spare nodes so your autoscaler can remove them.",
             ],
             [
               "The ",
@@ -96,12 +104,12 @@ export const term: GlossaryTerm = {
     },
     {
       title: "Spot instance",
-      line: "On AKS, only user pools can use spot.",
+      line: "On AKS, user pools only.",
       href: "/learn/glossary/spot-instance",
     },
     {
       title: "EKS Auto Mode",
-      line: "AWS picks, patches and runs the nodes, for a fee on top of EC2.",
+      line: "AWS runs the nodes, for a fee.",
       href: "/learn/glossary/eks-auto-mode",
     },
   ],

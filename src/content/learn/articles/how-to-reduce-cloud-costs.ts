@@ -6,28 +6,34 @@ import { figure as figure3 } from "@/features/learn/figures/how-to-reduce-cloud-
 export const article: Article = {
   slug: "how-to-reduce-cloud-costs",
   route: "/cloud-cost-optimization",
-  title: "How to reduce cloud costs: what moves the bill",
-  meta: "How to reduce cloud costs on Azure and AWS, in order: tag the spend, fix the architecture, remove idle resources, shrink requests and disks, then commit.",
-  h1: "How to reduce cloud costs: the fixes that move the bill",
+  title: "Cloud cost optimization: how to reduce cloud costs",
+  meta: "Cloud cost optimization on Azure and AWS, in order: tag the spend, fix the architecture, remove idle resources, shrink requests and disks, then commit.",
+  h1: "Cloud cost optimization: how to reduce cloud costs on Azure and AWS",
   deck: "Where the money goes, which fixes move it most, and the order to make them in, on Azure and AWS.",
-  card: "The order that moves an Azure or AWS bill: tags, architecture, idle resources, Kubernetes, disks, commitments.",
+  card: "The order that reduces Azure and AWS cost: tags, architecture, idle resources, Kubernetes, disks, commitments.",
   product: "both",
   hub: "Cloud cost",
   topic: "Cloud cost",
   published: "2026-10-21",
-  updated: "2026-10-21",
+  updated: "2026-11-01",
   author: "udit",
   cover: "/learn-covers/zoorik-learn-how-to-reduce-cloud-costs-1200x630.webp",
-  short:
-    "Reduce cloud costs on Azure and AWS in this order. Tag every resource so you can see where the money goes. Then fix the architecture, remove what nothing uses, shrink Kubernetes requests so spare nodes can go, and bring disks back to the size of their data. Buy reservations or savings plans last, sized to the baseline that remains, because you pay for a commitment every hour, used or not.",
+  coverAlt: "Reduce cloud costs in order: use less first, commit last",
+  short: [
+    "Cloud cost optimization on Azure and AWS comes down to six fixes, made in order. To reduce cloud costs, see where the money goes, fix the architecture and remove idle resources. Then reduce Kubernetes requests and oversized disks, and buy ",
+    { a: "reservations", href: "/learn/glossary/reserved-instance" },
+    " or ",
+    { a: "savings plans", href: "/learn/glossary/savings-plan" },
+    " last, sized to what’s left.",
+  ],
   sections: [
     {
-      id: "how-to-reduce-cloud-costs-see-the",
-      title: "How to reduce cloud costs: see the bill first, commit last",
+      id: "cloud-cost-optimization-see-the-spend-first",
+      title: "Cloud cost optimization: see the spend first, commit last",
       blocks: [
         {
           kind: "p",
-          text: "Picture a team that buys a one-year Azure savings plan, a fixed hourly spend sized to this month’s compute, then deallocates its development VMs every night and lets two spare nodes go. The plan still bills in full every hour, though part of the usage it was sized for is gone, and whatever an hour doesn’t use expires.",
+          text: "Picture a team that buys a one-year Azure savings plan, a fixed hourly spend sized to this month’s compute, then deallocates its development VMs every night and lets two spare nodes go. You still pay for the plan in full every hour, though part of the usage it was sized for is gone. Whatever an hour doesn’t use expires.",
         },
         { kind: "p", text: "Take the ways to reduce cloud costs in order:" },
         {
@@ -42,9 +48,14 @@ export const article: Article = {
           ],
         },
         { kind: "svg", figure: figure1 },
+        { kind: "h3", id: "see-where-the-money-goes", title: "See where the money goes" },
         {
           kind: "p",
-          text: "First, find out who owns each line of the bill. Tags let Cost analysis in Microsoft Cost Management and AWS Cost Explorer split your spend by team, application and environment. On Azure, four rules decide whether and when a tag shows up:",
+          text: [
+            "First, find out who owns each line in your cost reports. ",
+            { a: "Tags", href: "/learn/glossary/cost-allocation-tags" },
+            " let Cost analysis in Microsoft Cost Management and AWS Cost Explorer split your spend by team, application and environment. On Azure, four rules decide whether and when a tag shows up:",
+          ],
         },
         {
           kind: "ul",
@@ -58,31 +69,46 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "So tag first and analyze a few days later. A Kubernetes cluster appears on the bill as its machines, so splitting it by team needs a view from inside the cluster, which ",
+            "So tag first and analyze a few days later. In cost reports, a Kubernetes cluster shows up as its machines. Splitting it by team needs a view from inside the cluster, which ",
             { a: "AKS cost analysis", href: "/learn/aks-cost-analysis" },
             " covers.",
           ],
         },
         {
           kind: "p",
-          text: "Managing cloud costs effectively needs standing rules, or the bill drifts back. For cloud governance to reduce costs, start with three: every resource carries the tags your reports group by, every subscription or account has a budget with an alert, and someone reads the biggest lines every month. Let those lines pick the fix that moves your bill most: VM compute points to architecture and idle VMs, cluster node VMs to Kubernetes, and disks to block storage.",
+          text: "Cloud cost management needs standing rules, or the spend drifts back up. For cloud governance to reduce costs, start with three: every resource carries the tags your reports group by, every subscription or account has a budget with an alert, and someone reads the biggest lines every month.",
+        },
+        {
+          kind: "p",
+          text: "Let those lines pick the fix that reduces your cost most: VM compute points to architecture and idle VMs, cluster node VMs to Kubernetes, and disks to block storage.",
         },
       ],
     },
     {
-      id: "fix-the-architecture-that-sets-the-bill",
-      title: "Fix the architecture that sets the bill",
+      id: "fix-the-architecture-that-sets-your-cloud",
+      title: "Fix the architecture that sets your cloud cost",
       blocks: [
         {
           kind: "p",
-          text: "An app on its own VM is sized for its own peak, and a running VM bills for that peak around the clock, so three apps on three VMs carry three peaks. A shared pool such as a Kubernetes cluster holds what its apps reserve. Once that follows each app’s demand, for example with the Horizontal Pod Autoscaler (HPA) adding and removing pods, the pool needs room only for the combined demand, which is smaller whenever the peaks don’t line up.",
+          text: "An app on its own VM is sized for its own peak. A running VM is charged for that peak around the clock, so three apps on three VMs carry three peaks.",
+        },
+        {
+          kind: "p",
+          text: [
+            "A shared pool such as a Kubernetes cluster holds what its apps reserve. Once that follows each app’s demand, for example with the ",
+            {
+              a: "Horizontal Pod Autoscaler (HPA)",
+              href: "/learn/glossary/horizontal-pod-autoscaler",
+            },
+            " adding and removing pods, the pool needs room only for the combined demand, which is smaller whenever the peaks don’t line up.",
+          ],
         },
         { kind: "svg", figure: figure2 },
         {
           kind: "p",
           text: [
             {
-              a: "How poor architecture increases your cloud bill",
+              a: "How poor architecture increases your cloud costs",
               href: "/learn/poor-architecture-cloud-bill",
             },
             " walks through the decisions that cost most, such as leaving development and test environments running all day. Architecture changes need a pilot, so start them early and run the quicker fixes below alongside.",
@@ -96,8 +122,12 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
+          text: "A VM that looks off can still be charged. Azure charges a VM in the Stopped state, also called Stopped (allocated), for instance usage. That’s where a shutdown from inside the guest OS leaves it.",
+        },
+        {
+          kind: "p",
           text: [
-            "A VM that looks off can still bill. Azure bills a VM in the Stopped state, also called Stopped (allocated), for instance usage, and that’s where a shutdown from inside the guest OS leaves it. Only a deallocated VM, shown as Stopped (deallocated), has released the hardware and stopped that charge. In the Azure CLI, ",
+            "Only a deallocated VM, shown as Stopped (deallocated), has released the hardware and stopped that charge. In the Azure CLI, ",
             { code: "az vm stop" },
             " keeps the compute resources and ",
             { code: "az vm deallocate" },
@@ -115,12 +145,16 @@ export const article: Article = {
           text: [
             "Then the leftovers: disks and snapshots of deleted VMs. ",
             { a: "Finding unattached disks in Azure", href: "/learn/find-unattached-disks-azure" },
-            " shows how to list the disks, and the snapshot guides for ",
+            " shows how to list the disks. The snapshot guides for ",
             { a: "Azure", href: "/learn/azure-disk-snapshot-cost" },
             " and ",
             { a: "Amazon Elastic Block Store (EBS)", href: "/learn/ebs-snapshot-cost" },
-            " explain what a snapshot bills for. Deleting a disk deletes its data, so confirm the owner from its tags before you remove it.",
+            " explain what you pay for in a snapshot.",
           ],
+        },
+        {
+          kind: "p",
+          text: "Deleting a disk deletes its data, so confirm the owner from its tags before you remove it.",
         },
       ],
     },
@@ -141,7 +175,9 @@ export const article: Article = {
           kind: "ol",
           items: [
             [
-              "Bring each container’s requests close to what it uses, from its own usage history, with headroom for its peaks. ",
+              "Bring each container’s requests close to what it uses, from its own usage history, with ",
+              { a: "headroom", href: "/learn/glossary/kubernetes-headroom" },
+              " for its peaks. ",
               { a: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
               " shows how, and ",
               { a: "Kubernetes overprovisioning", href: "/learn/kubernetes-overprovisioning" },
@@ -161,9 +197,12 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "VPA vs HPA", href: "/learn/vpa-vs-hpa" },
-            " covers how requests and the HPA meet on CPU, and ",
-            { a: "How to reduce Kubernetes cost", href: "/kubernetes-cost-optimization" },
-            " is the full walk-through for AKS and EKS.",
+            " covers how requests and the HPA meet on CPU. ",
+            {
+              a: "Kubernetes cost optimization on AKS and EKS",
+              href: "/kubernetes-cost-optimization",
+            },
+            " is the full walk-through.",
           ],
         },
       ],
@@ -174,12 +213,20 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Space bought for a migration or a one-off import stays on the bill after the data has gone. Block storage bills for the space you provision, and the size only goes one way. Microsoft Learn says shrinking an existing managed disk “isn’t supported and might result in data loss.” EBS Elastic Volumes can increase a volume’s size, change its type or adjust its performance, but can’t decrease its size.",
+          text: "Space bought for a migration or a one-off import is still charged after the data has gone. Block storage is charged for the space you provision, and the size only goes one way.",
+        },
+        {
+          kind: "p",
+          text: "Microsoft Learn says shrinking an existing managed disk “isn’t supported and might result in data loss.” EBS Elastic Volumes can increase a volume’s size, change its type or adjust its performance, but can’t decrease its size.",
         },
         {
           kind: "callout",
           label: "For engineers",
-          text: "On Azure managed disks, a Standard SSD bills at the tier its size falls in, a Premium SSD at its performance tier (set by its size unless you pick a higher one), and a Premium SSD v2 per GiB. On EBS, you’re charged for a volume’s configuration, so a volume you enlarge bills at its new size from the moment the modification starts.",
+          text: [
+            "Azure charges a Standard SSD at its size tier, a Premium SSD at its ",
+            { a: "performance tier", href: "/learn/azure-disk-performance-tiers" },
+            " and a Premium SSD v2 per GiB. On EBS, you’re charged for a volume’s configuration, so an enlarged volume is charged at its new size from the moment the modification starts.",
+          ],
         },
         {
           kind: "p",
@@ -188,7 +235,15 @@ export const article: Article = {
             { a: "on Azure VMs", href: "/learn/azure-vm-disk-usage" },
             " and ",
             { a: "on EBS", href: "/learn/check-ebs-volume-usage" },
-            ". Some fixes need no copy. On an instance that supports Elastic Volumes, a type change runs while the volume stays attached, which makes a ",
+            ". The ",
+            { a: "EBS and Azure disk pricing", href: "/ebs-and-azure-disk-pricing" },
+            " calculator prices one disk or volume.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "Some fixes need no copy. On an instance that supports Elastic Volumes, a type change runs while the volume stays attached, which makes a ",
             { a: "move from gp2 to gp3", href: "/learn/gp2-vs-gp3" },
             " a small job. On Azure, every Premium SSD v2 includes 3,000\u00a0IOPS and 125\u00a0MB/s at no charge, so ",
             { a: "compare it with Premium SSD", href: "/learn/premium-ssd-v2-vs-premium-ssd" },
@@ -216,7 +271,15 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Reservations and savings plans reduce cloud computing costs through the price per hour, not the amount you use. Savings plans on both clouds run for one or three years. AWS Savings Plans trade a commitment to an amount of compute, measured per hour, for savings of up to 72% on compute. An Azure savings plan is a fixed hourly spend: each hour, Azure applies it to eligible usage, bills anything beyond it at pay-as-you-go rates, and lets the rest expire without rolling over. Azure savings plans can’t be canceled or refunded, and the one for compute doesn’t cover storage.",
+          text: "Reservations and savings plans reduce cloud computing costs through the price per hour, not the amount you use. Savings plans on both clouds run for one or three years. AWS Savings Plans trade a commitment to an amount of compute, measured per hour, for savings of up to 72% on compute.",
+        },
+        {
+          kind: "p",
+          text: "An Azure savings plan is a fixed hourly spend. Each hour, Azure applies it to eligible usage and charges anything beyond it at pay-as-you-go rates. Azure lets any unused part expire without rolling over.",
+        },
+        {
+          kind: "p",
+          text: "Azure savings plans can’t be canceled or refunded, and the one for compute doesn’t cover storage.",
         },
         {
           kind: "p",
@@ -237,6 +300,7 @@ export const article: Article = {
           kind: "p",
           text: "Two of these steps, requests and disks, never finish, because usage keeps moving.",
         },
+        { kind: "h3", id: "coral-for-kubernetes", title: "Coral for Kubernetes" },
         {
           kind: "p",
           text: [{ a: "Coral", href: "/coral" }, " optimizes Kubernetes on AKS and EKS:"],
@@ -274,10 +338,42 @@ export const article: Article = {
         {
           kind: "p",
           text: [
+            { a: "AKS cost optimization", href: "/aks-cost-optimization" },
+            " and ",
+            { a: "EKS cost optimization", href: "/eks-cost-optimization" },
+            " show what Coral does on each cloud.",
+          ],
+        },
+        { kind: "h3", id: "amoeba-for-block-storage", title: "Amoeba for block storage" },
+        {
+          kind: "p",
+          text: [
             { a: "Amoeba", href: "/amoeba" },
-            " optimizes block storage on Azure managed disks and Amazon EBS. It moves a Windows or Linux VM’s data disks onto one pool sized to the data, holds it 80% to 90% full by default, and rightsizes it one disk at a time. On Linux, the systemd services that use the data mounts restart at the switch onto the pool, and every resize after it runs without unmounting. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. Amoeba is in early access, and ",
+            " optimizes block storage on ",
+            { a: "Azure managed disks", href: "/azure-managed-disk-cost-optimization" },
+            " and ",
+            { a: "Amazon EBS", href: "/ebs-cost-optimization" },
+            ". It moves a Windows or Linux VM’s data disks onto one btrfs pool sized to your data, with room to grow. Then it rightsizes the pool one disk at a time, so you pay for close to what you use.",
+          ],
+        },
+        {
+          kind: "p",
+          text: "On Linux, the systemd services that use the data mounts restart at the switch onto the pool, and every resize after it runs without unmounting.",
+        },
+        {
+          kind: "p",
+          text: [
+            "We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. Amoeba is in early access, and ",
             { a: "the free block storage assessment", href: "/assessment?p=amoeba" },
             " works out your own figure.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "To compare Coral and Amoeba with other options, see ",
+            { a: "cloud cost optimization tools", href: "/cloud-cost-optimization-library" },
+            ".",
           ],
         },
       ],
@@ -298,7 +394,7 @@ export const article: Article = {
     product: "coral",
     text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and drains spare nodes so your autoscaler can remove them. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
-      { label: "Kubernetes cost optimization with Coral", href: "/coral" },
+      { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Estimate your saving", href: "/assessment?p=coral" },
     ],
   },
@@ -346,17 +442,17 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "How Poor Infra Architecture Quietly Increases Your Cloud Bill",
+      title: "How Poor Infra Architecture Quietly Increases Your Cloud Costs",
       where: "Learn",
       href: "/learn/poor-architecture-cloud-bill",
     },
     {
-      title: "How we reduced our own cluster’s machine bill by 58%",
+      title: "How We Reduced AKS Cluster Costs by 58%",
       where: "Case study",
       href: "/coral-value-lab",
     },
     {
-      title: "How to reduce Kubernetes cost: rebalance requests, then remove spare nodes",
+      title: "Kubernetes cost optimization: rebalance requests, then remove spare nodes",
       where: "Learn",
       href: "/kubernetes-cost-optimization",
     },
