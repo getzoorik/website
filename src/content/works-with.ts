@@ -19,7 +19,7 @@ import { routes } from "@/config/site";
 
 /** The six pages print no day: the day their content last changed, for the sitemap. Move it in the PR that
  * changes it. */
-export const worksWithLastUpdated = "31 October 2026";
+export const worksWithLastUpdated = "1 November 2026";
 
 /** The words every works-with page shares: the eyebrow over the h1, and the names of the sections the six share. */
 export const worksWith = {
@@ -371,6 +371,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
     readMore: [
       "[Coral product guide: Rebalancing](/coral-guide#rebalancing): what a rebalance needs, and how it runs.",
       "[Coral FAQ: Do I need Coral with Karpenter or NAP?](/coral-faq#do-i-need-coral-with-karpenter): the short answer, with more on autoscalers.",
+      "[AKS node auto provisioning (NAP): how to enable it](/learn/aks-node-auto-provisioning): what NAP is, and how to enable or disable it.",
       "[HPA vs VPA vs Cluster Autoscaler: what each one scales](/learn/hpa-vs-vpa-vs-cluster-autoscaler): pods, requests and nodes, plus Karpenter.",
       "[Coral works with Cluster Autoscaler](/coral-works-with-cluster-autoscaler): Coral empties spare nodes, and the Cluster Autoscaler removes them.",
       "[Coral works with Karpenter](/coral-works-with-karpenter): the same story on EKS, with Karpenter itself.",

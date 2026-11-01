@@ -55,7 +55,7 @@ export const amoebaPageContent: ProductPageContent = {
   meta: {
     title: "Block storage cost optimization for Azure and AWS",
     description:
-      "Amoeba rightsizes Azure managed disks and Amazon EBS volumes to the data you store, to reduce your cloud bill, autonomously, without any downtime.",
+      "Amoeba rightsizes Azure managed disks and Amazon EBS volumes to the data you store, to reduce your cloud cost, autonomously, without any downtime.",
     /* What "What is Amoeba?" says: structured data must say what the page
        says. */
     appDescription:

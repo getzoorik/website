@@ -73,7 +73,7 @@ export const coralFaqPage = {
     title: "Coral FAQ",
     deck: "Sizing, safety, HPA, nodes and autoscalers.",
   },
-  updated: "Updated 25 October 2026",
+  updated: "Updated 1 November 2026",
   /** The one download line after the last group: the FAQ's PDF, and no other. */
   download: { label: "FAQ PDF", document: "coral-faq" },
 } as const;

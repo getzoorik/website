@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -90,10 +90,9 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously. Amoeba sizes its pool’s performance for 1.3 times the measured p99, within the instance’s EBS limits.",
+            " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously. Each pool volume gets at least gp3’s included performance, and more when the instance’s load needs it.",
           ],
         },
-        { kind: "p", text: "Here, p99 is the level that 99 in 100 readings stay at or below." },
         {
           kind: "p",
           text: [

@@ -107,7 +107,11 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "The ",
+            {
+              a: "How to choose EKS instance types",
+              href: "/learn/how-to-choose-eks-instance-types",
+            },
+            " covers the family and the size. The ",
             { a: "EKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
             " gives the monthly list price of an EKS node pool.",
           ],

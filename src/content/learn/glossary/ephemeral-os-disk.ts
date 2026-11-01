@@ -81,7 +81,7 @@ export const term: GlossaryTerm = {
         {
           kind: "code",
           lang: "bash",
-          code: "az aks nodepool add --resource-group <rg> --cluster-name <cluster> --name <pool> --node-vm-size <size> --node-osdisk-type Ephemeral",
+          code: "az aks nodepool add \\\n  --resource-group <rg> \\\n  --cluster-name <cluster> \\\n  --name <pool> \\\n  --node-vm-size <size> \\\n  --node-osdisk-type Ephemeral",
         },
       ],
     },

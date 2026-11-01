@@ -252,7 +252,7 @@ describe("/coral-guide page", () => {
     const container = page();
     const top = container.querySelector("article.gd-main > .fq-upd")!;
     expect(top).toBe(container.querySelector("article.gd-main")!.firstElementChild);
-    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 30 October 2026");
+    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 1 November 2026");
     const list = top.querySelector("dl.doc-sum")!;
     expect([...list.querySelectorAll("dt")].map(text)).toEqual([
       "Product page",

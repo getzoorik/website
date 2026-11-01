@@ -121,25 +121,26 @@ describe("sitemap.xml", () => {
       /* The two Topic pages print no day: the day their content was written (1 Nov 2026). */
       "/azure-cost-optimization": "2026-11-01",
       "/aws-cost-optimization": "2026-11-01",
-      /* The ten pages of 31 Oct 2026 print no day: the day their content was written. */
+      /* The four cloud pages of 31 Oct 2026 print no day: the day their content was written. */
       "/aks-cost-optimization": "2026-10-31",
       "/eks-cost-optimization": "2026-10-31",
       "/azure-managed-disk-cost-optimization": "2026-10-31",
       "/ebs-cost-optimization": "2026-10-31",
-      "/coral-works-with-cluster-autoscaler": "2026-10-31",
-      "/coral-works-with-karpenter": "2026-10-31",
-      "/coral-works-with-aks-node-auto-provisioning": "2026-10-31",
-      "/coral-works-with-keda": "2026-10-31",
-      "/coral-works-with-helm": "2026-10-31",
-      "/coral-works-with-terraform": "2026-10-31",
+      /* The six works-with pages print no day: the day their content last changed (their D230 links, and the NAP
+         article in Read more, 1 Nov 2026). */
+      "/coral-works-with-cluster-autoscaler": "2026-11-01",
+      "/coral-works-with-karpenter": "2026-11-01",
+      "/coral-works-with-aks-node-auto-provisioning": "2026-11-01",
+      "/coral-works-with-keda": "2026-11-01",
+      "/coral-works-with-helm": "2026-11-01",
+      "/coral-works-with-terraform": "2026-11-01",
       "/assessment": "2026-11-01",
       "/marketplaces": "2026-10-21",
       /* The guide PDF's new page count (30 Oct 2026). */
       "/docs": "2026-10-30",
-      /* The Custom policies steps of 30 Oct 2026. */
-      "/coral-guide": "2026-10-30",
-      /* The four questions of 25 Oct 2026. */
-      "/coral-faq": "2026-10-25",
+      /* The Coral link's new words (O1), 1 Nov 2026. */
+      "/coral-guide": "2026-11-01",
+      "/coral-faq": "2026-11-01",
       /* The Amoeba guide and FAQ, rewritten at product level on 27 Oct 2026. */
       ...(amoebaDocs ? { "/amoeba-guide": "2026-10-27", "/amoeba-faq": "2026-10-27" } : {}),
       /* The three guides print "Updated 16 October 2026"; /open-source gives its content file's date. */

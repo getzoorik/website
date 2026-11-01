@@ -144,7 +144,7 @@ describe("the page", () => {
     const top = page.querySelector("article.fq-main > .fq-upd")!;
     expect(top).toBe(page.querySelector("article.fq-main")!.firstElementChild);
     expect([...top.children].map((child) => child.className)).toEqual(["doc-updated"]);
-    expect(text(top)).toBe("Updated 25 October 2026");
+    expect(text(top)).toBe("Updated 1 November 2026");
   });
 
   it("has no contents rail and no summary, and names its groups in the phone's chip row", () => {

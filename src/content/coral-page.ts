@@ -45,7 +45,7 @@ export const coralPageContent: ProductPageContent = {
   meta: {
     title: "Coral: Kubernetes optimization for AKS and EKS",
     description:
-      "Coral rebalances AKS and EKS clusters to reduce your cloud bill, autonomously, without any downtime. Works with HPA, Karpenter, NAP and Cluster Autoscaler.",
+      "Coral rebalances AKS and EKS clusters to reduce your cloud cost, autonomously, without any downtime. Works with HPA, Karpenter, NAP and Cluster Autoscaler.",
     appDescription:
       "Kubernetes cost optimization on AKS and EKS. Coral sizes pod requests to real use and drains idle nodes one at a time.",
   },

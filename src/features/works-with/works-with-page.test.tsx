@@ -125,6 +125,7 @@ const pages = [
     readMore: [
       "/coral-guide#rebalancing",
       "/coral-faq#do-i-need-coral-with-karpenter",
+      "/learn/aks-node-auto-provisioning",
       "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
       "/coral-works-with-cluster-autoscaler",
       "/coral-works-with-karpenter",
@@ -268,7 +269,7 @@ describe("the works-with pages", () => {
     expect(Object.values(worksWithPages).map((copy) => copy.route)).toEqual(
       pages.map((page) => page.route),
     );
-    expect(worksWithLastUpdated).toBe("31 October 2026");
+    expect(worksWithLastUpdated).toBe("1 November 2026");
     for (const copy of Object.values(worksWithPages)) {
       expect(copy.lastUpdated).toBe(worksWithLastUpdated);
     }

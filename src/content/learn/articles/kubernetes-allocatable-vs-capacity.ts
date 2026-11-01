@@ -492,7 +492,7 @@ export const article: Article = {
       href: "/coral-guide#how-sizes-are-worked-out",
     },
     {
-      title: "How We Reduced AKS Cluster Costs by 58%",
+      title: "How we reduced our own cluster’s machine bill by 58%",
       where: "Case study",
       href: "/coral-value-lab",
     },
