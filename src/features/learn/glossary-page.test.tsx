@@ -233,7 +233,10 @@ describe.each(glossaryTerms.map((term) => term.slug))("/learn/glossary/%s", (slu
       images: [termCard(term)],
     });
     expect(termCard(term)).toBe(pageCards[route]);
-    expect(termCard(term).url).toBe(`/og/pages/glossary-${slug}.png`);
+    /* A redrawn card keeps the term's name and adds its new words: platforms cache cards by URL. */
+    expect(termCard(term).url).toMatch(
+      new RegExp(`^/og/pages/glossary-${slug}(-[a-z0-9-]+)?\\.png$`),
+    );
   });
 
   it("opens on the utility hero: the trail back to Learn and the glossary over the h1, and no deck", async () => {

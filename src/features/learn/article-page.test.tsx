@@ -268,7 +268,8 @@ describe("the Learn articles at the site's root (D230)", () => {
       expect(metadata).toEqual(articleMetadata(article));
       expect(metadata.alternates).toEqual({ canonical: route });
       expect(metadata.openGraph).toMatchObject({ url: route, images: [articleCard(article)] });
-      expect(articleCard(article).url).toBe(`/og/pages/learn-${article.slug}.png`);
+      /* Named for the address since its title moved there (1 Nov 2026). */
+      expect(articleCard(article).url).toBe(`/og/pages${route}.png`);
     }
   });
 });
@@ -709,7 +710,7 @@ describe("/learn/poor-architecture-cloud-bill, against its draft", () => {
   });
 
   it("ships its share card within its size budget", () => {
-    const file = "public/og/pages/learn-poor-architecture-cloud-bill.png";
+    const file = "public/og/pages/learn-poor-architecture-cloud-costs.png";
     expect(readFileSync(file).length / 1024, file).toBeLessThan(200);
   });
 });
