@@ -45,9 +45,10 @@
 //
 // A glossary draft is front matter (slug, route, group, product, term, title, h1, meta), the definition with what
 // stands beside it before the first "## " heading, two to four sections in an article's blocks with one [DIAGRAM: …]
-// among them, "## Related terms" (each line "- [Term](/learn/glossary/<slug>): its line"), "**Read next:**" and the
-// sources. The title loses its " | Zoorik" (the site's template adds it); the hub's line under the term is the
-// definition's first sentence. Every link to another term must lead to one of the drafts.
+// among them (an id after a heading as {#id}, so a renamed section keeps its anchor), "## Related terms" (each line
+// "- [Term](/learn/glossary/<slug>): its line"), "**Read next:**" and the sources. The title loses its " | Zoorik"
+// (the site's template adds it); the hub's line under the term is the definition's first sentence. Every link to
+// another term must lead to one of the drafts.
 //
 // In both modes a link to an address that moved, in the text, the help box, a Related line or Read next, is written to
 // where its page lives now: a study's old /case-studies/<study> or /value-lab/<study> (which the article drafts still
@@ -826,8 +827,8 @@ function convertTerm(slug) {
   const sections = parts
     .filter((part) => part !== relatedPart)
     .map(({ heading, lines: own }) => ({
-      id: slugOf(heading),
-      title: words(heading),
+      id: /\s*\{#([^}]+)\}\s*$/.exec(heading)?.[1] ?? slugOf(heading),
+      title: words(heading.replace(/\s*\{#[^}]*\}\s*$/, "")),
       blocks: render(parse(own), ctx),
     }));
   if (ctx.figures !== 1 || !ctx.drawn.has(1))
