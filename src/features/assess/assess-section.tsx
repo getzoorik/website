@@ -13,8 +13,9 @@ import { offSiteProps } from "@/lib/links";
  * home, the product pages and the generated pages.
  *
  * A server component. Two cards of equal width on one subgrid, so the two
- * headings, paragraphs and buttons line up across the cards; stacked below
- * 980px. The white card sends the reader to the assessment, the dark card to the
+ * labels, paragraphs and buttons line up across the cards; stacked below
+ * 980px. The labels look like headings but are `div.as-h`, not h2: the same two
+ * words close every page, so they stay out of each page's heading outline. The white card sends the reader to the assessment, the dark card to the
  * calendar, and the dark card's fine line to the one address.
  *
  * ─── ONE COMPONENT, THREE SWITCHES ─────────────────────────────────────────
@@ -59,6 +60,9 @@ export interface AssessSectionProps {
    * where the reader's own figure is. None on every other page.
    */
   readonly lead?: ReactNode;
+  /** One line under the assessment card's paragraph, in the same `<p>` so the subgrid rows still line up: the EKS
+   *  page's line to the pricing calculator. None on every other page. */
+  readonly after?: ReactNode;
 }
 
 /** One card: a `<Reveal>` where the page reveals, a plain div where it does not. */
@@ -91,6 +95,7 @@ export function AssessSection({
   talkOnly = false,
   reveal = true,
   lead,
+  after,
 }: AssessSectionProps = {}): React.JSX.Element {
   const { assessment, contact } = assessContent;
   const builders: readonly ProductId[] = product ? [product] : contact.both;
@@ -102,8 +107,16 @@ export function AssessSection({
         <div className={talkOnly ? "as-grid as-solo" : "as-grid"}>
           {talkOnly ? null : (
             <Card reveal={reveal} order={0} className="as-card as-mini">
-              <h2 className="as-h">{assessment.title}</h2>
-              <p>{assessment.body}</p>
+              <div className="as-h">{assessment.title}</div>
+              <p>
+                {assessment.body}
+                {after ? (
+                  <>
+                    <br />
+                    {after}
+                  </>
+                ) : null}
+              </p>
               <a className="btn-ink" href={assessmentHref(product)}>
                 {assessment.cta.label} <Arrow />
               </a>
@@ -112,7 +125,7 @@ export function AssessSection({
 
           {/* Second to rise beside the white card; first, and alone, without it. */}
           <Card reveal={reveal} order={talkOnly ? 0 : 1} className="as-cal" id="contact">
-            <h2 className="as-h">{contact.title}</h2>
+            <div className="as-h">{contact.title}</div>
             <p>
               {contact.body.before}
               {builders.map((id, index) => (

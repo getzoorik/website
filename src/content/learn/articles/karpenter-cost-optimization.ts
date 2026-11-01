@@ -456,7 +456,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Karpenter, and node auto-provisioning on AKS, choose and remove machines from requests they don’t change. ",
+            "Karpenter, and node auto provisioning on AKS, choose and remove machines from requests they don’t change. ",
             { a: "Coral", href: "/coral" },
             " optimizes Kubernetes on AKS and EKS, and it rebalances those requests to real use.",
           ],

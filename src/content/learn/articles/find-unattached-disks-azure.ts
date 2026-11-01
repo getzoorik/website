@@ -514,7 +514,7 @@ export const article: Article = {
             ],
             [
               { b: "The source disks." },
-              " After the switch is checked, Amoeba detaches each source disk, takes an incremental snapshot and deletes the disk when the snapshot completes. It deletes the snapshot a few days later, and only ever deletes its own.",
+              " After the switch is checked, Amoeba detaches each source disk, takes an incremental snapshot and deletes the disk when the snapshot completes. It deletes the snapshot 7 days later, and only ever deletes its own.",
             ],
             [
               { b: "Every other disk." },
@@ -528,7 +528,13 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Amoeba works on Windows and Linux VMs. On Linux, the VM needs a recent kernel with btrfs, and services that keep a data mount open must run under systemd. The VM needs a few free disk slots for the pool.",
+          text: [
+            {
+              a: "Azure managed disk cost optimization",
+              href: "/azure-managed-disk-cost-optimization",
+            },
+            " covers the move and what a VM needs in full.",
+          ],
         },
         {
           kind: "p",

@@ -84,7 +84,7 @@ export const offersContent: {
         { cloud: "aws", text: "EBS" },
       ],
     },
-    { figure: "both", title: togetherLabel, tags: [{ text: "Overall cloud bill" }] },
+    { figure: "both", title: togetherLabel, tags: [{ text: "Overall cloud cost" }] },
   ],
   tools: [
     { label: "EKS and AKS pricing calculator", href: routes.eksAndAksPricingCalculator },

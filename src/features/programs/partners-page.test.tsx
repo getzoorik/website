@@ -81,7 +81,7 @@ describe("/partners", () => {
     const card = main().querySelector(".cp-pair .as-grid > .as-card.as-mini.cp-w.rise")!;
     expect(text(card.querySelector(".cp-flag"))).toBe("Coming soon");
     expect(card.querySelector("svg.cp-own.cp-own-l")).toHaveAttribute("aria-hidden", "true");
-    expect(text(card.querySelector("h2.as-h"))).toBe("Reduce your customers’ cloud bill");
+    expect(text(card.querySelector("h2.as-h"))).toBe("Reduce your customers’ cloud cost");
     expect(text(card.querySelector(":scope > p"))).toBe(
       "Coral rebalances Kubernetes and Amoeba rightsizes block storage, autonomously, without any downtime.",
     );
@@ -106,9 +106,7 @@ describe("/partners", () => {
       expect(row.querySelector(".cp-track")).toHaveAttribute("aria-hidden", "true");
       expect(row.querySelector("svg.cp-rgi")).toHaveAttribute("aria-hidden", "true");
     }
-    expect(text(card.querySelector("p.cp-fine"))).toBe(
-      "Estimated ranges of the bill, not a promise.",
-    );
+    expect(text(card.querySelector("p.cp-fine"))).toBe("Estimated ranges, not a promise.");
     const go = card.querySelector<HTMLAnchorElement>("a.btn-ink")!;
     expect(text(go)).toBe("See our own result");
     expect(go.getAttribute("href")).toBe(caseStudy.route);
@@ -137,7 +135,7 @@ describe("/partners", () => {
       ],
       [
         "Managed service providers",
-        "You run clusters and VMs for customers; Coral and Amoeba reduce their bill.",
+        "You run clusters and VMs for customers; Coral and Amoeba reduce their cloud cost.",
         null,
       ],
       [
@@ -174,7 +172,7 @@ describe("/partners", () => {
   it("ends on where customers buy: Coral's listing in each store, then every marketplace", () => {
     const buy = main().querySelector(".cp-buy")!;
     expect(text(buy.querySelector(".cp-buyrow p"))).toBe(
-      "Coral is on AWS Marketplace and Microsoft Marketplace, billed with the rest of their cloud.",
+      "Coral and Amoeba are on AWS Marketplace and Microsoft Marketplace, paid through the cloud account your customers already use.",
     );
     const stores = [...buy.querySelectorAll<HTMLAnchorElement>(".mkt-btns.cp-stores > a.mkt-b")];
     expect(stores.map((store) => [text(store), store.getAttribute("href")])).toEqual(

@@ -97,7 +97,7 @@ describe("/design-partners", () => {
     expect(apply).not.toHaveAttribute("target");
   });
 
-  it("puts what we ask on the navy card: three things, ticked, and Book a call in a new tab", () => {
+  it("puts what we ask on the navy card: three things, ticked, and Book a demo in a new tab", () => {
     const card = main().querySelector(".cp-pair .as-grid > .as-cal.cp-d.rise")!;
     expect(card).toHaveAttribute("data-i", "1");
     expect(card.querySelector("svg.cp-own")).toHaveAttribute("aria-hidden", "true");
@@ -115,7 +115,7 @@ describe("/design-partners", () => {
     expect(call.getAttribute("href")).toBe(calendarUrl);
     expect(call).toHaveAttribute("target", "_blank");
     expect(call).toHaveAttribute("rel", "noopener noreferrer");
-    expect(text(call)).toBe("Book a call (opens in a new tab)");
+    expect(text(call)).toBe("Book a demo (opens in a new tab)");
     expect(call.querySelector("svg.ext")).not.toBeNull();
   });
 
@@ -147,8 +147,8 @@ describe("/design-partners", () => {
       ["Apply", "Tell us about your clusters and disks."],
       ["See your number", "The free assessment shows your estimated saving at list price."],
       [
-        "Connect a non-production cluster",
-        `zoorikctl, Helm or Terraform; free for the first ${designPartnerPlaces} partners.`,
+        "Connect a non-production cluster or VM",
+        `Coral with zoorikctl, Helm or Terraform; Amoeba with a script in Azure Cloud Shell or AWS CloudShell. Free for the first ${designPartnerPlaces} partners.`,
       ],
       ["Review together", "We go through the results with you and plan what comes next."],
     ]);

@@ -496,7 +496,7 @@ export const article: Article = {
           items: [
             [
               { b: "The move." },
-              " Amoeba moves a VM’s data disks onto one btrfs pool, sized to your data, with room to grow. It copies your data while your services run.",
+              " The services that use those mounts restart once, at the switch onto the pool.",
             ],
             [
               { b: "The switch." },
@@ -504,7 +504,7 @@ export const article: Article = {
             ],
             [
               { b: "The old disks." },
-              " Once the switch is checked, Amoeba snapshots each old disk and deletes the disk. It keeps each snapshot for a few days, then deletes it too.",
+              " Once the switch is checked, Amoeba snapshots each old disk and deletes the disk. It keeps each snapshot for 7 days, then deletes it too.",
             ],
             [
               { b: "Rightsizing." },
@@ -519,10 +519,6 @@ export const article: Article = {
             { a: "what happens at the switch", href: "/amoeba-guide#at-the-switch" },
             ". You pay for both sets of disks only while the move runs, and then for the snapshots while they’re kept.",
           ],
-        },
-        {
-          kind: "p",
-          text: "On Linux, the VM needs a recent kernel with btrfs. Every service that keeps a data mount open must run under systemd. The VM also needs a few free disk slots for the pool.",
         },
         {
           kind: "p",

@@ -47,7 +47,7 @@ describe("/security", () => {
     const root = page();
     const top = root.querySelector("article.gd-main > .fq-upd.gd-top > .pp-prose")!;
     /* 30 Oct 2026: the Trust center's link in Report a security issue moved the day. */
-    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 30 October 2026");
+    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 1 November 2026");
     const summary = top.querySelector("#summary")!;
     expect(text(summary.querySelector(".sc-sum-t"))).toBe("Summary");
     expect([...summary.querySelectorAll("dt")].map(text)).toEqual([

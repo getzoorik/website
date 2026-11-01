@@ -482,7 +482,7 @@ export const article: Article = {
           items: [
             [
               { b: "Checks first." },
-              " Before draining, Coral simulates the scheduler on the live cluster, and every pod must fit elsewhere with its affinity, taints, spread, ports and zones. Coral also respects PDBs, do-not-disrupt, safe-to-evict “false” and your autoscaler’s minimum pool size.",
+              " Before draining, Coral simulates the scheduler on the live cluster, and every pod must fit elsewhere with its affinity, taints, spread, ports and zones. Coral also respects PDBs, do-not-disrupt and safe-to-evict “false”. By default, Coral may reduce a pool’s minimum when that minimum alone keeps a node it has emptied, and disconnect puts the old minimum back.",
             ],
             [
               { b: "One by one." },
@@ -490,7 +490,7 @@ export const article: Article = {
             ],
             [
               { b: "Your autoscaler deletes." },
-              " After “Wait before removing empty nodes” (5\u00a0minutes by default), Coral hands the empty node to your autoscaler, whose own timers decide when it goes. Coral never adds nodes for demand.",
+              " After “Wait before removing empty nodes”, Coral hands the empty node to your autoscaler, whose own timers decide when it goes. Coral never adds nodes for demand.",
             ],
           ],
         },
@@ -579,7 +579,7 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "HPA vs VPA vs Cluster Autoscaler: what each one scales",
+      title: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
       where: "Learn",
       href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
     },
@@ -593,7 +593,11 @@ export const article: Article = {
       where: "Learn",
       href: "/learn/pod-disruption-budget-best-practices",
     },
-    { title: "Nodes held", where: "Coral product guide", href: "/coral-guide#nodes-held" },
+    {
+      title: "Why Coral holds a node, and each fix",
+      where: "Coral product guide",
+      href: "/coral-guide#nodes-held",
+    },
     {
       title: "How does Coral interact with Cluster Autoscaler or Karpenter decisions?",
       where: "Coral FAQ",

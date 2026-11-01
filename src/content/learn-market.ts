@@ -935,7 +935,7 @@ export const marketGroups: readonly MarketGroup[] = [
         ],
       },
       {
-        name: "AKS node auto-provisioning (NAP)",
+        name: "AKS node auto provisioning (NAP)",
         company: "Microsoft",
         subgroup: "Azure",
         line: "AKS feature, based on Karpenter, that provisions VM sizes for pending pods and removes or replaces underutilized nodes.",
@@ -1119,7 +1119,8 @@ export const shownGroups: readonly ShownGroup[] = [
     group: "storage",
     ours: {
       product: "amoeba",
-      short: "Rightsizes Azure managed disks and Amazon EBS, without any downtime.",
+      short:
+        "Rightsizes Azure managed disks and Amazon EBS, without any downtime after the one switch.",
     },
     tools: [
       {
@@ -1194,7 +1195,7 @@ export const shownGroups: readonly ShownGroup[] = [
         googleCloud: false,
       },
       {
-        name: "AKS node auto-provisioning (NAP)",
+        name: "AKS node auto provisioning (NAP)",
         short: "Provisions VM sizes for pending pods and removes underused nodes.",
         googleCloud: false,
       },
@@ -1411,7 +1412,7 @@ export const versusFacts: readonly VersusFacts[] = [
       },
       {
         label: "Free tier or trial",
-        ours: { mark: "partly", note: "a free cost assessment; the product by demo", sources: [] },
+        ours: { mark: "partly", note: "a free assessment; the product by demo", sources: [] },
         theirs: {
           mark: "yes",
           note: "Full optimization on 1 cluster for 30 days (the AWS agent listing says 45 days)",

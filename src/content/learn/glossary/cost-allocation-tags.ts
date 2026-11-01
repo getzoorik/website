@@ -63,7 +63,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why cost allocation tags matter for your cloud cost",
       blocks: [
         {
           kind: "ul",

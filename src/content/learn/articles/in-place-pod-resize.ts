@@ -487,7 +487,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "On our own AKS development cluster, Coral rebalanced 14 apps by 12 October. The CPU they reserve went from 0.78 to 0.43\u00a0cores, and their memory from 6.4 to 5.4\u00a0GiB (",
-            { a: "the case study", href: "/coral-value-lab" },
+            { a: "the Coral Value Lab study", href: "/coral-value-lab" },
             "). The ",
             { a: "Coral guide", href: "/coral-guide#how-sizes-are-worked-out" },
             " shows how each size is worked out.",
@@ -553,7 +553,7 @@ export const article: Article = {
       href: "/learn/kubernetes-pod-right-sizing",
     },
     {
-      title: "VPA vs HPA: when to use which, and why to rebalance first",
+      title: "VPA vs HPA: when to use which",
       where: "Learn",
       href: "/learn/vpa-vs-hpa",
     },

@@ -68,7 +68,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why TCO matters for your cloud cost",
       blocks: [
         {
           kind: "ul",
@@ -105,7 +105,7 @@ export const term: GlossaryTerm = {
       line: "A license saving Azure Migrate counts.",
       href: "/learn/glossary/azure-hybrid-benefit",
     },
-    { title: "FinOps", line: "Shared ownership of cloud spend.", href: "/learn/glossary/finops" },
+    { title: "FinOps", line: "Shared ownership of cloud cost.", href: "/learn/glossary/finops" },
   ],
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",

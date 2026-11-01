@@ -65,7 +65,7 @@ afterEach(() => {
 describe("/cloud-cost-optimization-library's metadata", () => {
   it("is titled, described and canonicalised as its mock, with its own card", () => {
     /* Part 4 (1 Nov 2026): the title and description carry the page's searches. */
-    expect(metadata.title).toBe("Cloud cost optimization tools and FinOps tools");
+    expect(metadata.title).toBe("Cloud cost management tools and FinOps tools");
     expect(metadata.description).toBe(
       "Cloud cost management tools for Azure and AWS: the cloud cost optimization tools and FinOps tools that reduce what you pay, and how each one acts.",
     );
@@ -74,7 +74,7 @@ describe("/cloud-cost-optimization-library's metadata", () => {
     expect(metadata.alternates).toEqual({ canonical: "/cloud-cost-optimization-library" });
     expect(metadata.openGraph).toMatchObject({
       url: "/cloud-cost-optimization-library",
-      title: "Cloud cost optimization tools and FinOps tools | Zoorik",
+      title: "Cloud cost management tools and FinOps tools | Zoorik",
       images: [pageCards["/cloud-cost-optimization-library"]],
     });
     expect(routes.cloudCostTools).toBe("/cloud-cost-optimization-library");
@@ -87,7 +87,7 @@ describe("/cloud-cost-optimization-library", () => {
     const root = page();
     expect(root.querySelectorAll("h1")).toHaveLength(1);
     expect(root.querySelector("header.hero.doc-hero.lv-hero#top")).not.toBeNull();
-    expect(text(root.querySelector("h1"))).toBe("Cloud cost optimization tools and FinOps tools");
+    expect(text(root.querySelector("h1"))).toBe("Cloud cost management tools and FinOps tools");
     expect(text(root.querySelector(".doc-deck"))).toBe(
       "These cloud cost management tools reduce what you pay on Azure and AWS. Each tile says what the tool does, how it acts and which clouds it supports. Filter them by cloud, or by kind: block storage, Kubernetes, FinOps tools or the cloud providers’ own.",
     );
@@ -105,10 +105,10 @@ describe("/cloud-cost-optimization-library", () => {
     );
     const sections = [...root.querySelectorAll("main > section")];
     expect(sections.map((s) => [s.id, s.className, text(s.querySelector("h2"))])).toEqual([
-      ["tools", "sec lv-sec", "Tools that reduce cloud cost"],
+      ["tools", "sec lv-sec", "Cloud cost optimization tools for Azure and AWS"],
       ["ours", "sec lv-sec sec-band", "Compare Coral and Amoeba"],
       ["calculators", "sec lv-sec", "Free calculators"],
-      ["assess", "sec", "Find your own number"],
+      ["assess", "sec", ""],
     ]);
     for (const id of ["tools", "ours", "calculators"]) {
       const section = root.querySelector(`#${id}`)!;
@@ -164,7 +164,7 @@ describe("/cloud-cost-optimization-library", () => {
     const blocks = [...root.querySelectorAll("#tools .tl-wrap > .tl-g")];
     expect(
       blocks.map((b) => [b.getAttribute("data-k"), text(b.querySelector("h3.cm-sl"))]),
-    ).toEqual(shownGroups.map((g) => [g.kind, g.label]));
+    ).toEqual(shownGroups.map((g) => [g.kind, g.heading ?? g.label]));
     expect(root.querySelectorAll("#tools article.dt.tl")).toHaveLength(26);
 
     expected.forEach((group, g) => {
@@ -224,7 +224,9 @@ describe("/cloud-cost-optimization-library", () => {
           );
           const mono = tile.querySelector(".tl-mono")!;
           expect(mono).toHaveAttribute("aria-hidden", "true");
-          expect(text(mono)).toBe(name[0]);
+          /* The initial is drawn by the sheet (`::before`, from data-initial), so the box holds no text. */
+          expect(mono).toHaveAttribute("data-initial", name[0]);
+          expect(text(mono)).toBe("");
           expect(tile.querySelector(".tl-ours")).toBeNull();
           expect(link).toHaveAttribute("href", entry.tool!.url);
           expect(link).toHaveAttribute("target", "_blank");

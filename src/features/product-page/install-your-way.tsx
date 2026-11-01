@@ -6,7 +6,12 @@ import { LinuxMark, WindowsMark } from "@/components/brand/cloud-marks";
 import { Arrow } from "@/components/primitives/arrow";
 import { ExternalArrow } from "@/components/primitives/external-arrow";
 import { NewTabHint } from "@/components/primitives/new-tab-hint";
-import { coralInstall, type InstallLink, type InstallOsKey } from "@/content/coral-install";
+import {
+  coralInstall,
+  type InstallCloud,
+  type InstallLink,
+  type InstallOsKey,
+} from "@/content/coral-install";
 import { CommandLines } from "@/features/documents/doc-command-well";
 import {
   AppleMark,
@@ -330,8 +335,12 @@ function ZoorikctlCard(): React.JSX.Element {
   );
 }
 
-export function InstallYourWay(): React.JSX.Element {
+/** `cloud`: a cloud page shows only its own Terraform module; /coral passes nothing and shows both. */
+export function InstallYourWay({
+  cloud,
+}: { readonly cloud?: InstallCloud } = {}): React.JSX.Element {
   const { helm, terraform } = coralInstall;
+  const modules = cloud ? terraform.modules[cloud] : terraform.lines;
   return (
     <section className="sec" id="install" aria-labelledby="install-h">
       <div className="wrap">
@@ -376,7 +385,7 @@ export function InstallYourWay(): React.JSX.Element {
                   rather than breaking a path. */}
               <div className="iw-well">
                 <pre>
-                  {terraform.lines.map((line, index) => (
+                  {modules.map((line, index) => (
                     <span key={index}>
                       {index > 0 ? "\n" : null}
                       {line.startsWith("#") ? <i>{line}</i> : line}

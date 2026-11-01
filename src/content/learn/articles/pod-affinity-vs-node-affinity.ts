@@ -554,7 +554,7 @@ export const article: Article = {
             ],
             [
               { b: "The limits." },
-              " It respects PodDisruptionBudgets, do-not-disrupt and your autoscaler’s minimum pool size. Every pool keeps at least one node.",
+              " It respects PodDisruptionBudgets and do-not-disrupt. By default, Coral may reduce a pool’s minimum when that minimum alone keeps a node it has emptied, and disconnect puts the old minimum back. Every pool keeps at least one node.",
             ],
             [
               { b: "The drain." },

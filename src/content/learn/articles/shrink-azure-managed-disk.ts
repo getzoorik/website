@@ -340,11 +340,11 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
+              " The services that use those mounts restart once, at the switch onto the pool.",
             ],
             [
               { b: "The old disks." },
-              " Once the switch is checked, Amoeba snapshots each old disk and deletes the disk. It keeps each snapshot for a few days, then deletes it too.",
+              " Once the switch is checked, Amoeba snapshots each old disk and deletes the disk. It keeps each snapshot for 7 days, then deletes it too.",
             ],
             [
               { b: "Rightsizing." },
@@ -362,7 +362,13 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "On Linux, the VM needs a recent kernel with btrfs. Every service that keeps a data mount open must run under systemd. The VM also needs a few free disk slots for the pool.",
+          text: [
+            {
+              a: "Azure managed disk cost optimization",
+              href: "/azure-managed-disk-cost-optimization",
+            },
+            " covers the move and what a VM needs in full.",
+          ],
         },
       ],
     },

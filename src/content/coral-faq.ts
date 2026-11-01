@@ -441,7 +441,7 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
           "Only on HPAs Coral manages: ones it creates for safe Deployments, with minReplicas of 2 or more, and ones you created by hand that it takes over.",
           "On an HPA it takes over, Coral keeps minReplicas, only raises maxReplicas, and restores your values when it lets go.",
           "An HPA that Coral creates can scale a steady Deployment down to its minimum.",
-          "It never changes min or max on HPAs from Helm, Argo CD, Flux, KEDA or kubectl apply.",
+          "Outside a rebalance’s warm handover, it never changes min or max on HPAs from Helm, KEDA or kubectl apply, and never on HPAs whose bounds Argo CD or Flux own.",
         ],
       },
       {

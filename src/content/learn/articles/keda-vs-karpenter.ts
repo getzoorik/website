@@ -114,7 +114,7 @@ export const article: Article = {
             [
               "Managed by the cloud",
               "The KEDA add-on on AKS, preconfigured on AKS Automatic",
-              "Node auto-provisioning (NAP) on AKS, and EKS Auto Mode on EKS",
+              "Node auto provisioning (NAP) on AKS, and EKS Auto Mode on EKS",
             ],
             [
               "Changes pod requests",
@@ -150,7 +150,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "Microsoft’s AKS docs advise against pointing your own HPA and a ScaledObject at the same workload: the two compete. ",
-            { a: "KEDA vs HPA vs VPA", href: "/learn/keda-vs-hpa-vs-vpa" },
+            { a: "KEDA vs HPA", href: "/learn/keda-vs-hpa-vs-vpa" },
             " compares KEDA with the HPA on its own.",
           ],
         },
@@ -481,7 +481,7 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "KEDA vs HPA vs VPA: where event-driven scaling fits",
+      title: "KEDA vs HPA: where event-driven scaling fits",
       where: "Learn",
       href: "/learn/keda-vs-hpa-vs-vpa",
     },
@@ -500,6 +500,10 @@ export const article: Article = {
       where: "Coral FAQ",
       href: "/coral-faq#do-i-need-coral-with-karpenter",
     },
-    { title: "HPAs and VPAs", where: "Coral product guide", href: "/coral-guide#hpas-and-vpas" },
+    {
+      title: "HPAs and VPAs: what Coral does with each",
+      where: "Coral product guide",
+      href: "/coral-guide#hpas-and-vpas",
+    },
   ],
 };

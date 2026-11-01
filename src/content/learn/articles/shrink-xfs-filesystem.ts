@@ -377,11 +377,11 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " Amoeba copies your data while your services run. Then it switches each mount to the pool at the same path, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
+              " The services that use those mounts restart once, at the switch onto the pool.",
             ],
             [
               { b: "The old disks." },
-              " Once the switch is checked, Amoeba snapshots each old disk and deletes the disk. It keeps the snapshot for a few days, then deletes it too.",
+              " Once the switch is checked, Amoeba snapshots each old disk and deletes the disk. It keeps the snapshot for 7 days, then deletes it too.",
             ],
             [
               { b: "Cost during the move." },
@@ -396,10 +396,6 @@ export const article: Article = {
           ],
         },
         { kind: "h3", id: "what-the-vm-needs", title: "What the VM needs" },
-        {
-          kind: "p",
-          text: "On Linux, the VM needs a recent kernel with btrfs. Every service that keeps a data mount open must run under systemd. The VM also needs a few free disk slots for the pool.",
-        },
         {
           kind: "p",
           text: "Amoeba checks the running kernel, not the OS name. Where the kernel has no btrfs, the XFS mount stays where it is. The manual copy above is then the route.",

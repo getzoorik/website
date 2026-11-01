@@ -378,7 +378,7 @@ export const readMoreRows: Partial<Readonly<Record<ProductId, ReadMoreRow>>> = O
     group.product,
     {
       product: group.product,
-      title: "Read more",
+      title: `${products[group.product].name} docs and guides`,
       allDocs: { label: "All docs", href: `${routes.docs}#${group.product}` },
       tiles: group.tiles.filter((tile) => !tile.hubOnly),
     },

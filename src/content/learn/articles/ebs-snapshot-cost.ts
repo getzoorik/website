@@ -380,7 +380,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Amoeba keeps each snapshot for a few days, then deletes it too. It deletes only the snapshots it took, so the snapshots your own policies take are left alone.",
+          text: "Amoeba keeps each snapshot for 7 days, then deletes it too. It deletes only the snapshots it took, so the snapshots your own policies take are left alone.",
         },
         {
           kind: "p",
@@ -411,7 +411,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves an EC2 instance’s EBS data volumes onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one volume at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage cost optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
@@ -467,7 +467,7 @@ export const article: Article = {
       href: "/learn/azure-disk-snapshot-cost",
     },
     {
-      title: "EBS volume types: pricing and how to choose",
+      title: "EBS volume types compared: how to choose one",
       where: "Learn",
       href: "/learn/ebs-volume-types",
     },

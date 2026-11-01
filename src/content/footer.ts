@@ -60,12 +60,12 @@ export const footerBrand: {
   readonly lead: string;
   readonly lines: readonly { readonly product: ProductId; readonly rest: string }[];
 } = {
-  lead: " reduces cloud cost.",
+  lead: " reduces cloud cost, autonomously.",
   lines: [
-    { product: "coral", rest: " optimizes Kubernetes on AKS and EKS." },
+    { product: "coral", rest: " rebalances Kubernetes on AKS and EKS." },
     {
       product: "amoeba",
-      rest: " optimizes block storage on Windows and Linux VMs, on Azure and AWS.",
+      rest: " rightsizes block storage on Windows and Linux VMs, on Azure and AWS.",
     },
   ],
 };

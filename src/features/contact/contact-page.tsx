@@ -19,7 +19,7 @@ import { NEW_TAB_HINT, isOffSite, offSiteProps } from "@/lib/links";
  * `/contact`, on /partners' frame:
  *
  *   hero                        the title and one line
- *   the pair                    on the band: Book a call on the white card, Email on the navy one
+ *   the pair                    on the band: Book a demo on the white card, Email on the navy one
  *   What to write to us about   three groups, each topic as the guides' summary rows (its name, then its text and
  *                               links); the grievance officer, as /privacy names them, closes Security and privacy
  *   Company details             /about's company facts, on the band, then the line on writing by post

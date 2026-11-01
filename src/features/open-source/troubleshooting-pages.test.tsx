@@ -104,7 +104,7 @@ describe("the troubleshooting pages", () => {
       const root = draw(page);
       expect(text(root.querySelector("h1"))).toBe(page.title);
       expect(text(root.querySelector(".doc-updated"))).toBe(
-        "Updated 29 October 2026 · Published by Zoorik",
+        "Updated 1 November 2026 · Published by Zoorik",
       );
       expect(page.guide.short).toBeUndefined();
       expect(root.querySelector(".ar-short")).toBeNull();
@@ -185,7 +185,7 @@ describe("the troubleshooting pages", () => {
       "Check the network",
       "Check what connect set up in your cloud",
       "Wait for the first report",
-      "Check your Helm install",
+      "Check your Helm install if it says a resource already exists",
       "If the cluster shows “Not reporting”",
       "If the Agent release card says “Re-run connect”",
     ]);
@@ -228,7 +228,7 @@ describe("the troubleshooting pages", () => {
       "Check the VM’s subscription is included",
       "Check the VM is running and has a data disk",
       "Give the list a moment",
-      "On AWS, check the instance",
+      "On AWS, check the instance and Systems Manager",
       "Check the agent has reported",
       "If the install failed or the agent stopped",
     ]);

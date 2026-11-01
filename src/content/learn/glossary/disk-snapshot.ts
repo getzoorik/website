@@ -50,7 +50,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why disk snapshots matter for your cloud cost",
       blocks: [
         {
           kind: "ul",
@@ -76,7 +76,7 @@ export const term: GlossaryTerm = {
           text: [
             "Once the switch to the pool is checked, Amoeba snapshots each old disk and deletes the disk. On Azure it’s an ",
             { a: "incremental snapshot", href: "/learn/azure-disk-snapshot-cost" },
-            ", and on AWS an EBS snapshot. Amoeba keeps each snapshot for a few days, then deletes it too.",
+            ", and on AWS an EBS snapshot. Amoeba keeps each snapshot for 7 days, then deletes it too.",
           ],
         },
         {

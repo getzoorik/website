@@ -192,9 +192,9 @@ export const learnPriority: readonly string[] = [
 const learnNames: Readonly<Record<string, string>> = {
   "how-to-reduce-cloud-costs": "Cloud cost optimization: how to reduce cloud costs",
   "reduce-kubernetes-cost": "Kubernetes cost optimization",
-  "azure-disk-cost-optimization": "Azure disk cost optimization",
+  "azure-disk-cost-optimization": "Azure disk reservations",
   "shrink-azure-managed-disk": "Reduce Azure disk size: can a managed disk shrink?",
-  "kubernetes-cost-estimation": "Kubernetes cost estimation for AKS and EKS",
+  "kubernetes-cost-estimation": "Kubernetes cost estimation",
   "kubernetes-pod-right-sizing": "Kubernetes pod right sizing",
   "cluster-autoscaler-not-scaling-down": "Cluster Autoscaler not scaling down",
   "change-eks-node-group-instance-type": "Change an EKS node group instance type",
@@ -227,7 +227,7 @@ const learnNames: Readonly<Record<string, string>> = {
   "resize2fs-shrink-ext4": "resize2fs shrink ext4",
   "remove-disk-from-lvm": "Remove a disk from LVM",
   "vpa-vs-hpa": "VPA vs HPA",
-  "keda-vs-hpa-vs-vpa": "KEDA vs HPA vs VPA",
+  "keda-vs-hpa-vs-vpa": "KEDA vs HPA",
   "premium-ssd-v2-vs-premium-ssd": "Premium SSD v2 vs Premium SSD",
   "cordon-vs-drain": "Cordon vs drain",
   "premium-ssd-vs-standard-ssd-azure": "Premium SSD vs Standard SSD",
@@ -251,7 +251,7 @@ const learnNames: Readonly<Record<string, string>> = {
   "karpenter-vs-cluster-autoscaler": "Karpenter vs Cluster Autoscaler",
   "azure-disk-lrs-vs-zrs": "Azure disk LRS vs ZRS",
   "gp2-vs-gp3": "gp2 vs gp3",
-  "aks-node-auto-provisioning": "AKS node auto-provisioning (NAP)",
+  "aks-node-auto-provisioning": "AKS node auto provisioning (NAP)",
   "topology-spread-constraints": "Topology spread constraints",
   "ebs-elastic-volumes": "EBS Elastic Volumes",
   "is-btrfs-stable": "Is btrfs stable?",
@@ -364,7 +364,7 @@ export const learnMore: readonly {
   {
     href: routes.valueLab,
     title: caseStudiesHub.hero.title,
-    line: `${caseStudy.band.stats[0].value} on our own cluster’s monthly machine cost.`,
+    line: `${caseStudy.band.stats[0].value} on our own AKS cluster’s monthly machine cost.`,
   },
   {
     href: routes.cloudCostTools,

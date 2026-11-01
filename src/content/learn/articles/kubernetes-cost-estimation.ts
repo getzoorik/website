@@ -437,8 +437,8 @@ export const article: Article = {
       href: "/coral-faq#how-is-the-saving-worked-out",
     },
     {
-      title: "How we reduced AKS cluster costs by 58%",
-      where: "Case study",
+      title: "How we reduced our own AKS cluster’s machine cost by 58%",
+      where: "Coral Value Lab",
       href: "/coral-value-lab",
     },
   ],

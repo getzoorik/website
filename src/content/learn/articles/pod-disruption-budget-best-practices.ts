@@ -547,7 +547,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "A rebalance replaces the nodes you choose with cheaper machines that your Karpenter or AKS node auto-provisioning launches. It never goes past a PDB either.",
+          text: "A rebalance replaces the nodes you choose with cheaper machines that your Karpenter or AKS node auto provisioning launches. It never goes past a PDB either.",
         },
         {
           kind: "p",
@@ -557,7 +557,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "On our own AKS development cluster, node optimization removed one 4-CPU worker in under 10\u00a0minutes, and single-copy apps restarted once. ",
-            { a: "The case study", href: "/coral-value-lab" },
+            { a: "The Coral Value Lab study", href: "/coral-value-lab" },
             " has the figures.",
           ],
         },

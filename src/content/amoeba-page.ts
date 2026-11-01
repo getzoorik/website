@@ -114,7 +114,7 @@ export const amoebaPageContent: ProductPageContent = {
     example: elasticContent.caption,
   },
   readMore: {
-    title: "Read more",
+    title: "Amoeba docs and guides",
     allDocs: { label: "All docs", href: `${routes.docs}#amoeba` },
     tiles: [
       ...(amoebaDocs ? amoebaGuideAndFaq : []),

@@ -600,7 +600,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "**What it means:** During the move, the pool’s disks attach beside the old disks, so the VM needs a few free disk slots. A VM Amoeba declines, for example one with too few slots, shows why and stays on its own disks. Amoeba doesn’t move a VM that uses Azure Disk Encryption as it is.",
+            text: "**What it means:** During the move, the pool’s disks attach beside the source disks, so the VM needs a few free disk slots. A VM Amoeba declines, for example one with too few slots, shows why and stays on its own disks. Amoeba doesn’t move a VM that uses Azure Disk Encryption as it is.",
           },
           {
             kind: "p",

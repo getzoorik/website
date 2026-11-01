@@ -470,10 +470,6 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "On Linux, the VM needs a recent kernel with btrfs. Every service that keeps a data mount open must run under systemd, so Amoeba can stop it and start it again at the switch. The VM also needs a few free disk slots for the pool.",
-        },
-        {
-          kind: "p",
           text: [
             "The pages on ",
             {

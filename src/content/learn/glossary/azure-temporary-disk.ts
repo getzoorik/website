@@ -59,7 +59,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why Azure temporary storage matters for your cloud cost",
       blocks: [
         {
           kind: "ul",

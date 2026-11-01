@@ -51,7 +51,7 @@ export function CaseBand(): React.JSX.Element {
             {/* The mock's markup, a space before the arrow included: inside the inline-flex
                 button it collapses. */}
             <a className="btn btn-light" href={caseBand.cta.href}>
-              {caseBand.cta.label} <Arrow />
+              <NamedText text={caseBand.cta.label} name={products.coral.name} /> <Arrow />
             </a>
           </div>
           <figure

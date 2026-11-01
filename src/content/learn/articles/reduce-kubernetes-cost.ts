@@ -20,7 +20,7 @@ export const article: Article = {
   coverAlt:
     "Reduce Kubernetes cost: rebalance requests, and the cluster has one node fewer to pay for",
   short:
-    "Kubernetes cost optimization takes two steps, in this order. First, rebalance each container’s CPU and memory requests to what it uses, since node autoscalers count requests, not use. Then let the Cluster Autoscaler, Karpenter or AKS node auto-provisioning (NAP) remove spare nodes: smaller requests reduce cost only once a node goes.",
+    "Kubernetes cost optimization takes two steps, in this order. First, rebalance each container’s CPU and memory requests to what it uses, since node autoscalers count requests, not use. Then let the Cluster Autoscaler, Karpenter or AKS node auto provisioning (NAP) remove spare nodes: smaller requests reduce cost only once a node goes.",
   sections: [
     {
       id: "you-pay-for-nodes-and-requests-decide",
@@ -375,7 +375,7 @@ export const article: Article = {
             ],
             [
               { b: "Nodes." },
-              " Node optimization is on from install. Coral checks that every pod on a node fits on another Ready node, then cordons and drains one node at a time. If a drain can’t finish in 10\u00a0minutes, the node goes back into service.",
+              " Node optimization is on from install. Coral checks that every pod on a node fits on another Ready node, then cordons and drains one node at a time. If a drain can’t finish in time, the node goes back into service.",
             ],
             [
               { b: "Machines." },
@@ -383,7 +383,7 @@ export const article: Article = {
             ],
             [
               { b: "Held nodes." },
-              " Consolidation respects PDBs, any pod or node marked not to be disrupted, and your autoscaler’s minimum pool size. Node list → “What’s holding them” gives each held node’s reason and fix.",
+              " Consolidation respects PDBs and any pod or node marked not to be disrupted. By default, Coral may reduce a pool’s minimum when that minimum alone keeps a node it has emptied, and disconnect puts the old minimum back. Node list → “What’s holding them” gives each held node’s reason and fix.",
             ],
             [
               { b: "Restarts." },
@@ -402,7 +402,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            { a: "The case study", href: "/coral-value-lab" },
+            { a: "The Coral Value Lab study", href: "/coral-value-lab" },
             " has the full timeline, and its 58% also counts a swap to a cheaper worker on 12 October.",
           ],
         },
@@ -483,8 +483,8 @@ export const article: Article = {
       href: "/coral-faq#if-workload-optimization-reduces-requests-how",
     },
     {
-      title: "How we reduced our own cluster’s machine bill by 58%",
-      where: "Case study",
+      title: "How we reduced our own AKS cluster’s machine cost by 58%",
+      where: "Coral Value Lab",
       href: "/coral-value-lab",
     },
   ],

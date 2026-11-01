@@ -436,7 +436,7 @@ export const article: Article = {
             ],
             [
               { b: "Removal." },
-              " Coral hands each emptied node to your Cluster Autoscaler, AKS node auto-provisioning (NAP) or Karpenter, whose own timers decide when it goes. It deletes machines itself only in fixed-size pools that nothing else manages. Pools that Karpenter or NAP already consolidates are left to them.",
+              " Coral hands each emptied node to your Cluster Autoscaler, AKS node auto provisioning (NAP) or Karpenter, whose own timers decide when it goes. It deletes machines itself only in fixed-size pools that nothing else manages. Pools that Karpenter or NAP already consolidates are left to them.",
             ],
           ],
         },
@@ -477,7 +477,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "Apps that run a single copy restarted once on another machine. The full run is in ",
-            { a: "the case study", href: "/coral-value-lab" },
+            { a: "the Coral Value Lab study", href: "/coral-value-lab" },
             ".",
           ],
         },

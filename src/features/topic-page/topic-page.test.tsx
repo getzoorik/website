@@ -80,7 +80,7 @@ const cases: readonly (readonly [string, Case])[] = [
       content: azureCostOptimizationPage,
       title: "Azure cost optimization: how to reduce Azure costs",
       description:
-        "Azure cost optimization, line by line: how to reduce Azure costs on VMs, managed disks, AKS and data transfer, and where Microsoft Cost Management fits.",
+        "Azure cost optimization, line by line: how to reduce Azure costs on VMs, managed disks, AKS and data transfer, and where Azure cost management fits.",
       eyebrow: "Azure",
       card: "azure-cost-optimization",
       sections: [
@@ -257,9 +257,7 @@ describe.each(cases)("%s", (path, c) => {
       ...content.sections.map((section) => [section.id, plain(section.title)]),
       ["coral-and-amoeba", "Where Coral and Amoeba fit"],
       ["questions", plain(content.questions.title)],
-      ["read-more", "Read more"],
-      ["assess", "Find your own number"],
-      ["assess", "Talk to the builders"],
+      ["read-more", content.readMore.title],
     ]);
     /* No heading level is skipped. */
     const levels = [...main.querySelectorAll("h1, h2, h3, h4")].map((h) => Number(h.tagName[1]));
@@ -394,7 +392,11 @@ describe.each(cases)("%s", (path, c) => {
   it("ends on Read more, six tiles, then the closing row naming both products", () => {
     const page = renderPage(path, c);
     const read = page.querySelector("main > section.sec#read-more")!;
-    expect(text(read.querySelector(".sec-hrow > h2#read-more-h"))).toBe("Read more");
+    expect(text(read.querySelector(".sec-hrow > h2#read-more-h"))).toBe(
+      path === routes.azureCostOptimization
+        ? "More on Azure cost optimization"
+        : "More on AWS cost optimization",
+    );
     const tiles = [...read.querySelectorAll(".dt-grid > article.dt")];
     expect(tiles).toHaveLength(6);
     expect(

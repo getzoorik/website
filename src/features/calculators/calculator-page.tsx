@@ -51,6 +51,7 @@ function Blocks({ blocks }: { readonly blocks: readonly CalculatorBlock[] }): Re
 function Table({ table }: { readonly table: ReferenceTable }): React.JSX.Element {
   return (
     <>
+      {table.heading ? <h3>{richText(table.heading)}</h3> : null}
       <h4>{richText(table.title)}</h4>
       <table className="doc-tbl nw-tbl" role="table">
         <colgroup>
@@ -110,7 +111,7 @@ export function CalculatorPage({
         <div className="wrap">
           {/* The section's h2, for the outline only: the node result's h3s would otherwise follow the h1. */}
           <h2 className="sr-only" id="calculator-h">
-            Calculator
+            {copy.heading ?? "Calculator"}
           </h2>
           <div className="calc-intro">
             {copy.intro.map((line) => (

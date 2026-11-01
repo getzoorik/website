@@ -436,7 +436,7 @@ export const article: Article = {
       href: "/learn/oomkilled-exit-code-137",
     },
     {
-      title: "How sizes are worked out",
+      title: "How Coral works out pod sizes",
       where: "Coral product guide",
       href: "/coral-guide#how-sizes-are-worked-out",
     },

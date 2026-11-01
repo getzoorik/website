@@ -56,7 +56,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why anomaly detection matters for your cloud cost",
       blocks: [
         {
           kind: "ul",
@@ -83,7 +83,7 @@ export const term: GlossaryTerm = {
     },
   ],
   related: [
-    { title: "FinOps", line: "Shared ownership of cloud spend.", href: "/learn/glossary/finops" },
+    { title: "FinOps", line: "Shared ownership of cloud cost.", href: "/learn/glossary/finops" },
     {
       title: "Showback",
       line: "Reports each team’s share of the cost.",

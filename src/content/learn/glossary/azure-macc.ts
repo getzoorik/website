@@ -49,7 +49,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why Azure MACC matters for your cloud cost",
       blocks: [
         { kind: "h3", id: "the-macc-shortfall-charge", title: "The MACC shortfall charge" },
         {

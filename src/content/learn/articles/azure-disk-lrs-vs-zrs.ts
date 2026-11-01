@@ -476,7 +476,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "A move only goes forward. Once the switch is checked, Amoeba snapshots and deletes each old disk. It keeps the snapshots for a few days, then deletes them too.",
+          text: "A move only goes forward. Once the switch is checked, Amoeba snapshots and deletes each old disk. It keeps the snapshots for 7 days, then deletes them too.",
         },
         {
           kind: "p",

@@ -15,9 +15,10 @@ const rowOf = (props: AssessSectionProps = {}) => render(<AssessSection {...prop
 const text = (el: Element | null) => el?.textContent ?? "";
 
 describe("the closing row's copy", () => {
-  it("is the mocks' words, with no period on either heading", () => {
+  it("is the mocks' words, with no period on either label, and no heading", () => {
     const row = rowOf();
-    expect([...row.querySelectorAll("h2.as-h")].map(text)).toEqual([
+    expect(row.querySelector("h2")).toBeNull();
+    expect([...row.querySelectorAll("div.as-h")].map(text)).toEqual([
       "Find your own number",
       "Talk to the builders",
     ]);

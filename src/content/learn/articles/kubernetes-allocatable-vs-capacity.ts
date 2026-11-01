@@ -333,7 +333,7 @@ export const article: Article = {
     },
     {
       id: "size-pods-against-allocatable",
-      title: "Size pods against allocatable, then rebalance requests",
+      title: "Size pods against allocatable, then set requests from real use",
       blocks: [
         {
           kind: "p",
@@ -397,7 +397,7 @@ export const article: Article = {
             ],
             [
               { b: "Spare nodes." },
-              " Node optimization is on from install. It works out from pod requests how many nodes each pool needs, keeps at least one per pool, and leaves to Karpenter, or AKS node auto-provisioning (NAP), the pools they already consolidate. Coral first checks on the live cluster that every pod on a node fits on another Ready node. Then it cordons and drains one node at a time, and hands the empty node to your Cluster Autoscaler, NAP or Karpenter. In a fixed-size pool that nothing else manages, Coral removes the machine itself. A pod gets a short restart if its replacement can’t start first.",
+              " Node optimization is on from install. It works out from pod requests how many nodes each pool needs, keeps at least one per pool, and leaves to Karpenter, or AKS node auto provisioning (NAP), the pools they already consolidate. Coral first checks on the live cluster that every pod on a node fits on another Ready node. Then it cordons and drains one node at a time, and hands the empty node to your Cluster Autoscaler, NAP or Karpenter. In a fixed-size pool that nothing else manages, Coral removes the machine itself. A pod gets a short restart if its replacement can’t start first.",
             ],
             [
               { b: "Opt-in." },
@@ -487,13 +487,13 @@ export const article: Article = {
       href: "/learn/kubernetes-node-size-best-practices",
     },
     {
-      title: "How sizes are worked out",
+      title: "How Coral works out pod sizes",
       where: "Coral product guide",
       href: "/coral-guide#how-sizes-are-worked-out",
     },
     {
-      title: "How we reduced our own cluster’s machine bill by 58%",
-      where: "Case study",
+      title: "How we reduced our own AKS cluster’s machine cost by 58%",
+      where: "Coral Value Lab",
       href: "/coral-value-lab",
     },
   ],

@@ -33,7 +33,7 @@ describe("the footer's brand column", () => {
   it("says what Zoorik and each product do, Coral first, each name kept out of translation", () => {
     const line = footerOf().querySelector(".foot-brand > p:not(.az-badge)")!;
     expect(line.textContent).toBe(
-      "Zoorik reduces cloud cost. Coral optimizes Kubernetes on AKS and EKS. Amoeba optimizes block storage on Windows and Linux VMs, on Azure and AWS.",
+      "Zoorik reduces cloud cost, autonomously. Coral rebalances Kubernetes on AKS and EKS. Amoeba rightsizes block storage on Windows and Linux VMs, on Azure and AWS.",
     );
     expect([...line.querySelectorAll('[translate="no"]')].map((el) => el.textContent)).toEqual([
       "Zoorik",

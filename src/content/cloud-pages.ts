@@ -283,7 +283,7 @@ export const aksCostOptimizationPage: CoralCloudPage = {
     ],
   },
   readMore: {
-    title: "Read more",
+    title: "Coral docs and guides",
     allDocs: { label: "All docs", href: `${routes.docs}#coral` },
     tiles: [
       {
@@ -429,7 +429,7 @@ export const eksCostOptimizationPage: CoralCloudPage = {
     ],
   },
   readMore: {
-    title: "Read more",
+    title: "Coral docs and guides",
     allDocs: { label: "All docs", href: `${routes.docs}#coral` },
     tiles: [
       {
@@ -529,6 +529,7 @@ export const azureManagedDiskCostOptimizationPage: AmoebaCloudPage = {
       "The role is the limit on what Zoorik can do in your Azure. A permission added to the role later reaches your subscription only when you run the script again.",
       "Onboarding is your go-ahead. After the agent's first report, the move starts by itself.",
       "A move only goes forward. Amoeba deletes a source disk only after its own snapshot has succeeded.",
+      "You pay for both sets of disks only while the move runs, and then for the snapshots while they’re kept.",
     ],
   },
   needs: {
@@ -572,14 +573,14 @@ export const azureManagedDiskCostOptimizationPage: AmoebaCloudPage = {
     ],
   },
   readMore: {
-    title: "Read more",
+    title: "Amoeba docs and guides",
     allDocs: { label: "All docs", href: `${routes.docs}#amoeba` },
     tiles: [
       /* /amoeba's guide and FAQ tiles, behind its flag: drawn only while both are published. */
       ...(amoebaDocs ? amoebaGuideAndFaq : []),
       {
         kind: "page",
-        title: "Azure disk cost optimization",
+        title: "Azure disk reservations: are they worth it?",
         line: "What a managed disk is charged for, and how to pay for your data",
         href: learnPath("azure-disk-cost-optimization"),
       },
@@ -713,7 +714,7 @@ export const ebsCostOptimizationPage: AmoebaCloudPage = {
     ],
   },
   readMore: {
-    title: "Read more",
+    title: "Amoeba docs and guides",
     allDocs: { label: "All docs", href: `${routes.docs}#amoeba` },
     tiles: [
       /* /amoeba's guide and FAQ tiles, behind its flag: drawn only while both are published. */

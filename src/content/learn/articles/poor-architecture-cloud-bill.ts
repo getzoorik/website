@@ -150,7 +150,7 @@ export const article: Article = {
       ],
     },
     {
-      id: "how-we-review-an-architecture-for-cost",
+      id: "how-we-approach-cloud-cost-optimization-as",
       title: "How we review an architecture for cost",
       blocks: [
         {
@@ -271,7 +271,7 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS. Once workloads share a cluster, the next cost is the one in the Watch out above: requests set far above use. Coral rebalances CPU and memory requests to measured use, works with your HPA, and drains spare nodes so your Cluster Autoscaler, AKS node auto-provisioning or Karpenter can remove them.",
+            " optimizes Kubernetes on AKS and EKS. Once workloads share a cluster, the next cost is the one in the Watch out above: requests set far above use. Coral rebalances CPU and memory requests to measured use, works with your HPA, and drains spare nodes so your Cluster Autoscaler, AKS node auto provisioning or Karpenter can remove them.",
           ],
         },
         {
@@ -322,7 +322,7 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "How we reduced AKS cluster costs by 58%",
+      title: "How we reduced our own AKS cluster’s machine cost by 58%",
       where: "Coral Value Lab",
       href: "/coral-value-lab",
     },
@@ -337,7 +337,7 @@ export const article: Article = {
       href: "/learn/shrink-azure-managed-disk",
     },
     {
-      title: "VPA vs HPA: when to use which, and why to rebalance first",
+      title: "VPA vs HPA: when to use which",
       where: "Learn",
       href: "/learn/vpa-vs-hpa",
     },

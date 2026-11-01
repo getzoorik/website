@@ -171,7 +171,7 @@ export const article: Article = {
             [
               "On AKS",
               "Built in: you switch it on per node pool",
-              "Node auto-provisioning (NAP), which runs Karpenter for you",
+              "Node auto provisioning (NAP), which runs Karpenter for you",
             ],
           ],
         },
@@ -346,7 +346,7 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Watch out",
-          text: "Microsoft warns that the AKS cluster autoscaler and node auto-provisioning (NAP) both “react to pending pod pressure, and can lead to double provisioning of nodes”. Its migration guide’s fix is mutually exclusive scheduling, with a taint on each side and a toleration that sends each workload to one of them.",
+          text: "Microsoft warns that the AKS cluster autoscaler and node auto provisioning (NAP) both “react to pending pod pressure, and can lead to double provisioning of nodes”. Its migration guide’s fix is mutually exclusive scheduling, with a taint on each side and a toleration that sends each workload to one of them.",
         },
         { kind: "svg", figure: figure2 },
         {
@@ -604,7 +604,7 @@ export const article: Article = {
       href: "/learn/aks-node-auto-provisioning",
     },
     {
-      title: "HPA vs VPA vs Cluster Autoscaler: what each one scales",
+      title: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
       where: "Learn",
       href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
     },

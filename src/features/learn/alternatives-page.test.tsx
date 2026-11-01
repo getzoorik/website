@@ -6,6 +6,7 @@ import { routes } from "@/config/site";
 import { pageCards } from "@/config/social";
 import { pageStructuredData } from "@/config/structured-data";
 import {
+  alternativesCopy,
   alternativesPages,
   versusPages,
   versusRoute,
@@ -87,7 +88,8 @@ describe.each(alternativesPages.map((entry) => [entry.route, entry] as const))(
       const root = page();
       expect(text(root.querySelector(".vp-kick"))).toBe("Alternatives · checked 19 October 2026");
       expect(text(root.querySelector("h1"))).toBe(entry.h1);
-      expect(text(root.querySelector(".doc-deck"))).toBe(entry.meta.description);
+      /* The deck is the page's own where it has one; the description carries the searches (1 Nov 2026). */
+      expect(text(root.querySelector(".doc-deck"))).toBe(entry.deck ?? entry.meta.description);
       const blocks = root.querySelectorAll('script[type="application/ld+json"]');
       expect(blocks).toHaveLength(1);
       expect(JSON.parse(blocks[0]!.textContent!)).toEqual(
@@ -97,6 +99,13 @@ describe.each(alternativesPages.map((entry) => [entry.route, entry] as const))(
         "choose",
         "options",
         "assess",
+      ]);
+      /* Each section under the page's own name where it has one. */
+      expect(
+        ["choose", "options"].map((id) => text(root.querySelector(`section#${id} h2`))),
+      ).toEqual([
+        entry.titles?.choose ?? alternativesCopy.choose.title,
+        entry.titles?.options ?? alternativesCopy.options.title,
       ]);
     });
 

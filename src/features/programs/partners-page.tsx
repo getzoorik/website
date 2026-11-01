@@ -114,7 +114,8 @@ function Pair(): React.JSX.Element {
 
 /**
  * Coral's two store buttons, as the footer draws its own (mark, store name, the arrow out), each opening Coral's
- * listing in that store, since the line beside them names Coral.
+ * listing in that store; the line beside them names Coral and Amoeba, and All marketplaces under them goes on to the
+ * rest.
  */
 function Stores(): React.JSX.Element {
   return (

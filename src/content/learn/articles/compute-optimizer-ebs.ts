@@ -370,11 +370,11 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
+              " The services that use those mounts restart once, at the switch onto the pool.",
             ],
             [
               { b: "The old volumes." },
-              " Once the switch is checked, Amoeba snapshots each old volume and deletes it. It keeps each snapshot for a few days, then deletes it too. You pay for both sets of volumes only while the move runs, then for the snapshots while they’re kept.",
+              " Once the switch is checked, Amoeba snapshots each old volume and deletes it. It keeps each snapshot for 7 days, then deletes it too. You pay for both sets of volumes only while the move runs, then for the snapshots while they’re kept.",
             ],
             [
               { b: "Your control." },
@@ -400,7 +400,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves an EC2 instance’s EBS data volumes onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one volume at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage cost optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
@@ -466,7 +466,7 @@ export const article: Article = {
       href: "/learn/ebs-elastic-volumes",
     },
     {
-      title: "EBS volume types: pricing and how to choose",
+      title: "EBS volume types compared: how to choose one",
       where: "Learn",
       href: "/learn/ebs-volume-types",
     },

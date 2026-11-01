@@ -382,7 +382,7 @@ export const article: Article = {
             ],
             [
               { b: "Cleanup." },
-              " Amoeba keeps each snapshot for a few days, then deletes it. It deletes only the snapshots it created.",
+              " Amoeba keeps each snapshot for 7 days, then deletes it. It deletes only the snapshots it created.",
             ],
           ],
         },

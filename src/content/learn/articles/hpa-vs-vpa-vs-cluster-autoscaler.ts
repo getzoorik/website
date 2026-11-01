@@ -24,7 +24,7 @@ export const article: Article = {
     { a: "Horizontal Pod Autoscaler (HPA)", href: "/learn/glossary/horizontal-pod-autoscaler" },
     " sets how many pods run, the ",
     { a: "Vertical Pod Autoscaler (VPA)", href: "/learn/glossary/vertical-pod-autoscaler" },
-    " what each requests, and the Cluster Autoscaler the nodes. Karpenter and AKS node auto-provisioning (NAP) do the node job, with machines chosen to fit the pods.",
+    " what each requests, and the Cluster Autoscaler the nodes. Karpenter and AKS node auto provisioning (NAP) do the node job, with machines chosen to fit the pods.",
   ],
   sections: [
     {
@@ -103,7 +103,7 @@ export const article: Article = {
           text: [
             { a: "HPA vs VPA", href: "/learn/vpa-vs-hpa" },
             " walks through how the two work against each other on CPU, and ",
-            { a: "KEDA vs HPA vs VPA", href: "/learn/keda-vs-hpa-vs-vpa" },
+            { a: "KEDA vs HPA", href: "/learn/keda-vs-hpa-vs-vpa" },
             " covers event-driven scaling. ",
             { a: "KEDA vs Karpenter", href: "/learn/keda-vs-karpenter" },
             " shows how event-driven pod scaling meets node scaling.",
@@ -363,7 +363,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "On our own AKS development cluster, Coral removed one of two 4-CPU workers, then rebalanced the remaining worker onto a cheaper machine of the same size. Eight days after we connected it, the cluster cost $154.76 a month instead of $368.65.",
+          text: "On our own AKS development cluster, Coral removed one of two 4-CPU workers, then rebalanced the remaining worker onto a cheaper machine of the same size. Eight days after we connected it, the cluster’s machines cost $154.76 a month instead of $368.65.",
         },
         {
           kind: "p",
@@ -430,12 +430,12 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "VPA vs HPA: when to use which, and why to rebalance first",
+      title: "VPA vs HPA: when to use which",
       where: "Learn",
       href: "/learn/vpa-vs-hpa",
     },
     {
-      title: "KEDA vs HPA vs VPA: where event-driven scaling fits",
+      title: "KEDA vs HPA: where event-driven scaling fits",
       where: "Learn",
       href: "/learn/keda-vs-hpa-vs-vpa",
     },

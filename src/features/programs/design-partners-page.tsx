@@ -25,7 +25,7 @@ import {
  *
  *   hero            the title and one line
  *   the pair        on the band: the offer on the white card ("Open now · the first 10", a slot for each place, free on
- *                   non-production, a ready email), and what we ask on the navy one (three things, ticked; Book a call,
+ *                   non-production, a ready email), and what we ask on the navy one (three things, ticked; Book a demo,
  *                   in a new tab)
  *   What you get    four tiles, each with its glyph
  *   How it works    the program as a path: four numbered steps on one line
@@ -97,7 +97,7 @@ function Steps(): React.JSX.Element {
               {index + 1}
             </span>
             <h3>{step.title}</h3>
-            <p>{step.line}</p>
+            <p>{named(step.line)}</p>
           </li>
         ))}
       </ol>

@@ -14,7 +14,7 @@ import { ValueLabMark } from "./value-lab-mark";
  *   hero          the page's name and its line, and beside them what the studies saved so far, as of the newest
  *                 study's day, its dot pulsing and its figure counting up once (`SavedSoFar`)
  *   studies       on the band, the closing row's pair: each study on a white card (the mark, its figure before and
- *                 after as two bars on one scale, "Read the case study"), the featured Coral study then the Amoeba
+ *                 after as two bars on one scale, "Read the Coral Value Lab study"), the featured Coral study then the Amoeba
  *                 one; under the pair, on a row of its own, "Want to be next?" on the navy card (the free assessment)
  *   closing row   for both products, as the hub holds a study of each
  *
@@ -95,7 +95,7 @@ function Studies(): React.JSX.Element {
               <p>{named(card.line)}</p>
               <Bars card={card} />
               <a className="btn-ink" href={card.href}>
-                {caseStudiesHub.card.read} <Arrow />
+                {named(card.read)} <Arrow />
               </a>
             </Reveal>
           ))}

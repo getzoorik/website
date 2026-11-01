@@ -333,7 +333,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "Karpenter on EKS and ",
-            { a: "node auto-provisioning (NAP)", href: "/learn/aks-node-auto-provisioning" },
+            { a: "node auto provisioning (NAP)", href: "/learn/aks-node-auto-provisioning" },
             " on AKS turn size into a range. NAP uses Karpenter’s NodePool API.",
           ],
         },
@@ -442,7 +442,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "Apps that run a single copy were back in 5 to 82\u00a0seconds. By then, the cluster’s machines cost $154.76 a month instead of $368.65, at Azure list prices. ",
-            { a: "The case study", href: "/coral-value-lab" },
+            { a: "The Coral Value Lab study", href: "/coral-value-lab" },
             " has the full run.",
           ],
         },
@@ -514,7 +514,7 @@ export const article: Article = {
       href: "/learn/kubernetes-bin-packing",
     },
     {
-      title: "How to choose AKS node sizes",
+      title: "How to choose AKS VM sizes",
       where: "Learn",
       href: "/learn/how-to-choose-aks-node-sizes",
     },

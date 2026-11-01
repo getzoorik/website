@@ -157,9 +157,12 @@ export interface ArticleRelated {
   readonly href: string;
 }
 
-/** "How Coral helps": the product it names, one paragraph and its links. */
+/**
+ * "How Coral helps" (or Amoeba), or "How Coral and Amoeba help" when it names no one product: the product, one
+ * paragraph and its links.
+ */
 export interface ArticleHelp {
-  readonly product: ProductId;
+  readonly product?: ProductId;
   readonly text: ArticleText;
   readonly links: readonly { readonly label: string; readonly href: string }[];
 }
@@ -180,6 +183,18 @@ export const learnTopics = [
 ] as const;
 
 export type LearnTopic = (typeof learnTopics)[number];
+
+/** The Related row's heading, by the article's topic, so it names what the tiles are about. */
+export const relatedTitle: Readonly<Record<LearnTopic, string>> = {
+  "Cloud cost": "More on cloud cost",
+  "Kubernetes cost basics": "More on Kubernetes cost basics",
+  "Kubernetes autoscaling": "More on Kubernetes autoscaling",
+  "Node lifecycle and scheduling": "More on node lifecycle and scheduling",
+  "Kubernetes storage": "More on Kubernetes storage",
+  "Azure block storage": "More on Azure block storage",
+  "AWS block storage": "More on AWS block storage",
+  "Linux filesystems": "More on Linux filesystems",
+};
 
 export interface Article {
   /** The file's name, and the page's address, /learn/<slug>, where it has no `route`. */
@@ -243,5 +258,4 @@ export const articleWords = {
   by: " · Published by ",
   short: "Short answer.",
   sources: "Sources: ",
-  related: "Related",
 } as const;

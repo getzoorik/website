@@ -369,7 +369,7 @@ export const article: Article = {
           text: [
             "If none of them holds, keep gp3 at the IOPS and throughput you measured. If you’re still on gp2, ",
             { a: "moving to gp3", href: "/learn/gp2-vs-gp3" },
-            " comes first. AWS prices gp3 20% below gp2 per GiB.",
+            " comes first. AWS prices gp3 20% below gp2 per GB.",
           ],
         },
         {
@@ -456,11 +456,11 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " Amoeba copies your data while your services run, then switches each mount to the pool with a short restart of those services. If the switch fails, it puts the original mounts back and tries again.",
+              " The services that use those mounts restart once, at the switch onto the pool.",
             ],
             [
               { b: "The old volumes." },
-              " Once the switch is checked, Amoeba snapshots and deletes each old volume, then deletes the snapshots a few days later. You pay for both sets of volumes only while the move runs, then for the snapshots while they’re kept.",
+              " Once the switch is checked, Amoeba snapshots and deletes each old volume, then deletes the snapshots 7 days later. You pay for both sets of volumes only while the move runs, then for the snapshots while they’re kept.",
             ],
           ],
         },
@@ -473,7 +473,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves an EC2 instance’s EBS data volumes onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one volume at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage cost optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },

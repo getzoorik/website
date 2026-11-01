@@ -8,9 +8,11 @@ import type { Author } from "@/content/authors";
 import {
   articleWords,
   learnTopics,
+  relatedTitle,
   type Article,
   type ArticleBlock,
   type ArticleColumn,
+  type ArticleHelp,
   type ArticleItem,
   type ArticleSource,
   type ArticleText,
@@ -506,6 +508,32 @@ function Byline({ author }: { readonly author: Author }): React.JSX.Element {
   );
 }
 
+/**
+ * The help box's links in one row, a space between each so the page's text does not run "CoralEstimate": in the box,
+ * or at the end of the article's own product section.
+ */
+function HelpLinks({
+  links,
+  className,
+}: {
+  readonly links: ArticleHelp["links"];
+  readonly className: string;
+}): React.JSX.Element {
+  return (
+    <p className={className}>
+      {links.map((link, index) => (
+        <Fragment key={link.href}>
+          {index > 0 ? " " : null}
+          <a className="alink" href={link.href}>
+            <span>{named(link.label)}</span>
+            <Arrow />
+          </a>
+        </Fragment>
+      ))}
+    </p>
+  );
+}
+
 export function ArticlePage({ article }: { readonly article: Article }): React.JSX.Element {
   const sources = article.sources ?? [];
   const author = articleAuthor(article);
@@ -513,6 +541,16 @@ export function ArticlePage({ article }: { readonly article: Article }): React.J
   /* The closing row leads to the help box's product, else the article's own; an article about both offers both. */
   const product =
     article.help?.product ?? (article.product === "both" ? undefined : article.product);
+  /* An article that ends on its own product's section ("How Coral drains nodes") takes the help box's links at the
+     end of that section and draws no box, which would repeat the section's pitch. */
+  const helpNames = article.help?.product
+    ? [products[article.help.product].name]
+    : [products.coral.name, products.amoeba.name];
+  const last = article.sections.at(-1);
+  const helpInLast = Boolean(
+    article.help && last && helpNames.some((name) => last.title.includes(name)),
+  );
+  const helpBox = article.help && !helpInLast ? article.help : undefined;
 
   return (
     <DocumentPage hero={{ title: named(article.h1), deck: named(article.deck) }} product={product}>
@@ -530,8 +568,13 @@ export function ArticlePage({ article }: { readonly article: Article }): React.J
                 </>
               ) : null}
               {author ? <Byline author={author} /> : null}
-              {articleWords.by}
-              <a href={routes.about}>{named("Zoorik")}</a>
+              {/* A Zoorik author's role already names Zoorik: " · Published by Zoorik" only for a guest or no one. */}
+              {author && !author.guest ? null : (
+                <>
+                  {articleWords.by}
+                  <a href={routes.about}>{named("Zoorik")}</a>
+                </>
+              )}
             </p>
             {article.cover ? (
               <figure className="ar-cover">
@@ -562,27 +605,29 @@ export function ArticlePage({ article }: { readonly article: Article }): React.J
           id: section.id,
           title: named(section.title),
           chip: named(section.title),
-          body: section.blocks.map((block, index) => <Block block={block} set={set} key={index} />),
+          body: [
+            ...section.blocks.map((block, index) => <Block block={block} set={set} key={index} />),
+            ...(helpInLast && article.help && section === last
+              ? [<HelpLinks links={article.help.links} className="ar-help-a" key="help" />]
+              : []),
+          ],
         }))}
         foot={
-          article.help || sources.length > 0 ? (
+          helpBox || sources.length > 0 ? (
             <>
-              {article.help ? (
+              {helpBox ? (
                 <aside className="doc-call doc-help">
                   <p className="doc-call-t">
-                    {named(`How ${products[article.help.product].name} helps`)}
+                    {named(
+                      helpBox.product
+                        ? `How ${products[helpBox.product].name} helps`
+                        : "How Coral and Amoeba help",
+                    )}
                   </p>
                   <p>
-                    <Text text={article.help.text} breaks={set.breaks} />
+                    <Text text={helpBox.text} breaks={set.breaks} />
                   </p>
-                  <p className="doc-help-a">
-                    {article.help.links.map((link) => (
-                      <a className="alink" href={link.href} key={link.href}>
-                        <span>{named(link.label)}</span>
-                        <Arrow />
-                      </a>
-                    ))}
-                  </p>
+                  <HelpLinks links={helpBox.links} className="doc-help-a" />
                 </aside>
               ) : null}
               {sources.length > 0 ? <Sources sources={sources} /> : null}
@@ -591,7 +636,7 @@ export function ArticlePage({ article }: { readonly article: Article }): React.J
         }
       />
 
-      <RelatedRow title={articleWords.related}>
+      <RelatedRow title={relatedTitle[article.topic]}>
         {article.related.map((tile) => {
           const link = titleLink({ text: tile.title, href: tile.href });
           return (

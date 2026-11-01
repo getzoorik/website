@@ -491,7 +491,7 @@ export const article: Article = {
               ", the default, removes or replaces any node it can to reduce cost. ",
               { code: "WhenEmpty" },
               " removes only empty nodes. On AKS, ",
-              { a: "node auto-provisioning (NAP)", href: "/learn/aks-node-auto-provisioning" },
+              { a: "node auto provisioning (NAP)", href: "/learn/aks-node-auto-provisioning" },
               " is based on Karpenter.",
             ],
             [
@@ -580,7 +580,10 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: [{ a: "The case study", href: "/coral-value-lab" }, " has the full run."],
+          text: [
+            { a: "The Coral Value Lab study", href: "/coral-value-lab" },
+            " has the full run.",
+          ],
         },
       ],
     },

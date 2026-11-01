@@ -389,7 +389,7 @@ export const azureCostOptimizationPage: TopicPage = {
     ],
   },
   readMore: {
-    title: "Read more",
+    title: "More on Azure cost optimization",
     tiles: [
       {
         title: "Cloud cost optimization",
@@ -748,7 +748,7 @@ export const awsCostOptimizationPage: TopicPage = {
     ],
   },
   readMore: {
-    title: "Read more",
+    title: "More on AWS cost optimization",
     tiles: [
       {
         title: "Cloud cost optimization",

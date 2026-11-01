@@ -67,7 +67,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why amortized cost matters",
       blocks: [
         {
           kind: "ul",

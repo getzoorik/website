@@ -1,4 +1,9 @@
-import { nodeCalculator, sizeKindNames } from "@/content/calculators";
+import {
+  diskCalculatorUi,
+  nodeCalculator,
+  nodeCalculatorUi,
+  sizeKindNames,
+} from "@/content/calculators";
 import { cloudPrices, eniFacts, regionNames } from "@/content/cloud-prices";
 import {
   amount,
@@ -22,6 +27,8 @@ import {
  */
 
 export interface ReferenceTable {
+  /** An h3 over the table, named for its search. */
+  readonly heading?: string;
   readonly title: string;
   readonly head: readonly string[];
   /** The columns' widths, as the mock's colgroup sets them. */
@@ -51,6 +58,7 @@ export function nodeReferenceTables(): readonly ReferenceTable[] {
     const regions = cloud === "azure" ? cloudPrices.azure.regions : cloudPrices.aws.regions;
     const first = nodeSizes(cloudPrices, eniFacts, cloud, regions[0]!);
     const prices: ReferenceTable = {
+      heading: nodeCalculatorUi.tableHeadings[cloud],
       title: `${CLOUD_NAME[cloud]}: monthly list price per node`,
       head: ["Size", "Kind", "vCPUs", "Memory", ...regions.map((region) => regionNames[region]!)],
       widths: PRICE_WIDTHS,
@@ -107,6 +115,7 @@ export function diskReferenceTables(): readonly ReferenceTable[] {
   const azure = cloudPrices.azure.regions;
   const aws = cloudPrices.aws.regions;
   const tiers = (["premium-ssd", "standard-ssd"] as const).map((type): ReferenceTable => ({
+    heading: diskCalculatorUi.tableHeadings[type],
     title: `Azure ${type === "premium-ssd" ? "Premium SSD" : "Standard SSD"} (LRS): monthly list price per disk`,
     head: ["Tier", "Size", ...azure.map((region) => regionNames[region]!)],
     widths: ["16%", "18%", "22%", "22%", "22%"],
@@ -125,6 +134,7 @@ export function diskReferenceTables(): readonly ReferenceTable[] {
   return [
     ...tiers,
     {
+      heading: diskCalculatorUi.tableHeadings.ebs,
       title: "Amazon EBS: storage list price per GB-month",
       head: ["Volume type", ...aws.map((region) => regionNames[region]!)],
       widths: ["28%", "24%", "24%", "24%"],

@@ -383,7 +383,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                 [
                   "Permission to remove nodes on AKS",
                   "Every AKS connect",
-                  "A managed identity, zoorik-agent-<cluster>, with the role “Zoorik Node Removal v1” on this cluster only. The role can read the cluster, its pools and machines, and delete machines. Connect also turns on workload identity and the OIDC issuer if they are off.",
+                  "A managed identity, zoorik-agent-<cluster>, with the role “Zoorik Node Removal v2” on this cluster only. The role can read the cluster, its pools and machines, and delete machines. Connect also turns on workload identity and the OIDC issuer if they are off.",
                 ],
                 [
                   "Permission to remove nodes on EKS",
@@ -393,7 +393,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                 [
                   "A node autoscaler on AKS",
                   "Only if the cluster has none",
-                  "Turns on Node Auto Provisioning (NAP), which needs Azure CNI (not kubenet), and adds the node class zoorik-base.",
+                  "Turns on AKS node auto provisioning (NAP), which needs Azure CNI (not kubenet), and adds the node class zoorik-base.",
                 ],
                 [
                   "A node autoscaler on EKS",
@@ -877,7 +877,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               items: [
                 "Coral creates an HPA only for a Deployment or Argo Rollout that has none. The workload needs 24 hours of history, at least 100m CPU per pod, and 2 or more ready replicas. The new HPA’s minReplicas is 2 or more.",
                 "It takes over only HPAs nothing else manages. It keeps minReplicas, only raises maxReplicas, and restores your values on “Hand back”.",
-                "It never changes HPAs from Helm, Argo CD, Flux, KEDA or kubectl apply.",
+                "Outside a rebalance’s warm handover, it never changes HPAs from Helm, KEDA or kubectl apply, and never HPAs whose bounds Argo CD or Flux own.",
                 "With automation on, Coral switches an active VPA to Off, and restores it when you switch off.",
                 "Switching automation off removes the HPAs Coral created and hands back the ones it took over.",
               ],
@@ -887,11 +887,11 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
       ],
       related: [
         {
-          text: "VPA vs HPA: when to use which, and why to rebalance first",
+          text: "VPA vs HPA: when to use which",
           href: learnPath("vpa-vs-hpa"),
         },
         {
-          text: "HPA vs VPA vs Cluster Autoscaler: what each one scales",
+          text: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
           href: learnPath("hpa-vs-vpa-vs-cluster-autoscaler"),
         },
       ],
@@ -953,7 +953,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
             },
             {
               kind: "p",
-              text: "Warm handover isn’t possible for StatefulSets, workloads with the Recreate strategy, pods with ReadWriteOnce volumes, GPU pods or, outside a rebalance, HPA-scaled pods. Without live migration, these pods get a short restart.",
+              text: "Warm handover isn’t possible for StatefulSets, workloads with the Recreate strategy, workloads whose replicas Argo CD or Flux set, pods with ReadWriteOnce volumes, GPU pods, or HPA-scaled pods outside a rebalance. Without live migration, these pods get a short restart.",
             },
           ],
         },
@@ -981,7 +981,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                   "Add a PodDisruptionBudget that allows at least one disruption.",
                 ],
                 [
-                  "Data on the node’s own disk (emptyDir or hostPath).",
+                  "Data on the node’s own disk (hostPath).",
                   "Move the data to a persistent volume, or mark the pod safe to evict.",
                 ],
                 ["Nothing would recreate the pod.", "Run it under a Deployment or StatefulSet."],
@@ -1335,7 +1335,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                 "The node autoscaler set up during connect.",
                 "Coral’s zoorik-base node class and zoorik-rb-… rebalancing pools.",
                 "The CRIU files on nodes, and the folder /var/lib/zoorik/checkpoints, which can hold a checkpoint from an interrupted move. Delete it.",
-                "The “Zoorik Node Removal v1” role definition, workload identity, the OIDC issuer and the Pod Identity Agent add-on.",
+                "The “Zoorik Node Removal v2” role definition, workload identity, the OIDC issuer and the Pod Identity Agent add-on.",
                 "The cluster’s entry in the console, shown as “Not reporting”, and the data Zoorik has already received.",
               ],
             },

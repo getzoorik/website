@@ -207,7 +207,7 @@ export const pricingPage = {
         answer: [
           {
             kind: "p",
-            text: "Yes, but only while the move runs. The source disks are deleted once the switch is checked. Then you pay for the safety snapshots for the few days they're kept.",
+            text: "Yes, but only while the move runs. The source disks are deleted once the switch is checked. Then you pay for the safety snapshots for the 7 days they're kept.",
           },
         ],
       },

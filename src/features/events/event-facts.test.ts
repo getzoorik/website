@@ -107,9 +107,20 @@ describe("an event's place", () => {
       "Bengaluru, India and online",
     );
     expect(place(event({ city: "", country: "" }))).toBe("Place to be announced");
-    expect(place(event({ format: "hybrid", city: "", country: "" }))).toBe(
+    expect(place(event({ format: "hybrid", city: "", country: "", venue: "" }))).toBe(
       "Place to be announced and online",
     );
+    /* A hybrid event with no city but a venue that says where it is: the venue, not "to be announced". */
+    expect(
+      place(
+        event({
+          format: "hybrid",
+          city: "",
+          country: "",
+          venue: "Online, with in-person days in London and New York",
+        }),
+      ),
+    ).toBe("Online, with in-person days in London and New York");
   });
 
   it("files it under India and Online for the Where filter", () => {

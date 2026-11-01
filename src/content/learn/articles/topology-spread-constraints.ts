@@ -466,7 +466,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "On AKS, ",
-            { a: "node auto-provisioning (NAP)", href: "/learn/aks-node-auto-provisioning" },
+            { a: "node auto provisioning (NAP)", href: "/learn/aks-node-auto-provisioning" },
             " runs Karpenter too.",
           ],
         },
@@ -561,7 +561,7 @@ export const article: Article = {
             ],
             [
               { b: "The drain." },
-              " Coral respects PodDisruptionBudgets and do-not-disrupt. In consolidation it also respects your autoscaler’s minimum pool size, and every pool keeps at least one node. Nodes drain one at a time, and a drain that can’t finish in time puts the node back into service.",
+              " Coral respects PodDisruptionBudgets and do-not-disrupt. By default, Coral may reduce a pool’s minimum when that minimum alone keeps a node it has emptied, and disconnect puts the old minimum back. Every pool keeps at least one node. Nodes drain one at a time, and a drain that can’t finish in time puts the node back into service.",
             ],
             [
               { b: "The warning." },

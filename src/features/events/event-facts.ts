@@ -91,11 +91,15 @@ export function upcoming(list: readonly EventEntry[], today: string): EventEntry
     .map(({ event }) => event);
 }
 
-/** Where the card's pin says it is: "Online", "Bengaluru, India", "Raleigh, United States and online". */
+/**
+ * Where the card's pin says it is: "Online", "Bengaluru, India", "Raleigh, United States and online". A hybrid event
+ * with no city or country but a venue that says where it is gives that venue, not "to be announced".
+ */
 export function place(event: EventEntry): string {
   if (event.format === "virtual") return placeCopy.online;
-  const named = [event.city, event.country].filter(Boolean).join(", ") || placeCopy.unknown;
-  return named + (event.format === "hybrid" ? placeCopy.andOnline : "");
+  const named = [event.city, event.country].filter(Boolean).join(", ");
+  if (!named && event.format === "hybrid" && event.venue) return event.venue;
+  return (named || placeCopy.unknown) + (event.format === "hybrid" ? placeCopy.andOnline : "");
 }
 
 /** The Where filter's places it belongs to: in India, online (virtual or hybrid), both or neither. */
@@ -179,17 +183,20 @@ export interface EventRow {
 
 /**
  * The Details rows: About (the description's rest, when it has one), Dates, Where (the venue first, unless the
- * event is online only), Format, Organizer, then Tickets (the label alone), Call for talks and Why go when the
- * list has them.
+ * event is online only or the place is the venue; a venue that ends in the city names the city once), Format,
+ * Organizer, then Tickets (the label alone), Call for talks and Why go when the list has them.
  */
 export function details(event: EventEntry): EventRow[] {
-  const rest = split(event.description)[1];
-  const venue = event.venue && event.format !== "virtual" ? `${event.venue}, ` : "";
+  const about = split(event.description)[1];
+  const at = place(event);
+  const venue = event.venue && event.format !== "virtual" && at !== event.venue ? event.venue : "";
+  const rest =
+    venue && event.city && venue.endsWith(event.city) ? at.replace(`${event.city}, `, "") : at;
   const found: EventRow[] = [];
-  if (rest) found.push({ label: rows.about, value: rest });
+  if (about) found.push({ label: rows.about, value: about });
   found.push(
     { label: rows.dates, value: when(event).text },
-    { label: rows.where, value: venue + place(event) },
+    { label: rows.where, value: venue ? `${venue}, ${rest}` : at },
     { label: rows.format, value: event.format.slice(0, 1).toUpperCase() + event.format.slice(1) },
     { label: rows.organizer, value: event.organizer },
   );

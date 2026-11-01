@@ -2,6 +2,7 @@ import { SiteNav } from "@/components/layout/site-nav";
 import { Reveal } from "@/components/primitives/reveal";
 import { JsonLd } from "@/components/seo/json-ld";
 import type { ProductPageContent } from "@/content/product-page";
+import { products } from "@/content/products";
 import { AssessSection } from "@/features/assess/assess-section";
 import { FooterSection } from "@/features/footer/footer-section";
 import { StepCard } from "@/features/how-it-works/how-it-works-section";
@@ -46,7 +47,9 @@ function ProductHow({ content }: { content: ProductPageContent }): React.JSX.Ele
     <section className="sec sec-band" id="how">
       <div className="wrap">
         <Reveal className="sec-head">
-          <h2>{content.how.title}</h2>
+          <h2>
+            <NamedText text={content.how.title} name={products[content.product].name} />
+          </h2>
         </Reveal>
         <div className="steps">
           {content.how.steps.map((step, index) => (

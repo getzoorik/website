@@ -13,7 +13,11 @@ import { cloudPages } from "@/content/cloud-pages";
 import { communityLastUpdated } from "@/content/community";
 import { contactLastUpdated } from "@/content/contact";
 import { designPartnersLastUpdated } from "@/content/design-partners";
-import { amoebaStudy, caseStudiesHubLastUpdated, caseStudy } from "@/content/case-studies";
+import {
+  amoebaStudyLastUpdated,
+  caseStudiesHubLastUpdated,
+  caseStudyLastUpdated,
+} from "@/content/case-studies";
 import { coralFaqPage } from "@/content/coral-faq";
 import { coralGuide } from "@/content/coral-guide";
 import { coralPageLastUpdated } from "@/content/coral-page";
@@ -96,7 +100,8 @@ const contentDates: Partial<Record<string, string>> = {
   [routes.amoebaFaq]: amoebaFaqPage.updated,
   [routes.cloudCostTools]: cloudCostToolsLastUpdated,
   /* The comparison pages (under Cloud cost optimization tools) print the day they were checked ("checked 19 October
-     2026", the two of 1 Nov 2026 their own); their content dates are each versus page's and the alternatives pages'. */
+     2026", the two of 1 Nov 2026 their own); their content dates are each versus page's and the alternatives pages'
+     (all 1 Nov 2026). */
   ...Object.fromEntries(
     versusPages.map(
       (page) => [versusRoute(page), page.lastUpdated ?? learnCompareLastUpdated] as const,
@@ -106,8 +111,8 @@ const contentDates: Partial<Record<string, string>> = {
     alternativesPages.map((page) => [page.route, alternativesLastUpdated] as const),
   ),
   [routes.valueLab]: caseStudiesHubLastUpdated,
-  [routes.caseStudyCoralDevCluster]: caseStudy.band.date,
-  [routes.caseStudyAmoebaLabVms]: amoebaStudy.band.date,
+  [routes.caseStudyCoralDevCluster]: caseStudyLastUpdated,
+  [routes.caseStudyAmoebaLabVms]: amoebaStudyLastUpdated,
   [routes.events]: eventsLastUpdated,
   [routes.news]: newsLastUpdated,
   [routes.community]: communityLastUpdated,
@@ -121,12 +126,12 @@ const contentDates: Partial<Record<string, string>> = {
   [routes.privacy]: privacy.effective,
   [routes.terms]: termsCopy.effective,
   [routes.security]: securityPage.updated,
-  /* /open-source prints no day; the three guides print "Updated 16 October 2026". */
+  /* /open-source prints no day; the three guides print "Updated 1 November 2026". */
   [routes.openSource]: openSourceLastUpdated,
   [openSourceGuides.helm.route]: openSourceUpdated,
   [openSourceGuides.terraform.route]: openSourceUpdated,
   [openSourceGuides.contributing.route]: openSourceUpdated,
-  /* The two troubleshooting pages print "Updated 29 October 2026". */
+  /* The two troubleshooting pages print "Updated 1 November 2026". */
   ...Object.fromEntries(
     Object.values(troubleshootingGuides).map(
       (guide) => [guide.route, guide.updated ?? troubleshootingUpdated] as const,
@@ -134,8 +139,8 @@ const contentDates: Partial<Record<string, string>> = {
   ),
   /* The research page prints no day: its content file's. */
   [routes.research]: researchLastUpdated,
-  /* The five pages of 30 Oct 2026: /trust prints its day; /contact and /pricing print none, the calculators their
-     prices' day, while their content's is Part 4's (1 Nov 2026). */
+  /* /trust prints its day; /contact and /pricing print none, the calculators their prices' day, while their content's
+     is Part 4's (1 Nov 2026). */
   [routes.trust]: trustUpdated,
   [routes.contact]: contactLastUpdated,
   [routes.pricing]: pricingLastUpdated,

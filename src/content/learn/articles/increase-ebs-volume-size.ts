@@ -431,7 +431,7 @@ export const article: Article = {
           kind: "callout",
           label: "Worked example",
           text: [
-            "The volume is now 450 ÷ 1,000 = 45% full, leaving 550\u00a0GiB empty, and the data would fit in the old 500\u00a0GiB. The EBS pricing page’s ",
+            "The volume is now 450 ÷ 1,000 = 45% full, leaving 550\u00a0GiB empty, and the data would fit in the old 500\u00a0GiB. The Amazon EBS pricing page’s ",
             { a: "gp3", href: "/learn/glossary/ebs-gp3" },
             " example uses a Region that charges $0.08 per GB-month (October 2026).",
           ],
@@ -514,7 +514,7 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
+              " The services that use those mounts restart once, at the switch onto the pool.",
             ],
             [
               { b: "Growing." },
@@ -526,7 +526,7 @@ export const article: Article = {
             ],
             [
               { b: "The old volumes." },
-              " Once the switch is checked, Amoeba snapshots each old volume and deletes it. It keeps the snapshot for a few days, then deletes that too.",
+              " Once the switch is checked, Amoeba snapshots each old volume and deletes it. It keeps the snapshot for 7 days, then deletes that too.",
             ],
             [
               { b: "Cost during the move." },
@@ -565,7 +565,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves an EC2 instance’s EBS data volumes onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one volume at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage cost optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
@@ -627,7 +627,7 @@ export const article: Article = {
       href: "/learn/check-ebs-volume-usage",
     },
     {
-      title: "EBS volume types: pricing and how to choose",
+      title: "EBS volume types compared: how to choose one",
       where: "Learn",
       href: "/learn/ebs-volume-types",
     },

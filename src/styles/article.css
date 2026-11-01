@@ -25,6 +25,8 @@
 .doc-prose > .ar-short{margin-top:0}
 .doc-prose > .ar-short + section{margin-top:56px}
 .doc-prose > section + .doc-help{margin-top:56px}
+/* an article that ends on its own product's section: the help box's links close that section, in the box's row */
+.doc-prose p.ar-help-a{display:flex;flex-wrap:wrap;gap:8px 24px;margin-top:20px}
 .doc-prose .ar-code code{display:block;margin-top:0;padding:12px 16px;border-radius:var(--r-card);font-size:.875rem;line-height:1.6}
 .ar-src{margin-top:24px;font-size:.875rem;line-height:1.6;color:var(--muted);overflow-wrap:anywhere}
 .doc-prose p.ar-src{margin-top:24px}

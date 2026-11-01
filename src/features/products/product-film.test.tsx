@@ -5,7 +5,7 @@ import { render } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import { filmCaption, homeFilms } from "@/content/home-films";
+import { homeFilms } from "@/content/home-films";
 import { productOrder } from "@/content/products";
 import { ProductFilm } from "@/features/products/product-film";
 
@@ -42,7 +42,7 @@ describe("ProductFilm", () => {
     expect(video).toHaveAttribute("src", homeFilms[id].src);
     expect(video).toHaveAttribute("poster", homeFilms[id].poster);
     expect(video).toHaveAttribute("aria-label", homeFilms[id].label);
-    expect(film.querySelector("figcaption")!.textContent).toBe(filmCaption);
+    expect(film.querySelector("figcaption")!.textContent).toBe(homeFilms[id].caption);
   });
 
   it("sends the server's markup silent and inline, so the observer may start it", () => {
@@ -59,8 +59,10 @@ describe("ProductFilm", () => {
   it("names each film's figures as examples, first", () => {
     for (const id of productOrder) {
       expect(homeFilms[id].label).toMatch(/^(Coral|Amoeba) product preview with example figures: /);
+      expect(homeFilms[id].caption).toBe(
+        `${id === "coral" ? "Coral" : "Amoeba"} product preview with example figures.`,
+      );
     }
-    expect(filmCaption).toBe("Product preview with example figures.");
   });
 });
 

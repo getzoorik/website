@@ -21,6 +21,7 @@ import { articleAuthor, articleCard, articleRoute, learnArticles } from "@/conte
 import { products } from "@/content/products";
 
 import {
+  authorJob,
   brandLogo,
   homeStructuredData,
   organization,
@@ -37,6 +38,13 @@ vi.mock("next/navigation", async (original) => ({
 type Node = Readonly<Record<string, unknown>>;
 
 const graphOf = (path: string) => pageStructuredData(path)["@graph"] as readonly Node[];
+
+/** An author's employer in the markup: Zoorik for staff, the employer a guest's byline names, or none. */
+const worksForOf = (author: { readonly role: string; readonly guest: boolean }) => {
+  const { employer } = authorJob(author.role);
+  if (!author.guest) return { worksFor: { "@id": "https://zoorik.com/#organization" } };
+  return employer ? { worksFor: { "@type": "Organization", name: employer } } : {};
+};
 const ofType = (graph: readonly Node[], type: string) =>
   graph.filter((node) => node["@type"] === type);
 
@@ -500,7 +508,7 @@ describe("every indexed page's structured data", () => {
     expect(names(routes.caseStudyCoralDevCluster)).toEqual([
       "Zoorik",
       "Value Lab",
-      "How we reduced our own cluster’s machine bill by 58%",
+      "How we reduced our own AKS cluster’s machine cost by 58%",
     ]);
     expect(names(routes.caseStudyAmoebaLabVms)).toEqual([
       "Zoorik",
@@ -514,7 +522,7 @@ describe("every indexed page's structured data", () => {
       "Docs",
       "Amoeba troubleshooting",
     ]);
-    expect(names(routes.research)).toEqual(["Zoorik", "Cloud cost optimization research"]);
+    expect(names(routes.research)).toEqual(["Zoorik", "Cloud cost optimization research papers"]);
     /* The five pages of 30 Oct 2026: the calculators under Cloud cost optimization tools by their h1, the rest under
        Zoorik alone. */
     expect(names(routes.eksAndAksPricingCalculator)).toEqual([
@@ -646,9 +654,15 @@ describe("every indexed page's structured data", () => {
     ]) {
       expect(about(path), path).toEqual({ "@id": "https://zoorik.com/amoeba#software" });
     }
-    /* An article points at the product it is about, and at none when it is about both. */
+    /* An article is about its own topic, its h1 before the colon, and mentions the product it names (none when it
+       is about both). */
     for (const article of learnArticles) {
-      expect(about(articleRoute(article)), article.slug).toEqual(
+      const node = graphOf(articleRoute(article))[2]!;
+      expect(node.about, article.slug).toEqual({
+        "@type": "Thing",
+        name: article.h1.split(":")[0]!.trim(),
+      });
+      expect(node.mentions, article.slug).toEqual(
         article.product === "both"
           ? undefined
           : { "@id": `https://zoorik.com/${article.product}#software` },
@@ -719,9 +733,9 @@ describe("every indexed page's structured data", () => {
           ? {
               "@type": "Person",
               name: author.name,
-              jobTitle: author.role,
+              jobTitle: authorJob(author.role).jobTitle,
               ...(author.linkedin ? { url: author.linkedin } : {}),
-              ...(author.guest ? {} : { worksFor: orgRef }),
+              ...worksForOf(author),
             }
           : orgRef,
       );
@@ -739,7 +753,24 @@ describe("every indexed page's structured data", () => {
     expect(orgRef).toEqual({ "@id": "https://zoorik.com/#organization" });
   });
 
-  it("writes an article's author as a person: no employer for a guest, no address without a profile", async () => {
+  it("takes an author's job title alone from the byline's role, and the employer it names", () => {
+    expect(authorJob("Software development manager, Zoorik · 11 years’ experience")).toEqual({
+      jobTitle: "Software development manager",
+    });
+    expect(authorJob("Backend engineer, Zoorik")).toEqual({ jobTitle: "Backend engineer" });
+    expect(authorJob("Guest author · SDE II")).toEqual({ jobTitle: "SDE II" });
+    expect(authorJob("Guest author · Senior software engineer at Fivetran")).toEqual({
+      jobTitle: "Senior software engineer",
+      employer: "Fivetran",
+    });
+    for (const author of Object.values(authors)) {
+      expect(authorJob(author.role).jobTitle, author.name).not.toMatch(
+        /Guest author|Zoorik|experience/,
+      );
+    }
+  });
+
+  it("writes an article's author as a person: no employer for a guest whose byline names none, no address without a profile", async () => {
     const [base] = learnArticles;
     const guest = Object.entries(authors).find(([, author]) => author.guest && author.linkedin)!;
     const bare = Object.entries(authors).find(([, author]) => !author.linkedin)!;
@@ -759,9 +790,9 @@ describe("every indexed page's structured data", () => {
         expect(authorOf(key), key).toEqual({
           "@type": "Person",
           name: author.name,
-          jobTitle: author.role,
+          jobTitle: authorJob(author.role).jobTitle,
           ...(author.linkedin ? { url: author.linkedin } : {}),
-          ...(author.guest ? {} : { worksFor: orgRef }),
+          ...worksForOf(author),
         });
       }
       expect(authorOf(guest[0])).not.toHaveProperty("worksFor");
@@ -802,8 +833,8 @@ describe("every indexed page's structured data", () => {
         datePublished: term.published,
         dateModified: term.updated,
       });
-      /* Its name is the term's words without the other names in brackets at its end ("Data transfer (egress) cost"
-         keeps the bracket inside its name), and its description the definition's opening. */
+      /* Its name is the term's words without the other names in brackets at its end ("Egress cost (data transfer,
+         bandwidth)" is named "Egress cost"), and its description the definition's opening. */
       expect(node!.name, term.slug).not.toMatch(/\)\s*$/);
       expect(node!.description, term.slug).toMatch(/[.?!]$/);
     }

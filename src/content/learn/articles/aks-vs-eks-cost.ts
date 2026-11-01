@@ -420,7 +420,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "On our own AKS development cluster, the machines cost $368.65 a month when Coral was connected, and $154.76 eight days later, 58% less. Both figures are at Azure pay-as-you-go list prices over 730\u00a0hours, and ",
-            { a: "the case study", href: "/coral-value-lab" },
+            { a: "the Coral Value Lab study", href: "/coral-value-lab" },
             " walks through each step.",
           ],
         },
@@ -493,7 +493,7 @@ export const article: Article = {
       href: "/learn/aks-cost-analysis",
     },
     {
-      title: "How to choose AKS node sizes",
+      title: "How to choose AKS VM sizes",
       where: "Learn",
       href: "/learn/how-to-choose-aks-node-sizes",
     },

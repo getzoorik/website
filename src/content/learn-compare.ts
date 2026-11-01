@@ -132,7 +132,8 @@ export const versusFrameCopy = {
   /** Before the short answer, in bold. */
   short: "Short answer.",
   sources: { id: "sources", title: "Sources" },
-  readMore: "Read more",
+  /** Named for the product the page compares: "Coral docs and guides". */
+  readMore: (product: string) => `${product} docs and guides`,
 } as const;
 
 /** The day the two 1 Nov 2026 versus pages were checked and written. */

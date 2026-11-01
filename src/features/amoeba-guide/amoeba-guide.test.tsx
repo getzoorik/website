@@ -21,9 +21,9 @@ import { AmoebaGuide } from "@/features/amoeba-guide/amoeba-guide";
  * own contract on top of the
  * documents kit, which `documents.test.tsx` covers: the groups and their
  * numbered rows, the ids a link made before the rows still lands on, the hero
- * and its PDF, the Updated line and the summary, the Related lines, the
- * 12 placeholders, the connect well, the role table's codes, and the words the
- * site never prints. It describes Amoeba at product level (owner, 27 Oct 2026):
+ * and its PDF, the Updated line and the summary, the Related lines, that no
+ * placeholder and no command well is left (1 Nov 2026), the role table's
+ * codes, and the words the site never prints. It describes Amoeba at product level (owner, 27 Oct 2026):
  * the move only goes forward, with no soak, no going back and no band.
  *
  * The page component is rendered, not the route: while `amoebaDocs` is off the
@@ -96,28 +96,6 @@ const ROWS: Record<string, readonly string[]> = {
   "remove-amoeba-from-a-vm": ["going-back-during-the-soak", "what-amoeba-added"],
 };
 const ROW_IDS = Object.values(ROWS).flat();
-
-/** Every "To come" on the page, by the row that holds it, in page order. */
-const PLACEHOLDERS = [
-  ["before-you-start-what-you-need", "the exact Azure roles needed to run the connect script"],
-  ["before-you-start-what-you-need", "supported Linux distributions and versions"],
-  ["before-you-start-what-you-need", "supported Windows versions and what Amoeba needs on them"],
-  [
-    "before-you-start-what-you-need",
-    "hosts to allow: Zoorik, GitHub release downloads and the distribution’s package mirrors",
-  ],
-  ["before-you-start-what-you-need", "the Amoeba console address"],
-  ["onboard-a-vm-step-by-step", "the Amoeba console address, and how you sign in"],
-  ["onboard-a-vm-step-by-step", "the connect script, exactly as the console prints it"],
-  ["which-vms-are-listed", "how Windows VMs appear in the onboarding list"],
-  [
-    "at-the-switch",
-    "what happens to writes made on the pool if a late check fails after the services restarted",
-  ],
-  ["the-soak-and-going-back", "how to restore from a safety snapshot, and who does it"],
-  ["how-an-expand-runs", "typical time from the trigger to the added capacity"],
-  ["what-the-role-allows", "when Amoeba reapplies a VM"],
-];
 
 describe("/amoeba-guide groups and rows", () => {
   it("draws the 11 sections as groups, each labelled by its h2, with its lede over its rows", () => {
@@ -193,14 +171,14 @@ describe("/amoeba-guide groups and rows", () => {
     expect(words).toContain("The VM’s kernel is too old, or doesn’t support btrfs.");
   });
 
-  it("gives the switch's placeholder a bullet of its own, so no sentence runs into it", () => {
+  it("says at the switch what a process outside a service does, in a bullet of its own", () => {
     const items = [...page().querySelectorAll("#at-the-switch li")].map(text);
-    expect(items).toHaveLength(5);
+    expect(items).toHaveLength(4);
     expect(items[2]).toBe(
       "If any step fails, the agent tries to put the original mounts back and start the services again. The source disks are never written during the switch. Amoeba then tries the switch again, so your services can restart more than once.",
     );
     expect(items[3]).toBe(
-      "To come: what happens to writes made on the pool if a late check fails after the services restarted",
+      "A process that holds a data mount open outside a systemd service can’t be stopped cleanly, so the switch can’t finish.",
     );
   });
 
@@ -287,7 +265,7 @@ describe("/amoeba-guide page", () => {
   it("opens the column on the Updated line and the summary: the product page first", () => {
     const container = page();
     const top = container.querySelector("article.gd-main > .fq-upd")!;
-    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 27 October 2026");
+    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 1 November 2026");
     const list = top.querySelector("dl.doc-sum")!;
     expect([...list.querySelectorAll("dt")].map(text)).toEqual([
       "Product page",
@@ -310,42 +288,18 @@ describe("/amoeba-guide page", () => {
     expect(text(container.querySelector("article.gd-main"))).not.toMatch(/section \d/i);
   });
 
-  it("carries the 12 placeholders in page order, each its own “To come: ” kept out of snippets", () => {
+  it("prints no placeholder and no command well: the twelve “To come” lines went on 1 Nov 2026", () => {
     const container = page();
-    const spans = [...container.querySelectorAll(".ph")];
-    expect(
-      spans.map((span) => [span.closest("details")!.id, text(span).replace(/^To come: /, "")]),
-    ).toEqual(PLACEHOLDERS);
-    for (const span of spans) {
-      expect(span.tagName).toBe("SPAN");
-      expect(span).toHaveAttribute("data-nosnippet");
-      expect(span.firstElementChild).toHaveClass("ph-k");
-      expect(span.firstElementChild!.textContent).toBe("To come: ");
-    }
-    expect(container.textContent).not.toMatch(/\[OWNER|\{\{PH/);
+    expect(container.querySelectorAll(".ph")).toHaveLength(0);
+    expect(container.querySelectorAll(".as-well")).toHaveLength(0);
+    expect(container.textContent).not.toMatch(/To come|\[OWNER|\{\{PH/);
   });
 
-  it("draws the connect step's well with its prompt and a placeholder: it wraps, with no copy button", () => {
-    const container = page();
-    const wells = [...container.querySelectorAll(".as-well")];
-    expect(wells).toHaveLength(1);
-    const well = wells[0]!;
-    expect(well.className).toBe("as-well doc-well");
-    expect(well.closest(".doc-steps > li")!.querySelector(".doc-st")!.textContent).toBe(
-      "Connect Azure",
-    );
-    const pre = well.querySelector("pre")!;
-    expect(pre.textContent).toBe("$ To come: the connect script, exactly as the console prints it");
-    expect(pre.querySelector("i")).toHaveAttribute("aria-hidden", "true");
-    expect(pre.querySelector("i + .ph")).not.toBeNull();
-    expect(container.querySelector(".as-copy, .doc-well-note, .os")).toBeNull();
-  });
-
-  it("has two step lists of 4 and 6, three callouts and 15 tables, every cell labelled", () => {
+  it("has two step lists of 4 and 5, three callouts and 15 tables, every cell labelled", () => {
     const container = page();
     expect(
       [...container.querySelectorAll("ol.doc-steps")].map((list) => list.children.length),
-    ).toEqual([4, 6]);
+    ).toEqual([4, 5]);
     expect(
       [...container.querySelectorAll(".doc-call-t")].map((title) => [
         (title.closest("details") ?? title.closest("section"))!.id,
@@ -489,7 +443,7 @@ describe("the /amoeba-guide route", () => {
   it("titles, describes and canonicalises the page", () => {
     expect(metadata.title).toBe("Amoeba product guide");
     expect(metadata.description).toBe(
-      "Onboard a VM to Amoeba on Azure or AWS. See how its data moves onto one btrfs pool, how that pool grows and shrinks, and how you stay in control.",
+      "Amoeba product guide: onboard a VM on Azure or AWS, see how its data moves onto one btrfs pool, how that pool grows and shrinks, and how you stay in control.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/amoeba-guide" });
     expect(metadata).not.toHaveProperty("robots");

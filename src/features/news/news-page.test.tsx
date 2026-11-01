@@ -61,9 +61,9 @@ describe("/news's metadata", () => {
     expect(routes.news).toBe("/news");
   });
 
-  it("dates the content by the week of its Radar", () => {
-    expect(newsLastUpdated).toBe(newsDay(newsRadar.week));
-    expect(newsLastUpdated).toBe("19 October 2026");
+  it("dates the content by the day its words last changed, after the week of its Radar", () => {
+    expect(newsDay(newsRadar.week)).toBe("19 October 2026");
+    expect(newsLastUpdated).toBe("1 November 2026");
   });
 });
 
@@ -183,8 +183,8 @@ describe("/news", () => {
       [
         routes.caseStudyCoralDevCluster,
         "zoorik",
-        "How we reduced our own cluster’s machine bill by 58%",
-        "Eight days after we connected Coral to our own AKS development cluster, it cost $154.76 a month instead of $368.65.",
+        "How we reduced our own AKS cluster’s machine cost by 58%",
+        "Eight days after we connected Coral to our own AKS development cluster, its machines cost $154.76 a month instead of $368.65.",
         "12 Oct · Value Lab",
         "2026-10-12",
       ],

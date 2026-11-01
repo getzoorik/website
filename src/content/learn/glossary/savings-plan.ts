@@ -57,7 +57,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why savings plans matter for your cloud cost",
       blocks: [
         {
           kind: "ul",

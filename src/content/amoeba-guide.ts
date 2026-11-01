@@ -465,7 +465,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                 ],
                 [
                   ["Safety snapshots", { sub: "zoorik-amoeba-snap-…" }],
-                  "One incremental snapshot of each source disk, taken before the disk is deleted, in the disk’s own resource group. Deleted after a few days.",
+                  "One incremental snapshot of each source disk, taken before the disk is deleted, in the disk’s own resource group. Deleted after 7 days.",
                 ],
                 [
                   "Zoorik Storage Operator",
@@ -481,7 +481,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
           body: [
             {
               kind: "p",
-              text: "The IAM role ZoorikStorageOperator, the pool’s gp3 volumes, and an EBS snapshot of each source volume, kept for a few days.",
+              text: "The IAM role ZoorikStorageOperator, the pool’s gp3 volumes, and an EBS snapshot of each source volume, kept for 7 days.",
             },
           ],
         },
@@ -605,7 +605,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
               items: [
                 "Amoeba sizes the pool to your data, with room to grow. It looks at your peak use and recent growth, not at the size the source disks were given.",
                 "It picks the cheapest layout of disks that holds your data and carries your VM’s disk load.",
-                "Each VM gets one pool, on one disk type. On Azure the pool uses Premium SSD v2 where your region offers it, and Premium SSD otherwise.",
+                "Each VM gets one pool, on one disk type. On Azure the pool uses Premium SSD v2 where your VM’s region and zone offer it, and Premium SSD otherwise.",
                 "On AWS the pool uses gp3 volumes, in the instance’s Availability Zone.",
                 "Data on Standard SSD, Standard HDD or Ultra Disk also moves to Premium SSD v2 or Premium SSD. Per GiB, Premium disks can cost more than Standard ones. Zone-redundant (ZRS) disks map to a locally redundant (LRS) pool, so the data loses zone redundancy.",
               ],
@@ -646,7 +646,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                 ],
                 [
                   "Clean up",
-                  "Amoeba snapshots each source disk, deletes the disk, and keeps the snapshot for a few days before deleting it too.",
+                  "Amoeba snapshots each source disk, deletes the disk, and keeps the snapshot for 7 days before deleting it too.",
                 ],
               ],
             },
@@ -674,7 +674,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
             {
               kind: "ul",
               items: [
-                "A move only goes forward. Once the switch is checked, Amoeba snapshots each source disk, deletes the disk, and keeps the snapshot for a few days before deleting it too.",
+                "A move only goes forward. Once the switch is checked, Amoeba snapshots each source disk, deletes the disk, and keeps the snapshot for 7 days before deleting it too.",
                 "A disk is deleted only after its own snapshot succeeded, and only when its tag names this move.",
                 "You pay for both sets of disks only while the move runs, and then for the snapshots while they’re kept.",
                 "The pool keeps growing before it fills. Shrinks wait until Amoeba has seen enough of your use after the move.",
@@ -1000,7 +1000,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                     { br: true },
                     { code: "Microsoft.Compute/snapshots/delete" },
                   ],
-                  "Taking safety snapshots, and deleting them after a few days.",
+                  "Taking safety snapshots, and deleting them after 7 days.",
                 ],
               ],
             },
@@ -1139,7 +1139,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
           body: [
             {
               kind: "p",
-              text: "A move only goes forward. Once the switch is checked, Amoeba snapshots each source disk and deletes it. It keeps each snapshot for a few days, then deletes it too.",
+              text: "A move only goes forward. Once the switch is checked, Amoeba snapshots each source disk and deletes it. It keeps each snapshot for 7 days, then deletes it too.",
             },
           ],
         },

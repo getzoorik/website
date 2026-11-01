@@ -43,7 +43,7 @@ function Ring({
   from,
 }: {
   readonly className: string;
-  readonly tools: readonly Required<CareersTool>[];
+  readonly tools: readonly Required<Pick<CareersTool, "name" | "mark">>[];
   readonly from: number;
 }): React.JSX.Element {
   const step = 360 / tools.length;

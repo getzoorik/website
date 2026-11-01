@@ -75,8 +75,8 @@ const checkedOf = (entry: VersusPage): string => entry.checked ?? "19 October 20
 
 /** Each page's rows with the pricing row: the two first pages' counts as they were, the newer pages' from their drafts. */
 const rowCounts: Readonly<Record<string, number>> = {
-  "coral-vs-stormforge": 14,
-  "amoeba-vs-zesty-disk": 11,
+  "coral-vs-stormforge": 13,
+  "amoeba-vs-zesty-disk": 10,
   "coral-vs-azure-advisor": 11,
   "coral-vs-aws-compute-optimizer": 12,
 };
@@ -190,8 +190,12 @@ describe.each(versusPages.map((entry) => [entry.slug, entry] as const))("%s", (_
     if (entry.card) expect(pageCards[versusRoute(entry)]!.alt).toBe(`Zoorik. ${entry.meta.title}.`);
     expect(`${entry.meta.title} | Zoorik`.length).toBeLessThanOrEqual(60);
     expect(entry.meta.description.length).toBeLessThanOrEqual(158);
-    /* "Coral vs AWS Compute Optimizer for EKS": the draft's title names the cluster it is about. */
-    expect(entry.meta.title.startsWith(`${ours} vs ${facts.name}`)).toBe(true);
+    /* "AWS Compute Optimizer vs Coral for EKS": the title names both, either way round (theirs first where that is the
+       search, 1 Nov 2026), and the cluster it is about where the draft's does. */
+    expect(
+      entry.meta.title.startsWith(`${ours} vs ${facts.name}`) ||
+        entry.meta.title.startsWith(`${facts.name} vs ${ours}`),
+    ).toBe(true);
   });
 
   it("draws the hero: the kicker with the checked day, the h1 and the deck", async () => {
@@ -200,7 +204,7 @@ describe.each(versusPages.map((entry) => [entry.slug, entry] as const))("%s", (_
     expect(text(root.querySelector(".vp-kick"))).toBe(`Compare · checked ${checkedOf(entry)}`);
     expect(marketChecked).toBe("19 October 2026");
     expect(text(root.querySelector("h1"))).toBe(entry.meta.title);
-    expect(text(root.querySelector(".doc-deck"))).toBe(entry.meta.description);
+    expect(text(root.querySelector(".doc-deck"))).toBe(entry.deck ?? entry.meta.description);
     expect(root.querySelector("header.hero.doc-hero.lv-hero")).not.toBeNull();
   });
 
@@ -458,7 +462,9 @@ describe.each(
   it("ends on Read more, its sibling page last but one, before the closing row", async () => {
     const read = (await page(entry)).querySelector("main > section.sec#read-more")!;
     expect(read).toHaveAttribute("aria-labelledby", "read-more-h");
-    expect(text(read.querySelector(".sec-hrow > h2#read-more-h"))).toBe("Read more");
+    expect(text(read.querySelector(".sec-hrow > h2#read-more-h"))).toBe(
+      `${entry.product === "coral" ? "Coral" : "Amoeba"} docs and guides`,
+    );
     const tiles = [...read.querySelectorAll(".dt-grid > article.dt")];
     const expected = readMore.map((tile) => {
       if (!("versus" in tile)) return tile;

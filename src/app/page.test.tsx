@@ -67,7 +67,7 @@ describe("the home page", () => {
       [
         "amoeba",
         "/amoeba",
-        "Stop paying for empty disk space. Amoeba rightsizes Azure managed disks and Amazon EBS on Windows and Linux VMs, autonomously, without any downtime.",
+        "Stop paying for empty disk space. Amoeba rightsizes Azure managed disks and Amazon EBS on Windows and Linux VMs, autonomously, without any downtime after the one switch.",
         "Amoeba",
       ],
     ] as const) {
@@ -132,19 +132,17 @@ describe("the home page", () => {
       /* The SEO heading pass (23 Oct 2026): each product section's h2 is its category. */
       "h2 Kubernetes cost optimization",
       "h2 Block storage cost optimization",
-      "h2 Cloud cost optimization, without the risk",
+      "h2 Autonomous cloud cost optimization, without the risk",
       "h3 Reduce cloud cost",
       "h3 Drains nodes safely, one at a time",
-      "h3 No code changes, no downtime",
+      "h3 Without any downtime or code changes",
       "h3 Full control and visibility",
-      "h2 How we reduced our own cluster’s machine bill by 58%",
+      "h2 How we reduced our own AKS cluster’s machine cost by 58%",
       "h2 Cloud cost assessment",
       "h3 Free assessment",
       "h3 Coral",
       "h3 Amoeba",
       "h3 Coral and Amoeba together",
-      "h2 Find your own number",
-      "h2 Talk to the builders",
     ]);
     /* Only the h1 is a sentence with a period; every other heading is set
        plain, as the mock draws them. */
@@ -289,15 +287,16 @@ describe("the home page", () => {
   it("follows each product's button with what its page is about, to the product's page", () => {
     for (const [id, label] of [
       ["amoeba", "Block storage cost optimization"],
-      ["coral", "Kubernetes cost optimization"],
+      ["coral", "Kubernetes optimization with Coral"],
     ] as const) {
       const more = page.querySelectorAll<HTMLAnchorElement>(`#${id} .btns a.alink`);
       expect(more).toHaveLength(1);
       expect(more[0]).toHaveAttribute("href", `/${id}`);
-      /* Its own words in place of "Learn more": the category alone (owner, 23
-         Oct 2026), the h2's own words. */
+      /* Its own words in place of "Learn more": Amoeba's the category alone (owner, 23 Oct 2026), the h2's own
+         words; Coral's names the product (1 Nov 2026). */
       expect(more[0]!.textContent).toBe(label);
-      expect(more[0]!.textContent).toBe(page.querySelector(`#${id} h2.st-h`)!.textContent);
+      if (id === "amoeba")
+        expect(more[0]!.textContent).toBe(page.querySelector(`#${id} h2.st-h`)!.textContent);
       expect(more[0]!.querySelector(".sr-only")).toBeNull();
       /* After the button, in the same row, and ending on the same arrow. */
       expect(more[0]!.previousElementSibling?.className).toBe("btn-ink");
@@ -405,8 +404,8 @@ describe("the home page", () => {
       expect(video).not.toHaveAttribute("controls");
     }
     expect([...page.querySelectorAll("main .mo-cap")].map((p) => p.textContent)).toEqual([
-      "Product preview with example figures.",
-      "Product preview with example figures.",
+      "Coral product preview with example figures.",
+      "Amoeba product preview with example figures.",
     ]);
     /* Mirrored: Coral's film after its copy, Amoeba's before it; each comes in
        once, 120ms after the copy beside it. */
@@ -457,13 +456,13 @@ describe("the home page", () => {
         "20–30%",
         "img",
         "20 to 30 percent",
-        "off your overall cloud bill",
+        "off your overall cloud cost",
       ],
     ]);
     /* What each range is a share of, as tags; the caption above is their words for the ear. */
     expect(
       rows.map((li) => [...li.querySelectorAll(".ofx-cap .chip")].map((chip) => chip.textContent)),
-    ).toEqual([["AKS", "EKS"], ["Managed Disks", "EBS"], ["Overall cloud bill"]]);
+    ).toEqual([["AKS", "EKS"], ["Managed Disks", "EBS"], ["Overall cloud cost"]]);
     /* No axis: the "Off the cost it optimizes" row and its ticks are gone. */
     expect(offers.querySelector(".ofx-axis, .ofx-ticks")).toBeNull();
     expect(offers.textContent).not.toMatch(/Off the cost it optimizes|100%/);

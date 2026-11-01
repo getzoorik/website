@@ -104,7 +104,9 @@ describe.each(pages)("the product page %s", (path, content) => {
     const h1s = page.querySelectorAll("h1");
     expect(h1s).toHaveLength(1);
     expect(h1s[0].textContent).toBe(
-      product === "coral" ? "Kubernetes cost optimization" : "Block\u00a0storage cost optimization",
+      product === "coral"
+        ? "Kubernetes optimization for AKS and EKS"
+        : "Block\u00a0storage cost optimization",
     );
 
     const levels = [...page.querySelectorAll("main h1, main h2, main h3, main h4")].map((h) =>
@@ -252,8 +254,8 @@ describe.each(pages)("the product page %s", (path, content) => {
 
   it("lists What it does as rows, each its drawing, its title and its line, and where it runs", () => {
     const page = renderPage(path, content);
-    /* The heading, "?" and all. */
-    expect(text(page.querySelector("#what h2#what-h"))).toBe(`What ${name} does?`);
+    /* The heading, with no "?" (owner, 1 Nov 2026). */
+    expect(text(page.querySelector("#what h2#what-h"))).toBe(`What ${name} does`);
     expect(page.querySelector("#what h2 [translate='no']")).toHaveTextContent(name);
     const list = page.querySelector("#what ul.flist")!;
     const rows = [...list.children];
@@ -313,7 +315,9 @@ describe.each(pages)("the product page %s", (path, content) => {
 
   it("shows this product's three How it works cards, one key row each, no lede", () => {
     const page = renderPage(path, content);
-    expect(text(page.querySelector("#how .sec-head"))).toBe("How it works");
+    expect(text(page.querySelector("#how .sec-head"))).toBe(
+      product === "amoeba" ? "How Amoeba rightsizes disks" : "How it works",
+    );
     expect(page.querySelector("#how .sec-head p")).toBeNull();
     const cards = [...page.querySelectorAll("#how .stepc")];
     expect(cards).toHaveLength(3);
@@ -657,7 +661,7 @@ describe("the Coral page", () => {
     expect(linksOf(more!)).toEqual([
       ["KEDA", routes.coralWorksWithKeda],
       ["Karpenter", routes.coralWorksWithKarpenter],
-      ["Node Auto Provisioning (NAP)", routes.coralWorksWithNodeAutoProvisioning],
+      ["AKS node auto provisioning (NAP)", routes.coralWorksWithNodeAutoProvisioning],
       ["the Cluster Autoscaler", routes.coralWorksWithClusterAutoscaler],
     ]);
     /* The site's verb, where the mock had "cut". */
@@ -669,7 +673,7 @@ describe("the Coral page", () => {
     const article = learnTile(coralPageContent);
     const section = page.querySelector("section#read-coral")!;
     expect(section).toHaveAttribute("aria-labelledby", "read-coral-h");
-    expect(text(section.querySelector("h2#read-coral-h"))).toBe("Read more");
+    expect(text(section.querySelector("h2#read-coral-h"))).toBe("Coral docs and guides");
     const all = section.querySelector(".sec-hrow a.alink")!;
     expect(text(all)).toBe("All docs");
     expect(all).toHaveAttribute("href", `${routes.docs}#coral`);

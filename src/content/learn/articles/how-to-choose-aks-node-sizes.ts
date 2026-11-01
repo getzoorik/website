@@ -307,7 +307,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "You can also hand the size to Azure. ",
-            { a: "Node auto-provisioning (NAP)", href: "/learn/aks-node-auto-provisioning" },
+            { a: "Node auto provisioning (NAP)", href: "/learn/aks-node-auto-provisioning" },
             " picks VM sizes for you. Microsoft says it decides the VM configuration “based on pending pod resource requirements”.",
           ],
         },
@@ -402,7 +402,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "On our own AKS development cluster, a rebalance swapped a 4-CPU Intel worker for a cheaper 4-CPU AMD machine. The worker went from $147.46 a month to $81.03, at Azure list prices. ",
-            { a: "The case study", href: "/coral-value-lab" },
+            { a: "The Coral Value Lab study", href: "/coral-value-lab" },
             " has the full run, and ",
             { a: "AKS cost optimization", href: "/aks-cost-optimization" },
             " covers Coral on AKS.",

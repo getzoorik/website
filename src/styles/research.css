@@ -17,6 +17,7 @@
    reading colour */
 #papers .res-group + .res-group{margin-top:clamp(40px,4.5vw,64px)}
 #papers .res-group .dt-grid{grid-template-rows:none}
-#papers .res-group .dt{display:flex;grid-row:auto}
+#papers .res-group .dt{display:flex;grid-row:auto;position:relative}
+#papers .dt-t a::after{content:"";position:absolute;inset:0;border-radius:var(--r-card)}
 #papers .dt-a{flex:1 1 auto}
 #papers .dt-l + .dt-l{margin-top:8px;color:var(--text)}

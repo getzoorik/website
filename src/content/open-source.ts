@@ -612,7 +612,7 @@ export const openSourcePage = {
       },
       {
         name: "assessment",
-        line: "The free savings assessment for Kubernetes and block storage.",
+        line: "The free assessment for Kubernetes and block storage.",
         licence: "Apache-2.0",
         links: [
           {

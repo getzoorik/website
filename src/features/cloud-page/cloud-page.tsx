@@ -244,7 +244,7 @@ function CloudBody({ content }: { readonly content: CloudPageContent }): React.J
           <Setup content={content} />
         </DocFrame>
         <WorksWith content={content} />
-        <InstallYourWay />
+        <InstallYourWay cloud={content.cloud} />
         <DocFrame>
           <Questions content={content} />
         </DocFrame>
@@ -274,7 +274,14 @@ export function CloudPage({ content }: { readonly content: CloudPageContent }): 
         <CloudHow content={content} />
         <CloudBody content={content} />
         <ReadMore content={content} />
-        <AssessSection product={content.product} />
+        <AssessSection
+          product={content.product}
+          after={
+            content.product === "coral" && content.calculator
+              ? richText(content.calculator)
+              : undefined
+          }
+        />
       </main>
       <FooterSection />
     </>

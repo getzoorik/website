@@ -200,7 +200,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Microsoft’s page on node auto-provisioning (NAP), which runs Karpenter inside Azure Kubernetes Service (AKS), lists only ",
+            "Microsoft’s page on node auto provisioning (NAP), which runs Karpenter inside Azure Kubernetes Service (AKS), lists only ",
             { code: "WhenEmpty" },
             " and ",
             { code: "WhenEmptyOrUnderutilized" },
@@ -660,7 +660,7 @@ export const article: Article = {
       href: "/learn/pod-disruption-budget-best-practices",
     },
     {
-      title: "Nodes held: why Coral keeps a node",
+      title: "Why Coral holds a node, and each fix",
       where: "Coral product guide",
       href: "/coral-guide#nodes-held",
     },

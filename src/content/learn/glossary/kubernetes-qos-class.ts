@@ -65,7 +65,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why the QoS class matters for your cloud cost",
       blocks: [
         {
           kind: "p",

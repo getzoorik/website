@@ -275,6 +275,11 @@ interface PageEntry {
   readonly trail: readonly Crumb[];
   /** What the page is about: its product, or the organisation (/about, /careers). */
   readonly about?: ProductId | "organization";
+  /**
+   * A Learn article's own topic, from its h1 ("OOMKilled exit code 137"). The page and the article are then about
+   * that topic, and only mention the product in `about`.
+   */
+  readonly subject?: string;
   /** The apps the page carries in full: the home page's both, a product page's own. */
   readonly apps?: readonly ProductId[];
   readonly article?: {
@@ -288,6 +293,8 @@ interface PageEntry {
       readonly jobTitle: string;
       readonly url?: string;
       readonly worksForZoorik: boolean;
+      /** A guest's employer, where their byline names one. */
+      readonly employer?: string;
     };
     /** The day it was published, as an ISO day. */
     readonly published?: string;
@@ -383,30 +390,48 @@ function osGuideEntry(
 }
 
 /**
- * A Learn article: its h1 as the headline, its published and updated days, the
- * product it is about (none for an article about both), the card its page
- * shows, and its author where it is published under a person.
+ * A byline's role as a job title alone, and the employer it names: "Guest author · SDE II at Expedia" is "SDE II" at
+ * Expedia, "Software development manager, Zoorik · 11 years’ experience" is "Software development manager". The byline
+ * keeps its words; the structured data takes the title, and Zoorik or the named employer as `worksFor`.
+ */
+export function authorJob(role: string): { readonly jobTitle: string; readonly employer?: string } {
+  const plain = role
+    .replace(/^Guest author · /, "")
+    .replace(/ · \d+ years’ experience$/, "")
+    .replace(/, Zoorik$/, "");
+  const at = plain.match(/^(.+?)(?: at |, )(.+)$/);
+  return at ? { jobTitle: at[1]!, employer: at[2]! } : { jobTitle: plain };
+}
+
+/**
+ * A Learn article: its h1 as the headline, its published and updated days, its
+ * own topic (its h1 before the colon) with the product it mentions (none for an
+ * article about both), the card its page shows, and its author where it is
+ * published under a person.
  */
 function articleEntry(article: Article): PageEntry {
   const author = articleAuthor(article);
+  const job = author ? authorJob(author.role) : undefined;
   return {
     kind: "WebPage",
     name: titled(article.title),
     description: article.meta,
     trail: [step(routes.learn), { name: article.h1, path: articleRoute(article) }],
     ...(article.product === "both" ? {} : { about: article.product }),
+    subject: article.h1.split(":")[0]!.trim(),
     article: {
       headline: article.h1,
       published: article.published,
       modified: article.updated,
       image: articleCard(article),
-      ...(author
+      ...(author && job
         ? {
             author: {
               name: author.name,
-              jobTitle: author.role,
+              jobTitle: job.jobTitle,
               ...(author.linkedin ? { url: author.linkedin } : {}),
               worksForZoorik: !author.guest,
+              ...(author.guest && job.employer ? { employer: job.employer } : {}),
             },
           }
         : {}),
@@ -724,12 +749,15 @@ export function pageStructuredData(path: string) {
   const url = pageUrl(path);
   const pageId = `${url}#webpage`;
   const trailId = `${url}#breadcrumb`;
-  const about =
+  const product =
     page.about === "organization"
       ? ref(organizationId)
       : page.about
         ? ref(appId(page.about))
         : undefined;
+  /* A Learn article is about its own topic and mentions its product; every other page is about its product. */
+  const about = page.subject ? { "@type": "Thing", name: page.subject } : product;
+  const mentions = page.subject ? product : undefined;
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -744,6 +772,7 @@ export function pageStructuredData(path: string) {
         isPartOf: ref(websiteId),
         ...(page.trail.length > 0 ? { breadcrumb: ref(trailId) } : {}),
         ...(about ? { about } : {}),
+        ...(mentions ? { mentions } : {}),
         ...(page.kind === "AboutPage" ? { mainEntity: ref(organizationId) } : {}),
         /* A glossary term's page carries its days, as its Updated line prints the later one. */
         ...(page.term
@@ -784,11 +813,19 @@ export function pageStructuredData(path: string) {
                     ...(page.article.author.url ? { url: page.article.author.url } : {}),
                     ...(page.article.author.worksForZoorik
                       ? { worksFor: ref(organizationId) }
-                      : {}),
+                      : page.article.author.employer
+                        ? {
+                            worksFor: {
+                              "@type": "Organization",
+                              name: page.article.author.employer,
+                            },
+                          }
+                        : {}),
                   }
                 : ref(organizationId),
               publisher: ref(organizationId),
               ...(about ? { about } : {}),
+              ...(mentions ? { mentions } : {}),
               image: `${site.url}${page.article.image.url}`,
             },
           ]

@@ -46,7 +46,7 @@ describe("the hero", () => {
     expect(text(hero.querySelector("h1"))).toBe("Cloud cost assessment");
     /* Under the title, what the assessment is, set as the site's hero deck (W32). */
     expect(text(hero.querySelector(".ax-hero-t > h1 + p.doc-deck.ax-lead"))).toBe(
-      "The free assessment estimates what you could save on Kubernetes (AKS and EKS) or block storage on Azure and AWS. It’s read-only, runs in Cloud Shell or your terminal, and writes one PDF. It sends nothing to Zoorik.",
+      "The free cloud cost assessment estimates what you could save on Kubernetes (AKS and EKS) or block storage on Azure and AWS. It’s read-only, runs in Cloud Shell or your terminal, and writes one PDF. It sends nothing to Zoorik.",
     );
     /* Then the line to choose over the switch. */
     const pick = hero.querySelector(".ax-hero-t > h1 + .ax-lead + .ax-pick")!;
@@ -405,12 +405,12 @@ describe("Before you run it", () => {
 });
 
 describe("the page's description", () => {
-  it("says what the assessment is in 142 characters, and never says bill", () => {
+  it("says what the assessment is in 159 characters, and never says bill", () => {
     const { description } = assessmentCopy.meta;
     expect(description).toBe(
-      "A free, read-only assessment for Kubernetes and block storage on Azure and AWS. Run it in Cloud Shell or your terminal and get one PDF report.",
+      "Free cloud cost assessment for Kubernetes and block storage on Azure and AWS: a read-only cloud cost analysis, run in Cloud Shell or your terminal, in one PDF.",
     );
-    expect(description).toHaveLength(142);
+    expect(description).toHaveLength(159);
     expect(description).not.toMatch(/\bbill/i);
   });
 });
@@ -428,9 +428,9 @@ describe("After the run", () => {
     const cal = section.querySelector(".as-cal")!;
     expect(text(cal.querySelector("h3"))).toBe("Book 30 minutes");
     expect(text(cal.querySelector("p"))).toBe(
-      "Walk through your report with the people who build Coral.",
+      "Walk through your report with the people who build Coral and Amoeba.",
     );
-    expect(cal.querySelector('p [translate="no"]')).toHaveTextContent("Coral");
+    expect([...cal.querySelectorAll('p [translate="no"]')].map(text)).toEqual(["Coral", "Amoeba"]);
     expect(cal.querySelector("a.cta-go")).toHaveAttribute("href", "https://cal.com/zoorik/talk");
     expect(cal.querySelector("a.cta-go")).toHaveAttribute("target", "_blank");
     expect(
@@ -447,7 +447,7 @@ describe("After the run", () => {
     ]);
   });
 
-  it("follows Amoeba: the mail's subject, the booking line and the estimate's section", () => {
+  it("follows Amoeba: the mail's subject and the estimate's section; the booking line names both", () => {
     at("?p=amoeba");
     const section = page().querySelector("#after")!;
     expect(section.querySelector(".as-card a.btn-ink")).toHaveAttribute(
@@ -455,7 +455,7 @@ describe("After the run", () => {
       "mailto:founders@zoorik.com?subject=Amoeba%20assessment",
     );
     expect(text(section.querySelector(".as-cal p"))).toBe(
-      "Walk through your report with the people who build Amoeba.",
+      "Walk through your report with the people who build Coral and Amoeba.",
     );
     expect(section.querySelectorAll(".ax-foot a")[1]).toHaveAttribute(
       "href",
@@ -502,7 +502,11 @@ describe("the first paint", () => {
     const html = renderToString(<AssessmentPage />);
     expect(html).toMatch(/<li data-p="coral">.*npx -y zoorik assess coral/);
     expect(html).toMatch(/<li data-p="amoeba">.*npx -y zoorik assess amoeba/);
-    expect(html).toContain('<span data-if-p="coral"><span translate="no">Coral</span></span>');
+    /* The booking line is one sentence before hydration: both names, no per-product copies. */
+    expect(html).toContain(
+      'Walk through your report with the people who build <span translate="no">Coral</span> and <span translate="no">Amoeba</span>.',
+    );
+    expect(html).not.toContain('<span data-if-p="coral"><span translate="no">Coral</span></span>');
     expect(html).toMatch(/<nav class="as-switch ax-switch" aria-label="Product" data-boot="">/);
   });
 });

@@ -337,7 +337,7 @@ export const article: Article = {
     },
     {
       id: "rebalance-first-then-scale-out",
-      title: "Rebalance first, then scale out",
+      title: "Set requests from real use first, then scale out",
       blocks: [
         {
           kind: "p",
@@ -413,7 +413,7 @@ export const article: Article = {
             ],
             [
               { b: "Nodes." },
-              " Coral drains spare nodes one at a time so your Cluster Autoscaler, AKS node auto-provisioning or Karpenter can remove them. Node optimization is on from install, and you can limit it to chosen node pools.",
+              " Coral drains spare nodes one at a time so your Cluster Autoscaler, AKS node auto provisioning or Karpenter can remove them. Node optimization is on from install, and you can limit it to chosen node pools.",
             ],
             [
               { b: "Opt-in." },
@@ -482,12 +482,12 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "HPA vs VPA vs Cluster Autoscaler: what each one scales",
+      title: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
       where: "Learn",
       href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
     },
     {
-      title: "KEDA vs HPA vs VPA: where event-driven scaling fits",
+      title: "KEDA vs HPA: where event-driven scaling fits",
       where: "Learn",
       href: "/learn/keda-vs-hpa-vs-vpa",
     },

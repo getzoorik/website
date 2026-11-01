@@ -28,7 +28,7 @@ export const article: Article = {
     { code: '"false"' },
     " holds the node, and ",
     { code: '"true"' },
-    " releases pods it would otherwise keep, such as emptyDir or hostPath pods. Karpenter, AKS node auto-provisioning and ",
+    " releases pods it would otherwise keep, such as emptyDir or hostPath pods. Karpenter, AKS node auto provisioning and ",
     { a: "EKS Auto Mode", href: "/learn/glossary/eks-auto-mode" },
     " read do-not-disrupt, which keeps the node out of consolidation.",
   ],
@@ -67,7 +67,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "The Cluster Autoscaler’s FAQ documents safe-to-evict and never mentions Karpenter’s annotation, while Karpenter’s disruption docs never mention safe-to-evict, so don’t count on it there. On Azure Kubernetes Service (AKS), ",
-            { a: "node auto-provisioning (NAP)", href: "/learn/aks-node-auto-provisioning" },
+            { a: "node auto provisioning (NAP)", href: "/learn/aks-node-auto-provisioning" },
             " documents ",
             { code: "karpenter.sh/do-not-disrupt" },
             " too, and so does EKS Auto Mode on Amazon Elastic Kubernetes Service (EKS). ",

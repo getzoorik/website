@@ -500,7 +500,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "One app needed more memory, and Coral gave it more. The memory the apps reserve went from 6.4 to 5.4\u00a0GiB, 16% less. ",
-            { a: "Our case study", href: "/coral-value-lab" },
+            { a: "The Coral Value Lab study", href: "/coral-value-lab" },
             " has the full run.",
           ],
         },

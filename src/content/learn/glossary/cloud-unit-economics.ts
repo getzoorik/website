@@ -53,7 +53,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why unit economics matter for your cloud cost",
       blocks: [
         {
           kind: "ul",
@@ -96,7 +96,7 @@ export const term: GlossaryTerm = {
     },
   ],
   next: {
-    title: "Kubernetes cost estimation for AKS and EKS",
+    title: "Kubernetes cost estimation: what a cluster costs",
     href: "/learn/kubernetes-cost-estimation",
   },
   sources: [

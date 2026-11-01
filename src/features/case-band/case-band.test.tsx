@@ -39,7 +39,7 @@ describe("the case study band", () => {
 
   it("sets the study's own headline, its second half on a line of its own", () => {
     const h2 = band().querySelector("h2#mo-case-h")!;
-    expect(h2.textContent).toBe("How we reduced our own cluster’s machine bill by 58%");
+    expect(h2.textContent).toBe("How we reduced our own AKS cluster’s machine cost by 58%");
     expect(h2.querySelector("span")!.textContent).toBe(caseStudy.hero.titleGreen);
     expect(h2.firstChild!.textContent).toBe(caseStudy.hero.title);
     /* Set plain, as every heading on the page: no period. */
@@ -61,7 +61,7 @@ describe("the case study band", () => {
     expect(button).toHaveClass("btn", "btn-light");
     expect(button).toHaveAttribute("href", "/coral-value-lab");
     expect(button!.getAttribute("href")).toBe(caseStudy.route);
-    expect(text(button!)).toBe("Read the case study");
+    expect(text(button!)).toBe("Read the Coral Value Lab study");
     /* Same tab: no new-tab hint, the plain arrow. */
     expect(button).not.toHaveAttribute("target");
     expect(button!.querySelector(".sr-only, .ext")).toBeNull();

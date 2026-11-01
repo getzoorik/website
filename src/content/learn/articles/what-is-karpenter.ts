@@ -20,7 +20,7 @@ export const article: Article = {
   coverAlt:
     "What is Karpenter? It launches a node for pending pods and removes the node once it is empty",
   short:
-    "Karpenter is an open-source Kubernetes node autoscaler that launches nodes sized to pending pods and removes underused ones or replaces them with cheaper machines. On Amazon EKS you run it yourself, EKS Auto Mode builds on it, and on AKS it runs as node auto-provisioning (NAP).",
+    "Karpenter is an open-source Kubernetes node autoscaler that launches nodes sized to pending pods and removes underused ones or replaces them with cheaper machines. On Amazon EKS you run it yourself, EKS Auto Mode builds on it, and on AKS it runs as node auto provisioning (NAP).",
   sections: [
     {
       id: "what-is-karpenter",
@@ -345,7 +345,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "karpenter-on-aks-node-auto-provisioning",
-          title: "Karpenter on AKS: node auto-provisioning",
+          title: "Karpenter on AKS: node auto provisioning",
         },
         {
           kind: "p",
@@ -360,7 +360,7 @@ export const article: Article = {
           text: [
             "It doesn’t support Windows node pools or IPv6 clusters. To turn it on, see ",
             {
-              a: "how to enable AKS node auto-provisioning",
+              a: "how to enable AKS node auto provisioning",
               href: "/learn/aks-node-auto-provisioning",
             },
             ".",

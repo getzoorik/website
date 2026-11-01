@@ -414,7 +414,13 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Amoeba works on Windows and Linux VMs. On Linux, the VM needs a recent kernel with btrfs, and every process that keeps a data mount open must run under systemd. The VM also needs a few free data-disk slots for the pool.",
+          text: [
+            {
+              a: "Azure managed disk cost optimization",
+              href: "/azure-managed-disk-cost-optimization",
+            },
+            " covers the move and what a VM needs in full.",
+          ],
         },
         {
           kind: "p",

@@ -190,7 +190,7 @@ export const securityGroups: readonly SecurityGroup[] = [
             text: [
               "Connect creates a managed identity, ",
               { code: "zoorik-agent-<cluster>" },
-              ", with the role “Zoorik Node Removal v1” on that cluster only. The role can read the cluster, its pools and machines, and delete machines. Connect also turns on workload identity and the OIDC issuer if they are off. The OIDC issuer can’t be turned off again.",
+              ", with the role “Zoorik Node Removal v2” on that cluster only. The role can read the cluster, its pools and machines, and delete machines. Connect also turns on workload identity and the OIDC issuer if they are off. The OIDC issuer can’t be turned off again.",
             ],
           },
           { kind: "h4", title: "On EKS" },

@@ -71,7 +71,7 @@ export const coralPageContent: ProductPageContent = {
         ", ",
         { a: "Karpenter", href: routes.coralWorksWithKarpenter },
         ", ",
-        { a: "Node Auto Provisioning (NAP)", href: routes.coralWorksWithNodeAutoProvisioning },
+        { a: "AKS node auto provisioning (NAP)", href: routes.coralWorksWithNodeAutoProvisioning },
         " and ",
         { a: "the Cluster Autoscaler", href: routes.coralWorksWithClusterAutoscaler },
         ".",
@@ -117,7 +117,7 @@ export const coralPageContent: ProductPageContent = {
     example: kubernetesContent.caption,
   },
   readMore: {
-    title: "Read more",
+    title: "Coral docs and guides",
     allDocs: { label: "All docs", href: `${routes.docs}#coral` },
     tiles: [
       {

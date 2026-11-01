@@ -121,6 +121,9 @@ function Build(): React.JSX.Element {
                 <ul className="cq-stack" aria-label={build.stackLabel}>
                   {item.stack.map((tool) => (
                     <li key={tool.name}>
+                      {"markBefore" in tool ? (
+                        <ToolMark mark={tool.markBefore} idSuffix={`cq-${item.product}`} />
+                      ) : null}
                       {"mark" in tool ? (
                         <ToolMark mark={tool.mark} idSuffix={`cq-${item.product}`} />
                       ) : null}

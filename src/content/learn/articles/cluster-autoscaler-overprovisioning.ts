@@ -272,7 +272,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "AKS overprovisioning with the Cluster Autoscaler works as described above. Node auto-provisioning (NAP) on AKS is different, and the Karpenter notes below apply to it too. Microsoft says NAP is based on the open-source Karpenter project and provisions nodes in response to pending pod pressure.",
+          text: "AKS overprovisioning with the Cluster Autoscaler works as described above. Node auto provisioning (NAP) on AKS is different, and the Karpenter notes below apply to it too. Microsoft says NAP is based on the open-source Karpenter project and provisions nodes in response to pending pod pressure.",
         },
         {
           kind: "p",

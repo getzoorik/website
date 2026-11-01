@@ -105,7 +105,7 @@ export const caseStudy = {
   meta: {
     title: "How We Reduced AKS Cluster Costs by 58%",
     description:
-      "Our own AKS cost reduction case study: eight days after we connected Coral, our development cluster cost $154.76 a month instead of $368.65.",
+      "Our own AKS cost reduction case study: eight days after we connected Coral, our development cluster’s machines cost $154.76 a month instead of $368.65.",
   },
   hero: {
     kicker: "Value Lab · Coral on Azure Kubernetes Service · October 2026",
@@ -113,7 +113,7 @@ export const caseStudy = {
     title: "How we reduced our own AKS cluster’s",
     titleGreen: "machine cost by 58%",
     deck: [
-      "Before we ask anyone to trust Coral with their cluster, we run it on ours. In October 2026 we connected Coral to the Kubernetes cluster that runs Zoorik’s own development platform on Azure. Eight days later the cluster cost ",
+      "Before we ask anyone to trust Coral with their cluster, we run it on ours. In October 2026 we connected Coral to the Kubernetes cluster that runs Zoorik’s own development platform on Azure. Eight days later the cluster’s machines cost ",
       { b: "$154.76 a month instead of $368.65" },
       ", and every app was still running.",
     ] satisfies CaseStudyText,
@@ -560,18 +560,18 @@ export const amoebaStudy = {
       title: "The move onto a pool: two folders, while the app kept writing",
       date: "19 Oct",
       text: [
-        "On Lab VM B, Amoeba built a btrfs pool beside the two old disks. It copied both folders onto the pool while our test app kept writing. Then it copied what had changed and switched both folders to the pool. ",
+        "On Lab VM B, Amoeba built a btrfs pool beside the two source disks. It copied both folders onto the pool while our test app kept writing. Then it copied what had changed and switched both folders to the pool. ",
         { b: "Not one write failed" },
-        " at the switch, and writing never paused for more than 1.5 seconds. We then let Amoeba release the old disks. It took a safety snapshot of each, then deleted them.",
+        " at the switch, and writing never paused for more than 1.5 seconds. We then let Amoeba release the source disks. It took a safety snapshot of each, then deleted them.",
       ],
       pill: "2 folders moved · 0 failed writes at the switch",
     } satisfies CaseStudyStep,
     swap: {
       label:
-        "Lab VM B: both folders moved from two 32 GiB old disks onto a btrfs pool; each old disk was snapshotted, then deleted.",
+        "Lab VM B: both folders moved from two 32 GiB source disks onto a btrfs pool; each source disk was snapshotted, then deleted.",
       before: {
         badge: "Before",
-        name: "Old disks",
+        name: "Source disks",
         kind: "2 × 32 GiB, both folders",
         disks: [32, 32],
         tone: "old",
@@ -582,7 +582,7 @@ export const amoebaStudy = {
         kind: "both folders",
         disks: [],
         tone: "new",
-        note: "Old disks: a safety snapshot each, then deleted",
+        note: "Source disks: a safety snapshot each, then deleted",
       } satisfies CaseStudyDiskCard as CaseStudyDiskCard,
     },
     shrink: {
@@ -616,7 +616,7 @@ export const amoebaStudy = {
     },
   },
   through: {
-    text: "The move onto a pool is the big step for an app: its folders switch from the old disks to the pool. Here is how long our test app’s writes took on Lab VM B, before and through that move. The app wrote to both folders every second. Each write was saved to disk before it counted.",
+    text: "The move onto a pool is the big step for an app: its folders switch from the source disks to the pool. Here is how long our test app’s writes took on Lab VM B, before and through that move. The app wrote to both folders every second. Each write was saved to disk before it counted.",
     felt: {
       caption: "What the test app felt on Lab VM B",
       unit: "milliseconds: 99 in 100 writes, and the slowest",
@@ -670,7 +670,7 @@ export const amoebaStudy = {
   safe: [
     {
       title: "Snapshot first",
-      text: "After the move, Amoeba took a safety snapshot of each old disk before it deleted that disk.",
+      text: "After the move, Amoeba took a safety snapshot of each source disk before it deleted that disk.",
     },
     {
       title: "Data off first",
@@ -815,6 +815,8 @@ export interface ValueLabCard {
   /** Under the bars: what they measure ("a month", "btrfs pool"). */
   readonly per: string;
   readonly href: string;
+  /** Its way in, by the study's own name: "Read the Coral Value Lab study". */
+  readonly read: string;
 }
 
 const amoebaPool = amoebaStudy.result.pool;
@@ -841,7 +843,7 @@ export const caseStudiesHub = {
     asOfLabel: `As of ${shortDay(caseStudy.band.date)}`,
     amount: savedMonthly,
     unit: "a month",
-    line: `About ${perYear(savedMonthly)} a year from the ${products.coral.name} case study, at list prices.`,
+    line: `About ${perYear(savedMonthly)} a year from the ${products.coral.name} Value Lab study, at list prices.`,
   },
   studies,
   /** The band, named for a screen reader: the studies' cards and "Want to be next?". */
@@ -861,6 +863,7 @@ export const caseStudiesHub = {
       after: { ...studies[0]!.after, name: "With Coral" },
       per: "a month",
       href: caseStudy.route,
+      read: `Read the ${products.coral.name} Value Lab study`,
     },
     {
       flag: "New",
@@ -871,10 +874,9 @@ export const caseStudiesHub = {
       after: { value: amoebaAfter.amount, label: amoebaAfter.label, name: "With Amoeba" },
       per: "btrfs pool",
       href: amoebaStudy.route,
+      read: `Read the ${products.amoeba.name} Value Lab study`,
     },
   ] satisfies readonly ValueLabCard[] as readonly ValueLabCard[],
-  /** Each study's way in. */
-  card: { read: "Read the case study" },
   /** The navy card beside it: the free assessment. */
   next: {
     title: "Want to be next?",

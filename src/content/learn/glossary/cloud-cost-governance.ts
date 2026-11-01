@@ -7,7 +7,7 @@ export const term: GlossaryTerm = {
   title: "What is cloud cost governance?",
   meta: "Cloud cost governance is the budgets, tag rules and deploy limits that keep cloud cost in bounds. See FinOps governance, Azure Policy and AWS budget alerts.",
   h1: "What is cloud cost governance?",
-  card: "Cloud cost governance is the set of rules that keeps your cloud spend inside agreed limits.",
+  card: "Cloud cost governance is the set of rules that keeps your cloud cost inside agreed limits.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
@@ -15,7 +15,7 @@ export const term: GlossaryTerm = {
   definition: [
     {
       kind: "p",
-      text: "Cloud cost governance is the set of rules that keeps your cloud spend inside agreed limits. It covers budgets, tag rules, approvals and limits on what teams can deploy. You define the rules, apply them, then monitor them.",
+      text: "Cloud cost governance is the set of rules that keeps your cloud cost inside agreed limits. It covers budgets, tag rules, approvals and limits on what teams can deploy. You define the rules, apply them, then monitor them.",
     },
     { kind: "svg", figure: figure1 },
   ],
@@ -77,7 +77,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why cloud cost governance matters",
       blocks: [
         {
           kind: "ul",

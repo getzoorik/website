@@ -586,7 +586,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "On our own AKS development cluster, Coral removed one of two 4-CPU workers. It then rebalanced the remaining worker onto a cheaper machine of the same size. Eight days after we connected it, the cluster cost $154.76 a month instead of $368.65.",
+          text: "On our own AKS development cluster, Coral removed one of two 4-CPU workers. It then rebalanced the remaining worker onto a cheaper machine of the same size. Eight days after we connected it, the cluster’s machines cost $154.76 a month instead of $368.65.",
         },
         {
           kind: "p",
@@ -679,12 +679,12 @@ export const article: Article = {
       href: "/learn/karpenter-vs-cluster-autoscaler",
     },
     {
-      title: "How to choose AKS node sizes",
+      title: "How to choose AKS VM sizes",
       where: "Learn",
       href: "/learn/how-to-choose-aks-node-sizes",
     },
     {
-      title: "HPA vs VPA vs Cluster Autoscaler: what each one scales",
+      title: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
       where: "Learn",
       href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
     },

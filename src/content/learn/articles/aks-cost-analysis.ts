@@ -452,8 +452,8 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Eight days after we connected Coral to our own AKS development cluster, the cluster cost $154.76 a month instead of $368.65. That is 58% less, and ",
-            { a: "the case study", href: "/coral-value-lab" },
+            "Eight days after we connected Coral to our own AKS development cluster, the cluster’s machines cost $154.76 a month instead of $368.65. That is 58% less, and ",
+            { a: "the Coral Value Lab study", href: "/coral-value-lab" },
             " walks through each step.",
           ],
         },
@@ -536,7 +536,7 @@ export const article: Article = {
       href: "/learn/kubernetes-pod-right-sizing",
     },
     {
-      title: "How to choose AKS node sizes",
+      title: "How to choose AKS VM sizes",
       where: "Learn",
       href: "/learn/how-to-choose-aks-node-sizes",
     },

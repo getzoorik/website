@@ -479,7 +479,7 @@ export const article: Article = {
             ],
             [
               { b: "Held nodes:" },
-              " a node stays when a pod on it can’t move safely. Examples are a PDB that allows no disruption, emptyDir or hostPath data, or a pod ",
+              " a node stays when a pod on it can’t move safely. Examples are a PDB that allows no disruption, hostPath data, or a pod ",
               { a: "marked do-not-disrupt", href: "/learn/safe-to-evict-do-not-disrupt" },
               ". Coral’s console names ",
               { a: "each reason and its fix", href: "/coral-guide#nodes-held" },

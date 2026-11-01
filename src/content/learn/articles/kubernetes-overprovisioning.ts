@@ -378,7 +378,7 @@ export const article: Article = {
             ],
             [
               { b: "Spare nodes." },
-              " Node optimization is on from install and uses pod requests to work out how many nodes each pool needs. It checks on the live cluster that every pod on a node fits on another Ready node. It then cordons and drains one node at a time for your Cluster Autoscaler, Karpenter or AKS node auto-provisioning (NAP) to remove.",
+              " Node optimization is on from install and uses pod requests to work out how many nodes each pool needs. It checks on the live cluster that every pod on a node fits on another Ready node. It then cordons and drains one node at a time for your Cluster Autoscaler, Karpenter or AKS node auto provisioning (NAP) to remove.",
             ],
             [
               { b: "What it leaves alone." },
@@ -420,7 +420,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "All $213.89 of that monthly reduction came from one machine removed and one swapped for a cheaper one, as ",
-            { a: "the case study", href: "/coral-value-lab" },
+            { a: "the Coral Value Lab study", href: "/coral-value-lab" },
             " shows.",
           ],
         },
@@ -499,7 +499,7 @@ export const article: Article = {
       href: "/learn/cluster-autoscaler-not-scaling-down",
     },
     {
-      title: "VPA vs HPA: when to use which, and why to rebalance first",
+      title: "VPA vs HPA: when to use which",
       where: "Learn",
       href: "/learn/vpa-vs-hpa",
     },

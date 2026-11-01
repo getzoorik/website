@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 
-import { filmCaption, homeFilms } from "@/content/home-films";
+import { homeFilms } from "@/content/home-films";
 import type { ProductId } from "@/content/products";
 
 /**
@@ -41,7 +41,7 @@ export function ProductFilm({ product }: { product: ProductId }): React.JSX.Elem
           aria-label={film.label}
         />
       </div>
-      <figcaption className="mo-cap">{filmCaption}</figcaption>
+      <figcaption className="mo-cap">{film.caption}</figcaption>
     </figure>
   );
 }

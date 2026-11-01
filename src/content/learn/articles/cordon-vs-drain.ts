@@ -495,7 +495,7 @@ export const article: Article = {
           items: [
             [
               { b: "A fit check first." },
-              " Before it moves anything, Coral checks the live cluster. Every pod on the node must fit on another Ready node, with its affinity, taints, spread, ports and zones. The move must also respect PDBs, do-not-disrupt markers and your autoscaler’s minimum pool size.",
+              " Before it moves anything, Coral checks the live cluster. Every pod on the node must fit on another Ready node, with its affinity, taints, spread, ports and zones. The move must also respect PDBs and do-not-disrupt markers. By default, Coral may reduce a pool’s minimum when that minimum alone keeps a node it has emptied, and disconnect puts the old minimum back.",
             ],
             [
               { b: "One node at a time." },
@@ -528,7 +528,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "On our own AKS development cluster on 6 October, Coral removed a spare 4-CPU worker on its own in under 10\u00a0minutes. Apps that run a single copy restarted once on another machine. Every app was running again afterwards, as ",
-            { a: "the case study", href: "/coral-value-lab" },
+            { a: "the Coral Value Lab study", href: "/coral-value-lab" },
             " shows.",
           ],
         },

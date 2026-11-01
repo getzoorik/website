@@ -52,7 +52,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "Why egress cost matters",
       blocks: [
         {
           kind: "ul",
@@ -87,7 +87,7 @@ export const term: GlossaryTerm = {
     },
     {
       title: "FinOps",
-      line: "The practice of managing cloud spend.",
+      line: "The practice of managing cloud cost.",
       href: "/learn/glossary/finops",
     },
   ],

@@ -61,7 +61,7 @@ export const designPartnersPage = {
       "Join regular feedback calls with our team.",
       "If you agree, let us publish your results as a case study, named or anonymised.",
     ],
-    call: { label: "Book a call", href: calendarUrl },
+    call: { label: "Book a demo", href: calendarUrl },
   },
   get: {
     id: "get",

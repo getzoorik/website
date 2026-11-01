@@ -34,7 +34,7 @@ describe("page metadata", () => {
     expect(assessment.title).toBe("Free cloud cost assessment for Azure and AWS");
     expect(login.title).toBe("Sign in");
     expect(amoeba.title).toBe("Block storage cost optimization for Azure and AWS");
-    expect(coral.title).toBe("Coral: Kubernetes optimization for AKS and EKS");
+    expect(coral.title).toBe("Kubernetes cost optimization for AKS and EKS");
   });
 
   it("keeps each full title within the 60 characters a search result shows", () => {
@@ -42,7 +42,7 @@ describe("page metadata", () => {
     const { template } = layout.title as { template: string };
     const full = (title: unknown) => template.replace("%s", String(title));
     expect(full(amoeba.title)).toBe("Block storage cost optimization for Azure and AWS | Zoorik");
-    expect(full(coral.title)).toBe("Coral: Kubernetes optimization for AKS and EKS | Zoorik");
+    expect(full(coral.title)).toBe("Kubernetes cost optimization for AKS and EKS | Zoorik");
     for (const title of [amoeba.title, coral.title, assessment.title])
       expect(full(title).length).toBeLessThanOrEqual(60);
     expect((layout.title as { default: string }).default).toHaveLength(55);
@@ -50,13 +50,13 @@ describe("page metadata", () => {
 
   it("describes the home page and each product page in its own words, and the right product's", () => {
     expect(home.description).toBe(
-      "Zoorik reduces cloud cost, autonomously, without any downtime. Coral rebalances Kubernetes on AKS and EKS. Amoeba rightsizes Azure disks and Amazon EBS.",
+      "Zoorik is a cloud cost optimization company. Coral rebalances Kubernetes on AKS and EKS. Amoeba rightsizes Azure managed disks and Amazon EBS, autonomously.",
     );
     expect(amoeba.description).toBe(
-      "Amoeba rightsizes Azure managed disks and Amazon EBS volumes to the data you store, to reduce your cloud cost, autonomously, without any downtime.",
+      "Block storage cost optimization: Amoeba rightsizes Azure managed disks and Amazon EBS to your data, autonomously, without any downtime after the one switch.",
     );
     expect(coral.description).toBe(
-      "Coral rebalances AKS and EKS clusters to reduce your cloud cost, autonomously, without any downtime. Works with HPA, Karpenter, NAP and Cluster Autoscaler.",
+      "Kubernetes optimization platform for AKS and EKS: Coral rebalances clusters to reduce your cloud cost, autonomously, without any downtime.",
     );
     /* Coral is never shown on Windows or Linux. */
     expect(String(coral.description)).not.toMatch(/Windows|Linux/);
@@ -133,7 +133,7 @@ describe("the documents section's metadata", () => {
 
   it("titles, describes and canonicalises the Amoeba FAQ as its mock does", () => {
     const description =
-      "Answers on how Amoeba keeps data safe, what restarts and when, how pools expand and shrink, and how it runs on Azure managed disks and Amazon EBS.";
+      "Amoeba FAQ: how it keeps data safe, what restarts and when, what happens to your original disks, how pools grow and shrink, and how it runs on Azure and AWS.";
     expect(amoebaFaq.title).toBe("Amoeba FAQ");
     expect(amoebaFaq.description).toBe(description);
     expect(amoebaFaq.alternates).toEqual({ canonical: "/amoeba-faq" });
@@ -173,7 +173,7 @@ describe("the numbered-row pages' metadata", () => {
     /* The hub's h1 is "Zoorik Learn"; its title goes through the template like every page's. */
     expect(learn.title).toBe("Cloud cost optimization guides");
     expect(learn.description).toBe(
-      "Guides and comparisons for Kubernetes, block storage and the whole cloud bill on Azure and AWS, from where the money goes to the right fix.",
+      "Cloud cost optimization guides and comparisons for Kubernetes and block storage on Azure and AWS, from where the money goes to the right fix.",
     );
     expect(learn.alternates).toEqual({ canonical: "/learn" });
     expect(learn).not.toHaveProperty("robots");

@@ -630,7 +630,7 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "How to choose AKS node sizes",
+      title: "How to choose AKS VM sizes",
       where: "Learn",
       href: "/learn/how-to-choose-aks-node-sizes",
     },

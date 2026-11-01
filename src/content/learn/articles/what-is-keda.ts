@@ -125,7 +125,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            { a: "KEDA vs HPA vs VPA", href: "/learn/keda-vs-hpa-vs-vpa" },
+            { a: "KEDA vs HPA", href: "/learn/keda-vs-hpa-vs-vpa" },
             " compares KEDA with a plain HPA and the Vertical Pod Autoscaler.",
           ],
         },
@@ -592,7 +592,7 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "KEDA vs HPA vs VPA: where event-driven scaling fits",
+      title: "KEDA vs HPA: where event-driven scaling fits",
       where: "Learn",
       href: "/learn/keda-vs-hpa-vs-vpa",
     },
@@ -602,7 +602,7 @@ export const article: Article = {
       href: "/learn/keda-vs-karpenter",
     },
     {
-      title: "HPA vs VPA vs Cluster Autoscaler: what each one scales",
+      title: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
       where: "Learn",
       href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
     },

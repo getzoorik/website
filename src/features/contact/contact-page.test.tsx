@@ -27,7 +27,7 @@ describe("/contact", () => {
   it("is titled, described and canonicalised as its draft, with its own card", () => {
     expect(metadata.title).toBe("Contact");
     expect(metadata.description).toBe(
-      "Book a call with the people who build Coral and Amoeba, or email founders@zoorik.com. For demos, early access, partners, press, security and privacy.",
+      "Book a demo with the people who build Coral and Amoeba, or email founders@zoorik.com. For early access, partners, press, security and privacy.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/contact" });
     expect(metadata.openGraph).toMatchObject({
@@ -42,7 +42,7 @@ describe("/contact", () => {
     expect(text(root.querySelector("main > header.hero h1"))).toBe("Contact Zoorik");
     const pair = root.querySelector("main > section.cp-pair .as-grid")!;
     const call = pair.querySelector(".as-card.cp-w")!;
-    expect(text(call.querySelector("h2"))).toBe("Book a call");
+    expect(text(call.querySelector("h2"))).toBe("Book a demo");
     expect(call.querySelector("a.btn-ink")).toHaveAttribute("href", "https://cal.com/zoorik/talk");
     expect(call.querySelector("a.btn-ink")).toHaveAttribute("target", "_blank");
     const mail = pair.querySelector(".as-cal.cp-d")!;
