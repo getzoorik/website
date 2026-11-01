@@ -3,7 +3,7 @@ import type { ProductId } from "@/content/products";
 
 /**
  * The market data: every fact the comparison pages print about the tools in the market, and about Coral and Amoeba
- * beside them: the tiles of Cloud cost optimization tools, the two versus pages and the two alternatives pages.
+ * beside them: the tiles of Cloud cost optimization tools, the versus pages and the two alternatives pages.
  *
  * ─── WHERE IT COMES FROM ─────────────────────────────────────────────────────────────────────────────────────────
  * Generated from the mocks' data, checked on the day `marketChecked` names: each tool's name, owner, line, how it
@@ -1243,7 +1243,7 @@ export interface VersusRow {
 }
 
 /**
- * A live versus page's facts (one per product). `tool` is the market's tool it compares, whose owner, address
+ * A live versus page's facts. `tool` is the market's tool it compares, whose owner, address
  * and clouds the page prints; `name` is what the page calls it. The rows are the page's, in its order (no SOC 2
  * row), the storage page's "Azure managed disks" and "Amazon EBS" rows read from the tool's clouds as the mock reads
  * them; then the published pricing, as printed, with the pages it comes from.
@@ -1442,6 +1442,12 @@ export const versusFacts: readonly VersusFacts[] = [
       ],
     },
   },
+  /*
+   * The two clouds' own tools (1 Nov 2026), checked that day on their own pages: word for word from their drafts'
+   * tables (docs/website-seo/new-pages-2026-11-01/<slug>/page.md, every cell in its ledger.md), with the quotes curled
+   * and a day kept with its figure as their mocks print them. Coral's pricing cell is the owner's line (D226), the one
+   * /pricing prints, on both.
+   */
   {
     slug: "amoeba-vs-zesty-disk",
     tool: "Zesty Disk",
@@ -1583,6 +1589,321 @@ export const versusFacts: readonly VersusFacts[] = [
         "https://aws.amazon.com/marketplace/pp/prodview-xqekqy2ylmwyo",
         "https://aws.amazon.com/marketplace/pp/prodview-vlfhlckav3nnu",
       ],
+    },
+  },
+  {
+    slug: "coral-vs-azure-advisor",
+    tool: "Azure Advisor",
+    name: "Azure Advisor",
+    line: "Free Azure service that analyzes configuration and usage to recommend cost, reliability, security, performance and operational excellence improvements.",
+    rows: [
+      {
+        label: "Pod CPU and memory requests",
+        ours: {
+          mark: "yes",
+          note: "sizes them to real use once you turn on “Automatically optimize”, and only recommends until then",
+          sources: [],
+        },
+        theirs: {
+          mark: "partly",
+          note: "recommends the Vertical Pod Autoscaler in recommendation mode, which suggests values but changes no pod",
+          sources: [
+            "https://learn.microsoft.com/en-us/azure/advisor/advisor-reference-cost-recommendations",
+            "https://learn.microsoft.com/en-us/azure/aks/vertical-pod-autoscaler",
+          ],
+        },
+      },
+      {
+        label: "Spare AKS nodes",
+        ours: {
+          mark: "yes",
+          note: "empties them one at a time, so your autoscaler removes them",
+          sources: [],
+        },
+        theirs: {
+          mark: "partly",
+          note: "recommends a cluster autoscaler profile that removes unneeded nodes sooner",
+          sources: [
+            "https://learn.microsoft.com/en-us/azure/advisor/advisor-reference-cost-recommendations",
+          ],
+        },
+      },
+      {
+        label: "Cheaper machines",
+        ours: {
+          mark: "yes",
+          note: "with AKS node auto provisioning (NAP) or Karpenter on EKS, replaces the nodes you choose with cheaper ones that fit the work",
+          sources: [],
+        },
+        theirs: {
+          mark: "partly",
+          note: "recommends Spot nodes for AKS work that can handle interruptions, and cheaper sizes for VMs and scale sets",
+          sources: [
+            "https://learn.microsoft.com/en-us/azure/advisor/advisor-reference-cost-recommendations",
+            "https://learn.microsoft.com/en-us/azure/advisor/advisor-cost-recommendations",
+          ],
+        },
+      },
+      {
+        label: "Idle VMs and other Azure services",
+        ours: { mark: "no", note: "works only inside Kubernetes clusters", sources: [] },
+        theirs: {
+          mark: "yes",
+          note: "finds idle and underused resources across many Azure services",
+          sources: [
+            "https://learn.microsoft.com/en-us/azure/advisor/advisor-reference-cost-recommendations",
+          ],
+        },
+      },
+      {
+        label: "Reservations and savings plans",
+        ours: {
+          mark: "no",
+          note: "left to you, and Coral’s savings are at list price, before discounts",
+          sources: [],
+        },
+        theirs: {
+          mark: "yes",
+          note: "recommends them from your recent usage",
+          sources: [
+            "https://learn.microsoft.com/en-us/azure/advisor/advisor-reference-cost-recommendations",
+          ],
+        },
+      },
+      {
+        label: "Block storage",
+        ours: {
+          mark: "yes",
+          note: "through Amoeba, which rightsizes the data disks of Azure and AWS VMs",
+          sources: [],
+        },
+        theirs: {
+          mark: "partly",
+          note: "flags unattached disks and suggests disk reservations. None of its cost recommendations makes a disk in use smaller",
+          sources: [
+            "https://learn.microsoft.com/en-us/azure/advisor/advisor-reference-cost-recommendations",
+          ],
+        },
+      },
+      {
+        label: "Applies changes on its own",
+        ours: {
+          mark: "yes",
+          note: "empties nodes from install, and sizes pods once you switch it on",
+          sources: [],
+        },
+        theirs: {
+          mark: "no",
+          note: "you apply each recommendation. Quick Fix fixes many resources at once, in a few clicks",
+          sources: [
+            "https://learn.microsoft.com/en-us/azure/advisor/advisor-overview",
+            "https://azure.microsoft.com/en-us/products/advisor/",
+          ],
+        },
+      },
+      {
+        label: "Shows the saving",
+        ours: {
+          mark: "yes",
+          note: "at your cloud’s list price for the region, before discounts",
+          sources: [],
+        },
+        theirs: {
+          mark: "yes",
+          note: "for VMs and scale sets, at retail rates, without your discounts, reservations or savings plans",
+          sources: ["https://learn.microsoft.com/en-us/azure/advisor/advisor-cost-recommendations"],
+        },
+      },
+      {
+        label: "Nothing to install",
+        ours: {
+          mark: "no",
+          note: "zoorikctl, our Helm chart or Terraform installs the agent in your cluster",
+          sources: [],
+        },
+        theirs: {
+          mark: "yes",
+          note: "open it in the Azure portal. Reader access shows the recommendations",
+          sources: ["https://learn.microsoft.com/en-us/azure/advisor/advisor-overview"],
+        },
+      },
+      {
+        label: "Amazon EKS",
+        ours: { mark: "yes", note: "works on EKS as on AKS", sources: [] },
+        theirs: {
+          mark: "no",
+          note: "covers Azure resources only",
+          sources: ["https://learn.microsoft.com/en-us/azure/advisor/advisor-overview"],
+        },
+      },
+    ],
+    pricing: {
+      label: "Published pricing",
+      ours: "Priced per vCPU it manages, bought on AWS or Microsoft Marketplace",
+      theirs:
+        "Free, “available at no additional cost”. Some fixes cost money once applied, such as VM backup",
+      sources: ["https://azure.microsoft.com/en-us/products/advisor/"],
+    },
+  },
+  {
+    slug: "coral-vs-aws-compute-optimizer",
+    tool: "AWS Compute Optimizer",
+    name: "AWS Compute Optimizer",
+    line: "Analyzes your AWS resources’ configuration and utilization metrics to provide rightsizing recommendations and identify idle resources.",
+    rows: [
+      {
+        label: "Sets pod CPU and memory requests",
+        ours: {
+          mark: "yes",
+          note: "sets them to real use once you switch on “Automatically optimize”",
+          sources: [],
+        },
+        theirs: {
+          mark: "no",
+          note: "Kubernetes pods aren’t among its supported resources, and its automation applies two EBS actions",
+          sources: [
+            "https://docs.aws.amazon.com/compute-optimizer/latest/ug/what-is-compute-optimizer.html",
+            "https://aws.amazon.com/compute-optimizer/faqs/",
+          ],
+        },
+      },
+      {
+        label: "Reads what pods request",
+        ours: { mark: "yes", note: "reads each container’s requests and real use", sources: [] },
+        theirs: {
+          mark: "no",
+          note: "reads the instance’s CloudWatch metrics: CPU, network, disk and EBS I/O, plus memory and GPU with the CloudWatch agent",
+          sources: [
+            "https://docs.aws.amazon.com/compute-optimizer/latest/ug/ec2-metrics-analyzed.html",
+          ],
+        },
+      },
+      {
+        label: "Instance types for EKS node groups",
+        ours: {
+          mark: "yes",
+          note: "with Karpenter, a rebalance moves work from the nodes you choose onto cheaper EC2 instances. With only the Cluster Autoscaler, it keeps each group’s instance types",
+          sources: [],
+        },
+        theirs: {
+          mark: "no",
+          note: "no rightsizing for Auto Scaling groups with “Amazon ECS or Amazon EKS workloads”. Each managed node group is an Auto Scaling group",
+          sources: [
+            "https://docs.aws.amazon.com/compute-optimizer/latest/ug/supported-resources.html",
+            "https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html",
+          ],
+        },
+      },
+      {
+        label: "Spare EKS nodes",
+        ours: {
+          mark: "yes",
+          note: "empties spare nodes one at a time, and Karpenter or the Cluster Autoscaler terminates them",
+          sources: [],
+        },
+        theirs: {
+          mark: "partly",
+          note: "a group is idle only if each instance stayed within 5% peak CPU and 5 MB of network a day, over 14 days. It then suggests scaling down to one instance, or deleting the group",
+          sources: [
+            "https://docs.aws.amazon.com/compute-optimizer/latest/ug/view-idle-recommendations.html",
+            "https://docs.aws.amazon.com/compute-optimizer/latest/ug/supported-resources.html",
+          ],
+        },
+      },
+      {
+        label: "Applies changes itself",
+        ours: {
+          mark: "yes",
+          note: "nodes drain one at a time, and pods resize in place or restart within their PodDisruptionBudgets",
+          sources: [],
+        },
+        theirs: {
+          mark: "partly",
+          note: "two EBS actions: snapshot and delete unattached volumes, and upgrade a volume’s type. EC2 changes are yours to make",
+          sources: ["https://aws.amazon.com/compute-optimizer/faqs/"],
+        },
+      },
+      {
+        label: "Memory use",
+        ours: {
+          mark: "yes",
+          note: "reads each container’s memory use in the cluster",
+          sources: [],
+        },
+        theirs: {
+          mark: "partly",
+          note: "only with the CloudWatch agent or one of four observability products. Without memory data, it tries to avoid downsizing memory",
+          sources: [
+            "https://docs.aws.amazon.com/compute-optimizer/latest/ug/ec2-metrics-analyzed.html",
+            "https://aws.amazon.com/compute-optimizer/faqs/",
+          ],
+        },
+      },
+      {
+        label: "Spot nodes in the figures",
+        ours: { mark: "yes", note: "priced at the spot rate", sources: [] },
+        theirs: {
+          mark: "no",
+          note: "it “does not consider transient pricing factors, such as spot pricing”, and gives no EC2 rightsizing for Spot Instances",
+          sources: [
+            "https://aws.amazon.com/compute-optimizer/faqs/",
+            "https://docs.aws.amazon.com/compute-optimizer/latest/ug/supported-resources.html",
+          ],
+        },
+      },
+      {
+        label: "Savings Plans and Reserved Instances",
+        ours: {
+          mark: "no",
+          note: "list price for the region. Discounts, reservations and savings plans are left out",
+          sources: [],
+        },
+        theirs: {
+          mark: "yes",
+          note: "ranks options with On-Demand pricing and discounts through Savings Plans or Reserved Instances",
+          sources: ["https://aws.amazon.com/compute-optimizer/faqs/"],
+        },
+      },
+      {
+        label: "Standalone EC2 instances",
+        ours: { mark: "no", note: "Coral works on AKS and EKS nodes", sources: [] },
+        theirs: {
+          mark: "yes",
+          note: "instance type and size for standalone instances, with up to three options each",
+          sources: ["https://aws.amazon.com/compute-optimizer/faqs/"],
+        },
+      },
+      {
+        label: "Block storage (EBS)",
+        ours: {
+          mark: "yes",
+          note: "through Amoeba, which rightsizes Azure managed disks and Amazon EBS on VMs",
+          sources: [],
+        },
+        theirs: {
+          mark: "yes",
+          note: "recommends EBS volume configurations, with up to three options each",
+          sources: ["https://aws.amazon.com/compute-optimizer/faqs/"],
+        },
+      },
+      {
+        label: "Azure Kubernetes Service (AKS)",
+        ours: { mark: "yes", note: "AKS and EKS", sources: [] },
+        theirs: {
+          mark: "no",
+          note: "it analyzes AWS resources",
+          sources: [
+            "https://docs.aws.amazon.com/compute-optimizer/latest/ug/what-is-compute-optimizer.html",
+          ],
+        },
+      },
+    ],
+    pricing: {
+      label: "Published pricing",
+      ours: "Priced per vCPU it manages, bought on AWS or Microsoft Marketplace",
+      theirs:
+        "No additional charge: you pay for your AWS resources and CloudWatch monitoring. Enhanced infrastructure metrics, with up to three months of history, cost $0.0003360215 per resource per hour, about $0.25 for a full 31-day month. For an Auto Scaling group, it’s charged per running instance",
+      sources: ["https://aws.amazon.com/compute-optimizer/pricing/"],
     },
   },
 ];

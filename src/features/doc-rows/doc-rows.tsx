@@ -3,7 +3,7 @@ import { Fragment, type ReactNode } from "react";
 import { titleLink } from "@/content/learn/published";
 import { ArrowGlyph, ChevronGlyph } from "@/features/documents/document-glyphs";
 import { DocumentFolds } from "@/features/documents/document-folds";
-import { FaqChips } from "@/features/documents/faq-chips";
+import { FaqChips, type FaqChip } from "@/features/documents/faq-chips";
 
 /**
  * The numbered rows in groups: the FAQ's layout, shared by the guides, /terms,
@@ -74,6 +74,16 @@ export interface DocRowsProps {
   readonly end?: ReactNode;
   /** The closing block, in `div.fq-upd.gd-foot`: /learn's line to Medium; an article's help box and sources. */
   readonly foot?: ReactNode;
+  /**
+   * The row of names on a phone, where it is not the groups': a Topic page's first frame names the sections after it
+   * too (its band and its questions), and its second frame, the questions alone, draws none (`[]`).
+   */
+  readonly chips?: readonly FaqChip[];
+  /**
+   * The fold script (`DocumentFolds`), which acts on the whole document and runs once a page: `false` on a Topic
+   * page's first frame, whose second frame (the questions) runs it.
+   */
+  readonly folds?: boolean;
 }
 
 /** The column's classes, its open block's and its closing block's, by frame. */
@@ -105,12 +115,14 @@ export function DocRows({
   frame = "faq",
   end,
   foot,
+  chips = groups.map((group) => ({ id: group.id, label: group.chip })),
+  folds = true,
 }: DocRowsProps): React.JSX.Element {
   const classes = FRAME[frame];
   return (
     <div className="sec doc-body">
       <div className="wrap">
-        <FaqChips chips={groups.map((group) => ({ id: group.id, label: group.chip }))} />
+        {chips.length > 0 ? <FaqChips chips={chips} /> : null}
         <article className={classes.main}>
           {top ? <div className={classes.top}>{top}</div> : null}
           {groups.map((group) => (
@@ -134,7 +146,7 @@ export function DocRows({
           {foot ? <div className={classes.foot}>{foot}</div> : null}
         </article>
       </div>
-      <DocumentFolds />
+      {folds ? <DocumentFolds /> : null}
     </div>
   );
 }

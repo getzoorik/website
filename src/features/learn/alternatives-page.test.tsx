@@ -31,7 +31,7 @@ import { marketTool } from "./market-rows";
 /**
  * The two alternatives pages, under /compare: the hero with the checked day, four questions, then the options, our
  * product first, every tool from the market data in the page's order, linked to its own page, and the one live versus
- * page per product linked from its tool. Names are read from the data, never typed here.
+ * page per product against a listed tool linked from its tool. Names are read from the data, never typed here.
  */
 
 const text = (el: Element | null): string => (el?.textContent ?? "").replace(/[\s ]+/g, " ").trim();
@@ -142,7 +142,14 @@ describe.each(alternativesPages.map((entry) => [entry.route, entry] as const))(
 
     it("links a tool to its versus page only where that page is live", () => {
       const root = page();
-      const live = versusPages.filter((v) => v.product === entry.product);
+      /* The live versus pages against a tool this page lists: not the clouds' own tools, which it does not list. */
+      const listed = alternativesFacts.find((f) => f.product === entry.product)!.tools;
+      const live = versusPages.filter(
+        (v) =>
+          v.product === entry.product &&
+          listed.includes(versusFacts.find((f) => f.slug === v.slug)!.tool),
+      );
+      expect(live).toHaveLength(1);
       const links = [...root.querySelectorAll("a.ap-vs")];
       expect(links.map((a) => a.getAttribute("href"))).toEqual(live.map(versusRoute));
       for (const [index, a] of links.entries()) {

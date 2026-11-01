@@ -41,6 +41,7 @@ import { referralsLastUpdated } from "@/content/referrals";
 import { researchLastUpdated } from "@/content/research";
 import { securityPage } from "@/content/security";
 import { termsCopy } from "@/content/terms";
+import { topicPages } from "@/content/topic-pages";
 import { troubleshootingGuides, troubleshootingUpdated } from "@/content/troubleshooting";
 import { trustUpdated } from "@/content/trust";
 import { worksWithPages } from "@/content/works-with";
@@ -94,10 +95,12 @@ const contentDates: Partial<Record<string, string>> = {
   [routes.amoebaGuide]: amoebaGuide.updated,
   [routes.amoebaFaq]: amoebaFaqPage.updated,
   [routes.cloudCostTools]: cloudCostToolsLastUpdated,
-  /* The comparison pages (under Cloud cost optimization tools) print "checked 19 October 2026"; their content dates
-     are the versus pages' and the alternatives pages'. */
+  /* The comparison pages (under Cloud cost optimization tools) print the day they were checked ("checked 19 October
+     2026", the two of 1 Nov 2026 their own); their content dates are each versus page's and the alternatives pages'. */
   ...Object.fromEntries(
-    versusPages.map((page) => [versusRoute(page), learnCompareLastUpdated] as const),
+    versusPages.map(
+      (page) => [versusRoute(page), page.lastUpdated ?? learnCompareLastUpdated] as const,
+    ),
   ),
   ...Object.fromEntries(
     alternativesPages.map((page) => [page.route, alternativesLastUpdated] as const),
@@ -144,12 +147,14 @@ const contentDates: Partial<Record<string, string>> = {
   ...Object.fromEntries(
     Object.values(worksWithPages).map((page) => [page.route, page.lastUpdated] as const),
   ),
+  /* The two Topic pages of 1 Nov 2026 print no day: their content's. */
+  ...Object.fromEntries(topicPages.map((page) => [page.path, page.lastUpdated] as const)),
 };
 
 /**
- * Every indexed page: home first, then the two products (Coral first), each
- * product on each cloud (Coral's two, then Amoeba's), the six pages on what
- * Coral works with, the assessment, the documents section (the hub, then
+ * Every indexed page: home first, then the two products (Coral first), the two
+ * Topic pages (Azure, then AWS), each product on each cloud (Coral's two, then
+ * Amoeba's), the six pages on what Coral works with, the assessment, the documents section (the hub, then
  * Coral's guide and FAQ, then Amoeba's once `amoebaDocs` publishes them, the
  * install and contributing guides and the troubleshooting pages), Learn and
  * every article in the Learn index (A–Z by slug), the glossary and every term
@@ -166,6 +171,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/",
     routes.coral,
     routes.amoeba,
+    ...topicPages.map((page) => page.path),
     ...cloudPages.map((page) => page.path),
     ...Object.values(worksWithPages).map((page) => page.route),
     routes.assessment,
