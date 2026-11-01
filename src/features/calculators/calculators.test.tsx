@@ -37,25 +37,29 @@ const plain = (cell: string): string => cell.replace(/`/g, "");
 
 describe("the calculators' metadata", () => {
   it("titles, describes and canonicalises each at the site's root, with its own card", () => {
-    expect(nodeMetadata.title).toBe("Kubernetes node cost calculator");
+    /* Part 4's titles and descriptions (1 Nov 2026): each page carries its search. */
+    expect(nodeMetadata.title).toBe("EKS pricing calculator: AKS and EKS node cost");
     expect(nodeMetadata.description).toBe(
-      "Price an AKS or EKS node from the Azure and AWS list prices. See a node pool's monthly cost and how much of each node your pods can use.",
+      "EKS pricing calculator for nodes: price an EKS or AKS node pool at AWS and Azure list prices, and see how much of each node your pods can use.",
     );
     expect(nodeMetadata.alternates).toEqual({ canonical: "/eks-and-aks-pricing-calculator" });
     expect(nodeMetadata.openGraph).toMatchObject({
       url: "/eks-and-aks-pricing-calculator",
-      title: "Kubernetes node cost calculator | Zoorik",
+      title: "EKS pricing calculator: AKS and EKS node cost | Zoorik",
       images: [{ url: "/og/pages/eks-and-aks-pricing-calculator.png" }],
     });
-    expect(diskMetadata.title).toBe("Disk cost calculator: Azure disks and Amazon EBS");
+    expect(diskMetadata.title).toBe("EBS pricing and Azure disk pricing calculator");
+    expect(diskMetadata.description).toBe(
+      "EBS pricing and Azure disk pricing in one calculator: see what an EBS volume or a managed disk costs a month at list price, and what its empty space costs.",
+    );
     expect(diskMetadata.alternates).toEqual({ canonical: "/ebs-and-azure-disk-pricing" });
     expect(diskMetadata.openGraph).toMatchObject({
-      title: "Disk cost calculator: Azure disks and Amazon EBS | Zoorik",
+      title: "EBS pricing and Azure disk pricing calculator | Zoorik",
       images: [{ url: "/og/pages/ebs-and-azure-disk-pricing.png" }],
     });
     for (const meta of [nodeMetadata, diskMetadata]) {
       expect(`${String(meta.title)} | Zoorik`.length).toBeLessThanOrEqual(60);
-      expect(String(meta.description).length).toBeLessThanOrEqual(160);
+      expect(String(meta.description).length).toBeLessThanOrEqual(158);
     }
     expect([nodeCalculator.tile.href, diskCalculator.tile.href]).toEqual([
       routes.eksAndAksPricingCalculator,
@@ -63,10 +67,30 @@ describe("the calculators' metadata", () => {
     ]);
   });
 
-  it("dates both by the day their prices were read", () => {
+  it("dates both by the day their content last changed, their prices still those of 30 October", () => {
     expect(pricesRetrievedAt.startsWith("2026-10-30")).toBe(true);
     expect(pricesRetrieved).toBe("30 October 2026");
-    expect(calculatorsLastUpdated).toBe(pricesRetrieved);
+    /* Part 4's titles, h1s, descriptions and first paragraphs, 1 Nov 2026. */
+    expect(calculatorsLastUpdated).toBe("1 November 2026");
+  });
+
+  it("opens each page on Part 4's h1 and first paragraph", () => {
+    expect(nodeCalculator.hero.title).toBe(
+      "EKS pricing calculator: what an EKS or AKS node costs a month",
+    );
+    expect(nodeCalculator.intro).toEqual([
+      "EKS pricing is an hourly fee for each cluster, plus the EC2 instances and other resources your worker nodes use. This calculator prices the nodes, on EKS and on AKS. A node costs its hourly list price for every hour it runs, and here a month is 730 hours.",
+      "Your pods can't use all of it. Kubernetes keeps some CPU and memory on every node for itself. The results show both: what a node costs, and what your pods get.",
+    ]);
+    expect(diskCalculator.hero.title).toBe("AWS EBS pricing and Azure disk pricing calculator");
+    expect(diskCalculator.intro[0]).toBe(
+      "Under AWS EBS pricing and Azure disk pricing, you pay for a disk's full size every month, however little data it holds. AWS prices an EBS volume by the GB you provision. Azure prices a Premium SSD or Standard SSD at the smallest size tier that holds it.",
+    );
+    /* The node page's first sentence rests on AWS's EKS pricing page, which its Sources names. */
+    const sources = nodeCalculator.frame.find((section) => section.title === "Sources")!;
+    expect(JSON.stringify(sources.blocks)).toContain(
+      "The EKS cluster fee from AWS's [Amazon EKS pricing](https://aws.amazon.com/eks/pricing/), checked 1 November 2026.",
+    );
   });
 });
 

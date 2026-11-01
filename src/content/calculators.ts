@@ -44,24 +44,25 @@ export interface CalculatorCopy {
 }
 
 /**
- * The day the calculators' content last changed, for the sitemap's `lastmod`: the pages print the prices' day
- * ("retrieved 30 October 2026"), which is the same. Whoever changes either page, or refreshes its prices, moves it.
+ * The day the calculators' content last changed, for the sitemap's `lastmod`. Whoever changes either page, or
+ * refreshes its prices, moves it. 1 Nov 2026: Part 4's titles, h1s, descriptions and first paragraphs, the node page's
+ * EKS pricing source and the tools hub's tile names; the prices are still those retrieved 30 October 2026.
  */
-export const calculatorsLastUpdated = "30 October 2026";
+export const calculatorsLastUpdated = "1 November 2026";
 
 export const nodeCalculator = {
   meta: {
-    title: "Kubernetes node cost calculator",
+    title: "EKS pricing calculator: AKS and EKS node cost",
     description:
-      "Price an AKS or EKS node from the Azure and AWS list prices. See a node pool's monthly cost and how much of each node your pods can use.",
+      "EKS pricing calculator for nodes: price an EKS or AKS node pool at AWS and Azure list prices, and see how much of each node your pods can use.",
   },
   hero: {
-    title: "Kubernetes node cost calculator",
+    title: "EKS pricing calculator: what an EKS or AKS node costs a month",
     deck: "Pick a VM size and a node count. See the monthly cost, and how much of each node your pods can use.",
   },
   intro: [
-    "A node costs its hourly list price for every hour it runs. Here a month is 730 hours.",
-    "Your pods can't use all of it. Kubernetes keeps some CPU and memory on every node for itself. This calculator shows both: what a node costs, and what your pods get.",
+    "EKS pricing is an hourly fee for each cluster, plus the EC2 instances and other resources your worker nodes use. This calculator prices the nodes, on EKS and on AKS. A node costs its hourly list price for every hour it runs, and here a month is 730 hours.",
+    "Your pods can't use all of it. Kubernetes keeps some CPU and memory on every node for itself. The results show both: what a node costs, and what your pods get.",
   ],
   frame: [
     {
@@ -152,7 +153,7 @@ export const nodeCalculator = {
       blocks: [
         {
           kind: "p",
-          text: "Prices from the [Azure Retail Prices API](https://prices.azure.com/api/retail/prices) and the [AWS Price List for Amazon EC2](https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonEC2/current/region_index.json), retrieved 30 October 2026. Sizes from Microsoft Learn's VM size pages and the AWS Price List. AKS reserves from Microsoft Learn's [node resource reservations in AKS](https://learn.microsoft.com/en-us/azure/aks/node-resource-reservations) and [maximum pods per node](https://learn.microsoft.com/en-us/azure/aks/concepts-network-ip-address-planning#maximum-pods-per-node). EKS reserves from AWS's [node CPU and memory reservations](https://docs.aws.amazon.com/batch/latest/userguide/memory-cpu-batch-eks.html) and [how maxPods is determined](https://docs.aws.amazon.com/eks/latest/userguide/choosing-instance-type.html). Scheduling from the Kubernetes docs on [scheduling by requests](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/). All checked 30 October 2026. Prices change; check your cloud's price list before you buy.",
+          text: "Prices from the [Azure Retail Prices API](https://prices.azure.com/api/retail/prices) and the [AWS Price List for Amazon EC2](https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonEC2/current/region_index.json), retrieved 30 October 2026. Sizes from Microsoft Learn's VM size pages and the AWS Price List. AKS reserves from Microsoft Learn's [node resource reservations in AKS](https://learn.microsoft.com/en-us/azure/aks/node-resource-reservations) and [maximum pods per node](https://learn.microsoft.com/en-us/azure/aks/concepts-network-ip-address-planning#maximum-pods-per-node). EKS reserves from AWS's [node CPU and memory reservations](https://docs.aws.amazon.com/batch/latest/userguide/memory-cpu-batch-eks.html) and [how maxPods is determined](https://docs.aws.amazon.com/eks/latest/userguide/choosing-instance-type.html). Scheduling from the Kubernetes docs on [scheduling by requests](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/). All checked 30 October 2026. The EKS cluster fee from AWS's [Amazon EKS pricing](https://aws.amazon.com/eks/pricing/), checked 1 November 2026. Prices change; check your cloud's price list before you buy.",
         },
       ],
     },
@@ -168,7 +169,7 @@ export const nodeCalculator = {
           href: "/learn/kubernetes-cost-estimation",
         },
         {
-          text: "How to reduce Kubernetes cost: rebalance requests, then remove spare nodes",
+          text: "Kubernetes cost optimization: rebalance requests, then remove spare nodes",
           href: "/kubernetes-cost-optimization",
         },
       ],
@@ -177,7 +178,7 @@ export const nodeCalculator = {
   close:
     "This is the list price of one node size. Coral rebalances AKS and EKS clusters to reduce your cloud cost, autonomously, without any downtime. Your own cluster's saving is one free assessment away.",
   tile: {
-    title: "Kubernetes node cost calculator",
+    title: "EKS and AKS pricing calculator",
     line: "A node's monthly list price on AKS or EKS, and how much of it your pods can use.",
     href: "/eks-and-aks-pricing-calculator",
   },
@@ -202,16 +203,16 @@ export const nodeCalculator = {
 
 export const diskCalculator = {
   meta: {
-    title: "Disk cost calculator: Azure disks and Amazon EBS",
+    title: "EBS pricing and Azure disk pricing calculator",
     description:
-      "Price an Azure managed disk or an Amazon EBS volume from public list prices. See its monthly cost, its empty space and what that empty space costs.",
+      "EBS pricing and Azure disk pricing in one calculator: see what an EBS volume or a managed disk costs a month at list price, and what its empty space costs.",
   },
   hero: {
-    title: "Disk cost calculator: Azure managed disks and Amazon EBS",
+    title: "AWS EBS pricing and Azure disk pricing calculator",
     deck: "Enter a disk's size and the space its files use. See what the disk costs a month, and what its empty space costs.",
   },
   intro: [
-    "A cloud disk costs its full size every month, however little data it holds. Azure prices a managed disk by the size tier that holds it. AWS prices an EBS volume by the GB you provision.",
+    "Under AWS EBS pricing and Azure disk pricing, you pay for a disk's full size every month, however little data it holds. AWS prices an EBS volume by the GB you provision. Azure prices a Premium SSD or Standard SSD at the smallest size tier that holds it.",
     "So empty space costs the same as space your data uses. This calculator shows what a disk costs, how much of it is empty, and what the empty part costs.",
   ],
   frame: [
@@ -310,7 +311,7 @@ export const diskCalculator = {
   close:
     "This is the list price of one disk. Amoeba rightsizes block storage on Azure and AWS, for Windows and Linux VMs, to reduce your cloud cost, autonomously, without any downtime. Your own saving is one free assessment away.",
   tile: {
-    title: "Disk cost calculator",
+    title: "EBS and Azure disk pricing calculator",
     line: "What an Azure managed disk or an EBS volume costs a month, and what its empty space costs.",
     href: "/ebs-and-azure-disk-pricing",
   },

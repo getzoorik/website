@@ -21,10 +21,10 @@ export const learnCompareLastUpdated = "19 October 2026";
 export const alternativesLastUpdated = "1 November 2026";
 
 /**
- * The day Cloud cost optimization tools' content last changed, for the sitemap's `lastmod` only, as above. 30 Oct
- * 2026: its Free calculators.
+ * The day Cloud cost optimization tools' content last changed, for the sitemap's `lastmod` only, as above. 1 Nov
+ * 2026: Part 4's title, h1, description and deck, and the calculators' tile names.
  */
-export const cloudCostToolsLastUpdated = "30 October 2026";
+export const cloudCostToolsLastUpdated = "1 November 2026";
 
 /**
  * Cloud cost optimization tools: every string it prints, verbatim. Its tiles are `shownGroups` in `learn-market.ts`,
@@ -34,13 +34,14 @@ export const cloudCostToolsLastUpdated = "30 October 2026";
 export const cloudCostToolsPage = {
   /** The page's `<title>`, as is, and its description. */
   meta: {
-    title: "Cloud cost optimization tools",
+    title: "Cloud cost optimization tools and FinOps tools",
     description:
-      "The tools that reduce the cloud bill on Azure and AWS: what each one does, how it works and which clouds it supports, checked on each company's own pages.",
+      "Cloud cost management tools for Azure and AWS: the cloud cost optimization tools and FinOps tools that reduce what you pay, and how each one acts.",
   },
+  /** The h1 and, as the page has no intro, the deck is its first paragraph (Part 4, 1 Nov 2026). */
   hero: {
-    title: "Cloud cost optimization tools",
-    deck: "The tools that reduce the cloud bill, how each one works and which clouds it supports.",
+    title: "Cloud cost optimization tools and FinOps tools",
+    deck: "These cloud cost management tools reduce what you pay on Azure and AWS. Each tile says what the tool does, how it acts and which clouds it supports. Filter them by cloud, or by kind: block storage, Kubernetes, FinOps tools or the cloud providers’ own.",
   },
   /** The tiles, by kind, under the two rows of chips. */
   tools: {

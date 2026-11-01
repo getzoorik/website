@@ -17,7 +17,7 @@ import "@/styles/calculators.css";
  * client island. At the site's root (owner, 30 Oct 2026: "At the root"), linked from Cloud cost optimization tools'
  * Free calculators and from the footer's Resources column, after EKS and AKS pricing calculator (owner, 30 Oct 2026).
  */
-/* Its title goes through the layout's template: "Disk cost calculator: Azure disks and Amazon EBS | Zoorik". */
+/* Its title goes through the layout's template: "EBS pricing and Azure disk pricing calculator | Zoorik". */
 export const metadata: Metadata = documentMetadata(
   routes.ebsAndAzureDiskPricing,
   diskCalculator.meta,

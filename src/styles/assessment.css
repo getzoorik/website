@@ -159,6 +159,25 @@ a.oc-tl:hover{border-color:rgba(255,255,255,.5)}
 .oc .br{border-color:transparent}
 .oc .brs .ro{color:#fff} .oc .brs .ro svg{color:#7FE0BF}
 
+/* ── Before you run it (W32, 1 Nov 2026): three questions, set as the FAQ pages set a question and its answer: a
+   hairline between each, the question in the FAQ's size and weight, the answer under it, a short list with the FAQ's
+   dots. From 900px the question takes the first of What it does' three columns and the answer the other two, so each
+   answer starts where What it does' second fact starts. The section follows the navy band, so it takes the top
+   spacing After the run took before it (#what-it-does + .sec, below), and After the run follows it as one .sec follows
+   another ── */
+.ax-qs{border-top:1px solid var(--line)}
+.ax-q{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding:24px 0 26px;border-bottom:1px solid var(--line)}
+.ax-q h3{margin:0;font-size:1.0625rem;font-weight:600;line-height:1.5;letter-spacing:-.01em;color:var(--text);text-wrap:balance}
+.ax-a{min-width:0;font-size:1rem;line-height:1.65;color:var(--text)}
+.ax-a p,.ax-a ul{max-width:68ch;margin:0;text-wrap:pretty}
+.ax-a ul{list-style:none;padding:0 0 0 18px}
+.ax-a li{position:relative}
+.ax-a li + li{margin-top:8px}
+.ax-a li::before{content:"";position:absolute;left:-18px;top:.7em;width:5px;height:5px;border-radius:50%;
+  background:color-mix(in srgb,var(--muted) 60%,transparent)}
+@media(min-width:900px){.ax-q{grid-template-columns:repeat(3,minmax(0,1fr));gap:0;padding:28px 0 30px}
+  .ax-q h3{padding-right:32px}.ax-a{grid-column:2 / -1;padding-left:32px}}
+
 /* ── After the run ── */
 /* the band before it is a .sec, which would take this section's top spacing away (site rule .sec + .sec) */
 #what-it-does + .sec{padding-top:clamp(40px,5.2vw,72px)}

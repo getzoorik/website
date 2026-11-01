@@ -1,16 +1,19 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { act, fireEvent, render, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, within } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { assessmentCopy } from "@/content/assessment";
 
 import { AssessmentPage } from "./assessment-page";
 import { FIRST_PAINT_SCRIPT } from "./first-paint";
 
 /**
  * `/assessment` as the reader meets it: the hero and its two lines to copy, What you get, What it
- * does and After the run, on Coral by default and on Amoeba with `?p=amoeba`, every string the mock's.
+ * does, Before you run it and After the run, on Coral by default and on Amoeba with `?p=amoeba`,
+ * every string the mock's.
  */
 
 const text = (el: Element | null | undefined): string =>
@@ -41,8 +44,12 @@ describe("the hero", () => {
     expect(hero.querySelector(".ax-hero-t > .hero-badges + h1")).not.toBeNull();
     /* The h1 does not say "Free"; the page's <title> keeps it. */
     expect(text(hero.querySelector("h1"))).toBe("Cloud cost assessment");
-    /* Under the title, the line to choose over the switch. */
-    const pick = hero.querySelector(".ax-hero-t > h1 + .ax-pick")!;
+    /* Under the title, what the assessment is, set as the site's hero deck (W32). */
+    expect(text(hero.querySelector(".ax-hero-t > h1 + p.doc-deck.ax-lead"))).toBe(
+      "The free assessment estimates what you could save on Kubernetes (AKS and EKS) or block storage on Azure and AWS. It’s read-only, runs in Cloud Shell or your terminal, and writes one PDF. It sends nothing to Zoorik.",
+    );
+    /* Then the line to choose over the switch. */
+    const pick = hero.querySelector(".ax-hero-t > h1 + .ax-lead + .ax-pick")!;
     expect(text(pick.querySelector(":scope > p.ax-sub:first-child"))).toBe(
       "Choose the assessment you want.",
     );
@@ -327,7 +334,7 @@ describe("What it does", () => {
       "Sends",
     ]);
     expect([...section.querySelectorAll(".oc-facts dd")].map(text)).toEqual([
-      "Nodes, pods, workloads, HPAs, PodDisruptionBudgets, 3 minutes of usage and list prices. Never Secrets or ConfigMaps.",
+      "Nodes, pods, ReplicaSets and Jobs, 3 minutes of usage and list prices. Never Secrets or ConfigMaps.",
       "az aks command invoke, only when kubectl can’t reach an AKS cluster.",
       "Nothing.",
     ]);
@@ -356,6 +363,55 @@ describe("What it does", () => {
       "Your VMs, their disks, 14 days of disk activity and list prices.",
       "A read of used space inside running Linux VMs, only after you answer y.",
     ]);
+  });
+});
+
+describe("Before you run it", () => {
+  it("follows What it does and comes before After the run, three questions under its h2, the same on both products", () => {
+    for (const search of ["", "?p=amoeba"]) {
+      /* One page at a time: jsdom finds an id in the document's first copy. */
+      cleanup();
+      at(search);
+      const container = page();
+      const section = container.querySelector("section#before-you-run")!;
+      expect(section).toHaveClass("sec", "ax-before");
+      expect(section.previousElementSibling).toBe(container.querySelector("#what-it-does"));
+      expect(section.nextElementSibling).toBe(container.querySelector("#after"));
+      expect(section).toHaveAttribute("aria-labelledby", "ax-before-h");
+      expect(text(section.querySelector(".ax-head > h2#ax-before-h"))).toBe("Before you run it");
+      const questions = [...section.querySelectorAll(".ax-qs > .ax-q")];
+      expect(questions.map((question) => text(question.querySelector(":scope > h3")))).toEqual([
+        "How long does it take?",
+        "What access does it need?",
+        "How is the saving worked out?",
+      ]);
+      const [time, access, saving] = questions.map((question) =>
+        question.querySelector(":scope > .ax-a")!,
+      );
+      expect(text(time!.querySelector(":scope > p"))).toBe(
+        "A Kubernetes run samples usage for 3 minutes by default, so it takes a little over 3 minutes. Private AKS clusters, and many or large clusters, take longer.",
+      );
+      /* The three access answers are a short list. */
+      expect([...access!.querySelectorAll(":scope > ul > li")].map(text)).toEqual([
+        "For AKS, it needs read access to your clusters and the Azure Kubernetes Service Cluster User Role on each.",
+        "For EKS, it needs read-only EKS, EC2 and pricing actions, and an EKS access entry.",
+        "For block storage on Azure, it needs Reader on the subscriptions, plus Run Command for the used-space read.",
+      ]);
+      expect(text(saving!.querySelector(":scope > p"))).toBe(
+        "It sets each container’s request from its peak use, then works out how many nodes the pods need. The saving is (nodes today − nodes needed) × hourly list price × 730.",
+      );
+    }
+  });
+});
+
+describe("the page's description", () => {
+  it("says what the assessment is in 142 characters, and never says bill", () => {
+    const { description } = assessmentCopy.meta;
+    expect(description).toBe(
+      "A free, read-only assessment for Kubernetes and block storage on Azure and AWS. Run it in Cloud Shell or your terminal and get one PDF report.",
+    );
+    expect(description).toHaveLength(142);
+    expect(description).not.toMatch(/\bbill/i);
   });
 });
 

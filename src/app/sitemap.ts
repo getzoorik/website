@@ -132,7 +132,7 @@ const contentDates: Partial<Record<string, string>> = {
   /* The research page prints no day: its content file's. */
   [routes.research]: researchLastUpdated,
   /* The five pages of 30 Oct 2026: /trust prints its day; /contact and /pricing print none, the calculators their
-     prices' day, which is their content's. */
+     prices' day, while their content's is Part 4's (1 Nov 2026). */
   [routes.trust]: trustUpdated,
   [routes.contact]: contactLastUpdated,
   [routes.pricing]: pricingLastUpdated,

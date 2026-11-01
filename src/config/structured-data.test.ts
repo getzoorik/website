@@ -518,12 +518,12 @@ describe("every indexed page's structured data", () => {
     expect(names(routes.eksAndAksPricingCalculator)).toEqual([
       "Zoorik",
       "Cloud cost optimization tools",
-      "Kubernetes node cost calculator",
+      "EKS pricing calculator: what an EKS or AKS node costs a month",
     ]);
     expect(names(routes.ebsAndAzureDiskPricing)).toEqual([
       "Zoorik",
       "Cloud cost optimization tools",
-      "Disk cost calculator: Azure managed disks and Amazon EBS",
+      "AWS EBS pricing and Azure disk pricing calculator",
     ]);
     /* The ten pages of 31 Oct 2026, each under its product's page by its h1. */
     expect(names(routes.aksCostOptimization)).toEqual(["Zoorik", "Coral", "AKS cost optimization"]);

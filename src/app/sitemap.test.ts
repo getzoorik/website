@@ -159,16 +159,16 @@ describe("sitemap.xml", () => {
         isoDay(glossaryPage.updated),
       ),
       ...Object.fromEntries(glossaryTerms.map((term) => [glossaryPath(term.slug), term.updated])),
-      /* Cloud cost optimization tools: the day its content last changed (its Free calculators, 30 Oct 2026). */
-      "/cloud-cost-optimization-library": "2026-10-30",
+      /* Cloud cost optimization tools: the day its content last changed (Part 4's title and deck, 1 Nov 2026). */
+      "/cloud-cost-optimization-library": "2026-11-01",
       /* The comparison pages: the day the versus pages were checked and published, and the day the
          alternatives pages were retitled (1 Nov 2026). */
       "/cloud-cost-optimization-library/coral-alternatives": "2026-11-01",
       "/cloud-cost-optimization-library/amoeba-alternatives": "2026-11-01",
       ...Object.fromEntries(versusPages.map((page) => [versusRoute(page), "2026-10-19"])),
-      /* The two calculators: the day their prices were read, which they print. */
-      "/eks-and-aks-pricing-calculator": "2026-10-30",
-      "/ebs-and-azure-disk-pricing": "2026-10-30",
+      /* The two calculators: the day their content last changed (Part 4's titles, 1 Nov 2026). */
+      "/eks-and-aks-pricing-calculator": "2026-11-01",
+      "/ebs-and-azure-disk-pricing": "2026-11-01",
       /* Value Lab: the Amoeba study's card beside the Coral one (29 Oct 2026). Each study: the day it prints. */
       "/value-lab": "2026-10-29",
       "/coral-value-lab": "2026-10-12",
