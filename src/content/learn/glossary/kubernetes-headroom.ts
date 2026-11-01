@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -49,15 +49,15 @@ export const term: GlossaryTerm = {
     },
     {
       id: "an-example-on-aws",
-      title: "An example on AWS",
+      title: "How much headroom to keep: an AWS example",
       blocks: [
         {
           kind: "p",
-          text: "The Amazon EKS guide calls headroom for Kubernetes on AWS a trade between speed and cost. In its example, you need a node every 30\u00a0seconds. EC2 takes 30\u00a0seconds to start one.",
+          text: "The Amazon EKS guide calls headroom a trade between speed and cost. In its example, you need a node every 30\u00a0seconds. EC2 takes 30\u00a0seconds to start one.",
         },
         {
           kind: "p",
-          text: "So one spare node saves 30\u00a0seconds of wait, for the cost of one extra EC2 instance. Comparing those two times is a simple Kubernetes headroom calculator.",
+          text: "So one spare node saves 30\u00a0seconds of wait, for the cost of one extra EC2 instance. Comparing those two times tells you whether a spare node is worth its cost.",
         },
       ],
     },

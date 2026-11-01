@@ -183,7 +183,7 @@ export const article: Article = {
     },
     {
       id: "create-one-btrfs-filesystem-on-several-disks",
-      title: "Create one btrfs filesystem on several disks",
+      title: "mkfs.btrfs: create one btrfs filesystem on several disks",
       blocks: [
         {
           kind: "p",

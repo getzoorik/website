@@ -5,9 +5,9 @@ export const term: GlossaryTerm = {
   slug: "finops",
   term: "FinOps",
   title: "What is FinOps? Cloud FinOps explained",
-  meta: "Cloud FinOps is how finance, engineering and business teams share ownership of cloud spend. Learn its three phases and how it works on Azure and AWS.",
+  meta: "FinOps means finance, engineering and business teams sharing ownership of cloud cost. Learn the three phases of cloud FinOps and how it works on Azure and AWS.",
   h1: "What is FinOps? Cloud FinOps explained",
-  card: "FinOps, or cloud FinOps, is a practice where finance, engineering and business teams share ownership of cloud spend.",
+  card: "FinOps, or cloud FinOps, is a practice where finance, engineering and business teams share ownership of cloud cost.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-25",
@@ -15,27 +15,33 @@ export const term: GlossaryTerm = {
   definition: [
     {
       kind: "p",
-      text: "FinOps, or cloud FinOps, is a practice where finance, engineering and business teams share ownership of cloud spend. The FinOps meaning is in its name: finance plus DevOps. Microsoft says its goal isn’t to save money, but to get more business value from the cloud.",
+      text: "FinOps, or cloud FinOps, is a practice where finance, engineering and business teams share ownership of cloud cost. The FinOps meaning is in its name: finance plus DevOps. Microsoft says its goal isn’t to save money, but to get more business value from the cloud.",
     },
-    {
-      kind: "p",
-      text: "In simple terms, each team owns its cloud cost. The FinOps Foundation’s FinOps Framework splits the work into three phases that repeat:",
-    },
-    {
-      kind: "ul",
-      items: [
-        "Inform shows each team what it spends.",
-        "Optimize makes cloud use more efficient.",
-        "Operate tracks goals and sets rules.",
-      ],
-    },
-    { kind: "svg", figure: figure1 },
+    { kind: "p", text: "In simple terms, each team owns its cloud cost." },
   ],
   sections: [
     {
-      id: "an-example-idle-developer-machines",
-      title: "An example: idle developer machines",
+      id: "the-finops-framework-inform-optimize-operate",
+      title: "The FinOps Framework: inform, optimize, operate",
       blocks: [
+        {
+          kind: "p",
+          text: "The FinOps Foundation’s FinOps Framework splits the work into three phases that repeat:",
+        },
+        {
+          kind: "ul",
+          items: [
+            "Inform shows each team its cloud cost.",
+            "Optimize makes cloud use more efficient.",
+            "Operate tracks goals and sets rules.",
+          ],
+        },
+        { kind: "svg", figure: figure1 },
+        {
+          kind: "h3",
+          id: "an-example-idle-developer-vms",
+          title: "An example: idle developer VMs",
+        },
         {
           kind: "p",
           text: "Microsoft’s FinOps guidance suggests three steps for developer virtual machines (VMs):",
@@ -56,7 +62,7 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "Microsoft bases its Azure FinOps guidance largely on the FinOps Framework. For tracking spend, it points to Microsoft Cost Management. AWS has a similar framework, Cloud Financial Management, with four pillars: see, save, plan and run.",
+          text: "Microsoft bases its Azure FinOps guidance largely on the FinOps Framework. For tracking cloud cost, it points to Microsoft Cost Management. AWS has a similar framework, Cloud Financial Management, with four pillars: see, save, plan and run.",
         },
       ],
     },

@@ -3,6 +3,7 @@ import type { ComponentType } from "react";
 import { Arrow } from "@/components/primitives/arrow";
 import { routes } from "@/config/site";
 import { openSourceUpdated, type GuideBlock, type OpenSourceGuide } from "@/content/open-source";
+import type { ProductId } from "@/content/products";
 import { DocRows } from "@/features/doc-rows/doc-rows";
 import { DocumentPage } from "@/features/documents/document-page";
 import { named } from "@/features/legal/named";
@@ -12,11 +13,12 @@ import { OsText } from "@/features/open-source/os-text";
 /**
  * The guides in the article frame: the three install and contributing guides under /docs and the two
  * troubleshooting pages. Each section's name beside its text, nothing folded.
- * The top line is "Updated 16 October 2026 · Published by Zoorik" (the guide's own date where it has one), then the
+ * The top line is "Updated 1 November 2026 · Published by Zoorik" (the guide's own date where it has one), then the
  * short answer where there is one. Command
  * wells have "$ " on a command's first line only, and a Copy button; values, YAML and HCL blocks scroll sideways with
  * no prompt and no copy; tables stack on phones as the docs tables do. The foot is the related links, then the
- * closing row on the guide's product (Coral unless it names another).
+ * closing row on the guide's product (Coral unless it names another), or on both (`about={null}`: Contributing, whose
+ * repositories serve both products).
  */
 
 /**
@@ -120,11 +122,18 @@ export function Block({
   }
 }
 
-export function OsGuidePage({ guide }: { readonly guide: OpenSourceGuide }): React.JSX.Element {
+export function OsGuidePage({
+  guide,
+  about = guide.product ?? "coral",
+}: {
+  readonly guide: OpenSourceGuide;
+  /** The closing row's product, as the structured data's `osGuideEntry` takes it: `null` names both. */
+  readonly about?: ProductId | null;
+}): React.JSX.Element {
   return (
     <DocumentPage
       hero={{ title: named(guide.hero.title), deck: named(guide.hero.deck) }}
-      product={guide.product ?? "coral"}
+      product={about ?? undefined}
     >
       <DocRows
         frame="article"
@@ -142,12 +151,12 @@ export function OsGuidePage({ guide }: { readonly guide: OpenSourceGuide }): Rea
           </>
         }
         groups={guide.sections.map((section) => {
-          const sectionId = sectionSlug(section.title);
+          const sectionId = section.id ?? sectionSlug(section.title);
           return {
             id: sectionId,
             title: named(section.title),
             /* A chip is plain text, as the mocks draw it: a name's span inside a chip loses the space before it. */
-            chip: section.title,
+            chip: section.chip ?? section.title,
             body: section.blocks.map((block, index) => <Block block={block} key={index} />),
           };
         })}

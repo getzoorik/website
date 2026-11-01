@@ -35,7 +35,7 @@ import type { ProductId } from "@/content/products";
  * the page does not print it. Whoever changes the page's content moves this to
  * that day in the same PR; never the build's date.
  */
-export const careersLastUpdated = "25 October 2026";
+export const careersLastUpdated = "1 November 2026";
 
 /**
  * A tool's mark (`careers-marks.tsx`): the site's own for Kubernetes, Azure,
@@ -170,7 +170,7 @@ const values = [
     id: "results",
     letter: "R",
     name: "Results for customers",
-    meaning: "We reduce our customers’ cloud bills without breaking anything.",
+    meaning: "We reduce our customers’ cloud cost without breaking anything.",
     behaviours: [
       "Measure impact, not activity",
       "Know the people we serve",
@@ -301,7 +301,7 @@ export const careers = {
         src: "/motion/amoeba-overview-5s.mp4",
         label: "Amoeba’s Overview with example figures",
         stack: [
-          { name: "Linux VMs", mark: "linux" },
+          { name: "Windows and Linux VMs", mark: "linux" },
           { name: "btrfs" },
           { name: "systemd" },
           { name: "Azure", mark: "azure" },

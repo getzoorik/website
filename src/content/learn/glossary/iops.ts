@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "iops",
   term: "IOPS",
   title: "What is IOPS?",
-  meta: "IOPS is how many reads and writes a disk handles each second. See how AWS and Azure count it, and why some disks tie that speed limit to their size.",
+  meta: "IOPS, input/output operations per second, is how many reads and writes a disk handles a second. See how AWS and Azure count it, and why size can set it.",
   h1: "What is IOPS?",
   card: "IOPS, short for input/output operations per second, is how many reads and writes a disk handles each second.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -49,7 +49,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why it matters for your cloud cost",
+      title: "SSD IOPS, disk size and your cloud cost",
       blocks: [
         { kind: "p", text: "On some disks, the IOPS limit grows with size:" },
         {

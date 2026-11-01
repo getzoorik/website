@@ -8,17 +8,18 @@ import type { ProductPageContent, ReadMoreTile } from "@/content/product-page";
 /**
  * `/coral`: every string the page prints, verbatim from the mock.
  *
- * The product tour adds each row's line, the "?" on What Coral does and the
- * film (`product-films.ts`).
+ * The product tour adds each row's line and the film (`product-films.ts`).
+ * What Coral does is a heading, so it has no "?" (owner, 1 Nov 2026).
  *
  * The hero's line (the home page's own line for Coral), the Runs on chips and
  * the line under the How it works cards are read from `kubernetes.ts`, and the
  * cards from `how-it-works.ts`, rather than copied: a second copy would be a
  * second claim free to drift. Nothing here is a new figure.
  *
- * Coral is "Kubernetes cost optimization" on AKS and EKS, as its h1 says. Its
- * `<title>` is "Coral: Kubernetes optimization for AKS and EKS" (owner, 1 Nov
- * 2026, O1): the search "Kubernetes cost optimization" belongs to
+ * Coral's h1 is "Kubernetes optimization for AKS and EKS", and its `<title>`
+ * "Kubernetes cost optimization for AKS and EKS" (owner, 1 Nov 2026): the
+ * product page leads with "<x> cost optimization" in its title, and the h1
+ * leaves the bare search "Kubernetes cost optimization" to
  * /kubernetes-cost-optimization (D229). It is never shown as running on Windows
  * or Linux.
  */
@@ -43,14 +44,14 @@ export const coralFaqTile: ReadMoreTile = {
 export const coralPageContent: ProductPageContent = {
   product: "coral",
   meta: {
-    title: "Coral: Kubernetes optimization for AKS and EKS",
+    title: "Kubernetes cost optimization for AKS and EKS",
     description:
-      "Coral rebalances AKS and EKS clusters to reduce your cloud cost, autonomously, without any downtime. Works with HPA, Karpenter, NAP and Cluster Autoscaler.",
+      "Kubernetes optimization platform for AKS and EKS: Coral rebalances clusters to reduce your cloud cost, autonomously, without any downtime.",
     appDescription:
-      "Kubernetes cost optimization on AKS and EKS. Coral sizes pod requests to real use and drains idle nodes one at a time.",
+      "Kubernetes cost optimization on AKS and EKS. Coral sizes pod requests to real use and drains spare nodes one at a time.",
   },
   hero: {
-    title: "Kubernetes cost optimization",
+    title: "Kubernetes optimization for AKS and EKS",
     line: kubernetesContent.body,
     cta: { label: assessContent.assessment.cta.label, href: assessmentHref("coral") },
   },
@@ -65,7 +66,7 @@ export const coralPageContent: ProductPageContent = {
         " platform for Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS). It continuously finds and removes the capacity your clusters don’t need, while your workloads keep serving. It sizes each container’s CPU and memory requests to what it really uses, and empties spare nodes one at a time so your autoscaler can remove them.",
       ],
       [
-        "Coral helps platform and engineering teams reduce AKS and EKS cost with no application code changes. It monitors every workload and node, recommends right sizes and spare nodes with the saving, and applies them safely: pods resize in place or restart one at a time within their PodDisruptionBudgets, and nodes drain one at a time. Coral works alongside native Kubernetes autoscaling: the Horizontal Pod Autoscaler, ",
+        "Coral helps platform and engineering teams reduce AKS and EKS cost with no application code changes. It monitors every workload and node, recommends new requests and spare nodes, with the saving, and applies them safely: pods resize in place or restart one at a time within their PodDisruptionBudgets, and nodes drain one at a time. Coral works alongside native Kubernetes autoscaling: the Horizontal Pod Autoscaler, ",
         { a: "KEDA", href: routes.coralWorksWithKeda },
         ", ",
         { a: "Karpenter", href: routes.coralWorksWithKarpenter },
@@ -90,7 +91,7 @@ export const coralPageContent: ProductPageContent = {
       id: "recommendations",
       label: "Recommendations",
       drawing: "requests",
-      line: "Right sizes, spare nodes and the saving.",
+      line: "New requests, spare nodes and the saving.",
     },
     {
       id: "workload-optimization",
@@ -106,7 +107,7 @@ export const coralPageContent: ProductPageContent = {
     },
   ],
   what: {
-    heading: "What Coral does?",
+    heading: "What Coral does",
     runsOn: kubernetesContent.runsOn,
   },
   film: productFilms.coral,

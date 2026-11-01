@@ -19,7 +19,7 @@ import { about, registeredOffice, type AboutFact } from "@/content/about";
  * The day /contact's content last changed, for the sitemap's `lastmod` only: the page prints no date. Whoever changes
  * the page moves it in the same PR; never the build's date.
  */
-export const contactLastUpdated = "30 October 2026";
+export const contactLastUpdated = "1 November 2026";
 
 /** A ready email with its subject, as the mock encodes it ("Design%20partner%20program"). */
 const mail = (subject: string): string =>
@@ -64,15 +64,18 @@ export const contactPage = {
   /** The page's `<title>` (through the site's "%s | Zoorik" template) and its description. */
   meta: {
     title: "Contact",
-    description: `Book a call with the people who build Coral and Amoeba, or email ${contactEmail}. For demos, early access, partners, press, security and privacy.`,
+    description: `Book a demo with the people who build Coral and Amoeba, or email ${contactEmail}. For early access, partners, press, security and privacy.`,
   },
   hero: {
     title: "Contact Zoorik",
-    deck: "Book a call with the people who build Coral and Amoeba, or write to us.",
+    deck: "Book a demo with the people who build Coral and Amoeba, or write to us.",
   },
-  /** The pair on the band: the calendar on the white card, the address on the navy one. */
+  /**
+   * The pair on the band: the calendar on the white card, the address on the navy one. The calendar is "Book a demo",
+   * as everywhere on the site (owner, 1 Nov 2026; D228 counts a booked demo as the lead).
+   */
   call: {
-    title: "Book a call",
+    title: "Book a demo",
     line: "Pick a time with the people who build Coral and Amoeba. A call takes thirty minutes.",
     go: { label: "Book a demo", href: calendarUrl },
   },
@@ -130,7 +133,7 @@ export const contactPage = {
           },
           {
             term: "Referrals",
-            text: `The program is coming soon. Write to us and we will tell you first. [Write to us](${mail("Referral program")}), or read about the [Referral program](${routes.referrals}).`,
+            text: `The program is coming soon. [Write to us](${mail("Referral program")}) and we will tell you first, or read about the [Referral program](${routes.referrals}).`,
           },
           {
             term: "Press, or writing about Zoorik",

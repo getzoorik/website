@@ -6,7 +6,7 @@ import { figure as figure3 } from "@/features/learn/figures/safe-to-evict-do-not
 export const article: Article = {
   slug: "safe-to-evict-do-not-disrupt",
   title: "Safe-to-evict and do-not-disrupt annotations",
-  meta: "What safe-to-evict and karpenter.sh/do-not-disrupt do, which autoscaler reads each, where emptyDir and hostPath pods hold nodes, and when to drop a marker.",
+  meta: "What the Kubernetes safe-to-evict annotation and karpenter.sh/do-not-disrupt do, which autoscaler reads each, and where emptyDir and hostPath pods hold nodes.",
   h1: "The safe-to-evict and do-not-disrupt annotations explained",
   deck: "One annotation on one pod can keep its whole node running, so it pays to know which autoscaler reads which.",
   card: "What safe-to-evict and do-not-disrupt do, which autoscaler reads each, and why you keep paying for a held node.",
@@ -506,7 +506,7 @@ export const article: Article = {
             ],
             [
               { b: "Nodes held." },
-              " Node list → “What’s holding them” shows each held node with its reason and fix, so a marker that outlived its reason turns up as a node you can release.",
+              " Coral shows each held node with its reason and fix, so a marker that outlived its reason turns up as a node you can release.",
             ],
             [
               { b: "Short restarts." },
@@ -605,6 +605,10 @@ export const article: Article = {
       where: "Learn",
       href: "/learn/change-eks-node-group-instance-type",
     },
-    { title: "Nodes held", where: "Coral product guide", href: "/coral-guide#nodes-held" },
+    {
+      title: "Why Coral holds a node, and each fix",
+      where: "Coral product guide",
+      href: "/coral-guide#nodes-held",
+    },
   ],
 };

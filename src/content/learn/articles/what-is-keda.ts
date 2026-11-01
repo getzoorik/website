@@ -56,7 +56,7 @@ export const article: Article = {
     },
     {
       id: "keda-wakes-a-workload-from-zero-and",
-      title: "KEDA wakes a workload from zero, and the HPA it creates scales it",
+      title: "How KEDA scaling works: activation from zero, then scaling from one to N",
       blocks: [
         {
           kind: "p",
@@ -69,7 +69,12 @@ export const article: Article = {
               { b: "The operator," },
               " ",
               { code: "keda-operator" },
-              ", watches your ScaledObjects and creates and manages an HPA for each one.",
+              ", watches your ScaledObjects and ",
+              {
+                a: "creates and manages an HPA",
+                href: "/learn/keda-vs-hpa-vs-vpa#keda-vs-hpa-keda-creates-an-hpa",
+              },
+              " for each one.",
             ],
             [
               { b: "The admission webhooks," },
@@ -394,7 +399,7 @@ export const article: Article = {
             "Multiple KEDA installations aren’t supported.",
           ],
         },
-        { kind: "h3", id: "keda-on-eks", title: "KEDA on EKS" },
+        { kind: "h3", id: "keda-on-eks", title: "Install the KEDA Helm chart on EKS" },
         { kind: "p", text: "The EKS user guide installs KEDA from its Helm chart:" },
         {
           kind: "ol",

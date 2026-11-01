@@ -5,7 +5,7 @@ export const term: GlossaryTerm = {
   slug: "kubernetes-cpu-throttling",
   term: "CPU throttling (Kubernetes)",
   title: "What is CPU throttling in Kubernetes?",
-  meta: "CPU throttling in Kubernetes slows a container that reaches its CPU limit. See what causes it, a real example, and how quick fixes can add nodes you pay for.",
+  meta: "CPU throttling in Kubernetes slows a container that reaches its CPU limit. See what causes it, how to check it, and how quick fixes can add nodes you pay for.",
   h1: "What is CPU throttling in Kubernetes?",
   card: "CPU throttling in Kubernetes is when the Linux kernel holds back a container that hits its CPU limit.",
   group: "kubernetes",
@@ -44,7 +44,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "how-to-check-for-cpu-throttling",
-      title: "How to check for CPU throttling",
+      title: "How to check CPU throttling in Kubernetes",
       blocks: [
         {
           kind: "p",

@@ -4,8 +4,8 @@ import { figure as figure2 } from "@/features/learn/figures/is-btrfs-stable/2";
 
 export const article: Article = {
   slug: "is-btrfs-stable",
-  title: "Is btrfs stable in 2026? Feature by feature",
-  meta: "Is btrfs stable in 2026? What the official status table marks OK, mostly OK and unstable, why RAID5/6 stays out of production, and how to watch a pool.",
+  title: "Is btrfs stable in 2026? RAID1, RAID5 and RAID6",
+  meta: "Is btrfs stable in 2026? What the status table marks OK and unstable, whether btrfs RAID1 is stable, why RAID5/6 isn’t, and how to scrub and watch a pool.",
   h1: "Is btrfs stable in 2026?",
   deck: "The official status table, read feature by feature, and what to check before you trust btrfs with data.",
   card: "What the btrfs status table marks OK, mostly OK and unstable, and why RAID5/6 is the one to avoid.",
@@ -206,7 +206,7 @@ export const article: Article = {
     },
     {
       id: "why-raid5-and-raid6-stay-unstable",
-      title: "Why RAID5 and RAID6 stay unstable",
+      title: "Why btrfs RAID5 and RAID6 stay unstable",
       blocks: [
         {
           kind: "p",
@@ -299,7 +299,7 @@ export const article: Article = {
     },
     {
       id: "is-btrfs-good-for-a-data-volume",
-      title: "Is btrfs good for a data volume? Yes, if you watch it",
+      title: "Is btrfs good for a data volume? Yes, with scrub and device stats",
       blocks: [
         { kind: "p", text: "Three commands cover most of the watching." },
         {

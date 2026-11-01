@@ -6,7 +6,7 @@ export const article: Article = {
   slug: "reduce-kubernetes-cost",
   route: "/kubernetes-cost-optimization",
   title: "Kubernetes cost optimization: requests, then nodes",
-  meta: "Kubernetes cost optimization on AKS and EKS: rebalance requests to real use, then let the Cluster Autoscaler, Karpenter or AKS NAP remove spare nodes.",
+  meta: "Kubernetes cost optimization on AKS and EKS. Kubernetes cost management starts with requests: rebalance, then remove spare nodes to reduce Kubernetes costs.",
   h1: "Kubernetes cost optimization: rebalance requests, then remove spare nodes",
   deck: "Smaller requests free room on your nodes. Your cloud cost falls when a spare node goes. Both steps, in order.",
   card: "Rebalance requests to real use, then let spare nodes go: the order that reduces AKS and EKS cost.",
@@ -24,7 +24,7 @@ export const article: Article = {
   sections: [
     {
       id: "you-pay-for-nodes-and-requests-decide",
-      title: "Kubernetes cost optimization: requests decide how many nodes you pay for",
+      title: "How to reduce Kubernetes costs: requests decide how many nodes you pay for",
       blocks: [
         {
           kind: "p",
@@ -39,7 +39,9 @@ export const article: Article = {
           text: [
             "The ",
             { a: "EKS and AKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
-            " gives one node’s monthly list price.",
+            " gives one node’s monthly list price. To work out ",
+            { a: "what a cluster costs", href: "/learn/kubernetes-cost-estimation" },
+            ", see Kubernetes cost estimation.",
           ],
         },
         {
@@ -391,11 +393,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "On our own AKS development cluster, the apps already fit on fewer machines. So on 6 October, after we gave Coral permission to remove machines, node optimization removed one 4-CPU worker on its own, in under 10\u00a0minutes, before sizing was automatic.",
+          text: "On our own AKS development cluster, the apps already fit on fewer machines. So on 6 October, after we gave Coral permission to remove machines, node optimization removed one 4-CPU node on its own, in under 10\u00a0minutes, before sizing was automatic.",
         },
         {
           kind: "p",
-          text: "The machine cost went from $368.65 to $221.19 a month, $147.46 less for that one worker. Apps that run a single copy restarted once on another machine. That is Zoorik’s own AKS cluster, not a customer result, at Azure pay-as-you-go list prices for a 730-hour month.",
+          text: "The machine cost went from $368.65 to $221.19 a month, $147.46 less for that one node. Apps that run a single copy restarted once on another machine. That is Zoorik’s own AKS cluster, not a customer result, at Azure pay-as-you-go list prices for a 730-hour month.",
         },
         {
           kind: "p",

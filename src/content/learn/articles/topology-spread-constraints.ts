@@ -6,7 +6,7 @@ import { figure as figure3 } from "@/features/learn/figures/topology-spread-cons
 export const article: Article = {
   slug: "topology-spread-constraints",
   title: "Topology spread constraints: maxSkew and scale-down",
-  meta: "Topology spread constraints set how unevenly pods may sit across zones and nodes. How maxSkew and whenUnsatisfiable work, and when a rule holds a node.",
+  meta: "Kubernetes topologySpreadConstraints set how unevenly pods may sit across zones and nodes. How maxSkew and whenUnsatisfiable work, and when a rule holds a node.",
   h1: "Topology spread constraints: maxSkew, zones and scale-down",
   deck: "What maxSkew, whenUnsatisfiable and minDomains do, how spread differs from anti-affinity, and when a rule holds a node.",
   card: "How maxSkew and whenUnsatisfiable spread pods across zones and nodes, and when a spread rule keeps a node.",
@@ -110,7 +110,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "the-fields-and-a-deployment-that-uses",
-          title: "The fields, and a Deployment that uses them",
+          title: "topologySpreadConstraints fields, and an example Deployment",
         },
         {
           kind: "table",
@@ -212,7 +212,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "topology-spread-constraints-on-aks",
-          title: "Topology spread constraints on AKS",
+          title: "Topology spread constraints on AKS, and balance-similar-node-groups",
         },
         {
           kind: "p",
@@ -565,11 +565,7 @@ export const article: Article = {
             ],
             [
               { b: "The warning." },
-              " The Optimization constraints page lists workload setups that make optimization risky, topology spread among them, with the fix for each. It’s advisory only. Setting the ",
-              { code: "coral.zoorik.com/ignore-optimization-constraints" },
-              " annotation to ",
-              { code: '"true"' },
-              " on a pod template hides a workload from that page only.",
+              " Coral flags workloads whose spread rules make optimization risky, with the fix for each. The warning is advisory only.",
             ],
           ],
         },

@@ -358,6 +358,11 @@ export const article: Article = {
           ],
         },
         {
+          kind: "h3",
+          id: "how-to-migrate-from-cluster-autoscaler-to",
+          title: "How to migrate from Cluster Autoscaler to Karpenter on EKS",
+        },
+        {
           kind: "p",
           text: "On EKS, Karpenter’s migration guide ends the overlap once Karpenter is running:",
         },
@@ -412,7 +417,15 @@ export const article: Article = {
               { b: "Karpenter" },
               " itself is open-source software you install and manage. It gets AWS technical support when it runs unmodified at a compatible version, and has no AWS Service Level Agreement.",
             ],
-            [{ b: "The Cluster Autoscaler" }, " works through Auto Scaling groups."],
+            [
+              {
+                b: [
+                  "The ",
+                  { a: "Cluster Autoscaler", href: "/coral-works-with-cluster-autoscaler" },
+                ],
+              },
+              " works through Auto Scaling groups.",
+            ],
           ],
         },
         {

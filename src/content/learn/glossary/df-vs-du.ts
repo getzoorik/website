@@ -4,9 +4,9 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/df-vs-du/1"
 export const term: GlossaryTerm = {
   slug: "df-vs-du",
   term: "df vs du",
-  title: "df vs du: meaning and cost impact",
-  meta: "df vs du: df shows how much of a whole file system is used, and du adds up your files. See why the two differ and how to find space you pay for but don’t use.",
-  h1: "df vs du: meaning and cost impact",
+  title: "df vs du in Linux: why the results differ",
+  meta: "df vs du in Linux: the df command shows what a whole file system uses, and du adds up your files. See why they differ and find space you pay for but don’t use.",
+  h1: "df vs du in Linux: why the results differ",
   card: "df vs du is the comparison of two Linux commands that report disk space.",
   group: "block-storage",
   product: "amoeba",
@@ -25,21 +25,28 @@ export const term: GlossaryTerm = {
         [{ code: "du" }, " can’t see a deleted file that’s still open."],
       ],
     },
-    { kind: "code", lang: "", code: "df -h /data\ndu -shx /data" },
-    {
-      kind: "p",
-      text: [
-        "Use ",
-        { code: "-h" },
-        " for sizes such as 20G, ",
-        { code: "-s" },
-        " for one total, and ",
-        { code: "-x" },
-        " to stay on one file system.",
-      ],
-    },
   ],
   sections: [
+    {
+      id: "how-to-check-disk-space-in-linux",
+      title: "How to check disk space in Linux with df and du",
+      blocks: [
+        { kind: "p", text: "Run both on the same mount:" },
+        { kind: "code", lang: "", code: "df -h /data\ndu -shx /data" },
+        {
+          kind: "p",
+          text: [
+            "Use ",
+            { code: "-h" },
+            " for sizes such as 20G, ",
+            { code: "-s" },
+            " for one total, and ",
+            { code: "-x" },
+            " to stay on one file system.",
+          ],
+        },
+      ],
+    },
     {
       id: "an-example-df-and-du-showing-different",
       title: "An example: df and du showing different results",

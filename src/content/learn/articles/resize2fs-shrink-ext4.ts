@@ -28,7 +28,7 @@ export const article: Article = {
   sections: [
     {
       id: "why-resize2fs-wont-shrink-a-mounted-ext4",
-      title: "Why resize2fs won’t shrink a mounted ext4",
+      title: "Why resize2fs says “On-line shrinking not supported”",
       blocks: [
         {
           kind: "p",
@@ -218,7 +218,7 @@ export const article: Article = {
     },
     {
       id: "resize2fs-shrink-ext4",
-      title: "How to shrink an ext4 filesystem with resize2fs",
+      title: "resize2fs example: how to shrink an ext4 filesystem",
       blocks: [
         {
           kind: "p",

@@ -41,6 +41,7 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: "Pod-level resources (beta since v1.34) follow the same rules. The class never changes, even with an in-place resize (stable since v1.35).",
         },
+        { kind: "h3", id: "which-pods-are-evicted-first", title: "Which pods are evicted first" },
         {
           kind: "p",
           text: "BestEffort pods are usually evicted first, then Burstable, then Guaranteed. The kubelet starts with pods using more than their requests.",

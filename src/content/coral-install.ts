@@ -7,7 +7,8 @@ export type InstallOsKey = "mac" | "linux" | "windows";
 /**
  * /coral's "Install your way" (`#install`): zoorikctl, Helm and Terraform as three equal cards, each command in the
  * assessment's terminal (owner, 23 Oct 2026). The commands are the zoorikctl README's and the chart's; every string is
- * the mock's. A terminal's bar names what is in it: zoorikctl's holds the system switch instead.
+ * the mock's. A terminal's bar names what is in it: zoorikctl's holds the system switch instead. The Coral cloud pages
+ * draw it too, their Terraform card with only their own cloud's module.
  */
 
 export interface InstallOs {
@@ -23,6 +24,15 @@ export interface InstallLink {
   readonly label: string;
   readonly href: string;
 }
+
+/** A cluster's cloud, keyed as the Runs on chips key it: each has its own Terraform module. */
+export type InstallCloud = "aks" | "eks";
+
+/** Each cloud's Terraform module: /coral shows both, and a cloud page only its own (`/aks-cost-optimization`…). */
+const terraformModules = {
+  aks: ["# AKS", 'source = "getzoorik/zoorik-coral/azurerm"'],
+  eks: ["# EKS", 'source = "getzoorik/zoorik-coral/aws"'],
+} as const satisfies Record<InstallCloud, readonly string[]>;
 
 export const coralInstall = {
   title: "Install your way",
@@ -93,12 +103,8 @@ export const coralInstall = {
     name: "Terraform",
     line: "Cloud permissions as code.",
     file: "main.tf",
-    lines: [
-      "# AKS",
-      'source = "getzoorik/zoorik-coral/azurerm"',
-      "# EKS",
-      'source = "getzoorik/zoorik-coral/aws"',
-    ],
+    lines: [...terraformModules.aks, ...terraformModules.eks],
+    modules: terraformModules,
     note: "Then install the agent with Helm.",
     links: [
       { label: "Terraform Registry", href: openSourceLinks.terraformRegistry },

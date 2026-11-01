@@ -280,7 +280,7 @@ export const newsFromZoorik: readonly NewsAnnouncement[] = [
   {
     date: "2026-10-12",
     tag: "Value Lab",
-    title: "How we reduced our own cluster’s machine bill by 58%",
+    title: "How we reduced AKS cluster costs by 58%",
     line: "Eight days after we connected Coral to our own AKS development cluster, it cost $154.76 a month instead of $368.65.",
     href: routes.caseStudyCoralDevCluster,
     cta: "Read the case study",

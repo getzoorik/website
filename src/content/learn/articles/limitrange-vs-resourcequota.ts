@@ -6,7 +6,7 @@ import { figure as figure3 } from "@/features/learn/figures/limitrange-vs-resour
 export const article: Article = {
   slug: "limitrange-vs-resourcequota",
   title: "LimitRange vs ResourceQuota: what caps requests",
-  meta: "LimitRange vs ResourceQuota: what each one checks, why to use both, how LimitRange defaults count against a quota, and how to fix a quota exceeded error.",
+  meta: "LimitRange vs ResourceQuota: what each checks, how LimitRange defaults count against a Kubernetes resource quota, and how to fix a quota exceeded error.",
   h1: "LimitRange vs ResourceQuota: what caps namespace requests",
   deck: "A LimitRange bounds each container and a ResourceQuota caps the namespace total. How the two combine.",
   card: "What each one checks, how LimitRange defaults count against a quota, and what to do when a quota is full.",
@@ -100,7 +100,7 @@ export const article: Article = {
     },
     {
       id: "kubernetes-limitrange",
-      title: "A LimitRange sets defaults and bounds for each container",
+      title: "A Kubernetes LimitRange sets defaults and bounds for each container",
       blocks: [
         {
           kind: "p",
@@ -501,7 +501,7 @@ export const article: Article = {
           items: [
             [
               { b: "Rebalancing." },
-              " Every change respects your minimums, LimitRanges and quotas, and routine changes under 10% are skipped (",
+              " Every change respects your minimums, LimitRanges and quotas, and small routine changes are skipped (",
               {
                 a: "how Coral decides a change is safe",
                 href: "/coral-faq#how-does-coral-decide-a-change",
@@ -524,7 +524,7 @@ export const article: Article = {
             ],
             [
               { b: "Quotas and refusals." },
-              " The agent’s inventory, sent every 5\u00a0minutes, covers nodes, namespaces, workloads with their requests, limits and labels, autoscalers, PodDisruptionBudgets and quotas. The only event text sent is the message when a pod can’t be created because of a quota, a limit range or an admission policy (",
+              " Coral reads your ResourceQuotas and LimitRanges. The only event text it sends is the message when a pod is refused by a quota, a limit range or an admission policy (",
               { a: "what never leaves", href: "/coral-guide#what-never-leaves" },
               ").",
             ],
@@ -615,7 +615,7 @@ export const article: Article = {
       href: "/coral-faq#how-does-coral-decide-a-change",
     },
     {
-      title: "What never leaves",
+      title: "What Coral never sends out of your cluster",
       where: "Coral product guide",
       href: "/coral-guide#what-never-leaves",
     },

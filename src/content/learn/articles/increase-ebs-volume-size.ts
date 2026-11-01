@@ -5,8 +5,8 @@ import { figure as figure3 } from "@/features/learn/figures/increase-ebs-volume-
 
 export const article: Article = {
   slug: "increase-ebs-volume-size",
-  title: "Increase EBS volume size without downtime on Linux",
-  meta: "Increase EBS volume size without downtime: modify-volume, then growpart and xfs_growfs or resize2fs while it stays mounted, and why you keep paying for it.",
+  title: "Increase EC2 volume size without downtime on Linux",
+  meta: "Increase EC2 volume size without downtime: modify the EBS volume, then growpart and xfs_growfs or resize2fs while mounted, and why you keep paying for it.",
   h1: "How to increase EBS volume size without downtime on Linux",
   deck: "Grow the volume with Elastic Volumes, then its partition and filesystem, while the instance keeps running.",
   card: "Grow an attached EBS volume and its filesystem on Linux, the limits on changes, and why the new size stays.",
@@ -246,7 +246,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "5-grow-the-partition-if-there-is",
-          title: "5. Grow the partition, if there is one",
+          title: "5. Grow the partition with growpart",
         },
         {
           kind: "p",
@@ -279,7 +279,7 @@ export const article: Article = {
             " should show the partition at the volume’s size.",
           ],
         },
-        { kind: "h3", id: "6-grow-the-filesystem", title: "6. Grow the filesystem" },
+        { kind: "h3", id: "6-grow-the-filesystem", title: "6. Grow the XFS or ext4 filesystem" },
         {
           kind: "p",
           text: [
@@ -323,7 +323,7 @@ export const article: Article = {
           kind: "p",
           text: "If the volume holds Logical Volume Manager (LVM) logical volumes, the last step differs, and AWS says you must extend the logical volume with LVM.",
         },
-        { kind: "h3", id: "when-a-layer-doesnt-grow", title: "When a layer doesn’t grow" },
+        { kind: "h3", id: "when-a-layer-doesnt-grow", title: "When df doesn’t show the new size" },
         { kind: "p", text: "Three messages tell you which layer didn’t move:" },
         {
           kind: "table",

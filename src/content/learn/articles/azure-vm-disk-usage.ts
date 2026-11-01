@@ -214,7 +214,7 @@ export const article: Article = {
     },
     {
       id: "check-azure-vm-disk-space-without-ssh",
-      title: "Check Azure VM disk space without SSH or RDP",
+      title: "Check Azure VM disk space with Run Command, without SSH or RDP",
       blocks: [
         {
           kind: "p",
@@ -406,10 +406,6 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The console shows used and provisioned space on every disk, and what the disks cost at Azure’s list price. Each VM’s Dashboard also shows its recent used and provisioned space. Before the agent’s first report, used space reads “Available once the agent reports” rather than a guess.",
-        },
-        {
-          kind: "p",
           text: "Then Amoeba rightsizes. It moves the VM’s data mounts onto one btrfs pool sized to your data, with room to grow. Each mount keeps its path.",
         },
         {
@@ -423,9 +419,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "To see the gap on your own VMs first, the ",
+            "To see the gap on your own VMs first, run the ",
             { a: "free assessment", href: "/assessment?p=amoeba" },
-            " runs in your terminal or Cloud Shell and covers the data disks of Linux Azure VMs. It runs a command inside your VMs only after you say yes, and sends nothing to Zoorik. What you get is one PDF with each VM’s estimated saving at list price.",
+            " in your terminal or Cloud Shell. It runs a command inside your VMs only after you say yes, and sends nothing to Zoorik. What you get is one PDF with each VM’s estimated saving at list price.",
           ],
         },
       ],

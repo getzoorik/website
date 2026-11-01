@@ -21,7 +21,7 @@ import { contactEmail } from "@/config/site";
  * The day /brand-assets's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /brand-assets's content moves this to that day in the same PR; never the build's date.
  */
-export const brandAssetsLastUpdated = "21 October 2026";
+export const brandAssetsLastUpdated = "1 November 2026";
 
 /** Where the kit's files are served (`public/brand-kit/`, a month in the browser: `public/_headers`). */
 export const brandKitDir = "/brand-kit";
@@ -47,6 +47,8 @@ export interface BrandFile {
 /** One tile: the file it previews (`<stem>.svg`), its name and line, its ground, and its PNG downloads. */
 export interface BrandTile {
   readonly name: string;
+  /** The preview's alt: what the file is, "Zoorik" first, so it never just repeats the name under it. */
+  readonly alt: string;
   readonly line: string;
   readonly stem: string;
   readonly ground: BrandGround;
@@ -105,36 +107,42 @@ export const brandAssetsPage = {
     tiles: [
       {
         name: "Logo on navy",
+        alt: "Zoorik logo, bone on navy",
         line: "The primary logo: bone on navy.",
         stem: "zoorik-logo-on-navy",
         ground: "navy",
       },
       {
         name: "Logo on white",
+        alt: "Zoorik logo, navy on white",
         line: "Navy on white.",
         stem: "zoorik-logo-on-white",
         ground: "white",
       },
       {
         name: "Bone, transparent",
+        alt: "Zoorik logo, bone, transparent background",
         line: "For navy or other dark grounds.",
         stem: "zoorik-logo-bone-transparent",
         ground: "navy",
       },
       {
         name: "Navy, transparent",
+        alt: "Zoorik logo, navy, transparent background",
         line: "For white or other light grounds.",
         stem: "zoorik-logo-navy-transparent",
         ground: "light",
       },
       {
         name: "With the tagline, bone",
+        alt: "Zoorik logo with tagline, bone",
         line: tagged,
         stem: "zoorik-logo-tagline-bone-transparent",
         ground: "navy",
       },
       {
         name: "With the tagline, navy",
+        alt: "Zoorik logo with tagline, navy",
         line: tagged,
         stem: "zoorik-logo-tagline-navy-transparent",
         ground: "light",
@@ -148,18 +156,21 @@ export const brandAssetsPage = {
     tiles: [
       {
         name: "Mark, bone",
+        alt: "Zoorik mark, bone",
         line: "The mark alone, for avatars and icons above 32 px.",
         stem: "zoorik-mark-bone-transparent",
         ground: "navy",
       },
       {
         name: "Mark, navy",
+        alt: "Zoorik mark, navy",
         line: "The mark alone on light grounds.",
         stem: "zoorik-mark-navy-transparent",
         ground: "light",
       },
       {
         name: "Small mark, bone",
+        alt: "Zoorik small mark, bone",
         line: "Only at 32 px and below: favicons and tabs.",
         stem: "zoorik-mark-small-bone-transparent",
         ground: "navy",
@@ -167,6 +178,7 @@ export const brandAssetsPage = {
       },
       {
         name: "Small mark, navy",
+        alt: "Zoorik small mark, navy",
         line: "Only at 32 px and below, on light grounds.",
         stem: "zoorik-mark-small-navy-transparent",
         ground: "light",

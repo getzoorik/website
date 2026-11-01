@@ -5,9 +5,9 @@ export const term: GlossaryTerm = {
   slug: "azure-managed-disk",
   term: "Azure managed disk",
   title: "What is an Azure managed disk?",
-  meta: "An Azure managed disk is block storage that Azure manages for your VM. See how it’s charged by provisioned size, and why you can grow it but not shrink it.",
+  meta: "An Azure managed disk is block storage for your VM, sold as Azure Disk Storage. See how it’s charged by provisioned size, and why it can grow but not shrink.",
   h1: "What is an Azure managed disk?",
-  card: "An Azure managed disk is a block storage volume that Azure manages for your virtual machine (VM).",
+  card: "An Azure managed disk is a block storage volume that Azure manages for your virtual machine (VM), sold as Azure Disk Storage.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
@@ -18,20 +18,30 @@ export const term: GlossaryTerm = {
       text: [
         "An Azure managed disk is a ",
         { a: "block storage", href: "/learn/glossary/block-storage" },
-        " volume that Azure manages for your virtual machine (VM). A managed disk in Azure is like a physical disk in a server, but virtual. “Managed” means you pick the type and size, and Azure handles the rest.",
+        " volume that Azure manages for your virtual machine (VM), sold as Azure Disk Storage. A managed disk in Azure is like a physical disk in a server, but virtual. “Managed” means you pick the ",
+        { a: "disk type", href: "/learn/azure-managed-disk-types" },
+        " and size, and Azure handles the rest.",
       ],
-    },
-    { kind: "p", text: "A managed disk in an Azure VM has one of two roles:" },
-    {
-      kind: "ul",
-      items: ["The OS disk holds the operating system.", "A data disk holds your apps and data."],
     },
   ],
   sections: [
     {
-      id: "an-example-a-1-tib-data-disk",
-      title: "An example: a 1\u00a0TiB data disk",
+      id: "os-disk-vs-data-disk-in-an",
+      title: "OS disk vs data disk in an Azure VM",
       blocks: [
+        { kind: "p", text: "A managed disk in an Azure VM has one of two roles:" },
+        {
+          kind: "ul",
+          items: [
+            "The OS disk holds the operating system.",
+            "A data disk holds your apps and data.",
+          ],
+        },
+        {
+          kind: "h3",
+          id: "an-example-a-1-tib-data-disk",
+          title: "An example: a 1\u00a0TiB data disk",
+        },
         {
           kind: "p",
           text: "Say you attach a 1\u00a0TiB Premium SSD (solid-state drive) data disk. By default, Azure gives it the P30 tier. Your data fills only 200\u00a0GiB.",
@@ -71,10 +81,13 @@ export const term: GlossaryTerm = {
         {
           kind: "p",
           text: [
-            "An Azure managed disk can’t shrink in place; see ",
+            "To reduce that cost, see ",
             { a: "how to reduce Azure disk size", href: "/learn/shrink-azure-managed-disk" },
-            ". For ways to reduce that cost, see ",
-            { a: "Azure disk cost optimization", href: "/learn/azure-disk-cost-optimization" },
+            " and ",
+            {
+              a: "Azure managed disk cost optimization",
+              href: "/azure-managed-disk-cost-optimization",
+            },
             ".",
           ],
         },

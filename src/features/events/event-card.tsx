@@ -136,13 +136,19 @@ export function EventCard({
   );
 }
 
-/** "Next up": the first event with its days known, its description's first sentence and its banner beside them. */
+/**
+ * "Next up": the first event with its days known, its description's first sentence and its banner beside them.
+ * "Next up" is the panel's heading and the event's name a line under it: the name changes every week, and its card
+ * already carries it as an h3.
+ */
 export function NextUp({ event }: { readonly event: EventEntry }): React.JSX.Element {
   return (
     <section className="ev-next" aria-labelledby="next-h">
       <div className="ev-next-in">
-        <p className="ev-eyebrow">{next.eyebrow}</p>
-        <h2 id="next-h">{event.name}</h2>
+        <h2 id="next-h" className="ev-eyebrow">
+          {next.eyebrow}
+        </h2>
+        <p className="ev-next-n">{event.name}</p>
         <p className="ev-next-when">
           {when(event).text} · {place(event)}
         </p>

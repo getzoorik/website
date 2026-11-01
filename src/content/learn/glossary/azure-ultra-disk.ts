@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "block-storage",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",

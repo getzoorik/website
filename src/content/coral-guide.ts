@@ -95,7 +95,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
     {
       term: "What Coral does",
       text: [
-        "Right-sizes CPU and memory requests, removes nodes you don’t need, and moves work to cheaper machines.",
+        "Sizes CPU and memory requests to real use, removes nodes you don’t need, and moves work to cheaper machines.",
       ],
     },
     {
@@ -120,7 +120,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
     {
       id: "how-coral-works",
       title: "How Coral works",
-      lede: "Coral rebalances your Kubernetes clusters. It right-sizes workloads and removes nodes you don’t need, so you pay for what you use. Cost monitoring is always on.",
+      lede: "Coral rebalances your Kubernetes clusters. It sizes workloads to real use and removes nodes you don’t need, so you pay for what you use. Cost monitoring is always on.",
       rows: [
         {
           id: "how-coral-works-the-four-steps",
@@ -183,7 +183,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               rows: [
                 [
                   "Workload optimization",
-                  "Right-sizes each container’s CPU and memory requests, and can manage HPAs.",
+                  "Sizes each container’s CPU and memory requests to real use, and can manage HPAs.",
                   "Recommendations only, until you switch on “Automatically optimize”.",
                 ],
                 [
@@ -219,7 +219,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                 ],
                 [
                   "Linux nodes for optimization",
-                  "Coral’s parts run on Linux nodes. Windows nodes are listed and costed, but their workloads are not right-sized, rebalanced or live-migrated.",
+                  "Coral’s parts run on Linux nodes. Windows nodes are listed and costed, but their workloads are not resized, rebalanced or live-migrated.",
                 ],
                 [
                   "Nodes on 1.33 or later",
@@ -521,7 +521,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                   "Scaling policies",
                   "Built-in and custom policies. Switch on “Automatically optimize” for a policy.",
                 ],
-                ["Impact", "What resizing has already cut from requests, at list price."],
+                ["Impact", "What resizing has already reduced in requests, at list price."],
                 ["Event log", "Everything Coral did or saw, newest first."],
               ],
               continuation: true,
@@ -615,7 +615,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                 [
                   "On a policy (recommended)",
                   "Scaling policies → switch on “Automatically optimize” → “Start optimizing”.",
-                  "In the first 24 hours of data, cuts are capped at 10%, then 25%, then 35%. After that Coral needs at least 90% data coverage.",
+                  "In the first 24 hours of data, reductions are capped at 10%, then 25%, then 35%. After that Coral needs at least 90% data coverage.",
                 ],
                 [
                   "On one workload",
@@ -934,7 +934,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
         },
         {
           id: "how-pods-are-moved",
-          title: "How pods are moved",
+          title: "How pods are moved: warm handover, live migration or eviction",
           body: [
             { kind: "p", text: "Coral moves a pod in the first of these ways that works:" },
             {
@@ -953,7 +953,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
             },
             {
               kind: "p",
-              text: "Warm handover isn’t possible for StatefulSets, Argo Rollouts, workloads with the Recreate strategy, pods with ReadWriteOnce volumes, GPU pods or HPA-scaled pods. Without live migration, these pods get a short restart.",
+              text: "Warm handover isn’t possible for StatefulSets, workloads with the Recreate strategy, pods with ReadWriteOnce volumes, GPU pods or, outside a rebalance, HPA-scaled pods. Without live migration, these pods get a short restart.",
             },
           ],
         },
@@ -1015,10 +1015,6 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                 [
                   { b: "How it runs:" },
                   " Coral creates fixed-size NodePools named zoorik-rb-…. Your Karpenter or NAP launches the new machines. Then the old nodes are drained and removed one by one. The new pools stay after the run.",
-                ],
-                [
-                  { b: "“Evict nodes gracefully”" },
-                  " is off by default. While it is off, pods still on a node after 20 minutes of normal eviction are deleted, even if their PodDisruptionBudget doesn’t allow it. Switch it on to keep such a node instead.",
                 ],
                 [
                   { b: "Schedules:" },
@@ -1148,7 +1144,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
             {
               kind: "ul",
               items: [
-                "A PodDisruptionBudget that allows no disruption keeps its pods, and their node, in place for consolidation and the Evictor. A rebalance respects it only when “Evict nodes gracefully” is on.",
+                "A PodDisruptionBudget that allows no disruption keeps its pods, and their node, in place for consolidation, the Evictor and rebalances.",
                 "The ignore label stops workload changes only (sizes and HPAs). It does not stop node moves.",
               ],
             },
@@ -1207,7 +1203,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                 [
                   "Already removed",
                   "Impact",
-                  "The list-price value of the requests resizing has already cut. It reaches your bill once the freed capacity lets nodes go.",
+                  "The list-price value of the requests resizing has already reduced. Your cloud cost goes down once the freed capacity lets nodes go.",
                 ],
                 [
                   "Fleet cost, Unclaimed capacity, Nodes held",

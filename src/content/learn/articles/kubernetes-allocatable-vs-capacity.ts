@@ -175,7 +175,7 @@ export const article: Article = {
           kind: "p",
           text: "On a managed cluster you rarely set these values yourself: AKS and the EKS-optimized Amazon Linux AMI set them for you.",
         },
-        { kind: "h3", id: "aks", title: "AKS" },
+        { kind: "h3", id: "aks", title: "How much CPU and memory AKS reserves" },
         {
           kind: "p",
           text: [
@@ -237,7 +237,7 @@ export const article: Article = {
             ". To change it later, Microsoft says to add a new pool and migrate your pods. Fewer pod slots per node leave more memory for pods, but a pool of many small pods may then need more nodes.",
           ],
         },
-        { kind: "h3", id: "eks", title: "EKS" },
+        { kind: "h3", id: "eks", title: "How much CPU and memory EKS reserves" },
         {
           kind: "p",
           text: "On EKS-optimized Amazon Linux AMI nodes, the AMI’s bootstrap sets kube-reserved from the instance type. AWS documents the rule in its guide to AWS Batch on EKS. CPU is graduated: 6% of the first core, 1% of the second, 0.5% each of the third and fourth, and 0.25% of every core after that. Memory is 11\u00a0MiB per max pod plus 255\u00a0MiB, and the hard eviction threshold comes off on top, 100\u00a0MiB in AWS’s example.",
@@ -381,7 +381,7 @@ export const article: Article = {
           items: [
             [
               { b: "Rebalancing." },
-              " On the default balanced policy, Coral sets each container’s CPU request to the 80th percentile of the last 3\u00a0days plus 10%. Its memory request is 10% above the highest use in the last 8\u00a0days. Running pods are resized in place on 1.33+ nodes where possible, or restarted one at a time within their ",
+              " Coral sets each container’s CPU and memory requests from measured use, plus headroom. Running pods are resized in place on 1.33+ nodes where possible, or restarted one at a time within their ",
               { a: "PodDisruptionBudgets", href: "/learn/glossary/pod-disruption-budget" },
               ".",
             ],

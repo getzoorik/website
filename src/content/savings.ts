@@ -24,7 +24,7 @@ export interface SavingsFigure {
 export const savingsFigures: Readonly<Record<SavingsKey, SavingsFigure>> = {
   coral: { range: "40–50%", spoken: "40 to 50 percent", caption: "off AKS and EKS cost" },
   amoeba: { range: "50–60%", spoken: "50 to 60 percent", caption: "off block storage cost" },
-  both: { range: "20–30%", spoken: "20 to 30 percent", caption: "off your overall cloud bill" },
+  both: { range: "20–30%", spoken: "20 to 30 percent", caption: "off your overall cloud cost" },
 };
 
 /** The label over the two products' figure: both products, named. */

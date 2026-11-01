@@ -5,8 +5,8 @@ import { figure as figure3 } from "@/features/learn/figures/kubernetes-pod-right
 
 export const article: Article = {
   slug: "kubernetes-pod-right-sizing",
-  title: "Kubernetes pod right sizing, step by step",
-  meta: "Kubernetes pod right sizing, step by step: read real CPU and memory use, set requests from it, keep limits safe, find CPU throttling and roll back cleanly.",
+  title: "Kubernetes pod right sizing: requests vs limits",
+  meta: "Kubernetes pod right sizing, step by step: requests vs limits, setting CPU and memory requests from real use, keeping requests and limits safe and rolling back.",
   h1: "Kubernetes pod right sizing: set requests from real use",
   deck: "How to read what each container really uses, set its requests from that, and change them without OOM kills.",
   card: "Read real CPU and memory use, set requests from it, and keep limits, throttling and rollbacks in check.",
@@ -327,8 +327,8 @@ export const article: Article = {
           kind: "ul",
           items: [
             [
-              { b: "The figures." },
-              " On the balanced policy, the default for Deployments, DaemonSets and Argo Rollouts, the CPU request is the 80th percentile of the last 3\u00a0days plus 10%, and memory is the 8-day peak plus 10%. By default Coral ignores the first 2\u00a0minutes of CPU after a container starts.",
+              { b: "The sizes." },
+              " Coral sets CPU from a high percentile of recent use and memory from the recent peak, each plus headroom.",
             ],
             [
               { b: "The HPA keeps scaling." },
@@ -338,17 +338,17 @@ export const article: Article = {
               { b: "Regular pods’ limits stay or rise." },
               " On the built-in policies, Coral never reduces the CPU or memory limit of a regular (",
               { a: "non-Guaranteed", href: "/learn/glossary/kubernetes-qos-class" },
-              ") pod, so startup can still burst above the request into free CPU on the node. When Coral changes a memory request, the limit becomes the largest of your own limit, 1.5 times the new request and 128\u00a0MiB, and a container with no limit keeps none. A custom policy can set limits its own way.",
+              ") pod, so startup can still burst above the request into free CPU on the node. When Coral changes a memory request, it keeps your limit or raises it, so the limit is never below the request. A custom policy can set limits its own way.",
             ],
             [
               { b: "How a change lands." },
               " Coral only recommends until you switch on “Automatically optimize” for a policy or a workload. Your manifest is never changed. Coral sets new requests as pods start, resizes running pods in place on 1.33+ nodes, or else restarts them one at a time within their ",
               { a: "PodDisruptionBudgets", href: "/learn/glossary/pod-disruption-budget" },
-              ". Through a policy, reductions in the first 24\u00a0hours of data are capped at 10%, then 25%, then 35%. Every change respects your minimums, LimitRanges and quotas.",
+              ". Early reductions are made in small steps while data builds up. Every change respects your minimums, LimitRanges and quotas.",
             ],
             [
               { b: "Going back." },
-              " Failing probes and CPU pressure make Coral raise requests back up, and a replacement pod that isn’t Ready within 10\u00a0minutes goes back to its original size, except in StatefulSets. After an OOM kill, with automation on, Coral raises that container’s memory request straight away by 20% of its base size per kill, or 100\u00a0MiB if that is more, and the memory limit rises with it. With automation off, new pods start at your manifest’s size, and running pods keep theirs until they restart.",
+              " Failing probes and CPU pressure make Coral raise requests back up, and a replacement pod that isn’t Ready in time goes back to its original size, except in StatefulSets. After an OOM kill, with automation on, Coral raises that container’s memory request straight away, and the memory limit rises with it. With automation off, new pods start at your manifest’s size, and running pods keep theirs until they restart.",
             ],
           ],
         },

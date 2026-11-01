@@ -5,7 +5,7 @@ import { figure as figure2 } from "@/features/learn/figures/cluster-autoscaler-n
 export const article: Article = {
   slug: "cluster-autoscaler-not-scaling-down",
   title: "Cluster Autoscaler not scaling down on AKS and EKS",
-  meta: "Cluster Autoscaler not scaling down on AKS or EKS: the pods, PDBs, node pool minimums and timers that keep nodes running, and the fix for each one.",
+  meta: "Cluster Autoscaler not scaling down on AKS or EKS? The scale-down utilization threshold, PDBs, pods, pool minimums and timers that keep nodes, and each fix.",
   h1: "Cluster Autoscaler not scaling down: what keeps nodes running",
   deck: "The pods, budgets, minimums and timers that hold nodes on AKS and EKS, how to find which one, and the fix.",
   card: "Why the Cluster Autoscaler keeps a node on AKS or EKS, how to find the reason, and the fix for each one.",
@@ -46,6 +46,11 @@ export const article: Article = {
           text: "CPU requests sit at 55% of allocatable (2.2 ÷ 4) and memory at 37.5% (6 ÷ 16). The higher figure decides, and 55% is over the 50% line, which sits at 2\u00a0CPU (4 × 0.5). To get under it, requests must fall by more than 0.2\u00a0CPU (2.2 − 2), while 1.9\u00a0CPU of them goes unused (2.2 − 0.3).",
         },
         { kind: "svg", figure: figure1 },
+        {
+          kind: "h3",
+          id: "how-cluster-autoscaler-scale-down-decides-a",
+          title: "How Cluster Autoscaler scale-down decides a node is unneeded",
+        },
         {
           kind: "p",
           text: "The Cluster Autoscaler adds nodes for pods that can’t be scheduled and removes nodes it calls unneeded. Every 10\u00a0seconds, when no scale-up is needed, it checks each node against three conditions in its FAQ. All must hold:",
@@ -445,7 +450,7 @@ export const article: Article = {
     },
     {
       id: "raising-the-threshold-helps-less-than-resizing",
-      title: "Raising the threshold helps less than resizing requests",
+      title: "Raising the scale-down utilization threshold helps less than resizing requests",
       blocks: [
         {
           kind: "p",
@@ -481,7 +486,7 @@ export const article: Article = {
             ],
             [
               { b: "One by one." },
-              " Coral cordons and drains one node at a time, and if a drain can’t finish in 10\u00a0minutes, the node goes back into service.",
+              " Coral cordons and drains one node at a time, and if a drain can’t finish in time, the node goes back into service.",
             ],
             [
               { b: "Your autoscaler deletes." },

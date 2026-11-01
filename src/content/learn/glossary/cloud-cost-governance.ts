@@ -5,7 +5,7 @@ export const term: GlossaryTerm = {
   slug: "cloud-cost-governance",
   term: "Cloud cost governance",
   title: "What is cloud cost governance?",
-  meta: "Cloud cost governance is the set of budgets, tag rules and limits on what teams deploy that keeps cloud spend in bounds. See real rules for Azure and AWS.",
+  meta: "Cloud cost governance is the budgets, tag rules and deploy limits that keep cloud cost in bounds. See FinOps governance, Azure Policy and AWS budget alerts.",
   h1: "What is cloud cost governance?",
   card: "Cloud cost governance is the set of rules that keeps your cloud spend inside agreed limits.",
   group: "finops-pricing",
@@ -63,6 +63,11 @@ export const term: GlossaryTerm = {
         {
           kind: "p",
           text: "To test it, assign it with enforcement off (DoNotEnforce). It then reports rule breaks but blocks nothing.",
+        },
+        {
+          kind: "h3",
+          id: "aws-budget-alerts-and-budget-actions",
+          title: "AWS budget alerts and budget actions",
         },
         {
           kind: "p",

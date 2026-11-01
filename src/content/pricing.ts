@@ -18,7 +18,7 @@ import { assessmentHref } from "@/content/assess";
  * The day /pricing's content last changed, for the sitemap's `lastmod` only: the page prints no date. Whoever changes
  * the page moves it in the same PR; never the build's date.
  */
-export const pricingLastUpdated = "30 October 2026";
+export const pricingLastUpdated = "1 November 2026";
 
 /** The owner's line (D226), the page's lead: word for word, never paraphrased. */
 export const pricingLine =
@@ -122,10 +122,6 @@ export const pricingPage = {
         kind: "p",
         text: "Your order, or your marketplace purchase, sets the price, how often you pay and the payment terms.",
       },
-      {
-        kind: "p",
-        text: "Your cloud provider charges you directly for the disks and snapshots Amoeba creates or keeps.",
-      },
     ] satisfies readonly PricingBlock[] as readonly PricingBlock[],
   },
   /** The four listings by name, text only (`marketplaces[].listings`), then the private offer and every listing. */
@@ -186,7 +182,7 @@ export const pricingPage = {
         answer: [
           {
             kind: "p",
-            text: "Amoeba is in early access. Book a demo for early access, or run the free assessment first.",
+            text: "Amoeba is available in AWS Marketplace and Microsoft Marketplace, and is in early access. Book a demo for early access, or run the free assessment first.",
           },
         ],
       },

@@ -29,7 +29,7 @@ export const article: Article = {
   sections: [
     {
       id: "cloud-cost-optimization-see-the-spend-first",
-      title: "Cloud cost optimization: see the spend first, commit last",
+      title: "Cloud cost optimization strategies: see the spend first, commit last",
       blocks: [
         {
           kind: "p",
@@ -73,6 +73,11 @@ export const article: Article = {
             { a: "AKS cost analysis", href: "/learn/aks-cost-analysis" },
             " covers.",
           ],
+        },
+        {
+          kind: "h3",
+          id: "cloud-cost-management-three-standing-rules",
+          title: "Cloud cost management: three standing rules",
         },
         {
           kind: "p",
@@ -378,24 +383,13 @@ export const article: Article = {
         },
       ],
     },
-    {
-      id: "every-learn-article-by-subject",
-      title: "Every Learn article, by subject",
-      blocks: [
-        {
-          kind: "p",
-          text: "Each step above has articles of its own. Here they all are, by subject.",
-        },
-        { kind: "every" },
-      ],
-    },
   ],
   help: {
-    product: "coral",
-    text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and drains spare nodes so your autoscaler can remove them. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Coral rebalances Kubernetes on AKS and EKS, and Amoeba rightsizes block storage on Azure and AWS. We estimate 40–50% off AKS and EKS cost and 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Kubernetes optimization with Coral", href: "/coral" },
-      { label: "Estimate your saving", href: "/assessment?p=coral" },
+      { label: "Block storage cost optimization with Amoeba", href: "/amoeba" },
+      { label: "Estimate your saving", href: "/assessment" },
     ],
   },
   sources: [
@@ -447,8 +441,8 @@ export const article: Article = {
       href: "/learn/poor-architecture-cloud-bill",
     },
     {
-      title: "How we reduced our own cluster’s machine bill by 58%",
-      where: "Case study",
+      title: "How we reduced AKS cluster costs by 58%",
+      where: "Coral Value Lab",
       href: "/coral-value-lab",
     },
     {

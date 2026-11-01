@@ -5,9 +5,9 @@ export const term: GlossaryTerm = {
   slug: "pod-disruption-budget",
   term: "Pod Disruption Budget (PDB)",
   title: "What is a Pod Disruption Budget (PDB)?",
-  meta: "Pod disruption budget meaning, in plain words: how it limits the pods a node drain can take down, and why a strict one keeps you paying for a spare node.",
+  meta: "A pod disruption budget (PodDisruptionBudget, or PDB) limits how many pods a node drain can take down. See why a strict one keeps you paying for a spare node.",
   h1: "What is a Pod Disruption Budget (PDB)?",
-  card: "A pod disruption budget in Kubernetes, or PDB, limits how many of an app’s pods can be down at once during voluntary disruptions.",
+  card: "A pod disruption budget in Kubernetes (a PodDisruptionBudget, or PDB) limits how many of an app’s pods can be down at once during voluntary disruptions.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-26",
@@ -15,7 +15,7 @@ export const term: GlossaryTerm = {
   definition: [
     {
       kind: "p",
-      text: "A pod disruption budget in Kubernetes, or PDB, limits how many of an app’s pods can be down at once during voluntary disruptions. PDBs have been stable since Kubernetes v1.21.",
+      text: "A pod disruption budget in Kubernetes (a PodDisruptionBudget, or PDB) limits how many of an app’s pods can be down at once during voluntary disruptions. PDBs have been stable since Kubernetes v1.21.",
     },
     {
       kind: "p",

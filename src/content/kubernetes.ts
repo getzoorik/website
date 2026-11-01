@@ -30,8 +30,9 @@ export const kubernetesContent: ProductSectionContent = {
     href: `${routes.assessment}?p=coral`,
     label: "Estimate your saving",
   },
-  /* The category alone (owner, 23 Oct 2026: "it should be 'Kubernetes cost optimization ->'"). */
-  more: "Kubernetes cost optimization",
+  /* Not the category: "Kubernetes cost optimization" is the pillar's search (D229), so the link to /coral names the
+     product, as its title does (owner, 1 Nov 2026). */
+  more: "Kubernetes optimization with Coral",
   /* Says whose example the How it works figures are: our own cluster, not a
      customer's. */
   caption: workedExample.coral,

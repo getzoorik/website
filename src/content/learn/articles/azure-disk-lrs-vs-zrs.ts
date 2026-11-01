@@ -46,7 +46,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "lrs-three-copies-in-one-datacenter",
-          title: "LRS: three copies in one datacenter",
+          title: "What LRS is in Azure: three copies in one datacenter",
         },
         {
           kind: "p",
@@ -60,7 +60,11 @@ export const article: Article = {
           kind: "p",
           text: "An LRS disk comes in two forms, charged at the same rate. A zonal LRS disk is pinned to one zone and attaches only to VMs in that zone. A regional (nonzonal) disk is created without a zone, and Azure may place it in any zone.",
         },
-        { kind: "h3", id: "zrs-copies-in-three-zones", title: "ZRS: copies in three zones" },
+        {
+          kind: "h3",
+          id: "zrs-copies-in-three-zones",
+          title: "What ZRS is in Azure: copies in three zones",
+        },
         {
           kind: "p",
           text: "ZRS replicates the disk synchronously across three zones. Each zone has its own power, cooling and networking. Microsoft states at least 12 nines for it.",
@@ -106,7 +110,7 @@ export const article: Article = {
             ],
             [
               { b: "The disk is shared." },
-              " Take a shared ZRS disk attached to a primary VM and a secondary VM in different zones. When the primary’s zone fails, the disk is already available to the secondary. Microsoft expects no data loss and no downtime for that disk.",
+              " Take a shared ZRS disk attached to a primary VM and a secondary VM in different zones. When the primary’s zone fails, the disk is already available to the secondary. For that disk, Microsoft expects the failover to run without any data loss or downtime.",
             ],
           ],
         },
@@ -374,7 +378,7 @@ export const article: Article = {
             ["Durability Microsoft states", "At least 11 nines a year", "At least 12 nines a year"],
             [
               "In a zone outage",
-              "A zonal LRS disk might be unavailable until the zone recovers",
+              "A zonal LRS disk is unavailable until the zone recovers",
               "The data stays available; a data disk can be force detached and attached to a VM in a healthy zone",
             ],
             ["Writes", "Less latency", "More latency"],

@@ -6,7 +6,7 @@ import { figure as figure3 } from "@/features/learn/figures/ebs-elastic-volumes/
 export const article: Article = {
   slug: "ebs-elastic-volumes",
   title: "EBS Elastic Volumes: what you can and can’t change",
-  meta: "EBS Elastic Volumes change an attached volume’s size, type, IOPS and throughput. The optimizing state, the four-a-day limit and the change they can’t make.",
+  meta: "EBS Elastic Volumes change a volume’s size, type, IOPS and throughput with aws ec2 modify-volume. The optimizing state, four-a-day limit and what can’t change.",
   h1: "EBS Elastic Volumes: what you can change, and what you can’t",
   deck: "Size, type, IOPS and throughput change while the volume stays in use. Size is the one that only goes up.",
   card: "What an EBS modification can change, the optimizing state, the four-a-day limit and why size only grows.",
@@ -121,7 +121,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "2-submit-the-change-naming-every-value",
-          title: "2. Submit the change, naming every value",
+          title: "2. Run aws ec2 modify-volume, naming every value",
         },
         {
           kind: "p",
@@ -250,7 +250,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "No. Search suggestions and older guides still pair EBS volume modification with 6\u00a0hours. That comes from an old rule of six hours between changes.",
+          text: "No. Older guides still pair EBS volume modification with 6\u00a0hours. That comes from an old rule of six hours between changes.",
         },
         {
           kind: "p",
@@ -531,7 +531,7 @@ export const article: Article = {
       href: "/learn/io2-vs-gp3",
     },
     {
-      title: "EBS volume types: pricing and how to choose",
+      title: "EBS volume types compared: how to choose one",
       where: "Learn",
       href: "/learn/ebs-volume-types",
     },

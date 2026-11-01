@@ -78,7 +78,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "For an AKS vs EKS cost comparison, these are the rows where AKS vs EKS pricing differs, at list prices in October 2026. Prices change, so check both pricing pages for your region before you decide.",
+          text: "For an AKS vs EKS cost comparison, these are the rows where the two clouds differ, at list prices in October 2026. Prices change, so check both pricing pages for your region before you decide.",
         },
         {
           kind: "table",
@@ -188,7 +188,7 @@ export const article: Article = {
     },
     {
       id: "eks-control-plane-cost-follows-the-kubernetes",
-      title: "EKS control plane cost follows the Kubernetes version",
+      title: "EKS extended support and control plane cost follow the Kubernetes version",
       blocks: [
         {
           kind: "p",
@@ -218,15 +218,20 @@ export const article: Article = {
         { kind: "svg", figure: figure2 },
         {
           kind: "p",
+          text: "EKS Provisioned Control Plane is optional. It runs the control plane on a scaling tier you choose, from $1.65 per cluster per hour for XL. That’s charged on top of the version support fee.",
+        },
+        {
+          kind: "h3",
+          id: "eks-supported-versions-which-are-in-extended",
+          title: "EKS supported versions: which are in extended support in October 2026",
+        },
+        {
+          kind: "p",
           text: "In October 2026, Kubernetes 1.31, 1.32 and 1.33 are in extended support on EKS, and 1.34 leaves standard support on 2 December 2026. Extended support for 1.31 ends on 26 November 2026.",
         },
         {
           kind: "p",
           text: "After that date AWS upgrades the control plane itself, at a time it doesn’t announce. Managed node groups and self-managed nodes stay on the old version until you update them.",
-        },
-        {
-          kind: "p",
-          text: "EKS Provisioned Control Plane is optional. It runs the control plane on a scaling tier you choose, from $1.65 per cluster per hour for XL. That’s charged on top of the version support fee.",
         },
         {
           kind: "h3",
@@ -400,7 +405,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Coral also empties spare nodes one at a time so your autoscaler can remove them. On AKS it works through a role that can read the cluster and delete its machines. On EKS it uses an IAM role that can terminate instances in the cluster’s Auto Scaling groups.",
+          text: "Coral also empties spare nodes one at a time so your autoscaler can remove them.",
         },
         {
           kind: "p",

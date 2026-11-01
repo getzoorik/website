@@ -86,24 +86,32 @@ const SYSTEM = "$73.73";
 const WORKER = "$147.46";
 
 /**
- * The day the /value-lab hub's content last changed (the Amoeba study's card, 29 Oct 2026), for the sitemap's
- * `lastmod` only: the page does not print it. Whoever changes the hub's content
+ * The day the /value-lab hub's content last changed (its description, deck and total's line, 1 Nov 2026), for the
+ * sitemap's `lastmod` only: the page does not print it. Whoever changes the hub's content
  * moves this to that day in the same PR; never the build's date.
  */
-export const caseStudiesHubLastUpdated = "29 October 2026";
+export const caseStudiesHubLastUpdated = "1 November 2026";
+
+/**
+ * The day each study's content last changed, for the sitemap's `lastmod` only: each page prints the day its result
+ * was published (`band.date`), which a later edit does not move. Whoever changes a study's content moves its day here
+ * in the same PR; never the build's date.
+ */
+export const caseStudyLastUpdated = "1 November 2026";
+export const amoebaStudyLastUpdated = "1 November 2026";
 
 export const caseStudy = {
   route: routes.caseStudyCoralDevCluster,
   meta: {
     title: "How We Reduced AKS Cluster Costs by 58%",
     description:
-      "Before we ask anyone to trust Coral with their cluster, we run it on ours. Eight days after we connected it, our AKS development cluster cost $154.76 a month instead of $368.65.",
+      "Our own AKS cost reduction case study: eight days after we connected Coral, our development cluster cost $154.76 a month instead of $368.65.",
   },
   hero: {
     kicker: "Value Lab · Coral on Azure Kubernetes Service · October 2026",
     /** The h1, its second half on a line of its own in the good green. */
-    title: "How we reduced our own cluster’s",
-    titleGreen: "machine bill by 58%",
+    title: "How we reduced our own AKS cluster’s",
+    titleGreen: "machine cost by 58%",
     deck: [
       "Before we ask anyone to trust Coral with their cluster, we run it on ours. In October 2026 we connected Coral to the Kubernetes cluster that runs Zoorik’s own development platform on Azure. Eight days later the cluster cost ",
       { b: "$154.76 a month instead of $368.65" },
@@ -121,14 +129,14 @@ export const caseStudy = {
     by: " · Published by ",
     publisher: { text: "Zoorik", href: routes.about },
     stats: [
-      { value: "−58%", label: "machine bill", good: true },
+      { value: "−58%", label: "machine cost", good: true },
       { value: "$213.89", label: "saved every month, about $2,567 a year", good: true },
       { value: "10 → 6", label: "CPU, on 2 machines instead of 3", good: false },
       { value: "8 days", label: "from connecting Coral to the result", good: false },
     ],
     about: [
       { b: "Coral" },
-      " is Zoorik’s Kubernetes cost optimization for AKS and EKS. It right-sizes apps, removes machines a cluster no longer needs, and rebalances onto cheaper machines, all within each app’s safety limits.",
+      " is Zoorik’s Kubernetes cost optimization for AKS and EKS. It sizes each app’s CPU and memory requests to real use, removes machines a cluster no longer needs, and rebalances onto cheaper machines, all within each app’s safety limits.",
     ] satisfies CaseStudyText,
   },
   /** The section names, as the mock prints them in the left column and the chips: plain text. */
@@ -141,7 +149,7 @@ export const caseStudy = {
     { id: "the-result", title: "The result" },
   ] satisfies readonly { id: CaseStudySectionId; title: string }[],
   start: {
-    text: "Our development cluster runs Coral’s own API, our consoles and our deployment tooling. It is a typical small team cluster: a system machine that Azure requires, and two worker machines for the apps. Like most clusters, it was sized for safety, not for what the apps actually used.",
+    text: "Our development cluster runs Coral’s own API, our consoles and our deployment tooling. It is a typical small team cluster: a system machine that Azure requires, and two worker machines for the apps. It was sized for safety, not for what the apps used.",
     machines: [
       {
         badge: "Stays",
@@ -231,7 +239,7 @@ export const caseStudy = {
       title: "Workload optimization: apps sized to what they use",
       date: "from 8 Oct",
       text: [
-        "We switched workload optimization to automatic. By 12 October Coral had right-sized ",
+        "We switched workload optimization to automatic. By 12 October Coral had resized ",
         { b: "14 of the cluster’s apps" },
         ". Most were reserving more than they used; one app needed more memory, and Coral gave it more.",
       ],
@@ -378,7 +386,7 @@ export const caseStudy = {
       ],
     },
     share: {
-      caption: "Share of the machine bill removed",
+      caption: "Share of the machine cost removed",
       alt: "58% less",
       value: "58%",
       word: "less",
@@ -391,8 +399,8 @@ export const caseStudy = {
   /** The card at the end of The result: the PDF, the whole card one link. The page, like the
       PDF, has no "What's next". */
   end: {
-    title: "How we reduced our own cluster’s machine bill by 58%",
-    kind: "Case study · PDF · ",
+    title: "How we reduced our own AKS cluster’s machine cost by 58%",
+    kind: "Value Lab · PDF · ",
     go: "Download",
   },
   fine: "Zoorik’s own development cluster on Azure Kubernetes Service, 4 to 12 October 2026. Costs are Azure pay-as-you-go list prices for the cluster’s machines at 730 hours a month. App figures cover the cluster’s own apps. Results depend on each cluster’s apps and machines.",
@@ -482,7 +490,7 @@ export const amoebaStudy = {
     ],
     about: [
       { b: "Amoeba" },
-      " is Zoorik’s block storage optimization for Windows and Linux VMs on Azure and AWS. It moves a VM’s data disks onto one btrfs pool sized to the data, with room to grow. Then it rightsizes that pool, one disk at a time, while it stays mounted.",
+      " is Zoorik’s block storage cost optimization for Windows and Linux VMs on Azure and AWS. It moves a VM’s data disks onto one btrfs pool sized to the data, with room to grow. Then it rightsizes that pool, one disk at a time, while it stays mounted.",
     ] satisfies CaseStudyText,
   },
   sections: [
@@ -494,7 +502,7 @@ export const amoebaStudy = {
     { id: "the-result", title: "The result" },
   ] satisfies readonly { id: AmoebaStudySectionId; title: string }[],
   start: {
-    text: "Our lab is a set of VMs on Azure that we run ourselves. This study follows two of them on 19 October 2026. Each one runs a test app of ours that keeps writing to its data folders.",
+    text: "Our lab is a set of VMs on Azure that we run ourselves. This Value Lab follows two of them on 19 October 2026. Each one runs a test app of ours that keeps writing to its data folders.",
     label:
       "Lab VM A: a btrfs pool of 64 and 32 GiB disks, 96 GiB, holding 60.07 GiB, on Manual. Lab VM B: new, two 32 GiB disks, about 10 GiB of data on each.",
     vms: [
@@ -787,7 +795,7 @@ const studies = [
     figure: caseStudy.band.stats[0].value,
     before: { value: coralConnected.amount, label: coralConnected.label },
     after: { value: coralToday.amount, label: coralToday.label },
-    cap: "machine bill a month, before and after",
+    cap: "machine cost a month, before and after",
   },
 ] satisfies readonly CaseStudyCard[] as readonly CaseStudyCard[];
 
@@ -818,11 +826,12 @@ export const caseStudiesHub = {
   /** The `<title>`'s own words, before " | Zoorik", and the description. */
   meta: {
     title: "Value Lab",
-    description: "What Coral does on real clusters, with the figures.",
+    description:
+      "Zoorik Value Lab: cloud cost case studies from our own AKS cluster and Azure lab VM. What Coral and Amoeba reduced, with the figures.",
   },
   hero: {
     title: "Value Lab by Zoorik",
-    deck: "What Coral and Amoeba reduced on real cloud bills, every figure at list prices.",
+    deck: "What Coral and Amoeba reduced on our own AKS cluster and Azure lab VMs, every figure at list prices.",
   },
   /** Beside the hero's words: what the studies saved so far, as of the newest study's day. */
   total: {
@@ -832,7 +841,7 @@ export const caseStudiesHub = {
     asOfLabel: `As of ${shortDay(caseStudy.band.date)}`,
     amount: savedMonthly,
     unit: "a month",
-    line: `About ${perYear(savedMonthly)} a year, across ${studies.length} case ${studies.length === 1 ? "study" : "studies"}, at list prices.`,
+    line: `About ${perYear(savedMonthly)} a year from the ${products.coral.name} case study, at list prices.`,
   },
   studies,
   /** The band, named for a screen reader: the studies' cards and "Want to be next?". */
@@ -847,7 +856,7 @@ export const caseStudiesHub = {
       flag: "Featured",
       title: "Our own AKS cluster",
       /* "58%" is the study's own "−58%" (`band.stats[0]`). */
-      line: `We reduced its monthly machine bill by ${caseStudy.band.stats[0].value.replace("−", "")} with Coral.`,
+      line: `We reduced its monthly machine cost by ${caseStudy.band.stats[0].value.replace("−", "")} with Coral.`,
       before: { ...studies[0]!.before, name: "Before" },
       after: { ...studies[0]!.after, name: "With Coral" },
       per: "a month",

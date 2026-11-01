@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "finops-pricing",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -23,19 +23,25 @@ export const term: GlossaryTerm = {
       id: "on-demand-instance-pricing",
       title: "On-demand instance pricing",
       blocks: [
+        { kind: "h3", id: "aws-on-demand-instances", title: "AWS on-demand instances" },
         {
-          kind: "ul",
-          items: [
-            "AWS charges per second for Linux and Windows instances, with a 60-second minimum. SUSE Linux Enterprise Server is charged in full hours.",
-            "Azure charges per full minute a VM runs, so in Azure’s example 6\u00a0minutes and 45\u00a0seconds counts as 6\u00a0minutes.",
-            "On Azure, you still pay for the cores of a “Stopped” VM. Only “Stopped (deallocated)” ends that charge.",
-          ],
+          kind: "p",
+          text: "AWS charges per second for Linux and Windows instances, with a 60-second minimum. SUSE Linux Enterprise Server is charged in full hours.",
+        },
+        { kind: "h3", id: "azure-pay-as-you-go-vms", title: "Azure pay-as-you-go VMs" },
+        {
+          kind: "p",
+          text: "Azure charges per full minute a VM runs, so in Azure’s example 6\u00a0minutes and 45\u00a0seconds counts as 6\u00a0minutes.",
+        },
+        {
+          kind: "p",
+          text: "On Azure, you still pay for the cores of a “Stopped” VM. Only “Stopped (deallocated)” ends that charge.",
         },
       ],
     },
     {
       id: "on-demand-instances-vs-reserved",
-      title: "On-demand instances vs reserved",
+      title: "On-demand vs reserved instances",
       blocks: [
         {
           kind: "ul",

@@ -105,7 +105,7 @@ export const article: Article = {
     },
     {
       id: "spread-or-pack-is-a-scoring-strategy",
-      title: "Spread or pack is a scoring strategy on the default scheduler",
+      title: "LeastAllocated vs MostAllocated: spread or pack on the default scheduler",
       blocks: [
         {
           kind: "p",
@@ -431,12 +431,8 @@ export const article: Article = {
               " Coral rebalances each container’s CPU and memory requests to what it uses, with headroom on top. Pod sizing starts when you switch on “Automatically optimize” for a policy or a workload.",
             ],
             [
-              { b: "The Evictor." },
-              " Coral’s Evictor moves pods off lightly used nodes and leaves each empty node for your autoscaler. It drains only in pools whose setting allows it, which is off by default. Even then, it never overrides a PodDisruptionBudget.",
-            ],
-            [
-              { b: "Node optimization." },
-              " Coral works out from pod requests how many nodes each pool needs, and every pool keeps at least one node. Before each drain it checks on the live cluster that every pod fits elsewhere, with its affinity, taints, spread, ports and zones. Nodes drain one at a time, and a drain that can’t finish in time puts the node back into service.",
+              { b: "Spare nodes." },
+              " Coral works out from pod requests how many nodes each pool needs, checks that every pod fits elsewhere, and drains one node at a time.",
             ],
             [
               { b: "Removal." },
@@ -444,36 +440,13 @@ export const article: Article = {
             ],
           ],
         },
-        { kind: "h3", id: "when-a-pod-has-to-move", title: "When a pod has to move" },
-        {
-          kind: "p",
-          text: "For pods of a Deployment or an Argo Rollout, Coral first tries a warm handover:",
-        },
-        {
-          kind: "ol",
-          items: [
-            "Coral scales the owner up by one.",
-            "It waits until the new pod is Ready on another node.",
-            "Then it evicts the old one.",
-          ],
-        },
-        { kind: "p", text: "No process state moves, and open connections to the old pod end." },
-        { kind: "p", text: "Warm handover isn’t used for these, among others:" },
-        {
-          kind: "ul",
-          items: [
-            "StatefulSets",
-            "the Recreate strategy",
-            "ReadWriteOnce volumes",
-            "an app scaled by a Horizontal Pod Autoscaler, during consolidation",
-          ],
-        },
         {
           kind: "p",
           text: [
-            "Those pods are evicted within their ",
-            { a: "PodDisruptionBudget", href: "/learn/glossary/pod-disruption-budget" },
-            ", and an app that runs a single copy restarts briefly. A pod annotated ",
+            { a: "Where it can", href: "/learn/kubernetes-drain-node-without-downtime" },
+            ", Coral starts a new copy on another node before the old pod goes. Other pods move within their ",
+            { a: "PodDisruptionBudgets", href: "/learn/glossary/pod-disruption-budget" },
+            ", and a single-copy app among them restarts briefly. A pod annotated ",
             { code: 'karpenter.sh/do-not-disrupt: "true"' },
             " is never moved, and its node is kept.",
           ],

@@ -5,10 +5,10 @@ import { figure as figure3 } from "@/features/learn/figures/btrfs-unallocated-sp
 
 export const article: Article = {
   slug: "btrfs-unallocated-space",
-  title: "btrfs unallocated space vs free space, explained",
-  meta: "btrfs unallocated space is raw space no chunk holds yet. How it differs from free space, why writes fail while df shows room, and how balance gives it back.",
-  h1: "btrfs unallocated space vs free space, explained",
-  deck: "Why btrfs can run out of space while df shows room, and how balance turns allocated space back into unallocated.",
+  title: "btrfs balance: unallocated vs free space explained",
+  meta: "btrfs unallocated space is room no chunk holds yet. How it differs from free space, why writes fail while df shows room, and how btrfs balance gives it back.",
+  h1: "btrfs balance and unallocated space vs free space, explained",
+  deck: "Why btrfs can run out of space while df shows room, and how btrfs balance turns allocated space back into unallocated.",
   card: "Unallocated vs free space in btrfs: read filesystem usage, explain ENOSPC with room left, and fix it.",
   product: "amoeba",
   hub: "Block storage",
@@ -239,7 +239,8 @@ export const article: Article = {
     },
     {
       id: "a-filtered-balance-packs-data-block-groups",
-      title: "A filtered balance packs data block groups and returns their space to unallocated",
+      title:
+        "A filtered balance with -dusage packs data block groups and returns their space to unallocated",
       blocks: [
         {
           kind: "p",

@@ -38,10 +38,10 @@ export interface TrustSection {
 }
 
 /**
- * The day /trust's content last changed. The page prints it ("Updated 30 October 2026"), and the sitemap reads it;
+ * The day /trust's content last changed. The page prints it ("Updated 1 November 2026"), and the sitemap reads it;
  * whoever changes the page moves it in the same PR.
  */
-export const trustUpdated = "Updated 30 October 2026";
+export const trustUpdated = "Updated 1 November 2026";
 
 export const trustPage = {
   /** The page's `<title>` (through the site's "%s | Zoorik" template) and its description. */
@@ -56,7 +56,7 @@ export const trustPage = {
   },
   /** The paragraph that opens the column, under the Updated line. */
   intro:
-    "They cover Coral, which rebalances Kubernetes clusters on AKS and EKS, and the Zoorik platform that runs it. They do not cover Amoeba. For Amoeba's permissions and data, see our [security page](/security#amoeba-on-your-vms).",
+    "This security overview, data processing agreement and sub-processor list cover Coral, which rebalances Kubernetes clusters on AKS and EKS, and the Zoorik platform that runs it. They do not cover Amoeba. For Amoeba's permissions and data, see our [security page](/security#amoeba-on-your-vms).",
   sections: [
     {
       id: "security-overview",

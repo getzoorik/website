@@ -47,7 +47,7 @@ export const glossaryPage = {
   meta: {
     title: "Cloud cost and FinOps glossary",
     description:
-      "Plain answers to the cloud cost terms on AKS, EKS, Azure and AWS: Kubernetes requests and limits, disk IOPS and throughput, and spot and reserved pricing.",
+      "Cloud cost glossary: plain answers to Kubernetes terms, disk IOPS and throughput, and FinOps terms like spot and reserved pricing for AKS, EKS, Azure and AWS.",
   },
   hero: {
     /** The small line over the h1, a link back to /learn. */
@@ -66,6 +66,12 @@ export const glossaryPage = {
   count: { one: "term", many: "terms" },
   /** Its tile in /learn's More from Zoorik: the line under the h1. */
   line: "Plain answers to the terms behind your cloud cost.",
+  /** Each group's heading on the hub, naming its terms as people search for them. */
+  groups: {
+    kubernetes: "Kubernetes terms",
+    "block-storage": "Block storage terms",
+    "finops-pricing": "FinOps and pricing terms",
+  } satisfies Record<GlossaryGroupId, string>,
 } as const;
 
 /** A group of the hub: its id (the section's anchor), its heading, and its terms A–Z by name. */
@@ -78,7 +84,8 @@ export interface GlossaryHubGroup {
 /** The hub's groups, in the glossary's order; a group with no published term is left out. */
 export const glossaryHubGroups: readonly GlossaryHubGroup[] = glossaryGroups
   .map((group) => ({
-    ...group,
+    id: group.id,
+    title: glossaryPage.groups[group.id],
     terms: glossaryTerms
       .filter((term) => term.group === group.id)
       .sort((a, b) => termName(a).localeCompare(termName(b), "en", { sensitivity: "base" })),

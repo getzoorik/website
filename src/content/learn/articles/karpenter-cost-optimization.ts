@@ -5,7 +5,7 @@ import { figure as figure2 } from "@/features/learn/figures/karpenter-cost-optim
 export const article: Article = {
   slug: "karpenter-cost-optimization",
   title: "Karpenter cost optimization: the request gap",
-  meta: "Karpenter cost optimization starts with pod requests: how Karpenter picks and consolidates nodes, the settings that matter, and how to find the request gap.",
+  meta: "Karpenter cost optimization starts with pod requests: how Karpenter picks and consolidates nodes, spot and other best practices, and finding the request gap.",
   h1: "Karpenter cost optimization: the requests it can’t fix",
   deck: "Karpenter buys machines for the requests you set. What it does well, the settings that matter, and the gap it leaves.",
   card: "What Karpenter does to reduce node cost, and why over-requested pods still buy machines they don’t use.",
@@ -133,13 +133,13 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "AWS recommends setting limits and creating alarms that warn you when your spend passes a threshold.",
+          text: "AWS recommends setting limits and creating alarms that warn you when your cost passes a threshold.",
         },
       ],
     },
     {
       id: "karpenter-cost-optimization",
-      title: "AWS Karpenter cost optimization settings worth checking",
+      title: "Karpenter best practices for cost: the settings worth checking",
       blocks: [
         {
           kind: "p",
@@ -171,7 +171,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "allow-spot-for-pods-that-can-move",
-          title: "Allow spot for pods that can move",
+          title: "Karpenter spot instances: allow spot for pods that can move",
         },
         {
           kind: "p",

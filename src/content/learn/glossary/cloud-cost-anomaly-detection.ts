@@ -4,9 +4,9 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/cloud-cost-
 export const term: GlossaryTerm = {
   slug: "cloud-cost-anomaly-detection",
   term: "Cloud cost anomaly detection",
-  title: "What is cloud cost anomaly detection?",
-  meta: "Cloud cost anomaly detection learns your normal spend and alerts on sudden jumps. See how AWS and Azure find a cost anomaly, and the costs it can’t see.",
-  h1: "What is cloud cost anomaly detection?",
+  title: "What is cost anomaly detection in AWS and Azure?",
+  meta: "Cost anomaly detection learns your normal cloud cost and alerts on sudden jumps. See how AWS Cost Anomaly Detection and Azure find one, and what they miss.",
+  h1: "What is cost anomaly detection in AWS and Azure?",
   card: "Cloud cost anomaly detection is an automated check that learns your normal spend and flags sudden changes.",
   group: "finops-pricing",
   product: "both",
@@ -62,7 +62,7 @@ export const term: GlossaryTerm = {
           kind: "ul",
           items: [
             "An email alert flags a sudden jump within days. If it wasn’t planned, you catch it early.",
-            "Detection misses steady over-provisioning, such as a virtual machine oversized from day one. That cost is part of the normal it learns.",
+            "Detection misses steady overprovisioning, such as a virtual machine oversized from day one. That cost is part of the normal it learns.",
             [
               { a: "Cloud cost optimization", href: "/cloud-cost-optimization" },
               " finds it by comparing what you run with its use.",

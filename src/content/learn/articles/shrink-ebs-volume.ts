@@ -370,7 +370,7 @@ export const article: Article = {
     },
     {
       id: "can-you-resize-an-ebs-volume-with",
-      title: "Can you resize an EBS volume with no downtime?",
+      title: "Can you resize an EBS volume without any downtime?",
       blocks: [
         {
           kind: "p",
@@ -427,7 +427,7 @@ export const article: Article = {
             ],
             [
               { b: "Rightsizing." },
-              " Amoeba grows the pool before it fills, and sooner when data arrives fast. When your data goes down and stays down, it shrinks the pool one volume at a time. So you pay for close to what you use. Shrinks run on their own in “Auto”, or when you start them in “Manual”.",
+              " Amoeba grows the pool before it fills, and sooner when data arrives fast. When your data goes down and stays down, it shrinks the pool one volume at a time. So you pay for close to what you use.",
             ],
           ],
         },

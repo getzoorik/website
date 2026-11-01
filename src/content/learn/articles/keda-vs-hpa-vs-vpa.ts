@@ -4,9 +4,9 @@ import { figure as figure2 } from "@/features/learn/figures/keda-vs-hpa-vs-vpa/2
 
 export const article: Article = {
   slug: "keda-vs-hpa-vs-vpa",
-  title: "KEDA vs HPA vs VPA: where event-driven scaling fits",
-  meta: "KEDA vs HPA vs VPA: KEDA scales pods on events through an HPA it creates, the HPA scales on CPU, and the VPA sizes requests. Which pairs work together.",
-  h1: "KEDA vs HPA vs VPA: where event-driven scaling fits",
+  title: "KEDA vs HPA: where event-driven scaling fits",
+  meta: "KEDA vs HPA: KEDA scales pods on events through an HPA it creates, while the HPA scales on CPU. KEDA vs VPA: the VPA sizes requests. Which pairs work together.",
+  h1: "KEDA vs HPA: where event-driven scaling fits",
   deck: "KEDA and the HPA set how many pods run, and the VPA sets how big each one is. How they overlap, and what to combine.",
   card: "How KEDA drives an HPA, where the VPA fits, and which pairs are safe to run on one workload.",
   product: "coral",
@@ -23,7 +23,7 @@ export const article: Article = {
   sections: [
     {
       id: "keda-vs-hpa-vs-vpa",
-      title: "KEDA vs HPA vs VPA: two set the pod count, one sets the pod size",
+      title: "KEDA, the HPA and the VPA: two set the pod count, one sets the pod size",
       blocks: [
         {
           kind: "p",
@@ -50,11 +50,8 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "None of the three adds or removes nodes. The Cluster Autoscaler, Karpenter and AKS node auto-provisioning (NAP) do that, and ",
-            {
-              a: "HPA vs VPA vs Cluster Autoscaler",
-              href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler",
-            },
+            "None of the three adds or removes nodes. The Cluster Autoscaler, Karpenter and AKS node auto-provisioning (NAP) do that, and the guide to ",
+            { a: "Kubernetes autoscaling", href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler" },
             " compares them.",
           ],
         },
@@ -370,7 +367,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            { a: "VPA vs HPA", href: "/learn/vpa-vs-hpa" },
+            { a: "HPA vs VPA", href: "/learn/vpa-vs-hpa" },
             " walks through the same loop with a plain HPA, and the order that avoids it.",
           ],
         },

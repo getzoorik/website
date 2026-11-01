@@ -6,7 +6,7 @@ import { figure as figure3 } from "@/features/learn/figures/check-ebs-volume-usa
 export const article: Article = {
   slug: "check-ebs-volume-usage",
   title: "How to check EBS volume usage: used vs paid space",
-  meta: "Check EBS volume usage from inside the instance with df, lsblk or the CloudWatch agent’s disk_used_percent, then match used space to the size you pay for.",
+  meta: "How to check EBS volume usage: AWS/EBS metrics show I/O, not used space. Use df, lsblk or the agent’s disk_used_percent, then compare with the size you pay for.",
   h1: "How to check EBS volume usage: used space vs paid space",
   deck: "AWS charges for the size you provision, and its EBS metrics measure I/O. How to read the used space and line the two up.",
   card: "EBS charges for the size you provision and its metrics measure I/O. Read used space per volume and compare.",
@@ -47,7 +47,7 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Worked example",
-          text: "The volume is 50 ÷ 500 = 10% full, so the other 500 − 50 = 450\u00a0GiB, 90% of the size you pay for, holds no data. The gp3 example on the EBS pricing page uses a rate of $0.08 per GB-month. At that rate the volume costs 500 × $0.08 = $40 a month, and 450 × $0.08 = $36 of that pays for space that holds nothing. Rates vary by Region and change.",
+          text: "The volume is 50 ÷ 500 = 10% full, so the other 500 − 50 = 450\u00a0GiB, 90% of the size you pay for, holds no data. The gp3 example on the Amazon EBS pricing page uses a rate of $0.08 per GB-month. At that rate the volume costs 500 × $0.08 = $40 a month, and 450 × $0.08 = $36 of that pays for space that holds nothing. Rates vary by Region and change.",
         },
         { kind: "svg", figure: figure1 },
         {
@@ -75,7 +75,7 @@ export const article: Article = {
     },
     {
       id: "ebs-volume-utilization-in-cloudwatch-means-i",
-      title: "EBS volume utilization in CloudWatch means I/O",
+      title: "EBS volume utilization: AWS/EBS metrics in CloudWatch measure I/O",
       blocks: [
         {
           kind: "p",
@@ -134,7 +134,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "2-match-each-filesystem-to-its-volume",
-          title: "2. Match each filesystem to its volume ID",
+          title: "2. Match each NVMe device to its EBS volume ID",
         },
         {
           kind: "p",
@@ -451,7 +451,7 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " by Zoorik optimizes Azure managed disks and Amazon EBS, and keeps the measurement above current on each instance you onboard. Its agent installs through AWS Systems Manager Run Command and reports each mount’s size and use. Amoeba prices the volumes from the AWS Price List API.",
+            " by Zoorik optimizes Azure managed disks and Amazon EBS. On each instance you onboard, its agent installs through AWS Systems Manager Run Command and reports each mount’s size and use.",
           ],
         },
         {
@@ -486,9 +486,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "The free block storage assessment covers Amazon EBS. For the data volumes of Linux EC2 instances, ",
-            { a: "it estimates your own figure", href: "/assessment?p=amoeba" },
-            ", proposes a gp3 pool, and writes one PDF without sending anything to Zoorik. Inside an instance, it runs a command only after you say yes, through Systems Manager.",
+            "The free block storage assessment covers Amazon EBS. It reads your instances and their volumes, ",
+            { a: "estimates your own figure", href: "/assessment?p=amoeba" },
+            ", proposes a gp3 pool, and writes one PDF without sending anything to Zoorik. Inside a running Linux instance, it reads used space only after you say yes, through Systems Manager.",
           ],
         },
         {

@@ -8,8 +8,8 @@ import type { ProductPageContent, ReadMoreTile } from "@/content/product-page";
 /**
  * `/amoeba`: every string the page prints, verbatim from the mock.
  *
- * The product tour adds each row's line, the "?" on What Amoeba does and the
- * film (`product-films.ts`).
+ * The product tour adds each row's line and the film (`product-films.ts`).
+ * What Amoeba does is a heading, so it has no "?" (owner, 1 Nov 2026).
  *
  * The hero's line (the home page's own line for Amoeba), the Runs on chips and
  * the line under the How it works cards are read from `elastic.ts`, and the
@@ -55,7 +55,7 @@ export const amoebaPageContent: ProductPageContent = {
   meta: {
     title: "Block storage cost optimization for Azure and AWS",
     description:
-      "Amoeba rightsizes Azure managed disks and Amazon EBS volumes to the data you store, to reduce your cloud cost, autonomously, without any downtime.",
+      "Block storage cost optimization: Amoeba rightsizes Azure managed disks and Amazon EBS to your data, autonomously, without any downtime after the one switch.",
     /* What "What is Amoeba?" says: structured data must say what the page
        says. */
     appDescription:
@@ -103,12 +103,13 @@ export const amoebaPageContent: ProductPageContent = {
     },
   ],
   what: {
-    heading: "What Amoeba does?",
+    heading: "What Amoeba does",
     runsOn: elasticContent.runsOn,
   },
   film: productFilms.amoeba,
   how: {
-    title: "How it works",
+    /* Named for the search "how to rightsize disks" (owner, 1 Nov 2026); the section keeps its id. */
+    title: "How Amoeba rightsizes disks",
     steps: howItWorksSteps.amoeba,
     example: elasticContent.caption,
   },

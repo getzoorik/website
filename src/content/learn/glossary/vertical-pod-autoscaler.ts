@@ -4,9 +4,9 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/vertical-po
 export const term: GlossaryTerm = {
   slug: "vertical-pod-autoscaler",
   term: "Vertical Pod Autoscaler (VPA)",
-  title: "What is VPA (Vertical Pod Autoscaler)?",
-  meta: "VPA in Kubernetes sets pod CPU and memory requests from real use. See its parts and modes, the docs’ hamster example, and how requests decide your node cost.",
-  h1: "What is VPA (Vertical Pod Autoscaler)?",
+  title: "What is Kubernetes VPA (Vertical Pod Autoscaler)?",
+  meta: "The Vertical Pod Autoscaler (Kubernetes VPA) sets pod CPU and memory requests from real use. Its parts, update modes, an example and how requests set node cost.",
+  h1: "What is Kubernetes VPA (Vertical Pod Autoscaler)?",
   card: "VPA in Kubernetes is the Vertical Pod Autoscaler, which sets the CPU and memory requests of a workload’s pods to match real use.",
   group: "kubernetes",
   product: "coral",
@@ -36,7 +36,7 @@ export const term: GlossaryTerm = {
             "Admission controller: sets the target on new pods",
           ],
         },
-        { kind: "p", text: "Main update modes:" },
+        { kind: "h3", id: "vpa-update-modes", title: "VPA update modes" },
         {
           kind: "ul",
           items: [

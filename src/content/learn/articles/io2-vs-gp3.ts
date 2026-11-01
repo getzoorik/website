@@ -198,7 +198,7 @@ export const article: Article = {
     },
     {
       id: "multi-attach-needs-provisioned-iops-and-99",
-      title: "Multi-Attach needs Provisioned IOPS, and 99.999% durability needs io2",
+      title: "EBS Multi-Attach needs Provisioned IOPS, and 99.999% durability needs io2",
       blocks: [
         {
           kind: "p",
@@ -300,7 +300,7 @@ export const article: Article = {
     },
     {
       id: "io1-vs-io2-vs-gp3-io2-replaces",
-      title: "io1 vs io2 vs gp3: io2 replaces io1 at the same price or less",
+      title: "Migrate io1 to io2: the same price or less, changed in place",
       blocks: [
         {
           kind: "p",
@@ -314,7 +314,15 @@ export const article: Article = {
           kind: "p",
           text: "io1’s durability is gp3’s 99.8% to 99.9%. AWS’s Multi-Attach guide recommends io2 over io1 for performance, consistency and durability, at less cost.",
         },
-        { kind: "p", text: "So in io1 vs io2 vs gp3:" },
+        {
+          kind: "p",
+          text: [
+            "To ",
+            { a: "compare io1 vs io2 with every other EBS type", href: "/learn/ebs-volume-types" },
+            ", see EBS volume types.",
+          ],
+        },
+        { kind: "p", text: "So, of the three types:" },
         {
           kind: "ul",
           items: [
@@ -522,7 +530,7 @@ export const article: Article = {
       href: "/learn/gp2-vs-gp3",
     },
     {
-      title: "EBS volume types: pricing and how to choose",
+      title: "EBS volume types compared: how to choose one",
       where: "Learn",
       href: "/learn/ebs-volume-types",
     },

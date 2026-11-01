@@ -5,10 +5,10 @@ import { figure as figure2 } from "@/features/learn/figures/premium-ssd-vs-stand
 export const article: Article = {
   slug: "premium-ssd-vs-standard-ssd-azure",
   title: "Premium SSD vs Standard SSD on Azure: cost and IOPS",
-  meta: "Premium SSD vs Standard SSD on Azure, tier by tier: IOPS, throughput, East US prices, when Standard SSD transactions cost more, and how to switch a disk.",
+  meta: "Premium SSD vs Standard SSD on Azure, tier by tier: IOPS, throughput, East US prices, when Standard SSD transactions cost more, and what a switch gives up.",
   h1: "Premium SSD vs Standard SSD on Azure: what you pay for",
-  deck: "Both charge by size tier. What the higher price buys, when transactions close the gap, and how to switch a disk.",
-  card: "Premium SSD and Standard SSD tier by tier: IOPS, East US prices, transaction charges and how to convert.",
+  deck: "Both charge by size tier. What the higher price buys, when transactions close the gap, and what a switch gives up.",
+  card: "Premium SSD and Standard SSD tier by tier: IOPS, East US prices, transaction charges and what a switch gives up.",
   product: "amoeba",
   hub: "Block storage",
   topic: "Azure block storage",
@@ -154,7 +154,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The Azure Standard SSD vs Premium SSD IOPS gap opens with size. At 128\u00a0GiB the two match on paper, but above it Premium SSD climbs with size.",
+          text: "The IOPS gap opens with size: at 128\u00a0GiB the two match on paper, but above it Premium SSD climbs with size.",
         },
         {
           kind: "p",
@@ -258,23 +258,8 @@ export const article: Article = {
     },
     {
       id: "azure-standard-hdd-vs-standard-ssd-vs",
-      title: "Azure Standard HDD vs Standard SSD vs Premium SSD: choose by the I/O you measure",
+      title: "P20 vs E20: choose Premium SSD or Standard SSD by the I/O you measure",
       blocks: [
-        {
-          kind: "p",
-          text: [
-            { a: "Standard HDD", href: "/learn/glossary/azure-standard-hdd" },
-            " is the third type charged by size tier. It runs from S4 to S80, starting at 32\u00a0GiB, with up to 500\u00a0IOPS and 60\u00a0MB/s through S50.",
-          ],
-        },
-        {
-          kind: "p",
-          text: "An S20 (512\u00a0GiB) lists at $21.76 a month in East US. It charges for transactions too, counted in 16\u00a0KiB units and capped per disk per hour.",
-        },
-        {
-          kind: "p",
-          text: "Microsoft designs Standard HDD for write latency under 10\u00a0ms and read latency under 20\u00a0ms, for most operations. It says Standard HDD doesn’t suit OS disks or transactional databases. On September 8, 2028, Microsoft retires the use of Standard HDD as an OS disk.",
-        },
         {
           kind: "p",
           text: "Microsoft’s high availability guide says which VMs get the highest single-VM uptime service level agreement (SLA). Their OS disk is Premium SSD, and their data disks are all Premium SSD, Premium SSD v2 or Ultra Disk.",
@@ -282,68 +267,38 @@ export const article: Article = {
         {
           kind: "table",
           columns: [
-            { label: "What you decide on", width: "18%" },
-            { label: "Premium SSD", width: "33%" },
-            { label: "Standard SSD", width: "23%" },
-            { label: "Standard HDD", width: "26%" },
+            { label: "What you decide on", width: "24%" },
+            { label: "Premium SSD", width: "40%" },
+            { label: "Standard SSD", width: "36%" },
           ],
           rows: [
-            [
-              "What you pay for",
-              "Size tier, P1 to P80",
-              "Size tier, E1 to E80, plus transactions",
-              "Size tier, S4 to S80, plus transactions",
-            ],
-            [
-              "512\u00a0GiB in East US, Oct 2026",
-              "$73.22 (P20)",
-              "$38.40 (E20) plus transactions",
-              "$21.76 (S20) plus transactions",
-            ],
+            ["What you pay for", "Size tier, P1 to P80", "Size tier, E1 to E80, plus transactions"],
+            ["512\u00a0GiB in East US, Oct 2026", "$73.22 (P20)", "$38.40 (E20) plus transactions"],
             [
               "Performance at 512\u00a0GiB",
               "2,300\u00a0IOPS and 150\u00a0MB/s, provisioned",
               "Up to 500\u00a0IOPS and 100\u00a0MB/s",
-              "Up to 500\u00a0IOPS and 60\u00a0MB/s",
             ],
-            [
-              "Largest disk",
-              "20,000\u00a0IOPS, 900\u00a0MB/s",
-              "6,000\u00a0IOPS, 750\u00a0MB/s",
-              "2,000\u00a0IOPS (3,000 with performance plus), 500\u00a0MB/s",
-            ],
+            ["Largest disk", "20,000\u00a0IOPS, 900\u00a0MB/s", "6,000\u00a0IOPS, 750\u00a0MB/s"],
             [
               "Latency target",
               "Single-digit ms, 99.9% of the time",
               "Single-digit ms, 99% of the time",
-              "Under 10\u00a0ms writes, under 20\u00a0ms reads, for most operations",
             ],
-            [
-              "Bursting",
-              "Credit-based to P20, on-demand from P30",
-              "Credit-based to E30",
-              "None listed",
-            ],
-            [
-              "Higher performance tier",
-              "At some sizes, charged at that tier",
-              "No, set by size",
-              "No, set by size",
-            ],
-            ["VM sizes", "Sizes that support Premium storage", "All", "All"],
+            ["Bursting", "Credit-based to P20, on-demand from P30", "Credit-based to E30"],
+            ["Higher performance tier", "At some sizes, charged at that tier", "No, set by size"],
+            ["VM sizes", "Sizes that support Premium storage", "All"],
             [
               "Highest single-VM uptime SLA",
               "Yes, with a Premium SSD OS disk and premium data disks",
               "No",
-              "No",
             ],
-            ["Redundancy", "LRS or ZRS", "LRS or ZRS", "LRS only"],
-            ["Reservations", "One year, P30 to P80", "None", "None"],
+            ["Redundancy", "LRS or ZRS", "LRS or ZRS"],
+            ["Reservations", "One year, P30 to P80", "None"],
             [
               "Microsoft’s suggested use",
               "Production workloads that need high performance and low latency",
               "Web servers, lightly used enterprise applications, dev and test",
-              "Backup and noncritical, infrequently accessed workloads",
             ],
           ],
         },
@@ -359,19 +314,23 @@ export const article: Article = {
               { b: "Premium SSD:" },
               " production workloads, and any single VM that needs the top SLA. It also suits a disk of 4\u00a0TiB or less that needs more than 500\u00a0IOPS for longer than a burst. On a Standard SSD from E30 up, performance plus can lift that limit.",
             ],
-            [{ b: "Standard HDD:" }, " backups and large sequential files."],
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            { a: "Standard HDD", href: "/learn/glossary/azure-standard-hdd" },
+            " is the third type charged by size tier and suits backups and large sequential files; ",
+            { a: "Azure disk types", href: "/learn/azure-managed-disk-types" },
+            " compares all five.",
           ],
         },
       ],
     },
     {
       id: "how-to-convert-a-premium-disk-to",
-      title: "How to convert a Premium disk to Standard SSD, and what it gives up",
+      title: "Premium_LRS vs StandardSSD_LRS: what a switch gives up",
       blocks: [
-        {
-          kind: "p",
-          text: "Switching between Premium SSD, Standard SSD and Standard HDD updates the disk’s SKU, and the conversion itself is instantaneous. But Microsoft’s conversion guide says it requires a restart of the VM, so schedule it in a maintenance window. You can change a disk’s type twice per day.",
-        },
         {
           kind: "p",
           text: "Going from Premium to Standard needs no VM resize. Coming back needs a VM size that supports Premium storage.",
@@ -391,43 +350,13 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "These Azure CLI commands from Microsoft’s guide convert one data disk:",
-        },
-        {
-          kind: "ol",
-          items: [
+          text: [
+            "The switch itself is one SKU change that needs a VM restart, and you can make it twice a day; ",
             {
-              text: "Look up the VM the disk is attached to and store its ID.",
-              blocks: [
-                {
-                  kind: "code",
-                  lang: "bash",
-                  code: "vmId=$(az disk show --name <disk-name> --resource-group <resource-group> --query managedBy --output tsv)",
-                },
-              ],
+              a: "how to change a disk type in Azure",
+              href: "/learn/azure-managed-disk-types#how-to-change-a-disk-type-in",
             },
-            {
-              text: [
-                "Deallocate the VM. This stops it, so every service on it is down until step 4. Microsoft says the VM’s ",
-                { a: "temporary disk", href: "/learn/glossary/azure-temporary-disk" },
-                " isn’t persisted in Azure Storage, so keep nothing there that you need.",
-              ],
-              blocks: [{ kind: "code", lang: "bash", code: "az vm deallocate --ids $vmId" }],
-            },
-            {
-              text: "Change the disk’s SKU. Use StandardSSD_ZRS instead to keep a zone-redundant disk zone-redundant.",
-              blocks: [
-                {
-                  kind: "code",
-                  lang: "bash",
-                  code: "az disk update --sku StandardSSD_LRS --name <disk-name> --resource-group <resource-group>",
-                },
-              ],
-            },
-            {
-              text: "Start the VM.",
-              blocks: [{ kind: "code", lang: "bash", code: "az vm start --ids $vmId" }],
-            },
+            " covers it.",
           ],
         },
       ],

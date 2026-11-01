@@ -67,8 +67,8 @@ export const securityPage = {
     title: "Security and data handling",
     deck: "What each product may change, what it sends us, and where we keep it.",
   },
-  /* 30 Oct 2026: the Trust center's link in Report a security issue. */
-  updated: "Updated 30 October 2026",
+  /* 1 Nov 2026: what Amoeba deletes, as it runs now, with no going back and no 48-hour soak. */
+  updated: "Updated 1 November 2026",
   /** The summary's title is a paragraph, the list a summary list. */
   summaryTitle: "Summary",
 } as const;
@@ -369,7 +369,7 @@ export const securityGroups: readonly SecurityGroup[] = [
           {
             kind: "ul",
             items: [
-              "Only these: an elastic disk a shrink emptied; a disk an expand created and gave up on; the pool’s disks after you go back; a source disk after the 48-hour soak, once its snapshot is complete; and a safety snapshot when its 7\u00a0days end.",
+              "Only these: a pool disk a shrink emptied; a disk an expand created and gave up on; a source disk once the switch is checked and its snapshot is complete; and a safety snapshot when its 7\u00a0days end.",
               "It never removes a disk that still holds data, never deletes a source disk before its snapshot is complete, and never looks inside a VM you haven’t onboarded.",
             ],
           },

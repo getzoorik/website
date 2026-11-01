@@ -94,7 +94,7 @@ export const azureCostOptimizationPage: TopicPage = {
   meta: {
     title: "Azure cost optimization: how to reduce Azure costs",
     description:
-      "Azure cost optimization, line by line: how to reduce Azure costs on VMs, managed disks, AKS and data transfer, and where Microsoft Cost Management fits.",
+      "Azure cost optimization, line by line: how to reduce Azure costs on VMs, managed disks, AKS and data transfer, and where Azure cost management fits.",
   },
   hero: {
     eyebrow: "Azure",
@@ -135,14 +135,11 @@ export const azureCostOptimizationPage: TopicPage = {
         p(
           `Tag your resources first. Resource tags are the only way to add your own context, such as an app, environment or owner, to cost details. [Cost allocation tags](${term("cost-allocation-tags")}) explains how to set them.`,
         ),
-        p(
-          "This page isn't Microsoft's tool, and it doesn't replace it. It's a guide to the fixes that reduce what those reports show.",
-        ),
       ],
     },
     {
       id: "azure-cost-optimization-by-line",
-      title: "Azure cost optimization, one cost line at a time",
+      title: "Azure cost optimization best practices, one cost line at a time",
       blocks: [
         p(
           "Azure cost optimization works one cost line at a time. Each line has its own driver and its own first fix.",
@@ -190,6 +187,7 @@ export const azureCostOptimizationPage: TopicPage = {
       id: "azure-vm-cost",
       title: "Virtual machines: deallocate idle ones, resize the rest",
       blocks: [
+        h3("Azure VM stopped vs deallocated"),
         p(
           "A VM's compute charge follows its power state, not how busy it is. Azure charges a running VM for instance usage. It also charges a VM that's Stopped (allocated), the state a shutdown from inside the guest OS leaves.",
         ),
@@ -444,7 +442,7 @@ export const awsCostOptimizationPage: TopicPage = {
   sections: [
     {
       id: "see-where-aws-cost-goes",
-      title: "See where your AWS cost goes",
+      title: "AWS cost management: see where your cost goes",
       blocks: [
         p(
           "Start with tags. A tag is a key and a value on a resource, such as `team` and `payments`. Tag resources by cost center, application or owner, and you can track each one's AWS cost across services.",
@@ -469,7 +467,7 @@ export const awsCostOptimizationPage: TopicPage = {
     },
     {
       id: "aws-cost-optimization-by-line",
-      title: "AWS cost optimization, one cost line at a time",
+      title: "AWS cost optimization best practices, one cost line at a time",
       blocks: [
         p(
           "Work down the lines in this order. Each fix shrinks what the next one has to cover, so commitments come last.",
@@ -521,7 +519,7 @@ export const awsCostOptimizationPage: TopicPage = {
     },
     {
       id: "ec2-cost",
-      title: "EC2: stop idle instances, rightsize the rest",
+      title: "EC2 cost optimization: stop idle instances, rightsize the rest",
       blocks: [
         h3("Stop or delete what nothing uses"),
         p(
@@ -614,7 +612,7 @@ export const awsCostOptimizationPage: TopicPage = {
         p(
           "New objects go to S3 Standard unless you choose another storage class. Choosing the class that fits each use case reduces what you pay to store the data.",
         ),
-        h3("When you don't know the access pattern"),
+        h3("S3 Intelligent-Tiering: when you don't know the access pattern"),
         p("S3 Intelligent-Tiering moves objects between tiers by how they're read:"),
         ul(
           "after 30 days without access, to the Infrequent Access tier;",

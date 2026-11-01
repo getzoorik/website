@@ -4,9 +4,9 @@ import { figure as figure2 } from "@/features/learn/figures/hpa-vs-vpa-vs-cluste
 
 export const article: Article = {
   slug: "hpa-vs-vpa-vs-cluster-autoscaler",
-  title: "HPA vs VPA vs Cluster Autoscaler, plus Karpenter",
-  meta: "HPA vs VPA vs Cluster Autoscaler: one sets the pod count, one the pod size, one the node count. Where Karpenter and NAP fit, with their October 2026 status.",
-  h1: "HPA vs VPA vs Cluster Autoscaler: what each one scales",
+  title: "Kubernetes autoscaling: HPA and node autoscalers",
+  meta: "Kubernetes autoscaling: the HPA sets pod count, the Cluster Autoscaler node count. HPA vs Cluster Autoscaler and Karpenter vs HPA in a surge.",
+  h1: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
   deck: "Pod count, pod size or node count: what each autoscaler changes, where Karpenter and NAP fit, and how they combine.",
   card: "What the HPA, VPA and Cluster Autoscaler each change, where Karpenter and NAP fit, and how they combine.",
   product: "coral",
@@ -20,7 +20,7 @@ export const article: Article = {
   coverAlt:
     "HPA vs VPA vs Cluster Autoscaler: the HPA adds pods, the VPA makes a pod bigger, the Cluster Autoscaler adds a node",
   short: [
-    "HPA vs VPA vs Cluster Autoscaler comes down to what each changes: pod count, pod size or node count. The ",
+    "Kubernetes autoscaling works on three layers, and each autoscaler changes one: pod count, pod size or node count. The ",
     { a: "Horizontal Pod Autoscaler (HPA)", href: "/learn/glossary/horizontal-pod-autoscaler" },
     " sets how many pods run, the ",
     { a: "Vertical Pod Autoscaler (VPA)", href: "/learn/glossary/vertical-pod-autoscaler" },
@@ -29,7 +29,7 @@ export const article: Article = {
   sections: [
     {
       id: "what-each-autoscaler-does",
-      title: "HPA vs VPA vs Cluster Autoscaler: each one changes a different layer",
+      title: "Karpenter vs HPA, VPA and Cluster Autoscaler: what each one changes",
       blocks: [
         {
           kind: "p",
@@ -98,62 +98,11 @@ export const article: Article = {
           text: "The HPA works out CPU and memory utilization as usage divided by the request. Node autoscalers count requests too: the Kubernetes docs say consolidation, like provisioning, “only considers Pod resource requests and not real resource usage”.",
         },
         { kind: "svg", figure: figure1 },
-      ],
-    },
-    {
-      id: "hpa-vs-vpa-the-hpa-sets-the",
-      title: "HPA vs VPA: the HPA sets the pod count, the VPA the pod size",
-      blocks: [
         {
           kind: "p",
           text: [
-            "Every 15\u00a0seconds by default, the HPA compares a metric with your target and sets the replica count of a Deployment, StatefulSet or other scalable workload. Its core rule is ",
-            { code: "desiredReplicas = ceil(currentReplicas × currentMetric ÷ targetMetric)" },
-            ". For CPU and memory it reads the resource metrics API, which Metrics Server usually serves, and custom and external metrics work too.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "The VPA isn’t part of core Kubernetes: installing it adds the ",
-            { code: "VerticalPodAutoscaler" },
-            " custom resource (",
-            { code: "autoscaling.k8s.io/v1" },
-            "). Its recommender works out target requests from usage history and out-of-memory events, its updater applies them to running pods, and its admission webhook writes them into new pods. Its update mode decides how far it goes:",
-          ],
-        },
-        {
-          kind: "ul",
-          items: [
-            [{ code: "Off" }, " only recommends."],
-            [{ code: "Initial" }, " sets requests when a pod is created and never changes them."],
-            [
-              { code: "Recreate" },
-              " evicts pods whose requests differ enough from the target, and they come back at the new size.",
-            ],
-            [
-              { code: "InPlaceOrRecreate" },
-              " resizes running pods ",
-              { a: "in place", href: "/learn/in-place-pod-resize" },
-              ", and evicts them only when that fails.",
-            ],
-            [
-              { code: "InPlace" },
-              " is newer and never evicts. It arrived as an alpha feature in VPA 1.7.0, and needs Kubernetes 1.33 or later plus a VPA feature gate.",
-            ],
-            [{ code: "Auto" }, " is deprecated and now means ", { code: "Recreate" }, "."],
-          ],
-        },
-        {
-          kind: "callout",
-          label: "Watch out",
-          text: "On the same metric, the two work against each other, because the VPA moves the request that the HPA divides by. The VPA’s own documentation says it shouldn’t be used with the HPA on the same resource metric, CPU or memory. You can pair them when the HPA scales on a custom or external metric. A split also works: the VPA on memory, the HPA on CPU.",
-        },
-        {
-          kind: "p",
-          text: [
-            { a: "VPA vs HPA", href: "/learn/vpa-vs-hpa" },
-            " walks through that loop on CPU, and ",
+            { a: "HPA vs VPA", href: "/learn/vpa-vs-hpa" },
+            " walks through how the two work against each other on CPU, and ",
             { a: "KEDA vs HPA vs VPA", href: "/learn/keda-vs-hpa-vs-vpa" },
             " covers event-driven scaling. ",
             { a: "KEDA vs Karpenter", href: "/learn/keda-vs-karpenter" },
@@ -258,7 +207,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Karpenter does the same job without node groups. It auto-provisions: it reads the pending pods, chooses a node configuration that fits them within the NodePools you define, and launches individual machines. It consolidates nodes that are no longer needed, can swap a set of nodes for a different one, and can replace nodes that reach a set lifetime. So in HPA vs VPA vs Karpenter, Karpenter takes only the node layer. ",
+            "Karpenter does the same job without node groups. It auto-provisions: it reads the pending pods, chooses a node configuration that fits them within the NodePools you define, and launches individual machines. It consolidates nodes that are no longer needed, can swap a set of nodes for a different one, and can replace nodes that reach a set lifetime. So in Karpenter vs HPA, Karpenter takes only the node layer. ",
             { a: "What is Karpenter?", href: "/learn/what-is-karpenter" },
             " and ",
             {
@@ -315,7 +264,7 @@ export const article: Article = {
     },
     {
       id: "how-they-work-together-in-a-surge",
-      title: "In a surge, the HPA adds pods and the node autoscaler adds nodes",
+      title: "How the HPA and the Cluster Autoscaler work together in a surge",
       blocks: [
         {
           kind: "p",
@@ -374,7 +323,7 @@ export const article: Article = {
           items: [
             [
               { b: "HPA:" },
-              " the HPA keeps deciding how many pods run, and Coral how big each pod is. For a CPU-utilization HPA, Coral picks the CPU request by replaying past load through the HPA’s own settings, 3\u00a0days of it on the default policy.",
+              " the HPA keeps deciding how many pods run, and Coral how big each pod is. For a CPU-utilization HPA, Coral picks the CPU request by replaying past load through the HPA’s own settings.",
             ],
             [
               { b: "While the HPA is scaling:" },
@@ -392,7 +341,7 @@ export const article: Article = {
             ],
             [
               { b: "Cluster Autoscaler:" },
-              " before draining, Coral simulates the scheduler on the live cluster, so every pod must fit elsewhere. An emptied node waits 5\u00a0minutes by default, then Coral hands it to the Cluster Autoscaler, whose own timers decide when it goes, within its minimums. With only the Cluster Autoscaler, Coral removes nodes but never changes their size.",
+              " before draining, Coral simulates the scheduler on the live cluster, so every pod must fit elsewhere. After the delay in the “Wait before removing empty nodes” setting, Coral hands an emptied node to the Cluster Autoscaler, whose own timers decide when it goes, within its minimums. With only the Cluster Autoscaler, Coral removes nodes but never changes their size.",
             ],
             [
               { b: "Karpenter and NAP:" },
@@ -406,7 +355,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Coral keeps no idle spare nodes. The headroom sits inside each pod’s request, and sudden growth is your autoscaler’s job. Running pods are resized in place on 1.33+ nodes where possible, and otherwise restart one at a time within their PodDisruptionBudgets. Coral doesn’t forecast: its longest look-back is 8\u00a0days, so for a known event you set minimums on critical workloads.",
+          text: [
+            "Coral keeps no idle spare nodes. The headroom sits inside each pod’s request, and sudden growth is your autoscaler’s job. Running pods are ",
+            { a: "resized in place", href: "/learn/in-place-pod-resize" },
+            " on 1.33+ nodes where possible, and otherwise restart one at a time within their PodDisruptionBudgets. Coral doesn’t forecast, so for a known event you set minimums on critical workloads.",
+          ],
         },
         {
           kind: "p",

@@ -5,7 +5,7 @@ export const term: GlossaryTerm = {
   slug: "kubernetes-resource-requests",
   term: "Resource requests (pod requests)",
   title: "What are resource requests in Kubernetes?",
-  meta: "A resource request in Kubernetes is the CPU or memory a container asks for. See how requests, not real use, decide how many nodes you run and pay for.",
+  meta: "A resource request in Kubernetes is the CPU or memory a container asks for. See CPU and memory units, and why Kubernetes resource requests set node cost.",
   h1: "What are resource requests in Kubernetes?",
   card: "A resource request in Kubernetes is how much CPU, memory or another resource a container asks for.",
   group: "kubernetes",
@@ -26,7 +26,7 @@ export const term: GlossaryTerm = {
   sections: [
     {
       id: "cpu-and-memory-requests",
-      title: "CPU and memory requests",
+      title: "Kubernetes CPU and memory requests, and their units",
       blocks: [
         {
           kind: "ul",

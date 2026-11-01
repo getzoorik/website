@@ -4,9 +4,9 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/horizontal-
 export const term: GlossaryTerm = {
   slug: "horizontal-pod-autoscaler",
   term: "Horizontal Pod Autoscaler (HPA)",
-  title: "What is HPA (Horizontal Pod Autoscaler)?",
-  meta: "HPA in Kubernetes adds or removes pods to match demand. See how its CPU target is a share of each pod’s request, and why that request shapes your node cost.",
-  h1: "What is HPA (Horizontal Pod Autoscaler)?",
+  title: "What is Kubernetes HPA (Horizontal Pod Autoscaler)?",
+  meta: "Kubernetes HPA (Horizontal Pod Autoscaler) adds or removes pods to match demand. See how its CPU target uses each pod’s request, and why that shapes node cost.",
+  h1: "What is Kubernetes HPA (Horizontal Pod Autoscaler)?",
   card: "HPA in Kubernetes stands for Horizontal Pod Autoscaler.",
   group: "kubernetes",
   product: "coral",
@@ -22,14 +22,16 @@ export const term: GlossaryTerm = {
       text: [
         "Horizontal means more pods, not bigger ones. ",
         { a: "VPA vs HPA", href: "/learn/vpa-vs-hpa" },
-        " compares it with vertical scaling.",
+        " compares it with vertical scaling, and ",
+        { a: "Kubernetes autoscaling", href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler" },
+        " sets it beside the VPA and the Cluster Autoscaler.",
       ],
     },
   ],
   sections: [
     {
       id: "how-the-hpa-decides",
-      title: "How the HPA decides",
+      title: "How HPA scaling works",
       blocks: [
         {
           kind: "ul",
@@ -53,7 +55,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "an-example-from-the-kubernetes-docs",
-      title: "An example from the Kubernetes docs",
+      title: "An HPA example from the Kubernetes docs",
       blocks: [
         {
           kind: "p",
@@ -76,11 +78,14 @@ export const term: GlossaryTerm = {
             "At a 50% target, each pod’s request is twice its target use.",
             [
               { a: "Node autoscalers", href: "/learn/hpa-vs-vpa-vs-cluster-autoscaler" },
-              " add nodes to fit pods’ requests, not their real use. For event-driven scaling, see ",
+              " add nodes to fit pods’ requests, not their real use.",
+            ],
+            "When new replicas don’t fit, you pay for nodes sized to those requests.",
+            [
+              "For event-driven scaling, see ",
               { a: "KEDA vs Karpenter", href: "/learn/keda-vs-karpenter" },
               ".",
             ],
-            "When new replicas don’t fit, you pay for nodes sized to those requests.",
           ],
         },
         {

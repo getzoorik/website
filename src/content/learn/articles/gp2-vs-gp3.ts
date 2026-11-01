@@ -64,7 +64,7 @@ export const article: Article = {
             [
               "Price, US East (N. Virginia), October 2026",
               "$0.10 per GB-month, performance included",
-              "$0.08 per GB-month, plus $0.005 per IOPS-month above 3,000 and $0.04 per MiB/s-month above 125",
+              "$0.08 per GB-month, plus $0.005 per IOPS-month above 3,000 and $0.040 per MB/s-month above 125",
             ],
             [
               "Baseline IOPS",
@@ -138,11 +138,12 @@ export const article: Article = {
           text: "In AWS’s 100\u00a0GiB example, a full refill takes 18,000\u00a0seconds (5\u00a0hours).",
         },
         {
-          kind: "h3",
-          id: "how-gp3-iops-and-throughput-are-set",
-          title: "How gp3\u00a0IOPS and throughput are set",
+          kind: "p",
+          text: [
+            { a: "gp3\u00a0IOPS and throughput", href: "/learn/glossary/ebs-gp3" },
+            " are two separate settings:",
+          ],
         },
-        { kind: "p", text: "gp3\u00a0IOPS and throughput are two separate settings:" },
         {
           kind: "ul",
           items: [

@@ -12,7 +12,8 @@ import type { ProductId } from "@/content/products";
  *
  * 🔴 THE FIGURES IN THE FILMS ARE EXAMPLES, AND BOTH LINES SAY SO. The caption
  * under each screen and the film's name for a screen reader open on it, in the
- * mock's words. A film is not described by anything else on the page, so its
+ * mock's words; each caption names its product, so the two lines differ (owner,
+ * 1 Nov 2026). A film is not described by anything else on the page, so its
  * label is all a screen reader gets: it says what plays, in order.
  *
  * The labels are the mock's, verbatim, its straight apostrophe ("today's") and
@@ -21,23 +22,24 @@ import type { ProductId } from "@/content/products";
 export interface HomeFilm {
   readonly src: `/motion/${string}.mp4`;
   readonly poster: `/motion/${string}.webp`;
+  /** The line under the screen (`.mo-cap`). */
+  readonly caption: string;
   /** The film's `aria-label`: what it shows, example first. */
   readonly label: string;
 }
-
-/** The line under each screen (`.mo-cap`). */
-export const filmCaption = "Product preview with example figures.";
 
 export const homeFilms: Readonly<Record<ProductId, HomeFilm>> = {
   coral: {
     src: "/motion/coral-overview-5s.mp4",
     poster: "/motion/coral-poster.webp",
+    caption: "Coral product preview with example figures.",
     label:
       "Coral product preview with example figures: the Overview, where today's running cost, the cost at the optimum and the recoverable amount count up, then the four engine figures.",
   },
   amoeba: {
     src: "/motion/amoeba-overview-5s.mp4",
     poster: "/motion/amoeba-poster.webp",
+    caption: "Amoeba product preview with example figures.",
     label:
       "Amoeba product preview with example figures: the Overview, where today's disk spend, the right-sized spend and the recoverable amount count up, then utilization, what needs you and the saving to date.",
   },

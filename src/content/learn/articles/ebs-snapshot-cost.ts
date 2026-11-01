@@ -5,9 +5,9 @@ import { figure as figure3 } from "@/features/learn/figures/ebs-snapshot-cost/3"
 
 export const article: Article = {
   slug: "ebs-snapshot-cost",
-  title: "EBS snapshot cost: pricing and how to reduce it",
-  meta: "EBS snapshot cost explained: what the standard and archive tiers charge, why deleting a snapshot may not help, and how to find old ones you still pay for.",
-  h1: "EBS snapshot cost: what you pay for and how to reduce it",
+  title: "AWS snapshot pricing: reduce EBS snapshot cost",
+  meta: "AWS snapshot pricing explained: what EBS snapshots cost in the standard and archive tiers, why deleting one may not help, and Data Lifecycle Manager policies.",
+  h1: "AWS snapshot pricing: what EBS snapshots cost and how to reduce it",
   deck: "What a snapshot is charged for, when the archive tier pays off, and how to find the snapshots nobody will restore.",
   card: "How incremental EBS snapshots are charged, and how to find the old ones nobody will restore.",
   product: "amoeba",
@@ -20,7 +20,7 @@ export const article: Article = {
   coverAlt:
     "EBS snapshot cost: the first snapshot stores all the volume’s data, and later ones store only changes",
   short:
-    "EBS snapshot cost depends on the data each snapshot stores, not on its volume’s size, and you pay it until you delete the snapshot. At October 2026 list prices in US East (Northern Virginia), standard snapshot storage is $0.05 per GB-month and the archive tier $0.0125.",
+    "AWS snapshot pricing for EBS follows the data each snapshot stores, not its volume’s size, and you pay for that data until you delete the snapshot. At October 2026 list prices in US East (N. Virginia), standard snapshot storage is $0.05 per GB-month and the archive tier $0.0125.",
   sections: [
     {
       id: "ebs-snapshot-cost",
@@ -218,7 +218,7 @@ export const article: Article = {
     },
     {
       id: "set-an-ebs-snapshot-lifecycle-policy-and",
-      title: "Set an EBS snapshot lifecycle policy, and know what it leaves behind",
+      title: "Set an EBS snapshot lifecycle policy with Amazon Data Lifecycle Manager",
       blocks: [
         {
           kind: "p",
@@ -397,8 +397,8 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "What Amoeba creates in your AWS account is listed in ",
-            { a: "its guide", href: "/amoeba-guide#in-your-aws-account" },
+            "What Amoeba creates in your AWS account is listed in the ",
+            { a: "Amoeba guide", href: "/amoeba-guide#in-your-aws-account" },
             ". ",
             { a: "How to shrink an EBS volume", href: "/learn/shrink-ebs-volume" },
             " explains why the old volumes are replaced at all. ",

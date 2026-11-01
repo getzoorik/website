@@ -5,9 +5,9 @@ import { figure as figure3 } from "@/features/learn/figures/azure-managed-disk-t
 
 export const article: Article = {
   slug: "azure-managed-disk-types",
-  title: "Azure disk types: pricing and how to choose",
+  title: "Azure disk types compared: how to choose one",
   meta: "Azure disk types compared: how Ultra Disk, Premium SSD v2, Premium SSD, Standard SSD and Standard HDD charge, one disk priced on all five, and which to pick.",
-  h1: "Azure managed disk types: pricing and how to choose",
+  h1: "Azure managed disk types: how to choose one",
   deck: "Five disk types and two ways of charging, one disk priced on all five, and the type each of your disks needs.",
   card: "The five Azure disk types side by side: how each charges, one disk priced on all five, and how to pick.",
   product: "amoeba",
@@ -81,7 +81,7 @@ export const article: Article = {
               "750\u00a0MB/s",
               "500\u00a0MB/s",
             ],
-            ["OS disk", "No", "No", "Yes", "Yes", "Yes, until September 8, 2028"],
+            ["OS disk", "No", "No", "Yes", "Yes", "Yes, until 8 September 2028"],
             ["Zone-redundant storage (ZRS)", "No", "No", "Yes", "Yes", "No"],
             [
               "Microsoft’s suggested use",
@@ -109,7 +109,7 @@ export const article: Article = {
     },
     {
       id: "how-azure-disk-types-pricing-works",
-      title: "How Azure disk types pricing works",
+      title: "How each Azure disk type charges",
       blocks: [
         {
           kind: "h3",
@@ -125,6 +125,14 @@ export const article: Article = {
             " come in fixed ",
             { a: "size tiers", href: "/learn/glossary/azure-disk-sizes" },
             ", such as P30, E30 and S30 for 1,024\u00a0GiB. Azure rounds the size you provision up to the next tier. It charges that tier by the hour, however much data the disk holds.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "The ",
+            { a: "Azure disk pricing", href: "/ebs-and-azure-disk-pricing" },
+            " page lists what each Premium SSD and Standard SSD tier costs a month.",
           ],
         },
         {
@@ -278,7 +286,7 @@ export const article: Article = {
         { kind: "h3", id: "the-azure-os-disk-type", title: "The Azure OS disk type" },
         {
           kind: "p",
-          text: "An OS disk can be Premium SSD, Standard SSD or Standard HDD. Microsoft says Standard HDD doesn’t suit OS disks, and retires its use as one on September 8, 2028.",
+          text: "An OS disk can be Premium SSD, Standard SSD or Standard HDD. Microsoft says Standard HDD doesn’t suit OS disks, and retires its use as one on 8 September 2028.",
         },
         {
           kind: "p",
@@ -346,7 +354,7 @@ export const article: Article = {
             ],
             [
               { b: "Performance tiers." },
-              " A Premium SSD can run at a higher tier’s IOPS and throughput without growing. Most tier changes need no downtime. You pay that tier’s price while it runs there, as ",
+              " A Premium SSD can run at a higher tier’s IOPS and throughput without growing. Most tier changes run without any downtime. You pay that tier’s price while it runs there, as ",
               { a: "Azure disk performance tiers", href: "/learn/azure-disk-performance-tiers" },
               " explains.",
             ],

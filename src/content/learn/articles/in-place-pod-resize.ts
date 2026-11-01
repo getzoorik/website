@@ -6,7 +6,7 @@ import { figure as figure3 } from "@/features/learn/figures/in-place-pod-resize/
 export const article: Article = {
   slug: "in-place-pod-resize",
   title: "In-place pod resize on Kubernetes, AKS and EKS",
-  meta: "In-place pod resize changes a running container’s CPU and memory without recreating its pod. Versions, resizePolicy, limits and what AKS and EKS support.",
+  meta: "In-place pod resize, also called in-place pod vertical scaling, changes a running pod’s CPU and memory without a restart. Versions, resizePolicy, AKS and EKS.",
   h1: "In-place pod resize: change CPU and memory without a restart",
   deck: "Stable since Kubernetes 1.35. How a resize works, when it still restarts a container, and what AKS and EKS need.",
   card: "Change a running pod’s CPU and memory without recreating it: versions, restart rules, limits, AKS and EKS.",
@@ -39,6 +39,11 @@ export const article: Article = {
         {
           kind: "p",
           text: "In-place pod resize, also called in-place pod vertical scaling, lets you patch the running pod instead. With the default resize policy, its container keeps running on the same node, now at 300m.",
+        },
+        {
+          kind: "h3",
+          id: "podresizepending-deferred-or-infeasible",
+          title: "PodResizePending: Deferred or Infeasible",
         },
         {
           kind: "p",

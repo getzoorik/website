@@ -4,14 +4,14 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/thin-provis
 export const term: GlossaryTerm = {
   slug: "thin-provisioning",
   term: "Thin provisioning",
-  title: "What is thin provisioning?",
+  title: "Thin provisioning vs thick provisioning",
   meta: "Thin provisioning means a volume takes space only as you write data. See how it differs from thick provisioning, and how Azure and AWS charge by disk size.",
-  h1: "What is thin provisioning?",
+  h1: "Thin provisioning vs thick provisioning",
   card: "Thin provisioning in storage creates a volume that takes up space only as you write data.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",
@@ -26,9 +26,8 @@ export const term: GlossaryTerm = {
         {
           kind: "ul",
           items: [
-            "Thick provisioning, which Azure Local calls fixed, reserves the full size up front. A thick disk still works when the pool is full.",
+            "Thick provisioning reserves the full size up front. A thick disk still works when the pool is full.",
             "Thin provisioning takes space only as needed, and thin volumes can add up to more than the pool holds.",
-            "By default, Azure Local alerts you when over 70% of the pool is used.",
           ],
         },
       ],
@@ -75,8 +74,6 @@ export const term: GlossaryTerm = {
           text: [
             "Sizing disks to their data is ",
             { a: "rightsizing", href: "/learn/glossary/rightsizing" },
-            ", covered in ",
-            { a: "Azure disk cost optimization", href: "/learn/azure-disk-cost-optimization" },
             ".",
           ],
         },

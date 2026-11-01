@@ -4,9 +4,9 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/spot-instan
 export const term: GlossaryTerm = {
   slug: "spot-instance",
   term: "Spot instance (AWS Spot Instances, Azure Spot VMs)",
-  title: "What is a spot instance?",
-  meta: "A spot instance runs on spare cloud capacity at a discount, and AWS or Azure can take it back. See the warning you get, when to use one, and AKS spot pools.",
-  h1: "What is a spot instance?",
+  title: "What are spot instances in AWS and Azure?",
+  meta: "AWS spot instances and Azure spot VMs use spare capacity at a discount, and can be taken back. See the warning you get, when to use them, and AKS spot pools.",
+  h1: "What are spot instances in AWS and Azure?",
   card: "A spot instance is a cloud virtual machine (VM) that runs on spare capacity, for less than the on-demand price.",
   group: "finops-pricing",
   product: "coral",
@@ -41,7 +41,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "spot-pools-on-aks",
-      title: "Spot pools on AKS",
+      title: "Azure spot instances and AKS spot node pools",
       blocks: [
         {
           kind: "p",
@@ -74,7 +74,7 @@ export const term: GlossaryTerm = {
           items: [
             "Spot reduces each node’s price. It suits work that can stop and restart, like batch jobs and test environments.",
             [
-              "Right-sized requests mean fewer nodes. See ",
+              "Requests that match real use mean fewer nodes. See ",
               { a: "Kubernetes cost optimization", href: "/kubernetes-cost-optimization" },
               ".",
             ],

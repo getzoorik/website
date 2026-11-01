@@ -16,7 +16,7 @@ import { ValueLabMark } from "./value-lab-mark";
  *   studies       on the band, the closing row's pair: each study on a white card (the mark, its figure before and
  *                 after as two bars on one scale, "Read the case study"), the featured Coral study then the Amoeba
  *                 one; under the pair, on a row of its own, "Want to be next?" on the navy card (the free assessment)
- *   closing row   for Coral
+ *   closing row   for both products, as the hub holds a study of each
  *
  * No client study is listed until the first one exists. The pair rises as it arrives, as on /community; the dot's
  * pulse and the count stop under reduced motion.
@@ -119,10 +119,7 @@ function Studies(): React.JSX.Element {
 
 export function CaseStudiesHub(): React.JSX.Element {
   return (
-    <DocumentPage
-      hero={{ title: named(hero.title), deck: named(hero.deck), aside: <Total /> }}
-      product="coral"
-    >
+    <DocumentPage hero={{ title: named(hero.title), deck: named(hero.deck), aside: <Total /> }}>
       <Studies />
     </DocumentPage>
   );

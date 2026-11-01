@@ -27,6 +27,8 @@ export interface CalculatorCopy {
   /** The page's `<title>` (through the site's "%s | Zoorik" template) and its description. */
   readonly meta: { readonly title: string; readonly description: string };
   readonly hero: { readonly title: string; readonly deck: string };
+  /** The calculator section's h2, for the outline only; "Calculator" where a page sets none. */
+  readonly heading?: string;
   /** The two paragraphs over the calculator. */
   readonly intro: readonly string[];
   /** Worked example, How the calculator works, Sources and Related reading, in that order. */
@@ -46,7 +48,8 @@ export interface CalculatorCopy {
 /**
  * The day the calculators' content last changed, for the sitemap's `lastmod`. Whoever changes either page, or
  * refreshes its prices, moves it. 1 Nov 2026: Part 4's titles, h1s, descriptions and first paragraphs, the node page's
- * EKS pricing source and the tools hub's tile names; the prices are still those retrieved 30 October 2026.
+ * EKS pricing source and the tools hub's tile names, then the clean-page pass's headings, the disk page's first sentence
+ * and its closing line; the prices are still those retrieved 30 October 2026.
  */
 export const calculatorsLastUpdated = "1 November 2026";
 
@@ -60,6 +63,8 @@ export const nodeCalculator = {
     title: "EKS pricing calculator: what an EKS or AKS node costs a month",
     deck: "Pick a VM size and a node count. See the monthly cost, and how much of each node your pods can use.",
   },
+  /* Named for the search "aks pricing calculator" (owner, 1 Nov 2026). */
+  heading: "EKS and AKS pricing calculator",
   intro: [
     "EKS pricing is an hourly fee for each cluster, plus the EC2 instances and other resources your worker nodes use. This calculator prices the nodes, on EKS and on AKS. A node costs its hourly list price for every hour it runs, and here a month is 730 hours.",
     "Your pods can't use all of it. Kubernetes keeps some CPU and memory on every node for itself. The results show both: what a node costs, and what your pods get.",
@@ -212,13 +217,14 @@ export const diskCalculator = {
     deck: "Enter a disk's size and the space its files use. See what the disk costs a month, and what its empty space costs.",
   },
   intro: [
-    "Under AWS EBS pricing and Azure disk pricing, you pay for a disk's full size every month, however little data it holds. AWS prices an EBS volume by the GB you provision. Azure prices a Premium SSD or Standard SSD at the smallest size tier that holds it.",
+    "On AWS and Azure, you pay for a disk's full size every month, however little data it holds. AWS prices an EBS volume by the GB you provision. Azure prices a Premium SSD or Standard SSD at the smallest size tier that holds it.",
     "So empty space costs the same as space your data uses. This calculator shows what a disk costs, how much of it is empty, and what the empty part costs.",
   ],
   frame: [
     {
       title: "Worked example",
       blocks: [
+        { kind: "h3", text: "Azure disk cost: a 200 GiB Standard SSD" },
         { kind: "p", text: "A 200 GiB Standard SSD in East US, with 50 GiB used:" },
         {
           kind: "ul",
@@ -229,6 +235,7 @@ export const diskCalculator = {
             "**Tier space above the disk:** 256 − 200 = 56 GiB, or $4.20 a month.",
           ],
         },
+        { kind: "h3", text: "EBS storage cost: a 200 GiB gp3 volume" },
         { kind: "p", text: "A 200 GiB gp3 volume in US East (N. Virginia), with 50 GiB used:" },
         {
           kind: "ul",
@@ -243,7 +250,7 @@ export const diskCalculator = {
     {
       title: "How the calculator works",
       blocks: [
-        { kind: "h3", text: "The disk's monthly cost" },
+        { kind: "h3", text: "How EBS volumes and Azure managed disks are priced" },
         {
           kind: "ul",
           items: [
@@ -309,7 +316,7 @@ export const diskCalculator = {
     },
   ],
   close:
-    "This is the list price of one disk. Amoeba rightsizes block storage on Azure and AWS, for Windows and Linux VMs, to reduce your cloud cost, autonomously, without any downtime. Your own saving is one free assessment away.",
+    "This is the list price of one disk. Amoeba rightsizes block storage on Azure and AWS, for Windows and Linux VMs, to reduce your cloud cost, autonomously, without any downtime after the one switch. Your own saving is one free assessment away.",
   tile: {
     title: "EBS and Azure disk pricing calculator",
     line: "What an Azure managed disk or an EBS volume costs a month, and what its empty space costs.",
@@ -383,6 +390,11 @@ export const nodeCalculatorUi = {
   notShown: "Not shown (see the note)",
   /** The reference tables' fold. */
   tables: "List prices and reserves",
+  /** The h3 over each cloud's price table in the fold, named for its search (owner, 1 Nov 2026). */
+  tableHeadings: {
+    azure: "Azure VM pricing for AKS nodes, per month",
+    aws: "EC2 instance pricing for EKS nodes, per month",
+  },
 } as const;
 
 /** The disk calculator's controls and result, in the order the page draws them. */
@@ -405,4 +417,10 @@ export const diskCalculatorUi = {
   up: "Tier space above the disk’s size",
   /** The reference tables' fold. */
   tables: "List prices",
+  /** The h3 over each price table in the fold, named for its search (owner, 1 Nov 2026). */
+  tableHeadings: {
+    "premium-ssd": "Azure Premium SSD pricing by tier",
+    "standard-ssd": "Azure Standard SSD pricing by tier",
+    ebs: "Amazon EBS pricing: gp3 and gp2 per GB-month",
+  },
 } as const;

@@ -460,7 +460,11 @@ export const article: Article = {
             ", which deletes without asking.",
           ],
         },
-        { kind: "h3", id: "stop-new-orphans", title: "Stop new orphans" },
+        {
+          kind: "h3",
+          id: "stop-new-orphans",
+          title: "Stop new orphaned disks when you delete a VM",
+        },
         {
           kind: "p",
           text: [

@@ -4,9 +4,9 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/blended-vs-
 export const term: GlossaryTerm = {
   slug: "blended-vs-unblended-cost",
   term: "Blended vs unblended cost (AWS)",
-  title: "Blended vs unblended cost: meaning and cost impact",
-  meta: "Blended vs unblended cost: two ways AWS shows the same usage cost across accounts. Learn unblended, blended and net unblended cost with AWS’s own example.",
-  h1: "Blended vs unblended cost: meaning and cost impact",
+  title: "AWS blended vs unblended cost: what each means",
+  meta: "AWS blended vs unblended cost: two ways AWS shows the same usage cost across accounts. Learn unblended, blended and net unblended cost with AWS’s own example.",
+  h1: "AWS blended vs unblended cost: what each means",
   card: "Blended vs unblended cost compares two ways AWS shows the same usage cost across an organization’s accounts.",
   group: "finops-pricing",
   product: "both",
@@ -30,6 +30,11 @@ export const term: GlossaryTerm = {
             { a: "Reserved Instance (RI)", href: "/learn/glossary/reserved-instance" },
             " covers show $0. It’s the default in AWS Cost Explorer and AWS Budgets.",
           ],
+        },
+        {
+          kind: "h3",
+          id: "blended-net-unblended-and-amortized-cost",
+          title: "Blended, net unblended and amortized cost",
         },
         {
           kind: "ul",
@@ -76,11 +81,6 @@ export const term: GlossaryTerm = {
             "Blended vs unblended cost in AWS doesn’t change what you pay, only which account each cost shows on.",
             "Blended cost hides which account got the RI discount. On-demand account 2 shows only $4.14.",
             "AWS’s Cloud Financial Management blog says most customers need only unblended cost.",
-            [
-              "To reduce your cloud cost, see ",
-              { a: "cloud cost optimization", href: "/cloud-cost-optimization" },
-              ".",
-            ],
             [
               "The ",
               { a: "free assessment", href: "/assessment" },

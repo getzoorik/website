@@ -5,7 +5,7 @@ export const term: GlossaryTerm = {
   slug: "kubernetes-cost-allocation",
   term: "Kubernetes cost allocation",
   title: "What is Kubernetes cost allocation?",
-  meta: "Kubernetes cost allocation splits a shared cluster’s cost across pods and teams. See how AWS charges each pod for the larger of its request and its use.",
+  meta: "Kubernetes cost allocation splits a cluster’s cost across pods and teams. EKS split cost allocation data charges each pod the larger of its request and use.",
   h1: "What is Kubernetes cost allocation?",
   card: "Kubernetes cost allocation splits a shared cluster’s cost across its pods, then adds up pod costs by namespace, label or team.",
   group: "finops-pricing",
@@ -45,6 +45,12 @@ export const term: GlossaryTerm = {
           ],
         },
         { kind: "svg", figure: figure1 },
+      ],
+    },
+    {
+      id: "how-idle-cost-is-allocated-on-eks-and-aks",
+      title: "How idle cost is allocated on EKS and AKS",
+      blocks: [
         {
           kind: "p",
           text: [

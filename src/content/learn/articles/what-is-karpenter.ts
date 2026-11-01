@@ -6,7 +6,7 @@ import { figure as figure3 } from "@/features/learn/figures/what-is-karpenter/3"
 export const article: Article = {
   slug: "what-is-karpenter",
   title: "What is Karpenter? How it picks and removes nodes",
-  meta: "What is Karpenter: an open-source Kubernetes node autoscaler. How NodePools shape the nodes it launches, how it removes them, and how it runs on EKS and AKS.",
+  meta: "What is Karpenter: an open-source Kubernetes node autoscaler. How NodePools shape the nodes it adds, how it removes them, and how it runs on AWS EKS and AKS.",
   h1: "What is Karpenter? How it picks and removes nodes",
   deck: "It launches nodes for pending pods and removes the ones it no longer needs. NodePools, EKS, AKS and its limits.",
   card: "What Karpenter is, how a NodePool shapes the nodes it launches, and how it removes them on EKS and AKS.",
@@ -456,14 +456,8 @@ export const article: Article = {
           text: [
             "If an EKS cluster has no node autoscaler yet, ",
             { a: "connecting it to Coral", href: "/coral-guide#what-connect-asks-to-change" },
-            " can install Karpenter, with your approval. Connect lists every cloud change and asks once. Its ",
-            { code: "--dry-run" },
-            " prints every cloud command and every object it would install without changing anything.",
+            " can install Karpenter, with your approval.",
           ],
-        },
-        {
-          kind: "p",
-          text: "Check two things before you approve. On a cluster that uses only aws-auth, installing Karpenter switches authentication to API_AND_CONFIG_MAP, and that can’t be undone. On AKS the same step turns on NAP, which needs Azure CNI, not kubenet.",
         },
       ],
     },

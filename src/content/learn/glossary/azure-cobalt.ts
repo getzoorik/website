@@ -4,14 +4,14 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/azure-cobal
 export const term: GlossaryTerm = {
   slug: "azure-cobalt",
   term: "Azure Cobalt (Arm-based Azure VMs)",
-  title: "What is Azure Cobalt?",
-  meta: "Azure Cobalt is Microsoft’s own Arm CPU behind the Dpsv6, Dplsv6 and Epsv6 VMs. See what it offers, how it compares to Graviton, and what AKS needs.",
-  h1: "What is Azure Cobalt?",
+  title: "What is Microsoft Azure Cobalt?",
+  meta: "Azure Cobalt is Microsoft’s own Arm CPU behind the Cobalt 100 VMs, Dpsv6, Dplsv6 and Epsv6. How these Azure Arm VMs compare to Graviton, and what AKS needs.",
+  h1: "What is Microsoft Azure Cobalt?",
   card: "Azure Cobalt is Microsoft’s own Arm-based processor for Azure virtual machines (VMs).",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-10-26",
+  updated: "2026-11-01",
   definition: [
     {
       kind: "p",

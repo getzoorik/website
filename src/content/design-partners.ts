@@ -20,7 +20,7 @@ import { calendarUrl } from "@/config/site";
  * The day /design-partners's content last changed, for the sitemap's `lastmod` only: the page does not print it.
  * Whoever changes /design-partners's content moves this to that day in the same PR; never the build's date.
  */
-export const designPartnersLastUpdated = "21 October 2026";
+export const designPartnersLastUpdated = "1 November 2026";
 
 /** How many design partners get the offer: their non-production infrastructure is free. */
 export const designPartnerPlaces = 10;
@@ -100,8 +100,8 @@ export const designPartnersPage = {
         line: "The free assessment shows your estimated saving at list price.",
       },
       {
-        title: "Connect a non-production cluster",
-        line: `zoorikctl, Helm or Terraform; free for the first ${designPartnerPlaces} partners.`,
+        title: "Connect a non-production cluster or VM",
+        line: `Coral with zoorikctl, Helm or Terraform; Amoeba with a script in Azure Cloud Shell or AWS CloudShell. Free for the first ${designPartnerPlaces} partners.`,
       },
       {
         title: "Review together",

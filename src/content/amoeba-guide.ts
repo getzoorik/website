@@ -11,9 +11,11 @@ import type { GuideContent } from "@/content/guide";
  * timings or phase names. The move only goes forward, and a VM's one setting
  * is Auto or Manual shrinks.
  *
- * The facts the draft does not have yet are placeholders (`{ ph }`): the page
- * prints "To come: " and the description. Filling one is an edit to this file
- * alone: replace the piece with plain text, or text with bold or code.
+ * On 1 November 2026 the twelve "To come" placeholders were dropped: each
+ * sentence or cell keeps the words written around it, the Windows row gives
+ * its short yes, and the empty "Open the console" step and connect well went.
+ * A fact that is written later goes back in as plain text, or text with bold
+ * or code; a placeholder (`{ ph }`) prints "To come: " and its description.
  *
  * ─── THE ANCHOR IDS ARE A CONTRACT ─────────────────────────────────────────
  * Other pages and shared links point at these ids: the groups keep the
@@ -82,14 +84,14 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
   meta: {
     title: "Amoeba product guide",
     description:
-      "Onboard a VM to Amoeba on Azure or AWS. See how its data moves onto one btrfs pool, how that pool grows and shrinks, and how you stay in control.",
+      "Amoeba product guide: onboard a VM on Azure or AWS, see how its data moves onto one btrfs pool, how that pool grows and shrinks, and how you stay in control.",
   },
   hero: {
     title: "Amoeba product guide",
     deck: "How to onboard a VM, what Amoeba changes, and how you stay in control.",
     downloads: [{ label: "PDF", document: "amoeba-guide" }],
   },
-  updated: "Updated 27 October 2026",
+  updated: "Updated 1 November 2026",
   summary: [
     {
       term: "Product page",
@@ -159,12 +161,12 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                   body: [
                     {
                       kind: "p",
-                      text: "Amoeba copies your data onto one btrfs pool, sized to your data with room to grow, while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. Once the switch is checked, it snapshots and deletes each old disk.",
+                      text: "Amoeba copies your data onto one btrfs pool, sized to your data with room to grow, while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. Once the switch is checked, it snapshots and deletes each source disk.",
                     },
                   ],
                 },
                 {
-                  title: "Optimize",
+                  title: "Autopilot",
                   body: [
                     {
                       kind: "p",
@@ -194,7 +196,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
               rows: [
                 [
                   "The move onto a pool",
-                  "Copies your data onto the pool while your services run, then switches each mount to it. Once the switch is checked, it snapshots and deletes each old disk.",
+                  "Copies your data onto the pool while your services run, then switches each mount to it. Once the switch is checked, it snapshots and deletes each source disk.",
                   "By itself, after the agent’s first report. A move only goes forward.",
                 ],
                 [
@@ -241,10 +243,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                 ],
                 [
                   "The rights to connect",
-                  [
-                    "In Azure, the rights to add Zoorik’s app to your directory, create a custom role, and assign it on each subscription. ",
-                    { ph: "the exact Azure roles needed to run the connect script" },
-                  ],
+                  "In Azure, the rights to add Zoorik’s app to your directory, create a custom role, and assign it on each subscription.",
                 ],
                 [
                   "A running VM with data disks",
@@ -252,16 +251,13 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                 ],
                 [
                   "Data-disk slots",
-                  "During the move, the pool’s disks attach beside the old disks. So the VM needs a few free disk slots for the pool. If it has too few, Amoeba declines it and says why.",
+                  "During the move, the pool’s disks attach beside the source disks. So the VM needs a few free disk slots for the pool. If it has too few, Amoeba declines it and says why.",
                 ],
                 [
                   "Linux",
-                  [
-                    "The kernel must be recent and support btrfs, built in or as a module, and services on data mounts must run under systemd. The agent also needs rsync, btrfs-progs (mkfs.btrfs and btrfs) and psmisc (fuser), which the installer doesn’t add, and cgroup v2 for its disk-load readings. Amoeba checks the running kernel, never the OS name. ",
-                    { ph: "supported Linux distributions and versions" },
-                  ],
+                  "The kernel must be recent and support btrfs, built in or as a module, and services on data mounts must run under systemd. The agent also needs rsync, btrfs-progs (mkfs.btrfs and btrfs) and psmisc (fuser), which the installer doesn’t add, and cgroup v2 for its disk-load readings. Amoeba checks the running kernel, never the OS name.",
                 ],
-                ["Windows", [{ ph: "supported Windows versions and what Amoeba needs on them" }]],
+                ["Windows", "Amoeba works on the data disks of Windows VMs too."],
                 [
                   "Services on data mounts",
                   "Every process that keeps a data mount open must run as a systemd service. Then the agent can stop it and start it again at the switch.",
@@ -272,20 +268,9 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                 ],
                 [
                   "Network",
-                  [
-                    "Outbound access from each VM to Zoorik for the agent’s reports and command channels, and to the hosts it downloads from. ",
-                    {
-                      ph: "hosts to allow: Zoorik, GitHub release downloads and the distribution’s package mirrors",
-                    },
-                  ],
+                  "Outbound access from each VM to Zoorik for the agent’s reports and command channels, and to the hosts it downloads from.",
                 ],
-                [
-                  "A console account",
-                  [
-                    "Sign in with a Microsoft or Google account. ",
-                    { ph: "the Amoeba console address" },
-                  ],
-                ],
+                ["A console account", "Sign in with a Microsoft or Google account."],
               ],
             },
           ],
@@ -317,25 +302,11 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
               kind: "steps",
               steps: [
                 {
-                  title: "Open the console",
-                  body: [
-                    {
-                      kind: "p",
-                      text: [{ ph: "the Amoeba console address, and how you sign in" }],
-                    },
-                  ],
-                },
-                {
                   title: "Connect Azure",
                   body: [
                     {
                       kind: "p",
                       text: "Click “Connect Azure” and enter your directory (tenant) ID. The console shows a script to run in Azure Cloud Shell. It adds Zoorik’s app to your directory, creates the role “Zoorik Storage Operator”, and assigns it to the app on each subscription you name.",
-                    },
-                    {
-                      kind: "well",
-                      lines: [[{ ph: "the connect script, exactly as the console prints it" }]],
-                      prompt: "$ ",
                     },
                   ],
                 },
@@ -387,10 +358,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
               kind: "ul",
               items: [
                 "The list comes from Azure Resource Graph only. Amoeba doesn’t look inside a VM, or show its used space or savings, until the VM’s agent reports.",
-                [
-                  "VMs that can’t be onboarded are counted in one line under the list, with the reason. For example, the VM is stopped or has only an OS disk. ",
-                  { ph: "how Windows VMs appear in the onboarding list" },
-                ],
+                "VMs that can’t be onboarded are counted in one line under the list, with the reason. For example, the VM is stopped or has only an OS disk.",
                 "The list can be a little behind Azure.",
                 "A VM you onboarded before keeps its settings when you onboard it again.",
               ],
@@ -635,7 +603,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
             {
               kind: "ul",
               items: [
-                "Amoeba sizes the pool to your data, with room to grow. It looks at your peak use and recent growth, not at the size the old disks were given.",
+                "Amoeba sizes the pool to your data, with room to grow. It looks at your peak use and recent growth, not at the size the source disks were given.",
                 "It picks the cheapest layout of disks that holds your data and carries your VM’s disk load.",
                 "Each VM gets one pool, on one disk type. On Azure the pool uses Premium SSD v2 where your region offers it, and Premium SSD otherwise.",
                 "On AWS the pool uses gp3 volumes, in the instance’s Availability Zone.",
@@ -661,7 +629,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                 ],
                 [
                   "Build the pool",
-                  "It creates the pool’s disks and attaches them beside the old disks.",
+                  "It creates the pool’s disks and attaches them beside the source disks.",
                 ],
                 [
                   "Copy",
@@ -678,7 +646,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                 ],
                 [
                   "Clean up",
-                  "Amoeba snapshots each old disk, deletes the disk, and keeps the snapshot for a few days before deleting it too.",
+                  "Amoeba snapshots each source disk, deletes the disk, and keeps the snapshot for a few days before deleting it too.",
                 ],
               ],
             },
@@ -694,11 +662,6 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                 "The agent stops every systemd service that holds a data mount open, with systemctl stop. It never kills a process itself.",
                 "It checks nothing is left to copy, saves /etc/fstab, mounts the pool at each data mount’s path, and starts the services again. Your mount paths stay the same.",
                 "If any step fails, the agent tries to put the original mounts back and start the services again. The source disks are never written during the switch. Amoeba then tries the switch again, so your services can restart more than once.",
-                [
-                  {
-                    ph: "what happens to writes made on the pool if a late check fails after the services restarted",
-                  },
-                ],
                 "A process that holds a data mount open outside a systemd service can’t be stopped cleanly, so the switch can’t finish.",
               ],
             },
@@ -711,9 +674,8 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
             {
               kind: "ul",
               items: [
-                "A move only goes forward. Once the switch is checked, Amoeba snapshots each old disk, deletes the disk, and keeps the snapshot for a few days before deleting it too.",
+                "A move only goes forward. Once the switch is checked, Amoeba snapshots each source disk, deletes the disk, and keeps the snapshot for a few days before deleting it too.",
                 "A disk is deleted only after its own snapshot succeeded, and only when its tag names this move.",
-                [{ ph: "how to restore from a safety snapshot, and who does it" }],
                 "You pay for both sets of disks only while the move runs, and then for the snapshots while they’re kept.",
                 "The pool keeps growing before it fills. Shrinks wait until Amoeba has seen enough of your use after the move.",
               ],
@@ -765,7 +727,6 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                 "The pool stays mounted while it grows, so your services keep running.",
                 "Amoeba grows existing disks in place, or adds new ones while the VM has a free disk slot.",
                 "When data arrives fast, it adds room sooner.",
-                [{ ph: "typical time from the trigger to the added capacity" }],
               ],
             },
           ],
@@ -915,7 +876,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
             {
               kind: "ol",
               items: [
-                "Run the free disk assessment first, to see what your own VMs could save.",
+                "Run the free block storage cost assessment first, to see what your own VMs could save.",
                 "Onboard one VM whose services run under systemd, and set “When Zoorik shrinks” to “Manual” on its Settings page.",
                 "Watch the move on Pool → Migration, and check your services after the switch.",
                 "When a shrink waits for you, start it yourself from Operations, and read its log entry.",
@@ -1020,10 +981,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
                   [{ code: "Microsoft.Compute/virtualMachines/runCommand/action" }],
                   "Installing the agent, and checking the copy and the switch during the move.",
                 ],
-                [
-                  [{ code: "Microsoft.Compute/virtualMachines/reapply/action" }],
-                  [{ ph: "when Amoeba reapplies a VM" }],
-                ],
+                [[{ code: "Microsoft.Compute/virtualMachines/reapply/action" }], ""],
                 [
                   [
                     { code: "Microsoft.Compute/disks/write" },
@@ -1148,7 +1106,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
           body: [
             {
               kind: "p",
-              text: "Sign in with a Microsoft or Google account, as for Coral.",
+              text: "Sign in with a Microsoft or Google account.",
             },
           ],
         },
@@ -1181,7 +1139,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
           body: [
             {
               kind: "p",
-              text: "A move only goes forward. Once the switch is checked, Amoeba snapshots each old disk and deletes it. It keeps each snapshot for a few days, then deletes it too.",
+              text: "A move only goes forward. Once the switch is checked, Amoeba snapshots each source disk and deletes it. It keeps each snapshot for a few days, then deletes it too.",
             },
           ],
         },

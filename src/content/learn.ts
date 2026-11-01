@@ -13,7 +13,7 @@ import { shortDay } from "@/lib/content-date";
 /**
  * `/learn`, the hub: every string it prints, verbatim from the approved mock. The
  * page's name and its line; on the band, Start here (the three subjects' guides) beside Find the right fix (three
- * causes of a high bill, each to its guide); All articles, in the order the site publishes by; Watch and read; More
+ * causes of high cloud cost, each to its guide); All articles, in the order the site publishes by; Watch and read; More
  * from Zoorik. Always the three subjects, Cloud cost, Kubernetes and Block storage.
  *
  * ─── ONLY WHAT IS PUBLISHED ─────────────────────────────────────────────────
@@ -42,11 +42,11 @@ export const learnPage = {
      *  hub "Zoorik Learn" and the footer "Learn". */
     title: "Cloud cost optimization guides",
     description:
-      "Guides and comparisons for Kubernetes, block storage and the whole cloud bill on Azure and AWS, from where the money goes to the right fix.",
+      "Cloud cost optimization guides and comparisons for Kubernetes and block storage on Azure and AWS, from where the money goes to the right fix.",
   },
   hero: {
     title: "Zoorik Learn",
-    deck: "Guides to reduce cloud cost on Kubernetes, block storage and the whole bill, on Azure and AWS.",
+    deck: "Cloud cost optimization guides for Kubernetes and block storage, and for your whole cloud cost, on Azure and AWS.",
   },
   /**
    * The day the hub's own content last changed, for the sitemap; it is not printed. A new article moves the hub's
@@ -55,8 +55,11 @@ export const learnPage = {
   updated: "Updated 1 November 2026",
   /** The band's name for a screen reader: the two cards have no section heading of their own. */
   band: "Start here, and find the right fix",
-  start: { title: "Start here", line: "Three guides that cover the whole bill." },
-  fix: { title: "Find the right fix", line: "Three causes of a high bill, and the fix for each." },
+  start: { title: "Start here", line: "Three guides that cover your whole cloud cost." },
+  fix: {
+    title: "Find the right fix",
+    line: "Three causes of high cloud cost, and the fix for each.",
+  },
   articles: {
     id: "articles",
     title: "All articles",
@@ -187,8 +190,8 @@ export const learnPriority: readonly string[] = [
  * before the colon. The full h1 is the link's hover title.
  */
 const learnNames: Readonly<Record<string, string>> = {
-  "how-to-reduce-cloud-costs": "How to reduce cloud costs",
-  "reduce-kubernetes-cost": "How to reduce Kubernetes cost",
+  "how-to-reduce-cloud-costs": "Cloud cost optimization: how to reduce cloud costs",
+  "reduce-kubernetes-cost": "Kubernetes cost optimization",
   "azure-disk-cost-optimization": "Azure disk cost optimization",
   "shrink-azure-managed-disk": "Reduce Azure disk size: can a managed disk shrink?",
   "kubernetes-cost-estimation": "Kubernetes cost estimation for AKS and EKS",
@@ -252,6 +255,7 @@ const learnNames: Readonly<Record<string, string>> = {
   "topology-spread-constraints": "Topology spread constraints",
   "ebs-elastic-volumes": "EBS Elastic Volumes",
   "is-btrfs-stable": "Is btrfs stable?",
+  "poor-architecture-cloud-bill": "How poor architecture increases your cloud costs",
 };
 
 /** A row of the band: where it goes, the words it shows and the article's h1, its hover title. */
@@ -360,12 +364,12 @@ export const learnMore: readonly {
   {
     href: routes.valueLab,
     title: caseStudiesHub.hero.title,
-    line: `${caseStudy.band.stats[0].value} on our own cluster’s monthly machine bill.`,
+    line: `${caseStudy.band.stats[0].value} on our own cluster’s monthly machine cost.`,
   },
   {
     href: routes.cloudCostTools,
     title: "Cloud cost optimization tools",
-    line: "The tools that reduce the bill, and how each works.",
+    line: "The tools that reduce cloud cost, and how each works.",
   },
   {
     href: routes.eksAndAksPricingCalculator,
@@ -380,7 +384,7 @@ export const learnMore: readonly {
   {
     href: routes.community,
     title: communityPage.hero.title,
-    line: "r/zoorik and the communities that matter.",
+    line: "r/zoorik and the FinOps and cloud cost communities on Kubernetes, Azure and AWS.",
   },
   {
     href: routes.news,

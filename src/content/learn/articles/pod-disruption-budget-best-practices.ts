@@ -214,6 +214,11 @@ export const article: Article = {
           kind: "p",
           text: "These numbers assume every selected pod is Ready. One that isn’t uses up an allowed disruption.",
         },
+        {
+          kind: "h3",
+          id: "poddisruptionbudget-example-for-a-deployment",
+          title: "PodDisruptionBudget example for a Deployment",
+        },
         { kind: "p", text: ["A budget for a Deployment labelled ", { code: "app: <app>" }, ":"] },
         {
           kind: "code",
@@ -517,10 +522,6 @@ export const article: Article = {
               { a: "simulates the scheduler", href: "/coral-faq#how-do-you-make-sure-node" },
               " on the live cluster. It respects PDBs and do-not-disrupt, and drains one node at a time. If a drain can’t finish, the node goes back into service.",
             ],
-            [
-              { b: "The Evictor." },
-              " It moves pods off lightly used nodes and never overrides a PodDisruptionBudget.",
-            ],
           ],
         },
         { kind: "h3", id: "seeing-what-a-budget-holds", title: "Seeing what a budget holds" },
@@ -529,13 +530,13 @@ export const article: Article = {
           items: [
             [
               { b: "Held nodes." },
-              " A PDB at 0 keeps its pods’ node in place. Node list → “What’s holding them” names each held node and ",
-              { a: "its fix", href: "/coral-guide#nodes-held" },
+              " A PDB at 0 keeps its pods’ node in place. Coral’s console names ",
+              { a: "each held node and its fix", href: "/coral-guide#nodes-held" },
               ". Add replicas or relax the budget, or give a kube-system pod a budget that allows at least one disruption.",
             ],
             [
-              { b: "Optimization constraints." },
-              " This advisory page lists workload setups that make optimization risky, PodDisruptionBudgets among them, with the fix for each.",
+              { b: "Risky setups." },
+              " Coral lists workload setups that make optimization risky, PodDisruptionBudgets among them, with the fix for each.",
             ],
           ],
         },

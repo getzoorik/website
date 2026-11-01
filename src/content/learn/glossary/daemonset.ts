@@ -5,7 +5,7 @@ export const term: GlossaryTerm = {
   slug: "daemonset",
   term: "DaemonSet",
   title: "What is a DaemonSet in Kubernetes?",
-  meta: "A DaemonSet in Kubernetes runs one copy of a pod on each node it targets. See what it’s for, how it differs from a Deployment, and why its requests repeat.",
+  meta: "A Kubernetes DaemonSet runs one copy of a pod on each node it targets. See a DaemonSet example, DaemonSet vs Deployment, and why its requests repeat.",
   h1: "What is a DaemonSet in Kubernetes?",
   card: "A DaemonSet in Kubernetes runs one copy of a pod on each node.",
   group: "kubernetes",
@@ -18,14 +18,6 @@ export const term: GlossaryTerm = {
       text: "A DaemonSet in Kubernetes runs one copy of a pod on each node. A new node gets its copy. When a node leaves, Kubernetes removes its copy.",
     },
     { kind: "svg", figure: figure1 },
-    { kind: "p", text: "Some nodes get no copy:" },
-    {
-      kind: "ul",
-      items: [
-        "A node that doesn’t match its node selector or node affinity.",
-        "A node with a NoSchedule or NoExecute taint the pod doesn’t tolerate. A taint keeps pods away.",
-      ],
-    },
     {
       kind: "p",
       text: "The use of a DaemonSet is to run a helper on each node. The docs name three:",
@@ -33,6 +25,20 @@ export const term: GlossaryTerm = {
     { kind: "ul", items: ["cluster storage", "log collection", "node monitoring"] },
   ],
   sections: [
+    {
+      id: "daemonset-node-selector-and-tolerations",
+      title: "DaemonSet node selector and tolerations",
+      blocks: [
+        { kind: "p", text: "Some nodes get no copy:" },
+        {
+          kind: "ul",
+          items: [
+            "A node that doesn’t match its node selector or node affinity.",
+            "A node with a NoSchedule or NoExecute taint the pod doesn’t tolerate. A taint keeps pods away.",
+          ],
+        },
+      ],
+    },
     {
       id: "a-kubernetes-daemonset-example",
       title: "A Kubernetes DaemonSet example",

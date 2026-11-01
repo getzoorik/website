@@ -5,7 +5,7 @@ export const term: GlossaryTerm = {
   slug: "ephemeral-os-disk",
   term: "Ephemeral OS disk",
   title: "What is an ephemeral OS disk?",
-  meta: "An ephemeral OS disk keeps a VM’s operating system on local storage. See what it costs on AKS, what you give up, and when a node gets a managed disk instead.",
+  meta: "An Azure ephemeral OS disk keeps a VM’s OS on local storage. See what an ephemeral disk costs on AKS, what you give up, and when AKS uses a managed disk.",
   h1: "What is an ephemeral OS disk?",
   card: "An Azure ephemeral OS disk is an operating system disk on the local storage of its virtual machine (VM).",
   group: "block-storage",
@@ -76,6 +76,11 @@ export const term: GlossaryTerm = {
         {
           kind: "p",
           text: "An ephemeral OS disk can be at most 2,040\u00a0GiB, or the local disk’s size if that is smaller.",
+        },
+        {
+          kind: "h3",
+          id: "how-to-enable-an-ephemeral-os-disk",
+          title: "How to enable an ephemeral OS disk on AKS",
         },
         { kind: "p", text: "On AKS, set it when you create a node pool:" },
         {

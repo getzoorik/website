@@ -5,7 +5,7 @@ export const term: GlossaryTerm = {
   slug: "cloud-tco",
   term: "Cloud TCO (total cost of ownership)",
   title: "What is cloud TCO (total cost of ownership)?",
-  meta: "Cloud TCO is the full cost of a workload over several years, not only the monthly charges. See what it counts and how to compare the cloud with on premises.",
+  meta: "Cloud TCO, the total cost of ownership in cloud computing, is a workload’s full cost over several years. See what it counts and cloud vs on-premises TCO.",
   h1: "What is cloud TCO (total cost of ownership)?",
   card: "Cloud TCO (total cost of ownership) is the full cost of a workload in the cloud over several years.",
   group: "finops-pricing",

@@ -4,9 +4,9 @@ import { figure as figure2 } from "@/features/learn/figures/cordon-vs-drain/2";
 
 export const article: Article = {
   slug: "cordon-vs-drain",
-  title: "Cordon vs drain in Kubernetes: what each does",
-  meta: "Cordon vs drain: cordon stops new pods landing on a node, drain evicts the running ones within their PDBs. What uncordon and taints do, and when to use each.",
-  h1: "Cordon vs drain in Kubernetes: what each does to a node",
+  title: "kubectl cordon vs drain: what each does to a node",
+  meta: "kubectl cordon vs drain: cordon stops new pods landing on a node, drain evicts the running ones within their PDBs. What kubectl uncordon and taints do.",
+  h1: "kubectl cordon vs drain in Kubernetes: what each does to a node",
   deck: "Cordon stops new pods arriving. Drain also moves the pods already there. Where uncordon and taints fit.",
   card: "What kubectl cordon, drain and uncordon each change on a node, and when a taint is the better tool.",
   product: "coral",
@@ -20,14 +20,14 @@ export const article: Article = {
   coverAlt:
     "Cordon vs drain in Kubernetes: cordon turns new pods away, and drain moves the pods off to be recreated elsewhere",
   short: [
-    "Cordon vs drain comes down to the pods already on the node: a cordon leaves them running, and a drain evicts them. Both mark the node unschedulable, and a drain evicts each pod within its ",
+    "kubectl cordon vs drain comes down to the pods already on the node: a cordon leaves them running, and a drain evicts them. Both mark the node unschedulable, and a drain evicts each pod within its ",
     { a: "PodDisruptionBudget (PDB)", href: "/learn/glossary/pod-disruption-budget" },
     ", so its controller recreates it on another node.",
   ],
   sections: [
     {
       id: "what-is-cordon-in-kubernetes-running-pods",
-      title: "What is cordon in Kubernetes: running pods stay, new ones are kept off",
+      title: "What kubectl cordon does: running pods stay, new ones are kept off the node",
       blocks: [
         {
           kind: "p",
@@ -527,7 +527,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "On our own dev cluster on 6 October, Coral removed a spare 4-CPU worker on its own in under 10\u00a0minutes. Apps that run a single copy restarted once on another machine. Every app was running again afterwards, as ",
+            "On our own AKS development cluster on 6 October, Coral removed a spare 4-CPU worker on its own in under 10\u00a0minutes. Apps that run a single copy restarted once on another machine. Every app was running again afterwards, as ",
             { a: "the case study", href: "/coral-value-lab" },
             " shows.",
           ],

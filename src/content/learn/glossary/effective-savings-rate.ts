@@ -5,7 +5,7 @@ export const term: GlossaryTerm = {
   slug: "effective-savings-rate",
   term: "Effective savings rate (ESR)",
   title: "What is effective savings rate (ESR)?",
-  meta: "Effective savings rate (ESR) is the share of list cost your discounts saved. See the three costs behind it, an example, and why unused commitments reduce it.",
+  meta: "Effective savings rate (ESR) is the share of list cost your discounts saved. See the formula, effective vs list cost, and why unused commitments reduce it.",
   h1: "What is effective savings rate (ESR)?",
   card: "Effective savings rate (ESR) is the percentage of your list cost that discounts saved.",
   group: "finops-pricing",
@@ -21,7 +21,7 @@ export const term: GlossaryTerm = {
   sections: [
     {
       id: "how-esr-is-worked-out",
-      title: "How ESR is worked out",
+      title: "How to calculate effective savings rate",
       blocks: [
         {
           kind: "p",

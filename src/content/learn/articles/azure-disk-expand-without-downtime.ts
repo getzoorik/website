@@ -4,10 +4,10 @@ import { figure as figure2 } from "@/features/learn/figures/azure-disk-expand-wi
 
 export const article: Article = {
   slug: "azure-disk-expand-without-downtime",
-  title: "Azure disk expand without downtime, step by step",
-  meta: "Azure disk expand without downtime works for most data disks. The limits, az disk update, the rescan, growpart and xfs_growfs, and why the new size stays.",
-  h1: "How to expand an Azure disk without downtime",
-  deck: "Grow the managed disk, rescan it, then grow the partition and filesystem while the VM keeps running.",
+  title: "Resize or expand an Azure VM disk without downtime",
+  meta: "Resize an Azure VM disk without any downtime: the limits, az disk update, how to rescan the disk in Linux, growpart and xfs_growfs, and why the new size stays.",
+  h1: "How to resize or expand an Azure VM disk without any downtime",
+  deck: "Resize most Azure VM data disks without any downtime: grow the managed disk, rescan it in Linux, then grow the partition and filesystem while the VM keeps running.",
   card: "Grow a managed data disk while the VM runs: the limits, the rescan, growpart, and why the size stays.",
   product: "amoeba",
   hub: "Block storage",
@@ -186,7 +186,7 @@ export const article: Article = {
     },
     {
       id: "resize-the-disk-without-a-reboot-rescan",
-      title: "Resize the disk without a reboot: rescan the device",
+      title: "Rescan the disk in Linux so it shows the new size, without a reboot",
       blocks: [
         {
           kind: "p",
@@ -364,7 +364,7 @@ export const article: Article = {
             ],
             [
               { b: "Change the performance tier for IOPS." },
-              " If a Premium SSD needs IOPS rather than space, raise its tier: a P20’s gives 2,300\u00a0IOPS and a P30’s 5,000. You pay the higher tier’s rate while it’s set. Unlike a larger size, the tier can step back down to the baseline later. Microsoft allows one downgrade per 12\u00a0hours, and most tier changes need no downtime. ",
+              " If a Premium SSD needs IOPS rather than space, raise its tier: a P20’s gives 2,300\u00a0IOPS and a P30’s 5,000. You pay the higher tier’s rate while it’s set. Unlike a larger size, the tier can step back down to the baseline later. Microsoft allows one downgrade per 12\u00a0hours, and most tier changes run without any downtime. ",
               { a: "Azure disk performance tiers", href: "/learn/azure-disk-performance-tiers" },
               " covers the rules.",
             ],
@@ -408,55 +408,12 @@ export const article: Article = {
           ],
         },
         {
-          kind: "h3",
-          id: "what-amoeba-does-with-your-data-disks",
-          title: "What Amoeba does with your data disks",
-        },
-        {
-          kind: "ul",
-          items: [
-            [
-              { b: "What it works on." },
-              " The data disks of running Windows and Linux VMs. It never touches the OS disk.",
-            ],
-            [
-              { b: "The pool." },
-              " It moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. On Azure the pool uses Premium SSD v2 where your VM’s region and zone offer it, and Premium SSD otherwise.",
-            ],
-            [
-              { b: "The move." },
-              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
-            ],
-            [
-              { b: "Growing." },
-              " It grows the pool before it fills, and sooner when data arrives fast. It grows the pool’s disks or adds new ones while the pool stays mounted. You run no rescan, growpart or filesystem step.",
-            ],
-            [
-              { b: "Shrinking." },
-              " When your data goes down and stays down, it shrinks the pool one disk at a time. So you pay for close to what you use.",
-            ],
-            [
-              { b: "The old disks." },
-              " Once the switch is checked, Amoeba snapshots each old disk and deletes the disk. It keeps each snapshot for a few days, then deletes it too.",
-            ],
-          ],
-        },
-        {
-          kind: "h3",
-          id: "what-you-give-up-and-what-a",
-          title: "What you give up, and what a VM needs",
+          kind: "p",
+          text: "It grows the pool before it fills, and sooner when data arrives fast. It grows the pool’s disks or adds new ones while the pool stays mounted. You run no rescan, growpart or filesystem step.",
         },
         {
           kind: "p",
-          text: [
-            "You pay for both sets of disks only while the move runs, and then for the snapshots while they’re kept. Data on ",
-            { a: "zone-redundant (ZRS) disks", href: "/learn/azure-disk-lrs-vs-zrs" },
-            " moves to a locally redundant pool and loses its zone redundancy.",
-          ],
-        },
-        {
-          kind: "p",
-          text: "On Linux, the VM needs a recent kernel with btrfs. Every service that keeps a data mount open must run under systemd. The VM also needs a few free disk slots for the pool.",
+          text: "The one move onto the pool restarts the services that use the VM’s data mounts. After that, the pool grows while they run.",
         },
         {
           kind: "p",

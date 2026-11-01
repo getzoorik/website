@@ -50,7 +50,7 @@ export const article: Article = {
             ],
             [{ b: "Run both for zero pods and zero nodes overnight." }],
             [
-              { b: "Rebalance requests when pods reserve more than they use." },
+              { b: "Set requests from real use when pods reserve more than they use." },
               " Neither tool does that for you.",
             ],
           ],
@@ -310,7 +310,7 @@ export const article: Article = {
     },
     {
       id: "keda-and-karpenter-setup",
-      title: "Rebalance requests first, then set the caps",
+      title: "Set requests from real use first, then set the caps",
       blocks: [
         {
           kind: "p",
@@ -320,7 +320,7 @@ export const article: Article = {
           kind: "ol",
           items: [
             [
-              { b: "Rebalance requests to measured use." },
+              { b: "Set requests from measured use." },
               " With that trigger, change them in small steps and watch the replica count. ",
               { a: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
               " walks through the method.",
@@ -383,13 +383,13 @@ export const article: Article = {
           items: [
             [
               { b: "Rebalancing." },
-              " On the balanced policy, the default, CPU comes from the 80th percentile of the last 3\u00a0days and memory from the highest use in the last 8\u00a0days, each plus 10%. Pod sizing starts only when you switch on “Automatically optimize”. Running pods are resized in place on 1.33+ nodes, or restarted one at a time within their PDBs.",
+              " Coral sets each request from measured use, plus headroom. Pod sizing starts only when you switch on “Automatically optimize”. Running pods are resized in place on 1.33+ nodes, or restarted one at a time within their PDBs.",
             ],
             [
               { b: "KEDA sizing." },
               " For a ScaledObject with a ",
               { code: "cpu" },
-              " trigger, Coral picks the CPU request by replaying past load (3\u00a0days on the default policy) through the trigger’s utilization target, the ScaledObject’s minimum and maximum replicas, and the scaling behavior of KEDA’s HPA. A smaller request wins only if its saving beats the cost of unserved load and extra scaling. Event triggers such as a queue length aren’t replayed, nor is a paused ScaledObject.",
+              " trigger, Coral picks the CPU request by replaying past load through the trigger’s utilization target, the ScaledObject’s minimum and maximum replicas, and the scaling behavior of KEDA’s HPA. A smaller request wins only if its saving beats the cost of unserved load and extra scaling. Event triggers such as a queue length aren’t replayed, nor is a paused ScaledObject.",
             ],
             [
               { b: "KEDA’s HPA." },

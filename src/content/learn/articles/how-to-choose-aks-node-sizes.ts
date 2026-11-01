@@ -5,9 +5,9 @@ import { figure as figure3 } from "@/features/learn/figures/how-to-choose-aks-no
 
 export const article: Article = {
   slug: "how-to-choose-aks-node-sizes",
-  title: "How to choose AKS node sizes: VM series and price",
-  meta: "How to choose AKS node sizes: the system pool rules, the VM series that fits your pods, what the a, p and d letters cost, and the size within a series.",
-  h1: "How to choose AKS node sizes",
+  title: "AKS VM sizes: how to choose series and size",
+  meta: "How to choose AKS VM sizes: the system node pool rules, the VM series that fits your pods, what the a, p and d letters cost, and the size within a series.",
+  h1: "How to choose AKS VM sizes",
   deck: "System pool first, then the VM series, the letters and the size, priced at Azure list prices in East US.",
   card: "Pick AKS node sizes in order: system pool, VM series, letters, then size, with East US list prices.",
   product: "coral",
@@ -20,7 +20,7 @@ export const article: Article = {
   coverAlt:
     "Choose AKS node sizes: more CPU or more memory leaves room paid for, idle, and the size shaped to the pod requests fits",
   short:
-    "To choose AKS node sizes, size the system pool first, then match each user pool’s VM series to its pods’ memory per vCPU. Pick the processor and disk letters next, and the size last: a series usually lists every size at one price per vCPU.",
+    "To choose AKS VM sizes for your node pools, size the system pool first, then match each user pool’s VM series to its pods’ memory per vCPU. Pick the processor and disk letters next, and the size last: a series usually lists every size at one price per vCPU.",
   sections: [
     {
       id: "how-to-choose-aks-node-sizes",
@@ -57,7 +57,7 @@ export const article: Article = {
     },
     {
       id: "what-aks-recommends-for-each-node-pool",
-      title: "What AKS recommends for each node pool",
+      title: "AKS recommended VM size for each node pool",
       blocks: [
         {
           kind: "p",
@@ -114,7 +114,7 @@ export const article: Article = {
     },
     {
       id: "match-the-vm-series-to-your-pods",
-      title: "Match the VM series to your pods’ memory per vCPU",
+      title: "Which Azure VM series is best for AKS: match your pods’ memory per vCPU",
       blocks: [
         {
           kind: "p",
@@ -187,7 +187,11 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Azure size names follow one pattern: family, vCPU count, feature letters, then version. In Standard_D4as_v5, D is the family and 4 the vCPU count. The a and s are letters, and v5 is the version.",
+          text: [
+            "Size names follow the ",
+            { a: "Azure VM size naming convention", href: "/learn/glossary/azure-vm-series" },
+            ": family, vCPU count, feature letters, then version. In Standard_D4as_v5, D is the family and 4 the vCPU count. The a and s are letters, and v5 is the version.",
+          ],
         },
         { kind: "p", text: "Three letters change the price at the same vCPUs and memory:" },
         {

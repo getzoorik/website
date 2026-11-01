@@ -5,7 +5,7 @@ import { figure as figure2 } from "@/features/learn/figures/how-to-choose-eks-in
 export const article: Article = {
   slug: "how-to-choose-eks-instance-types",
   title: "EKS instance types: how to choose family and size",
-  meta: "EKS instance types, chosen in order: the family that fits your pods’ requests, then the processor, size and Spot or On-Demand, with October 2026 prices.",
+  meta: "AWS EKS instance types, chosen in order: the family that fits your pods’ requests, the processor, the size and Spot or On-Demand, with October 2026 prices.",
   h1: "How to choose EKS instance types",
   deck: "Match the family to your pods’ requests first. Then pick the processor, the size and how you pay.",
   card: "Family, processor, size, then Spot or On-Demand: the order to choose EKS instance types, with real prices.",
@@ -70,6 +70,12 @@ export const article: Article = {
           ],
         },
         { kind: "svg", figure: figure1 },
+      ],
+    },
+    {
+      id: "which-instance-type-is-best-for-eks",
+      title: "Which instance type is best for EKS? Choose in this order",
+      blocks: [
         { kind: "p", text: "Make the choices in this order, since each one narrows the next:" },
         {
           kind: "ol",
@@ -506,7 +512,7 @@ export const article: Article = {
       href: "/learn/kubernetes-allocatable-vs-capacity",
     },
     {
-      title: "How to choose AKS node sizes",
+      title: "How to choose AKS VM sizes",
       where: "Learn",
       href: "/learn/how-to-choose-aks-node-sizes",
     },

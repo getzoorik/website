@@ -6,7 +6,7 @@ import { figure as figure3 } from "@/features/learn/figures/compute-optimizer-eb
 export const article: Article = {
   slug: "compute-optimizer-ebs",
   title: "AWS Compute Optimizer for EBS: what it recommends",
-  meta: "Compute Optimizer EBS recommendations read 14 days of I/O metrics, not used space. See what each finding covers and how Trusted Advisor’s checks compare.",
+  meta: "AWS Compute Optimizer EBS recommendations read 14 days of I/O metrics, not used space. See what each finding covers and how Trusted Advisor’s checks compare.",
   h1: "What AWS Compute Optimizer recommends for EBS volumes",
   deck: "Type, size, IOPS and throughput from 14\u00a0days of I/O metrics, how Trusted Advisor differs, and what you apply yourself.",
   card: "What Compute Optimizer recommends for EBS volumes, the metrics behind it, and how Trusted Advisor differs.",
@@ -294,10 +294,6 @@ export const article: Article = {
         {
           kind: "p",
           text: "The rest stops at the recommendation. A new size, IOPS or throughput is yours to request. Compute Optimizer’s guidance on performance risk points you to the EBS steps for requesting a volume modification.",
-        },
-        {
-          kind: "p",
-          text: "Each Trusted Advisor action in the table also begins with “Consider.”",
         },
         { kind: "svg", figure: figure3 },
         { kind: "h3", id: "new-type-iops-or-throughput", title: "New type, IOPS or throughput" },

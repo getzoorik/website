@@ -373,7 +373,7 @@ export const article: Article = {
               { b: "The pool." },
               " Amoeba moves a VM’s data disks onto one ",
               { a: "btrfs pool", href: "/learn/btrfs-multiple-disks" },
-              ", sized to your data, with room to grow. On Azure the pool uses Premium SSD v2 where your region offers it, and Premium SSD otherwise. On AWS it uses gp3.",
+              ", sized to your data, with room to grow. On Azure the pool uses Premium SSD v2 where your VM’s region and zone offer it, and Premium SSD otherwise. On AWS it uses gp3.",
             ],
             [
               { b: "The move." },

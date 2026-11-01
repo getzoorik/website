@@ -4,10 +4,10 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/kubernetes-
 export const term: GlossaryTerm = {
   slug: "kubernetes-resource-limits",
   term: "Resource limits (pod limits)",
-  title: "What are resource limits in Kubernetes?",
-  meta: "A CPU limit in Kubernetes caps the CPU time a container can use. See how CPU and memory limits work, a docs example, and when a limit sets your node cost.",
-  h1: "What are resource limits in Kubernetes?",
-  card: "A CPU limit in Kubernetes is the most CPU time a container may use.",
+  title: "Kubernetes resource limits: CPU and memory",
+  meta: "Kubernetes resource limits cap a container’s CPU and memory. See how a CPU limit in Kubernetes and a memory limit work, and when a limit sets your node cost.",
+  h1: "Kubernetes resource limits: CPU and memory",
+  card: "A resource limit in Kubernetes is the most CPU or memory a container may use.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
@@ -15,13 +15,13 @@ export const term: GlossaryTerm = {
   definition: [
     {
       kind: "p",
-      text: "A CPU limit in Kubernetes is the most CPU time a container may use. A Kubernetes memory limit caps its memory.",
+      text: "A resource limit in Kubernetes is the most CPU or memory a container may use. A CPU limit in Kubernetes caps its CPU time, and a memory limit caps its memory.",
     },
   ],
   sections: [
     {
       id: "kubernetes-resource-limits-cpu-and-memory",
-      title: "Kubernetes resource limits: CPU and memory",
+      title: "Kubernetes CPU limits and memory limits",
       blocks: [
         { kind: "p", text: "On Linux, the kernel enforces each one differently:" },
         {
