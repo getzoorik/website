@@ -4,18 +4,18 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/azure-macc/
 export const term: GlossaryTerm = {
   slug: "azure-macc",
   term: "Azure MACC (Microsoft Azure Consumption Commitment)",
-  title: "What is Microsoft Azure MACC?",
-  meta: "Azure MACC, the Microsoft Azure Consumption Commitment, is a contract to spend a set amount on Azure. What counts toward it, and the shortfall if you miss it.",
-  h1: "What is Microsoft Azure MACC?",
-  card: "Azure MACC, the Microsoft Azure Consumption Commitment, is a contract to spend a set amount on Azure over a set period.",
+  title: "Microsoft MACC: what is an Azure MACC agreement?",
+  meta: "Azure MACC, the Microsoft Azure Consumption Commitment, commits you to a set amount of Azure consumption. What counts, and the MACC shortfall if you miss it.",
+  h1: "Microsoft MACC: what is an Azure MACC agreement?",
+  card: "Azure MACC, the Microsoft Azure Consumption Commitment, commits your organization to a set amount of Azure consumption over a set period.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
-      text: "Azure MACC, the Microsoft Azure Consumption Commitment, is a contract to spend a set amount on Azure over a set period. An Azure MACC agreement is part of a Microsoft Customer Agreement or Enterprise Agreement. Eligible spend on each invoice reduces the balance.",
+      text: "Azure MACC, the Microsoft Azure Consumption Commitment, commits your organization to a set amount of Azure consumption over a set period. An Azure MACC agreement is part of a Microsoft Customer Agreement or Enterprise Agreement. Eligible charges on each invoice reduce the balance.",
     },
   ],
   sections: [
@@ -35,7 +35,6 @@ export const term: GlossaryTerm = {
       id: "what-counts-toward-it",
       title: "What counts toward Azure MACC: eligible services and Marketplace offers",
       blocks: [
-        { kind: "p", text: "Only Azure MACC-eligible spend counts." },
         {
           kind: "ul",
           items: [
@@ -56,7 +55,7 @@ export const term: GlossaryTerm = {
           kind: "ul",
           items: [
             "Miss the total by the end date, and you pay the remaining balance as a shortfall charge. It comes as an Azure prepayment credit.",
-            "So a saving that takes spend below the commitment may not reduce the invoice.",
+            "So a saving that takes your Azure consumption below the commitment may not reduce the invoice.",
             "Some MACCs also have milestones, set amounts due by set dates. Missing one brings a shortfall charge too.",
             "While a MACC isn’t met, the account admins get emails 90, 60 and 30\u00a0days before it expires.",
             [
@@ -76,7 +75,7 @@ export const term: GlossaryTerm = {
   related: [
     {
       title: "Savings plan",
-      line: "A commitment to an hourly compute spend.",
+      line: "A commitment to pay a set amount per hour for compute.",
       href: "/learn/glossary/savings-plan",
     },
     {
@@ -90,6 +89,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/finops",
     },
   ],
+  relatedTitle: "Terms related to Azure MACC",
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",
     href: "/cloud-cost-optimization",

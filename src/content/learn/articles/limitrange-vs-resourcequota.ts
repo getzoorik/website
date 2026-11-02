@@ -5,23 +5,23 @@ import { figure as figure3 } from "@/features/learn/figures/limitrange-vs-resour
 
 export const article: Article = {
   slug: "limitrange-vs-resourcequota",
-  title: "LimitRange vs ResourceQuota: what caps requests",
-  meta: "LimitRange vs ResourceQuota: what each checks, how LimitRange defaults count against a Kubernetes resource quota, and how to fix a quota exceeded error.",
-  h1: "LimitRange vs ResourceQuota: what caps namespace requests",
-  deck: "A LimitRange bounds each container and a ResourceQuota caps the namespace total. How the two combine.",
+  title: "Namespace limits: LimitRange vs ResourceQuota",
+  meta: "LimitRange vs ResourceQuota: how a Kubernetes limit range sets container defaults, how a resource quota caps a namespace, and how to fix quota exceeded errors.",
+  h1: "Kubernetes namespace limits: LimitRange vs ResourceQuota",
+  deck: "Both act only when an object is created or updated, so adding either leaves running pods as they are.",
   card: "What each one checks, how LimitRange defaults count against a quota, and what to do when a quota is full.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes cost basics",
   versus: ["LimitRange", "ResourceQuota"],
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "soumya",
   cover: "/learn-covers/zoorik-learn-limitrange-vs-resourcequota-1200x630.webp",
   coverAlt:
-    "LimitRange vs ResourceQuota: a LimitRange covers each container, a ResourceQuota the total, with headroom left",
+    "LimitRange vs ResourceQuota: a LimitRange covers each container, a ResourceQuota the namespace total, with headroom left",
   short:
-    "LimitRange vs ResourceQuota is per-object rules against a namespace-wide total. A LimitRange works on each container, pod or PersistentVolumeClaim (PVC): it fills in default requests and limits for containers, and refuses values below a minimum, above a maximum or past a limit-to-request ratio. A ResourceQuota caps the namespace’s requests, limits and object counts. Use both with a CPU or memory quota: it may refuse pods with no requests or limits, and LimitRange defaults fill them in and count against it.",
+    "LimitRange vs ResourceQuota is per-object rules against a namespace-wide total. A LimitRange works on each container, pod or PersistentVolumeClaim (PVC): it fills in default requests and limits for containers, and refuses values below a minimum, above a maximum or past a limit-to-request ratio. A ResourceQuota caps the namespace’s requests, limits and object counts.",
   sections: [
     {
       id: "when-to-use-limitrange-vs-resourcequota",
@@ -30,17 +30,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Picture a namespace with two objects. Its LimitRange gives containers a default ",
-            { a: "CPU request", href: "/learn/glossary/kubernetes-resource-requests" },
-            " of 100m, which is 0.1\u00a0CPU (m means thousandths of a CPU). Its ResourceQuota caps CPU requests at 4\u00a0CPU. Every container that sets no CPU request or limit gets the 100m, and the quota adds it to the namespace’s total, so 40 such pods fill the quota and a 41st is refused. At a 500m default only 8 fit, and at 2\u00a0CPU only 2. So the default you write in one object decides how many pods the other admits.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
             "Both are namespaced objects in the core ",
             { code: "v1" },
-            " API. They act at admission, when the API server receives a create or an update. Which you need depends on the job:",
+            " API. Which you need depends on the job:",
           ],
         },
         {
@@ -54,7 +46,6 @@ export const article: Article = {
             ],
           ],
         },
-        { kind: "p", text: "Here is resource quota vs limit range, point by point." },
         {
           kind: "table",
           columns: [
@@ -115,8 +106,12 @@ export const article: Article = {
             { code: "Pod" },
             " or ",
             { code: "PersistentVolumeClaim" },
-            ". This Kubernetes LimitRange example covers the fields you’ll use most for containers:",
+            ".",
           ],
+        },
+        {
+          kind: "p",
+          text: "This Kubernetes LimitRange example covers the fields you’ll use most for containers:",
         },
         {
           kind: "code",
@@ -129,9 +124,22 @@ export const article: Article = {
             { code: "min" },
             " and ",
             { code: "max" },
-            " bound what a container may ask for: a request under the minimum or a limit over the maximum is refused with 403 Forbidden and a message naming the rule. The Kubernetes CPU walkthrough, with a 200m minimum and an 800m maximum, shows ",
+            " bound what a container may ask for. A request under the minimum or a limit over the maximum is refused with 403 Forbidden, naming the rule.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "In the Kubernetes CPU walkthrough, a 200m minimum (m means thousandths of a CPU) refuses a 100m ",
+            { a: "CPU request", href: "/learn/glossary/kubernetes-resource-requests" },
+            ". The error reads ",
             { code: "minimum cpu usage per Container is 200m, but request is 100m" },
-            ". ",
+            ".",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
             { code: "maxLimitRequestRatio" },
             " caps the ratio of limit to request, so with ",
             { code: 'cpu: "10"' },
@@ -299,8 +307,12 @@ export const article: Article = {
           text: [
             "A quota caps one namespace’s share, but it isn’t ",
             { a: "Kubernetes cost optimization", href: "/kubernetes-cost-optimization" },
-            " by itself: it doesn’t make a cluster smaller. It counts what pod specs ask for, in absolute units, so adding nodes doesn’t raise any namespace’s share. Nor does it restrict which nodes a namespace’s pods land on.",
+            " by itself: it doesn’t make a cluster smaller.",
           ],
+        },
+        {
+          kind: "p",
+          text: "It counts what pod specs ask for, in absolute units, so adding nodes raises no namespace’s share. Nor does it restrict which nodes the pods land on.",
         },
         {
           kind: "p",
@@ -325,12 +337,16 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "A container with no CPU request or limit counts against ",
-            { code: "requests.cpu" },
-            " at whatever ",
+            "A container with no CPU request or limit is charged its ",
             { code: "defaultRequest" },
-            " says, and one that sets only a limit is charged its limit, because its request is copied from it. Admission runs mutating controllers, which can change a pod, before validating ones: the LimitRange admission controller fills in its defaults in the first phase, and the ResourceQuota controller adds the pod up in the second, defaults included.",
+            " against ",
+            { code: "requests.cpu" },
+            ". One that sets only a limit is charged its limit, because its request is copied from it.",
           ],
+        },
+        {
+          kind: "p",
+          text: "Admission runs mutating controllers, which can change a pod, before validating ones. The LimitRange controller fills in its defaults first, then the ResourceQuota controller adds the pod up, defaults included.",
         },
         { kind: "svg", figure: figure1 },
         {
@@ -533,10 +549,14 @@ export const article: Article = {
         },
         {
           kind: "p",
+          text: "Smaller requests reduce your cloud cost only when a node goes. On our own AKS development cluster, Coral removed a spare worker and rebalanced the requests of 14 apps by 12 October 2026.",
+        },
+        {
+          kind: "p",
           text: [
-            "Smaller requests reduce your cloud cost only when a node goes. On our own AKS development cluster, Coral removed a spare worker and rebalanced the requests of 14 apps by 12 October 2026. The CPU the apps reserve went from 0.78 to 0.43\u00a0cores, 45% less, and memory from 6.4 to 5.4\u00a0GiB, 16% less. Then Coral swapped the remaining worker for a cheaper machine of the same size. Eight days after we connected it, ",
-            { a: "the machine cost", href: "/coral-value-lab" },
-            " was $154.76 a month instead of $368.65, 58% less.",
+            "The CPU the apps reserve went from 0.78 to 0.43\u00a0cores, and memory from 6.4 to 5.4\u00a0GiB. Then Coral swapped the remaining worker for a cheaper machine of the same size. ",
+            { a: "The machine cost", href: "/coral-value-lab" },
+            " went from $368.65 a month to $154.76, 58% less.",
           ],
         },
       ],
@@ -620,4 +640,5 @@ export const article: Article = {
       href: "/coral-guide#what-never-leaves",
     },
   ],
+  relatedTitle: "More on namespace limits and pod requests",
 };

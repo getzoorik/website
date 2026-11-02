@@ -68,7 +68,7 @@ describe("What we offer", () => {
     expect(text(free.querySelector(".ofx-free-n"))).toBe("Free");
     expect(free.querySelector(".ofx-free-n")).not.toHaveAttribute("role");
     expect(text(free.querySelector(".ofx-free-c"))).toBe(
-      "Your estimated saving at list price, from one line in your cloud console.",
+      "Your estimated saving at list price, in one PDF report, from one line in your cloud console.",
     );
   });
 

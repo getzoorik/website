@@ -4,17 +4,17 @@ import { figure as figure2 } from "@/features/learn/figures/vpa-vs-hpa/2";
 
 export const article: Article = {
   slug: "vpa-vs-hpa",
-  title: "VPA vs HPA in Kubernetes: when to use which",
-  meta: "VPA vs HPA: the VPA sets how much CPU and memory each pod requests, the HPA sets how many pods run. When to use each, why they clash, and what to do first.",
-  h1: "VPA vs HPA: when to use which",
-  deck: "What each autoscaler changes, when to use which, why they clash on CPU, and the order that works.",
+  title: "HPA vs VPA in Kubernetes: when to use which",
+  meta: "Kubernetes HPA vs VPA: the HPA sets how many pods run, the VPA sets each pod’s CPU and memory requests. When to use each, why they clash, and what to do first.",
+  h1: "HPA vs VPA in Kubernetes: when to use which",
+  deck: "Size requests from real use, then set the HPA’s target, then let your node autoscaler remove spare nodes.",
   card: "When to use the VPA or the HPA, why they clash on CPU, and why to rebalance requests first.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes autoscaling",
   versus: ["VPA", "HPA"],
   published: "2026-10-22",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "sonia",
   cover: "/learn-covers/zoorik-learn-vpa-vs-hpa-1200x630.webp",
   coverAlt: "VPA vs HPA: the VPA sets pod size, the HPA sets pod count",
@@ -35,10 +35,6 @@ export const article: Article = {
           text: "Picture two Deployments. In the first, each pod uses 200m of the 500m of CPU it requests, all day. More copies would each reserve another 500m, so this is the VPA’s job: it sets the request near real use, such as 250m. In the second, traffic pushes 4\u00a0pods to 140% of their CPU request against a 70% target. Its requests are fine. Four pods are too few, so this is the HPA’s job: it scales to 8.",
         },
         { kind: "svg", figure: figure1 },
-        {
-          kind: "p",
-          text: "Most production services need both jobs, so the real question is how to run both without two controllers reading the same signal. The node count follows from both.",
-        },
         {
           kind: "ul",
           items: [
@@ -375,13 +371,13 @@ export const article: Article = {
     },
     {
       id: "where-coral-fits",
-      title: "Where Coral fits",
+      title: "Where Coral fits with the HPA and VPA",
       blocks: [
         {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS. It does the VPA’s job without using the VPA, and it works with your HPA, so you don’t have to choose between them.",
+            " optimizes Kubernetes on AKS and EKS. It does the VPA’s job without using the VPA, and it works with your HPA.",
           ],
         },
         {
@@ -507,4 +503,5 @@ export const article: Article = {
       href: "/coral-guide#hpas-and-vpas",
     },
   ],
+  relatedTitle: "More on the HPA, the VPA and request sizing",
 };

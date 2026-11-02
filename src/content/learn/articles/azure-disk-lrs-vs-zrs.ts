@@ -5,23 +5,26 @@ import { figure as figure3 } from "@/features/learn/figures/azure-disk-lrs-vs-zr
 
 export const article: Article = {
   slug: "azure-disk-lrs-vs-zrs",
-  title: "Azure disk LRS vs ZRS: what zone redundancy costs",
-  meta: "Azure disk LRS vs ZRS: where each keeps your data, what a zone outage does, why ZRS costs 1.5 times LRS in most regions, and when LRS is the better buy.",
-  h1: "Azure disk LRS vs ZRS: what zone redundancy costs",
-  deck: "Where each keeps your three copies, what a zone outage does to them, and what ZRS adds to the cost.",
+  title: "Azure LRS vs ZRS disks: what zone redundancy costs",
+  meta: "Azure LRS keeps three disk copies in one datacenter, ZRS in three zones: what a zone outage does, why ZRS costs 1.5 times LRS in most regions, which to pick.",
+  h1: "Azure LRS vs ZRS for managed disks: what zone redundancy costs",
+  deck: "ZRS keeps data available through a zone outage, at 1.5 times LRS list prices in most regions (October 2026).",
   card: "LRS and ZRS managed disks side by side: copies, zone outages, list prices, converting, and when LRS is enough.",
   product: "amoeba",
   hub: "Block storage",
   topic: "Azure block storage",
   versus: ["LRS", "ZRS"],
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "harsh",
   cover: "/learn-covers/zoorik-learn-azure-disk-lrs-vs-zrs-1200x630.webp",
   coverAlt:
     "Azure disk LRS vs ZRS: LRS keeps the copies in one datacenter, ZRS spreads them across zones at a higher price",
-  short:
-    "Azure disk LRS vs ZRS decides where a managed disk’s three copies live: one datacenter for locally redundant storage, three availability zones for zone-redundant storage. ZRS keeps data available through a zone outage but adds write latency, and lists at 1.5 times LRS in most regions (October 2026).",
+  short: [
+    "Locally redundant storage (LRS) keeps a ",
+    { a: "managed disk", href: "/learn/glossary/azure-managed-disk" },
+    "’s three copies in one datacenter, and zone-redundant storage (ZRS) keeps them in three availability zones. ZRS adds write latency, so buy it only where nothing else carries your data through a zone outage.",
+  ],
   sections: [
     {
       id: "where-lrs-and-zrs-keep-your-three",
@@ -37,11 +40,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: [
-            "Every ",
-            { a: "managed disk", href: "/learn/glossary/azure-managed-disk" },
-            " keeps three copies of its data. The redundancy option decides where: one datacenter, or three availability zones. A zone is a physically separate group of datacenters inside a region.",
-          ],
+          text: "A zone is a physically separate group of datacenters inside a region.",
         },
         {
           kind: "h3",
@@ -126,7 +125,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "When the VM fails, ZRS protects the data. You still need a second VM, or a plan to create one, to keep serving it.",
+          text: "You still need a second VM, or a plan to create one, to keep serving the data.",
         },
         { kind: "svg", figure: figure2 },
       ],
@@ -140,17 +139,17 @@ export const article: Article = {
           text: "Microsoft’s reliability guide says ZRS “incurs a higher cost than LRS”, by an amount that varies by region and disk type. The Azure Retail Prices API, Microsoft’s unauthenticated source of list prices, shows how much.",
         },
         {
-          kind: "h3",
-          id: "most-regions-list-zrs-at-1-5",
-          title: "Most regions list ZRS at 1.5 times LRS",
-        },
-        {
           kind: "p",
           text: "In October 2026, 42 regions list a P20 ZRS disk. Of those, 40 price it at 1.5 times the P20 LRS disk. Only Japan West and New Zealand North differ.",
         },
         {
           kind: "p",
           text: "Standard SSD’s E20 shows the same 1.5 in 39 of 41 regions. Every other tier from P1 to P80 and E1 to E80 does the same, with one to four exceptions each.",
+        },
+        {
+          kind: "h3",
+          id: "most-regions-list-zrs-at-1-5",
+          title: "What ZRS adds to four P20 disks in East US",
         },
         {
           kind: "callout",
@@ -161,13 +160,13 @@ export const article: Article = {
           kind: "p",
           text: "Four disks cost 4 × $73.22 = $292.88 a month on LRS. On ZRS they cost 4 × $109.81 = $439.24. Converting all four adds $439.24 − $292.88 = $146.36 a month, or 12 × $146.36 = $1,756.32 a year.",
         },
-        { kind: "p", text: "A single 1,024\u00a0GiB P30 goes from $135.17 to $202.73." },
+        { kind: "p", text: "A single 1,024\u00a0GiB P30 goes from $135.17 to $202.73 a month." },
         {
           kind: "p",
           text: [
             "Prices change by region and over time, so check the managed disks pricing page. Our ",
             { a: "Azure disk pricing calculator", href: "/ebs-and-azure-disk-pricing" },
-            " gives a Premium SSD or Standard SSD disk’s LRS list price, and ZRS is 1.5 times that in most regions.",
+            " gives a Premium SSD or Standard SSD disk’s LRS list price.",
           ],
         },
         { kind: "svg", figure: figure3 },
@@ -176,7 +175,6 @@ export const article: Article = {
           id: "reservations-shared-disks-and-snapshots",
           title: "Reservations, shared disks and snapshots",
         },
-        { kind: "p", text: "Three smaller items round out the ZRS vs LRS cost:" },
         {
           kind: "ul",
           items: [
@@ -218,7 +216,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Azure managed disk ZRS support covers two of the five disk types. A Premium SSD ZRS disk uses the SKU ",
+            "Only two of the five disk types offer ZRS. A Premium SSD ZRS disk uses the SKU ",
             { code: "Premium_ZRS" },
             ", and a Standard SSD one uses ",
             { code: "StandardSSD_ZRS" },
@@ -238,7 +236,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "A ZRS managed disk needs a region with availability zones, and Microsoft says every such region offers one. LRS reaches further, since regions without zones offer it too. In October 2026, the Retail Prices API lists a P20\u00a0disk on LRS in 66 regions and on ZRS in 42.",
+          text: "A ZRS managed disk needs a region with availability zones, and Microsoft says every such region offers one. In October 2026, the Retail Prices API lists a P20\u00a0disk on LRS in 66 regions and on ZRS in 42.",
         },
         {
           kind: "p",
@@ -404,11 +402,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Microsoft recommends ZRS for the best reliability. Whether that’s worth 1.5 times the price depends on what else protects the data.",
-        },
-        {
-          kind: "p",
-          text: "Microsoft says ZRS disks are appropriate in two cases. One is a workload that can’t write synchronously to two zones at the application level. The other is an application that must meet a zero recovery point objective (RPO), the amount of recent data you can afford to lose.",
+          text: "Microsoft recommends ZRS for the best reliability, and calls it appropriate in two cases. One is a workload that can’t write synchronously to two zones at the application level. The other is an application that must meet a zero recovery point objective (RPO), the amount of recent data you can afford to lose.",
         },
         { kind: "h3", id: "which-disks-go-on-which", title: "Which disks go on which" },
         {
@@ -471,27 +465,15 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. It grows the pool before it fills. When your data goes down and stays down, it shrinks the pool one disk at a time.",
-        },
-        {
-          kind: "p",
           text: "On Azure, the pool uses Premium SSD v2 where your VM’s region and zone offer it, and Premium SSD otherwise.",
         },
         {
           kind: "p",
-          text: "A move only goes forward. Once the switch is checked, Amoeba snapshots and deletes each old disk. It keeps the snapshots for 7 days, then deletes them too.",
+          text: "A move only goes forward. Once the switch is checked, Amoeba snapshots each old disk, deletes the disk, and keeps the snapshot for a few days before deleting it too.",
         },
         {
           kind: "p",
-          text: "So onboard only VMs whose data can live in one zone. That includes data the application already replicates across zones, and data you can rebuild. Leave a VM off if its ZRS disks are what carries it through a zone outage.",
-        },
-        {
-          kind: "p",
-          text: [
-            "Amoeba acts only on the VMs you onboard, so you can ",
-            { a: "start with one VM", href: "/amoeba-faq#can-i-start-with-one-vm" },
-            ". Amoeba is in early access.",
-          ],
+          text: "Amoeba acts only on the VMs you onboard. Onboard those whose data can live in one zone, such as data the application already replicates across zones, or data you can rebuild. Leave a VM off if its ZRS disks are what carries it through a zone outage.",
         },
       ],
     },
@@ -573,4 +555,5 @@ export const article: Article = {
       href: "/learn/premium-ssd-vs-standard-ssd-azure",
     },
   ],
+  relatedTitle: "More on choosing Azure managed disks",
 };

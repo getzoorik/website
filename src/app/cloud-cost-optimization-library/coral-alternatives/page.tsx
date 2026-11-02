@@ -7,6 +7,7 @@ import { documentMetadata } from "@/features/documents/document-page";
 import { AlternativesPage, alternativesPageAt } from "@/features/learn/alternatives-page";
 
 import "@/styles/learn.css";
+import "@/styles/article.css";
 
 /**
  * `/cloud-cost-optimization-library/coral-alternatives`: Coral's alternatives; its old addresses, /compare/coral-alternatives and /learn/coral-alternatives, 301-redirect here

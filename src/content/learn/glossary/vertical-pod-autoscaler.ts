@@ -4,21 +4,23 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/vertical-po
 export const term: GlossaryTerm = {
   slug: "vertical-pod-autoscaler",
   term: "Vertical Pod Autoscaler (VPA)",
-  title: "What is Kubernetes VPA (Vertical Pod Autoscaler)?",
-  meta: "The Vertical Pod Autoscaler (Kubernetes VPA) sets pod CPU and memory requests from real use. Its parts, update modes, an example and how requests set node cost.",
-  h1: "What is Kubernetes VPA (Vertical Pod Autoscaler)?",
+  title: "Vertical Pod Autoscaler: what is VPA in Kubernetes?",
+  meta: "The Kubernetes VPA sets each pod’s CPU and memory requests from real use: its three parts, update modes, the quickstart example, and how requests set node cost.",
+  h1: "Vertical Pod Autoscaler: what is VPA in Kubernetes?",
   card: "VPA in Kubernetes is the Vertical Pod Autoscaler, which sets the CPU and memory requests of a workload’s pods to match real use.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
       text: [
         "VPA in Kubernetes is the Vertical Pod Autoscaler, which sets the CPU and memory ",
         { a: "requests", href: "/learn/glossary/kubernetes-resource-requests" },
-        " of a workload’s pods to match real use. You install it separately, with a metrics source such as Metrics Server.",
+        " of a workload’s pods to match real use. You install it separately, with a metrics source such as Metrics Server, and turn it on for each workload with a ",
+        { code: "VerticalPodAutoscaler" },
+        " object.",
       ],
     },
   ],
@@ -27,23 +29,13 @@ export const term: GlossaryTerm = {
       id: "what-is-vertical-pod-autoscaler-used-for",
       title: "What is Vertical Pod Autoscaler used for",
       blocks: [
-        { kind: "p", text: "It sizes pods up or down from real use, with three parts:" },
+        { kind: "p", text: "Vertical pod autoscaling runs as three parts:" },
         {
           kind: "ul",
           items: [
             "Recommender: works out a target from current and past use",
             "Updater: evicts or resizes pods that are far off",
             "Admission controller: sets the target on new pods",
-          ],
-        },
-        { kind: "h3", id: "vpa-update-modes", title: "VPA update modes" },
-        {
-          kind: "ul",
-          items: [
-            "Off: recommend only",
-            "Initial: set requests only at pod creation",
-            "Recreate, the default: evict pods that are far off",
-            "InPlaceOrRecreate: resize without a restart, or evict if that fails (AKS 1.34 or later)",
           ],
         },
         {
@@ -57,6 +49,16 @@ export const term: GlossaryTerm = {
             ", which scales on the same CPU and memory use.",
           ],
         },
+        { kind: "h3", id: "vpa-update-modes", title: "VPA update modes" },
+        {
+          kind: "ul",
+          items: [
+            "Off: recommend only",
+            "Initial: set requests only at pod creation",
+            "Recreate, the default: evict pods that are far off",
+            "InPlaceOrRecreate: resize without a restart, or evict if that fails (AKS 1.34 or later)",
+          ],
+        },
       ],
     },
     {
@@ -65,7 +67,7 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "In the VPA quickstart, two hamster pods each ask for 100\u00a0millicores of CPU (100m). They try to use slightly above 500m. After about 5\u00a0minutes, they should get a higher CPU request.",
+          text: "In the quickstart, two hamster pods each request 100\u00a0millicores of CPU (100m) and try to use slightly above 500m. After about 5\u00a0minutes they should get a higher request.",
         },
         { kind: "svg", figure: figure1 },
       ],
@@ -117,6 +119,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-cluster-utilization",
     },
   ],
+  relatedTitle: "Terms the VPA works with",
   next: { title: "VPA vs HPA", href: "/learn/vpa-vs-hpa" },
   sources: [
     {

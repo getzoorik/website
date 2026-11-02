@@ -4,18 +4,22 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/cloud-cost-
 export const term: GlossaryTerm = {
   slug: "cloud-cost-anomaly-detection",
   term: "Cloud cost anomaly detection",
-  title: "What is cost anomaly detection in AWS and Azure?",
-  meta: "Cost anomaly detection learns your normal cloud cost and alerts on sudden jumps. See how AWS Cost Anomaly Detection and Azure find one, and what they miss.",
-  h1: "What is cost anomaly detection in AWS and Azure?",
-  card: "Cloud cost anomaly detection is an automated check that learns your normal spend and flags sudden changes.",
+  title: "AWS cost anomaly detection, and how Azure compares",
+  meta: "Cloud cost anomaly detection learns your normal cloud cost and flags sudden jumps. See how AWS anomaly detection and Azure find them, and what both miss.",
+  h1: "AWS cost anomaly detection, and how Azure compares",
+  card: "Cloud cost anomaly detection is an automated check that learns your normal cloud cost and flags sudden changes.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
-      text: "Cloud cost anomaly detection is an automated check that learns your normal spend and flags sudden changes. The cost anomaly meaning is narrow: a spike or drop your past spend doesn’t predict.",
+      text: "Cloud cost anomaly detection is an automated check that learns your normal cloud cost and flags sudden changes. An anomaly is a spike or drop your past cost doesn’t predict.",
+    },
+    {
+      kind: "p",
+      text: "AWS Cost Anomaly Detection is AWS’s own service for it, and Microsoft Cost Management runs the same kind of check for Azure.",
     },
   ],
   sections: [
@@ -24,17 +28,12 @@ export const term: GlossaryTerm = {
       title: "What is a cost anomaly in AWS and Azure?",
       blocks: [
         {
-          kind: "p",
-          text: "In AWS, it’s spend that AWS Cost Anomaly Detection marks as unusual, using machine learning. Microsoft Cost Management finds anomalies per Azure subscription.",
-        },
-        {
           kind: "ul",
           items: [
-            "AWS allows for weekly or monthly patterns and natural growth.",
+            "AWS uses machine learning to mark cost as unusual, allowing for weekly or monthly patterns and natural growth.",
             "AWS checks about three times a day; detection can take up to 24\u00a0hours.",
             "AWS needs 10\u00a0days of history for a newly used service.",
-            "Azure compares each day’s total with a forecast from the last 60\u00a0days.",
-            "Azure runs that check 36\u00a0hours after the day ends (UTC).",
+            "Azure checks each subscription 36\u00a0hours after the day ends (UTC). It compares the day’s total with a forecast from the last 60\u00a0days.",
           ],
         },
       ],
@@ -72,11 +71,6 @@ export const term: GlossaryTerm = {
               { a: "cloud cost optimization tools", href: "/cloud-cost-optimization-library" },
               ", with what each one does.",
             ],
-            [
-              "The ",
-              { a: "free assessment", href: "/assessment" },
-              " works out what your clusters and disks could save.",
-            ],
           ],
         },
       ],
@@ -91,7 +85,7 @@ export const term: GlossaryTerm = {
     },
     {
       title: "Cloud cost governance",
-      line: "Rules, including alerts on unusual spend.",
+      line: "Rules, including alerts on unusual cost.",
       href: "/learn/glossary/cloud-cost-governance",
     },
     {
@@ -100,6 +94,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/rightsizing",
     },
   ],
+  relatedTitle: "Terms related to anomaly detection",
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",
     href: "/cloud-cost-optimization",

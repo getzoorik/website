@@ -19,13 +19,13 @@ import { ProgramPair } from "@/features/programs/program-parts";
 /**
  * `/pricing`, on /partners' frame:
  *
- *   hero                              the title, the owner's line (D226) as the deck, Estimate your saving and
- *                                     Book a demo
- *   Start with the free assessment    what the assessment is, and the two commands in the docs' table
- *   Coral and Amoeba                  on the band: what each does, what it is priced per, its assessment and page
+ *   hero                              the title, the first sentence of the owner's line (D226) as the deck,
+ *                                     Estimate your saving and Book a demo
+ *   Start with the free assessment    its second sentence, what the assessment is, and the two commands
+ *   Coral and Amoeba                  on the band: what each does, what it is priced per, and its page
  *   Buy through your cloud marketplace  the four listings by name, the private offer and every listing
  *   the pair                          on the band: early access on the white card, design partners on the navy one
- *   Questions                         the FAQ's rows, closed, with no numbers
+ *   Questions                         the FAQ's one row, closed, with no number
  *   closing row                       the site's, for both products
  *
  * 🔴 NO PRICE, RATE, CURRENCY OR FIGURE (D193): the text holds no digit. The pair rises as it arrives; nothing else

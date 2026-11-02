@@ -8,17 +8,17 @@ export const article: Article = {
   title: "Kubernetes descheduler: what it moves and when",
   meta: "What the Kubernetes descheduler evicts, LowNodeUtilization vs HighNodeUtilization, a dry-run Helm example, and when your autoscaler already does the job.",
   h1: "Kubernetes descheduler: what it moves and when to use it",
-  deck: "It evicts pods that no longer belong on their node. It never picks the next node, and it never removes one.",
+  deck: "With the Helm chart’s defaults, it spreads pods out instead of packing nodes for scale-down.",
   card: "What the descheduler evicts, LowNodeUtilization vs HighNodeUtilization, and a Helm example in dry-run mode.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Node lifecycle and scheduling",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "iqbal",
   cover: "/learn-covers/zoorik-learn-kubernetes-descheduler-1200x630.webp",
   coverAlt:
-    "Kubernetes descheduler: it evicts a pod from a busy node to a light one by requests, and no node is deleted",
+    "Kubernetes descheduler: it evicts a pod from a busy node toward a light one by requests, and no node is deleted",
   short:
     "The Kubernetes descheduler evicts pods from nodes where they no longer belong, so the scheduler can place their replacements better. Most strategies target pods that break a placement rule, keep restarting or have failed, and the descheduler never schedules a pod or deletes a node.",
   sections: [
@@ -32,7 +32,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Nothing moves them back. Kubernetes picks a node for each new pod once, and Amazon’s EKS documentation puts it plainly: “The Kubernetes scheduler never relocates a pod that is already running.”",
+          text: "Nothing moves them back. Amazon’s EKS documentation puts it plainly: “The Kubernetes scheduler never relocates a pod that is already running.”",
         },
         { kind: "p", text: "Placement drifts in quieter ways too:" },
         {
@@ -56,7 +56,7 @@ export const article: Article = {
           text: [
             "Every eviction goes through the Eviction API. So a ",
             { a: "PodDisruptionBudget", href: "/learn/pod-disruption-budget-best-practices" },
-            ", or PDB, that allows no more disruptions keeps the pod where it is. Removing a node that ends up empty is your autoscaler’s job.",
+            " (PDB) that allows no more disruptions keeps the pod where it is.",
           ],
         },
         { kind: "svg", figure: figure1 },
@@ -78,7 +78,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Pods are evicted even if they use a Persistent Volume Claim (PVC), unless you protect them.",
+          text: "Pods with a Persistent Volume Claim (PVC) are evicted unless you protect them.",
         },
       ],
     },
@@ -150,11 +150,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: [
-            "Actual use doesn’t count by default, so ",
-            { code: "kubectl top" },
-            " can tell a different story. LowNodeUtilization can read real usage from Metrics Server or Prometheus instead. HighNodeUtilization can’t yet.",
-          ],
+          text: "Actual use doesn’t count by default. LowNodeUtilization can read real usage from Metrics Server or Prometheus instead, and HighNodeUtilization can’t yet.",
         },
         {
           kind: "h3",
@@ -164,20 +160,16 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Descheduler LowNodeUtilization takes two maps, ",
+            "LowNodeUtilization takes two maps, ",
             { code: "thresholds" },
             " and ",
             { code: "targetThresholds" },
             ". A node under ",
             { code: "thresholds" },
-            " for every resource is underutilized. A node over ",
+            " for every resource is underutilized, and one over ",
             { code: "targetThresholds" },
-            " for any one resource is overutilized.",
+            " for any resource is overutilized. The strategy evicts pods from overutilized nodes toward underutilized ones, and does nothing when either group is empty.",
           ],
-        },
-        {
-          kind: "p",
-          text: "The strategy evicts pods from the overutilized nodes and expects their replacements to land on the underutilized ones. It does nothing when either group is empty.",
         },
         {
           kind: "p",
@@ -208,7 +200,7 @@ export const article: Article = {
             { code: "MostAllocated" },
             " scoring strategy. Under the default, ",
             { code: "LeastAllocated" },
-            ", the scheduler prefers less-allocated nodes, which can send the replacements straight back to the node that was just emptied.",
+            ", the replacements can go straight back to the node that was just emptied.",
           ],
         },
         {
@@ -229,21 +221,11 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Worked example",
-          text: "Under the chart’s defaults, node-a’s 70% is over 50%, node-c’s 10% is under 20%, and node-b’s 45% is in neither group. LowNodeUtilization evicts from node-a and expects the replacements on node-c, which stays in service.",
-        },
-        {
-          kind: "p",
           text: [
-            "HighNodeUtilization at the 20% ",
-            { code: "thresholds" },
-            " in the example below evicts node-c’s pods instead. ",
+            "Under the chart’s defaults, node-a’s 70% is over 50% and node-c’s 10% is under 20%, so LowNodeUtilization evicts from node-a toward node-c. HighNodeUtilization at 20% evicts node-c’s pods instead, and ",
             { code: "MostAllocated" },
-            " then prefers the busier node-a, which has room (70% + 10% = 80%).",
+            " sends them to node-a, which has room (70% + 10% = 80%). Three nodes become two, reducing the pool’s machine cost by a third.",
           ],
-        },
-        {
-          kind: "p",
-          text: "Three nodes can become two. Removing node-c reduces the pool’s machine cost by a third.",
         },
         { kind: "svg", figure: figure2 },
       ],
@@ -332,17 +314,11 @@ export const article: Article = {
           text: [
             "From v0.34, a pod can ask to stay with the ",
             { code: "descheduler.alpha.kubernetes.io/prefer-no-eviction" },
-            " annotation. Each strategy decides whether to respect it. It binds for all of them only when DefaultEvictor sets ",
+            " annotation. It binds every strategy only when DefaultEvictor sets ",
             { code: "noEvictionPolicy" },
             " to ",
             { code: "Mandatory" },
-            ".",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "At ",
+            ". At ",
             { code: "--v=4" },
             " or higher, the descheduler logs why each skipped pod wasn’t evictable.",
           ],
@@ -380,7 +356,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "It also changes two protections. Pods with a PVC are protected, and pods with local storage are not. So with the chart’s defaults, a pod with an emptyDir or hostPath volume can be evicted.",
+          text: "The chart also changes two protections: pods with a PVC are protected, and pods with local storage are not. So a pod with an emptyDir or hostPath volume can be evicted.",
         },
         {
           kind: "h3",
@@ -450,8 +426,6 @@ export const article: Article = {
               { code: "schedulerName" },
               ", or to the whole cluster under ",
               { code: "default-scheduler" },
-              ". You turn them on with ",
-              { code: "--enable-upstream-kubescheduler-user-configuration" },
               ".",
             ],
           ],
@@ -475,7 +449,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "If the aim is to reduce cloud cost, the eviction is the small part. A node costs money until something deletes it, and that’s your autoscaler’s job. Check what it already does before you add a second component that evicts pods on its own schedule.",
+          text: "A node costs money until something deletes it, and that’s your autoscaler’s job. Check what it already does before you add a second component that evicts pods on its own schedule.",
         },
         {
           kind: "ul",
@@ -524,11 +498,11 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Requests that match real use come first and node removal second. That’s the order the ",
+            "Requests that match real use come first and node removal second, the order the ",
             { a: "Kubernetes cost optimization guide", href: "/kubernetes-cost-optimization" },
             " follows. ",
             { a: "Kubernetes bin packing", href: "/learn/kubernetes-bin-packing" },
-            " explains why placement alone never empties a node, even with the scheduler set to pack.",
+            " explains why placement alone never empties a node.",
           ],
         },
       ],
@@ -541,30 +515,23 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS, and ",
-            { a: "empties lightly used nodes", href: "/coral-guide#the-evictor" },
-            " inside your cluster:",
+            " moves pods off lightly used nodes on AKS and EKS and leaves each empty node to your autoscaler. Its “Dry run” lists the nodes it would empty in the Event log, without moving any pod.",
           ],
         },
         {
-          kind: "ul",
-          items: [
-            "it moves pods off lightly used nodes and leaves each empty node to your autoscaler",
-            "it has a “Dry run” that lists the nodes it would empty in the Event log, without moving any pod",
+          kind: "p",
+          text: [
+            { a: "The Coral guide", href: "/coral-guide#the-evictor" },
+            " lists its switches and their defaults.",
           ],
         },
-        { kind: "p", text: "The Coral guide lists its switches and their defaults." },
         {
           kind: "p",
-          text: "Node optimization handles the rest. Before it drains a node, Coral checks on the live cluster that every pod fits on another Ready node. The check takes in affinity, taints, spread, ports and zones.",
+          text: "Before it drains a node, Coral checks on the live cluster that every pod fits on another Ready node. The check takes in affinity, taints, spread, ports and zones.",
         },
         {
           kind: "p",
-          text: "Coral cordons and drains one node at a time. Where a Deployment or Argo Rollout qualifies, Coral first starts a replacement on another node. It waits until that copy is Ready before the old pod goes.",
-        },
-        {
-          kind: "p",
-          text: "Other pods are evicted within their PDB, so a single-replica app among them restarts briefly.",
+          text: "Coral cordons and drains one node at a time. Where a Deployment or Argo Rollout qualifies, it first starts a replacement elsewhere and waits until that copy is Ready before the old pod goes. Other pods are evicted within their PDB, so a single-replica app among them restarts briefly.",
         },
         {
           kind: "p",
@@ -576,11 +543,8 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "On our own AKS development cluster, Coral moved the apps off one 4-CPU worker and removed it in under 10\u00a0minutes. That reduced the cluster’s machine cost by $147.46 a month. Apps that ran a single copy restarted once on another machine.",
-        },
-        {
-          kind: "p",
           text: [
+            "On our own AKS development cluster, Coral moved the apps off one 4-CPU worker and removed it in under 10\u00a0minutes. That reduced the cluster’s machine cost by $147.46 a month, and apps that ran a single copy restarted once. ",
             { a: "The Coral Value Lab study", href: "/coral-value-lab" },
             " has the full run.",
           ],
@@ -662,4 +626,5 @@ export const article: Article = {
       href: "/learn/karpenter-consolidation",
     },
   ],
+  relatedTitle: "More on packing and emptying nodes",
 };

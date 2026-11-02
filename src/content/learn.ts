@@ -5,7 +5,6 @@ import { communityPage } from "@/content/community";
 import type { Article } from "@/content/learn/article";
 import { glossaryPage } from "@/content/learn/glossary";
 import { articleAuthor, articleRoute, findArticle, learnArticles } from "@/content/learn/published";
-import { newsPage } from "@/content/news";
 import { productFilms } from "@/content/product-films";
 import type { ProductId } from "@/content/products";
 import { shortDay } from "@/lib/content-date";
@@ -13,8 +12,8 @@ import { shortDay } from "@/lib/content-date";
 /**
  * `/learn`, the hub: every string it prints, verbatim from the approved mock. The
  * page's name and its line; on the band, Start here (the three subjects' guides) beside Find the right fix (three
- * causes of high cloud cost, each to its guide); All articles, in the order the site publishes by; Watch and read; More
- * from Zoorik. Always the three subjects, Cloud cost, Kubernetes and Block storage.
+ * causes of high cloud cost, each to its guide); All articles, in the order the site publishes by; Watch and read;
+ * Calculators, glossary and more. Always the three subjects, Cloud cost, Kubernetes and Block storage.
  *
  * ─── ONLY WHAT IS PUBLISHED ─────────────────────────────────────────────────
  * Every row and tile is an article of the Learn index (`@/content/learn/published`), read from the article's own file,
@@ -38,24 +37,27 @@ export const learnSubjects: readonly { readonly id: LearnSubject; readonly label
 export const learnPage = {
   path: routes.learn,
   meta: {
-    /** The `<title>`'s own words, before " | Zoorik". The h1 is "Zoorik Learn"; the header's Docs menu names the
-     *  hub "Zoorik Learn" and the footer "Learn". */
-    title: "Cloud cost optimization guides",
+    /** The `<title>`'s own words, before " | Zoorik". The header's Docs menu names the hub "Zoorik Learn" and the
+     *  footer "Learn". */
+    title: "Kubernetes and block storage cost guides",
     description:
-      "Cloud cost optimization guides and comparisons for Kubernetes and block storage on Azure and AWS, from where the money goes to the right fix.",
+      "Kubernetes blog articles and block storage guides on cloud cost for Azure and AWS: AKS and EKS nodes, pods and requests, Azure managed disks and Amazon EBS.",
   },
   hero: {
-    title: "Zoorik Learn",
-    deck: "Cloud cost optimization guides for Kubernetes and block storage, and for your whole cloud cost, on Azure and AWS.",
+    title: "Zoorik Learn: Kubernetes and block storage cost guides",
+    deck: "How-tos and comparisons for Azure and AWS engineers, each sourced from the official docs.",
   },
   /**
    * The day the hub's own content last changed, for the sitemap; it is not printed. A new article moves the hub's
    * sitemap day on its own (`sitemap.ts`), so this moves only when the hub itself changes.
    */
-  updated: "Updated 1 November 2026",
+  updated: "Updated 2 November 2026",
   /** The band's name for a screen reader: the two cards have no section heading of their own. */
   band: "Start here, and find the right fix",
-  start: { title: "Start here", line: "Three guides that cover your whole cloud cost." },
+  start: {
+    title: "Start here",
+    line: "One guide for each subject: cloud cost, Kubernetes and block storage.",
+  },
   fix: {
     title: "Find the right fix",
     line: "Three causes of high cloud cost, and the fix for each.",
@@ -78,7 +80,7 @@ export const learnPage = {
     film: "on YouTube",
     medium: "On Medium",
   },
-  more: { id: "more", title: "More from Zoorik" },
+  more: { id: "more", title: "Calculators, glossary and more" },
 } as const;
 
 /** Each subject's pillar, the guide Start here lists, in the hub's order. */
@@ -351,26 +353,17 @@ export const learnMedium = {
 const curled = (line: string): string => line.replaceAll("'", "’");
 
 /**
- * More from Zoorik: Value Lab, Cloud cost optimization tools, the two calculators, Community, News and the glossary,
- * each its name and one line. Value Lab's figure is the study's own (`caseStudy.band`), and the pages' names are their
- * own h1s, but for the calculators: each is named by the words it is searched by (owner, 1 Nov 2026), Coral's first,
- * and keeps the line its tile has on the tools page.
+ * Calculators, glossary and more: the two calculators, the glossary, Value Lab, Cloud cost optimization tools,
+ * Community and News, each its name and one line. Value Lab's figure is the study's own (`caseStudy.band`), and the
+ * pages' names are their own h1s, but for the calculators, the glossary and News. Each calculator is named by the
+ * words it is searched by (owner, 1 Nov 2026), Coral's first, and keeps the line its tile has on the tools page. The
+ * glossary and News go by the short names their h1s carry, "Cloud cost glossary" and "Zoorik News".
  */
 export const learnMore: readonly {
   readonly href: string;
   readonly title: string;
   readonly line: string;
 }[] = [
-  {
-    href: routes.valueLab,
-    title: caseStudiesHub.hero.title,
-    line: `${caseStudy.band.stats[0].value} on our own AKS cluster’s monthly machine cost.`,
-  },
-  {
-    href: routes.cloudCostTools,
-    title: "Cloud cost optimization tools",
-    line: "The tools that reduce cloud cost, and how each works.",
-  },
   {
     href: routes.eksAndAksPricingCalculator,
     title: "EKS and AKS pricing calculator",
@@ -382,18 +375,28 @@ export const learnMore: readonly {
     line: curled(diskCalculator.tile.line),
   },
   {
+    href: routes.learnGlossary,
+    title: "Cloud cost glossary",
+    line: glossaryPage.line,
+  },
+  {
+    href: routes.valueLab,
+    title: caseStudiesHub.hero.title,
+    line: `${caseStudy.band.stats[0].value} on our own AKS cluster’s monthly machine cost.`,
+  },
+  {
+    href: routes.cloudCostTools,
+    title: "Cloud cost optimization tools",
+    line: "The tools that reduce cloud cost, and how each works.",
+  },
+  {
     href: routes.community,
     title: communityPage.hero.title,
     line: "r/zoorik and the FinOps and cloud cost communities on Kubernetes, Azure and AWS.",
   },
   {
     href: routes.news,
-    title: newsPage.hero.title,
+    title: "Zoorik News",
     line: "What we ship, and what changed this week.",
-  },
-  {
-    href: routes.learnGlossary,
-    title: glossaryPage.hero.title,
-    line: glossaryPage.line,
   },
 ];

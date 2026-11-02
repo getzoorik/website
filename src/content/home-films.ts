@@ -16,8 +16,9 @@ import type { ProductId } from "@/content/products";
  * 1 Nov 2026). A film is not described by anything else on the page, so its
  * label is all a screen reader gets: it says what plays, in order.
  *
- * The labels are the mock's, verbatim, its straight apostrophe ("today's") and
- * Amoeba's "right-sized spend" included.
+ * The labels are the mock's, its straight apostrophe ("today's") included.
+ * Amoeba's says "block storage cost" and "the cost once rightsized" where the
+ * mock says "disk spend" and "right-sized spend" (2 Nov 2026: the site's words).
  */
 export interface HomeFilm {
   readonly src: `/motion/${string}.mp4`;
@@ -41,6 +42,6 @@ export const homeFilms: Readonly<Record<ProductId, HomeFilm>> = {
     poster: "/motion/amoeba-poster.webp",
     caption: "Amoeba product preview with example figures.",
     label:
-      "Amoeba product preview with example figures: the Overview, where today's disk spend, the right-sized spend and the recoverable amount count up, then utilization, what needs you and the saving to date.",
+      "Amoeba product preview with example figures: the Overview, where today's block storage cost, the cost once rightsized and the recoverable amount count up, then utilization, what needs you and the saving to date.",
   },
 };

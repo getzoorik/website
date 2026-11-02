@@ -4,10 +4,12 @@ import type { DocumentId } from "@/content/documents";
 import type { ProductId } from "@/content/products";
 
 /**
- * `/assessment`: the hero with what the assessment is, the product switch and the chosen product's one line to run,
+ * `/assessment`: the hero with its one line under the h1, the product switch and the chosen product's one line to run,
  * What you get (both products' runs and their example reports), What it does, Before you run it (three questions), and
  * After the run. Every string is the mock's, verbatim; W32's (1 Nov 2026) are
- * docs/website-seo/new-pages-2026-11-01/assessment-copy.md's, as written.
+ * docs/website-seo/new-pages-2026-11-01/assessment-copy.md's, as written; 2 Nov 2026: the SEO plan sheet's pass (the
+ * title and description, the h1, the one line under it, the badge, AWS block storage access and the block storage
+ * estimate).
  *
  * The output is one PDF report. No curl line and no "one Python file" anywhere on the page.
  *
@@ -21,7 +23,7 @@ import type { ProductId } from "@/content/products";
  * The day /assessment's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /assessment's content moves this to that day in the same PR; never the build's date.
  */
-export const assessmentLastUpdated = "1 November 2026";
+export const assessmentLastUpdated = "2 November 2026";
 
 /** One run in What you get: the terminal's lines and the example report under it. */
 export interface AssessmentDemo {
@@ -111,14 +113,14 @@ export type AssessmentQuestion = { readonly title: string } & (
 export const assessmentCopy = {
   /** The page's `<title>` (through the site's template) and description. */
   meta: {
-    title: "Free cloud cost assessment for Azure and AWS",
+    title: "Free cloud cost analysis for Azure and AWS",
     description:
-      "Free cloud cost assessment for Kubernetes and block storage on Azure and AWS: a read-only cloud cost analysis, run in Cloud Shell or your terminal, in one PDF.",
+      "A free cloud computing cost analysis for AKS, EKS and block storage on Azure and AWS: read-only, in your terminal, one PDF with your estimated saving.",
   },
-  /** The h1, without "Free"; the page's `<title>` keeps it. */
-  title: "Cloud cost assessment",
-  /** Under the h1, before the line to choose: what the assessment is. The same on both products. */
-  lead: "The free cloud cost assessment estimates what you could save on Kubernetes (AKS and EKS) or block storage on Azure and AWS. It’s read-only, runs in Cloud Shell or your terminal, and writes one PDF. It sends nothing to Zoorik.",
+  /** The h1; the page's `<title>` is `meta.title`. */
+  title: "Free cloud cost analysis for Kubernetes and block storage",
+  /** The one line under the h1, before the line to choose. The same on both products. */
+  lead: "One command estimates what you could save, at list price.",
   /** Over the switch, set like the lines under the command. */
   sub: "Choose the assessment you want.",
   run: {
@@ -185,7 +187,7 @@ export const assessmentCopy = {
         mark: "python",
       },
     ] as const,
-    trust: "Read-only · Sends nothing",
+    trust: "Read-only",
   },
   /** After What it does: how long a run takes, the access it needs and how the saving is worked out. The same on
    *  both products. */
@@ -203,11 +205,15 @@ export const assessmentCopy = {
           "For AKS, it needs read access to your clusters and the Azure Kubernetes Service Cluster User Role on each.",
           "For EKS, it needs read-only EKS, EC2 and pricing actions, and an EKS access entry.",
           "For block storage on Azure, it needs Reader on the subscriptions, plus Run Command for the used-space read.",
+          "For block storage on AWS, it needs read-only EC2, Systems Manager, CloudWatch and pricing actions, plus Systems Manager Run Command for the used-space read.",
         ],
       },
       {
         title: "How is the saving worked out?",
-        text: "It sets each container’s request from its peak use, then works out how many nodes the pods need. The saving is (nodes today − nodes needed) × hourly list price × 730.",
+        items: [
+          "For Kubernetes, it sets each container’s request from its peak use and counts the nodes needed. The saving is (nodes today − nodes needed) × hourly list price × 730.",
+          "For block storage, it sizes a pool to the used space on each VM it could read. The saving is the list price of the disks the pool replaces, less the pool’s.",
+        ],
       },
     ] as readonly AssessmentQuestion[],
   },
@@ -229,7 +235,6 @@ export const assessmentCopy = {
       cta: "Book a demo",
       href: calendarUrl,
     },
-    code: { label: "Read the code", href: openSourceLinks.assessment },
     how: "How the estimate works",
   },
 } as const;

@@ -242,7 +242,7 @@ function Diagram({ figure }: { readonly figure: LearnFigure }): React.JSX.Elemen
 
 /**
  * A drawn figure: the SVG as written, in a box that scrolls sideways on a phone rather than shrink its words, then its
- * caption.
+ * caption, where it has one.
  */
 function SvgFigure({
   figure,
@@ -254,9 +254,11 @@ function SvgFigure({
   return (
     <figure className="ar-fig">
       <div className="ar-fig-s" dangerouslySetInnerHTML={{ __html: figure.markup }} />
-      <figcaption>
-        <Text text={figure.caption} breaks={breaks} />
-      </figcaption>
+      {figure.caption ? (
+        <figcaption>
+          <Text text={figure.caption} breaks={breaks} />
+        </figcaption>
+      ) : null}
     </figure>
   );
 }
@@ -636,7 +638,7 @@ export function ArticlePage({ article }: { readonly article: Article }): React.J
         }
       />
 
-      <RelatedRow title={relatedTitle[article.topic]}>
+      <RelatedRow title={article.relatedTitle ?? relatedTitle[article.topic]}>
         {article.related.map((tile) => {
           const link = titleLink({ text: tile.title, href: tile.href });
           return (

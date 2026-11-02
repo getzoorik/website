@@ -13,7 +13,7 @@ import type { OpenSourceGuide } from "@/content/open-source";
  * names, no slot counts. Re-read those sources before changing a line.
  */
 
-/** The two pages' printed date ("Updated 1 November 2026"), which the sitemap gives them too. */
+/** The printed date ("Updated 1 November 2026") of a page not changed since, which the sitemap gives it too. */
 export const troubleshootingUpdated = "1 November 2026";
 
 export type TroubleshootingId = "coral" | "amoeba";
@@ -22,7 +22,8 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
   coral: {
     route: routes.coralTroubleshooting,
     product: "coral",
-    updated: troubleshootingUpdated,
+    /* Its related link's words follow the safe-to-evict article's new h1 (2 Nov 2026). */
+    updated: "2 November 2026",
     meta: {
       title: "Coral troubleshooting",
       description:
@@ -438,7 +439,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
         href: "/learn/cluster-autoscaler-not-scaling-down",
       },
       {
-        text: "The safe-to-evict and do-not-disrupt annotations explained",
+        text: "Karpenter do-not-disrupt and the Kubernetes safe-to-evict annotation, explained",
         href: "/learn/safe-to-evict-do-not-disrupt",
       },
       { text: "Install Coral with Terraform + Helm", href: "/docs/install-coral-with-terraform" },

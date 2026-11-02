@@ -89,7 +89,7 @@ export const coralInstall = {
     /* The console is not open yet (/login shows Coral "Coming soon"), so the token line says how to get an account. */
     earlyAccess: {
       name: "Coral",
-      before: " is in early access — ",
+      before: " is in early access: ",
       link: "book a demo",
       href: calendarUrl,
       after: " for a console account.",

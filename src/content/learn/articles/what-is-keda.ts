@@ -4,22 +4,21 @@ import { figure as figure2 } from "@/features/learn/figures/what-is-keda/2";
 
 export const article: Article = {
   slug: "what-is-keda",
-  title: "What is KEDA in Kubernetes? Event-driven scaling",
-  meta: "What is KEDA in Kubernetes? It scales a workload from events such as queue length, down to zero, by driving an HPA. ScaledObjects, scalers, AKS and EKS.",
-  h1: "What is KEDA in Kubernetes? Event-driven scaling explained",
-  deck: "KEDA scales a workload from events such as queue length, down to zero, through an HPA it manages.",
+  title: "What is KEDA? Kubernetes event-driven autoscaling",
+  meta: "KEDA means Kubernetes Event-driven Autoscaling: it scales a workload from events such as queue length, down to zero. Scalers, ScaledObjects and the Helm chart.",
+  h1: "What is KEDA in Kubernetes? Event-driven autoscaling explained",
+  deck: "KEDA decides how many pods run, never how much CPU or memory each one gets.",
   card: "KEDA scales pods from queue length and other events, down to zero. How it works on AKS and EKS.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes autoscaling",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "sushant",
   cover: "/learn-covers/zoorik-learn-what-is-keda-1200x630.webp",
-  coverAlt:
-    "What is KEDA? With work waiting, KEDA runs pods, and with the queue empty it scales to zero pods",
+  coverAlt: "With work waiting, KEDA runs pods, and with the queue empty it scales to zero pods",
   short:
-    "KEDA (Kubernetes Event-driven Autoscaling) is a Kubernetes autoscaler that scales a workload from events, such as messages in a queue, not CPU alone. It drives a Horizontal Pod Autoscaler (HPA) for the workload, can scale it to zero, and decides how many pods run, not their size.",
+    "KEDA (Kubernetes Event-driven Autoscaling) is a Kubernetes autoscaler that scales a workload from events, such as messages in a queue, not CPU alone. It drives a Horizontal Pod Autoscaler (HPA) for the workload and can scale it to zero.",
   sections: [
     {
       id: "what-is-keda-in-kubernetes",
@@ -191,7 +190,13 @@ export const article: Article = {
           text: [
             "Give one ScaledObject several triggers and KEDA scales to whichever demands the most replicas, unless a ",
             { code: "scalingModifiers" },
-            " formula combines them. Deleting the ScaledObject keeps the workload’s replica count, unless you set ",
+            " formula combines them.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "Deleting the ScaledObject keeps the workload’s replica count, unless you set ",
             { code: "advanced.restoreToOriginalReplicaCount: true" },
             ".",
           ],
@@ -220,7 +225,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "If none fits, you can write a custom scaler. CPU and Memory differ from the rest: they take usage from the Kubernetes Metrics Server, not an outside event source. To scale on HTTP requests, KEDA has a separate HTTP add-on, which Microsoft lists as a preview.",
+          text: "If none fits, you can write a custom scaler. CPU and Memory differ from the rest: they take usage from the Kubernetes Metrics Server, not an outside event source.",
+        },
+        {
+          kind: "p",
+          text: "To scale on HTTP requests, KEDA has a separate HTTP add-on, which Microsoft lists as a preview.",
         },
         {
           kind: "h3",
@@ -487,13 +496,13 @@ export const article: Article = {
     },
     {
       id: "where-coral-fits",
-      title: "Where Coral fits",
+      title: "Where Coral fits alongside KEDA",
       blocks: [
         {
           kind: "p",
           text: [
             { a: "Coral optimizes Kubernetes", href: "/coral" },
-            " on AKS and EKS and works alongside KEDA. Its own work is the layer KEDA leaves alone. It rebalances CPU and memory requests, and drains spare nodes one at a time so your autoscaler can remove them.",
+            " on AKS and EKS. It works on the layer KEDA leaves alone: each pod’s CPU and memory requests, and the nodes they leave spare.",
           ],
         },
         {
@@ -612,4 +621,5 @@ export const article: Article = {
       href: "/coral-faq#does-optimization-ever-modify-hpa-minreplicas",
     },
   ],
+  relatedTitle: "More on KEDA and event-driven scaling",
 };

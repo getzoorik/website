@@ -1,7 +1,7 @@
 {
   "node": [
     {
-      "title": "Azure (AKS): monthly list price per node",
+      "title": "Azure VM pricing: monthly list price per node",
       "head": ["Size", "Kind", "vCPUs", "Memory", "East US", "West Europe", "Central India"],
       "rows": [
         ["`Standard_D2s_v5`", "General purpose", "2", "8 GiB", "$70.08", "$83.95", "$73.73"],
@@ -117,7 +117,7 @@
       ]
     },
     {
-      "title": "AWS (EKS): monthly list price per node",
+      "title": "EC2 instance pricing: monthly list price per node",
       "head": [
         "Size",
         "Kind",

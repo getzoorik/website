@@ -76,9 +76,10 @@ interface Case {
   readonly readMore: readonly string[];
 }
 
-const closing = (product: "coral" | "amoeba"): readonly (readonly [string, string])[] => [
-  [`read-${product}`, `${product === "coral" ? "Coral" : "Amoeba"} docs and guides`],
-];
+const closing = (
+  product: "coral" | "amoeba",
+  title = `${product === "coral" ? "Coral" : "Amoeba"} docs and guides`,
+): readonly (readonly [string, string])[] => [[`read-${product}`, title]];
 
 const coralOrder = [
   "top",
@@ -154,18 +155,18 @@ const cases: readonly (readonly [string, Case])[] = [
       content: eksCostOptimizationPage,
       title: "EKS cost optimization",
       description:
-        "EKS cost optimization with Coral: it rebalances your cluster to reduce EKS costs, sizes pods to real use, and its EKS node optimization empties spare nodes.",
+        "EKS cost optimization with Coral: it rebalances your cluster, sizes pods to real use and empties spare EC2 nodes. Autonomous EKS tuning, with no code changes.",
       eyebrow: "Coral for EKS",
       chips: ["EKS"],
       order: coralOrder,
       h2s: [
-        ["about", "How Coral reduces EKS costs"],
+        ["about", "How Coral reduces the cloud cost of your EKS clusters"],
         ["how", "How it works on EKS"],
         ["setup", "What connect sets up on EKS"],
-        ["works-with", "Works with"],
-        ["install", "Install your way"],
+        ["works-with", "What Coral works with on EKS"],
+        ["install", "Install Coral on EKS your way"],
         ["questions", "Questions about Coral on EKS"],
-        ...closing("coral"),
+        ...closing("coral", "Coral docs and EKS guides"),
       ],
       cards: ["Connect a cluster", "See the idle capacity", "Optimize"],
       setupRows: 4,
@@ -242,7 +243,7 @@ const cases: readonly (readonly [string, Case])[] = [
       content: ebsCostOptimizationPage,
       title: "EBS cost optimization",
       description:
-        "EBS cost optimization on EC2 instances. Reduce EBS costs: Amoeba moves data volumes onto one pool of gp3 volumes sized to your data, then grows and shrinks it.",
+        "EBS cost optimization for Windows and Linux EC2: Amoeba rightsizes data volumes by moving them onto one gp3 pool that grows and shrinks with your data.",
       eyebrow: "Amoeba for AWS",
       chips: ["AWS", "Windows", "Linux"],
       order: amoebaOrder,
@@ -250,9 +251,9 @@ const cases: readonly (readonly [string, Case])[] = [
         ["about", "What Amoeba does on AWS"],
         ["how", "How it works on AWS"],
         ["setup", "What onboarding sets up on AWS"],
-        ["needs", "What your VMs need"],
+        ["needs", "What your EC2 instances need"],
         ["questions", "Questions about Amoeba on AWS"],
-        ...closing("amoeba"),
+        ...closing("amoeba", "Amoeba docs and EBS guides"),
       ],
       cards: ["Onboard a Windows or Linux VM", "Move onto one pool", "Rightsize the pool"],
       setupRows: 4,
@@ -265,7 +266,6 @@ const cases: readonly (readonly [string, Case])[] = [
         ["do-my-services-on-ec2-go-down", "Do my services on EC2 go down during the move?"],
         ["do-i-pay-for-both-sets-of", "Do I pay for both sets of volumes during the move?"],
         ["how-is-the-saving-worked-out-on", "How is the saving worked out on AWS?"],
-        ["do-you-pay-for-unused-space-on", "Do you pay for unused space on an EBS volume?"],
         ["can-ebs-volumes-shrink-automatically", "Can EBS volumes shrink automatically?"],
       ],
       readMore: [
@@ -284,14 +284,14 @@ function renderPage(path: string, { Page }: Case): HTMLElement {
 }
 
 describe("the four per-cloud pages", () => {
-  it("are the four the footer names, in its order, each dated the day it was built", () => {
+  it("are the four the footer names, in its order, each dated the day it last changed", () => {
     expect(cloudPages.map((page) => page.path)).toEqual([
       routes.aksCostOptimization,
       routes.eksCostOptimization,
       routes.azureManagedDiskCostOptimization,
       routes.ebsCostOptimization,
     ]);
-    expect(cloudPages.map((page) => page.lastUpdated)).toEqual(Array(4).fill("1 November 2026"));
+    expect(cloudPages.map((page) => page.lastUpdated)).toEqual(Array(4).fill("2 November 2026"));
     /* Product pages, not documents: the header marks nothing, and an in-page link leaves the address clean, as on
        /coral and /amoeba (their mocks carry no data-keep-hash). */
     for (const page of cloudPages) {

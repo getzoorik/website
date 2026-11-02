@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 
 import { cloudPrices as prices, eniFacts as eni } from "@/content/cloud-prices";
 import {
+  AZURE_TIER_IOPS,
   HOURS_PER_MONTH,
   aksAllocatableMemoryGb,
   aksKubeReservedCpuMillicores,
@@ -13,6 +14,7 @@ import {
   azureTierFor,
   azureTiers,
   ebsDiskCost,
+  ebsIops,
   ebsPrice,
   eksAllocatableMemoryMib,
   eksEniMaxPods,
@@ -362,6 +364,22 @@ describe("the checked calc.test.ts", () => {
     assert.equal(r.emptyGib, 150);
     close(r.emptyShare, 0.75);
     close(r.emptyUsdPerMonth, 12);
+  });
+
+  it("disk IOPS: every priced Azure tier has its figure, gp2 scales 3 per GiB from 100 to 16,000, gp3 includes 3,000", () => {
+    for (const type of ["premium-ssd", "standard-ssd"] as const) {
+      for (const region of prices.azure.regions) {
+        const tiers = azureTiers(prices, region, type).map((tier) => tier.name);
+        assert.deepEqual(tiers, Object.keys(AZURE_TIER_IOPS[type]), `${type} ${region}`);
+      }
+    }
+    assert.equal(AZURE_TIER_IOPS["premium-ssd"].P15, 1100);
+    assert.equal(AZURE_TIER_IOPS["standard-ssd"].E15, 500);
+    assert.equal(ebsIops("gp2", 1), 100);
+    assert.equal(ebsIops("gp2", 200), 600);
+    assert.equal(ebsIops("gp2", 5334), 16000);
+    assert.equal(ebsIops("gp2", 16384), 16000);
+    assert.equal(ebsIops("gp3", 200), 3000);
   });
 });
 

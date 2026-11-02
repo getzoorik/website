@@ -11,7 +11,7 @@ import { useAssessment } from "@/features/assessment/assessment-provider";
 import { ByChoice } from "@/features/assessment/by-choice";
 import { offSiteProps } from "@/lib/links";
 
-const { send, book, code, how } = assessmentCopy.after;
+const { send, book, how } = assessmentCopy.after;
 
 /** What it does' two facts that follow the product: what the script reads, and what it runs only when it must. */
 export function AssessmentFacts({ fact }: { readonly fact: "reads" | "runs" }): React.JSX.Element {
@@ -54,8 +54,8 @@ function OffSite({
 
 /**
  * After the run: "Send us your PDF" (the mail to the founders, its subject the product's) and "Book 30 minutes" (the
- * people who build the product), in the site's closing grid; then the code and how the estimate works (the product's
- * section of the README).
+ * people who build the product), in the site's closing grid; then how the estimate works (the product's section of
+ * the README).
  *
  * The mail button and the estimate link read the same for both products, so they are one link whose address follows
  * the product. The booking line names both products whatever the switch says (`book.both`), so it is static text
@@ -96,7 +96,6 @@ export function AssessmentAfter(): React.JSX.Element {
         </div>
       </div>
       <p className="ax-foot">
-        <OffSite href={code.href}>{code.label}</OffSite>
         <OffSite href={assessmentProducts[product].how}>{how}</OffSite>
       </p>
     </>

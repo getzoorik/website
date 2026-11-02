@@ -4,14 +4,14 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/thin-provis
 export const term: GlossaryTerm = {
   slug: "thin-provisioning",
   term: "Thin provisioning",
-  title: "Thin provisioning vs thick provisioning",
-  meta: "Thin provisioning means a volume takes space only as you write data. See how it differs from thick provisioning, and how Azure and AWS charge by disk size.",
-  h1: "Thin provisioning vs thick provisioning",
+  title: "Thick vs thin provisioning in storage",
+  meta: "Thin provision a volume and it takes space only as you write data. Thick provision it and the full size is set aside. See why cloud disks cost their full size.",
+  h1: "Thick vs thin provisioning in storage",
   card: "Thin provisioning in storage creates a volume that takes up space only as you write data.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -21,7 +21,7 @@ export const term: GlossaryTerm = {
   sections: [
     {
       id: "thin-provisioning-vs-thick-provisioning",
-      title: "Thick vs thin provisioning: up front or as you write",
+      title: "Thin provisioning vs thick provisioning: up front or as you write",
       blocks: [
         {
           kind: "ul",
@@ -30,11 +30,15 @@ export const term: GlossaryTerm = {
             "Thin provisioning takes space only as needed, and thin volumes can add up to more than the pool holds.",
           ],
         },
+        {
+          kind: "p",
+          text: "When choosing thick or thin provisioning, Microsoft recommends thin if you don’t know how much space a volume needs. To limit what a volume takes from the pool, it recommends thick, which Azure Local calls “fixed”.",
+        },
       ],
     },
     {
       id: "a-10-gb-virtual-disk",
-      title: "A 10\u00a0GB virtual disk",
+      title: "A 10\u00a0GB virtual disk, thick or thin provisioned",
       blocks: [
         {
           kind: "p",
@@ -50,31 +54,19 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "Azure managed disks and Amazon EBS volumes charge for the size you provision, not the data you write. So an empty GiB costs the same as a full one.",
+          text: "Provisioning storage sets your cloud cost. Azure charges a managed disk’s full size from first use, and Amazon EBS charges each provisioned GB every month. So an empty GiB costs as much as a full one.",
         },
         {
-          kind: "ul",
-          items: [
-            "In Microsoft’s pricing example, a 1\u00a0TiB Standard SSD holds 120\u00a0GiB. You still pay for 1\u00a0TiB.",
-            "Azure charges for a managed disk’s full size from first use.",
-            "Amazon EBS charges per provisioned GB each month.",
-          ],
+          kind: "p",
+          text: "In Microsoft’s pricing example, a 1\u00a0TiB Standard SSD holds 120\u00a0GiB. You still pay for 1\u00a0TiB.",
         },
         {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously. The ",
-            { a: "free assessment", href: "/assessment?p=amoeba" },
-            " works out your own figure.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "Sizing disks to their data is ",
-            { a: "rightsizing", href: "/learn/glossary/rightsizing" },
-            ".",
+            " moves a VM’s data disks onto one btrfs pool sized to your data, then ",
+            { a: "rightsizes", href: "/learn/glossary/rightsizing" },
+            " it autonomously. So you pay for close to what you use.",
           ],
         },
       ],
@@ -98,6 +90,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/df-vs-du",
     },
   ],
+  relatedTitle: "Terms related to thin provisioning",
   next: { title: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
   sources: [
     {

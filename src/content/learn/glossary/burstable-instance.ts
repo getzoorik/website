@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "burstable-instance",
   term: "Burstable instance",
   title: "What is a burstable instance?",
-  meta: "A burstable instance is a VM with a baseline CPU and credits to burst above it. See how AWS T and Azure B-series VMs work, and when unlimited mode costs more.",
+  meta: "A burstable instance is a VM with a baseline CPU and credits to burst above it. See AWS T3 and T4g, Azure B-series burstable VMs, and T3 unlimited.",
   h1: "What is a burstable instance?",
   card: "A burstable instance is a virtual machine (VM) with a baseline CPU level.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -51,7 +51,7 @@ export const term: GlossaryTerm = {
           kind: "ul",
           items: [
             "A CPU credit in AWS is one virtual CPU (vCPU) at 100% for one minute.",
-            "T3 unlimited mode is the default. Dedicated Hosts don’t support it.",
+            "Unlimited mode is the default for T3, T3a, T4g and T8i, but T3 on a Dedicated Host runs only in standard mode.",
           ],
         },
         {
@@ -84,6 +84,23 @@ export const term: GlossaryTerm = {
       ],
     },
     {
+      id: "aws-t2-vs-t3-vs-t3a-instances",
+      title: "AWS T2 vs T3 vs T3a instances",
+      blocks: [
+        {
+          kind: "ul",
+          items: [
+            "A stopped T2 loses its earned credits. A stopped T3 or T3a keeps them for seven days.",
+            "t2.nano, t2.micro and t2.small have 1 vCPU. Every T3 and T3a size has at least 2.",
+          ],
+        },
+        {
+          kind: "p",
+          text: "T3a has T3’s sizes, credits and baselines, on AMD EPYC processors instead of Intel Xeon. AWS lists it at 10% less than T3.",
+        },
+      ],
+    },
+    {
       id: "a-t3-large-past-its-baseline",
       title: "A t3.large past its baseline",
       blocks: [
@@ -109,14 +126,6 @@ export const term: GlossaryTerm = {
             ],
           ],
         },
-        {
-          kind: "p",
-          text: [
-            "The ",
-            { a: "free assessment", href: "/assessment" },
-            " works out what your clusters and disks could save.",
-          ],
-        },
       ],
     },
   ],
@@ -137,6 +146,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-qos-class",
     },
   ],
+  relatedTitle: "Terms related to burstable instances",
   next: {
     title: "Kubernetes node size best practices: large or small nodes",
     href: "/learn/kubernetes-node-size-best-practices",

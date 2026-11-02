@@ -7,18 +7,19 @@ export const article: Article = {
   title: "How poor architecture increases your cloud costs",
   meta: "High cloud costs are often an architecture problem, not a pricing problem: VMs vs containers, where design adds cost, and how to size from measured use.",
   h1: "How poor architecture increases your cloud costs",
-  deck: "Why high cloud costs are often an architecture problem, not a pricing problem.",
+  deck: "High cloud cost often comes from how a system is built and sized, not from what each resource costs.",
   card: "Why high cloud costs are often an architecture problem, not a pricing problem.",
   product: "coral",
   hub: "Cloud cost",
   topic: "Cloud cost",
   published: "2026-10-14",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "vineet",
   cover: "/learn-covers/zoorik-learn-poor-architecture-cloud-bill-1200x630.webp",
-  coverAlt: "Architecture and cloud cost: one VM per app, against a shared pool with headroom",
+  coverAlt:
+    "Architecture and cloud cost: one VM per app, against a shared pool of nodes with headroom",
   short:
-    "High cloud cost often comes from a system’s architecture, not from what each resource costs. When every app runs on its own VM sized for its peak, you pay for capacity that sits idle most of the day. Sizing from measured use, sharing capacity and scaling with demand took one client’s monthly compute cost from about $2,800 to about $1,560.",
+    "When every app runs on its own VM sized for its peak, you pay for capacity that sits idle most of the day. Sizing from measured use, sharing capacity and scaling with demand took one client’s monthly compute cost from about $2,800 to about $1,560.",
   sections: [
     {
       id: "the-hidden-cost-of-architectural-decisions",
@@ -26,32 +27,41 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "During a recent cloud cost engagement, we found a client running every workload on a dedicated virtual machine (VM) rather than in containers. Nothing looked wrong: the applications ran, and the infrastructure was available. What we had to ask was whether the client was paying for the computing power its applications need, or for the way it had chosen to build them.",
+          text: "In one cloud cost engagement, a client ran every workload on its own virtual machine (VM) rather than in containers. Everything worked. The question was whether the client paid for the computing power its apps need, or for the way it had built them.",
         },
         {
           kind: "p",
-          text: "Picture one of those applications. Its VM has 4\u00a0vCPUs and 16\u00a0GB of RAM to handle peak traffic, but for most of the day it uses a fraction of that, and you pay for the provisioned capacity all the same. Now repeat that for every application, each with its own allocation and little room to scale.",
+          text: "Take one of those apps. Its VM has 4\u00a0vCPUs and 16\u00a0GB of RAM for peak traffic, but most of the day it uses a fraction of that. You pay for all of it, app after app.",
         },
         {
           kind: "p",
-          text: "Over time, the unused capacity adds up. Development and test environments stay on, scaling stays manual, and teams add capacity for a traffic spike but rarely revisit the original sizes. Each decision looks reasonable alone. Together they become a large share of the cost, and the cause is the architecture and how it is run, not the VM itself.",
+          text: "Over time, the unused capacity adds up. Development and test environments stay on, scaling stays manual, and capacity added for a traffic spike is never revisited. The cause is the architecture and how it’s run, not the VM itself.",
         },
       ],
     },
     {
       id: "vms-versus-containers-understanding-the-architectural-trade-off",
-      title: "Containers vs virtual machines: the architectural trade-off",
+      title: "Container vs VM: the architectural trade-off",
       blocks: [
+        {
+          kind: "h3",
+          id: "difference-between-a-vm-and-a-container",
+          title: "The difference between a VM and a container",
+        },
         {
           kind: "p",
           text: "A VM runs its own operating system on virtualized hardware. A container packages an application and its dependencies and shares the host’s kernel. That difference changes how capacity gets used.",
         },
         {
           kind: "p",
-          text: "A VM-centric design usually gives each application a dedicated slice of capacity, which stays reserved while the application is idle. With containers, many applications share a pool of nodes. An orchestrator such as Kubernetes places each workload by its resource requests, constraints and availability needs, so the spare room on one node can serve another workload.",
+          text: "A VM-centric design usually gives each app a dedicated slice of capacity, reserved even while the app is idle. With containers, many apps share a pool of nodes. An orchestrator such as Kubernetes places each workload by its resource requests, constraints and availability needs, so spare room on one node can serve another.",
         },
         { kind: "svg", figure: figure1 },
-        { kind: "p", text: "That shared pool brings more than packing:" },
+        {
+          kind: "h3",
+          id: "why-a-shared-pool-uses-capacity-better",
+          title: "Why a shared pool of nodes uses capacity better",
+        },
         {
           kind: "ul",
           items: [
@@ -74,11 +84,11 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Watch out",
-          text: "Containers don’t reduce cloud cost on their own. A Kubernetes cluster with oversized nodes, too many replicas, inflated requests and idle environments can cost more than a well-designed set of VMs. The most common case is requests. Pods reserve more CPU and memory than they use, and the cluster keeps paying for nodes that hold capacity nobody consumes.",
+          text: "Containers don’t reduce cloud cost on their own. A cluster with oversized nodes, too many replicas, inflated requests and idle environments can cost more than well-designed VMs. Inflated requests are the most common: pods reserve more CPU and memory than they use, and the cluster keeps nodes for capacity nobody uses.",
         },
         {
           kind: "p",
-          text: "So the goal isn’t to replace every VM with a container, but to choose the architecture that fits the workload and uses what it provisions.",
+          text: "The goal isn’t to replace every VM with a container, but to choose the architecture that fits the workload and uses what it provisions.",
         },
       ],
     },
@@ -93,12 +103,12 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "An application sized for a theoretical peak, not for measured demand, pays for capacity it doesn’t use. One that needs a lot during a short processing window and little the rest of the day is a poor fit for a permanently large VM. Depending on the workload, smaller VMs, scheduled scaling, containers or serverless compute may fit better.",
+          text: "An app sized for a theoretical peak, not for measured demand, pays for capacity it doesn’t use. An app that is busy for a short window and quiet the rest of the day is a poor fit for a permanently large VM. Smaller VMs, scheduled scaling, containers or serverless compute may fit it better.",
         },
         {
           kind: "p",
           text: [
-            "Storage follows the same pattern. Disks are sized for the largest dataset a team expects, and ",
+            "Storage follows the same pattern: disks are sized for the largest dataset a team expects. ",
             {
               a: "Azure managed disks and Amazon EBS volumes can grow but can’t shrink in place",
               href: "/learn/shrink-azure-managed-disk",
@@ -113,7 +123,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "A separate VM per application makes sense when isolation, security, licensing or operations require it. When workloads are compatible and peak at different times, though, dedicated machines split capacity into pieces too small to share, and containers let those workloads share a pool while still keeping them apart at the application level. The saving comes from tighter packing, not from containers as such.",
+          text: "A separate VM per app makes sense when isolation, security, licensing or operations require it. For compatible workloads that peak at different times, though, dedicated machines split capacity into pieces too small to share.",
+        },
+        {
+          kind: "p",
+          text: "The saving comes from tighter packing, not from containers as such.",
         },
         {
           kind: "h3",
@@ -122,7 +136,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Adding CPU and memory is the easy answer to a slow application. If the real cause is inefficient database queries, a memory leak, heavy logging, needless background work or poor caching, more capacity hides the problem and adds a recurring charge. Review application performance alongside infrastructure use.",
+          text: "Adding CPU and memory is the easy answer to a slow app. If the real cause is slow queries, a memory leak, heavy logging or poor caching, more capacity hides it and adds a recurring charge. Review the app’s performance alongside its infrastructure.",
         },
         {
           kind: "h3",
@@ -131,7 +145,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Development, QA, staging and temporary test environments can run around the clock when nobody needs them to.",
+          text: "Development, QA, staging and test environments can run around the clock when nobody needs them.",
         },
         {
           kind: "callout",
@@ -145,7 +159,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Production has to handle spikes, but keeping enough capacity for the absolute peak running all the time is expensive. Horizontal scaling, autoscaling, queue-based processing and asynchronous work can match capacity to demand, as long as availability, latency and resilience hold while the system scales. Reducing cost should never mean reducing reliability.",
+          text: "Production has to handle spikes, but keeping peak capacity running all day is expensive. Autoscaling, queue-based processing and asynchronous work can match capacity to demand, as long as availability, latency and resilience hold. Reducing cost should never mean reducing reliability.",
         },
       ],
     },
@@ -155,17 +169,17 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Don’t start by changing VM sizes or migrating applications: start by understanding how the architecture, the workloads’ behaviour and the cost relate. We follow six steps.",
+          text: "Don’t start by resizing VMs or migrating apps. Start by understanding how the architecture, the workloads’ behaviour and the cost relate.",
         },
         { kind: "h3", id: "establish-a-baseline", title: "1. Establish a baseline" },
         {
           kind: "p",
-          text: "Review cost, compute use, CPU and memory metrics, traffic patterns, storage, network charges and cost per environment. Then find which workloads drive the cost and when their use actually happens.",
+          text: "Review cost, CPU and memory use, traffic patterns, storage, network charges and cost per environment. Then find which workloads drive the cost, and when.",
         },
         { kind: "h3", id: "understand-the-workload", title: "2. Understand the workload" },
         {
           kind: "p",
-          text: "Is it CPU-heavy, memory-heavy, driven by traffic, a batch job or always on? A stateless web service, a stateful database and a nightly batch job shouldn’t get the same design by default.",
+          text: "Work out whether each workload is CPU-heavy, memory-heavy, driven by traffic, a batch job or always on. A stateless web service, a stateful database and a nightly batch job shouldn’t get the same design by default.",
         },
         {
           kind: "h3",
@@ -179,7 +193,7 @@ export const article: Article = {
         { kind: "h3", id: "model-the-expected-savings", title: "4. Model the expected savings" },
         {
           kind: "p",
-          text: "Estimate the difference between the current setup and the proposal, with real demand, high availability, autoscaling headroom, idle capacity and any extra platform costs. Don’t set one VM’s price against one container’s: they aren’t equivalent units.",
+          text: "Estimate the difference between the current setup and the proposal. Include real demand, high availability, autoscaling headroom, idle capacity and any extra platform costs. Don’t set one VM’s price against one container’s: they aren’t equivalent units.",
         },
         {
           kind: "h3",
@@ -204,7 +218,7 @@ export const article: Article = {
           text: [
             "Add ",
             { a: "tagging", href: "/learn/glossary/cloud-tagging-strategy" },
-            ", budgets, utilization alerts, regular sizing reviews, autoscaling policies and infrastructure standards, so cost becomes part of the engineering lifecycle, not a one-time project.",
+            ", budgets, utilization alerts, regular sizing reviews, autoscaling policies and infrastructure standards. Then cost becomes part of the engineering lifecycle, not a one-time project.",
           ],
         },
       ],
@@ -215,16 +229,16 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "The client ran 12 applications on 18 VMs. That was six customer-facing services on two VMs each, four internal services on one VM each, and two databases. Every service VM was a 4\u00a0vCPU, 16\u00a0GB general-purpose machine, and each database had an 8\u00a0vCPU, 32\u00a0GB one. Over 30\u00a0days, average CPU utilization was 11% and memory utilization 31%.",
+          text: "The client ran 12 apps on 18 VMs: six customer-facing services on two VMs each, four internal services on one VM each, and two databases. Every service VM was a 4\u00a0vCPU, 16\u00a0GB general-purpose machine, and each database VM had 8\u00a0vCPU and 32\u00a0GB. Over 30\u00a0days, average CPU utilization was 11% and memory utilization 31%.",
         },
         {
           kind: "p",
-          text: "We moved the 16 service VMs onto one managed Kubernetes cluster of four nodes, each with 8\u00a0vCPU and 32\u00a0GB, spread across availability zones. Each service was sized from its measured use. The customer-facing ones scale out on demand. The two databases stayed on VMs and moved to memory-optimized 4\u00a0vCPU machines with the same 32\u00a0GB of RAM.",
+          text: "We moved the 16 service VMs onto one managed Kubernetes cluster: four nodes of 8\u00a0vCPU and 32\u00a0GB, spread across availability zones. Each service was sized from its measured use, and the customer-facing ones scale out on demand. The two databases stayed on VMs, now memory-optimized 4\u00a0vCPU machines with the same 32\u00a0GB.",
         },
         {
           kind: "callout",
           label: "Worked example",
-          text: "Before the move, those 16 VMs held 16 × 4 = 64\u00a0vCPU and 16 × 16 = 256\u00a0GB, and the four nodes now hold 4 × 8 = 32\u00a0vCPU and 4 × 32 = 128\u00a0GB, half of each. Both databases went from 8 to 4\u00a0vCPU, so 2 × 8 = 16\u00a0vCPU became 2 × 4 = 8, with memory unchanged at 2 × 32 = 64\u00a0GB. Altogether, the client went from 80\u00a0vCPU and 320\u00a0GB to 40\u00a0vCPU and 192\u00a0GB.",
+          text: "The 16 service VMs held 16 × 4 = 64\u00a0vCPU and 16 × 16 = 256\u00a0GB. The four nodes hold 4 × 8 = 32\u00a0vCPU and 4 × 32 = 128\u00a0GB, half of each. With the databases down from 16 to 8\u00a0vCPU and their 64\u00a0GB unchanged, 80\u00a0vCPU and 320\u00a0GB became 40\u00a0vCPU and 192\u00a0GB.",
         },
         {
           kind: "p",
@@ -247,39 +261,45 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Cloud cost optimization is often treated as a finance exercise: review the charges, find the expensive services, negotiate or buy discounts. Discounts reduce the price of capacity. They can’t fix an application that has been overprovisioned for years, and monitoring, which shows the unused capacity, can’t redesign the system that created it either.",
+          text: "Discounts reduce the price of capacity, and monitoring shows the unused part. Neither can fix an app that has been overprovisioned for years, or redesign the system that created it.",
         },
         {
           kind: "p",
           text: [
-            "The lasting approach brings engineering, architecture and FinOps together. Engineers know how workloads behave, architects decide how systems are built, and ",
+            "Engineers, architects and ",
             { a: "FinOps", href: "/learn/glossary/finops" },
-            " connects those decisions to business outcomes.",
+            " can ask four questions of each workload:",
           ],
         },
         {
-          kind: "p",
-          text: "The lesson from this engagement wasn’t that VMs are bad or that containers always win, but that infrastructure decisions deserve to be challenged continuously. Why does this application need this much compute, and could workloads share capacity safely? Does it need to run all day? Is it scaling because demand grew, or because the application is inefficient? The most effective cost work often happens before the next resource is provisioned, with a better architectural decision.",
+          kind: "ul",
+          items: [
+            "Does it need this much compute?",
+            "Could it share capacity safely with other workloads?",
+            "Does it need to run all day?",
+            "Is it scaling because demand grew, or because the app is inefficient?",
+          ],
         },
       ],
     },
     {
       id: "where-coral-fits",
-      title: "Where Coral fits",
+      title: "Where Coral fits once workloads share a cluster",
       blocks: [
         {
           kind: "p",
           text: [
+            "In a shared cluster, the next cost is the one in the Watch out above: requests set far above use. ",
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS. Once workloads share a cluster, the next cost is the one in the Watch out above: requests set far above use. Coral rebalances CPU and memory requests to measured use, works with your HPA, and drains spare nodes so your Cluster Autoscaler, AKS node auto provisioning or Karpenter can remove them.",
+            " optimizes Kubernetes on AKS and EKS, and rebalances CPU and memory requests to measured use.",
           ],
         },
         {
           kind: "p",
           text: [
-            "On our own AKS development cluster, Coral removed a spare worker, rebalanced the requests of 14 apps and swapped the remaining worker for a cheaper machine of the same size. Eight days after we connected it, ",
+            "On our own AKS development cluster, Coral removed a spare worker and rebalanced the requests of 14 apps. It also swapped the remaining worker for a cheaper machine of the same size. Eight days after we connected it, ",
             { a: "the cluster’s machines cost", href: "/coral-value-lab" },
-            " $154.76 a month instead of $368.65, 58% less.",
+            " $154.76 a month instead of $368.65.",
           ],
         },
       ],
@@ -342,4 +362,5 @@ export const article: Article = {
       href: "/learn/vpa-vs-hpa",
     },
   ],
+  relatedTitle: "More on architecture and cloud cost",
 };

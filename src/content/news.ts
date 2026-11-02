@@ -15,11 +15,10 @@ import { nvidiaInceptionLegal } from "@/content/memberships";
  */
 
 /**
- * The day /news's content last changed (the week of the latest Radar, or a change to its own words: the Value Lab
- * announcement, 1 Nov 2026), for the sitemap's `lastmod` only. A refresh moves it in the same PR; never the build's
- * date.
+ * The day /news's content last changed (the week of the latest Radar, or a change to its own words: its title, h1 and
+ * deck, 2 Nov 2026), for the sitemap's `lastmod` only. A refresh moves it in the same PR; never the build's date.
  */
-export const newsLastUpdated = "1 November 2026";
+export const newsLastUpdated = "2 November 2026";
 
 /* The month names the page's dates print: "17 October 2026" on the latest announcement, "16 Oct" on a tile. */
 const months = [
@@ -44,14 +43,14 @@ const profile = (platform: (typeof socialProfiles)[number]["platform"]): string 
 export const newsPage = {
   /** The `<title>`'s own words, before " | Zoorik", and the share title's. */
   meta: {
-    title: "News",
+    title: "Kubernetes news and cloud cost updates, weekly",
     description:
-      "What Zoorik ships, and Zoorik Radar: what changed this week in cloud cost, Kubernetes and FinOps, each item with its source.",
+      "What Zoorik ships, and Zoorik Radar: this week’s Kubernetes, cloud cost and FinOps news, each item with its source. Also by email as our newsletter.",
   },
   /** The page's name (its h1) and the deck under it. */
   hero: {
-    title: "Zoorik News",
-    deck: "What we ship, and what changed this week in cloud cost, Kubernetes and FinOps.",
+    title: "Zoorik News: what we ship, plus Kubernetes news and cloud cost updates each week",
+    deck: "We read AWS, Azure, the Kubernetes projects and the FinOps Foundation, and link each item to its source.",
   },
   /**
    * The band under the hero: the newest announcement on the white card, flagged "Latest", and the newsletter on the
@@ -65,7 +64,6 @@ export const newsPage = {
     flag: "Latest",
     newsletter: {
       title: "Get Zoorik News by email",
-      line: "Our newsletter on Medium: what we ship, and each week’s Zoorik Radar, in your inbox.",
       subscribe: { label: "Subscribe on Medium", href: profile("medium") },
       alt: { before: "Or on ", label: "Substack", href: substackPublication },
     },
@@ -82,9 +80,8 @@ export const newsPage = {
     week: (week: string) => `Week of ${week}`,
     /** The stream chips: their name for a screen reader, and the first chip, which shows every stream. */
     chips: { label: "Stream", all: "All" },
-    /** The line under the streams ends on the window it read, its first letter raised: "5 to 19 October 2026." */
-    note: (window: string) =>
-      `Read every week from AWS, Azure, the Kubernetes projects and the FinOps Foundation, in our words, each linked to its source. ${window.charAt(0).toUpperCase()}${window.slice(1)}.`,
+    /** The line under the streams, around the window it read: "5 to 19 October 2026". */
+    note: (window: string) => `Cloud, Kubernetes and FinOps news from ${window}, in our own words.`,
   },
   months,
 } as const;
@@ -257,7 +254,7 @@ export const newsFromZoorik: readonly NewsAnnouncement[] = [
     date: "2026-10-27",
     tag: "Company",
     title: "Zoorik joins the NVIDIA Inception Program",
-    line: "Zoorik is now a member of the NVIDIA Inception program, NVIDIA’s program for startups.",
+    line: "It’s NVIDIA’s program for startups.",
     href: `${routes.about}#programs`,
     cta: "About Zoorik",
     legal: nvidiaInceptionLegal,

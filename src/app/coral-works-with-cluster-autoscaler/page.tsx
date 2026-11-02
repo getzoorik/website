@@ -12,8 +12,8 @@ import "@/styles/open-source.css";
 import "@/styles/works-with.css";
 
 /**
- * `/coral-works-with-cluster-autoscaler`: "Coral works with Cluster Autoscaler", titled for its search "Cluster
- * Autoscaler and Coral on AKS and EKS" (owner, 1 Nov 2026), a works-with page in the Helm guide's article frame.
+ * `/coral-works-with-cluster-autoscaler`: "Coral works with Cluster Autoscaler", titled "Coral works with Cluster
+ * Autoscaler on AKS and EKS" (2 Nov 2026, the SEO sheet), a works-with page in the Helm guide's article frame.
  * Indexed, listed in the sitemap, and prerendered at build like every page here; in no menu, linked from the footer's
  * Works with list and the Coral cloud pages.
  */

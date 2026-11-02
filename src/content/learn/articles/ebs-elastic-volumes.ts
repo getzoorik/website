@@ -6,20 +6,20 @@ import { figure as figure3 } from "@/features/learn/figures/ebs-elastic-volumes/
 export const article: Article = {
   slug: "ebs-elastic-volumes",
   title: "EBS Elastic Volumes: what you can and can’t change",
-  meta: "EBS Elastic Volumes change a volume’s size, type, IOPS and throughput with aws ec2 modify-volume. The optimizing state, four-a-day limit and what can’t change.",
+  meta: "Amazon EBS Elastic Volumes change size, type, IOPS and throughput with aws ec2 modify-volume. The optimizing state, four-a-day limit and what can’t change.",
   h1: "EBS Elastic Volumes: what you can change, and what you can’t",
-  deck: "Size, type, IOPS and throughput change while the volume stays in use. Size is the one that only goes up.",
+  deck: "Steps with aws ec2 modify-volume, what the optimizing state means, and what a change costs.",
   card: "What an EBS modification can change, the optimizing state, the four-a-day limit and why size only grows.",
   product: "amoeba",
   hub: "Block storage",
   topic: "AWS block storage",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "vineet",
   cover: "/learn-covers/zoorik-learn-ebs-elastic-volumes-1200x630.webp",
   coverAlt: "EBS Elastic Volumes: change a volume’s size, type and IOPS, but size can only grow",
   short:
-    "EBS Elastic Volumes is AWS’s name for changing an Amazon Elastic Block Store (EBS) volume in use: its size, type, IOPS and throughput. On a current-generation instance, nothing is detached or restarted, size only grows, and a volume takes up to four changes in a rolling 24\u00a0hours.",
+    "EBS Elastic Volumes is AWS’s name for changing an Amazon Elastic Block Store (EBS) volume in use: its size, type, IOPS and throughput. On a current-generation instance, nothing is detached or restarted. Size only grows, and a volume takes up to four changes in a rolling 24\u00a0hours.",
   sections: [
     {
       id: "ebs-elastic-volumes",
@@ -46,7 +46,6 @@ export const article: Article = {
           ],
         },
         { kind: "p", text: "If the data later shrinks, the volume stays at 500\u00a0GiB." },
-        { kind: "p", text: "Each change has its own range:" },
         {
           kind: "table",
           columns: [
@@ -85,7 +84,7 @@ export const article: Article = {
         {
           kind: "callout",
           label: "For engineers",
-          text: "The gp2 type has no IOPS or throughput setting. It gets 3\u00a0IOPS per GiB, from a minimum of 100 up to 16,000, so more IOPS takes more GiB or a different type.",
+          text: "The gp2 type has no IOPS or throughput setting. It gets 3\u00a0IOPS per GiB, from 100 up to 16,000, so more IOPS takes more GiB or another type.",
         },
         {
           kind: "p",
@@ -103,7 +102,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "You can change an EBS volume type without downtime on a current-generation instance. With the AWS Command Line Interface (CLI), it takes three steps.",
+          text: "On a current-generation instance, the volume stays attached and in use throughout. These steps use the AWS Command Line Interface (CLI).",
         },
         {
           kind: "h3",
@@ -116,6 +115,18 @@ export const article: Article = {
             "Over 16,384\u00a0GiB, a volume can’t become gp2, io1, st1 or sc1.",
             "A volume with Multi-Attach enabled, which lets several instances share it, can only move between io1 and io2. It can make that move while attached.",
             "st1 and sc1 need at least 125\u00a0GiB, and neither can take a root volume, even a detached one.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "To choose a type, see ",
+            { a: "EBS volume types", href: "/learn/ebs-volume-types" },
+            ". Two pages compare the common moves: ",
+            { a: "gp2 vs gp3", href: "/learn/gp2-vs-gp3" },
+            " and ",
+            { a: "io2 vs gp3", href: "/learn/io2-vs-gp3" },
+            ".",
           ],
         },
         {
@@ -157,18 +168,6 @@ export const article: Article = {
             { code: "optimizing" },
             " and ",
             { code: "completed" },
-            ".",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "To choose a type, see ",
-            { a: "EBS volume types", href: "/learn/ebs-volume-types" },
-            ". Two pages compare the common moves: ",
-            { a: "gp2 vs gp3", href: "/learn/gp2-vs-gp3" },
-            " and ",
-            { a: "io2 vs gp3", href: "/learn/io2-vs-gp3" },
             ".",
           ],
         },
@@ -293,7 +292,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Four a day is enough to schedule performance around a workload. AWS’s July 2026 storage blog describes a customer on 250\u00a0GiB gp3\u00a0volumes. Each weekday, the customer changed IOPS and throughput on this schedule, in UTC:",
+          text: "AWS’s July 2026 storage blog describes a customer changing IOPS and throughput on 250\u00a0GiB gp3\u00a0volumes each weekday, in UTC:",
         },
         {
           kind: "ul",
@@ -305,19 +304,16 @@ export const article: Article = {
           ],
         },
         {
-          kind: "p",
-          text: "Each change must complete before the next is due. So time your own modifications before you rely on a schedule.",
-        },
-        {
           kind: "callout",
           label: "Worked example",
-          text: "That schedule spends all four modifications within 12\u00a0hours. The gaps between them are 4, 2.5 and 5.5\u00a0hours.",
+          text: "That schedule uses all four modifications within 12\u00a0hours, with gaps of 4, 2.5 and 5.5\u00a0hours.",
         },
         {
           kind: "p",
           text: "So the 3:00 am change must reach completed within 2.5\u00a0hours. Now say it took 6\u00a0hours, the time AWS gives for a fully used 1\u00a0TiB volume. The 5:30 am raise couldn’t start until 9:00 am.",
         },
         { kind: "svg", figure: figure2 },
+        { kind: "p", text: "Time your own modifications before you rely on a schedule." },
       ],
     },
     {
@@ -426,7 +422,7 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " The services that use those mounts restart once, at the switch onto the pool.",
+              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
             ],
             [
               { b: "Growing." },
@@ -438,7 +434,7 @@ export const article: Article = {
             ],
             [
               { b: "The old volumes." },
-              " Once the switch is checked, Amoeba snapshots and deletes each old volume. It deletes each snapshot 7 days later.",
+              " Once the switch is checked, Amoeba snapshots and deletes each old volume. It keeps each snapshot for a few days, then deletes it too.",
             ],
           ],
         },
@@ -536,4 +532,5 @@ export const article: Article = {
       href: "/learn/ebs-volume-types",
     },
   ],
+  relatedTitle: "More on resizing EBS volumes and choosing a type",
 };

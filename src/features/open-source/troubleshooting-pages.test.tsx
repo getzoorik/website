@@ -52,6 +52,7 @@ const pages = [
     guide: troubleshootingGuides.coral,
     product: "coral",
     title: "Coral troubleshooting",
+    updated: "2 November 2026",
     topics: [
       ["coral-is-not-connecting-to-my-cluster", "Coral is not connecting to my cluster"],
       ["coral-is-not-removing-a-node", "Coral is not removing a node"],
@@ -64,6 +65,7 @@ const pages = [
     guide: troubleshootingGuides.amoeba,
     product: "amoeba",
     title: "Amoeba troubleshooting",
+    updated: "1 November 2026",
     topics: [
       ["amoeba-is-not-showing-my-vm", "Amoeba is not showing my VM"],
       ["amoeba-has-not-rightsized-my-disks-yet", "Amoeba has not rightsized my disks yet"],
@@ -104,7 +106,7 @@ describe("the troubleshooting pages", () => {
       const root = draw(page);
       expect(text(root.querySelector("h1"))).toBe(page.title);
       expect(text(root.querySelector(".doc-updated"))).toBe(
-        "Updated 1 November 2026 · Published by Zoorik",
+        `Updated ${page.updated} · Published by Zoorik`,
       );
       expect(page.guide.short).toBeUndefined();
       expect(root.querySelector(".ar-short")).toBeNull();

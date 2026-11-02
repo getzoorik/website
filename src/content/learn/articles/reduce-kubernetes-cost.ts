@@ -6,21 +6,21 @@ export const article: Article = {
   slug: "reduce-kubernetes-cost",
   route: "/kubernetes-cost-optimization",
   title: "Kubernetes cost optimization: requests, then nodes",
-  meta: "Kubernetes cost optimization on AKS and EKS. Kubernetes cost management starts with requests: rebalance, then remove spare nodes to reduce Kubernetes costs.",
+  meta: "A two-step guide to Kubernetes cost management on AKS and EKS: rebalance requests to real use, then let your autoscaler remove the spare nodes.",
   h1: "Kubernetes cost optimization: rebalance requests, then remove spare nodes",
-  deck: "Smaller requests free room on your nodes. Your cloud cost falls when a spare node goes. Both steps, in order.",
+  deck: "Smaller requests free room on your nodes, but only a node that goes reduces your cloud cost.",
   card: "Rebalance requests to real use, then let spare nodes go: the order that reduces AKS and EKS cost.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes cost basics",
   published: "2026-10-21",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "swapnil",
   cover: "/learn-covers/zoorik-learn-reduce-kubernetes-cost-1200x630.webp",
   coverAlt:
     "Reduce Kubernetes cost: rebalance requests, and the cluster has one node fewer to pay for",
   short:
-    "Kubernetes cost optimization takes two steps, in this order. First, rebalance each container’s CPU and memory requests to what it uses, since node autoscalers count requests, not use. Then let the Cluster Autoscaler, Karpenter or AKS node auto provisioning (NAP) remove spare nodes: smaller requests reduce cost only once a node goes.",
+    "Kubernetes cost optimization takes two steps. First, rebalance each container’s CPU and memory requests to what it uses, since node autoscalers count requests, not use. Then let the Cluster Autoscaler, Karpenter or AKS node auto provisioning (NAP) remove spare nodes.",
   sections: [
     {
       id: "you-pay-for-nodes-and-requests-decide",
@@ -61,9 +61,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "AWS’s guide ranks Kubernetes cost reduction in that order too: size the workloads, reduce unused capacity, then choose capacity types such as ",
+            "AWS’s guide ranks Kubernetes cost reduction the same way: size the workloads, reduce unused capacity, then choose capacity types such as ",
             { a: "Spot", href: "/learn/glossary/spot-instance" },
-            ", covered further down. ",
+            ". ",
             { a: "Kubernetes overprovisioning", href: "/learn/kubernetes-overprovisioning" },
             " explains where padded requests come from and how to measure them.",
           ],
@@ -488,4 +488,5 @@ export const article: Article = {
       href: "/coral-value-lab",
     },
   ],
+  relatedTitle: "More on requests and node removal",
 };

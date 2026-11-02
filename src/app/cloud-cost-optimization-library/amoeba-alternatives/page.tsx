@@ -7,6 +7,7 @@ import { documentMetadata } from "@/features/documents/document-page";
 import { AlternativesPage, alternativesPageAt } from "@/features/learn/alternatives-page";
 
 import "@/styles/learn.css";
+import "@/styles/article.css";
 
 /**
  * `/cloud-cost-optimization-library/amoeba-alternatives`: Amoeba's alternatives; its old addresses, /compare/amoeba-alternatives and /learn/amoeba-alternatives, 301-redirects

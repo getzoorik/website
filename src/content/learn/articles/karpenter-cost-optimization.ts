@@ -5,21 +5,21 @@ import { figure as figure2 } from "@/features/learn/figures/karpenter-cost-optim
 export const article: Article = {
   slug: "karpenter-cost-optimization",
   title: "Karpenter cost optimization: the request gap",
-  meta: "Karpenter cost optimization starts with pod requests: how Karpenter picks and consolidates nodes, spot and other best practices, and finding the request gap.",
+  meta: "Karpenter cost optimization starts with pod requests: how it picks and removes nodes, Karpenter best practices for spot instances, and finding the request gap.",
   h1: "Karpenter cost optimization: the requests it can’t fix",
-  deck: "Karpenter buys machines for the requests you set. What it does well, the settings that matter, and the gap it leaves.",
+  deck: "Karpenter picks low-cost machines well, but only for the requests your pods already set.",
   card: "What Karpenter does to reduce node cost, and why over-requested pods still buy machines they don’t use.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes autoscaling",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "adil",
   cover: "/learn-covers/zoorik-learn-karpenter-cost-optimization-1200x630.webp",
   coverAlt:
     "Karpenter cost optimization: requests as set stand tall, requests near use stand short, with the same use in both",
   short:
-    "Karpenter cost optimization comes from two jobs: launching low-priced instance types that fit pending pods, and consolidating nodes into fewer or cheaper ones. Both jobs count pod requests, not use, so much of the remaining saving can sit in requests set above what pods use.",
+    "Karpenter cost optimization comes from two jobs: launching low-priced instance types that fit pending pods, and consolidating nodes into fewer or cheaper ones. Much of the remaining saving can sit in requests set above what pods use.",
   sections: [
     {
       id: "karpenter-cost-savings-come-from-two-jobs",
@@ -318,15 +318,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Every setting above helps Karpenter buy the cheapest machine for a given set of ",
+            "None of the settings above changes the ",
             { a: "requests", href: "/learn/glossary/kubernetes-resource-requests" },
-            ". None of them changes the requests.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "Karpenter’s docs say so directly: “Instance type selection math only uses ",
+            ". Karpenter’s docs say so directly: “Instance type selection math only uses ",
             { code: "requests" },
             "”.",
           ],
@@ -495,10 +489,6 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Coral prices every saving at your cloud’s published list price for the region, with spot nodes at the spot rate and a 730-hour month. Discounts, reservations and savings plans are left out.",
-        },
-        {
-          kind: "p",
           text: [
             "If an EKS cluster has no autoscaler, connecting it to Coral sets up Karpenter, with your approval. ",
             { a: "Coral works with Karpenter", href: "/coral-works-with-karpenter" },
@@ -586,4 +576,5 @@ export const article: Article = {
       href: "/learn/how-to-choose-eks-instance-types",
     },
   ],
+  relatedTitle: "More on Karpenter cost and pod requests",
 };

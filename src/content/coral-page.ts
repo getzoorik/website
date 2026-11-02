@@ -11,10 +11,11 @@ import type { ProductPageContent, ReadMoreTile } from "@/content/product-page";
  * The product tour adds each row's line and the film (`product-films.ts`).
  * What Coral does is a heading, so it has no "?" (owner, 1 Nov 2026).
  *
- * The hero's line (the home page's own line for Coral), the Runs on chips and
- * the line under the How it works cards are read from `kubernetes.ts`, and the
- * cards from `how-it-works.ts`, rather than copied: a second copy would be a
- * second claim free to drift. Nothing here is a new figure.
+ * The Runs on chips and the line under the How it works cards are read from
+ * `kubernetes.ts`, and the cards from `how-it-works.ts`, rather than copied: a
+ * second copy would be a second claim free to drift. The hero's line is this
+ * page's own (owner, 2 Nov 2026: the H1 and one small line under it), in the
+ * pinned Coral help box's words. Nothing here is a new figure.
  *
  * Coral's h1 is "Kubernetes optimization for AKS and EKS", and its `<title>`
  * "Coral: Kubernetes optimization for AKS and EKS" (owner, 1 Nov 2026, O1):
@@ -23,11 +24,11 @@ import type { ProductPageContent, ReadMoreTile } from "@/content/product-page";
  * or Linux.
  */
 /**
- * The day /coral's content last changed (its title), for the sitemap's
+ * The day /coral's content last changed (the sheet pass), for the sitemap's
  * `lastmod` only: the page does not print it. Whoever changes /coral's content
  * moves this to that day in the same PR; never the build's date.
  */
-export const coralPageLastUpdated = "1 November 2026";
+export const coralPageLastUpdated = "2 November 2026";
 
 /**
  * Read more's FAQ tile. The per-cloud pages (`/aks-cost-optimization`,
@@ -45,13 +46,13 @@ export const coralPageContent: ProductPageContent = {
   meta: {
     title: "Coral: Kubernetes optimization for AKS and EKS",
     description:
-      "Kubernetes optimization platform for AKS and EKS: Coral rebalances clusters to reduce your cloud cost, autonomously, without any downtime.",
+      "Kubernetes optimization platform for AKS and EKS. Coral rebalances requests and nodes to reduce your cloud cost, autonomously, without any downtime.",
     appDescription:
       "Kubernetes cost optimization on AKS and EKS. Coral sizes pod requests to real use and drains spare nodes one at a time.",
   },
   hero: {
     title: "Kubernetes optimization for AKS and EKS",
-    line: kubernetesContent.body,
+    line: "Coral rebalances workloads and drains spare nodes so your autoscaler can remove them.",
     cta: { label: assessContent.assessment.cta.label, href: assessmentHref("coral") },
   },
   about: {
@@ -62,10 +63,14 @@ export const coralPageContent: ProductPageContent = {
       [
         "Coral is a ",
         { a: "Kubernetes cost optimization", href: routes.kubernetesCostOptimization },
-        " platform for Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS). It continuously finds and removes the capacity your clusters don’t need, while your workloads keep serving. It sizes each container’s CPU and memory requests to what it really uses, and empties spare nodes one at a time so your autoscaler can remove them.",
+        " platform for Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS). It finds the CPU, memory and nodes your clusters pay for but don’t use.",
       ],
+      "Coral helps platform and engineering teams reduce AKS and EKS cost with no application code changes. With Coral, you see where your Kubernetes cost goes, and what each change saves at your cloud’s list price.",
+      "Pod sizing starts when you switch on “Automatically optimize” for a policy or a workload. Pods then resize in place or restart one at a time, within their PodDisruptionBudgets.",
+      /* The warm handover as CORAL-CODE-FACTS.md states it, in the FAQ's words for the rest ("a short restart"). */
+      "Node optimization is on from install, and you choose the node pools it works on. When Coral drains a node, a pod of a Deployment can get a Ready copy on another node first. A pod whose replacement can’t start first gets a short restart.",
       [
-        "Coral helps platform and engineering teams reduce AKS and EKS cost with no application code changes. It monitors every workload and node, recommends new requests and spare nodes, with the saving, and applies them safely: pods resize in place or restart one at a time within their PodDisruptionBudgets, and nodes drain one at a time. Coral works alongside native Kubernetes autoscaling: the Horizontal Pod Autoscaler, ",
+        "Coral works alongside native Kubernetes autoscaling: the Horizontal Pod Autoscaler, ",
         { a: "KEDA", href: routes.coralWorksWithKeda },
         ", ",
         { a: "Karpenter", href: routes.coralWorksWithKarpenter },
@@ -75,14 +80,14 @@ export const coralPageContent: ProductPageContent = {
         { a: "the Cluster Autoscaler", href: routes.coralWorksWithClusterAutoscaler },
         ".",
       ],
-      "With Coral, you see where your Kubernetes spend goes, which capacity sits unused, and what each change saves at your cloud’s list price. Pod sizing starts when you switch on “Automatically optimize” for a policy or a workload. Node optimization is on from install, and you choose the node pools it works on.",
     ],
     more: "More about Coral",
   },
   offerings: [
     {
       id: "monitoring",
-      label: "Monitoring",
+      /* Named for the search "kubernetes cost monitoring" (owner, 2 Nov 2026); the id stays, as it is an address. */
+      label: "Kubernetes cost monitoring",
       drawing: "cost",
       line: "Cost tracked always, every action logged.",
     },
@@ -102,7 +107,7 @@ export const coralPageContent: ProductPageContent = {
       id: "node-optimization",
       label: "Node optimization",
       drawing: "drain",
-      line: "Spare nodes drained one at a time; never creates machines.",
+      line: "Spare nodes drained one at a time; Coral never creates machines.",
     },
   ],
   what: {
@@ -116,7 +121,7 @@ export const coralPageContent: ProductPageContent = {
     example: kubernetesContent.caption,
   },
   readMore: {
-    title: "Coral docs and guides",
+    title: "More on Coral: product guide, FAQ and Kubernetes guides",
     allDocs: { label: "All docs", href: `${routes.docs}#coral` },
     tiles: [
       {

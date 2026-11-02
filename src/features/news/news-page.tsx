@@ -159,7 +159,6 @@ function Latest({ item }: { readonly item: NewsAnnouncement }): React.JSX.Elemen
           <Reveal className="as-cal" order={1}>
             <MediumMark className="nw-own" />
             <h2 className="as-h">{named(newsletter.title)}</h2>
-            <p>{named(newsletter.line)}</p>
             <a
               className="cta-go"
               href={newsletter.subscribe.href}

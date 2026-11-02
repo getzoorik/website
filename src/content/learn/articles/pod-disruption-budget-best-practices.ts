@@ -5,15 +5,15 @@ import { figure as figure2 } from "@/features/learn/figures/pod-disruption-budge
 export const article: Article = {
   slug: "pod-disruption-budget-best-practices",
   title: "Pod disruption budget best practices: AKS and EKS",
-  meta: "Pod disruption budget best practices for AKS and EKS: choose maxUnavailable or minAvailable by replica count, so a drain, upgrade or scale-down can finish.",
+  meta: "Pod disruption budget best practices for AKS and EKS: the checklist, an example for a Deployment, and what kubectl get pdb shows before you drain.",
   h1: "Pod disruption budget best practices for AKS and EKS",
-  deck: "How to set a PDB that protects your app and still lets drains, upgrades and node scale-down finish.",
+  deck: "Pick maxUnavailable or minAvailable by replica count, so a budget protects the app and still lets drains finish.",
   card: "Pick maxUnavailable or minAvailable by replica count, so a PDB protects the app without holding its node.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Node lifecycle and scheduling",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "sonia",
   cover: "/learn-covers/zoorik-learn-pod-disruption-budget-best-practices-1200x630.webp",
   coverAlt: "Pod disruption budgets: one replica may go while the rest stay available",
@@ -24,91 +24,9 @@ export const article: Article = {
   ],
   sections: [
     {
-      id: "a-budget-that-allows-no-disruption-keeps",
-      title: "A budget that allows no disruption keeps its node running",
-      blocks: [
-        {
-          kind: "p",
-          text: [
-            "Picture a Deployment whose PDB sets ",
-            { code: "minAvailable" },
-            " to 2 and whose ",
-            { a: "Horizontal Pod Autoscaler", href: "/learn/glossary/horizontal-pod-autoscaler" },
-            " (HPA) has a ",
-            { code: "minReplicas" },
-            " of 2.",
-          ],
-        },
-        {
-          kind: "p",
-          text: "By day the HPA adds pods, so a disruption is allowed. Overnight it sits at its minimum, the budget allows none, and neither pod’s node can be emptied, however little the pods use.",
-        },
-        {
-          kind: "p",
-          text: [
-            "That’s where a budget meets cloud cost, because ",
-            { a: "Kubernetes cost optimization", href: "/kubernetes-cost-optimization" },
-            " relies on removing spare nodes.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "The Cluster Autoscaler ",
-            { a: "removes a node", href: "/learn/cluster-autoscaler-not-scaling-down" },
-            " only after checking that its pods’ PDBs allow at least one eviction. If an eviction still fails, it keeps the node. Karpenter won’t consolidate a node while any pod on it has a blocking PDB.",
-          ],
-        },
-      ],
-    },
-    {
-      id: "how-a-pdb-decides-which-evictions-go",
-      title: "How a PDB decides which evictions go ahead",
-      blocks: [
-        {
-          kind: "p",
-          text: [
-            "A ",
-            { a: "PodDisruptionBudget", href: "/learn/glossary/pod-disruption-budget" },
-            " limits how many pods of a replicated app voluntary disruptions can take down at once. It has been stable since Kubernetes 1.21, in the ",
-            { code: "policy/v1" },
-            " API.",
-          ],
-        },
-        {
-          kind: "p",
-          text: "Voluntary means chosen by a person or a controller, such as a drain for an upgrade or a scale-down. A PDB can’t prevent involuntary ones, such as a hardware failure. Even so, they count against its budget.",
-        },
-        {
-          kind: "p",
-          text: [
-            "The budget works through the Eviction API. A tool that respects PDBs asks to evict a pod, and the API server refuses while the eviction would break the budget. So ",
-            { code: "kubectl drain" },
-            " retries until the node is empty or its timeout runs out.",
-          ],
-        },
-        {
-          kind: "p",
-          text: "Two things skip the check: deleting a pod directly, and a Deployment or StatefulSet rolling update. Pods a rollout takes down still count against the budget.",
-        },
-        {
-          kind: "p",
-          text: "The disruption controller works out allowed disruptions by counting the selected pods whose Ready condition is True. From that it takes away how many must stay healthy, so 3 healthy pods against 2 required leave 1.",
-        },
-        {
-          kind: "p",
-          text: "At 0, every eviction is refused. If the budget can never rise above 0, you “cannot successfully drain a Node running one of those Pods.”",
-        },
-      ],
-    },
-    {
       id: "pod-disruption-budget-best-practices",
       title: "Pod disruption budget best practices: the checklist",
       blocks: [
-        {
-          kind: "p",
-          text: "These Kubernetes PDB best practices protect an app and let a drain finish.",
-        },
         {
           kind: "h3",
           id: "allow-at-least-one-disruption-at-the",
@@ -129,7 +47,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Besides the opening case, percentage rounding gets you there, because Kubernetes rounds ",
+            "Percentage rounding can also leave a budget that allows nothing, because Kubernetes rounds ",
             { code: "minAvailable" },
             " up to a whole pod.",
           ],
@@ -172,7 +90,9 @@ export const article: Article = {
           text: [
             "Kubernetes recommends ",
             { code: "maxUnavailable" },
-            " because it “automatically responds to changes in the number of replicas”. That suits anything an HPA scales. Its percentages round up too, so 30% of a single replica lets that pod go.",
+            " because it “automatically responds to changes in the number of replicas”. That suits anything a ",
+            { a: "Horizontal Pod Autoscaler", href: "/learn/glossary/horizontal-pod-autoscaler" },
+            " (HPA) scales. Its percentages round up too, so 30% of a single replica lets that pod go.",
           ],
         },
         {
@@ -209,10 +129,6 @@ export const article: Article = {
               "Healthy pods minus that integer",
             ],
           ],
-        },
-        {
-          kind: "p",
-          text: "These numbers assume every selected pod is Ready. One that isn’t uses up an allowed disruption.",
         },
         {
           kind: "h3",
@@ -335,11 +251,15 @@ export const article: Article = {
           items: [
             [
               { b: "List every budget." },
-              " Kubernetes shows each one’s allowed disruptions in the ALLOWED DISRUPTIONS column:",
+              " The short name ",
+              { code: "pdb" },
+              " stands for ",
+              { code: "poddisruptionbudgets" },
+              ". Kubernetes shows each one’s allowed disruptions in the ALLOWED DISRUPTIONS column:",
             ],
           ],
         },
-        { kind: "code", lang: "bash", code: "kubectl get poddisruptionbudgets --all-namespaces" },
+        { kind: "code", lang: "bash", code: "kubectl get pdb --all-namespaces" },
         {
           kind: "ol",
           start: 2,
@@ -362,6 +282,76 @@ export const article: Article = {
           kind: "code",
           lang: "bash",
           code: "kubectl get poddisruptionbudgets <pdb-name> --namespace <namespace> -o yaml",
+        },
+      ],
+    },
+    {
+      id: "a-budget-that-allows-no-disruption-keeps",
+      title: "A budget that allows no disruption keeps its node running",
+      blocks: [
+        {
+          kind: "p",
+          text: [
+            "Picture a Deployment whose PDB sets ",
+            { code: "minAvailable" },
+            " to 2 and whose HPA has a ",
+            { code: "minReplicas" },
+            " of 2.",
+          ],
+        },
+        {
+          kind: "p",
+          text: "By day the HPA adds pods, so a disruption is allowed. Overnight it sits at its minimum, the budget allows none, and neither pod’s node can be emptied, however little the pods use.",
+        },
+        {
+          kind: "p",
+          text: [
+            "That’s where a budget meets cloud cost, because ",
+            { a: "Kubernetes cost optimization", href: "/kubernetes-cost-optimization" },
+            " relies on removing spare nodes.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "The Cluster Autoscaler ",
+            { a: "removes a node", href: "/learn/cluster-autoscaler-not-scaling-down" },
+            " only after checking that its pods’ PDBs allow at least one eviction. If an eviction still fails, it keeps the node. Karpenter won’t consolidate a node while any pod on it has a blocking PDB.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "A ",
+            { a: "PodDisruptionBudget", href: "/learn/glossary/pod-disruption-budget" },
+            " limits how many pods of a replicated app voluntary disruptions can take down at once. It has been stable since Kubernetes 1.21, in the ",
+            { code: "policy/v1" },
+            " API.",
+          ],
+        },
+        {
+          kind: "p",
+          text: "Voluntary means chosen by a person or a controller, such as a drain for an upgrade or a scale-down. A PDB can’t prevent involuntary ones, such as a hardware failure. Even so, they count against its budget.",
+        },
+        {
+          kind: "p",
+          text: [
+            "The budget works through the Eviction API. A tool that respects PDBs asks to evict a pod, and the API server refuses while the eviction would break the budget. So ",
+            { code: "kubectl drain" },
+            " retries until the node is empty or its timeout runs out.",
+          ],
+        },
+        {
+          kind: "p",
+          text: "Two things skip the check: deleting a pod directly, and a Deployment or StatefulSet rolling update. Pods a rollout takes down still count against the budget.",
+        },
+        {
+          kind: "p",
+          text: "The disruption controller works out allowed disruptions by counting the selected pods whose Ready condition is True. From that it takes away how many must stay healthy, so 3 healthy pods against 2 required leave 1.",
+        },
+        {
+          kind: "p",
+          text: "At 0, every eviction is refused. If the budget can never rise above 0, you “cannot successfully drain a Node running one of those Pods.”",
         },
       ],
     },
@@ -481,10 +471,6 @@ export const article: Article = {
         {
           kind: "p",
           text: "By default, Auto Mode also terminates instances after 336\u00a0hours (14\u00a0days). It replaces nodes for drift roughly once a week, as new Auto Mode AMIs come out.",
-        },
-        {
-          kind: "p",
-          text: "So a budget at 0 fails an update, keeps a node or, on Auto Mode, is overridden.",
         },
         { kind: "svg", figure: figure2 },
       ],
@@ -641,4 +627,5 @@ export const article: Article = {
       href: "/learn/karpenter-consolidation",
     },
   ],
+  relatedTitle: "More on drains, evictions and node scale-down",
 };

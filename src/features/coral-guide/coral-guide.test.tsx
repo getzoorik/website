@@ -119,8 +119,11 @@ describe("/coral-guide groups and rows", () => {
     for (const group of groups) {
       expect(group.querySelector(":scope > h2")).toHaveAttribute("id", `${group.id}-h`);
       expect(group).toHaveAttribute("aria-labelledby", `${group.id}-h`);
-      /* Every section opens on its lede, over its rows. */
-      expect(group.querySelector(":scope > .fq-sec-b > .gd-lede"), group.id).not.toBeNull();
+      /* A section with a lede opens on it, over its rows; three have none (2 Nov 2026). */
+      const lede = group.querySelector(":scope > .fq-sec-b > .gd-lede");
+      if (coralGuide.sections.find((section) => section.id === group.id)!.lede)
+        expect(lede, group.id).not.toBeNull();
+      else expect(lede, group.id).toBeNull();
     }
     const chips = within(container).getByRole("navigation", { name: "Sections" });
     expect([...chips.querySelectorAll("a")].map((a) => [a.getAttribute("href"), text(a)])).toEqual(
@@ -227,7 +230,7 @@ describe("/coral-guide page", () => {
       ...(amoebaDocs ? [["Amoeba Block storage", "/amoeba-guide", null]] : []),
     ]);
     expect(text(container.querySelector(".doc-deck"))).toBe(
-      "How to connect a cluster, what Coral changes, and how you stay in control.",
+      "How to connect an AKS or EKS cluster, what Coral changes, and how you stay in control.",
     );
     expect(
       container.querySelector(".doc-date, .doc-crumb, .doc-q, .doc-rail, .doc-toc"),
@@ -252,7 +255,7 @@ describe("/coral-guide page", () => {
     const container = page();
     const top = container.querySelector("article.gd-main > .fq-upd")!;
     expect(top).toBe(container.querySelector("article.gd-main")!.firstElementChild);
-    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 1 November 2026");
+    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 2 November 2026");
     const list = top.querySelector("dl.doc-sum")!;
     expect([...list.querySelectorAll("dt")].map(text)).toEqual([
       "Product page",
@@ -265,7 +268,7 @@ describe("/coral-guide page", () => {
     expect(text(list.querySelector("dd a"))).toBe("Coral for AKS and EKS");
     const last = [...list.querySelectorAll("dd")][3]!;
     expect([...last.querySelectorAll("p")].map(text)).toEqual([
-      "Nothing is resized until you switch on “Automatically optimize”. Every engine has its own switch.",
+      "Nothing is resized until you switch on “Automatically optimize”.",
       "Node optimization and the Evictor start at install. For a careful start, see “Stay in control”.",
     ]);
     expect(last.querySelector("a")).toHaveAttribute("href", "#stay-in-control");
@@ -313,9 +316,7 @@ describe("/coral-guide page", () => {
       ["as-well doc-well is-yaml", expect.stringMatching(/^metadata:\n {2}annotations:\n/)],
       ["as-well doc-well is-line", "$ zoorikctl cluster disconnect --kube-context <name>"],
     ]);
-    expect(text(container.querySelector(".doc-well-note"))).toBe(
-      "Your own command, with its one-time token, comes from the console’s “Connect cluster” dialog.",
-    );
+    expect(container.querySelector(".doc-well-note")).toBeNull();
   });
 
   it("breaks inline code where the mock does, and keeps flags and short names whole", () => {
@@ -345,7 +346,9 @@ describe("/coral-guide page", () => {
     expect(text(steps[2].querySelector(":scope > ul + p"))).toBe(
       "A workload only needs to match one rule. The preview shows which workloads match.",
     );
-    expect(text(body.querySelector(":scope > ol + aside .doc-call-t"))).toBe("Good to know");
+    /* The "Good to know" callout went (2 Nov 2026): its points are a plain list after the steps. */
+    expect(body.querySelector(":scope > ol + ul")).not.toBeNull();
+    expect(body.querySelector(":scope > aside")).toBeNull();
   });
 
   it("draws the console table's groups as h3 subheads over continuation tables", () => {

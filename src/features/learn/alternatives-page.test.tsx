@@ -32,7 +32,8 @@ import { marketTool } from "./market-rows";
 /**
  * The two alternatives pages, under /compare: the hero with the checked day, four questions, then the options, our
  * product first, every tool from the market data in the page's order, linked to its own page, and the one live versus
- * page per product against a listed tool linked from its tool. Names are read from the data, never typed here.
+ * page per product against a listed tool linked from its tool; then the page's own sections and questions, in the
+ * Learn frame (2 Nov 2026). Names are read from the data, never typed here.
  */
 
 const text = (el: Element | null): string => (el?.textContent ?? "").replace(/[\s ]+/g, " ").trim();
@@ -177,6 +178,24 @@ describe.each(alternativesPages.map((entry) => [entry.route, entry] as const))(
         "Names, owners and descriptions come from each company’s own pages, checked 19 October 2026. Names are their owners’ trademarks. Something changed? Write to founders@zoorik.com.",
       );
       expect(note.querySelector("a")).toHaveAttribute("href", "mailto:founders@zoorik.com");
+    });
+
+    it("sets its own sections, then its questions, in the Learn frame after the options", () => {
+      const root = page();
+      const frame = root.querySelector("main > div.sec.doc-body")!;
+      expect(frame.previousElementSibling).toHaveAttribute("id", "options");
+      expect(
+        [...frame.querySelectorAll("nav.fq-chips a")].map((a) => [a.getAttribute("href"), text(a)]),
+      ).toEqual([
+        ...(entry.sections ?? []).map((section) => [`#${section.id}`, section.title]),
+        ...(entry.questions ? [["#questions", entry.questions.title]] : []),
+      ]);
+      for (const section of entry.sections ?? [])
+        expect(text(frame.querySelector(`section.fq-sec#${section.id} h2`))).toBe(section.title);
+      const rows = [...frame.querySelectorAll("section.fq-sec#questions .fq-list > details.fq")];
+      expect(rows.map((row) => text(row.querySelector("summary > h3")))).toEqual(
+        (entry.questions?.rows ?? []).map((row) => row.question),
+      );
     });
   },
 );

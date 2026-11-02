@@ -4,14 +4,14 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/kubernetes-
 export const term: GlossaryTerm = {
   slug: "kubernetes-qos-class",
   term: "Kubernetes QoS class (Guaranteed, Burstable, BestEffort)",
-  title: "What is a QoS class in Kubernetes?",
-  meta: "A Kubernetes QoS class marks each pod Guaranteed, Burstable or BestEffort. See how requests and limits set it, and why Guaranteed pods reserve their peak.",
-  h1: "What is a QoS class in Kubernetes?",
+  title: "What is a Kubernetes QoS class?",
+  meta: "A Kubernetes quality of service (QoS) class marks each pod Guaranteed, Burstable or BestEffort. See how requests and limits set it and what each reserves.",
+  h1: "What is a Kubernetes QoS class?",
   card: "A Kubernetes QoS class (quality of service class) is the category Kubernetes assigns to every pod.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -39,7 +39,7 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "Pod-level resources (beta since v1.34) follow the same rules. The class never changes, even with an in-place resize (stable since v1.35).",
+          text: "Pod-level resources (beta since v1.34) follow the same rules. The class is set when the pod is created and never changes. An in-place resize (stable since v1.35) that would change it is rejected.",
         },
         { kind: "h3", id: "which-pods-are-evicted-first", title: "Which pods are evicted first" },
         {
@@ -89,14 +89,6 @@ export const term: GlossaryTerm = {
             " refuses an in-place resize that would change a pod’s QoS class. Where its policy keeps Guaranteed QoS, it sets the limit equal to the request.",
           ],
         },
-        {
-          kind: "p",
-          text: [
-            "The ",
-            { a: "free assessment", href: "/assessment?p=coral" },
-            " works out your own figure.",
-          ],
-        },
       ],
     },
   ],
@@ -117,6 +109,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/burstable-instance",
     },
   ],
+  relatedTitle: "Terms related to QoS classes",
   next: { title: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
   sources: [
     {

@@ -7,10 +7,11 @@ import { assessmentHref } from "@/content/assess";
  * (pricing.html).
  *
  * 🔴 NO PRICE, RATE, CURRENCY OR FIGURE (D193, 9 Oct 2026: "no prices on the site, only one true sentence about
- * pricing"). The one sentence is the owner's, word for word (D226, 30 Oct 2026), and it is the hero's deck. Nothing
- * here says what a vCPU or a GB "it manages" is beyond that line. The page's text holds no digit at all, and its
- * structured data no offer (`pricing-page.test.tsx`); the shared closing row's "Thirty minutes" and the safety
- * snapshots' "seven days" (the 7 days /security prints) are spelled out.
+ * pricing"). The one line is the owner's, word for word (D226, 30 Oct 2026): its first sentence is the hero's deck,
+ * and its second opens the free assessment (2 Nov 2026). Nothing here says what a vCPU or a GB "it manages" is beyond
+ * that line. The page's text holds no digit at all, and its structured data no offer (`pricing-page.test.tsx`); the
+ * shared closing row's "Thirty minutes" and the safety snapshots' "seven days" (the 7 days /security prints) are
+ * spelled out.
  *
  * The text is the draft's small markup, drawn by `RichText`: `code`, [text](href), the address as a mailto.
  */
@@ -19,11 +20,17 @@ import { assessmentHref } from "@/content/assess";
  * The day /pricing's content last changed, for the sitemap's `lastmod` only: the page prints no date. Whoever changes
  * the page moves it in the same PR; never the build's date.
  */
-export const pricingLastUpdated = "1 November 2026";
+export const pricingLastUpdated = "2 November 2026";
 
-/** The owner's line (D226), the page's lead: word for word, never paraphrased. */
-export const pricingLine =
-  "Coral is priced per vCPU it manages, and Amoeba per GB it manages. The free assessment shows your saving before you pay anything.";
+/**
+ * The owner's line (D226) in its two sentences, word for word, never paraphrased: the hero's deck, then the free
+ * assessment's lead.
+ */
+const pricingDeck = "Coral is priced per vCPU it manages, and Amoeba per GB it manages.";
+const pricingAssessment = "The free assessment shows your saving before you pay anything.";
+
+/** The owner's line (D226), whole. */
+export const pricingLine = `${pricingDeck} ${pricingAssessment}`;
 
 /** A ready email with its subject, as the mock encodes it. */
 const mail = (subject: string): string =>
@@ -46,11 +53,11 @@ export const pricingPage = {
   meta: {
     title: "Pricing",
     description:
-      "Coral is priced per vCPU it manages, and Amoeba per GB it manages. See your saving with the free assessment, then buy on AWS or Microsoft Marketplace.",
+      "Kubernetes optimization pricing: Coral is priced per vCPU it manages, Amoeba per GB. Run the free assessment first, then buy on AWS or Microsoft Marketplace.",
   },
   hero: {
     title: "Pricing",
-    deck: pricingLine,
+    deck: pricingDeck,
     /** The hero's two buttons: the assessment, then the calendar. */
     assess: { label: "Estimate your saving", href: routes.assessment },
     demo: { label: "Book a demo", href: calendarUrl },
@@ -59,10 +66,7 @@ export const pricingPage = {
     id: "assessment",
     title: "Start with the free assessment",
     blocks: [
-      {
-        kind: "p",
-        text: "One line in your cloud console. One PDF report with your estimated saving at list price.",
-      },
+      { kind: "p", text: pricingAssessment },
       {
         kind: "ul",
         items: [
@@ -72,7 +76,6 @@ export const pricingPage = {
           "You decide whether to email us the report.",
         ],
       },
-      { kind: "p", text: "Choose the assessment you want:" },
       {
         kind: "table",
         head: ["Product", "Run", "Page"],
@@ -107,15 +110,10 @@ export const pricingPage = {
         rows: [
           [
             "What it does",
-            "Rebalances Kubernetes on AKS and EKS",
+            "Rebalances pod requests and nodes on AKS and EKS",
             "Rightsizes block storage on Windows and Linux VMs, on Azure and AWS",
           ],
           ["Priced per", "vCPU it manages", "GB it manages"],
-          [
-            "See your saving",
-            `[Coral assessment](${assessmentHref("coral")})`,
-            `[Amoeba assessment](${assessmentHref("amoeba")})`,
-          ],
           ["More", `[Coral](${routes.coral})`, `[Amoeba](${routes.amoeba})`],
         ],
       },
@@ -147,68 +145,25 @@ export const pricingPage = {
   },
   partners: {
     title: "Design partners",
-    line: "Design partners run Coral and Amoeba free on their non-production clusters and disks. Places are limited. They help shape what we build next. Production is on terms agreed with each partner.",
+    line: "Design partners run Coral and Amoeba free on their non-production clusters and disks. Places are limited. They help shape what we build next, and production runs on terms agreed with each partner.",
     go: { label: "Apply to be a design partner", href: mail("Design partner program") },
     more: { text: "Design partner program", href: routes.designPartners },
   },
-  /** The FAQ's rows, closed, with no numbers: the Coral and Amoeba FAQs' own answers. */
+  /** The FAQ's one row, closed, with no number: the question no section above answers (2 Nov 2026). */
   questions: {
     id: "questions",
     title: "Questions",
     rows: [
-      {
-        question: "Where can I buy Coral?",
-        answer: [
-          {
-            kind: "p",
-            text: "Coral is available in AWS Marketplace and Microsoft Marketplace. If you pay for Coral, the price, how often you pay and the payment terms are in your order or your marketplace purchase.",
-          },
-        ],
-      },
-      {
-        question: "What does Amoeba cost?",
-        answer: [
-          {
-            kind: "p",
-            text: "The assessment is free. If you pay for Amoeba, your order sets the price, how often you pay and the payment terms.",
-          },
-          {
-            kind: "p",
-            text: "Your cloud provider charges you directly for the disks and snapshots Amoeba creates or keeps.",
-          },
-        ],
-      },
-      {
-        question: "How do I get Amoeba?",
-        answer: [
-          {
-            kind: "p",
-            text: "Amoeba is available in AWS Marketplace and Microsoft Marketplace, and is in early access. Book a demo for early access, or run the free assessment first.",
-          },
-        ],
-      },
-      {
-        question: "How do I see what I could save?",
-        answer: [
-          {
-            kind: "p",
-            text: "Run the free assessment in your terminal or Cloud Shell, on Azure or AWS.",
-          },
-          {
-            kind: "ul",
-            items: [
-              "For Coral, it works out your own figure from your clusters, at list price.",
-              "For Amoeba, it writes one PDF report with each VM's estimated saving at list price.",
-            ],
-          },
-        ],
-      },
       {
         question: "Do I pay for both sets of disks during an Amoeba move?",
         answer: [
           {
             kind: "p",
             text: "Yes, but only while the move runs. The source disks are deleted once the switch is checked. Then you pay for the safety snapshots for the seven days they're kept.",
+          },
+          {
+            kind: "p",
+            text: "Your cloud provider charges you directly for the disks and snapshots Amoeba creates or keeps.",
           },
         ],
       },

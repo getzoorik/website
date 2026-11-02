@@ -4,19 +4,19 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/savings-pla
 export const term: GlossaryTerm = {
   slug: "savings-plan",
   term: "Savings plan (AWS Savings Plans, Azure savings plan for compute)",
-  title: "AWS savings plans and the Azure savings plan",
-  meta: "An AWS savings plan trades a one- or three-year hourly commitment for cheaper compute. See how it works and compares to Azure’s plan and reserved instances.",
-  h1: "AWS savings plans and the Azure savings plan",
-  card: "An AWS Savings Plan is a commitment to spend a set dollar amount per hour on compute, for one or three years.",
+  title: "What is a savings plan in AWS and Azure?",
+  meta: "AWS savings plans and the Azure savings plan trade a 1- or 3-year hourly commitment for cheaper compute. See an example and compare them to reserved instances.",
+  h1: "What is a savings plan in AWS and Azure?",
+  card: "An Amazon Web Services (AWS) Savings Plan commits you to a set dollar amount an hour of compute usage, for one or three years.",
   group: "finops-pricing",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
       text: [
-        "An AWS Savings Plan is a commitment to spend a set dollar amount per hour on compute, for one or three years. Usage it covers costs less than the ",
+        "An Amazon Web Services (AWS) Savings Plan commits you to a set dollar amount an hour of compute usage, for one or three years. Usage it covers costs less than the ",
         { a: "on-demand rate", href: "/learn/glossary/on-demand-instance" },
         ". The Azure savings plan for compute works the same way.",
       ],
@@ -25,7 +25,7 @@ export const term: GlossaryTerm = {
   sections: [
     {
       id: "an-example-from-aws",
-      title: "An AWS savings plan example",
+      title: "An AWS compute savings plan example",
       blocks: [
         {
           kind: "p",
@@ -33,7 +33,7 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "A $2.00-an-hour plan covers about 2.9 of them. The other 1.1 are charged on-demand, for $1.14.",
+          text: "A $2.00-an-hour plan covers about 2.9 of those instance-hours, and the other 1.1 are charged on-demand, for $1.14.",
         },
         { kind: "svg", figure: figure1 },
       ],
@@ -64,7 +64,7 @@ export const term: GlossaryTerm = {
           items: [
             "You pay the full commitment every hour, used or not, and can’t change it later.",
             [
-              "Spare nodes raise what you’d commit to, so ",
+              "Spare nodes raise the commitment you’d need, so ",
               { a: "reduce cloud costs", href: "/cloud-cost-optimization" },
               " first.",
             ],
@@ -74,7 +74,7 @@ export const term: GlossaryTerm = {
         {
           kind: "ul",
           items: [
-            "On EKS, a plan covers your EC2\u00a0nodes, but not EKS’s own charges.",
+            "On EKS, either type of EC2 savings plan, Compute or EC2 Instance, covers your EC2\u00a0nodes, but not EKS’s own charges.",
             "On AKS, it covers the virtual machines behind your nodes, if Microsoft lists their series as eligible.",
             [
               { a: "Coral", href: "/coral" },
@@ -112,6 +112,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/reserved-instance",
     },
   ],
+  relatedTitle: "Terms related to savings plans",
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",
     href: "/cloud-cost-optimization",

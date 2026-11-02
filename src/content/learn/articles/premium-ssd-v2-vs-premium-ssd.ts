@@ -8,20 +8,20 @@ export const article: Article = {
   title: "Premium SSD v2 vs Premium SSD: which costs less",
   meta: "Azure Premium SSD v2 vs Premium SSD: size tiers against per-GiB pricing, East US list prices, when v2 costs less, when Premium SSD fits, and Ultra Disk.",
   h1: "Premium SSD v2 vs Premium SSD: which one costs less?",
-  deck: "Fixed size tiers against capacity, IOPS and throughput charged apart, worked through at East US list prices.",
+  deck: "Four worked cases, and the limits that still make Premium SSD the right disk.",
   card: "How Premium SSD and Premium SSD v2 charge, when v2 costs less for the same data, and where Ultra Disk fits.",
   product: "amoeba",
   hub: "Block storage",
   topic: "Azure block storage",
   versus: ["Premium SSD v2", "Premium SSD"],
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "sheldon",
   cover: "/learn-covers/zoorik-learn-premium-ssd-v2-vs-premium-ssd-1200x630.webp",
   coverAlt:
     "Premium SSD v2 vs Premium SSD: Premium SSD’s size tier leaves space paid for, unused, while v2 ends at the data",
   short:
-    "In the Premium SSD v2 vs Premium SSD choice, v2 usually costs less for the same data: it charges per GiB, not per size tier. At East US list prices in October 2026, 512\u00a0GiB costs $41.11 a month on v2 and $73.22 on Premium SSD.",
+    "Premium SSD v2 usually costs less for the same data: it charges per GiB, not per size tier. At East US list prices in October 2026, 512\u00a0GiB costs $41.11 a month on v2 and $73.22 on Premium SSD.",
   sections: [
     {
       id: "premium-ssd-charges-a-size-tier-and",
@@ -66,12 +66,16 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Every v2\u00a0disk includes 3,000\u00a0IOPS and 125\u00a0MB/s free of charge. Going above either raises the price. You can change a disk’s performance four times in 24\u00a0hours, and creating the disk counts as one of the four.",
+          text: "Every v2\u00a0disk includes 3,000\u00a0IOPS and 125\u00a0MB/s free of charge, and going above either raises the price.",
+        },
+        {
+          kind: "p",
+          text: "You can change a v2\u00a0disk’s performance four times in 24\u00a0hours, and creating the disk counts as one.",
         },
         {
           kind: "callout",
           label: "For engineers",
-          text: "On v2, past 6\u00a0GiB, the IOPS ceiling grows by 500 per GiB, to a maximum of 80,000. Throughput can be set as high as 0.25\u00a0MB/s per provisioned IOPS, to a maximum of 2,000\u00a0MB/s.",
+          text: "Past 6\u00a0GiB, v2’s IOPS ceiling grows by 500 per GiB, to a maximum of 80,000. Throughput can reach 0.25\u00a0MB/s per provisioned IOPS, up to 2,000\u00a0MB/s.",
         },
       ],
     },
@@ -112,7 +116,7 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Worked example",
-          text: "Give the 600\u00a0GiB v2\u00a0disk the P30’s 5,000\u00a0IOPS and 200\u00a0MB/s. It then costs $61.41 a month, 55% less than the P30’s $135.17 for the same performance.",
+          text: "The 600\u00a0GiB v2\u00a0disk with the P30’s 5,000\u00a0IOPS and 200\u00a0MB/s costs $61.41 a month. That’s 55% less than the P30’s $135.17.",
         },
         { kind: "p", text: "The three meters add up like this:" },
         {
@@ -159,14 +163,6 @@ export const article: Article = {
           kind: "p",
           text: "Growth shows the difference most. A Premium SSD that outgrows 512\u00a0GiB jumps from a P20 at $73.22 to a P30 at $135.17. A v2\u00a0disk grows by the GiB.",
         },
-        {
-          kind: "p",
-          text: [
-            "Disk type is one way to reduce disk cost. ",
-            { a: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
-            " covers the others.",
-          ],
-        },
       ],
     },
     {
@@ -176,7 +172,7 @@ export const article: Article = {
         { kind: "p", text: "Both features exist on the Premium SSD side only." },
         {
           kind: "p",
-          text: "With bursting, P20 and smaller disks can reach 3,500\u00a0IOPS and 170\u00a0MB/s for up to 30\u00a0minutes. Premium SSD v2 doesn’t burst. Holding that level all month on a 512\u00a0GiB v2\u00a0disk costs $45.48, still 38% under the P20.",
+          text: "With bursting, P20 and smaller disks can reach 3,500\u00a0IOPS and 170\u00a0MB/s for up to 30\u00a0minutes. Holding that level all month on a 512\u00a0GiB v2\u00a0disk costs $45.48, still 38% under the P20.",
         },
         {
           kind: "p",
@@ -184,7 +180,10 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Disk reservations give a one-year discount on P30 to P80. Microsoft lists Premium SSD v2 among the disks they don’t cover.",
+          text: [
+            { a: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
+            " give a one-year discount on P30 to P80. Microsoft lists Premium SSD v2 among the disks they don’t cover.",
+          ],
         },
         {
           kind: "p",
@@ -247,14 +246,14 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "An OS disk can’t be v2, and neither can a disk used with Azure Compute Gallery. A workload tuned around host caching loses it. ",
+            "A disk used with Azure Compute Gallery can’t be v2 either. ",
             { a: "ZRS", href: "/learn/azure-disk-lrs-vs-zrs" },
-            ", which replicates a disk synchronously across three availability zones, has no v2 option.",
+            " replicates a disk synchronously across three availability zones.",
           ],
         },
         {
           kind: "p",
-          text: "In most regions with availability zones, v2 attaches only to zonal virtual machines (VMs). So a VM deployed without a zone can’t take it there. East US is one of those regions: it’s on the zonal list and not the nonzonal one.",
+          text: "East US is a region where v2 attaches only to zonal virtual machines (VMs). So a VM deployed there without a zone can’t take it.",
         },
         {
           kind: "p",
@@ -310,20 +309,6 @@ export const article: Article = {
           kind: "callout",
           label: "Rule of thumb",
           text: "Default to v2 for data disks. Choose Ultra Disk only when one disk needs more than v2’s 80,000\u00a0IOPS or 2,000\u00a0MB/s.",
-        },
-        {
-          kind: "p",
-          text: "Below that ceiling, v2 charges the same three meters at a fraction of Ultra Disk’s rates.",
-        },
-        { kind: "p", text: "Keep Premium SSD only where v2 can’t go:" },
-        {
-          kind: "ul",
-          items: [
-            "OS disks, and disks used with Azure Compute Gallery",
-            "Workloads that rely on host caching",
-            "Disks that need ZRS",
-            "VMs whose region or zone doesn’t offer v2",
-          ],
         },
         { kind: "svg", figure: figure3 },
       ],
@@ -397,16 +382,12 @@ export const article: Article = {
           text: [
             "The worked example on the ",
             { a: "Amoeba page", href: "/amoeba" },
-            " shows the size side. A VM has four 512\u00a0GiB Premium SSD data disks, 2,048\u00a0GiB in all, holding 1,000\u00a0GiB of data. At the East US prices above, those four P20s cost $292.88 a month, and more than half of that space is empty.",
+            " shows the size side. A VM has four 512\u00a0GiB Premium SSD data disks, 2,048\u00a0GiB in all, holding 1,000\u00a0GiB of data. More than half the space paid for is empty.",
           ],
         },
         {
           kind: "p",
-          text: [
-            "On Azure, Amoeba prices disks from the same Azure Retail Prices API as this article. The ",
-            { a: "free block storage assessment", href: "/assessment?p=amoeba" },
-            " writes one PDF and sends nothing to Zoorik.",
-          ],
+          text: "On Azure, Amoeba prices disks from the same Azure Retail Prices API as this article.",
         },
         {
           kind: "p",
@@ -498,4 +479,5 @@ export const article: Article = {
       href: "/learn/azure-disk-lrs-vs-zrs",
     },
   ],
+  relatedTitle: "More on Azure disk types and pricing",
 };

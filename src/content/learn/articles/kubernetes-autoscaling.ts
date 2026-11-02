@@ -4,41 +4,41 @@ import { figure as figure2 } from "@/features/learn/figures/kubernetes-autoscali
 
 export const article: Article = {
   slug: "kubernetes-autoscaling",
-  title: "Kubernetes autoscaling: HPA and node autoscalers",
-  meta: "Kubernetes autoscaling: the HPA sets pod count, the Cluster Autoscaler node count. HPA vs Cluster Autoscaler and Karpenter vs HPA in a surge.",
+  title: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
+  meta: "What each Kubernetes autoscaler changes: the HPA sets pod count; the Cluster Autoscaler, Karpenter and NAP set nodes on AKS and EKS, and how they combine.",
   h1: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
-  deck: "Pod count, pod size or node count: what each autoscaler changes, where Karpenter and NAP fit, and how they combine.",
+  deck: "The HPA and every node autoscaler read pod requests, so set requests near real use first.",
   card: "What the HPA, VPA and Cluster Autoscaler each change, where Karpenter and NAP fit, and how they combine.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes autoscaling",
   versus: ["HPA · VPA", "Cluster Autoscaler"],
   published: "2026-10-22",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "saurav",
   cover: "/learn-covers/zoorik-learn-kubernetes-autoscaling-1200x630.webp",
-  coverAlt:
-    "Kubernetes autoscaling: the HPA adds pods, the VPA makes a pod bigger, the Cluster Autoscaler adds a node",
+  coverAlt: "The HPA adds pods, the VPA makes a pod bigger, the Cluster Autoscaler adds a node",
   short: [
-    "Kubernetes autoscaling works on three layers, and each autoscaler changes one: pod count, pod size or node count. The ",
+    "Kubernetes autoscaling works on three layers, with one type of autoscaler for each. The ",
     { a: "Horizontal Pod Autoscaler (HPA)", href: "/learn/glossary/horizontal-pod-autoscaler" },
-    " sets how many pods run, the ",
+    " sets pod count, the ",
     { a: "Vertical Pod Autoscaler (VPA)", href: "/learn/glossary/vertical-pod-autoscaler" },
-    " what each requests, and the Cluster Autoscaler the nodes. Karpenter and AKS node auto provisioning (NAP) do the node job, with machines chosen to fit the pods.",
+    " pod size, and the Cluster Autoscaler node count. Karpenter and AKS node auto provisioning (NAP) also set node count, and pick machines to fit the pods.",
   ],
   sections: [
     {
       id: "what-each-autoscaler-does",
-      title: "Karpenter vs HPA, VPA and Cluster Autoscaler: what each one changes",
+      title: "Kubernetes autoscaler types: pod count, pod size and node count",
       blocks: [
         {
           kind: "p",
-          text: "Picture a 3-pod Deployment that an HPA keeps at a 60% CPU target. Traffic doubles. The HPA adds 3\u00a0pods, and if no node has room for their requests, they stay pending until the Cluster Autoscaler adds a node. A VPA beside it should set only memory requests, since the HPA scales on CPU.",
+          text: "Picture a 3-pod Deployment that an HPA keeps at a 60% CPU target. Traffic doubles, and the HPA adds 3\u00a0pods. If no node has room for their requests, they stay pending until the Cluster Autoscaler adds a node.",
         },
         {
           kind: "p",
-          text: "Autoscaling works on three layers: two on your workloads, and one on the machines under them.",
+          text: "A VPA beside it should set only memory requests, since the HPA scales on CPU.",
         },
+        { kind: "p", text: "Each k8s autoscaler side by side:" },
         {
           kind: "table",
           columns: [
@@ -91,7 +91,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The request links all three layers. It also decides how many nodes you pay for. A request is the CPU and memory a container asks the scheduler to reserve, and the scheduler places pods by requests, not by use. So a pod that requests 2\u00a0CPU and uses 0.5\u00a0CPU holds 2\u00a0CPU of a node, 1.5 of them unused, whichever node autoscaler you run.",
+          text: "A request is the CPU and memory a container asks the scheduler to reserve. The scheduler places pods by requests, not by use. So a pod that requests 2\u00a0CPU and uses 0.5\u00a0CPU holds 2\u00a0CPU of a node, 1.5 of them unused.",
         },
         {
           kind: "p",
@@ -102,11 +102,11 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "HPA vs VPA", href: "/learn/vpa-vs-hpa" },
-            " walks through how the two work against each other on CPU, and ",
+            " covers how the two work against each other on CPU. ",
             { a: "KEDA vs HPA", href: "/learn/keda-vs-hpa-vs-vpa" },
-            " covers event-driven scaling. ",
+            " covers event-driven scaling, and ",
             { a: "KEDA vs Karpenter", href: "/learn/keda-vs-karpenter" },
-            " shows how event-driven pod scaling meets node scaling.",
+            " how it meets node scaling.",
           ],
         },
       ],
@@ -123,16 +123,16 @@ export const article: Article = {
           kind: "p",
           text: "Scale-up starts when pods fail to schedule for lack of resources: every 10\u00a0seconds by default, the Cluster Autoscaler looks for them, works out which node group would fit them, and grows that group.",
         },
-        { kind: "p", text: "Scale-down needs all three to hold:" },
+        { kind: "p", text: "Scale-down needs all three:" },
         {
           kind: "ol",
           items: [
             [
-              "By default, the pods on the node, DaemonSet and mirror pods included, request less than half of its ",
+              "By default, the node’s pods, DaemonSet and mirror pods included, request less than half of its ",
               { a: "allocatable", href: "/learn/kubernetes-allocatable-vs-capacity" },
               " CPU, and of its memory.",
             ],
-            "Every pod on it, apart from DaemonSet and mirror pods, can be moved to another node.",
+            "Every pod on it, apart from DaemonSet and mirror pods, can move to another node.",
             [
               "The node doesn’t carry the ",
               { code: 'cluster-autoscaler.kubernetes.io/scale-down-disabled: "true"' },
@@ -142,7 +142,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "A node that meets all three is unneeded, and after 10\u00a0minutes unneeded, the default, it’s removed. Some pods keep a node running even with room for them elsewhere:",
+          text: "After 10\u00a0minutes unneeded, the default, a node that meets all three is removed. These pods keep it running even with room for them elsewhere:",
         },
         {
           kind: "ul",
@@ -185,13 +185,38 @@ export const article: Article = {
           kind: "callout",
           label: "For engineers",
           text: [
-            "The Cluster Autoscaler expects a new node to register within 15\u00a0minutes, and by default removes non-empty nodes one at a time and empty ones in batches of up to 10. The flags are ",
+            "A new node must register within 15\u00a0minutes. By default, the Cluster Autoscaler removes non-empty nodes one at a time and empty ones up to 10 at once. The flags and their defaults are ",
             { code: "--scan-interval" },
             " (10 s), ",
             { code: "--scale-down-utilization-threshold" },
             " (0.5) and ",
             { code: "--scale-down-unneeded-time" },
             " (10 min).",
+          ],
+        },
+        {
+          kind: "h3",
+          id: "cluster-autoscaler-expanders-which-node-group-grows",
+          title: "Cluster Autoscaler expanders: which node group grows",
+        },
+        {
+          kind: "p",
+          text: [
+            "When more than one node group could fit the pending pods, an expander picks the one that grows. You choose it with the Cluster Autoscaler’s ",
+            { code: "--expander" },
+            " flag. The expanders include:",
+          ],
+        },
+        {
+          kind: "ul",
+          items: [
+            [{ code: "random" }, ", for when no node group needs to scale differently"],
+            [{ code: "most-pods" }, ", the group that could schedule the most pods"],
+            [
+              { code: "least-waste" },
+              ", the default: the group left with the least idle CPU after scale-up",
+            ],
+            [{ code: "least-nodes" }, ", the group that uses the fewest nodes after scale-up"],
           ],
         },
       ],
@@ -202,12 +227,16 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "The Cluster Autoscaler only picks among node groups that already exist, so a pod too big for every group stays pending.",
+          text: "The Cluster Autoscaler picks only among node groups that already exist, so a pod too big for every group stays pending.",
+        },
+        {
+          kind: "p",
+          text: "Karpenter does the same job without node groups. It reads the pending pods and launches machines that fit them, within the NodePools you define. It also consolidates spare nodes, and can swap a set of nodes for a different one or replace nodes that reach a set lifetime.",
         },
         {
           kind: "p",
           text: [
-            "Karpenter does the same job without node groups. It auto-provisions: it reads the pending pods, chooses a node configuration that fits them within the NodePools you define, and launches individual machines. It consolidates nodes that are no longer needed, can swap a set of nodes for a different one, and can replace nodes that reach a set lifetime. So in Karpenter vs HPA, Karpenter takes only the node layer. ",
+            "So in Karpenter vs HPA, Karpenter takes only the node layer. ",
             { a: "What is Karpenter?", href: "/learn/what-is-karpenter" },
             " and ",
             {
@@ -268,25 +297,33 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "When load pushes pod utilization past the HPA’s target, the HPA adds pods straight away: there’s no stabilization window on the way up, and by default it can add 4\u00a0pods or double the count every 15\u00a0seconds, whichever is more. Pods that fit on no node go pending. The Cluster Autoscaler sees them within 10\u00a0seconds and grows a node group, or Karpenter launches a machine for them.",
+          text: "When load pushes pod utilization past the HPA’s target, the HPA adds pods straight away: there’s no stabilization window on the way up, and by default it can add 4\u00a0pods or double the count every 15\u00a0seconds, whichever is more.",
         },
         {
           kind: "p",
-          text: "The Cluster Autoscaler FAQ describes this pairing: the HPA creates replicas, and the Cluster Autoscaler brings up nodes when there isn’t room. So Cluster Autoscaler vs HPA isn’t an either-or, and neither is Karpenter vs HPA.",
+          text: "Pods that fit on no node go pending. The Cluster Autoscaler sees them within 10\u00a0seconds and grows a node group, or Karpenter launches a machine for them.",
         },
         {
           kind: "p",
-          text: "When load falls, the HPA waits out its 300-second scale-down stabilization window. Then it removes pods. Nodes empty out or drop below the 50% threshold, and after 10\u00a0minutes unneeded the Cluster Autoscaler removes them. Karpenter and NAP consolidate instead.",
+          text: "The Cluster Autoscaler FAQ describes this pairing: the HPA creates replicas, and the Cluster Autoscaler brings up nodes when there isn’t room. So the two aren’t an either-or.",
+        },
+        {
+          kind: "p",
+          text: "When load falls, the HPA waits out its 300-second scale-down stabilization window, then removes pods. After 10\u00a0minutes unneeded, the Cluster Autoscaler removes nodes left under the 50% threshold. Karpenter and NAP consolidate instead.",
         },
         {
           kind: "callout",
           label: "Worked example",
-          text: "In the opening case, doubled traffic puts the 3\u00a0pods at 120% against the 60% target, so the HPA asks for ceil(3 × 120 ÷ 60) = 6. Its default limit allows the larger of 3 + 4 = 7 and 3 × 2 = 6, so all 6 come in one step. On the way down, the HPA’s 300-second (5-minute) window comes first, then a node left under 50% needs 10\u00a0minutes unneeded, so it goes 5 + 10 = 15\u00a0minutes after the load falls, at the earliest.",
+          text: "Doubled traffic puts the 3\u00a0pods at 120% of the 60% target, so the HPA asks for ceil(3 × 120 ÷ 60) = 6. Its default limit allows the larger of 3 + 4 and 3 × 2, so all 6 come at once. When load falls, the 5-minute window plus 10\u00a0minutes unneeded means the node goes 15\u00a0minutes later, at the earliest.",
         },
         { kind: "svg", figure: figure2 },
         {
           kind: "p",
-          text: "Underneath both loops sit the requests. If they’re too low, the Kubernetes docs warn, a new node might not help a pod run, and if too high, they might keep its node from being consolidated. For DaemonSet pods, the same docs advise against vertical autoscaling when a node autoscaler runs, because the autoscaler has to predict what those pods will look like on a new node.",
+          text: "Under both loops sit the requests. If they’re too low, the Kubernetes docs warn, a new node might not help a pod run. If they’re too high, they might keep its node from being consolidated.",
+        },
+        {
+          kind: "p",
+          text: "For DaemonSet pods, the same docs advise against vertical autoscaling when a node autoscaler runs. The autoscaler has to predict what those pods will look like on a new node.",
         },
         { kind: "p", text: "The order that works:" },
         {
@@ -296,12 +333,12 @@ export const article: Article = {
               { b: "Set requests near real use." },
               " In ",
               { code: "Off" },
-              " mode the VPA only recommends, so you see its recommended requests without any pod changing. If an HPA scales on CPU, let the VPA set memory only.",
+              " mode the VPA only shows its recommendations, and no pod changes. Beside an HPA that scales on CPU, let the VPA set memory only.",
             ],
             [{ b: "Then set the HPA target." }, " A 60% target now means 60% of what a pod needs."],
             [
               { b: "Then pick the node autoscaler." },
-              " Use the Cluster Autoscaler if your node groups already fit your pods, and use Karpenter, or NAP on AKS, when pods need machines no group has.",
+              " Use the Cluster Autoscaler if your node groups already fit your pods, and Karpenter, or NAP on AKS, when pods need machines no group has.",
             ],
           ],
         },
@@ -315,62 +352,73 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS clusters running 1.30 or later. It works on the layer every node autoscaler counts: it rebalances each container’s CPU and memory requests to what it uses, and drains spare nodes one at a time so your node autoscaler can remove them. It never adds nodes for demand. Pod sizing starts when you switch on “Automatically optimize” for a policy or a workload. Node optimization is on from install.",
+            " optimizes Kubernetes on AKS and EKS clusters running 1.30 or later. It rebalances each container’s CPU and memory requests to what it uses. It drains spare nodes one at a time so your node autoscaler can remove them.",
           ],
+        },
+        {
+          kind: "p",
+          text: "It never adds nodes for demand. Pod sizing starts when you switch on “Automatically optimize” for a policy or a workload. Node optimization is on from install.",
         },
         {
           kind: "ul",
           items: [
             [
               { b: "HPA:" },
-              " the HPA keeps deciding how many pods run, and Coral how big each pod is. For a CPU-utilization HPA, Coral picks the CPU request by replaying past load through the HPA’s own settings.",
+              " the HPA keeps the pod count, and Coral the pod size. For a CPU-utilization HPA, Coral picks the CPU request by replaying past load through the HPA’s own settings.",
             ],
             [
               { b: "While the HPA is scaling:" },
-              " if it’s below its max, Coral holds back the request raises it makes in a usage surge or under CPU pressure (memory raises after an OOM kill still apply) and pauses pod replacements until every pod is Ready.",
+              " if it’s below its max, Coral holds back the request raises it makes in a usage surge or under CPU pressure. Memory raises after an OOM kill still apply. Coral also pauses pod replacements until every pod is Ready.",
             ],
             [
               { b: "VPA:" },
-              " Coral doesn’t run the VPA. With automation on, it switches an active VPA to Off, and restores it when you switch automation off or disconnect.",
+              " Coral doesn’t run the VPA. With automation on, it switches an active VPA to Off and restores it when you switch automation off or disconnect.",
             ],
             [
               { b: "KEDA:" },
               " for a ScaledObject with a ",
               { code: "cpu" },
-              " trigger, the same replay uses the trigger’s target, the ScaledObject’s minimum and maximum replicas, and the scaling behavior of the HPA that KEDA created. Coral never converts that HPA into one it manages, and never changes its maximum. It raises the minimum only in a rebalance’s warm handover, so a new copy is Ready on another node before the old pod goes, then scales back.",
+              " trigger, the replay uses the trigger’s target, the ScaledObject’s replica bounds and the scaling behavior of its HPA. Coral never converts that HPA into one it manages, and never changes its maximum.",
+            ],
+            [
+              { b: "KEDA in a rebalance:" },
+              " Coral raises the ScaledObject’s minimum only in a warm handover, so a new copy is Ready on another node before the old pod goes. Then it scales back.",
             ],
             [
               { b: "Cluster Autoscaler:" },
-              " before draining, Coral simulates the scheduler on the live cluster, so every pod must fit elsewhere. After the delay in the “Wait before removing empty nodes” setting, Coral hands an emptied node to the Cluster Autoscaler, whose own timers decide when it goes, within its minimums. With only the Cluster Autoscaler, Coral removes nodes but never changes their size.",
+              " before draining, Coral simulates the scheduler on the live cluster, so every pod must fit elsewhere. It then hands the emptied node to the Cluster Autoscaler, whose own timers decide when it goes. With only the Cluster Autoscaler, Coral removes nodes but never changes their size.",
             ],
             [
               { b: "Karpenter and NAP:" },
-              " pools that Karpenter or NAP already consolidates are left to them, and with either in place, Coral can also rebalance work onto smaller or cheaper machines.",
+              " pools they already consolidate are left to them. With either in place, Coral can also rebalance work onto smaller or cheaper machines.",
             ],
             [
               { b: "No node autoscaler:" },
-              " connect sets up NAP on AKS (it needs Azure CNI), or Karpenter on EKS, with your approval. Until one exists, nothing adds nodes.",
+              " connect sets up NAP on AKS, which needs Azure CNI, or Karpenter on EKS, with your approval. Until one exists, nothing adds nodes.",
             ],
           ],
         },
         {
           kind: "p",
+          text: "Coral keeps no idle spare nodes. The headroom sits inside each pod’s request, and sudden growth is your autoscaler’s job.",
+        },
+        {
+          kind: "p",
           text: [
-            "Coral keeps no idle spare nodes. The headroom sits inside each pod’s request, and sudden growth is your autoscaler’s job. Running pods are ",
+            "Running pods are ",
             { a: "resized in place", href: "/learn/in-place-pod-resize" },
-            " on 1.33+ nodes where possible, and otherwise restart one at a time within their PodDisruptionBudgets. Coral doesn’t forecast, so for a known event you set minimums on critical workloads.",
+            " on 1.33+ nodes where possible, and otherwise restart one at a time within their PodDisruptionBudgets. Coral doesn’t forecast, so set minimums on critical workloads before a known event.",
           ],
         },
         {
           kind: "p",
-          text: "On our own AKS development cluster, Coral removed one of two 4-CPU workers, then rebalanced the remaining worker onto a cheaper machine of the same size. Eight days after we connected it, the cluster’s machines cost $154.76 a month instead of $368.65.",
+          text: "On our own AKS development cluster, Coral removed one of two 4-CPU workers, then rebalanced the other onto a cheaper machine of the same size. Eight days in, the cluster’s machines cost $154.76 a month instead of $368.65.",
         },
         {
           kind: "p",
           text: [
-            "The details are in ",
             { a: "How we reduced AKS cluster costs by 58%", href: "/coral-value-lab" },
-            ", and ",
+            " has the details, and ",
             { a: "Coral’s FAQ", href: "/coral-faq#how-does-coral-interact-with-cluster" },
             " answers how it works with each node autoscaler.",
           ],
@@ -455,4 +503,5 @@ export const article: Article = {
       href: "/coral-faq#do-i-need-coral-with-karpenter",
     },
   ],
+  relatedTitle: "More on pod and node autoscalers",
 };

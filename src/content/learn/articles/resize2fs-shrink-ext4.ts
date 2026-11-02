@@ -5,21 +5,21 @@ import { figure as figure2 } from "@/features/learn/figures/resize2fs-shrink-ext
 export const article: Article = {
   slug: "resize2fs-shrink-ext4",
   title: "resize2fs shrink ext4: why it must be unmounted",
-  meta: "resize2fs shrinks ext4 only while it’s unmounted. Run e2fsck -f, find the minimum with resize2fs -P, then shrink the filesystem before the LV or partition.",
+  meta: "Resize ext4 down with resize2fs only while unmounted: run e2fsck -f, find the minimum with resize2fs -P, shrink the filesystem, then the LV or partition.",
   h1: "Shrink ext4 with resize2fs: why it must be unmounted",
-  deck: "ext4 grows while mounted and shrinks only unmounted. The safe order, and why the disk cost stays the same.",
+  deck: "ext4 grows while mounted, but shrinking it means stopping every service on the mount until it’s done.",
   card: "Why resize2fs won’t shrink a mounted ext4, and the safe steps when you can stop the service.",
   product: "amoeba",
   hub: "Block storage",
   topic: "Linux filesystems",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "ravi",
   cover: "/learn-covers/zoorik-learn-resize2fs-shrink-ext4-1200x630.webp",
   coverAlt:
     "Shrink ext4 with resize2fs: with /data unmounted, the blocks move first so the end can go",
   short: [
-    "resize2fs shrinks an ext4 filesystem only while it’s unmounted, so stop its services and unmount it first. Run ",
+    "resize2fs shrinks an ext4 filesystem only while it’s unmounted. Run ",
     { code: "e2fsck -f" },
     ", check the minimum with ",
     { code: "resize2fs -P" },
@@ -50,14 +50,6 @@ export const article: Article = {
         {
           kind: "p",
           text: "resize2fs notices the mount and prints the first line. It exits with the second as soon as the new size is smaller than the current one.",
-        },
-        {
-          kind: "p",
-          text: [
-            "Getting to 150\u00a0GiB means stopping every service on ",
-            { code: "/data" },
-            " for the whole shrink. Afterwards, you still pay for all 512\u00a0GiB.",
-          ],
         },
         {
           kind: "p",
@@ -223,7 +215,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "These steps stop every service on the mount and rewrite the filesystem’s layout. Replace ",
+            "These steps rewrite the filesystem’s layout. Replace ",
             { code: "/data" },
             ", ",
             { code: "<device>" },
@@ -322,7 +314,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Shrink the filesystem first, and the LV or partition under it second. Never take the LV or partition below the filesystem’s new size. The resize2fs man page gives that order for a partition, and an LV takes the same order.",
+          text: "Shrink the filesystem first, and the LV or partition under it second. The resize2fs man page gives that order for a partition, and an LV takes the same order.",
         },
         { kind: "svg", figure: figure2 },
         {
@@ -356,7 +348,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The freed extents go back to the volume group, ready for another LV. They don’t leave the disk. A smaller partition gains you nothing on a cloud data disk either, because the disk under it stays the size you provisioned.",
+          text: "The freed extents go back to the volume group, ready for another LV. They don’t leave the disk.",
         },
       ],
     },
@@ -366,7 +358,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "No. resize2fs refuses before any change is made, and no option turns the refusal off. Two routes keep a service running for most of the job instead.",
+          text: "No. resize2fs refuses before any change is made. Two routes keep a service running for most of the job instead.",
         },
         {
           kind: "p",
@@ -494,17 +486,14 @@ export const article: Article = {
         {
           kind: "ul",
           items: [
-            [
-              { b: "The move." },
-              " The services that use those mounts restart once, at the switch onto the pool.",
-            ],
+            [{ b: "The move." }, " Amoeba copies your data while your services run."],
             [
               { b: "The switch." },
               " Then it switches each mount to the pool, with a short restart of the services that use it. Each mount keeps its path. If the switch fails, Amoeba puts the original mounts back and tries again.",
             ],
             [
               { b: "The old disks." },
-              " Once the switch is checked, Amoeba snapshots each old disk and deletes the disk. It keeps each snapshot for 7 days, then deletes it too.",
+              " Once the switch is checked, Amoeba snapshots each old disk and deletes the disk. It keeps each snapshot for a few days, then deletes it too.",
             ],
             [
               { b: "Rightsizing." },
@@ -614,4 +603,5 @@ export const article: Article = {
       href: "/learn/shrink-ebs-volume",
     },
   ],
+  relatedTitle: "More on shrinking filesystems and cloud disks",
 };

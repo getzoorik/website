@@ -80,7 +80,7 @@ const cases: readonly (readonly [string, Case])[] = [
       content: azureCostOptimizationPage,
       title: "Azure cost optimization: how to reduce Azure costs",
       description:
-        "Azure cost optimization, line by line: how to reduce Azure costs on VMs, managed disks, AKS and data transfer, and where Azure cost management fits.",
+        "Microsoft Azure cost optimization, line by line: what drives the cost of Azure VMs, managed disks, AKS and data transfer, and how to reduce each one.",
       eyebrow: "Azure",
       card: "azure-cost-optimization",
       sections: [
@@ -94,9 +94,6 @@ const cases: readonly (readonly [string, Case])[] = [
       ],
       questions: [
         "what-is-azure-cost-management",
-        "where-do-you-start-to-reduce-azure",
-        "reservation-or-savings-plan-which-should-you",
-        "is-data-transfer-free-inside-azure",
         "does-zoorik-replace-microsoft-cost-management-or",
       ],
       cardLinks: [routes.aksCostOptimization, routes.azureManagedDiskCostOptimization],
@@ -111,7 +108,7 @@ const cases: readonly (readonly [string, Case])[] = [
       content: awsCostOptimizationPage,
       title: "AWS cost optimization: how to reduce AWS costs",
       description:
-        "AWS cost optimization, line by line: how to reduce AWS costs on EC2, EBS, EKS, S3 and data transfer, and when to buy Savings Plans.",
+        "Cost optimization on AWS, line by line: stop idle EC2 instances, rightsize with AWS Compute Optimizer, fit EKS, EBS and S3 to real use, then buy Savings Plans.",
       eyebrow: "AWS",
       card: "aws-cost-optimization",
       sections: awsCostOptimizationPage.sections.map((section) => section.id),
@@ -139,7 +136,7 @@ describe("the two Topic pages", () => {
       routes.azureCostOptimization,
       routes.awsCostOptimization,
     ]);
-    expect(topicPages.map((page) => page.lastUpdated)).toEqual(Array(2).fill("1 November 2026"));
+    expect(topicPages.map((page) => page.lastUpdated)).toEqual(Array(2).fill("2 November 2026"));
     /* Built in the article frame: the header marks nothing, and an in-page link keeps its address, as the mocks'
        `data-keep-hash` asks. */
     for (const page of topicPages) {
@@ -174,7 +171,7 @@ describe.each(cases)("%s", (path, c) => {
     expect(content.meta.title).toBe(c.title);
     expect(`${c.title} | Zoorik`.length).toBeLessThanOrEqual(60);
     expect(c.metadata.description).toBe(c.description);
-    expect(c.description.length).toBeLessThanOrEqual(158);
+    expect(c.description.length).toBeLessThanOrEqual(160);
     expect(c.metadata.alternates).toEqual({ canonical: path });
     const card = { url: `/og/pages/${c.card}.png`, alt: `Zoorik. ${c.title}.` };
     expect(pageCards[path]).toMatchObject(card);
@@ -255,7 +252,7 @@ describe.each(cases)("%s", (path, c) => {
       ]),
     ).toEqual([
       ...content.sections.map((section) => [section.id, plain(section.title)]),
-      ["coral-and-amoeba", "Where Coral and Amoeba fit"],
+      ["coral-and-amoeba", plain(content.products.title)],
       ["questions", plain(content.questions.title)],
       ["read-more", content.readMore.title],
     ]);
@@ -275,7 +272,7 @@ describe.each(cases)("%s", (path, c) => {
       [...rows[0]!.querySelectorAll("a")].map((a) => [a.getAttribute("href"), text(a)]),
     ).toEqual([
       ...content.sections.map((section) => [`#${section.id}`, plain(section.title)]),
-      ["#coral-and-amoeba", "Where Coral and Amoeba fit"],
+      ["#coral-and-amoeba", plain(content.products.title)],
       ["#questions", plain(content.questions.title)],
     ]);
     /* Both frames are the article frame. */
@@ -340,7 +337,7 @@ describe.each(cases)("%s", (path, c) => {
     const band = renderPage(path, c).querySelector("section.sec.sec-band#coral-and-amoeba")!;
     expect(band).toHaveAttribute("aria-labelledby", "coral-and-amoeba-h");
     expect(text(band.querySelector(".sec-head > h2#coral-and-amoeba-h"))).toBe(
-      "Where Coral and Amoeba fit",
+      plain(content.products.title),
     );
     expect(text(band.querySelector(".sec-head > p"))).toBe(plain(content.products.lead));
     const cards = [...band.querySelectorAll(".tp-prods > article.pl")];

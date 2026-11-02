@@ -1,5 +1,6 @@
 import { ExternalArrow } from "@/components/primitives/external-arrow";
 import { eventsPage, type EventEntry } from "@/content/events";
+import { DocProse, DocSection } from "@/features/documents/prose";
 import { ChevronGlyph, PinGlyph } from "@/features/events/event-glyphs";
 import {
   banner,
@@ -15,9 +16,10 @@ import { NEW_TAB_HINT, offSiteProps } from "@/lib/links";
 /**
  * One event on /events: the card (the mock's `card()`), the "Next up" panel (`main()`'s `feat`) and the link both
  * end on (`out_link()`). Rendered inside the list's island (`EventsList`), which decides which events are shown.
+ * Then the FinOps lines under the list (`FinOpsEvents`), drawn from the same events.
  */
 
-const { card: copy, next } = eventsPage;
+const { card: copy, next, finops } = eventsPage;
 
 /**
  * "Event page": the event's own page, and only that (`officialUrl`), in a new tab the site's way. A screen reader
@@ -137,9 +139,9 @@ export function EventCard({
 }
 
 /**
- * "Next up": the first event with its days known, its description's first sentence and its banner beside them.
- * "Next up" is the panel's heading and the event's name a line under it: the name changes every week, and its card
- * already carries it as an h3.
+ * "Next up": the first event with its days known, its date and place, and its banner beside them. Its description is
+ * left to its card, a few lines down. "Next up" is the panel's heading and the event's name a line under it: the name
+ * changes every week, and its card already carries it as an h3.
  */
 export function NextUp({ event }: { readonly event: EventEntry }): React.JSX.Element {
   return (
@@ -152,10 +154,36 @@ export function NextUp({ event }: { readonly event: EventEntry }): React.JSX.Ele
         <p className="ev-next-when">
           {when(event).text} · {place(event)}
         </p>
-        <p className="ev-next-d">{split(event.description)[0]}</p>
         <EventLink event={event} large />
       </div>
       <Banner event={event} box="next" />
     </section>
+  );
+}
+
+/**
+ * "FinOps conferences in 2026 and 2027": the page's one prose section, under the list and its source line. A line
+ * for each kind of FinOps event, shown while one of its events is still to come on the build's day, so a line whose
+ * events have all ended drops off at the next build. With none left, the section goes.
+ */
+export function FinOpsEvents({
+  events,
+}: {
+  /** The events still to come on the build's day, as the list gets them. */
+  readonly events: readonly EventEntry[];
+}): React.JSX.Element | null {
+  const listed = new Set(events.map((event) => event.name));
+  const lines = finops.lines.filter((line) => line.events.some((name) => listed.has(name)));
+  if (lines.length === 0) return null;
+  return (
+    <DocProse className="ev-finops">
+      <DocSection id="finops-conferences" title={finops.title} labelled>
+        <ul>
+          {lines.map((line) => (
+            <li key={line.text}>{line.text}</li>
+          ))}
+        </ul>
+      </DocSection>
+    </DocProse>
   );
 }

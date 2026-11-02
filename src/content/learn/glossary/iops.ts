@@ -4,26 +4,30 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/iops/1";
 export const term: GlossaryTerm = {
   slug: "iops",
   term: "IOPS",
-  title: "What is IOPS?",
-  meta: "IOPS, input/output operations per second, is how many reads and writes a disk handles a second. See how AWS and Azure count it, and why size can set it.",
-  h1: "What is IOPS?",
-  card: "IOPS, short for input/output operations per second, is how many reads and writes a disk handles each second.",
+  title: "What is IOPS? Full form and meaning in storage",
+  meta: "IOPS full form: input/output operations per second, the reads and writes a disk handles each second. See how AWS and Azure count IOPS, and why size can set it.",
+  h1: "What is IOPS? Full form and meaning in storage",
+  card: "IOPS stands for input/output operations per second.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
-      text: "IOPS, short for input/output operations per second, is how many reads and writes a disk handles each second. The IOPS meaning in storage is a rate of operations, not bytes. Every cloud disk has a limit.",
+      text: "IOPS stands for input/output operations per second. It means how many reads and writes a disk handles every second. The IOPS meaning in storage is a rate of operations, not bytes.",
     },
-    { kind: "p", text: "Go over it, and the disk makes each operation wait longer." },
+    {
+      kind: "p",
+      text: "Disk IOPS have a ceiling: each disk has its own IOPS limit. Drive more than that, and each operation waits longer.",
+    },
   ],
   sections: [
     {
       id: "iops-in-aws-and-azure",
       title: "IOPS in AWS and Azure",
       blocks: [
+        { kind: "h3", id: "what-is-iops-in-aws", title: "What is IOPS in AWS?" },
         {
           kind: "p",
           text: "Amazon EBS counts up to 256\u00a0KiB as one operation on SSD volumes. For example:",
@@ -37,13 +41,28 @@ export const term: GlossaryTerm = {
           ],
         },
         { kind: "svg", figure: figure1 },
+        { kind: "h3", id: "what-is-iops-in-azure", title: "What is IOPS in Azure?" },
+        {
+          kind: "p",
+          text: "Azure Premium SSD and Standard SSD also count each operation up to 256\u00a0KiB as one. A larger operation counts as several 256\u00a0KiB ones.",
+        },
         {
           kind: "p",
           text: [
-            "Azure Premium SSD also counts up to 256\u00a0KiB as one operation. Each Azure virtual machine (VM) has its own ",
+            "Each Azure virtual machine (VM) size has its own ",
             { a: "IOPS limit", href: "/learn/azure-disk-iops-vs-throughput" },
-            ", which can hold a disk below the disk’s own limit.",
+            " too, which can hold a disk below the disk’s own limit.",
           ],
+        },
+      ],
+    },
+    {
+      id: "how-to-calculate-the-iops-you-need",
+      title: "How to calculate the IOPS you need",
+      blocks: [
+        {
+          kind: "p",
+          text: "To calculate IOPS from throughput, divide the throughput by the I/O size. In Microsoft’s IOPS calculation, a P30 disk at 5,000\u00a0IOPS with 8\u00a0KB operations moves 40\u00a0MB/s.",
         },
       ],
     },
@@ -111,6 +130,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/azure-managed-disk",
     },
   ],
+  relatedTitle: "Terms related to IOPS",
   next: {
     title: "Azure disk IOPS vs throughput: what limits your disks",
     href: "/learn/azure-disk-iops-vs-throughput",

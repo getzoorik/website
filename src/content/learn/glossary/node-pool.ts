@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "node-pool",
   term: "Node pool",
   title: "What is a node pool in Kubernetes?",
-  meta: "A node pool in Kubernetes is a group of nodes with one configuration. See how AKS node pools and EKS node groups differ, and how each sets what nodes cost.",
+  meta: "A Kubernetes node pool, or nodepool, is a group of nodes with one configuration. See how AKS node pools and EKS node groups differ, and what nodes cost.",
   h1: "What is a node pool in Kubernetes?",
   card: "A node pool in Kubernetes is a group of nodes that share one configuration.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -24,12 +24,31 @@ export const term: GlossaryTerm = {
       title: "AKS node pool vs EKS managed node group",
       blocks: [
         {
+          kind: "p",
+          text: "A node pool and a node group are one idea with two names. AKS groups nodes into node pools, and EKS groups them into node groups.",
+        },
+        { kind: "h3", id: "how-an-aks-node-pool-works", title: "How an AKS node pool works" },
+        {
           kind: "ul",
           items: [
             "An AKS node pool runs on a Virtual Machine Scale Set by default, with one VM size.",
             "An AKS Virtual Machines node pool can mix up to five sizes from one family.",
+          ],
+        },
+        {
+          kind: "h3",
+          id: "how-an-eks-managed-node-group-works",
+          title: "How an EKS managed node group works",
+        },
+        {
+          kind: "p",
+          text: "In a managed node group, EKS creates, updates and removes the EC2 instances for you, in an EC2 Auto Scaling group it manages.",
+        },
+        {
+          kind: "ul",
+          items: [
             [
-              "EKS’s closest match, the managed node group, runs on an EC2 Auto Scaling group and can list several instance types. To switch them later, see ",
+              "It can list several instance types. To switch them later, see ",
               {
                 a: "how to change an EKS node group instance type",
                 href: "/learn/change-eks-node-group-instance-type",
@@ -86,11 +105,6 @@ export const term: GlossaryTerm = {
               { a: "Coral", href: "/coral" },
               " rebalances CPU and memory requests on AKS and EKS to match real use. It drains spare nodes so your autoscaler can remove them.",
             ],
-            [
-              "The ",
-              { a: "free assessment", href: "/assessment?p=coral" },
-              " works out your own figure.",
-            ],
           ],
         },
       ],
@@ -113,6 +127,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/eks-auto-mode",
     },
   ],
+  relatedTitle: "Terms related to node pools",
   next: {
     title: "Kubernetes node size best practices: large or small nodes",
     href: "/learn/kubernetes-node-size-best-practices",
@@ -137,6 +152,11 @@ export const term: GlossaryTerm = {
       publisher: "AWS",
       title: "“Simplify node lifecycle with managed node groups”",
       url: "https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html",
+    },
+    {
+      publisher: "AWS",
+      title: "“Maintain nodes yourself with self-managed nodes”",
+      url: "https://docs.aws.amazon.com/eks/latest/userguide/worker.html",
     },
   ],
 };

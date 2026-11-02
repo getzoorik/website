@@ -9,9 +9,10 @@ import { LearnFrame } from "@/features/learn/learn-parts";
  *
  *   hero      the link back to /learn over the h1 (`gl-kl`, as on a term: it keeps the kicker's quiet colour), and
  *             its line
- *   groups    Kubernetes, Block storage, FinOps and pricing: each a section head with its count, then one tile per
- *             term, A–Z by the term's name, its h1 over its definition's first sentence (the hub's More from Zoorik
- *             tiles, `LinkTile`), two up from 981px (`lr-2`, learn.css)
+ *   groups    Kubernetes, Block storage, FinOps and pricing: each a section head with its count and the words after
+ *             it ("17 terms, a Kubernetes glossary from …"), then one tile per term, A–Z by the term's name, its h1
+ *             over its definition's first sentence (the hub's More from Zoorik tiles, `LinkTile`), two up from 981px
+ *             (`lr-2`, learn.css)
  *
  * Then the site's closing assessment row, as on every Learn page but /learn. Every tile is a term of the glossary
  * index (`@/content/learn/glossary`), so a new term file is a new tile with no change here. A server component with
@@ -42,7 +43,8 @@ export function GlossaryHub(): React.JSX.Element {
             <div className="sec-hrow">
               <h2 id={`${group.id}-h`}>{group.title}</h2>
               <p>
-                {group.terms.length} {group.terms.length === 1 ? count.one : count.many}
+                {group.terms.length} {group.terms.length === 1 ? count.one : count.many},{" "}
+                {group.about}
               </p>
             </div>
             <div className="dt-grid lr-2">

@@ -4,14 +4,14 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/pod-disrupt
 export const term: GlossaryTerm = {
   slug: "pod-disruption-budget",
   term: "Pod Disruption Budget (PDB)",
-  title: "What is a Pod Disruption Budget (PDB)?",
-  meta: "A pod disruption budget (PodDisruptionBudget, or PDB) limits how many pods a node drain can take down. See why a strict one keeps you paying for a spare node.",
-  h1: "What is a Pod Disruption Budget (PDB)?",
+  title: "Pod disruption budget (PDB) in Kubernetes",
+  meta: "A Kubernetes PodDisruptionBudget (PDB) limits how many of an app’s pods a drain can take down. See minAvailable, maxUnavailable, and what a strict one costs.",
+  h1: "Pod disruption budget (PDB) in Kubernetes",
   card: "A pod disruption budget in Kubernetes (a PodDisruptionBudget, or PDB) limits how many of an app’s pods can be down at once during voluntary disruptions.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -45,8 +45,13 @@ export const term: GlossaryTerm = {
     },
     {
       id: "a-budget-that-blocks-a-drain",
-      title: "A budget that blocks a drain",
+      title: "A PodDisruptionBudget that blocks a drain",
       blocks: [
+        {
+          kind: "code",
+          lang: "yaml",
+          code: "apiVersion: policy/v1\nkind: PodDisruptionBudget\nmetadata:\n  name: zk-pdb\nspec:\n  minAvailable: 2\n  selector:\n    matchLabels:\n      app: zookeeper",
+        },
         {
           kind: "p",
           text: [
@@ -101,9 +106,7 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: [
             { a: "Set a budget", href: "/learn/pod-disruption-budget-best-practices" },
-            " that lets a drain finish. The ",
-            { a: "free assessment", href: "/assessment?p=coral" },
-            " works out your own figure.",
+            " that lets a drain finish.",
           ],
         },
       ],
@@ -126,6 +129,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-cluster-utilization",
     },
   ],
+  relatedTitle: "Terms related to pod disruption budgets",
   next: {
     title: "Pod disruption budget best practices for AKS and EKS",
     href: "/learn/pod-disruption-budget-best-practices",
@@ -150,6 +154,11 @@ export const term: GlossaryTerm = {
       publisher: "Kubernetes",
       title: "“Horizontal Pod Autoscaling”",
       url: "https://kubernetes.io/docs/concepts/workloads/autoscaling/horizontal-pod-autoscale/",
+    },
+    {
+      publisher: "Karpenter",
+      title: "“Disruption”",
+      url: "https://karpenter.sh/docs/concepts/disruption/",
     },
   ],
 };

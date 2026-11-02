@@ -37,25 +37,25 @@ const plain = (cell: string): string => cell.replace(/`/g, "");
 
 describe("the calculators' metadata", () => {
   it("titles, describes and canonicalises each at the site's root, with its own card", () => {
-    /* Part 4's titles and descriptions (1 Nov 2026): each page carries its search. */
-    expect(nodeMetadata.title).toBe("EKS pricing calculator: AKS and EKS node cost");
+    /* The 2 Nov 2026 plan's titles and descriptions: each page carries its search. */
+    expect(nodeMetadata.title).toBe("EKS pricing and AKS pricing calculator for nodes");
     expect(nodeMetadata.description).toBe(
-      "EKS pricing calculator for nodes: price an EKS or AKS node pool at AWS and Azure list prices, and see how much of each node your pods can use.",
+      "AWS EKS pricing and AKS pricing for nodes: price an EKS or AKS node pool at AWS and Azure list prices, and see how much of each node your pods can use.",
     );
     expect(nodeMetadata.alternates).toEqual({ canonical: "/eks-and-aks-pricing-calculator" });
     expect(nodeMetadata.openGraph).toMatchObject({
       url: "/eks-and-aks-pricing-calculator",
-      title: "EKS pricing calculator: AKS and EKS node cost | Zoorik",
-      images: [{ url: "/og/pages/eks-and-aks-pricing-calculator.png" }],
+      title: "EKS pricing and AKS pricing calculator for nodes | Zoorik",
+      images: [{ url: "/og/pages/eks-pricing-and-aks-pricing-calculator.png" }],
     });
-    expect(diskMetadata.title).toBe("EBS pricing and Azure disk pricing calculator");
+    expect(diskMetadata.title).toBe("Amazon EBS pricing and Azure disk cost calculator");
     expect(diskMetadata.description).toBe(
-      "EBS pricing and Azure disk pricing in one calculator: see what an EBS volume or a managed disk costs a month at list price, and what its empty space costs.",
+      "EBS volume pricing and Azure disk pricing in one calculator: what an EBS volume or a managed disk costs a month at list price, and what its empty space costs.",
     );
     expect(diskMetadata.alternates).toEqual({ canonical: "/ebs-and-azure-disk-pricing" });
     expect(diskMetadata.openGraph).toMatchObject({
-      title: "EBS pricing and Azure disk pricing calculator | Zoorik",
-      images: [{ url: "/og/pages/ebs-and-azure-disk-pricing.png" }],
+      title: "Amazon EBS pricing and Azure disk cost calculator | Zoorik",
+      images: [{ url: "/og/pages/amazon-ebs-pricing-and-azure-disk-cost-calculator.png" }],
     });
     for (const meta of [nodeMetadata, diskMetadata]) {
       expect(`${String(meta.title)} | Zoorik`.length).toBeLessThanOrEqual(60);
@@ -70,26 +70,28 @@ describe("the calculators' metadata", () => {
   it("dates both by the day their content last changed, their prices still those of 30 October", () => {
     expect(pricesRetrievedAt.startsWith("2026-10-30")).toBe(true);
     expect(pricesRetrieved).toBe("30 October 2026");
-    /* Part 4's titles, h1s, descriptions and first paragraphs, 1 Nov 2026. */
-    expect(calculatorsLastUpdated).toBe("1 November 2026");
+    /* The 2 Nov 2026 plan's titles, h1s, descriptions and first paragraphs. */
+    expect(calculatorsLastUpdated).toBe("2 November 2026");
   });
 
-  it("opens each page on Part 4's h1 and first paragraph", () => {
+  it("opens each page on the plan's h1 and first paragraph", () => {
     expect(nodeCalculator.hero.title).toBe(
       "EKS pricing calculator: what an EKS or AKS node costs a month",
     );
     expect(nodeCalculator.intro).toEqual([
-      "EKS pricing is an hourly fee for each cluster, plus the EC2 instances and other resources your worker nodes use. This calculator prices the nodes, on EKS and on AKS. A node costs its hourly list price for every hour it runs, and here a month is 730 hours.",
-      "Your pods can't use all of it. Kubernetes keeps some CPU and memory on every node for itself. The results show both: what a node costs, and what your pods get.",
+      "Your pods can't use all of a node: Kubernetes keeps some CPU and memory on every node for itself.",
     ]);
-    expect(diskCalculator.hero.title).toBe("AWS EBS pricing and Azure disk pricing calculator");
-    expect(diskCalculator.intro[0]).toBe(
-      "On AWS and Azure, you pay for a disk's full size every month, however little data it holds. AWS prices an EBS volume by the GB you provision. Azure prices a Premium SSD or Standard SSD at the smallest size tier that holds it.",
+    expect(diskCalculator.hero.title).toBe(
+      "Amazon EBS pricing and Azure disk pricing: what a disk costs a month",
     );
-    /* The node page's first sentence rests on AWS's EKS pricing page, which its Sources names. */
-    const sources = nodeCalculator.frame.find((section) => section.title === "Sources")!;
+    expect(diskCalculator.intro[0]).toBe(
+      "On AWS and Azure, block storage pricing follows a disk's full size, however little data it holds. So empty space costs the same as space your data uses.",
+    );
+    /* The node page's cluster fees rest on AWS's and Azure's pricing pages, which its sources name. */
+    const node: CalculatorCopy = nodeCalculator;
+    const sources = node.frame.find((section) => section.id === "sources")!;
     expect(JSON.stringify(sources.blocks)).toContain(
-      "The EKS cluster fee from AWS's [Amazon EKS pricing](https://aws.amazon.com/eks/pricing/), checked 1 November 2026.",
+      "Cluster fees from AWS's [Amazon EKS pricing](https://aws.amazon.com/eks/pricing/), and from Microsoft Learn's [AKS pricing tiers](https://learn.microsoft.com/en-us/azure/aks/free-standard-pricing-tiers) and Azure's [AKS pricing](https://azure.microsoft.com/en-us/pricing/details/kubernetes-service/), checked 2 November 2026.",
     );
   });
 });
@@ -215,20 +217,20 @@ describe("/eks-and-aks-pricing-calculator", () => {
     expect(more.open).toBe(true);
   });
 
-  it("names its formula and its prices' sources and day under the calculator, and in Sources", () => {
+  it("names its prices' sources and day under the calculator, and in its sources", () => {
     const root = render(<NodePage />).container;
     expect(text(root.querySelector("#calculator .calc-src"))).toBe(
-      "Monthly cost = the hourly list price × 730 hours × the number of nodes. Prices from the Azure Retail Prices API (opens in a new tab) and the AWS Price List for Amazon EC2 (opens in a new tab), retrieved 30 October 2026.",
+      "Prices from the Azure Retail Prices API (opens in a new tab) and the AWS Price List for Amazon EC2 (opens in a new tab), retrieved 30 October 2026.",
     );
     expect(text(root.querySelector("#sources h3"))).toBe(
       "List prices and reserves, 30 October 2026",
     );
     expect(root.querySelector("#sources details#list-prices")).not.toHaveAttribute("open");
     expect(root.querySelectorAll("#list-prices table.doc-tbl")).toHaveLength(4);
-    /* Each cloud's price table under an h3 named for its search (owner, 1 Nov 2026). */
+    /* Each cloud's price table under an h3 named for its search (2 Nov 2026 plan). */
     expect([...root.querySelectorAll("#list-prices .fq-body > h3")].map(text)).toEqual([
-      "Azure VM pricing for AKS nodes, per month",
-      "EC2 instance pricing for EKS nodes, per month",
+      "Azure virtual machine pricing for AKS nodes, per month",
+      "AWS EC2 pricing for EKS nodes, per month",
     ]);
   });
 
@@ -250,9 +252,7 @@ describe("/ebs-and-azure-disk-pricing", () => {
     expect(text(result.querySelector("#o-tier"))).toBe("E15 · 256 GiB");
     expect(text(result.querySelector("#o-empty"))).toBe("150 GiB (75%)");
     expect(text(result.querySelector("#o-up"))).toBe("56 GiB, $4.20 a month");
-    expect(text(result.querySelector("#o-upline"))).toBe(
-      "Azure prices this disk as E15 (256 GiB). The tier is 56 GiB larger than the disk. That part of the price is $4.20 a month.",
-    );
+    expect(text(result.querySelector("#o-iops"))).toBe("Up to 500");
     /* The size is whole GiB, the used space can carry a fraction. */
     expect(root.querySelector("#size")).toHaveAttribute("inputmode", "numeric");
     expect(root.querySelector("#used")).toHaveAttribute("inputmode", "decimal");
@@ -263,6 +263,7 @@ describe("/ebs-and-azure-disk-pricing", () => {
     fireEvent.click(within(root.querySelector("[data-sw=cloud]")!).getByText("AWS"));
     expect(text(root.querySelector("#o-cost"))).toBe("$16.00");
     expect(text(root.querySelector("#o-price"))).toBe("$0.08 per GB-month");
+    expect(text(root.querySelector("#o-iops"))).toBe("3,000, included in the price");
     expect(root.querySelector("#o-tier-row")).toHaveAttribute("hidden");
     expect(root.querySelector("#o-up-row")).toHaveAttribute("hidden");
     expect(text(root.querySelector("#size-h"))).toBe("AWS prices every GB you provision.");
@@ -271,6 +272,7 @@ describe("/ebs-and-azure-disk-pricing", () => {
     expect(text(root.querySelector("#o-ecost"))).toBe("$0.00");
     expect(text(root.querySelector("#used-m"))).toBe(diskCalculator.overLine);
     fireEvent.click(within(root.querySelector("[data-sw=type]")!).getByText("gp2"));
+    expect(text(root.querySelector("#o-iops"))).toBe("600");
     fireEvent.change(root.querySelector("#size")!, { target: { value: "16385" } });
     expect(text(root.querySelector("#calc-stop"))).toBe(
       "A gp2 volume can be 1 GiB to 16 TiB (16,384 GiB).",
@@ -279,6 +281,13 @@ describe("/ebs-and-azure-disk-pricing", () => {
     expect(text(root.querySelector("#calc-stop"))).toBe(
       "Enter the disk size as a whole number of GiB.",
     );
+  });
+
+  it("shows the chosen disk's IOPS: the Premium SSD tier's own figure", () => {
+    const root = render(<DiskPage />).container;
+    fireEvent.click(within(root.querySelector("[data-sw=type]")!).getByText("Premium SSD"));
+    expect(text(root.querySelector("#o-tier"))).toBe("P15 · 256 GiB");
+    expect(text(root.querySelector("#o-iops"))).toBe("1,100");
   });
 
   it("ends on Amoeba's closing row", () => {

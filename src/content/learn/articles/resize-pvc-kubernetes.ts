@@ -5,16 +5,16 @@ import { figure as figure3 } from "@/features/learn/figures/resize-pvc-kubernete
 
 export const article: Article = {
   slug: "resize-pvc-kubernetes",
-  title: "Resize a PVC in Kubernetes, and why it can’t shrink",
-  meta: "Resize a PVC in Kubernetes: expand it by raising its storage request once allowVolumeExpansion is set. Steps for AKS, EKS gp3, StatefulSets and shrinking.",
-  h1: "How to resize a PVC in Kubernetes, and why it can’t shrink",
-  deck: "Raise the storage request and the disk grows. Steps for AKS, EKS and StatefulSets, and the route to a smaller claim.",
+  title: "Expand a PVC in Kubernetes, and why it can’t shrink",
+  meta: "To resize a Kubernetes persistent volume, set allowVolumeExpansion and raise the PVC’s request. Steps for AKS, EKS and StatefulSets, and why it can’t shrink.",
+  h1: "How to expand or resize a PVC in Kubernetes, and why it can’t shrink",
+  deck: "Steps for AKS, EKS and StatefulSets, and how Azure charges for the size you pick.",
   card: "Grow a PVC on AKS and EKS, resize a StatefulSet’s claims, and what to do when a claim is too big.",
   product: "both",
   hub: "Kubernetes",
   topic: "Kubernetes storage",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "shashank",
   cover: "/learn-covers/zoorik-learn-resize-pvc-kubernetes-1200x630.webp",
   coverAlt: "Resize a PVC: you can grow it, but not shrink it",
@@ -69,7 +69,6 @@ export const article: Article = {
       id: "how-to-expand-a-pvc-in-kubernetes",
       title: "How to expand a PVC in Kubernetes",
       blocks: [
-        { kind: "p", text: "Check the class, then patch the claim:" },
         {
           kind: "ol",
           items: [
@@ -174,7 +173,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The limit to know is 4\u00a0TiB. A Standard HDD, Standard SSD or Premium SSD volume grows without downtime while the new size stays at 4\u00a0TiB or less.",
+          text: "The limit to know is 4\u00a0TiB. A Standard HDD, Standard SSD or Premium SSD volume grows without any downtime while the new size stays at 4\u00a0TiB or less.",
         },
         {
           kind: "p",
@@ -183,9 +182,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Premium SSD v2 and Ultra Disk volumes don’t have that limit. The disk-level steps are in ",
+            "Premium SSD v2 and Ultra Disk volumes don’t have that limit. The disk-level steps are in how to ",
             {
-              a: "how to expand an Azure disk without downtime",
+              a: "expand an Azure disk without any downtime",
               href: "/learn/azure-disk-expand-without-downtime",
             },
             ".",
@@ -215,7 +214,7 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Worked example",
-          text: "The 200Gi patch above, on the default class, matches Microsoft’s own example. A 200\u00a0GiB Standard SSD maps to E15 and is charged as 256\u00a0GiB.",
+          text: "The 200Gi patch above, on the default class, matches Microsoft’s example. A 200\u00a0GiB Standard SSD maps to E15 and is charged as 256\u00a0GiB.",
         },
         {
           kind: "p",
@@ -292,7 +291,7 @@ export const article: Article = {
     },
     {
       id: "how-to-resize-a-pvc-in-a",
-      title: "How to resize a PVC in a StatefulSet",
+      title: "How to resize a StatefulSet PVC when volumeClaimTemplates can’t change",
       blocks: [
         {
           kind: "p",
@@ -386,7 +385,6 @@ export const article: Article = {
           lang: "text",
           code: 'The persistentVolumeClaim "pvc-azuredisk" is invalid: spec.resources.requests.storage: Forbidden: field can not be less than previous value.',
         },
-        { kind: "p", text: "So a claim sized for a peak keeps that size, and so does its cost." },
         { kind: "h3", id: "why-a-claim-cant-shrink", title: "Why a claim can’t shrink" },
         {
           kind: "p",
@@ -449,7 +447,7 @@ export const article: Article = {
             [
               "Delete the old claim once you trust the copy. Because its PV is set to ",
               { code: "Retain" },
-              ", the PV becomes Released and keeps the disk. Deleting the PV leaves the disk in place too. Delete the disk itself in Azure or AWS last, since its data goes with it. Until then it stays provisioned, and the cloud keeps charging for it.",
+              ", the PV becomes Released and keeps the disk. Deleting the PV leaves the disk in place too. Delete the disk itself in Azure or AWS last, since its data goes with it.",
             ],
           ],
         },
@@ -601,4 +599,5 @@ export const article: Article = {
       href: "/learn/increase-ebs-volume-size",
     },
   ],
+  relatedTitle: "More on resizing claims and cloud disks",
 };

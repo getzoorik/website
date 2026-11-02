@@ -22,14 +22,14 @@ describe("the open-source guides", () => {
     const root = render(<InstallCoralWithHelm />).container;
     expect(text(root.querySelector("h1"))).toBe("Install Coral with Helm");
     expect(text(root.querySelector(".doc-updated"))).toBe(
-      "Updated 1 November 2026 · Published by Zoorik",
+      "Updated 2 November 2026 · Published by Zoorik",
     );
     expect(sections(root)).toEqual([
       "Before you install",
       "Install",
       "Values",
       "Cloud identity",
-      "Argo CD ignoreDifferences and Flux",
+      "Argo CD ignore differences and Flux",
       "Upgrade",
       "Uninstall",
     ]);

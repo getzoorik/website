@@ -4,14 +4,14 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/blended-vs-
 export const term: GlossaryTerm = {
   slug: "blended-vs-unblended-cost",
   term: "Blended vs unblended cost (AWS)",
-  title: "AWS blended vs unblended cost: what each means",
-  meta: "AWS blended vs unblended cost: two ways AWS shows the same usage cost across accounts. Learn unblended, blended and net unblended cost with AWS’s own example.",
-  h1: "AWS blended vs unblended cost: what each means",
+  title: "Blended costs vs unblended costs in AWS",
+  meta: "AWS blended vs unblended cost: unblended cost shows each account its own charges; blended pricing gives every account one average rate. See AWS’s example.",
+  h1: "Blended costs vs unblended costs in AWS",
   card: "Blended vs unblended cost compares two ways AWS shows the same usage cost across an organization’s accounts.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -81,11 +81,6 @@ export const term: GlossaryTerm = {
             "Blended vs unblended cost in AWS doesn’t change what you pay, only which account each cost shows on.",
             "Blended cost hides which account got the RI discount. On-demand account 2 shows only $4.14.",
             "AWS’s Cloud Financial Management blog says most customers need only unblended cost.",
-            [
-              "The ",
-              { a: "free assessment", href: "/assessment" },
-              " works out what your clusters and disks could save.",
-            ],
           ],
         },
       ],
@@ -113,6 +108,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/showback",
     },
   ],
+  relatedTitle: "Terms related to blended and unblended cost",
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",
     href: "/cloud-cost-optimization",

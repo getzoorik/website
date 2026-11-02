@@ -113,45 +113,47 @@ describe("sitemap.xml", () => {
       sitemap().map((entry) => [new URL(entry.url).pathname, entry.lastModified]),
     );
     expect(dates).toEqual({
-      /* A page that prints no day: the day its content last changed (the company sentence and the titles,
-         1 Nov 2026). */
-      "/": "2026-11-01",
-      "/coral": "2026-11-01",
+      /* A page that prints no day: the day its content last changed (the 2 Nov 2026 plan for home and /coral; the
+         company sentence and the titles, 1 Nov 2026, for /amoeba). */
+      "/": "2026-11-02",
+      "/coral": "2026-11-02",
       "/amoeba": "2026-11-01",
-      /* The two Topic pages print no day: the day their content was written (1 Nov 2026). */
-      "/azure-cost-optimization": "2026-11-01",
-      "/aws-cost-optimization": "2026-11-01",
-      /* The four cloud pages print no day: the day their content last changed (their titles and headings,
-         1 Nov 2026). */
-      "/aks-cost-optimization": "2026-11-01",
-      "/eks-cost-optimization": "2026-11-01",
-      "/azure-managed-disk-cost-optimization": "2026-11-01",
-      "/ebs-cost-optimization": "2026-11-01",
+      /* The two Topic pages print no day: the day their content last changed (2 Nov 2026). */
+      "/azure-cost-optimization": "2026-11-02",
+      "/aws-cost-optimization": "2026-11-02",
+      /* The four cloud pages print no day: the day their content last changed (the 2 Nov 2026 plan, and on AKS the
+         Helm card's early-access line). */
+      "/aks-cost-optimization": "2026-11-02",
+      "/eks-cost-optimization": "2026-11-02",
+      "/azure-managed-disk-cost-optimization": "2026-11-02",
+      "/ebs-cost-optimization": "2026-11-02",
       /* The six works-with pages print no day: the day their content last changed (their D230 links, and the NAP
-         article in Read more, 1 Nov 2026). */
-      "/coral-works-with-cluster-autoscaler": "2026-11-01",
-      "/coral-works-with-karpenter": "2026-11-01",
+         article in Read more, 1 Nov 2026; the 2 Nov 2026 plan for Cluster Autoscaler, and the link words on KEDA,
+         Helm and Karpenter). */
+      "/coral-works-with-cluster-autoscaler": "2026-11-02",
+      "/coral-works-with-karpenter": "2026-11-02",
       "/coral-works-with-aks-node-auto-provisioning": "2026-11-01",
-      "/coral-works-with-keda": "2026-11-01",
-      "/coral-works-with-helm": "2026-11-01",
+      "/coral-works-with-keda": "2026-11-02",
+      "/coral-works-with-helm": "2026-11-02",
       "/coral-works-with-terraform": "2026-11-01",
-      "/assessment": "2026-11-01",
+      "/assessment": "2026-11-02",
       "/marketplaces": "2026-11-01",
       /* The docs hub's own words (1 Nov 2026). */
       "/docs": "2026-11-01",
-      /* The Coral link's new words (O1), 1 Nov 2026. */
-      "/coral-guide": "2026-11-01",
+      /* The 2 Nov 2026 plan's guide; the FAQ's Coral link's new words (O1), 1 Nov 2026. */
+      "/coral-guide": "2026-11-02",
       "/coral-faq": "2026-11-01",
       /* The Amoeba guide and FAQ print "Updated 1 November 2026". */
       ...(amoebaDocs ? { "/amoeba-guide": "2026-11-01", "/amoeba-faq": "2026-11-01" } : {}),
-      /* The three guides print "Updated 1 November 2026"; /open-source gives its content file's date. */
-      "/docs/install-coral-with-helm": "2026-11-01",
+      /* The Helm guide prints "Updated 2 November 2026", Terraform and Contributing "Updated 1 November 2026";
+         /open-source gives its content file's date. */
+      "/docs/install-coral-with-helm": "2026-11-02",
       "/docs/install-coral-with-terraform": "2026-11-01",
       "/docs/contributing": "2026-11-01",
-      /* The two troubleshooting pages print "Updated 1 November 2026". */
-      "/coral-troubleshooting": "2026-11-01",
+      /* The troubleshooting pages print their "Updated" day: Coral's 2 Nov 2026, Amoeba's 1 Nov 2026. */
+      "/coral-troubleshooting": "2026-11-02",
       ...(amoebaDocs ? { "/amoeba-troubleshooting": "2026-11-01" } : {}),
-      "/open-source": "2026-11-01",
+      "/open-source": "2026-11-02",
       /* The hub: its own day or its newest article's, whichever is later. Each article: the day it last changed. */
       "/learn": learnArticles.reduce(
         (day, article) => (article.updated > day ? article.updated : day),
@@ -167,34 +169,33 @@ describe("sitemap.xml", () => {
         isoDay(glossaryPage.updated),
       ),
       ...Object.fromEntries(glossaryTerms.map((term) => [glossaryPath(term.slug), term.updated])),
-      /* Cloud cost optimization tools: the day its content last changed (Part 4's title and deck, 1 Nov 2026). */
-      "/cloud-cost-optimization-library": "2026-11-01",
-      /* The comparison pages: the day their content last changed (the first two versus pages' titles and decks,
-         the two against the clouds' own tools published, and the alternatives pages retitled, all 1 Nov 2026). */
-      "/cloud-cost-optimization-library/coral-alternatives": "2026-11-01",
-      "/cloud-cost-optimization-library/amoeba-alternatives": "2026-11-01",
+      /* Cloud cost optimization tools: the day its content last changed (the 2 Nov 2026 plan). */
+      "/cloud-cost-optimization-library": "2026-11-02",
+      /* The comparison pages: the day their content last changed (the 2 Nov 2026 plan, every one). */
+      "/cloud-cost-optimization-library/coral-alternatives": "2026-11-02",
+      "/cloud-cost-optimization-library/amoeba-alternatives": "2026-11-02",
       ...Object.fromEntries(
         versusPages
           .filter((page) => page.lastUpdated === undefined)
-          .map((page) => [versusRoute(page), "2026-11-01"]),
+          .map((page) => [versusRoute(page), "2026-11-02"]),
       ),
-      "/cloud-cost-optimization-library/coral-vs-azure-advisor": "2026-11-01",
-      "/cloud-cost-optimization-library/coral-vs-aws-compute-optimizer": "2026-11-01",
-      /* The two calculators: the day their content last changed (Part 4's titles, 1 Nov 2026). */
-      "/eks-and-aks-pricing-calculator": "2026-11-01",
-      "/ebs-and-azure-disk-pricing": "2026-11-01",
+      "/cloud-cost-optimization-library/coral-vs-azure-advisor": "2026-11-02",
+      "/cloud-cost-optimization-library/coral-vs-aws-compute-optimizer": "2026-11-02",
+      /* The two calculators: the day their content last changed (the 2 Nov 2026 plan's titles). */
+      "/eks-and-aks-pricing-calculator": "2026-11-02",
+      "/ebs-and-azure-disk-pricing": "2026-11-02",
       /* Value Lab and each study: the day its content last changed (1 Nov 2026). */
       "/value-lab": "2026-11-01",
       "/coral-value-lab": "2026-11-01",
       "/amoeba-value-lab": "2026-11-01",
       /* The research papers print no day: the day their content last changed. */
-      "/cloud-cost-optimization-research-papers": "2026-11-01",
-      "/events": "2026-11-01",
+      "/cloud-cost-optimization-research-papers": "2026-11-02",
+      "/events": "2026-11-02",
       /* Zoorik News: the day its words last changed, after the week of its latest Radar. */
-      "/news": "2026-11-01",
-      "/community": "2026-11-01",
+      "/news": "2026-11-02",
+      "/community": "2026-11-02",
       /* /pricing and /contact print no day: the day their content last changed. */
-      "/pricing": "2026-11-01",
+      "/pricing": "2026-11-02",
       "/contact": "2026-11-01",
       "/about": "2026-11-01",
       "/careers": "2026-11-01",
@@ -217,7 +218,7 @@ describe("sitemap.xml", () => {
   it("dates the home page by its content file, homeLastUpdated, and by nothing else", () => {
     const home = sitemap().find((entry) => new URL(entry.url).pathname === "/")!;
     expect(home.lastModified).toBe(isoDay(homeLastUpdated));
-    expect(homeLastUpdated).toBe("1 November 2026");
+    expect(homeLastUpdated).toBe("2 November 2026");
   });
 
   it("dates every page it lists, and none in the future", () => {

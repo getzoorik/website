@@ -26,7 +26,7 @@ describe("/pricing", () => {
   it("is titled, described and canonicalised as its draft, with its own card", () => {
     expect(metadata.title).toBe("Pricing");
     expect(metadata.description).toBe(
-      "Coral is priced per vCPU it manages, and Amoeba per GB it manages. See your saving with the free assessment, then buy on AWS or Microsoft Marketplace.",
+      "Kubernetes optimization pricing: Coral is priced per vCPU it manages, Amoeba per GB. Run the free assessment first, then buy on AWS or Microsoft Marketplace.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/pricing" });
     expect(metadata.openGraph).toMatchObject({
@@ -36,13 +36,17 @@ describe("/pricing", () => {
     });
   });
 
-  it("leads with the owner's line, word for word, then the assessment and Book a demo", () => {
+  it("leads with the owner's line's first sentence, word for word, then the assessment and Book a demo", () => {
     expect(pricingLine).toBe(
       "Coral is priced per vCPU it manages, and Amoeba per GB it manages. The free assessment shows your saving before you pay anything.",
     );
     const hero = page().querySelector("main > header.hero")!;
     expect(text(hero.querySelector("h1"))).toBe("Pricing");
-    expect(text(hero.querySelector(".doc-deck"))).toBe(pricingLine);
+    /* The deck is the line's first sentence (2 Nov 2026); its second is the assessment section's. */
+    expect(text(hero.querySelector(".doc-deck"))).toBe(
+      "Coral is priced per vCPU it manages, and Amoeba per GB it manages.",
+    );
+    expect(pricingLine.startsWith(text(hero.querySelector(".doc-deck")))).toBe(true);
     const buttons = [...hero.querySelectorAll(".hero-cta a.btn")];
     expect(buttons.map((a) => [text(a), a.getAttribute("href")])).toEqual([
       ["Estimate your saving", "/assessment"],
@@ -98,10 +102,6 @@ describe("/pricing", () => {
     ]);
     const rows = [...root.querySelectorAll("#questions details.fq")];
     expect(rows.map((row) => [row.id, text(row.querySelector("h3"))])).toEqual([
-      ["where-can-i-buy-coral", "Where can I buy Coral?"],
-      ["what-does-amoeba-cost", "What does Amoeba cost?"],
-      ["how-do-i-get-amoeba", "How do I get Amoeba?"],
-      ["how-do-i-see-what-i-could", "How do I see what I could save?"],
       ["do-i-pay-for-both-sets-of", "Do I pay for both sets of disks during an Amoeba move?"],
     ]);
     for (const row of rows) {

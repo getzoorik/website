@@ -168,7 +168,11 @@ const CARDS: readonly {
     paths: [routes.amoebaTroubleshooting],
   },
   { file: "open-source", words: "Open source", paths: ["/open-source"] },
-  { file: "learn", words: "Cloud cost optimization guides", paths: ["/learn"] },
+  {
+    file: "kubernetes-and-block-storage-cost-guides",
+    words: "Kubernetes and block storage cost guides",
+    paths: ["/learn"],
+  },
   {
     file: "cloud-cost-optimization-and-finops-tools",
     words: "Cloud cost optimization tools and FinOps tools",
@@ -221,13 +225,13 @@ const CARDS: readonly {
   { file: "terms", words: "Terms of use", paths: ["/terms"] },
   { file: "security", words: "Security and data handling", paths: ["/security"] },
   {
-    file: "eks-and-aks-pricing-calculator",
-    words: "EKS pricing calculator: AKS and EKS node cost",
+    file: "eks-pricing-and-aks-pricing-calculator",
+    words: "EKS pricing and AKS pricing calculator for nodes",
     paths: [routes.eksAndAksPricingCalculator],
   },
   {
-    file: "ebs-and-azure-disk-pricing",
-    words: "EBS pricing and Azure disk pricing calculator",
+    file: "amazon-ebs-pricing-and-azure-disk-cost-calculator",
+    words: "Amazon EBS pricing and Azure disk cost calculator",
     paths: [routes.ebsAndAzureDiskPricing],
   },
   { file: "pricing", words: "How Coral and Amoeba are priced", paths: [routes.pricing] },
@@ -250,8 +254,8 @@ const CARDS: readonly {
     paths: ["/learn/cluster-autoscaler-not-scaling-down"],
   },
   {
-    file: "learn-find-unattached-disks-azure",
-    words: "How to find unattached disks in Azure and clean up",
+    file: "learn-find-unattached-disks-in-azure",
+    words: "Find unattached disks in Azure and clean them up",
     paths: ["/learn/find-unattached-disks-azure"],
   },
   {
@@ -260,8 +264,8 @@ const CARDS: readonly {
     paths: [routes.cloudCostOptimization],
   },
   {
-    file: "learn-kubernetes-autoscaling",
-    words: "Kubernetes autoscaling: HPA and node autoscalers",
+    file: "learn-kubernetes-autoscaling-hpa-and-cluster-autoscaler",
+    words: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
     paths: ["/learn/kubernetes-autoscaling"],
   },
   {
@@ -285,8 +289,8 @@ const CARDS: readonly {
     paths: [routes.kubernetesCostOptimization],
   },
   {
-    file: "learn-reduce-azure-disk-size",
-    words: "Reduce Azure disk size: can a managed disk shrink?",
+    file: "learn-shrink-an-azure-managed-disk",
+    words: "Shrink an Azure managed disk: copy to a smaller one",
     paths: ["/learn/shrink-azure-managed-disk"],
   },
   {
@@ -305,8 +309,8 @@ const CARDS: readonly {
     paths: ["/learn/check-ebs-volume-usage"],
   },
   {
-    file: "learn-keda-vs-karpenter",
-    words: "KEDA vs Karpenter: pods, nodes and pod requests",
+    file: "learn-keda-vs-karpenter-when-to-use-each",
+    words: "KEDA vs Karpenter: when to use each or both",
     paths: ["/learn/keda-vs-karpenter"],
   },
   {
@@ -315,13 +319,13 @@ const CARDS: readonly {
     paths: ["/learn/kubernetes-allocatable-vs-capacity"],
   },
   {
-    file: "learn-limitrange-vs-resourcequota",
-    words: "LimitRange vs ResourceQuota: what caps requests",
+    file: "learn-namespace-limits-limitrange-vs-resourcequota",
+    words: "Namespace limits: LimitRange vs ResourceQuota",
     paths: ["/learn/limitrange-vs-resourcequota"],
   },
   {
-    file: "learn-safe-to-evict-do-not-disrupt",
-    words: "Safe-to-evict and do-not-disrupt annotations",
+    file: "learn-karpenter-do-not-disrupt-vs-safe-to-evict",
+    words: "Karpenter do-not-disrupt vs safe-to-evict",
     paths: ["/learn/safe-to-evict-do-not-disrupt"],
   },
   {
@@ -361,8 +365,8 @@ const CARDS: readonly {
     paths: ["/learn/aks-storage-classes"],
   },
   {
-    file: "learn-aks-vs-eks-cost",
-    words: "AKS vs EKS cost: control plane fees and nodes",
+    file: "learn-aks-vs-eks-control-plane-fees",
+    words: "AKS vs EKS: control plane fees and extended support",
     paths: ["/learn/aks-vs-eks-cost"],
   },
   {
@@ -376,8 +380,8 @@ const CARDS: readonly {
     paths: ["/learn/azure-disk-iops-vs-throughput"],
   },
   {
-    file: "learn-azure-disk-lrs-vs-zrs",
-    words: "Azure disk LRS vs ZRS: what zone redundancy costs",
+    file: "learn-azure-lrs-vs-zrs-disks",
+    words: "Azure LRS vs ZRS disks: what zone redundancy costs",
     paths: ["/learn/azure-disk-lrs-vs-zrs"],
   },
   {
@@ -401,8 +405,8 @@ const CARDS: readonly {
     paths: ["/learn/btrfs-device-remove"],
   },
   {
-    file: "learn-btrfs-vs-lvm",
-    words: "btrfs vs LVM: which one can shrink on a cloud VM?",
+    file: "learn-btrfs-vs-ext4-vs-xfs",
+    words: "btrfs vs ext4 vs XFS: which one can shrink?",
     paths: ["/learn/btrfs-vs-lvm"],
   },
   {
@@ -461,8 +465,8 @@ const CARDS: readonly {
     paths: ["/learn/how-to-choose-eks-instance-types"],
   },
   {
-    file: "learn-in-place-pod-resize",
-    words: "In-place pod resize on Kubernetes, AKS and EKS",
+    file: "learn-inplacepodverticalscaling",
+    words: "InPlacePodVerticalScaling: in-place pod resize",
     paths: ["/learn/in-place-pod-resize"],
   },
   {
@@ -471,8 +475,8 @@ const CARDS: readonly {
     paths: ["/learn/increase-ebs-volume-size"],
   },
   {
-    file: "learn-io2-vs-gp3",
-    words: "io2 vs gp3: when Provisioned IOPS is worth it",
+    file: "learn-io2-vs-gp3-io2-block-express",
+    words: "io2 vs gp3: when io2 Block Express is worth it",
     paths: ["/learn/io2-vs-gp3"],
   },
   {
@@ -511,8 +515,8 @@ const CARDS: readonly {
     paths: ["/learn/kubernetes-descheduler"],
   },
   {
-    file: "learn-kubernetes-drain-node-without-downtime",
-    words: "How to drain a Kubernetes node without downtime",
+    file: "learn-kubectl-drain-node-without-any-downtime",
+    words: "kubectl drain node without any downtime",
     paths: ["/learn/kubernetes-drain-node-without-downtime"],
   },
   {
@@ -526,13 +530,13 @@ const CARDS: readonly {
     paths: ["/learn/kubernetes-overprovisioning"],
   },
   {
-    file: "learn-oomkilled-exit-code-137",
-    words: "OOMKilled exit code 137 in Kubernetes: how to fix",
+    file: "learn-exit-code-137-oomkilled-in-kubernetes",
+    words: "Exit code 137 (OOMKilled) in Kubernetes: how to fix",
     paths: ["/learn/oomkilled-exit-code-137"],
   },
   {
-    file: "learn-pod-affinity-vs-node-affinity",
-    words: "Pod affinity vs node affinity: what each decides",
+    file: "learn-kubernetes-node-affinity-vs-pod-affinity",
+    words: "Kubernetes node affinity vs pod affinity",
     paths: ["/learn/pod-affinity-vs-node-affinity"],
   },
   {
@@ -546,8 +550,8 @@ const CARDS: readonly {
     paths: ["/learn/premium-ssd-v2-vs-premium-ssd"],
   },
   {
-    file: "learn-premium-ssd-vs-standard-ssd-azure",
-    words: "Premium SSD vs Standard SSD on Azure: cost and IOPS",
+    file: "learn-azure-premium-ssd-vs-standard-ssd",
+    words: "Azure Premium SSD vs Standard SSD: what you pay for",
     paths: ["/learn/premium-ssd-vs-standard-ssd-azure"],
   },
   {
@@ -556,8 +560,8 @@ const CARDS: readonly {
     paths: ["/learn/remove-disk-from-lvm"],
   },
   {
-    file: "learn-resize-pvc-kubernetes",
-    words: "Resize a PVC in Kubernetes, and why it can’t shrink",
+    file: "learn-expand-a-pvc-in-kubernetes",
+    words: "Expand a PVC in Kubernetes, and why it can’t shrink",
     paths: ["/learn/resize-pvc-kubernetes"],
   },
   {
@@ -566,30 +570,76 @@ const CARDS: readonly {
     paths: ["/learn/resize2fs-shrink-ext4"],
   },
   {
-    file: "learn-shrink-ebs-volume",
-    words: "How to shrink an EBS volume when it only grows",
+    file: "learn-how-to-shrink-an-aws-ebs-volume",
+    words: "How to shrink an AWS EBS volume when it only grows",
     paths: ["/learn/shrink-ebs-volume"],
   },
   {
-    file: "learn-topology-spread-constraints",
-    words: "Topology spread constraints: maxSkew and scale-down",
+    file: "learn-kubernetes-topologyspreadconstraints-and-maxskew",
+    words: "Kubernetes topologySpreadConstraints and maxSkew",
     paths: ["/learn/topology-spread-constraints"],
   },
   {
-    file: "learn-what-is-karpenter",
-    words: "What is Karpenter? How it picks and removes nodes",
+    file: "learn-what-is-karpenter-the-kubernetes-node-autoscaler",
+    words: "What is Karpenter? The Kubernetes node autoscaler",
     paths: ["/learn/what-is-karpenter"],
   },
   {
-    file: "learn-what-is-keda",
-    words: "What is KEDA in Kubernetes? Event-driven scaling",
+    file: "learn-what-is-keda-kubernetes-event-driven-autoscaling",
+    words: "What is KEDA? Kubernetes event-driven autoscaling",
     paths: ["/learn/what-is-keda"],
+  },
+  /* The articles of the 2 Nov 2026 release, each by its title. */
+  {
+    file: "learn-aws-nat-gateway-pricing",
+    words: "AWS NAT gateway pricing and how to reduce it",
+    paths: ["/learn/aws-nat-gateway-pricing"],
+  },
+  {
+    file: "learn-exit-code-143",
+    words: "Exit code 143 in Kubernetes: SIGTERM explained",
+    paths: ["/learn/exit-code-143"],
+  },
+  {
+    file: "learn-kubernetes-architecture",
+    words: "Kubernetes architecture: control plane and nodes",
+    paths: ["/learn/kubernetes-architecture"],
+  },
+  {
+    file: "learn-kubernetes-ephemeral-storage",
+    words: "Kubernetes ephemeral storage: limits and eviction",
+    paths: ["/learn/kubernetes-ephemeral-storage"],
+  },
+  {
+    file: "learn-kubernetes-explained-simply",
+    words: "What is Kubernetes? Kubernetes explained simply",
+    paths: ["/learn/kubernetes-explained-simply"],
+  },
+  {
+    file: "learn-kubernetes-persistent-volume",
+    words: "Kubernetes persistent volume and PVC explained",
+    paths: ["/learn/kubernetes-persistent-volume"],
+  },
+  {
+    file: "learn-kubernetes-taints-and-tolerations",
+    words: "Kubernetes taints and tolerations explained",
+    paths: ["/learn/kubernetes-taints-and-tolerations"],
+  },
+  {
+    file: "learn-statefulset-vs-deployment",
+    words: "StatefulSet vs Deployment in Kubernetes",
+    paths: ["/learn/statefulset-vs-deployment"],
   },
   /* The glossary's hub, then each term by its h1. */
   {
-    file: "glossary",
-    words: "Cloud cost glossary",
+    file: "cloud-computing-terms-cloud-cost-glossary",
+    words: "Cloud computing terms: a cloud cost glossary",
     paths: ["/learn/glossary"],
+  },
+  {
+    file: "glossary-aks",
+    words: "What is AKS (Azure Kubernetes Service)?",
+    paths: ["/learn/glossary/aks"],
   },
   {
     file: "glossary-amortized-cost",
@@ -597,8 +647,18 @@ const CARDS: readonly {
     paths: ["/learn/glossary/amortized-cost"],
   },
   {
-    file: "glossary-aws-instance-families",
-    words: "What are AWS instance families?",
+    file: "glossary-aws-edp",
+    words: "What is AWS EDP (Enterprise Discount Program)?",
+    paths: ["/learn/glossary/aws-edp"],
+  },
+  {
+    file: "glossary-aws-graviton",
+    words: "What is AWS Graviton? Graviton instances explained",
+    paths: ["/learn/glossary/aws-graviton"],
+  },
+  {
+    file: "glossary-aws-instance-families-ec2-instance-types",
+    words: "EC2 instance types and AWS instance families",
     paths: ["/learn/glossary/aws-instance-families"],
   },
   {
@@ -612,8 +672,8 @@ const CARDS: readonly {
     paths: ["/learn/glossary/azure-disk-sizes"],
   },
   {
-    file: "glossary-azure-hybrid-benefit",
-    words: "What is Azure Hybrid Benefit?",
+    file: "glossary-azure-hybrid-benefit-ahb",
+    words: "What is Azure Hybrid Benefit (AHB)?",
     paths: ["/learn/glossary/azure-hybrid-benefit"],
   },
   {
@@ -622,13 +682,13 @@ const CARDS: readonly {
     paths: ["/learn/glossary/azure-macc"],
   },
   {
-    file: "glossary-azure-managed-disk",
-    words: "What is an Azure managed disk?",
+    file: "glossary-azure-managed-disk-azure-disk-storage",
+    words: "Azure Disk Storage: what is an Azure managed disk?",
     paths: ["/learn/glossary/azure-managed-disk"],
   },
   {
-    file: "glossary-azure-premium-ssd",
-    words: "What is Premium SSD in Azure?",
+    file: "glossary-azure-premium-ssd-premium-storage",
+    words: "Azure Premium SSD: what is Azure premium storage?",
     paths: ["/learn/glossary/azure-premium-ssd"],
   },
   {
@@ -642,8 +702,8 @@ const CARDS: readonly {
     paths: ["/learn/glossary/azure-temporary-disk"],
   },
   {
-    file: "glossary-azure-ultra-disk",
-    words: "What is Ultra Disk in Azure?",
+    file: "glossary-azure-ultra-disk-explained",
+    words: "What is Azure Ultra Disk?",
     paths: ["/learn/glossary/azure-ultra-disk"],
   },
   {
@@ -660,6 +720,11 @@ const CARDS: readonly {
     file: "glossary-block-storage",
     words: "What is block storage?",
     paths: ["/learn/glossary/block-storage"],
+  },
+  {
+    file: "glossary-btrfs",
+    words: "What is btrfs? The btrfs filesystem in Linux",
+    paths: ["/learn/glossary/btrfs"],
   },
   {
     file: "glossary-burstable-instance",
@@ -687,8 +752,8 @@ const CARDS: readonly {
     paths: ["/learn/glossary/cloud-tagging-strategy"],
   },
   {
-    file: "glossary-cloud-tco",
-    words: "What is cloud TCO (total cost of ownership)?",
+    file: "glossary-cloud-tco-total-cost-of-ownership",
+    words: "What is cloud total cost of ownership (TCO)?",
     paths: ["/learn/glossary/cloud-tco"],
   },
   {
@@ -702,8 +767,8 @@ const CARDS: readonly {
     paths: ["/learn/glossary/cost-allocation-tags"],
   },
   {
-    file: "glossary-daemonset",
-    words: "What is a DaemonSet in Kubernetes?",
+    file: "glossary-daemonset-kubernetes",
+    words: "What is a Kubernetes DaemonSet?",
     paths: ["/learn/glossary/daemonset"],
   },
   {
@@ -722,18 +787,18 @@ const CARDS: readonly {
     paths: ["/learn/glossary/disk-snapshot"],
   },
   {
-    file: "glossary-disk-throughput",
-    words: "What is disk throughput?",
+    file: "glossary-disk-throughput-disk-io-speed",
+    words: "What is disk throughput? Disk I/O speed explained",
     paths: ["/learn/glossary/disk-throughput"],
   },
   {
-    file: "glossary-ebs-gp3",
-    words: "What is gp3 in AWS?",
+    file: "glossary-ebs-gp3-volumes-explained",
+    words: "What is gp3 in AWS? EBS gp3 volumes explained",
     paths: ["/learn/glossary/ebs-gp3"],
   },
   {
-    file: "glossary-ebs-optimized-instance",
-    words: "What is an EBS-optimized instance?",
+    file: "glossary-ebs-optimized-instance-amazon",
+    words: "What are Amazon EBS-optimized instances?",
     paths: ["/learn/glossary/ebs-optimized-instance"],
   },
   {
@@ -747,18 +812,23 @@ const CARDS: readonly {
     paths: ["/learn/glossary/effective-savings-rate"],
   },
   {
-    file: "glossary-egress-cost",
-    words: "What is egress cost in the cloud?",
+    file: "glossary-egress-cost-data-egress-explained",
+    words: "What is data egress? Egress cost and fees explained",
     paths: ["/learn/glossary/egress-cost"],
   },
   {
-    file: "glossary-eks-auto-mode",
-    words: "What is EKS Auto Mode?",
+    file: "glossary-eks",
+    words: "What is AWS EKS? Amazon Elastic Kubernetes Service",
+    paths: ["/learn/glossary/eks"],
+  },
+  {
+    file: "glossary-eks-auto-mode-amazon-eks",
+    words: "What is Amazon EKS Auto Mode?",
     paths: ["/learn/glossary/eks-auto-mode"],
   },
   {
-    file: "glossary-ephemeral-os-disk",
-    words: "What is an ephemeral OS disk?",
+    file: "glossary-ephemeral-os-disk-ephemeral-disk",
+    words: "What is an ephemeral disk? Azure ephemeral OS disks",
     paths: ["/learn/glossary/ephemeral-os-disk"],
   },
   {
@@ -782,28 +852,33 @@ const CARDS: readonly {
     paths: ["/learn/glossary/horizontal-pod-autoscaler"],
   },
   {
-    file: "glossary-instance-store",
-    words: "What is instance store in AWS?",
+    file: "glossary-instance-store-ec2-instance-storage",
+    words: "What is AWS instance store (EC2 instance storage)?",
     paths: ["/learn/glossary/instance-store"],
   },
   {
-    file: "glossary-iops",
-    words: "What is IOPS?",
+    file: "glossary-iops-full-form-and-meaning",
+    words: "What is IOPS? Full form and meaning in storage",
     paths: ["/learn/glossary/iops"],
   },
   {
-    file: "glossary-kubernetes-cluster-utilization",
-    words: "What is Kubernetes cluster utilization?",
+    file: "glossary-kubelet",
+    words: "What is the kubelet in Kubernetes?",
+    paths: ["/learn/glossary/kubelet"],
+  },
+  {
+    file: "glossary-kubernetes-cluster-utilization-meaning",
+    words: "What does Kubernetes cluster utilization mean?",
     paths: ["/learn/glossary/kubernetes-cluster-utilization"],
   },
   {
-    file: "glossary-kubernetes-cost-allocation",
-    words: "What is Kubernetes cost allocation?",
+    file: "glossary-kubernetes-cost-allocation-meaning",
+    words: "What does Kubernetes cost allocation mean?",
     paths: ["/learn/glossary/kubernetes-cost-allocation"],
   },
   {
-    file: "glossary-kubernetes-cpu-throttling",
-    words: "What is CPU throttling in Kubernetes?",
+    file: "glossary-kubernetes-cpu-throttling-explained",
+    words: "What is Kubernetes CPU throttling?",
     paths: ["/learn/glossary/kubernetes-cpu-throttling"],
   },
   {
@@ -812,8 +887,8 @@ const CARDS: readonly {
     paths: ["/learn/glossary/kubernetes-headroom"],
   },
   {
-    file: "glossary-kubernetes-qos-class",
-    words: "What is a QoS class in Kubernetes?",
+    file: "glossary-kubernetes-qos-class-explained",
+    words: "What is a Kubernetes QoS class?",
     paths: ["/learn/glossary/kubernetes-qos-class"],
   },
   {
@@ -822,14 +897,19 @@ const CARDS: readonly {
     paths: ["/learn/glossary/kubernetes-resource-limits"],
   },
   {
-    file: "glossary-kubernetes-resource-requests",
-    words: "What are resource requests in Kubernetes?",
+    file: "glossary-kubernetes-resource-requests-explained",
+    words: "What are Kubernetes resource requests?",
     paths: ["/learn/glossary/kubernetes-resource-requests"],
   },
   {
-    file: "glossary-max-pods-per-node",
-    words: "Max pods per node: meaning and cost impact",
+    file: "glossary-max-pods-per-node-eks-and-aks",
+    words: "Max pods per node in Kubernetes on EKS and AKS",
     paths: ["/learn/glossary/max-pods-per-node"],
+  },
+  {
+    file: "glossary-metrics-server",
+    words: "What is Metrics Server in Kubernetes?",
+    paths: ["/learn/glossary/metrics-server"],
   },
   {
     file: "glossary-node-pool",
@@ -837,18 +917,18 @@ const CARDS: readonly {
     paths: ["/learn/glossary/node-pool"],
   },
   {
-    file: "glossary-on-demand-instance",
-    words: "What is an on-demand instance?",
+    file: "glossary-on-demand-instance-aws-and-azure",
+    words: "What is an on-demand instance on AWS and Azure?",
     paths: ["/learn/glossary/on-demand-instance"],
   },
   {
-    file: "glossary-pod-disruption-budget",
-    words: "What is a Pod Disruption Budget (PDB)?",
+    file: "glossary-pod-disruption-budget-pdb",
+    words: "Pod disruption budget (PDB) in Kubernetes",
     paths: ["/learn/glossary/pod-disruption-budget"],
   },
   {
-    file: "glossary-provisioned-iops",
-    words: "What is provisioned IOPS?",
+    file: "glossary-provisioned-iops-piops",
+    words: "What is provisioned IOPS (PIOPS) on AWS and Azure?",
     paths: ["/learn/glossary/provisioned-iops"],
   },
   {
@@ -857,8 +937,8 @@ const CARDS: readonly {
     paths: ["/learn/glossary/reserved-instance"],
   },
   {
-    file: "glossary-rightsizing",
-    words: "What is rightsizing in cloud?",
+    file: "glossary-rightsizing-right-sizing",
+    words: "What is right sizing (rightsizing) in cloud?",
     paths: ["/learn/glossary/rightsizing"],
   },
   {
@@ -867,8 +947,8 @@ const CARDS: readonly {
     paths: ["/learn/glossary/savings-plan"],
   },
   {
-    file: "glossary-savings-plan-coverage-vs-utilization",
-    words: "What is savings plan coverage vs utilization?",
+    file: "glossary-savings-plan-coverage-vs-utilization-ri",
+    words: "RI utilization vs coverage for commitment discounts",
     paths: ["/learn/glossary/savings-plan-coverage-vs-utilization"],
   },
   {
@@ -887,9 +967,19 @@ const CARDS: readonly {
     paths: ["/learn/glossary/thin-provisioning"],
   },
   {
+    file: "glossary-vcpu",
+    words: "What is a vCPU? vCPU vs core in AWS and Azure",
+    paths: ["/learn/glossary/vcpu"],
+  },
+  {
     file: "glossary-vertical-pod-autoscaler",
     words: "What is VPA (Vertical Pod Autoscaler)?",
     paths: ["/learn/glossary/vertical-pod-autoscaler"],
+  },
+  {
+    file: "glossary-xfs",
+    words: "What is XFS? The XFS filesystem in Linux",
+    paths: ["/learn/glossary/xfs"],
   },
 ];
 

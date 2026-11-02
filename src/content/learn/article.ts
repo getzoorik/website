@@ -67,7 +67,8 @@ export interface LearnFigure {
 export interface LearnSvgFigure {
   /** The `<svg>` element, whole. */
   readonly markup: string;
-  readonly caption: ArticleText;
+  /** Left out where the drawing's own title already says it. */
+  readonly caption?: ArticleText;
 }
 
 /** The labels a callout opens with, each its own kind of aside. */
@@ -247,6 +248,8 @@ export interface Article {
   /** An article that cites none has no Sources line. */
   readonly sources?: readonly ArticleSource[];
   readonly related: readonly ArticleRelated[];
+  /** The Related row's heading where the article names its own; else its topic's (`relatedTitle`). */
+  readonly relatedTitle?: string;
 }
 
 /** The fixed words of an article page. */

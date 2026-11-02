@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "cloud-chargeback",
   term: "Chargeback (cloud / IT chargeback)",
   title: "What is cloud chargeback? Chargeback models",
-  meta: "Cloud chargeback charges each team’s budget for its share of the cloud cost. See three common AWS chargeback models and how to plan one with finance.",
+  meta: "Cloud chargeback charges each team’s budget for its share of the cloud cost. See three AWS starting models and how to plan an IT chargeback model with finance.",
   h1: "What is cloud chargeback? Chargeback models",
   card: "Cloud chargeback, or chargeback in cloud computing, means charging each team its share of the cloud cost.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -29,7 +29,7 @@ export const term: GlossaryTerm = {
           text: [
             "A ",
             { a: "showback", href: "/learn/glossary/showback" },
-            " report tells the infrastructure engineering team what it spent on AWS last month. Cloud chargeback takes that amount out of the team’s AWS budget.",
+            " report tells the infrastructure engineering team what its AWS usage cost last month. Cloud chargeback takes that amount out of the team’s AWS budget.",
           ],
         },
       ],
@@ -51,14 +51,32 @@ export const term: GlossaryTerm = {
           ],
         },
         {
+          kind: "h3",
+          id: "a-chargeback-model-for-shared-services",
+          title: "A chargeback model for shared services",
+        },
+        {
+          kind: "ul",
+          items: [
+            "Split a shared service’s cost evenly across the teams that use it.",
+            "Split it in proportion to each team’s total, compute, storage or network cost.",
+            "Split it by custom percentages.",
+            "Split it by measured use, from utilization data or app telemetry.",
+          ],
+        },
+        {
           kind: "p",
           text: [
-            "On AWS, some costs can’t be tagged, such as some fees for ",
+            "Some AWS costs can’t be tagged, such as some fees for ",
             { a: "Reserved Instances", href: "/learn/glossary/reserved-instance" },
             " and ",
             { a: "Savings Plans", href: "/learn/glossary/savings-plan" },
-            ". Microsoft says to plan your IT chargeback model with IT and finance, based on an agreed split of shared costs and commitment discounts.",
+            ". AWS says to agree how to treat and measure them.",
           ],
+        },
+        {
+          kind: "p",
+          text: "Microsoft says to plan your IT chargeback model with IT and finance, based on an agreed split of shared costs and commitment discounts.",
         },
       ],
     },
@@ -80,14 +98,13 @@ export const term: GlossaryTerm = {
             ],
             [
               { a: "Amoeba", href: "/amoeba" },
-              " moves a virtual machine’s data disks onto one pool sized to your data, then rightsizes it autonomously.",
+              " moves a virtual machine’s data disks onto one btrfs pool sized to your data, then rightsizes it autonomously.",
             ],
             [
               "Our library lists FinOps tools and other ",
               { a: "cloud cost management tools", href: "/cloud-cost-optimization-library" },
               ", with what each one does.",
             ],
-            ["The ", { a: "free assessment", href: "/assessment" }, " works out your own figure."],
           ],
         },
       ],
@@ -111,6 +128,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/cloud-unit-economics",
     },
   ],
+  relatedTitle: "Terms related to cloud chargeback",
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",
     href: "/cloud-cost-optimization",
@@ -130,6 +148,17 @@ export const term: GlossaryTerm = {
       publisher: "AWS",
       title: "“Building a cost allocation strategy”",
       url: "https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/building-a-cost-allocation-strategy.html",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“Allocation”",
+      url: "https://learn.microsoft.com/en-us/cloud-computing/finops/framework/understand/allocation",
+      note: " (FinOps Framework)",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“Allocate Azure costs”",
+      url: "https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/allocate-costs",
     },
   ],
 };

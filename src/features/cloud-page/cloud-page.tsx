@@ -244,7 +244,7 @@ function CloudBody({ content }: { readonly content: CloudPageContent }): React.J
           <Setup content={content} />
         </DocFrame>
         <WorksWith content={content} />
-        <InstallYourWay cloud={content.cloud} />
+        <InstallYourWay cloud={content.cloud} title={content.installTitle} />
         <DocFrame>
           <Questions content={content} />
         </DocFrame>

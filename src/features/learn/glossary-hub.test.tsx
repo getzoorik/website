@@ -36,7 +36,7 @@ const page = () => render(<GlossaryRoute />).container;
 
 describe("/learn/glossary's metadata", () => {
   it("titles it through the template, describes and canonicalises it, with its own card", () => {
-    expect(metadata.title).toBe("Cloud cost and FinOps glossary");
+    expect(metadata.title).toBe("Cloud computing terms: a cloud cost glossary");
     expect(metadata.description).toBe(glossaryPage.meta.description);
     expect(metadata.description!.length).toBeGreaterThanOrEqual(140);
     expect(metadata.description!.length).toBeLessThanOrEqual(158);
@@ -44,10 +44,12 @@ describe("/learn/glossary's metadata", () => {
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/learn/glossary",
-      title: "Cloud cost and FinOps glossary | Zoorik",
+      title: "Cloud computing terms: a cloud cost glossary | Zoorik",
       images: [pageCards["/learn/glossary"]],
     });
-    expect(pageCards["/learn/glossary"]!.url).toBe("/og/pages/glossary.png");
+    expect(pageCards["/learn/glossary"]!.url).toBe(
+      "/og/pages/cloud-computing-terms-cloud-cost-glossary.png",
+    );
     /* The sitemap's date for the hub: a printed day, not ahead of today. */
     expect(isoDay(glossaryPage.updated) <= learnToday()).toBe(true);
   });
@@ -56,7 +58,9 @@ describe("/learn/glossary's metadata", () => {
 describe("/learn/glossary", () => {
   it("has one h1 under its link back to /learn, then its line", () => {
     const root = page();
-    expect([...root.querySelectorAll("h1")].map(text)).toEqual(["Cloud cost glossary"]);
+    expect([...root.querySelectorAll("h1")].map(text)).toEqual([
+      "Cloud computing terms: a cloud cost glossary",
+    ]);
     const hero = root.querySelector("header.hero.doc-hero.lv-hero#top")!;
     const kicker = hero.querySelector("p.vp-kick")!;
     expect(kicker.nextElementSibling!.tagName).toBe("H1");
@@ -86,7 +90,9 @@ describe("/learn/glossary", () => {
       const group = glossaryHubGroups[index]!;
       expect(section).toHaveAttribute("aria-labelledby", `${group.id}-h`);
       expect(text(section.querySelector(`.sec-hrow h2#${group.id}-h`))).toBe(group.title);
-      expect(text(section.querySelector(".sec-hrow p"))).toBe(`${group.terms.length} terms`);
+      expect(text(section.querySelector(".sec-hrow p"))).toBe(
+        `${group.terms.length} terms, ${group.about}`,
+      );
     });
   });
 

@@ -6,7 +6,7 @@ import { figure as figure3 } from "@/features/learn/figures/karpenter-consolidat
 export const article: Article = {
   slug: "karpenter-consolidation",
   title: "Karpenter consolidation: policies, budgets, limits",
-  meta: "Karpenter consolidation in v1.15: the three consolidationPolicy values, consolidateAfter and disruption budgets, plus what to check when a node won’t go.",
+  meta: "Karpenter consolidation in v1.15: each consolidationPolicy value, consolidateAfter, Karpenter disruption budgets, and what to check when a node won’t go.",
   h1: "Karpenter consolidation: policies, budgets and limits",
   deck: "How Karpenter picks the nodes it removes, how to set the pace, and what keeps a node in place.",
   card: "The three consolidation policies, consolidateAfter and budgets, plus what stops Karpenter scaling down.",
@@ -14,7 +14,7 @@ export const article: Article = {
   hub: "Kubernetes",
   topic: "Kubernetes autoscaling",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "swati",
   cover: "/learn-covers/zoorik-learn-karpenter-consolidation-1200x630.webp",
   coverAlt: "Karpenter consolidation: when pods fit elsewhere, they move and the node is deleted",
@@ -40,11 +40,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Consolidation decides with a scheduling simulation, and the simulation works in requests. Karpenter’s troubleshooting guide says it “bin-packs pods based on the resource requests”.",
-        },
-        {
-          kind: "p",
-          text: "The Kubernetes scheduler places a pod only where the requests on a node, plus the new pod’s, fit its capacity. That holds however little CPU and memory the node is really using.",
+          text: "Consolidation decides with a scheduling simulation, and the simulation works in requests. Karpenter’s troubleshooting guide says it “bin-packs pods based on the resource requests”. Like the Kubernetes scheduler, it counts requests, however little CPU and memory a node really uses.",
         },
         {
           kind: "p",
@@ -57,9 +53,9 @@ export const article: Article = {
         { kind: "h3", id: "deletion-and-replacement", title: "Deletion and replacement" },
         {
           kind: "p",
-          text: "Consolidation looks for two kinds of action. A deletion removes a node whose pods can all run on free capacity of other nodes. A replacement removes a node and moves its pods onto a mix of free capacity elsewhere and a single new node that costs less.",
+          text: "A deletion removes a node whose pods can all run on free capacity of other nodes. A replacement removes a node and moves its pods onto a mix of free capacity elsewhere and a single new node that costs less.",
         },
-        { kind: "p", text: "It tries these in a fixed order:" },
+        { kind: "p", text: "Consolidation tries these in a fixed order:" },
         {
           kind: "ol",
           items: [
@@ -192,7 +188,6 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Where Karpenter is managed for you, support differs. ",
             { a: "Amazon EKS Auto Mode", href: "/learn/glossary/eks-auto-mode" },
             " NodePools accept all three values.",
           ],
@@ -361,13 +356,6 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            { code: "spec.limits" },
-            " caps the CPU, memory or node count a NodePool may provision. Once a limit is exceeded, Karpenter launches no more nodes from that pool until some terminate. A limit never removes a node, so it isn’t a consolidation control.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
             "Expiry is a separate, forceful method. ",
             { code: "spec.template.spec.expireAfter" },
             " defaults to ",
@@ -386,6 +374,13 @@ export const article: Article = {
             " alongside ",
             { code: "expireAfter" },
             " if you use that annotation.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            { code: "spec.limits" },
+            " caps the CPU, memory or node count a NodePool may provision. Once a limit is exceeded, Karpenter launches no more nodes from that pool until some terminate. A limit never removes a node, so it isn’t a consolidation control.",
           ],
         },
         {
@@ -506,21 +501,13 @@ export const article: Article = {
       title: "Requests decide how many nodes consolidation can remove",
       blocks: [
         {
-          kind: "p",
-          text: [
-            "Policies, timers and budgets decide how fast and how carefully nodes go. The ",
-            { a: "requests", href: "/learn/glossary/kubernetes-resource-requests" },
-            " decide how many can go.",
-          ],
-        },
-        {
           kind: "callout",
           label: "Worked example",
-          text: "In the first section’s NodePool, the pods request 3 × 3 = 9 of the 12\u00a0CPU and use 3 × 0.6 = 1.8. Each node has only 4 − 3 = 1\u00a0CPU free.",
-        },
-        {
-          kind: "p",
-          text: "Bring the requests near use, say 0.8\u00a0CPU per node’s worth of pods. All the pods then request 3 × 0.8 = 2.4\u00a0CPU, which fits on one node with 4 − 2.4 = 1.6\u00a0CPU to spare.",
+          text: [
+            "In the first section’s NodePool, bring the ",
+            { a: "requests", href: "/learn/glossary/kubernetes-resource-requests" },
+            " near use, say 0.8\u00a0CPU per node’s worth of pods. All the pods then request 3 × 0.8 = 2.4\u00a0CPU, which fits on one node with 4 − 2.4 = 1.6\u00a0CPU to spare.",
+          ],
         },
         {
           kind: "p",
@@ -544,7 +531,7 @@ export const article: Article = {
     },
     {
       id: "where-coral-fits",
-      title: "Where Coral fits",
+      title: "Where Coral fits with consolidation",
       blocks: [
         {
           kind: "p",
@@ -581,11 +568,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "For the product, see ",
-            { a: "Kubernetes optimization with Coral", href: "/coral" },
-            ". For the order of rebalancing and node removal, see the ",
+            "The ",
             { a: "Kubernetes cost optimization guide", href: "/kubernetes-cost-optimization" },
-            ".",
+            " gives the order of rebalancing and node removal.",
           ],
         },
       ],
@@ -670,4 +655,5 @@ export const article: Article = {
       href: "/coral-faq#do-i-need-coral-with-karpenter",
     },
   ],
+  relatedTitle: "More on Karpenter and draining nodes",
 };

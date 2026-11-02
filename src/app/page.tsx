@@ -28,6 +28,8 @@ import { OffersSection } from "@/features/offers/offers-section";
  *
  * Pricing and the FAQ are not in it. Both were removed on purpose, with the
  * contact form; the page closes on the assessment and the calendar instead.
+ * The closing row is the calendar's card alone (`talkOnly`, 2 Nov 2026): the
+ * offers' Free assessment card just above already offers the same PDF.
  *
  * ─── A SERVER COMPONENT, AND ALMOST ALL OF ITS CHILDREN ARE TOO ────────────
  * Only the parts that genuinely move ship to the browser: the nav's menus and
@@ -66,7 +68,7 @@ export default function HomePage(): React.JSX.Element {
         <ByDesignSection />
         <CaseBand />
         <OffersSection />
-        <AssessSection />
+        <AssessSection talkOnly />
         <HomeMotion />
       </main>
       <FooterSection />

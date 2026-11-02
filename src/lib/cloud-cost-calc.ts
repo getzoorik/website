@@ -326,6 +326,53 @@ export const EBS_SIZE_GIB: Readonly<
   gp2: { min: 1, max: 16 * 1024 },
 };
 
+/**
+ * Each Azure tier's IOPS (Microsoft Learn, Azure managed disk types, checked 2 Nov 2026): Premium SSD's base
+ * provisioned IOPS, and Standard SSD's base IOPS, which Microsoft gives as "up to".
+ */
+export const AZURE_TIER_IOPS: Readonly<Record<AzureDiskType, Readonly<Record<string, number>>>> = {
+  "premium-ssd": {
+    P1: 120,
+    P2: 120,
+    P3: 120,
+    P4: 120,
+    P6: 240,
+    P10: 500,
+    P15: 1100,
+    P20: 2300,
+    P30: 5000,
+    P40: 7500,
+    P50: 7500,
+    P60: 16000,
+    P70: 18000,
+    P80: 20000,
+  },
+  "standard-ssd": {
+    E1: 500,
+    E2: 500,
+    E3: 500,
+    E4: 500,
+    E6: 500,
+    E10: 500,
+    E15: 500,
+    E20: 500,
+    E30: 500,
+    E40: 500,
+    E50: 500,
+    E60: 2000,
+    E70: 4000,
+    E80: 6000,
+  },
+};
+
+/**
+ * An EBS volume's IOPS (Amazon EBS User Guide, General Purpose SSD volumes): gp3's 3,000 included at any size, gp2's
+ * baseline of 3 per GiB, at least 100 and at most 16,000.
+ */
+export function ebsIops(type: EbsVolumeType, provisionedGib: number): number {
+  return type === "gp3" ? 3000 : Math.min(16000, Math.max(100, 3 * provisionedGib));
+}
+
 export interface DiskInput {
   /** The size the disk was created or last grown to. */
   readonly provisionedGib: number;

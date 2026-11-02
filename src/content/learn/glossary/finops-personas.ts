@@ -5,20 +5,20 @@ export const term: GlossaryTerm = {
   slug: "finops-personas",
   term: "FinOps personas",
   title: "What are FinOps personas?",
-  meta: "FinOps personas are the roles that share cloud cost work. See Microsoft’s 7 core and 5 allied personas, what each does, and who owns usage and rates.",
+  meta: "FinOps personas are the roles that share cloud cost work. See FinOps roles and responsibilities for 7 core and 5 allied personas, and who owns usage and rates.",
   h1: "What are FinOps personas?",
   card: "FinOps personas are the roles that take part in FinOps, the shared work of managing cloud cost.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
       text: [
         "FinOps personas are the roles that take part in ",
         { a: "FinOps", href: "/learn/glossary/finops" },
-        ", the shared work of managing cloud cost. Each one has its own FinOps roles and responsibilities.",
+        ", the shared work of managing cloud cost.",
       ],
     },
     {
@@ -116,6 +116,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/savings-plan",
     },
   ],
+  relatedTitle: "Terms related to FinOps personas",
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",
     href: "/cloud-cost-optimization",

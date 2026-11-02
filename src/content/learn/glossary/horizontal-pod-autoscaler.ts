@@ -4,18 +4,18 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/horizontal-
 export const term: GlossaryTerm = {
   slug: "horizontal-pod-autoscaler",
   term: "Horizontal Pod Autoscaler (HPA)",
-  title: "What is Kubernetes HPA (Horizontal Pod Autoscaler)?",
-  meta: "Kubernetes HPA (Horizontal Pod Autoscaler) adds or removes pods to match demand. See how its CPU target uses each pod’s request, and why that shapes node cost.",
-  h1: "What is Kubernetes HPA (Horizontal Pod Autoscaler)?",
+  title: "Kubernetes HPA: the Horizontal Pod Autoscaler",
+  meta: "What is HPA? The k8s HPA, or Horizontal Pod Autoscaler, adds or removes pods to match demand. See how its CPU target works and why it shapes node cost.",
+  h1: "Kubernetes HPA: the Horizontal Pod Autoscaler",
   card: "HPA in Kubernetes stands for Horizontal Pod Autoscaler.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
-      text: "HPA in Kubernetes stands for Horizontal Pod Autoscaler. It changes the number of pods in a workload, such as a Deployment, to match demand. It can’t scale a DaemonSet.",
+      text: "HPA in Kubernetes stands for Horizontal Pod Autoscaler. It changes the number of pods in a workload, such as a Deployment, to match demand, and can’t scale a DaemonSet.",
     },
     {
       kind: "p",
@@ -31,7 +31,7 @@ export const term: GlossaryTerm = {
   sections: [
     {
       id: "how-the-hpa-decides",
-      title: "How HPA scaling works",
+      title: "How horizontal pod autoscaling works",
       blocks: [
         {
           kind: "ul",
@@ -44,12 +44,34 @@ export const term: GlossaryTerm = {
               ". If any container has no CPU request, the HPA takes no action on CPU.",
             ],
             "By default, it adds up to 4\u00a0pods or doubles the count per 15\u00a0seconds, whichever is more.",
-            "To scale down, it uses the highest count from the last 5\u00a0minutes.",
           ],
         },
         {
+          kind: "h3",
+          id: "scaling-behavior-stabilizationwindowseconds",
+          title: "Scaling behavior: stabilizationWindowSeconds",
+        },
+        {
+          kind: "p",
+          text: "To scale down, the HPA uses the highest replica count from its stabilization window, 300\u00a0seconds by default. So it won’t remove pods only to recreate them. By default, scale-up has no window.",
+        },
+        {
+          kind: "p",
+          text: "The docs’ example sets a 1-minute scale-down window in an HPA’s spec:",
+        },
+        {
+          kind: "code",
+          lang: "yaml",
+          code: "behavior:\n  scaleDown:\n    stabilizationWindowSeconds: 60",
+        },
+        { kind: "h3", id: "hpa-on-eks-and-aks", title: "HPA on EKS and AKS" },
+        {
           kind: "p",
           text: "The Horizontal Pod Autoscaler on EKS is built in. EKS lists Metrics Server as a prerequisite.",
+        },
+        {
+          kind: "p",
+          text: "On AKS, Microsoft advises the HPA when a workload can run several identical replicas and its demand changes. When the replicas outgrow your nodes, Cluster Autoscaler or node autoprovisioning adds nodes.",
         },
       ],
     },
@@ -66,6 +88,11 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: "At 200m average use, twice the target, the HPA would double the pods.",
         },
+        {
+          kind: "code",
+          lang: "yaml",
+          code: "apiVersion: autoscaling/v2\nkind: HorizontalPodAutoscaler\nmetadata:\n  name: php-apache\nspec:\n  scaleTargetRef:\n    apiVersion: apps/v1\n    kind: Deployment\n    name: php-apache\n  minReplicas: 1\n  maxReplicas: 10\n  metrics:\n  - type: Resource\n    resource:\n      name: cpu\n      target:\n        type: Utilization\n        averageUtilization: 50",
+        },
       ],
     },
     {
@@ -81,11 +108,6 @@ export const term: GlossaryTerm = {
               " add nodes to fit pods’ requests, not their real use.",
             ],
             "When new replicas don’t fit, you pay for nodes sized to those requests.",
-            [
-              "For event-driven scaling, see ",
-              { a: "KEDA vs Karpenter", href: "/learn/keda-vs-karpenter" },
-              ".",
-            ],
           ],
         },
         {
@@ -93,14 +115,6 @@ export const term: GlossaryTerm = {
           text: [
             { a: "Coral", href: "/coral" },
             " works with your HPA. For a CPU-utilization HPA, it picks the CPU request by replaying past load through that HPA’s own settings.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "The ",
-            { a: "free assessment", href: "/assessment?p=coral" },
-            " works out your own figure.",
           ],
         },
       ],
@@ -123,6 +137,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-headroom",
     },
   ],
+  relatedTitle: "Terms related to the HPA",
   next: { title: "VPA vs HPA", href: "/learn/vpa-vs-hpa" },
   sources: [
     {
@@ -144,6 +159,11 @@ export const term: GlossaryTerm = {
       publisher: "Amazon EKS",
       title: "“Scale pod deployments with Horizontal Pod Autoscaler”",
       url: "https://docs.aws.amazon.com/eks/latest/userguide/horizontal-pod-autoscaler.html",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“AKS Scaling Overview”",
+      url: "https://learn.microsoft.com/en-us/azure/aks/concepts-scale",
     },
   ],
 };

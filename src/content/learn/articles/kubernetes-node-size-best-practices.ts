@@ -7,19 +7,18 @@ export const article: Article = {
   title: "Kubernetes node size best practices on AKS and EKS",
   meta: "Kubernetes node size best practices: what large and small nodes cost on AKS and EKS, the pod and reserve limits behind them, and how to size each pool.",
   h1: "Kubernetes node size best practices: large or small nodes",
-  deck: "Big nodes spread each node’s fixed overhead. Small nodes are cheaper to leave idle and easier to empty.",
+  deck: "AWS advises the largest nodes your workloads can fully use that still meet your availability goals.",
   card: "Large or small nodes: the reserves, pod limits and autoscaler rules that decide the right size per pool.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes cost basics",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "soumya",
   cover: "/learn-covers/zoorik-learn-kubernetes-node-size-best-practices-1200x630.webp",
-  coverAlt:
-    "Kubernetes node size: small nodes or a large node, with resources reserved on every node",
+  coverAlt: "Small nodes or one large node, with resources reserved on every node",
   short:
-    "Kubernetes node size best practices come down to one trade-off: larger nodes spread fixed overhead, while smaller ones leave less idle and empty more easily. AWS advises the largest nodes your workloads can fully use that still meet your availability goals.",
+    "Kubernetes node size best practices come down to one trade-off. Larger nodes pay the per-node overhead fewer times, while smaller ones leave less idle and are easier to empty.",
   sections: [
     {
       id: "fewer-larger-nodes-pay-the-per-node",
@@ -284,7 +283,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Match the machine family’s CPU-to-memory ratio to your pods’ requests, or one resource fills first and strands the other. On Azure, the ",
+            "Pick the Kubernetes instance type whose CPU-to-memory ratio matches your pods’ requests, or one resource fills first and strands the other. On Azure, the ",
             { a: "VM series", href: "/learn/glossary/azure-vm-series" },
             " differ in that ratio:",
           ],
@@ -344,11 +343,13 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "NAP’s default NodePool allows the D family and sets the ",
-            { code: "WhenEmptyOrUnderutilized" },
-            " consolidation policy. With it, underused nodes can be replaced later. ",
+            "NAP’s default NodePool allows only the D family and sets ",
+            { code: "consolidateAfter" },
+            " to ",
+            { code: "0s" },
+            ". ",
             { a: "Karpenter consolidation", href: "/learn/karpenter-consolidation" },
-            " covers the policies.",
+            " explains when underused nodes are replaced.",
           ],
         },
         {
@@ -421,7 +422,7 @@ export const article: Article = {
             ],
             [
               { b: "Machine size." },
-              " With Karpenter or NAP, a rebalance replaces the nodes you choose with cheaper machines that still fit the work. Your Karpenter or NAP launches them, and the old nodes are drained and removed one by one. A rebalance never goes past a PDB. Where Coral starts a new copy first, the old copy goes only once the new one is Ready and serving. A node that can’t be emptied is kept.",
+              " With Karpenter or NAP, a rebalance swaps the nodes you choose for cheaper machines that your autoscaler launches, and never goes past a PDB. Where Coral starts a new copy first, the old one goes only once the new one is Ready and serving. A node that can’t be emptied is kept.",
             ],
             [
               { b: "Cluster Autoscaler only." },
@@ -529,4 +530,5 @@ export const article: Article = {
       href: "/learn/change-aks-node-pool-vm-size",
     },
   ],
+  relatedTitle: "More on choosing node sizes",
 };

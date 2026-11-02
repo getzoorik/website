@@ -93,7 +93,7 @@ export function GlossaryPage({ term }: { readonly term: GlossaryTerm }): React.J
         }
       />
 
-      <RelatedRow title={glossaryWords.related}>
+      <RelatedRow title={term.relatedTitle ?? glossaryWords.related}>
         {term.related.map((tile) => (
           <LinkTile
             key={tile.title}

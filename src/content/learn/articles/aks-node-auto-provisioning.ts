@@ -6,18 +6,18 @@ import { figure as figure3 } from "@/features/learn/figures/aks-node-auto-provis
 export const article: Article = {
   slug: "aks-node-auto-provisioning",
   title: "Karpenter on Azure: AKS node auto provisioning",
-  meta: "Karpenter on Azure is AKS node auto provisioning (NAP). Its October 2026 status, network needs, and how to enable or disable it with az or Terraform.",
+  meta: "Karpenter on AKS is node auto provisioning (NAP), run by AKS: its October 2026 status, network needs, and how to enable or disable it with az or Terraform.",
   h1: "Karpenter on Azure: AKS node auto provisioning (NAP) and how to enable it",
-  deck: "Karpenter on Azure, run by AKS for you: where it stands in October 2026, what it needs, and how to turn it on and off.",
+  deck: "Microsoft runs it in the AKS control plane, always on the latest Karpenter version, so there’s nothing to install.",
   card: "What AKS node auto provisioning is, its October 2026 status, and how to enable or disable it.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes autoscaling",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "saurav",
   cover: "/learn-covers/zoorik-learn-aks-node-auto-provisioning-1200x630.webp",
-  coverAlt: "AKS node auto provisioning: pending pods go to the VM size that fits",
+  coverAlt: "AKS node auto provisioning: pending pods go to the VM size that fits them",
   short: [
     "AKS node auto provisioning (NAP) is Microsoft’s managed Karpenter: it picks VM sizes for pods that can’t be scheduled, and consolidates empty or underused nodes. On AKS Standard, enable it with ",
     { code: "az aks update --node-provisioning-mode Auto" },
@@ -41,7 +41,7 @@ export const article: Article = {
           text: [
             "When nodes empty out or run underused, the NodePool’s consolidation policy decides whether NAP removes them. ",
             { a: "Karpenter consolidation", href: "/learn/karpenter-consolidation" },
-            " covers those policies in depth.",
+            " covers those policies.",
           ],
         },
         { kind: "svg", figure: figure1 },
@@ -52,14 +52,10 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Microsoft’s overview says NAP “automatically deploys, configures, and manages Karpenter on your AKS clusters.”",
-        },
-        {
-          kind: "p",
           text: [
-            "It’s built on the ",
+            "NAP is built on the ",
             { a: "open-source Karpenter project", href: "/learn/what-is-karpenter" },
-            " and the AKS Karpenter provider. AKS runs it in the managed control plane, and Microsoft says it’s always on the latest Karpenter version. To read its logs, turn on AKS control plane logs.",
+            " and the AKS Karpenter provider. To read its logs, turn on AKS control plane logs.",
           ],
         },
         { kind: "p", text: "Three kinds of object do the work:" },
@@ -90,7 +86,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "NAP sizes new nodes from what pending pods request, not from what they use. Microsoft’s pre-migration checklist for NAP asks you to size workloads for consolidation. It also asks for proper ",
+            "Microsoft’s pre-migration checklist for NAP asks you to size workloads for consolidation. It also asks for proper ",
             { a: "requests", href: "/learn/glossary/kubernetes-resource-requests" },
             ", limits, replicas and PodDisruptionBudgets.",
           ],
@@ -123,7 +119,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Guides written before NAP became generally available in July 2025 can be out of date. This is where NAP stands on Microsoft’s own pages:",
+          text: "Guides written before NAP became generally available in July 2025 can be out of date.",
         },
         {
           kind: "table",
@@ -165,7 +161,7 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Watch out",
-          text: "One more limit is easy to miss. You can’t change the egress outbound type of a cluster created with NAP, so pick it at creation.",
+          text: "You can’t change the egress outbound type of a cluster created with NAP, so pick it at creation.",
         },
       ],
     },
@@ -557,14 +553,18 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Microsoft also documents a shorter route, and recommends against it. That route “might leave some pods pending and doesn’t honor Pod Disruption Budgets (PDBs).”",
+          text: [
+            "Microsoft also documents a shorter route: skip steps 2 and 3, and delete each NAP node with ",
+            { code: "kubectl delete node" },
+            ". Microsoft recommends against it, since that route “might leave some pods pending and doesn’t honor Pod Disruption Budgets (PDBs).”",
+          ],
         },
         {
           kind: "p",
           text: [
-            "It skips steps 2 and 3 and deletes each NAP node with ",
-            { code: "kubectl delete node" },
-            ". If you take it anyway, check the label above first, so you delete only NAP nodes.",
+            "If you take it anyway, check the ",
+            { code: "karpenter.sh/nodepool" },
+            " label first, so you delete only NAP nodes.",
           ],
         },
       ],
@@ -576,8 +576,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
+            "NAP picks machines for the requests it’s given, but doesn’t change those requests. ",
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS clusters running 1.30 or later. NAP picks machines for the requests it’s given, but doesn’t change those requests.",
+            " optimizes Kubernetes on AKS and EKS clusters running 1.30 or later.",
           ],
         },
         {
@@ -586,7 +587,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "On our own AKS development cluster, Coral removed one of two 4-CPU workers. It then rebalanced the remaining worker onto a cheaper machine of the same size. Eight days after we connected it, the cluster’s machines cost $154.76 a month instead of $368.65.",
+          text: "On our own AKS development cluster, Coral removed one of two 4-CPU workers. It then rebalanced the remaining worker onto a cheaper machine of the same size.",
+        },
+        {
+          kind: "p",
+          text: "Eight days after we connected Coral, the cluster’s machines cost $154.76 a month instead of $368.65.",
         },
         {
           kind: "p",

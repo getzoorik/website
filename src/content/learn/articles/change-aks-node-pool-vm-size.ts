@@ -5,15 +5,15 @@ import { figure as figure2 } from "@/features/learn/figures/change-aks-node-pool
 export const article: Article = {
   slug: "change-aks-node-pool-vm-size",
   title: "How to change an AKS node pool VM size",
-  meta: "Change an AKS node pool VM size with az aks nodepool add, then cordon, drain and delete the old pool. The same steps change the AKS system node pool VM size.",
+  meta: "Change an AKS node pool VM size with the az aks nodepool commands: add a pool at the new size, drain the old pool and delete it. Works for system pools too.",
   h1: "How to change an AKS node pool VM size",
-  deck: "Outside a preview, a Scale Set node pool keeps its VM size. How to move to a new size, one node at a time.",
+  deck: "Both pools run until the old one is empty, so you need quota for both and pay for both.",
   card: "New pool, cordon, drain, delete: the route to a new AKS VM size, with the system pool rules and the preview.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes cost basics",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "iqbal",
   cover: "/learn-covers/zoorik-learn-change-aks-node-pool-vm-size-1200x630.webp",
   coverAlt:
@@ -38,7 +38,7 @@ export const article: Article = {
             { code: "nodepool2" },
             " at the new size and move the pods across, one node at a time. You delete ",
             { code: "nodepool1" },
-            " once it’s empty, and until then you pay for both pools.",
+            " once it’s empty.",
           ],
         },
         {
@@ -74,7 +74,6 @@ export const article: Article = {
             "A VMSS pool can be resized in place, in preview, within limits.",
           ],
         },
-        { kind: "p", text: "Otherwise, Microsoft recommends a new pool, cordon, drain, delete." },
         { kind: "svg", figure: figure1 },
       ],
     },
@@ -147,7 +146,7 @@ export const article: Article = {
           text: [
             "In the opening case, step 2 adds 3 ",
             { code: "Standard_D4s_v3" },
-            " nodes, each with 4\u00a0vCPUs by its name. Both pools run while you move, so ",
+            " nodes, each with 4\u00a0vCPUs by its name. So ",
             { code: "nodepool2" },
             " needs 3 × 4 = 12\u00a0vCPUs of quota beyond what ",
             { code: "nodepool1" },
@@ -161,9 +160,9 @@ export const article: Article = {
             { a: "EKS and AKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
             " prices an AKS node pool at Azure list prices, so you can compare the sizes it lists. ",
             { a: "Allocatable vs capacity", href: "/learn/kubernetes-allocatable-vs-capacity" },
-            " explains how the reserves AKS keeps on each node set what your pods can claim. ",
+            " and ",
             { a: "Node size best practices", href: "/learn/kubernetes-node-size-best-practices" },
-            " weighs a few large nodes against many small ones.",
+            " help you pick a size.",
           ],
         },
         {
@@ -183,7 +182,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "The steps to change an Azure AKS node pool VM size are the same for user and system pools. New nodes come first, then the pods, then the old pool.",
+          text: "The steps to change an Azure AKS node pool VM size are the same for user and system pools.",
         },
         { kind: "svg", figure: figure2 },
         {
@@ -232,8 +231,12 @@ export const article: Article = {
             { code: "--node-osdisk-type" },
             " unset, it defaults to ",
             { a: "Ephemeral", href: "/learn/glossary/ephemeral-os-disk" },
-            " when the new VM size and OS disk size allow it. Set it if the old pool’s OS disk type must stay. Name a Linux pool with 1 to 12 lowercase letters and digits, starting with a letter.",
+            " when the new VM size and OS disk size allow it. Set it if the old pool’s OS disk type must stay.",
           ],
+        },
+        {
+          kind: "p",
+          text: "Name a Linux pool with 1 to 12 lowercase letters and digits, starting with a letter.",
         },
         {
           kind: "code",
@@ -372,12 +375,11 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Which size to pick within these rules: ",
             {
-              a: "how to choose the AKS system node pool size",
+              a: "How to choose the AKS system node pool size",
               href: "/learn/how-to-choose-aks-node-sizes",
             },
-            ".",
+            " covers which size to pick within these rules.",
           ],
         },
         {
@@ -484,8 +486,11 @@ export const article: Article = {
         },
         {
           kind: "p",
+          text: "Replacements are paced by the NodePool’s disruption budget, 10% of its nodes when you set none, and by your PDBs. NAP’s consolidation also removes empty or underutilized nodes, and replaces nodes with cheaper variants on its own.",
+        },
+        {
+          kind: "p",
           text: [
-            "Replacements are paced by the NodePool’s disruption budget, 10% of its nodes when you set none, and by your PDBs. NAP’s consolidation also removes empty or underutilized nodes, and replaces nodes with cheaper variants on its own. ",
             { a: "The NAP guide", href: "/learn/aks-node-auto-provisioning" },
             " covers turning it on and the networking it needs.",
           ],
@@ -507,7 +512,7 @@ export const article: Article = {
     },
     {
       id: "how-coral-moves-aks-nodes-onto-cheaper",
-      title: "How Coral moves AKS nodes onto cheaper machines",
+      title: "How Coral rebalances AKS nodes onto cheaper machines",
       blocks: [
         {
           kind: "p",
@@ -526,7 +531,7 @@ export const article: Article = {
           items: [
             [
               { b: "With NAP:" },
-              " Coral rebalances the nodes you choose onto cheaper machines that still fit the work. You compare current and rebalanced cost in a plan before you start. Coral creates fixed-size NodePools, NAP launches the new machines, and the old nodes are drained and removed one by one. The new pools stay after the run.",
+              " you compare current and rebalanced cost in a plan before you start. Coral creates fixed-size NodePools, NAP launches the new machines, and the old nodes are drained and removed one by one. The new pools stay after the run.",
             ],
             [
               { b: "With only the Cluster Autoscaler:" },
@@ -544,17 +549,24 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "A rebalance never goes past a PDB, and a node that can’t be emptied in time is kept. Where it can, Coral starts a new copy of a Deployment or Argo Rollout pod on another node first. The new copy must be Ready and serving, with no restarts, before the old pod goes.",
+          text: "A rebalance never goes past a PDB, and a node that can’t be emptied in time is kept.",
+        },
+        {
+          kind: "p",
+          text: "Where it can, Coral starts a new copy of a Deployment or Argo Rollout pod on another node first. The new copy must be Ready and serving, with no restarts, before the old pod goes.",
+        },
+        {
+          kind: "p",
+          text: "Other pods are evicted within their PDB, and single-copy ones restart.",
         },
         {
           kind: "p",
           text: [
-            "Other pods are evicted within their PDB, and single-copy ones restart. ",
             {
               a: "Kubernetes autoscaling",
               href: "/learn/kubernetes-autoscaling",
             },
-            " shows where request sizing sits beside the autoscalers. ",
+            " shows where request sizing sits beside the autoscalers, and ",
             { a: "AKS cost optimization", href: "/aks-cost-optimization" },
             " covers the rest of Coral on AKS.",
           ],
@@ -562,7 +574,7 @@ export const article: Article = {
         { kind: "h3", id: "what-one-rebalance-showed", title: "What one rebalance showed" },
         {
           kind: "p",
-          text: "On our own development cluster, one rebalance swapped a 4-CPU Intel worker for a cheaper 4-CPU AMD machine of the same size. Coral chose it from Azure’s prices, and Azure built it in under 2\u00a0minutes. The run took 8\u00a0minutes 36\u00a0seconds and reduced the cluster’s machine cost by $66.43 a month.",
+          text: "On our own development cluster, one rebalance swapped a 4-CPU Intel worker for a cheaper 4-CPU AMD machine, chosen from Azure’s prices. The run took 8\u00a0minutes 36\u00a0seconds and reduced the cluster’s machine cost by $66.43 a month.",
         },
         {
           kind: "p",
@@ -650,4 +662,5 @@ export const article: Article = {
       href: "/learn/aks-node-auto-provisioning",
     },
   ],
+  relatedTitle: "More on AKS VM sizes and node changes",
 };

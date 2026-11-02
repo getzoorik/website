@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -25,7 +25,7 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "To work out the effective savings rate, FinOps tools such as Microsoft’s toolkit compare three costs:",
+          text: "Microsoft’s FinOps toolkit compares three costs:",
         },
         {
           kind: "ul",
@@ -43,7 +43,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "an-example",
-      title: "An example",
+      title: "An effective savings rate example",
       blocks: [
         {
           kind: "p",
@@ -60,18 +60,12 @@ export const term: GlossaryTerm = {
         {
           kind: "ul",
           items: [
-            "ESR shows the effect of all your discounts as one percentage.",
             "Unused commitments still cost you, so they reduce ESR.",
             "Effective cost above list cost gives negative savings, and a negative ESR.",
             [
               "A high ESR doesn’t mean a low cloud cost. Discounts reduce unit prices. Using fewer resources is the other half of ",
               { a: "how to reduce cloud costs", href: "/cloud-cost-optimization" },
               ".",
-            ],
-            [
-              "The ",
-              { a: "free assessment", href: "/assessment" },
-              " works out what your clusters and disks could save.",
             ],
           ],
         },
@@ -86,7 +80,7 @@ export const term: GlossaryTerm = {
     },
     {
       title: "Savings plan",
-      line: "A spend commitment that buys cheaper rates.",
+      line: "An hourly cost commitment that buys cheaper rates.",
       href: "/learn/glossary/savings-plan",
     },
     {
@@ -100,6 +94,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/amortized-cost",
     },
   ],
+  relatedTitle: "Terms related to effective savings rate",
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",
     href: "/cloud-cost-optimization",

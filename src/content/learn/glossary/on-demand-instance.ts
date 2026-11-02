@@ -4,14 +4,14 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/on-demand-i
 export const term: GlossaryTerm = {
   slug: "on-demand-instance",
   term: "On-demand instance (on-demand pricing)",
-  title: "What is an on-demand instance?",
-  meta: "An on-demand instance is a cloud VM charged by how long it runs, with no commitment. See how AWS and Azure charge and how it compares to reserved pricing.",
-  h1: "What is an on-demand instance?",
+  title: "What is an on-demand instance on AWS and Azure?",
+  meta: "An on-demand instance is a cloud instance you pay for by how long it runs, with no commitment. See how EC2 on-demand pricing and Azure pay-as-you-go work.",
+  h1: "What is an on-demand instance on AWS and Azure?",
   card: "An on-demand instance is a cloud virtual machine (VM) you pay for by how long it runs, with no commitment.",
   group: "finops-pricing",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -19,6 +19,20 @@ export const term: GlossaryTerm = {
     },
   ],
   sections: [
+    {
+      id: "what-is-an-instance-in-cloud-computing",
+      title: "What is an instance in cloud computing?",
+      blocks: [
+        {
+          kind: "p",
+          text: "In cloud computing, an instance is a virtual server you rent. AWS calls it an EC2 instance, and Azure calls it a virtual machine.",
+        },
+        {
+          kind: "p",
+          text: "A cloud instance’s type, or VM size, sets its compute, memory, storage and network. Its pricing model, such as on-demand, sets how you pay for it.",
+        },
+      ],
+    },
     {
       id: "on-demand-instance-pricing",
       title: "On-demand instance pricing",
@@ -70,18 +84,12 @@ export const term: GlossaryTerm = {
               { a: "size", href: "/learn/kubernetes-node-size-best-practices" },
               ".",
             ],
-            "A commitment or spot price can replace that rate.",
             "A spare node costs you until it’s removed.",
             [
               { a: "Coral", href: "/coral" },
               " drains spare nodes so your autoscaler can remove them.",
             ],
             "It rebalances CPU and memory requests to match real use, so the same pods fit on fewer nodes.",
-            [
-              "The ",
-              { a: "free assessment", href: "/assessment?p=coral" },
-              " works out your own figure.",
-            ],
           ],
         },
       ],
@@ -95,7 +103,7 @@ export const term: GlossaryTerm = {
     },
     {
       title: "Savings plan",
-      line: "A commitment to an hourly spend.",
+      line: "A commitment to a set amount of use each hour.",
       href: "/learn/glossary/savings-plan",
     },
     {
@@ -109,6 +117,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/node-pool",
     },
   ],
+  relatedTitle: "Terms related to on-demand instances",
   next: {
     title: "Kubernetes node size best practices: large or small nodes",
     href: "/learn/kubernetes-node-size-best-practices",
@@ -133,6 +142,21 @@ export const term: GlossaryTerm = {
       publisher: "Microsoft Azure",
       title: "“Linux Virtual Machines Pricing”",
       url: "https://azure.microsoft.com/en-us/pricing/details/virtual-machines/linux/",
+    },
+    {
+      publisher: "AWS",
+      title: "“What is Amazon EC2?”",
+      url: "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html",
+    },
+    {
+      publisher: "AWS",
+      title: "“Savings Plans types”",
+      url: "https://docs.aws.amazon.com/savingsplans/latest/userguide/plan-types.html",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“Overview of virtual machines in Azure”",
+      url: "https://learn.microsoft.com/en-us/azure/virtual-machines/overview",
     },
   ],
 };

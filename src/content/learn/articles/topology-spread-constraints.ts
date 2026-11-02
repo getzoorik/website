@@ -5,20 +5,20 @@ import { figure as figure3 } from "@/features/learn/figures/topology-spread-cons
 
 export const article: Article = {
   slug: "topology-spread-constraints",
-  title: "Topology spread constraints: maxSkew and scale-down",
-  meta: "Kubernetes topologySpreadConstraints set how unevenly pods may sit across zones and nodes. How maxSkew and whenUnsatisfiable work, and when a rule holds a node.",
-  h1: "Topology spread constraints: maxSkew, zones and scale-down",
-  deck: "What maxSkew, whenUnsatisfiable and minDomains do, how spread differs from anti-affinity, and when a rule holds a node.",
+  title: "Kubernetes topologySpreadConstraints and maxSkew",
+  meta: "Pod topology spread constraints set pod distribution across zones and nodes: how maxSkew, topologyKey and whenUnsatisfiable work, and when a rule holds a node.",
+  h1: "Kubernetes topologySpreadConstraints: maxSkew, zones and scale-down",
+  deck: "Evicted pods are scheduled again under the same spread rule, so the rule helps decide which nodes can go.",
   card: "How maxSkew and whenUnsatisfiable spread pods across zones and nodes, and when a spread rule keeps a node.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Node lifecycle and scheduling",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "harsh",
   cover: "/learn-covers/zoorik-learn-topology-spread-constraints-1200x630.webp",
   coverAlt:
-    "Topology spread constraints: pods spread over zone A, B and C, and the next pod goes to zone C, which has the fewest",
+    "Pods spread over zones A, B and C, and the next pod goes to zone C, which has the fewest",
   short: [
     "Topology spread constraints tell the kube-scheduler how unevenly pods may sit across zones or nodes, with ",
     { code: "maxSkew" },
@@ -45,7 +45,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "If zone B has no room, the pod stays Pending, however much room zone A has. A drain runs the same count for every evicted pod, so a spread rule can also keep a node, and its cost, in your cluster.",
+          text: "If zone B has no room, the pod stays Pending, however much room zone A has.",
         },
         {
           kind: "p",
@@ -496,14 +496,6 @@ export const article: Article = {
       title: "Spread settings that still let nodes go",
       blocks: [
         {
-          kind: "p",
-          text: [
-            "Spread rules help decide which nodes can be removed, so they are part of ",
-            { a: "Kubernetes cost optimization", href: "/kubernetes-cost-optimization" },
-            ".",
-          ],
-        },
-        {
           kind: "ul",
           items: [
             [
@@ -561,7 +553,11 @@ export const article: Article = {
             ],
             [
               { b: "The drain." },
-              " Coral respects PodDisruptionBudgets and do-not-disrupt. By default, Coral may reduce a pool’s minimum when that minimum alone keeps a node it has emptied, and disconnect puts the old minimum back. Every pool keeps at least one node. Nodes drain one at a time, and a drain that can’t finish in time puts the node back into service.",
+              " Coral respects PodDisruptionBudgets and do-not-disrupt, and drains one node at a time. A drain that can’t finish in time puts the node back into service.",
+            ],
+            [
+              { b: "The pool minimum." },
+              " By default, Coral may reduce a pool’s minimum when that minimum alone keeps a node it has emptied, and disconnect puts the old minimum back. Every pool keeps at least one node.",
             ],
             [
               { b: "The warning." },
@@ -667,4 +663,5 @@ export const article: Article = {
       href: "/learn/kubernetes-descheduler",
     },
   ],
+  relatedTitle: "More on pod spread, placement and scale-down",
 };

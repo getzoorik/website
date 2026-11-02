@@ -59,7 +59,7 @@ export function nodeReferenceTables(): readonly ReferenceTable[] {
     const first = nodeSizes(cloudPrices, eniFacts, cloud, regions[0]!);
     const prices: ReferenceTable = {
       heading: nodeCalculatorUi.tableHeadings[cloud],
-      title: `${CLOUD_NAME[cloud]}: monthly list price per node`,
+      title: `${cloud === "azure" ? "Azure VM pricing" : "EC2 instance pricing"}: monthly list price per node`,
       head: ["Size", "Kind", "vCPUs", "Memory", ...regions.map((region) => regionNames[region]!)],
       widths: PRICE_WIDTHS,
       rows: first.map(({ size }) => [

@@ -42,11 +42,12 @@ describe("the hero", () => {
     expect(text(badge)).toBe("Built for Azure and AWS");
     expect(badge.nextElementSibling).toBeNull();
     expect(hero.querySelector(".ax-hero-t > .hero-badges + h1")).not.toBeNull();
-    /* The h1 does not say "Free"; the page's <title> keeps it. */
-    expect(text(hero.querySelector("h1"))).toBe("Cloud cost assessment");
-    /* Under the title, what the assessment is, set as the site's hero deck (W32). */
+    expect(text(hero.querySelector("h1"))).toBe(
+      "Free cloud cost analysis for Kubernetes and block storage",
+    );
+    /* Under the title, its one line, set as the site's hero deck (W32). */
     expect(text(hero.querySelector(".ax-hero-t > h1 + p.doc-deck.ax-lead"))).toBe(
-      "The free cloud cost assessment estimates what you could save on Kubernetes (AKS and EKS) or block storage on Azure and AWS. It’s read-only, runs in Cloud Shell or your terminal, and writes one PDF. It sends nothing to Zoorik.",
+      "One command estimates what you could save, at list price.",
     );
     /* Then the line to choose over the switch. */
     const pick = hero.querySelector(".ax-hero-t > h1 + .ax-lead + .ax-pick")!;
@@ -324,7 +325,7 @@ describe("What you get", () => {
 });
 
 describe("What it does", () => {
-  it("says Reads, Runs, only when and Sends, the GitHub and PyPI cards, and Read-only · Sends nothing", () => {
+  it("says Reads, Runs, only when and Sends, the GitHub and PyPI cards, and Read-only", () => {
     const section = page().querySelector("#what-it-does")!;
     expect(section).toHaveClass("sec", "oc");
     expect(text(section.querySelector("h2"))).toBe("What it does");
@@ -353,7 +354,7 @@ describe("What it does", () => {
       ["GitHub", "Open source · Apache-2.0", "https://github.com/getzoorik/assessment", "_blank"],
       ["PyPI", "Published as zoorik", "https://pypi.org/project/zoorik/", "_blank"],
     ]);
-    expect(text(section.querySelector(".brs .ro"))).toBe("Read-only · Sends nothing");
+    expect(text(section.querySelector(".brs .ro"))).toBe("Read-only");
   });
 
   it("says what Amoeba's script reads and runs on the Amoeba page", () => {
@@ -391,32 +392,35 @@ describe("Before you run it", () => {
       expect(text(time!.querySelector(":scope > p"))).toBe(
         "A Kubernetes run samples usage for 3 minutes by default, so it takes a little over 3 minutes. Private AKS clusters, and many or large clusters, take longer.",
       );
-      /* The three access answers are a short list. */
+      /* The four access answers are a short list. */
       expect([...access!.querySelectorAll(":scope > ul > li")].map(text)).toEqual([
         "For AKS, it needs read access to your clusters and the Azure Kubernetes Service Cluster User Role on each.",
         "For EKS, it needs read-only EKS, EC2 and pricing actions, and an EKS access entry.",
         "For block storage on Azure, it needs Reader on the subscriptions, plus Run Command for the used-space read.",
+        "For block storage on AWS, it needs read-only EC2, Systems Manager, CloudWatch and pricing actions, plus Systems Manager Run Command for the used-space read.",
       ]);
-      expect(text(saving!.querySelector(":scope > p"))).toBe(
-        "It sets each container’s request from its peak use, then works out how many nodes the pods need. The saving is (nodes today − nodes needed) × hourly list price × 730.",
-      );
+      /* The saving, a line for each product (2 Nov 2026). */
+      expect([...saving!.querySelectorAll(":scope > ul > li")].map(text)).toEqual([
+        "For Kubernetes, it sets each container’s request from its peak use and counts the nodes needed. The saving is (nodes today − nodes needed) × hourly list price × 730.",
+        "For block storage, it sizes a pool to the used space on each VM it could read. The saving is the list price of the disks the pool replaces, less the pool’s.",
+      ]);
     }
   });
 });
 
 describe("the page's description", () => {
-  it("says what the assessment is in 159 characters, and never says bill", () => {
+  it("says what the assessment is in 150 characters, and never says bill", () => {
     const { description } = assessmentCopy.meta;
     expect(description).toBe(
-      "Free cloud cost assessment for Kubernetes and block storage on Azure and AWS: a read-only cloud cost analysis, run in Cloud Shell or your terminal, in one PDF.",
+      "A free cloud computing cost analysis for AKS, EKS and block storage on Azure and AWS: read-only, in your terminal, one PDF with your estimated saving.",
     );
-    expect(description).toHaveLength(159);
+    expect(description).toHaveLength(150);
     expect(description).not.toMatch(/\bbill/i);
   });
 });
 
 describe("After the run", () => {
-  it("offers the PDF to the founders and a booking, on the product's terms, then the code and the estimate", () => {
+  it("offers the PDF to the founders and a booking, on the product's terms, then the estimate", () => {
     const section = page().querySelector("#after")!;
     expect(text(section.querySelector("h2"))).toBe("After the run");
     const card = section.querySelector(".as-card")!;
@@ -439,7 +443,6 @@ describe("After the run", () => {
         a.getAttribute("href"),
       ]),
     ).toEqual([
-      ["Read the code (opens in a new tab)", "https://github.com/getzoorik/assessment"],
       [
         "How the estimate works (opens in a new tab)",
         "https://github.com/getzoorik/assessment#how-the-estimate-works",
@@ -457,7 +460,7 @@ describe("After the run", () => {
     expect(text(section.querySelector(".as-cal p"))).toBe(
       "Walk through your report with the people who build Coral and Amoeba.",
     );
-    expect(section.querySelectorAll(".ax-foot a")[1]).toHaveAttribute(
+    expect(section.querySelectorAll(".ax-foot a")[0]).toHaveAttribute(
       "href",
       "https://github.com/getzoorik/assessment#how-the-estimate-works-1",
     );

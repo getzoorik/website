@@ -4,26 +4,25 @@ import { figure as figure2 } from "@/features/learn/figures/azure-disk-expand-wi
 
 export const article: Article = {
   slug: "azure-disk-expand-without-downtime",
-  title: "Resize or expand an Azure VM disk without downtime",
-  meta: "Resize an Azure VM disk without any downtime: the limits, az disk update, how to rescan the disk in Linux, growpart and xfs_growfs, and why the new size stays.",
-  h1: "How to resize or expand an Azure VM disk without any downtime",
-  deck: "Resize most Azure VM data disks without any downtime: grow the managed disk, rescan it in Linux, then grow the partition and filesystem while the VM keeps running.",
+  title: "Resize an Azure VM disk without any downtime",
+  meta: "Resize an Azure VM disk without any downtime: az disk update, how to rescan a disk in Linux, growpart, xfs_growfs, and the Azure OS disk size limit.",
+  h1: "How to resize an Azure VM disk without any downtime",
+  deck: "Most data disks grow while the VM keeps running, but an OS disk expand needs the VM deallocated.",
   card: "Grow a managed data disk while the VM runs: the limits, the rescan, growpart, and why the size stays.",
   product: "amoeba",
   hub: "Block storage",
   topic: "Azure block storage",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "vineet",
   cover: "/learn-covers/zoorik-learn-azure-disk-expand-without-downtime-1200x630.webp",
-  coverAlt:
-    "Expand an Azure disk: the data disk grows while the VM keeps running, but the OS disk does not",
+  coverAlt: "The data disk grows while the VM keeps running, but the OS disk does not",
   short:
-    "You can expand most Azure managed data disks without downtime: resize in Azure, rescan the device, then grow the partition and filesystem. OS disks, shared disks and Standard HDD, Standard SSD or Premium SSD crossing 4\u00a0TiB need downtime, and you keep paying for the new size.",
+    "Resize the managed disk in Azure, rescan the device in Linux, then grow the partition and filesystem. Shared disks need downtime, and so do Standard HDD, Standard SSD and Premium SSD disks that cross 4\u00a0TiB.",
   sections: [
     {
       id: "azure-disk-expand-without-downtime",
-      title: "Azure disk expand without downtime: what qualifies",
+      title: "Azure disk expand without any downtime: what qualifies",
       blocks: [
         {
           kind: "p",
@@ -32,7 +31,7 @@ export const article: Article = {
             { a: "Premium SSD", href: "/learn/glossary/azure-premium-ssd" },
             " data disk at ",
             { code: "/datadrive" },
-            ", nearly full, on a VM whose application keeps writing. You can make it 1,024\u00a0GiB without stopping either one. When the data shrinks again, you still pay for 1,024\u00a0GiB.",
+            ", nearly full, on a VM whose application keeps writing. You can make it 1,024\u00a0GiB without stopping either one.",
           ],
         },
         {
@@ -42,7 +41,7 @@ export const article: Article = {
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
-          text: "Microsoft calls expanding a disk without deallocating the VM “Expand without downtime”. The disk’s host cache setting doesn’t affect it. Whether you can expand a disk in Azure without downtime depends on its type and size, the VM size and your tool.",
+          text: "Microsoft calls expanding a disk without deallocating the VM “Expand without downtime”. The disk’s host cache setting doesn’t affect it. Whether a disk qualifies depends on its type and size, the VM size and your tool.",
         },
         {
           kind: "table",
@@ -78,7 +77,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Microsoft’s troubleshooting guide says which VM sizes support the feature. They include sizes with Premium Storage capability, ephemeral OS disk support or Hyper-V Generation 2.",
+          text: "Microsoft’s troubleshooting guide says which VM sizes support the feature. They include sizes with Premium Storage capability, ephemeral OS disk support or Hyper-V Generation 2. The guide’s PowerShell script lists the qualifying sizes in a region.",
         },
         {
           kind: "callout",
@@ -93,7 +92,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The troubleshooting guide has a PowerShell script that lists the qualifying sizes in a region. For a data disk on any other size, the guide’s fallback keeps the VM running but not the disk:",
+          text: "For a data disk on any other size, the guide’s fallback keeps the VM running but not the disk:",
         },
         {
           kind: "ol",
@@ -139,7 +138,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "NVMe controllers name disks differently. There a data disk shows up as a path such as ",
+            "On NVMe controllers, a data disk shows up as a path such as ",
             { code: "/dev/nvme0n2" },
             ". The command ",
             { code: "sudo azure-nvme-id" },
@@ -167,7 +166,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Premium SSD v2 is different. It grows in 1\u00a0GiB increments and charges for each GiB you provision. Our ",
+            "Premium SSD v2 grows in 1\u00a0GiB increments and charges for each GiB you provision. Our ",
             { a: "Azure disk pricing calculator", href: "/ebs-and-azure-disk-pricing" },
             " shows what a managed disk costs a month at list price.",
           ],
@@ -175,18 +174,14 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Worked example",
-          text: "The opening’s 512\u00a0GiB Premium SSD is a P20. Ask for 600\u00a0GiB and Azure moves it to a P30, which is charged as 1,024\u00a0GiB.",
-        },
-        {
-          kind: "p",
-          text: "You gain 600 − 512 = 88\u00a0GiB of space, but the size you pay for doubles. Setting 1,024\u00a0GiB costs the same and gives you 1,024 − 600 = 424\u00a0GiB more. That’s why the opening goes straight to 1,024\u00a0GiB.",
+          text: "The opening’s 512\u00a0GiB Premium SSD is a P20. Ask for 600\u00a0GiB and Azure moves it to a P30, charged as 1,024\u00a0GiB, for 600 − 512 = 88\u00a0GiB more space. Setting 1,024\u00a0GiB costs the same and gives you 1,024 − 600 = 424\u00a0GiB more.",
         },
         { kind: "svg", figure: figure2 },
       ],
     },
     {
       id: "resize-the-disk-without-a-reboot-rescan",
-      title: "Rescan the disk in Linux so it shows the new size, without a reboot",
+      title: "Rescan a disk in Linux to show the new size, without a reboot",
       blocks: [
         {
           kind: "p",
@@ -276,14 +271,12 @@ export const article: Article = {
             { code: "growpart" },
             ". Then grow the logical volume with ",
             { code: "lvresize -r" },
-            ", which resizes its filesystem in the same step. Microsoft’s example adds 10\u00a0GB with ",
-            { code: "lvresize -r -L +10G /dev/mapper/rootvg-rootlv" },
-            ".",
+            ", which resizes its filesystem in the same step.",
           ],
         },
         {
           kind: "p",
-          text: "Nothing was unmounted and no service stopped. These steps resize an Azure disk without downtime for any data disk in the table’s first, third or fourth row. The VM size must support it too.",
+          text: "These steps work without any downtime for a data disk in the table’s first, third or fourth row, on a VM size that supports it.",
         },
       ],
     },
@@ -293,11 +286,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Not by Microsoft’s expand guide, which says expanding without downtime “is supported only for data disks.”",
-        },
-        {
-          kind: "p",
-          text: "The troubleshooting guide mentions OS disk live resize on supported VM sizes and storage types. For the requirements, it points back to the expand guide.",
+          text: "Not by Microsoft’s expand guide, which says expanding without downtime “is supported only for data disks.” The troubleshooting guide mentions OS disk live resize, but for the requirements it points back to the expand guide.",
         },
         {
           kind: "p",
@@ -334,8 +323,13 @@ export const article: Article = {
           ],
         },
         {
+          kind: "h3",
+          id: "azure-vm-os-disk-size-at-most",
+          title: "Azure VM OS disk size: at most 4,095\u00a0GiB",
+        },
+        {
           kind: "p",
-          text: "The OS disk tops out at 4,095\u00a0GiB. Many operating systems partition it with MBR by default, which caps the usable space at 2\u00a0TiB. For more, Microsoft’s advice is to attach data disks, which you can also expand while the VM runs.",
+          text: "Many operating systems partition the OS disk with MBR by default, which caps the usable space at 2\u00a0TiB. For more, Microsoft’s advice is to attach data disks, which you can also expand while the VM runs. If the data must sit on the OS disk, convert it to GPT.",
         },
       ],
     },
@@ -348,12 +342,12 @@ export const article: Article = {
           text: [
             "A ",
             { a: "managed disk", href: "/learn/glossary/azure-managed-disk" },
-            " is charged on its provisioned size, prorated hourly, however much data you’ve written to it. And the size only goes one way. Microsoft’s expand guide says shrinking an existing disk “isn’t supported and might result in data loss.”",
+            " is charged on its provisioned size, prorated hourly, however much data you’ve written to it. Microsoft’s expand guide says shrinking an existing disk “isn’t supported and might result in data loss.”",
           ],
         },
         {
           kind: "p",
-          text: "So an expand for a one-off peak, such as a bulk import or a migration, keeps costing you after the data goes. Three habits reduce what growth costs:",
+          text: "So an expand for a one-off peak, such as a bulk import or a migration, keeps costing you after the data goes.",
         },
         {
           kind: "ul",
@@ -381,17 +375,14 @@ export const article: Article = {
           text: [
             "Getting the space back means a copy onto a smaller disk. The services on that mount stop for the switch, as ",
             { a: "shrinking an Azure managed disk", href: "/learn/shrink-azure-managed-disk" },
-            " walks through. ",
-            { a: "Measure used against provisioned space", href: "/learn/azure-vm-disk-usage" },
-            " before you decide.",
+            " walks through.",
           ],
         },
         {
           kind: "p",
           text: [
-            "For the other ways to reduce what managed disks cost, see ",
             { a: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
-            ".",
+            " covers the other ways to reduce what managed disks cost.",
           ],
         },
       ],
@@ -404,21 +395,20 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " optimizes block storage on Azure and AWS. The steps above leave one disk at a fixed size, and you run them again each time it fills. Amoeba keeps a VM’s data in one pool instead, and rightsizes that pool as your data changes.",
+            " optimizes block storage on Azure and AWS. It moves a VM’s data disks onto one btrfs pool, then rightsizes the pool as your data changes.",
           ],
         },
         {
           kind: "p",
-          text: "It grows the pool before it fills, and sooner when data arrives fast. It grows the pool’s disks or adds new ones while the pool stays mounted. You run no rescan, growpart or filesystem step.",
+          text: "It grows the pool before it fills, and sooner when data arrives fast. It grows the pool’s disks or adds new ones while the pool stays mounted, so you run no rescan, growpart or filesystem step.",
         },
         {
           kind: "p",
-          text: "The one move onto the pool restarts the services that use the VM’s data mounts. After that, the pool grows while they run.",
+          text: "The one move onto the pool gives the services that use the VM’s data mounts a short restart. After that, the pool grows while they run.",
         },
         {
           kind: "p",
           text: [
-            "The page on ",
             {
               a: "Azure managed disk cost optimization",
               href: "/azure-managed-disk-cost-optimization",

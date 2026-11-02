@@ -14,7 +14,7 @@ export const article: Article = {
   hub: "Block storage",
   topic: "Linux filesystems",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "sourabh",
   cover: "/learn-covers/zoorik-learn-btrfs-device-remove-1200x630.webp",
   coverAlt: "btrfs device remove: data moves off the leaving disk onto the disks that stay",
@@ -104,7 +104,7 @@ export const article: Article = {
           text: [
             "devid 3, the one you want gone, has 180\u00a0GiB allocated. The three disks hold ",
             { code: "single" },
-            " data in nearly full chunks, and devid 1 and devid 2 have 40\u00a0GiB and 60\u00a0GiB unallocated. That’s about 40 + 60 = 100\u00a0GiB of room for 180\u00a0GiB, roughly 180 − 100 = 80\u00a0GiB short, so the removal will stop partway.",
+            " data in nearly full chunks, and devid 1 and devid 2 have 40\u00a0GiB and 60\u00a0GiB unallocated. That’s about 40 + 60 = 100\u00a0GiB of room, so the removal stops partway, roughly 180 − 100 = 80\u00a0GiB short.",
           ],
         },
         { kind: "svg", figure: figure2 },
@@ -341,11 +341,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "A balance moves chunks the same way. The man page says that work “can take a while, because all metadata have to be moved and all block pointers updated.”",
-        },
-        {
-          kind: "p",
-          text: "The same page names disk seeking as “the key factor affecting performance.”",
+          text: "The man page says a balance “can take a while, because all metadata have to be moved and all block pointers updated.” It names disk seeking as “the key factor affecting performance.”",
         },
       ],
     },
@@ -433,13 +429,10 @@ export const article: Article = {
         {
           kind: "p",
           text: [
+            "When your data goes down and stays down, ",
             { a: "Amoeba", href: "/amoeba" },
-            " optimizes block storage. It works on the data disks of running VMs: Azure managed disks and Amazon EBS volumes, on Windows and Linux VMs.",
+            " shrinks a VM’s btrfs pool one disk at a time. Each shrink is this procedure, automated.",
           ],
-        },
-        {
-          kind: "p",
-          text: "It moves a VM’s data disks onto one btrfs pool, sized to your data, with room to grow. When your data goes down and stays down, Amoeba shrinks the pool one disk at a time. Each shrink is this procedure, automated.",
         },
         {
           kind: "p",

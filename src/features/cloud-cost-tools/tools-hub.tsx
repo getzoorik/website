@@ -25,12 +25,15 @@ import {
   ToolTile,
   type Filed,
 } from "@/features/cloud-cost-tools/tools-filter";
+import { DocRows, UnnumberedRow } from "@/features/doc-rows/doc-rows";
 import { ArrowGlyph, ArrowOutGlyph } from "@/features/documents/document-glyphs";
 import { LinkTile } from "@/features/documents/link-tile";
+import { ProseBlocks } from "@/features/documents/prose-blocks";
 import { richText } from "@/features/documents/rich-text";
 import { LearnFrame, sectionClass } from "@/features/learn/learn-parts";
 import { marketOurs, marketTool } from "@/features/learn/market-rows";
 import { named } from "@/features/legal/named";
+import { sectionSlug } from "@/features/open-source/os-guide-page";
 import { offSiteProps } from "@/lib/links";
 
 /**
@@ -43,6 +46,7 @@ import { offSiteProps } from "@/lib/links";
  *           it acts and its clouds; then the note with the day they were checked
  *   ours    Compare Coral and Amoeba, on the band: the live versus pages and the alternatives pages, two by two
  *   calculators  Free calculators: the node and disk cost calculators, in the same tiles, two by two
+ *   questions    the page's questions, closed, in the Learn frame, as the versus pages draw theirs (2 Nov 2026)
  *   closing row
  *
  * Every name, line and fact is read from `learn-market.ts` and `learn-compare.ts`, so the page and the pages under
@@ -50,7 +54,7 @@ import { offSiteProps } from "@/lib/links";
  * (`tools-filter.tsx`), and with scripting off every tile shows.
  */
 
-const { hero, tools, ours, calculators } = cloudCostToolsPage;
+const { hero, tools, ours, calculators, questions } = cloudCostToolsPage;
 
 /** How a tile says a tool acts: the mock's class for each way (`mk-auto` for a tool that acts on its own). */
 const ACTS_CLASS: Readonly<Record<MarketActs, string>> = {
@@ -75,7 +79,6 @@ interface Tile extends Filed {
   readonly line: string;
   readonly short: string;
   readonly acts: MarketActs;
-  readonly googleCloud: boolean;
   /** Coral or Amoeba, drawn with its mark; any other tool with its initial. */
   readonly product?: "coral" | "amoeba";
 }
@@ -94,7 +97,6 @@ const groups = shownGroups.map((group) => {
       line: own.line,
       short: group.ours.short,
       acts: own.acts,
-      googleCloud: false,
       product: group.ours.product,
     });
   }
@@ -109,7 +111,6 @@ const groups = shownGroups.map((group) => {
       line: tool.line,
       short: shown.short,
       acts: tool.acts,
-      googleCloud: shown.googleCloud,
     });
   }
   return { kind: group.kind, label: group.label, heading: group.heading ?? group.label, tiles };
@@ -150,7 +151,6 @@ function ToolTileBody({
                 <AwsMark className="aws" label={cloud} key={cloud} />
               ),
             )}
-            {tile.googleCloud ? <small>{tools.googleCloud}</small> : null}
           </span>
         </span>
       </span>
@@ -263,12 +263,39 @@ function Calculators(): React.JSX.Element {
   );
 }
 
+/** The questions (`#questions`): the versus pages' rows, closed, each answer the page's prose. */
+function Questions(): React.JSX.Element {
+  return (
+    <DocRows
+      frame="article"
+      groups={[
+        {
+          id: questions.id,
+          title: questions.title,
+          chip: questions.title,
+          unnumbered: true,
+          rows: questions.rows.map((row) => (
+            <UnnumberedRow
+              id={sectionSlug(row.question)}
+              title={richText(row.question)}
+              key={row.question}
+            >
+              <ProseBlocks blocks={row.blocks} />
+            </UnnumberedRow>
+          )),
+        },
+      ]}
+    />
+  );
+}
+
 export function CloudCostTools(): React.JSX.Element {
   return (
     <LearnFrame hero={{ title: hero.title, deck: hero.deck }}>
       <Tools />
       <Ours />
       <Calculators />
+      <Questions />
     </LearnFrame>
   );
 }

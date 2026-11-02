@@ -87,8 +87,8 @@ export interface ProductPageContent {
   readonly hero: {
     /** The h1: the product's search term, and nothing else. */
     readonly title: string;
-    /** The line under it: the home page's own line for the product, read from
-     *  its section (`kubernetes.ts`, `elastic.ts`), never copied. */
+    /** The line under the h1, the page's own (Coral, owner 2 Nov 2026; Amoeba,
+     *  the home page's line for it until 2 Nov 2026). */
     readonly line: string;
     /** One button, same tab, to this product's assessment. */
     readonly cta: { readonly label: string; readonly href: string };

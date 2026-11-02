@@ -5,20 +5,20 @@ import { figure as figure2 } from "@/features/learn/figures/cordon-vs-drain/2";
 export const article: Article = {
   slug: "cordon-vs-drain",
   title: "kubectl cordon vs drain: what each does to a node",
-  meta: "kubectl cordon vs drain: cordon stops new pods landing on a node, drain evicts the running ones within their PDBs. What kubectl uncordon and taints do.",
+  meta: "kubectl cordon vs drain: a Kubernetes cordon stops new pods landing on a node, drain evicts the running ones within their PDBs. Plus uncordon and taints.",
   h1: "kubectl cordon vs drain in Kubernetes: what each does to a node",
-  deck: "Cordon stops new pods arriving. Drain also moves the pods already there. Where uncordon and taints fit.",
+  deck: "Neither command removes the node: it keeps running, and you keep paying for it, until it is removed.",
   card: "What kubectl cordon, drain and uncordon each change on a node, and when a taint is the better tool.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Node lifecycle and scheduling",
   versus: ["Cordon", "Drain"],
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "prashant",
   cover: "/learn-covers/zoorik-learn-cordon-vs-drain-1200x630.webp",
   coverAlt:
-    "Cordon vs drain in Kubernetes: cordon turns new pods away, and drain moves the pods off to be recreated elsewhere",
+    "Cordon vs drain in Kubernetes: a cordon turns new pods away, and a drain moves the pods off to be recreated elsewhere",
   short: [
     "kubectl cordon vs drain comes down to the pods already on the node: a cordon leaves them running, and a drain evicts them. Both mark the node unschedulable, and a drain evicts each pod within its ",
     { a: "PodDisruptionBudget (PDB)", href: "/learn/glossary/pod-disruption-budget" },
@@ -35,7 +35,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Cordon it, and the batch job finishes with nothing new landing beside it. The web replicas stay too, so the patch waits. The node is still a running virtual machine (VM) that you pay for.",
+          text: "Cordon it, and the batch job finishes with nothing new landing beside it. The web replicas stay too, so the patch waits.",
         },
         { kind: "h3", id: "what-a-cordon-changes", title: "What a cordon changes" },
         {
@@ -52,7 +52,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The Kubernetes docs are exact about the limit. Marking a node unschedulable “does not affect existing Pods on the Node,” they say. They call it “a preparatory step before a node reboot or other maintenance.”",
+          text: "Marking a node unschedulable “does not affect existing Pods on the Node,” the Kubernetes docs say. They call it “a preparatory step before a node reboot or other maintenance.”",
         },
         { kind: "code", lang: "bash", code: "kubectl cordon <node-name>\nkubectl get nodes" },
         {
@@ -124,9 +124,9 @@ export const article: Article = {
           text: [
             "When ",
             { code: "kubectl drain" },
-            " returns without an error, every pod it handles has been evicted. Each eviction stayed within the pod’s grace period and its ",
+            " returns without an error, every pod it handles has been evicted within its grace period and its ",
             { a: "PDB", href: "/learn/pod-disruption-budget-best-practices" },
-            ". The Kubernetes docs then call it safe to power down the machine or delete its VM.",
+            ". The Kubernetes docs then call it safe to power down the node, or delete the virtual machine behind it.",
           ],
         },
         { kind: "h3", id: "how-drain-evicts-pods", title: "How drain evicts pods" },
@@ -208,10 +208,6 @@ export const article: Article = {
       id: "cordon-vs-drain",
       title: "Cordon vs drain: the running pods decide",
       blocks: [
-        {
-          kind: "p",
-          text: "In the table below, the running-pods row settles kubectl drain vs cordon. A cordon leaves those pods running. A drain evicts all but DaemonSet and mirror pods, and uncordon reopens the node without bringing any evicted pod back.",
-        },
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
@@ -390,7 +386,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "New is the word to watch. The pods a drain evicted were recreated on other nodes, and they stay there. So an uncordoned node fills up only as new pods are created, from rollouts, scale-ups and replaced pods.",
+          text: "The pods a drain evicted were recreated on other nodes, and they stay there. So an uncordoned node fills up only as new pods are created, from rollouts, scale-ups and replaced pods.",
         },
         {
           kind: "p",
@@ -487,7 +483,7 @@ export const article: Article = {
           text: [
             "That’s where ",
             { a: "Kubernetes cost optimization", href: "/kubernetes-cost-optimization" },
-            " reduces your cloud cost: fewer machines run. Coral cordons and drains those nodes itself, under five rules:",
+            " reduces your cloud cost: fewer machines run. Coral cordons and drains those nodes itself, under six rules:",
           ],
         },
         {
@@ -495,7 +491,7 @@ export const article: Article = {
           items: [
             [
               { b: "A fit check first." },
-              " Before it moves anything, Coral checks the live cluster. Every pod on the node must fit on another Ready node, with its affinity, taints, spread, ports and zones. The move must also respect PDBs and do-not-disrupt markers. By default, Coral may reduce a pool’s minimum when that minimum alone keeps a node it has emptied, and disconnect puts the old minimum back.",
+              " Before it moves anything, Coral checks the live cluster. Every pod on the node must fit on another Ready node, with its affinity, taints, spread, ports and zones. The move must also respect PDBs and do-not-disrupt markers.",
             ],
             [
               { b: "One node at a time." },
@@ -512,6 +508,10 @@ export const article: Article = {
             [
               { b: "The empty node." },
               " After the delay in the “Wait before removing empty nodes” setting, Coral hands the node to your autoscaler. The autoscaler’s own timers decide when it goes. Coral deletes the machine itself only in fixed-size pools that nothing else manages.",
+            ],
+            [
+              { b: "The pool minimum." },
+              " By default, Coral may reduce a pool’s minimum when that minimum alone keeps a node it has emptied, and disconnect puts the old minimum back.",
             ],
           ],
         },

@@ -4,18 +4,18 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/disk-throug
 export const term: GlossaryTerm = {
   slug: "disk-throughput",
   term: "Disk throughput",
-  title: "What is disk throughput?",
-  meta: "Disk throughput is how much data a disk reads and writes each second. See how to work it out from IOPS, and why EBS throughput can raise your cloud cost.",
-  h1: "What is disk throughput?",
+  title: "What is disk throughput? Disk I/O speed explained",
+  meta: "Disk throughput is a disk’s I/O speed: the data it reads and writes each second. See how to convert IOPS to MB/s, and why EBS throughput can raise cloud cost.",
+  h1: "What is disk throughput? Disk I/O speed explained",
   card: "Disk throughput is the amount of data a disk reads and writes each second.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
-      text: "Disk throughput is the amount of data a disk reads and writes each second. AWS gives it in mebibytes per second (MiB/s), and Azure in megabytes per second (MB/s). It’s also called storage throughput or disk input/output (I/O) throughput.",
+      text: "Disk throughput is the amount of data a disk reads and writes each second. AWS gives it in mebibytes per second (MiB/s), Azure in megabytes per second (MB/s). It’s also called storage throughput or disk input/output (I/O) throughput.",
     },
     {
       kind: "p",
@@ -73,7 +73,7 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously. Each gp3\u00a0volume in the pool gets at least 3,000\u00a0IOPS and 125\u00a0MiB/s, and more when the VM’s measured load needs it.",
+            " moves a VM’s data disks onto one btrfs pool sized to your data, then rightsizes it autonomously. It sets the pool’s IOPS and throughput from the VM’s measured load.",
           ],
         },
         {
@@ -101,6 +101,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/provisioned-iops",
     },
   ],
+  relatedTitle: "Terms related to disk throughput",
   next: {
     title: "Azure disk IOPS vs throughput: what limits your disks",
     href: "/learn/azure-disk-iops-vs-throughput",

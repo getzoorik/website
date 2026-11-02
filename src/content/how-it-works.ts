@@ -149,7 +149,7 @@ const coralSteps: readonly Step[] = [
     ordinal: "01",
     title: "Connect a cluster",
     description:
-      "Connect the cluster with one command. Coral reads six nodes and seventy-seven workloads, with no code changes.",
+      "Connect the cluster with one command, and Coral reads six nodes and seventy-seven workloads.",
     mark: { kind: "columns", bank: "nodes" },
     figure: {
       caption: "Read from the cluster",
@@ -163,7 +163,7 @@ const coralSteps: readonly Step[] = [
     ordinal: "02",
     title: "See the idle capacity",
     description:
-      "Every node, workload and volume, priced. The gap between what you hold and what runs: 22 CPU held, and 3.09 CPU carrying the real work.",
+      "Every node, workload and volume, priced: 22 CPU held, and 3.09 CPU carrying the real work.",
     mark: { kind: "rule" },
     figure: {
       caption: "Carrying the real work",

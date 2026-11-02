@@ -4,22 +4,26 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/spot-instan
 export const term: GlossaryTerm = {
   slug: "spot-instance",
   term: "Spot instance (AWS Spot Instances, Azure Spot VMs)",
-  title: "What are spot instances in AWS and Azure?",
-  meta: "AWS spot instances and Azure spot VMs use spare capacity at a discount, and can be taken back. See the warning you get, when to use them, and AKS spot pools.",
-  h1: "What are spot instances in AWS and Azure?",
-  card: "A spot instance is a cloud virtual machine (VM) that runs on spare capacity, for less than the on-demand price.",
+  title: "AWS spot instances, spot pricing and Azure spot VMs",
+  meta: "EC2 spot instances and Azure spot VMs run on spare capacity for less, and can be taken back. See AWS spot pricing, the eviction warning and AKS spot pools.",
+  h1: "AWS spot instances, spot pricing and Azure spot VMs",
+  card: "On AWS, a spot instance is an Amazon EC2 instance that runs on spare capacity for less than the on-demand price.",
   group: "finops-pricing",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
       text: [
-        "A spot instance is a cloud virtual machine (VM) that runs on spare capacity, for less than the ",
+        "On AWS, a spot instance is an Amazon EC2 instance that runs on spare capacity for less than the ",
         { a: "on-demand", href: "/learn/glossary/on-demand-instance" },
-        " price. The cloud can evict it (take it back) when it needs that capacity. AWS warns you two minutes before, and Azure up to 30\u00a0seconds before, on a best-effort basis.",
+        " price. EC2 can take it back when it needs that capacity, with a two-minute warning.",
       ],
+    },
+    {
+      kind: "p",
+      text: "On Azure, a spot VM is a virtual machine (VM) on spare capacity that Azure can evict (take back). It gets up to 30\u00a0seconds’ warning, on a best-effort basis.",
     },
     { kind: "svg", figure: figure1 },
   ],
@@ -31,10 +35,37 @@ export const term: GlossaryTerm = {
         {
           kind: "ul",
           items: [
-            "On-demand runs until you stop it. Spot runs while spare capacity lasts.",
-            "On AWS, spot prices shift slowly with supply and demand. The on-demand rate doesn’t.",
-            "AWS says spot saves up to 90% off on-demand prices (October 2026). Prices change.",
-            "Azure gives spot VMs no service level agreement (SLA).",
+            "An on-demand instance runs until you stop it. A spot instance runs until you terminate it, EC2 needs the capacity back, or your Auto Scaling group scales in.",
+            "AWS spot instance pricing is set by EC2: each instance type in each Availability Zone has a spot price. EC2 adjusts it gradually with long-term supply and demand, while on-demand prices stay fixed.",
+            "AWS says spot saves up to 90% off on-demand prices (October 2026). Spot instance prices change.",
+          ],
+        },
+        {
+          kind: "h3",
+          id: "interruption-notices-and-rebalance-recommendations",
+          title: "Interruption notices and EC2 rebalance recommendations",
+        },
+        {
+          kind: "p",
+          text: "An EC2 instance rebalance recommendation signals that a spot instance is at higher risk of interruption. It can come before the two-minute interruption notice, so you can act sooner.",
+        },
+        {
+          kind: "p",
+          text: "AWS suggests an Amazon EventBridge rule that catches both signals, then saves the work’s progress or shuts it down cleanly.",
+        },
+        {
+          kind: "h3",
+          id: "when-no-spot-capacity-is-available",
+          title: "When no spot capacity is available",
+        },
+        { kind: "p", text: "AWS’s best practices for getting spot capacity:" },
+        {
+          kind: "ul",
+          items: [
+            "Be flexible across at least 10 instance types for each workload.",
+            "Use every Availability Zone.",
+            ["Use the ", { code: "price-capacity-optimized" }, " allocation strategy."],
+            "Check Spot placement scores, which point to the Regions or zones likelier to have capacity.",
           ],
         },
       ],
@@ -54,7 +85,8 @@ export const term: GlossaryTerm = {
         {
           kind: "ul",
           items: [
-            "It can’t be the default pool.",
+            "Azure gives spot VMs no service level agreement (SLA).",
+            "A spot pool can’t be the default pool.",
             [
               "Its nodes carry the taint ",
               { code: "kubernetes.azure.com/scalesetpriority=spot:NoSchedule" },
@@ -116,6 +148,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/savings-plan",
     },
   ],
+  relatedTitle: "Terms related to spot instances",
   next: {
     title: "Kubernetes cost optimization: requests, then nodes",
     href: "/kubernetes-cost-optimization",
@@ -129,8 +162,8 @@ export const term: GlossaryTerm = {
     },
     {
       publisher: "Amazon Web Services",
-      title: "“Amazon EC2 Spot Instances”",
-      url: "https://aws.amazon.com/ec2/spot/",
+      title: "“Best practices for Amazon EC2 Spot”",
+      url: "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-best-practices.html",
     },
     {
       publisher: "Microsoft Learn",

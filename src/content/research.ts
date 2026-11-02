@@ -12,7 +12,7 @@ import { routes } from "@/config/site";
  */
 
 /** The page prints no date: the day its content last changed, for the sitemap. Move it in the PR that changes it. */
-export const researchLastUpdated = "1 November 2026";
+export const researchLastUpdated = "2 November 2026";
 
 export interface ResearchPaper {
   readonly title: string;
@@ -36,13 +36,13 @@ export const researchPage = {
   route: routes.research,
   /** The `<title>`'s own words, before " | Zoorik", and the description. */
   meta: {
-    title: "Cloud cost optimization research papers",
+    title: "Cloud cost research papers",
     description:
-      "Research papers on cloud cost optimization: cluster scheduling, resource sizing, spot pricing, block storage and live migration, with a short note on each.",
+      "Research papers on cloud cost: Google’s Borg and Kubernetes scheduling, resource sizing, spot pricing, block storage and live migration, with a note on each.",
   },
   hero: {
-    title: "Cloud cost optimization research papers",
-    deck: "These cloud cost optimization research papers cover the main ideas: cluster scheduling, resource sizing, cloud pricing, block storage and live migration.",
+    title: "Cloud cost research papers",
+    deck: "Other researchers’ papers, each linked to its publisher, with a short note in our own words.",
   },
   /** The section's name for a screen reader. */
   label: "Research papers",
@@ -286,6 +286,4 @@ export const researchPage = {
       ],
     },
   ] satisfies readonly ResearchGroup[] as readonly ResearchGroup[],
-  /** After the groups, in the community page's small type. */
-  note: "Other researchers wrote every paper here. Each link goes to the publisher’s page. The short note under each paper is in our own words.",
 } as const;

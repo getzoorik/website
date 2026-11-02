@@ -13,7 +13,8 @@ import { Block, sectionSlug } from "@/features/open-source/os-guide-page";
  *   hero            "Works with" over the h1 (`.hero-ey`), then the short answer as the deck; no Updated line
  *   #who-does-what  the docs' table: Job / <tool> / Coral, stacked on a phone
  *   #together       the guides' numbered steps (01, 02 in the accent)
- *   #leaves         what Coral leaves to the tool (What stays yours on Helm and Terraform), bullets with bold lead-ins
+ *   #leaves         what Coral leaves to the tool (What stays yours on Helm and Terraform), bullets with bold lead-ins;
+ *                   absent on /coral-works-with-cluster-autoscaler (2 Nov 2026)
  *   #setup          bullets with bold lead-ins
  *   #questions      /pricing's rows: the FAQ's, closed, with no number column (`.pr-faq`), the column not prose
  *   #read-more      each link inline, then what it holds
@@ -60,7 +61,9 @@ export function WorksWithPage({ page }: { readonly page: WorksWithCopy }): React
             },
           ]),
           textGroup("together", page.sections.together, [{ kind: "steps", items: page.together }]),
-          textGroup("leaves", page.leaves.title, [{ kind: "ul", items: page.leaves.items }]),
+          ...(page.leaves
+            ? [textGroup("leaves", page.leaves.title, [{ kind: "ul", items: page.leaves.items }])]
+            : []),
           textGroup("setup", page.sections.setup, [{ kind: "ul", items: page.setup }]),
           {
             id: "questions",

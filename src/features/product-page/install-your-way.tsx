@@ -335,17 +335,21 @@ function ZoorikctlCard(): React.JSX.Element {
   );
 }
 
-/** `cloud`: a cloud page shows only its own Terraform module; /coral passes nothing and shows both. */
+/**
+ * `cloud`: a cloud page shows only its own Terraform module; /coral passes nothing and shows both. `title`: the page's
+ * own name for the section, where it is not `coralInstall.title`.
+ */
 export function InstallYourWay({
   cloud,
-}: { readonly cloud?: InstallCloud } = {}): React.JSX.Element {
+  title,
+}: { readonly cloud?: InstallCloud; readonly title?: string } = {}): React.JSX.Element {
   const { helm, terraform } = coralInstall;
   const modules = cloud ? terraform.modules[cloud] : terraform.lines;
   return (
     <section className="sec" id="install" aria-labelledby="install-h">
       <div className="wrap">
         <div className="sec-hrow">
-          <h2 id="install-h">{coralInstall.title}</h2>
+          <h2 id="install-h">{title ?? coralInstall.title}</h2>
           <a className="alink" href={coralInstall.openSource.href}>
             <span>{coralInstall.openSource.label}</span>
             <Arrow />

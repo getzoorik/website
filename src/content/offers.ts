@@ -64,7 +64,7 @@ export const offersContent: {
   free: {
     label: "Free assessment",
     word: "Free",
-    line: "Your estimated saving at list price, from one line in your cloud console.",
+    line: "Your estimated saving at list price, in one PDF report, from one line in your cloud console.",
     cta: { label: "Estimate your saving", href: routes.assessment },
   },
   rows: [

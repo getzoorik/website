@@ -5,22 +5,21 @@ import { figure as figure2 } from "@/features/learn/figures/combine-ebs-volumes/
 export const article: Article = {
   slug: "combine-ebs-volumes",
   title: "AWS EBS RAID 0, LVM or btrfs: combine EBS volumes",
-  meta: "AWS EBS RAID 0, LVM or a btrfs pool: how to combine EBS volumes into one, the commands for each, and what each takes to add a volume or give one back.",
+  meta: "EBS RAID 0 on AWS, LVM with lvextend, or a btrfs pool: how to combine EBS volumes into one, the commands for each, and what each takes to give a volume back.",
   h1: "How to combine EBS volumes: AWS EBS RAID 0, LVM or a btrfs pool",
-  deck: "Three ways to put several EBS volumes under one mount, and what each asks of you when the set of volumes changes.",
+  deck: "They differ most in giving a volume back: LVM needs free extents, RAID 0 a new array, btrfs one command.",
   card: "LVM, RAID 0 or a btrfs pool across EBS volumes: the commands, and what adding or removing a volume takes.",
   product: "amoeba",
   hub: "Block storage",
   topic: "AWS block storage",
   versus: ["LVM · RAID 0", "btrfs pool"],
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "sujal",
   cover: "/learn-covers/zoorik-learn-combine-ebs-volumes-1200x630.webp",
-  coverAlt:
-    "Combine EBS volumes into one: LVM, RAID 0 or a btrfs pool joins EBS volumes under one /data mount",
+  coverAlt: "LVM, RAID 0 or a btrfs pool joins EBS volumes under one /data mount",
   short:
-    "To combine EBS volumes into one on Linux, you join them in the operating system with LVM, an EBS RAID 0 array built with mdadm, or a btrfs pool. They differ in speed, and most of all in what it takes to add a volume or give one back.",
+    "To combine EBS volumes into one on Linux, you join them with LVM, an mdadm RAID 0 array or a btrfs pool. All three add up the volumes’ space, and RAID 0 also adds up their IOPS and throughput.",
   sections: [
     {
       id: "combine-ebs-volumes-into-one",
@@ -31,16 +30,12 @@ export const article: Article = {
           text: [
             "Picture ",
             { code: "/data" },
-            " on three 500\u00a0GiB gp3\u00a0volumes, sized for a seasonal peak that has passed. The data is back to 600\u00a0GiB. You still pay for all 1,500\u00a0GiB, and 900\u00a0GiB of it is empty.",
+            " on three 500\u00a0GiB gp3\u00a0volumes, sized for a seasonal peak that has passed. The data is back to 600\u00a0GiB, so 900\u00a0GiB that you pay for sit empty.",
           ],
         },
         {
           kind: "p",
-          text: "Two volumes can hold that data. So you can empty the third, delete it and pay for 1,000\u00a0GiB, with 400\u00a0GiB still free.",
-        },
-        {
-          kind: "p",
-          text: "Whether that takes an unmount, a copy or neither depends on how you joined them.",
+          text: "Two volumes can hold that data, so deleting the third leaves 1,000\u00a0GiB to pay for. How you joined them decides whether that takes an unmount, a copy or neither.",
         },
         { kind: "svg", figure: figure1 },
         {
@@ -169,7 +164,7 @@ export const article: Article = {
     },
     {
       id: "lvm-on-aws-ebs-volumes-growing-is",
-      title: "LVM on AWS EBS volumes: growing is easy, giving a volume back needs free extents",
+      title: "LVM on EBS volumes: growing is easy, giving a volume back needs free extents",
       blocks: [
         {
           kind: "p",
@@ -196,16 +191,32 @@ export const article: Article = {
         {
           kind: "h3",
           id: "add-a-volume-to-the-volume-group",
-          title: "Add a new EBS volume to an existing LVM volume group",
+          title: "Add an EBS volume to the volume group, then run lvextend",
         },
         {
           kind: "p",
-          text: "To add a volume, make it a PV and add it to the VG. Then grow the LV and its filesystem in one command. Red Hat’s procedure for this has no unmount step.",
+          text: [
+            "Make the new volume a PV and add it to the volume group with ",
+            { code: "vgextend" },
+            ". Then the ",
+            { code: "lvextend" },
+            " command grows the LV and its filesystem in one step, with no unmount.",
+          ],
         },
         {
           kind: "code",
           lang: "bash",
-          code: "sudo pvcreate /dev/nvme3n1\nsudo vgextend data_vg /dev/nvme3n1\nsudo lvextend --size +<added-size> --resizefs data_vg/data_lv",
+          code: "sudo pvcreate /dev/nvme3n1\nsudo vgextend data_vg /dev/nvme3n1\nsudo lvextend --extents +100%FREE --resizefs data_vg/data_lv",
+        },
+        {
+          kind: "p",
+          text: [
+            "In this ",
+            { code: "lvextend" },
+            " example, ",
+            { code: "--extents +100%FREE" },
+            " adds all the remaining free space in the volume group to the LV. Here, that’s the whole new volume.",
+          ],
         },
         {
           kind: "h3",
@@ -240,9 +251,11 @@ export const article: Article = {
           label: "Watch out",
           text: [
             { code: "pvmove" },
-            " needs free extents on the other PVs, but the LV above, created with ",
-            { code: "--extents 100%FREE" },
-            ", leaves none. You then have to shrink the filesystem and the LV first.",
+            " needs free extents on the other PVs, and ",
+            { code: "100%FREE" },
+            " leaves none. Growing the LV by a smaller ",
+            { code: "--size" },
+            " keeps some free. Otherwise, shrink the filesystem and the LV first.",
           ],
         },
         {
@@ -536,7 +549,7 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " optimizes block storage on Azure and AWS. On AWS it builds a btrfs pool like the one above for you, then rightsizes the pool as your data changes.",
+            " optimizes block storage on Azure and AWS. On AWS it builds a btrfs pool of EBS volumes for you, then rightsizes it as your data changes.",
           ],
         },
         {
@@ -553,7 +566,7 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " The services that use those mounts restart once, at the switch onto the pool.",
+              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it.",
             ],
             [
               { b: "Growing." },
@@ -567,7 +580,7 @@ export const article: Article = {
             ],
             [
               { b: "The old volumes." },
-              " Once the switch is checked, Amoeba snapshots and deletes each old volume. It deletes each snapshot 7 days later.",
+              " Once the switch is checked, Amoeba snapshots and deletes each old volume. It keeps each snapshot a few days, then deletes it too.",
             ],
           ],
         },
@@ -636,6 +649,11 @@ export const article: Article = {
       title: "“btrfs-device(8)”",
       url: "https://btrfs.readthedocs.io/en/latest/btrfs-device.html",
     },
+    {
+      publisher: "man7.org",
+      title: "“lvextend(8)”",
+      url: "https://man7.org/linux/man-pages/man8/lvextend.8.html",
+    },
   ],
   related: [
     {
@@ -664,4 +682,5 @@ export const article: Article = {
       href: "/learn/btrfs-device-remove",
     },
   ],
+  relatedTitle: "More on btrfs pools, LVM and shrinking EBS",
 };

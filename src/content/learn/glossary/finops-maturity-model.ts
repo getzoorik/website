@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "finops-maturity-model",
   term: "FinOps maturity model (crawl, walk, run)",
   title: "What is the FinOps maturity model?",
-  meta: "The FinOps maturity model rates each FinOps capability crawl, walk or run. See what each stage looks like, how to rate your team, and why run isn’t required.",
+  meta: "The FinOps maturity model rates each FinOps capability crawl, walk or run. See each stage, how to assess your FinOps maturity, and why run isn’t required.",
   h1: "What is the FinOps maturity model?",
   card: "The FinOps maturity model rates your team’s progress in each FinOps capability.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -67,7 +67,7 @@ export const term: GlossaryTerm = {
         {
           kind: "ul",
           items: [
-            "At crawl, some major teams skip the process, so their spend gets fewer checks.",
+            "At crawl, some major teams skip the process, so their cloud cost gets fewer checks.",
             [
               "A stage alone doesn’t ",
               { a: "reduce your cloud cost", href: "/cloud-cost-optimization" },
@@ -106,6 +106,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/cloud-cost-anomaly-detection",
     },
   ],
+  relatedTitle: "Terms related to the FinOps maturity model",
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",
     href: "/cloud-cost-optimization",

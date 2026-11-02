@@ -241,7 +241,7 @@ describe("the home page's structured data", () => {
     );
     expect(coral.applicationSubCategory).toBe("Kubernetes cost optimization");
     expect(coral.featureList).toEqual([
-      "Monitoring",
+      "Kubernetes cost monitoring",
       "Recommendations",
       "Workload optimization",
       "Node optimization",
@@ -522,7 +522,7 @@ describe("every indexed page's structured data", () => {
       "Docs",
       "Amoeba troubleshooting",
     ]);
-    expect(names(routes.research)).toEqual(["Zoorik", "Cloud cost optimization research papers"]);
+    expect(names(routes.research)).toEqual(["Zoorik", "Cloud cost research papers"]);
     /* The five pages of 30 Oct 2026: the calculators under Cloud cost optimization tools by their h1, the rest under
        Zoorik alone. */
     expect(names(routes.eksAndAksPricingCalculator)).toEqual([
@@ -533,7 +533,7 @@ describe("every indexed page's structured data", () => {
     expect(names(routes.ebsAndAzureDiskPricing)).toEqual([
       "Zoorik",
       "Cloud cost optimization tools",
-      "AWS EBS pricing and Azure disk pricing calculator",
+      "Amazon EBS pricing and Azure disk pricing: what a disk costs a month",
     ]);
     /* The ten pages of 31 Oct 2026, each under its product's page by its h1. */
     expect(names(routes.aksCostOptimization)).toEqual(["Zoorik", "Coral", "AKS cost optimization"]);
@@ -809,7 +809,7 @@ describe("every indexed page's structured data", () => {
     const set = {
       "@type": "DefinedTermSet",
       "@id": `${hubUrl}#terms`,
-      name: "Cloud cost glossary",
+      name: "Cloud computing terms: a cloud cost glossary",
       url: hubUrl,
     };
     expect(glossaryPage.hero.title).toBe(set.name);

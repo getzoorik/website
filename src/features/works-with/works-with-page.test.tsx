@@ -39,7 +39,7 @@ import { sectionSlug } from "@/features/open-source/os-guide-page";
 
 /**
  * The six works-with pages, one template in the Helm guide's article frame: their metadata, the eyebrow over the h1
- * and the short answer, the six sections in order at their anchors, Who does what's three columns, the numbered
+ * and the short answer, the sections in order at their anchors, Who does what's three columns, the numbered
  * steps, the questions as /pricing's rows (closed, no numerals), the Read more links, that every link lands (an anchor
  * on another page among the ids that page prints), the sheet's scope, and the closing row on Coral.
  * The copy is the checked drafts' (docs/website-seo/new-pages-2026-10-31/<slug>/page.md), so it holds no figure and
@@ -57,16 +57,16 @@ const pages = [
     Page: CoralWorksWithClusterAutoscaler,
     meta: clusterAutoscalerMeta,
     copy: worksWithPages.clusterAutoscaler,
-    title: "Cluster Autoscaler and Coral on AKS and EKS",
+    title: "Coral works with Cluster Autoscaler on AKS and EKS",
     h1: "Coral works with Cluster Autoscaler",
     description:
-      "On AKS and EKS, Coral rebalances pod requests and empties spare nodes one at a time. The Cluster Autoscaler adds nodes and removes the ones Coral empties.",
+      "How Coral works with the Cluster Autoscaler on AWS EKS and Azure AKS: Coral rebalances pod requests and empties spare nodes; the autoscaler removes them.",
     tool: "Cluster Autoscaler",
     rows: 5,
-    leaves: "What Coral leaves to the Cluster Autoscaler",
+    /* No section on what Coral leaves to it (2 Nov 2026): each line repeated the table, the steps or the deck. */
+    leaves: null,
     questions: [
       "Does the Cluster Autoscaler use requests or actual usage?",
-      "Will Coral fight my Cluster Autoscaler?",
       "Can Coral move work to cheaper machines with only the Cluster Autoscaler?",
       "Does Coral change my Cluster Autoscaler’s minimums?",
       "What about pools the Cluster Autoscaler doesn’t run?",
@@ -253,11 +253,11 @@ const idsOn = (route: string): ReadonlySet<string> | undefined => {
   return printedIds.get(route);
 };
 
-/** The six sections, in the template's order, at their anchors; the third is the page's own. */
+/** The sections, in the template's order, at their anchors; the third is the page's own, where it has one. */
 const sectionsOf = (page: (typeof pages)[number]) => [
   ["who-does-what", page.copy.sections.who],
   ["together", page.copy.sections.together],
-  ["leaves", page.leaves],
+  ...(page.leaves ? [["leaves", page.leaves]] : []),
   ["setup", page.copy.sections.setup],
   ["questions", page.copy.sections.questions],
   ["read-more", page.copy.sections.readMore],
@@ -277,8 +277,11 @@ describe("the works-with pages", () => {
       pages.map((page) => page.route),
     );
     expect(worksWithLastUpdated).toBe("1 November 2026");
-    for (const copy of Object.values(worksWithPages)) {
-      expect(copy.lastUpdated).toBe(worksWithLastUpdated);
+    /* A page changed on its own carries its own day (2 Nov 2026): Cluster Autoscaler's plan, and the link words KEDA,
+       Helm and Karpenter give the pages they link, after those pages' new h1s. */
+    const changed = new Set(["clusterAutoscaler", "keda", "helm", "karpenter"]);
+    for (const [id, copy] of Object.entries(worksWithPages)) {
+      expect(copy.lastUpdated, id).toBe(changed.has(id) ? "2 November 2026" : worksWithLastUpdated);
     }
   });
 
@@ -337,7 +340,7 @@ describe("the works-with pages", () => {
     expect(keepsHash(page.route)).toBe(true);
   });
 
-  it.each(pages)("$route: six sections in order at their anchors, and a chip for each", (page) => {
+  it.each(pages)("$route: its sections in order at their anchors, and a chip for each", (page) => {
     const root = draw(page);
     const article = root.querySelector(
       ".sec.doc-body > .wrap > article.doc-main.fq-main.ar-frame",
@@ -392,7 +395,7 @@ describe("the works-with pages", () => {
     expect(steps.map((li) => text(li.querySelector(":scope > div > p")))).toEqual(
       page.copy.together.map(printed),
     );
-    for (const id of ["leaves", "setup"]) {
+    for (const id of page.leaves ? ["leaves", "setup"] : ["setup"]) {
       const items = [...root.querySelectorAll(`section#${id} > .fq-sec-b.doc-prose > ul > li`)];
       expect(items.length, id).toBeGreaterThanOrEqual(2);
       /* Each bullet leads with its bold words. */
@@ -435,7 +438,10 @@ describe("the works-with pages", () => {
       const a = li.firstElementChild!;
       expect(a.tagName).toBe("A");
       expect(a).not.toHaveAttribute("target");
-      expect(text(li).slice(text(a).length)).toMatch(/^: \S/);
+      /* Its line after a colon or a comma, or after a question as its own sentence. */
+      expect(text(li).slice(text(a).length)).toMatch(
+        text(a).endsWith("?") ? /^(: \S| [A-Z])/ : /^(: |, )\S/,
+      );
       expect(isLiveHref(a.getAttribute("href")!)).toBe(true);
     }
     expect(page.readMore).not.toContain(page.route);

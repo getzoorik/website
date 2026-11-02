@@ -5,24 +5,24 @@ import { figure as figure3 } from "@/features/learn/figures/kubernetes-pod-right
 
 export const article: Article = {
   slug: "kubernetes-pod-right-sizing",
-  title: "Kubernetes pod right sizing: requests vs limits",
-  meta: "Kubernetes pod right sizing, step by step: requests vs limits, setting CPU and memory requests from real use, keeping requests and limits safe and rolling back.",
-  h1: "Kubernetes pod right sizing: set requests from real use",
-  deck: "How to read what each container really uses, set its requests from that, and change them without OOM kills.",
+  title: "Right-size Kubernetes pods: requests vs limits",
+  meta: "How to right-size Kubernetes pods: CPU and memory requests vs limits, setting requests from real use, CPU throttling and the rules for rolling back.",
+  h1: "Right-size Kubernetes pods: set requests from real use",
+  deck: "The scheduler and the Cluster Autoscaler count requests, not use, so requests decide how many nodes you pay for.",
   card: "Read real CPU and memory use, set requests from it, and keep limits, throttling and rollbacks in check.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes cost basics",
   published: "2026-10-21",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "shreya",
   cover: "/learn-covers/zoorik-learn-kubernetes-pod-right-sizing-1200x630.webp",
   coverAlt:
-    "Kubernetes pod right sizing: the old request moves down to a new request just above real use, day by day",
+    "Kubernetes pod right sizing: the old request moves down, day by day, to a new request just above real use",
   short: [
-    "Kubernetes pod right sizing means setting each container’s ",
+    "Set each container’s ",
     { a: "CPU and memory requests", href: "/learn/glossary/kubernetes-resource-requests" },
-    " from its real use. The scheduler and the Cluster Autoscaler count requests, not use, so requests decide how many nodes you pay for. Set CPU at a high percentile and memory at the peak, both plus headroom, and don’t reduce limits until you know why they were set.",
+    " from its real use: CPU at a high percentile and memory at the peak, both plus headroom. Don’t reduce limits until you know why they were set.",
   ],
   sections: [
     {
@@ -45,19 +45,25 @@ export const article: Article = {
               a: "considers a node for removal",
               href: "/learn/cluster-autoscaler-not-scaling-down",
             },
-            " only when its pods’ CPU requests and memory requests each sum to under 50% of the node’s ",
+            " only when its pods’ CPU and memory requests each sum to under 50% of ",
             { a: "allocatable capacity", href: "/learn/kubernetes-allocatable-vs-capacity" },
-            ", the default ",
+            ". That 50% is the default ",
             { code: "--scale-down-utilization-threshold" },
-            ". Actual use doesn’t enter that check. When requests sit far above use across a whole cluster, that’s ",
+            ".",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "When requests sit far above use across a whole cluster, that’s ",
             { a: "Kubernetes overprovisioning", href: "/learn/kubernetes-overprovisioning" },
-            ", and right sizing Kubernetes pods brings it back down.",
+            ", and right sizing pods brings it back down.",
           ],
         },
         {
           kind: "callout",
           label: "Worked example",
-          text: "If 150m is each replica’s 7-day 95th percentile (P95), and the Deployment has no Horizontal Pod Autoscaler (HPA), the example rule in step 1 below, P95 plus 10%, gives a request of 150m × 1.1 = 165m. The 20\u00a0replicas then request 20 × 165m = 3.3\u00a0CPU instead of 20. That leaves 16.7\u00a0CPU of node capacity free for other pods, and you pay less once that free capacity lets a node go.",
+          text: "Say 150m is each replica’s 7-day 95th percentile (P95), and the Deployment has no Horizontal Pod Autoscaler (HPA). Step 1’s rule, P95 plus 10%, gives 150m × 1.1 = 165m, so the 20\u00a0replicas request 3.3\u00a0CPU instead of 20. The 16.7\u00a0CPU this frees reduces cost once it lets a node go.",
         },
         { kind: "svg", figure: figure1 },
       ],
@@ -102,7 +108,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "CPU is shared out in time, so running past a CPU request is free while the node has idle CPU. Memory can’t be shared out that way. The documentation calls memory limits “enforced reactively”: a container may run past its limit for a while, and then it may be killed.",
+          text: "Running past a CPU request is free while the node has idle CPU. Memory limits are “enforced reactively”, as the documentation puts it: a container may pass its limit for a while and then be killed.",
         },
         {
           kind: "p",
@@ -111,7 +117,7 @@ export const article: Article = {
         {
           kind: "callout",
           label: "For engineers",
-          text: "A limit enters placement in one case: if a container sets a limit and no request, and nothing applies a default request at admission, Kubernetes copies the limit into the request.",
+          text: "If a container sets a limit and no request, and nothing applies a default request at admission, Kubernetes copies the limit into the request.",
         },
       ],
     },
@@ -127,18 +133,22 @@ export const article: Article = {
             { a: "HPA", href: "/learn/glossary/horizontal-pod-autoscaler" },
             " and the ",
             { a: "Vertical Pod Autoscaler (VPA)", href: "/learn/glossary/vertical-pod-autoscaler" },
-            ". Sizing needs history that includes last Monday’s peak, from a monitoring system such as Prometheus, scraping cAdvisor, the container-metrics daemon built into the kubelet.",
+            ". Sizing needs history that includes last Monday’s peak, from a monitoring system such as Prometheus scraping cAdvisor, the container-metrics daemon built into the kubelet.",
           ],
         },
         {
           kind: "p",
           text: [
-            "Two series carry what you need. ",
+            "Two series carry what you need. The rate of ",
             { code: "container_cpu_usage_seconds_total" },
-            " counts CPU seconds, so its rate is cores in use. ",
+            " is cores in use. ",
             { code: "container_memory_working_set_bytes" },
-            " is the working set, an estimate of the memory in use that can’t be freed under pressure, and it typically includes some file cache too. On Azure Kubernetes Service (AKS), the Azure Monitor metrics add-on scrapes the cAdvisor target by default and keeps both, plus the throttling counters used below.",
+            " is the working set, an estimate of the memory in use that can’t be freed under pressure.",
           ],
+        },
+        {
+          kind: "p",
+          text: "On Azure Kubernetes Service (AKS), the Azure Monitor metrics add-on scrapes the cAdvisor target by default. It keeps both series, plus the throttling counters used below.",
         },
         {
           kind: "p",
@@ -151,7 +161,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Choose the window from the workload’s cycle: a week or more for a service that’s busy on weekdays, several runs for a batch job. A startup burst pulls a CPU percentile up with every restart, so look at it separately before you decide whether the request should cover it.",
+          text: "Choose the window from the workload’s cycle: a week or more for a service that’s busy on weekdays, several runs for a batch job. A startup burst pulls a CPU percentile up with every restart, so look at it separately.",
         },
         {
           kind: "p",
@@ -172,15 +182,15 @@ export const article: Article = {
           items: [
             [
               { b: "Set the CPU request" },
-              " from a high percentile plus headroom, for example the 7-day P95 plus 10%. A CPU request below the peak won’t get a container killed: it borrows idle CPU at busy moments, and under contention the kernel still weights its share of CPU time by its request.",
+              " from a high percentile plus headroom, for example the 7-day P95 plus 10%. A CPU request below the peak won’t get a container killed: it borrows idle CPU at busy moments.",
             ],
             [
               { b: "Set the memory request" },
-              " from the peak of a window that includes the workload’s busiest day, plus headroom. A pod whose container is above its memory request is likely to be evicted when the node runs short of memory, so a percentile isn’t enough here.",
+              " from the peak of a window that includes the workload’s busiest day, plus headroom. A pod whose container is above its memory request is likely to be evicted when the node runs short of memory.",
             ],
             [
               { b: "Don’t reduce limits" },
-              " on the first pass. If a memory peak already sits close to the memory limit, that container is one spike from an OOM kill, so raise the limit before anything else.",
+              " on the first pass. If a memory peak already sits close to the memory limit, raise the limit first: that container is one spike from an OOM kill.",
             ],
             [
               {
@@ -196,14 +206,14 @@ export const article: Article = {
             ],
             [
               { b: "Check the HPA" },
-              ", if the workload has one. It measures CPU utilization as a percentage of the request, so the same load reads higher against a smaller one. If any container in the pod has no CPU request at all, the HPA can’t compute CPU utilization and takes no action on that metric.",
+              ", if the workload has one. It measures CPU utilization as a share of the request, so the same load reads higher against a smaller one. If any container in the pod has no CPU request, the HPA can’t act on CPU.",
             ],
           ],
         },
         {
           kind: "callout",
           label: "Watch out",
-          text: "A smaller request can buy an extra pod. Take four replicas using 300m each against a 750m request: they read 40%, and with a 50% target the HPA holds them at four. At a 500m request the same pods read 60%, and the HPA asks for ceil(4 × 60 / 50) = 5\u00a0replicas. CPU requested still falls, from 4 × 750m = 3\u00a0CPU to 5 × 500m = 2.5\u00a0CPU, but the fifth pod adds its memory request. To keep four pods, raise the target in proportion, to 50% × 750 / 500 = 75%.",
+          text: "A smaller request can buy an extra pod. Four replicas using 300m each read 40% of a 750m request, but 60% of a 500m one. At a 50% target the HPA then asks for 5\u00a0replicas, and a 75% target keeps four.",
         },
         { kind: "svg", figure: figure2 },
         {
@@ -212,11 +222,11 @@ export const article: Article = {
           items: [
             [
               { b: "Apply through the Pod template" },
-              ", in your manifest or Git, and let the controller replace the pods. ",
-              { a: "In-place resize", href: "/learn/in-place-pod-resize" },
-              " has been stable since Kubernetes 1.35, so a running container’s requests can also change through the pod’s ",
+              ", in your manifest or Git, and let the controller replace the pods. Or use ",
+              { a: "in-place resize", href: "/learn/in-place-pod-resize" },
+              ", stable since Kubernetes 1.35, through the pod’s ",
               { code: "/resize" },
-              " subresource without recreating the pod. For the Worked example, ",
+              " subresource. For the Worked example, ",
               { code: "resources" },
               " becomes:",
             ],
@@ -240,18 +250,22 @@ export const article: Article = {
               a: "CPU throttling in Kubernetes",
               href: "/learn/glossary/kubernetes-cpu-throttling",
             },
-            " is when the Linux kernel holds back a container that hits its CPU limit. On Linux the kernel enforces a ",
+            " is the Linux kernel holding back a container that hits its ",
             { a: "CPU limit", href: "/learn/glossary/kubernetes-resource-limits" },
-            " as a quota of CPU time per period, and the default period is 100\u00a0ms.",
+            ". The kernel enforces the limit as a quota of CPU time per period, and the default period is 100\u00a0ms.",
           ],
         },
         {
           kind: "p",
-          text: "A 500m limit therefore allows 50\u00a0ms of CPU time in each 100\u00a0ms, and once that quota is spent, the container’s threads are throttled until the next period refills it.",
+          text: "A 500m limit allows 50\u00a0ms of CPU time in each 100\u00a0ms. Once that quota is used up, the container’s threads wait for the next period.",
         },
         {
           kind: "p",
-          text: "Multi-threaded services feel this first, because every thread draws on the same quota. Four busy threads on four cores spend the whole 50\u00a0ms quota in 12.5\u00a0ms of wall-clock time, then wait 87.5\u00a0ms. A 5-minute CPU rate averages those bursts away. If one period in ten is busy like this, the rate reads 50\u00a0ms per second, or 50m, a tenth of the limit, though every busy period was throttled for 87.5\u00a0ms.",
+          text: "Multi-threaded services feel this first, because every thread draws on the same quota. Four busy threads on four cores use up the whole 50\u00a0ms quota in 12.5\u00a0ms of wall-clock time, then wait 87.5\u00a0ms.",
+        },
+        {
+          kind: "p",
+          text: "A 5-minute CPU rate averages those bursts away. If one period in ten is busy like this, the rate reads 50m, a tenth of the limit, though every busy period was throttled.",
         },
         { kind: "svg", figure: figure3 },
         {
@@ -271,7 +285,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "When a throttled service is also slow, look at its limit first. A bigger request reserves more of a node but leaves the ceiling where it was. A higher CPU limit, or none, lets the container take idle CPU when it bursts, at the price of CPU its neighbours might want. For pod right sizing itself, change requests and leave CPU limits for a separate change.",
+          text: "When a throttled service is also slow, look at its limit first. A bigger request reserves more of a node but leaves the ceiling where it was.",
+        },
+        {
+          kind: "p",
+          text: "A higher CPU limit, or none, lets the container take idle CPU when it bursts, at the price of CPU its neighbours might want. For pod right sizing itself, change requests and leave CPU limits for a separate change.",
         },
       ],
     },
@@ -288,7 +306,7 @@ export const article: Article = {
             ],
             [
               { b: "Decide what will make you revert" },
-              " before the change: a restart with reason OOMKilled, failing probes or slower responses at busy times, or the HPA’s replica count jumping.",
+              " before the change: OOMKilled restarts, failing probes, slower responses at busy times or a jump in HPA replicas.",
             ],
             [
               { b: "Make each change its own commit" },
@@ -301,7 +319,7 @@ export const article: Article = {
           text: [
             "Afterwards, ",
             { code: "kubectl describe pod <pod>" },
-            " shows a container that ran out of memory with Last State Terminated, Reason OOMKilled and a growing Restart Count (",
+            " shows an OOM kill as Reason OOMKilled, with a growing Restart Count (",
             { a: "what to do after an OOM kill", href: "/learn/oomkilled-exit-code-137" },
             "). Watch a full cycle of the workload, a week for most services, before you change it again.",
           ],
@@ -320,7 +338,7 @@ export const article: Article = {
               a: "Kubernetes optimization for AKS and Amazon Elastic Kubernetes Service (EKS)",
               href: "/coral",
             },
-            ", and it rebalances each container’s CPU and memory requests from observed use, on a policy you choose.",
+            ". It rebalances each container’s CPU and memory requests from observed use, on a policy you choose.",
           ],
         },
         {
@@ -332,30 +350,38 @@ export const article: Article = {
             ],
             [
               { b: "The HPA keeps scaling." },
-              " The HPA decides how many pods run, and Coral decides how big each pod is. For a workload with a CPU-based HPA, Coral picks the request by replaying past load through that HPA’s own settings, and a smaller request wins only if its saving beats the cost of unserved load and extra scaling.",
+              " The HPA decides how many pods run, and Coral decides how big each pod is. For a CPU-based HPA, Coral picks the request by replaying past load through that HPA’s own settings. A smaller request wins only if its saving beats the cost of unserved load and extra scaling.",
             ],
             [
               { b: "Regular pods’ limits stay or rise." },
               " On the built-in policies, Coral never reduces the CPU or memory limit of a regular (",
               { a: "non-Guaranteed", href: "/learn/glossary/kubernetes-qos-class" },
-              ") pod, so startup can still burst above the request into free CPU on the node. When Coral changes a memory request, it keeps your limit or raises it, so the limit is never below the request. A custom policy can set limits its own way.",
+              ") pod. When it changes a memory request, it keeps your limit or raises it, so the limit is never below the request. A custom policy can set limits its own way.",
             ],
             [
               { b: "How a change lands." },
-              " Coral only recommends until you switch on “Automatically optimize” for a policy or a workload. Your manifest is never changed. Coral sets new requests as pods start, resizes running pods in place on 1.33+ nodes, or else restarts them one at a time within their ",
+              " Coral only recommends until you switch on “Automatically optimize” for a policy or a workload. Your manifest is never changed. Coral sets new requests as pods start, resizes running pods in place on 1.33+ nodes, or restarts them one at a time within their ",
               { a: "PodDisruptionBudgets", href: "/learn/glossary/pod-disruption-budget" },
-              ". Early reductions are made in small steps while data builds up. Every change respects your minimums, LimitRanges and quotas.",
+              ".",
+            ],
+            [
+              { b: "Early reductions." },
+              " They come in small steps while data builds up, and every change respects your minimums, LimitRanges and quotas.",
             ],
             [
               { b: "Going back." },
-              " Failing probes and CPU pressure make Coral raise requests back up, and a replacement pod that isn’t Ready in time goes back to its original size, except in StatefulSets. After an OOM kill, with automation on, Coral raises that container’s memory request straight away, and the memory limit rises with it. With automation off, new pods start at your manifest’s size, and running pods keep theirs until they restart.",
+              " Failing probes and CPU pressure make Coral raise requests back up. A replacement pod that isn’t Ready in time goes back to its original size, except in StatefulSets.",
+            ],
+            [
+              { b: "After an OOM kill." },
+              " With automation on, Coral raises that container’s memory request straight away, and the memory limit rises with it. With automation off, new pods start at your manifest’s size.",
             ],
           ],
         },
         {
           kind: "p",
           text: [
-            "On our own AKS development cluster, Coral had rebalanced the requests of 14 apps by 12 October 2026. CPU reserved by the cluster’s own apps went from 0.78 to 0.43\u00a0cores, 45% less, and memory from 6.4 to 5.4\u00a0GiB, 16% less. ",
+            "On our own AKS development cluster, Coral had rebalanced the requests of 14 apps by 12 October 2026. CPU reserved by the cluster’s own apps fell 45%, from 0.78 to 0.43\u00a0cores, and memory 16%, from 6.4 to 5.4\u00a0GiB. ",
             { a: "How we reduced AKS cluster costs by 58%", href: "/coral-value-lab" },
             " has the full run.",
           ],
@@ -441,4 +467,5 @@ export const article: Article = {
       href: "/coral-guide#how-sizes-are-worked-out",
     },
   ],
+  relatedTitle: "More on setting pod requests and limits",
 };
