@@ -17,6 +17,8 @@ export const article: Article = {
   cover: "/learn-covers/zoorik-learn-kubernetes-taints-and-tolerations-1200x630.webp",
   coverAlt:
     "Kubernetes taints and tolerations: a tainted node keeps out a pod with no toleration and lets in one that tolerates the taint",
+  short:
+    "Kubernetes taints and tolerations work as a pair. A node’s taint keeps off pods without a matching toleration, and its effect decides whether running pods are evicted.",
   sections: [
     {
       id: "what-a-taint-and-a-toleration-do",

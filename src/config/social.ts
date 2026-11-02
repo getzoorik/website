@@ -647,11 +647,6 @@ const CARDS: readonly {
     paths: ["/learn/glossary/amortized-cost"],
   },
   {
-    file: "glossary-aws-edp",
-    words: "What is AWS EDP (Enterprise Discount Program)?",
-    paths: ["/learn/glossary/aws-edp"],
-  },
-  {
     file: "glossary-aws-graviton",
     words: "What is AWS Graviton? Graviton instances explained",
     paths: ["/learn/glossary/aws-graviton"],

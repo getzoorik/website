@@ -65,7 +65,7 @@ const libraryQuestions: readonly LibraryQuestion[] = [
     question: "What is Kubecost?",
     blocks: [
       p(
-        `Kubecost is now IBM Kubecost. Its tile is under FinOps tools above, with what it does and how it acts. For Kubernetes tools that change requests and nodes on their own, see [Kubernetes cost optimization tools compared](${routes.compareCoralAlternatives}).`,
+        `Kubecost, now IBM Kubecost, is Kubernetes cost software. It allocates cluster cost with showback, gives rightsizing advice, and can automate request sizing and namespace turndown. For Kubernetes tools that change requests and nodes on their own, see [Kubernetes cost optimization tools compared](${routes.compareCoralAlternatives}).`,
       ),
     ],
   },
@@ -83,7 +83,7 @@ const libraryQuestions: readonly LibraryQuestion[] = [
     blocks: [
       /* docs.aws.amazon.com/cost-management/latest/userguide/cost-optimization-hub.html */
       p(
-        "Cost Optimization Hub’s savings estimates count your Reserved Instances and Savings Plans. Its rightsizing and idle recommendations come from AWS Compute Optimizer.",
+        "Cost Optimization Hub is an AWS cost management feature. It gathers rightsizing, idle, Savings Plans and Reserved Instance recommendations across your AWS accounts and Regions. Its savings estimates count your Reserved Instances and Savings Plans, and its rightsizing and idle recommendations come from AWS Compute Optimizer.",
       ),
     ],
   },

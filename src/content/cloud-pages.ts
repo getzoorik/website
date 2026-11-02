@@ -123,9 +123,10 @@ export interface AmoebaCloudPage extends CloudPageBase {
 
 export type CloudPageContent = CoralCloudPage | AmoebaCloudPage;
 
-/** The four pages' date: built 31 Oct 2026, then their search pass of 1 Nov 2026 (titles, lines, links and questions). */
-const NOV_1 = "1 November 2026";
-/** The plan sheet's pass of 2 Nov 2026: one line under the h1, and each repeat taken out (EKS, Azure and EBS). */
+/**
+ * The four pages' date: built 31 Oct 2026, their search pass of 1 Nov 2026, then the plan sheet's pass of 2 Nov 2026:
+ * one line under the h1, each repeat taken out (EKS, Azure and EBS), and the Helm card's early-access line (AKS, EKS).
+ */
 const NOV_2 = "2 November 2026";
 
 /** The hero's button: the closing row's own words, to this product's assessment. */
@@ -178,7 +179,7 @@ const helmTile: CloudTile = {
 export const aksCostOptimizationPage: CoralCloudPage = {
   product: "coral",
   path: routes.aksCostOptimization,
-  lastUpdated: NOV_1,
+  lastUpdated: NOV_2,
   cloud: "aks",
   meta: {
     title: "AKS cost optimization",

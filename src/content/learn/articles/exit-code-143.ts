@@ -17,6 +17,8 @@ export const article: Article = {
   cover: "/learn-covers/zoorik-learn-exit-code-143-1200x630.webp",
   coverAlt:
     "SIGTERM, signal 15, reaches process 1, the app stops inside its grace period, and Kubernetes records 128 + 15 = 143",
+  short:
+    "In Kubernetes, exit code 143 means SIGTERM (signal 15) ended the container’s main process before its grace period ran out. The pod’s events show what sent it.",
   sections: [
     {
       id: "what-exit-code-143-means-in-kubernetes",

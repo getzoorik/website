@@ -18,6 +18,8 @@ export const article: Article = {
   cover: "/learn-covers/zoorik-learn-statefulset-vs-deployment-1200x630.webp",
   coverAlt:
     "Deployment pods with hash suffixes beside StatefulSet pods web-0, web-1 and web-2, each with its own volume",
+  short:
+    "Deployment vs StatefulSet comes down to identity. A Deployment runs interchangeable pods. A StatefulSet gives each pod a stable name, its own volume and an order.",
   sections: [
     {
       id: "what-a-deployment-runs-interchangeable-pods-through",
@@ -73,7 +75,7 @@ export const article: Article = {
           text: [
             "Pods are named ",
             { code: "<statefulset name>-<ordinal>" },
-            ", so a StatefulSet called web with 3 replicas runs ",
+            ", so a StatefulSet called web with 3\u00a0replicas runs ",
             { code: "web-0" },
             ", ",
             { code: "web-1" },

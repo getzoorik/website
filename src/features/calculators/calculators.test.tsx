@@ -252,6 +252,7 @@ describe("/ebs-and-azure-disk-pricing", () => {
     expect(text(result.querySelector("#o-tier"))).toBe("E15 · 256 GiB");
     expect(text(result.querySelector("#o-empty"))).toBe("150 GiB (75%)");
     expect(text(result.querySelector("#o-up"))).toBe("56 GiB, $4.20 a month");
+    expect(text(result.querySelector("#o-iops"))).toBe("Up to 500");
     /* The size is whole GiB, the used space can carry a fraction. */
     expect(root.querySelector("#size")).toHaveAttribute("inputmode", "numeric");
     expect(root.querySelector("#used")).toHaveAttribute("inputmode", "decimal");
@@ -262,6 +263,7 @@ describe("/ebs-and-azure-disk-pricing", () => {
     fireEvent.click(within(root.querySelector("[data-sw=cloud]")!).getByText("AWS"));
     expect(text(root.querySelector("#o-cost"))).toBe("$16.00");
     expect(text(root.querySelector("#o-price"))).toBe("$0.08 per GB-month");
+    expect(text(root.querySelector("#o-iops"))).toBe("3,000, included in the price");
     expect(root.querySelector("#o-tier-row")).toHaveAttribute("hidden");
     expect(root.querySelector("#o-up-row")).toHaveAttribute("hidden");
     expect(text(root.querySelector("#size-h"))).toBe("AWS prices every GB you provision.");
@@ -270,6 +272,7 @@ describe("/ebs-and-azure-disk-pricing", () => {
     expect(text(root.querySelector("#o-ecost"))).toBe("$0.00");
     expect(text(root.querySelector("#used-m"))).toBe(diskCalculator.overLine);
     fireEvent.click(within(root.querySelector("[data-sw=type]")!).getByText("gp2"));
+    expect(text(root.querySelector("#o-iops"))).toBe("600");
     fireEvent.change(root.querySelector("#size")!, { target: { value: "16385" } });
     expect(text(root.querySelector("#calc-stop"))).toBe(
       "A gp2 volume can be 1 GiB to 16 TiB (16,384 GiB).",
@@ -278,6 +281,13 @@ describe("/ebs-and-azure-disk-pricing", () => {
     expect(text(root.querySelector("#calc-stop"))).toBe(
       "Enter the disk size as a whole number of GiB.",
     );
+  });
+
+  it("shows the chosen disk's IOPS: the Premium SSD tier's own figure", () => {
+    const root = render(<DiskPage />).container;
+    fireEvent.click(within(root.querySelector("[data-sw=type]")!).getByText("Premium SSD"));
+    expect(text(root.querySelector("#o-tier"))).toBe("P15 · 256 GiB");
+    expect(text(root.querySelector("#o-iops"))).toBe("1,100");
   });
 
   it("ends on Amoeba's closing row", () => {

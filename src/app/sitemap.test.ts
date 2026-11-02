@@ -121,17 +121,17 @@ describe("sitemap.xml", () => {
       /* The two Topic pages print no day: the day their content last changed (2 Nov 2026). */
       "/azure-cost-optimization": "2026-11-02",
       "/aws-cost-optimization": "2026-11-02",
-      /* The four cloud pages print no day: the day their content last changed (their titles and headings, 1 Nov
-         2026; the 2 Nov 2026 plan for all but AKS). */
-      "/aks-cost-optimization": "2026-11-01",
+      /* The four cloud pages print no day: the day their content last changed (the 2 Nov 2026 plan, and on AKS the
+         Helm card's early-access line). */
+      "/aks-cost-optimization": "2026-11-02",
       "/eks-cost-optimization": "2026-11-02",
       "/azure-managed-disk-cost-optimization": "2026-11-02",
       "/ebs-cost-optimization": "2026-11-02",
       /* The six works-with pages print no day: the day their content last changed (their D230 links, and the NAP
-         article in Read more, 1 Nov 2026; the 2 Nov 2026 plan for Cluster Autoscaler, and the glossary link words on
-         KEDA and Helm). */
+         article in Read more, 1 Nov 2026; the 2 Nov 2026 plan for Cluster Autoscaler, and the link words on KEDA,
+         Helm and Karpenter). */
       "/coral-works-with-cluster-autoscaler": "2026-11-02",
-      "/coral-works-with-karpenter": "2026-11-01",
+      "/coral-works-with-karpenter": "2026-11-02",
       "/coral-works-with-aks-node-auto-provisioning": "2026-11-01",
       "/coral-works-with-keda": "2026-11-02",
       "/coral-works-with-helm": "2026-11-02",
@@ -150,8 +150,8 @@ describe("sitemap.xml", () => {
       "/docs/install-coral-with-helm": "2026-11-02",
       "/docs/install-coral-with-terraform": "2026-11-01",
       "/docs/contributing": "2026-11-01",
-      /* The two troubleshooting pages print "Updated 1 November 2026". */
-      "/coral-troubleshooting": "2026-11-01",
+      /* The troubleshooting pages print their "Updated" day: Coral's 2 Nov 2026, Amoeba's 1 Nov 2026. */
+      "/coral-troubleshooting": "2026-11-02",
       ...(amoebaDocs ? { "/amoeba-troubleshooting": "2026-11-01" } : {}),
       "/open-source": "2026-11-02",
       /* The hub: its own day or its newest article's, whichever is later. Each article: the day it last changed. */

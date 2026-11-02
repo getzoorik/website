@@ -176,26 +176,6 @@ export const article: Article = {
       ],
     },
     {
-      id: "docker-exit-code-137-and-the-other",
-      title: "Docker exit code 137, and the other places 137 shows up",
-      blocks: [
-        {
-          kind: "p",
-          text: "The number comes from Linux. In a shell, a command ended by signal n gets the return code 128 + n. SIGKILL is signal 9, so return code 137 means SIGKILL: 128 + 9 = 137.",
-        },
-        {
-          kind: "p",
-          text: [
-            "In Kubernetes, ",
-            { code: "kubectl exec" },
-            " prints ",
-            { code: "command terminated with exit code 137" },
-            " when the command it ran inside the container got SIGKILL.",
-          ],
-        },
-      ],
-    },
-    {
       id: "why-a-container-can-be-killed-below",
       title: "Why a container can be killed below its memory limit",
       blocks: [
@@ -552,11 +532,6 @@ export const article: Article = {
       url: "https://man7.org/linux/man-pages/man7/signal.7.html",
     },
     {
-      publisher: "Linux man-pages",
-      title: "“bash(1)”",
-      url: "https://man7.org/linux/man-pages/man1/bash.1.html",
-    },
-    {
       publisher: "Microsoft Learn",
       title: "“Troubleshoot memory saturation in AKS clusters”",
       url: "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/availability-performance/identify-memory-saturation-aks",
@@ -570,11 +545,6 @@ export const article: Article = {
       publisher: "AWS",
       title: "“Amazon EKS and Kubernetes Container Insights with enhanced observability metrics”",
       url: "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-metrics-enhanced-EKS.html",
-    },
-    {
-      publisher: "Kubernetes source",
-      title: "“client-go/tools/remotecommand/v4.go”",
-      url: "https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/client-go/tools/remotecommand/v4.go",
     },
   ],
   related: [

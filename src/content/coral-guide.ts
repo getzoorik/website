@@ -953,10 +953,6 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               ],
             },
             { kind: "p", text: "Without live migration, these pods get a short restart." },
-            {
-              kind: "p",
-              text: "Docker live migration doesn’t apply here. Kubernetes removed dockershim in 1.24, and AKS Linux node pools and EKS-optimized Amazon Linux nodes run containerd.",
-            },
           ],
         },
         {

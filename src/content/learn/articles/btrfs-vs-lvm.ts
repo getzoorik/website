@@ -396,7 +396,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Moving an ext4 or XFS mount onto btrfs is a copy with a short stop at the switch, the same route as ",
+            "Moving an ext4 or XFS mount onto btrfs is a copy with a short stop at the switch. It’s the same route as ",
             { a: "moving to a smaller Azure disk", href: "/learn/shrink-azure-managed-disk" },
             ".",
           ],

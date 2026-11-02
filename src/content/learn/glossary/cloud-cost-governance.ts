@@ -26,10 +26,6 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "In Microsoft’s Cloud Adoption Framework, governance in cloud computing covers domains such as security, regulatory compliance, operations, data, resource provisioning and cost management. Cloud cost governance is the cost management domain.",
-        },
-        {
-          kind: "p",
           text: [
             "In the ",
             { a: "FinOps", href: "/learn/glossary/finops" },
@@ -75,11 +71,7 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "For AWS budgeting, AWS Budgets alerts you by email or through an Amazon SNS topic when actual or forecasted cost passes your threshold. Its data updates up to three times a day.",
-        },
-        {
-          kind: "p",
-          text: "A budget action can also apply an access policy or stop chosen Amazon EC2 or Amazon RDS instances. It runs on its own or after your approval.",
+          text: "On AWS, AWS Budgets alerts you when cost goes outside your policy. A budget action can also apply an access policy or stop chosen Amazon EC2 or Amazon RDS instances. It runs on its own or after your approval.",
         },
       ],
     },
@@ -147,21 +139,10 @@ export const term: GlossaryTerm = {
       url: "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/assignment-structure",
     },
     {
-      publisher: "Microsoft Learn",
-      title: "“Build a cloud governance team”",
-      url: "https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/govern/build-cloud-governance-team",
-      note: " (Cloud Adoption Framework)",
-    },
-    {
       publisher: "AWS",
       title: "“COST02-BP05 Implement cost controls”",
       url: "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/cost_govern_usage_controls.html",
       note: " (Cost Optimization Pillar)",
-    },
-    {
-      publisher: "AWS",
-      title: "“Managing your costs with AWS Budgets”",
-      url: "https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html",
     },
   ],
 };

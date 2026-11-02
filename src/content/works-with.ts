@@ -177,7 +177,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
   },
   karpenter: {
     route: routes.coralWorksWithKarpenter,
-    lastUpdated: worksWithLastUpdated,
+    lastUpdated: "2 November 2026",
     meta: {
       title: "Coral works with Karpenter",
       description:
@@ -269,7 +269,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
       {
         question: "Does Coral respect `karpenter.sh/do-not-disrupt`?",
         answer: [
-          "Yes. A pod with it is never moved and its node is kept, and a node with it is kept. [The safe-to-evict and do-not-disrupt annotations explained](/learn/safe-to-evict-do-not-disrupt) shows which tool reads which marker.",
+          "Yes. A pod with it is never moved and its node is kept, and a node with it is kept. [Karpenter do-not-disrupt and the Kubernetes safe-to-evict annotation, explained](/learn/safe-to-evict-do-not-disrupt) shows which tool reads which marker.",
         ],
       },
       {

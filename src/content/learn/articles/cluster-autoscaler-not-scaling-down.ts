@@ -85,10 +85,6 @@ export const article: Article = {
           kind: "p",
           text: "A node that stays unneeded for 10\u00a0minutes is removed. The autoscaler taints it so no new pods land there, then evicts its pods through the eviction API, which honours PodDisruptionBudgets. Non-empty nodes go one at a time, empty ones in batches of up to 10.",
         },
-        {
-          kind: "p",
-          text: "Each pod it evicts gets a ScaleDown event reading “deleting pod for node scale down”. That message means removal has started, not that something failed.",
-        },
       ],
     },
     {

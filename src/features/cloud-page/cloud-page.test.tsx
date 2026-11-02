@@ -291,10 +291,7 @@ describe("the four per-cloud pages", () => {
       routes.azureManagedDiskCostOptimization,
       routes.ebsCostOptimization,
     ]);
-    expect(cloudPages.map((page) => page.lastUpdated)).toEqual([
-      "1 November 2026",
-      ...Array(3).fill("2 November 2026"),
-    ]);
+    expect(cloudPages.map((page) => page.lastUpdated)).toEqual(Array(4).fill("2 November 2026"));
     /* Product pages, not documents: the header marks nothing, and an in-page link leaves the address clean, as on
        /coral and /amoeba (their mocks carry no data-keep-hash). */
     for (const page of cloudPages) {

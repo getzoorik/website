@@ -181,7 +181,11 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Once a cluster runs, the invoice tells you what it costs, but the useful estimate is what it would cost on the nodes its workloads really need. Measured use plus headroom decides how many they need. A node can be full by requests and close to idle: the Kubernetes documentation says the scheduler keeps the requests on each node within its capacity, and that even when real use on the node is very low, it “still refuses to place a Pod on a node if the capacity check fails.”",
+          text: "Once a cluster runs, the invoice tells you what it costs. The useful estimate is what it would cost on the nodes its workloads really need. Measured use plus headroom decides how many they need.",
+        },
+        {
+          kind: "p",
+          text: "A node can be full by requests and close to idle. The Kubernetes documentation says the scheduler keeps the requests on each node within its capacity. Even when real use on the node is very low, it “still refuses to place a Pod on a node if the capacity check fails.”",
         },
         { kind: "p", text: "Two commands show the gap:" },
         { kind: "code", lang: "bash", code: "kubectl describe node <node-name>\nkubectl top node" },

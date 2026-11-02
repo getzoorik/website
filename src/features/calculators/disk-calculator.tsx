@@ -6,10 +6,12 @@ import { diskCalculator, diskCalculatorUi } from "@/content/calculators";
 import { cloudPrices, regionNames } from "@/content/cloud-prices";
 import { richText } from "@/features/documents/rich-text";
 import {
+  AZURE_TIER_IOPS,
   amount,
   azureDiskCost,
   azureTiers,
   ebsDiskCost,
+  ebsIops,
   ebsPrice,
   parseNumberInput,
   share,
@@ -18,6 +20,7 @@ import {
   type AzureDiskType,
   type Cloud,
   type DiskInputError,
+  type DiskResult,
   type EbsVolumeType,
 } from "@/lib/cloud-cost-calc";
 
@@ -26,9 +29,9 @@ import { CalcNumber, CalcRow, CalcSelect, CalcSwitch } from "./calc-parts";
 /**
  * The disk calculator: the form on the white card, the result on the dark one. Cloud, region, disk type, the disk's
  * size and the space its files use; the result is what the disk costs a month and what its empty space costs, then
- * the tier Azure prices it as, the price used, the empty space, and on Azure the tier's space above the disk's size.
- * Every figure is `azureDiskCost` or `ebsDiskCost` on the dated list prices (`@/content/cloud-prices`); nothing is
- * stored and nothing is sent.
+ * the tier Azure prices it as, the price used, the empty space, on Azure the tier's space above the disk's size, and
+ * the disk's IOPS. Every cost is `azureDiskCost` or `ebsDiskCost` on the dated list prices (`@/content/cloud-prices`),
+ * and the IOPS are the tier's (`AZURE_TIER_IOPS`) or `ebsIops`; nothing is stored and nothing is sent.
  *
  * A size that is blank, not whole or out of the disk type's range, or a used space that is blank or below 0, shows
  * its message under its field and in place of every figure. Used space above the disk's size still shows the
@@ -85,6 +88,16 @@ function messageOf(
 
 const regionsOf = (cloud: Cloud): readonly string[] =>
   cloud === "azure" ? cloudPrices.azure.regions : cloudPrices.aws.regions;
+
+/** The IOPS row: the tier's on Azure ("Up to 500" on Standard SSD), gp2's baseline, gp3's included 3,000. */
+function iopsOf(cloud: Cloud, type: DiskType, result: DiskResult): string {
+  if (cloud === "aws") {
+    const iops = amount(ebsIops(type as EbsVolumeType, result.pricedGib));
+    return type === "gp3" ? `${iops}${ui.iops.included}` : iops;
+  }
+  const iops = amount(AZURE_TIER_IOPS[type as AzureDiskType][result.tier!]!);
+  return type === "standard-ssd" ? `${ui.iops.upTo}${iops}` : iops;
+}
 
 export function DiskCalculator(): React.JSX.Element {
   const [cloud, setCloud] = useState<Cloud>("azure");
@@ -208,6 +221,9 @@ export function DiskCalculator(): React.JSX.Element {
                   {up
                     ? `${amount(ok.roundUpGib ?? 0)} GiB, ${usd(ok.roundUpUsdPerMonth ?? 0)} a month`
                     : ""}
+                </CalcRow>
+                <CalcRow id="o-iops" term={ui.iops.label}>
+                  {iopsOf(cloud, type, ok)}
                 </CalcRow>
               </dl>
             </>

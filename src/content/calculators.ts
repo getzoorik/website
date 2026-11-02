@@ -211,7 +211,7 @@ export const nodeCalculator = {
           href: "/learn/kubernetes-allocatable-vs-capacity",
         },
         {
-          text: "Kubernetes cost estimation: count the nodes, then price them",
+          text: "Kubernetes pricing and cost estimation: count the nodes, then price them",
           href: "/learn/kubernetes-cost-estimation",
         },
         {
@@ -278,7 +278,10 @@ export const diskCalculator = {
           ],
         },
         { kind: "h3", text: "EBS storage cost: a 200 GiB gp3 volume" },
-        { kind: "p", text: "A 200 GiB gp3 volume in US East (N. Virginia), with 50 GiB used:" },
+        {
+          kind: "p",
+          text: "In US East (N. Virginia), with 50 GiB used, the EBS calculator gives:",
+        },
         {
           kind: "ul",
           items: [
@@ -300,7 +303,7 @@ export const diskCalculator = {
           kind: "p",
           text: "It counts storage alone: transactions, bursting and snapshots aren't in the figure.",
         },
-        { kind: "h3", text: "How EBS volumes and Azure managed disks are priced" },
+        { kind: "h3", text: "Azure managed disk pricing: rounded up to a size tier" },
         {
           kind: "p",
           text: "Azure disk pricing rounds a managed disk's size up to the nearest tier. The disk then costs that tier's monthly price, whatever data it holds.",
@@ -340,10 +343,9 @@ export const diskCalculator = {
       ],
     },
     /* Each size's IOPS (the SEO plan sheet, 2 Nov 2026), from Microsoft Learn's Azure managed disk types and AWS's
-       General Purpose SSD volumes. The plan names it "Disk IOPS calculator: the IOPS each size gives" once the
-       calculator shows an IOPS row; until then it says what it is. */
+       General Purpose SSD volumes; the calculator's IOPS row shows the chosen disk's. */
     {
-      title: "Disk IOPS: what each size gives",
+      title: "Disk IOPS calculator: the IOPS each size gives",
       blocks: [
         {
           kind: "ul",
@@ -392,7 +394,7 @@ export const diskCalculator = {
           text: "What are Azure disk sizes (P10, P30, E10)?",
           href: "/learn/glossary/azure-disk-sizes",
         },
-        { text: "What is gp3 in AWS?", href: "/learn/glossary/ebs-gp3" },
+        { text: "What is gp3 in AWS? EBS gp3 volumes explained", href: "/learn/glossary/ebs-gp3" },
       ],
     },
   ],
@@ -487,6 +489,8 @@ export const diskCalculatorUi = {
   priceUsed: "Price used",
   empty: "Empty space",
   up: "Tier space above the disk’s size",
+  /** The disk's IOPS: the tier's on Azure (Standard SSD's "up to"), gp2's baseline, gp3's included 3,000. */
+  iops: { label: "IOPS", upTo: "Up to ", included: ", included in the price" },
   /** The reference tables' fold. */
   tables: "List prices",
   /** The h3 over each price table in the fold, named for its search (owner, 1 Nov 2026). */

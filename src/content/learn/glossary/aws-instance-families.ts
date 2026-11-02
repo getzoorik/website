@@ -7,7 +7,7 @@ export const term: GlossaryTerm = {
   title: "EC2 instance types and AWS instance families",
   meta: "AWS instance types set an EC2 instance’s CPU, memory and storage. See what EC2 instance families are, how to read c7gn.xlarge, and how they shape cloud cost.",
   h1: "EC2 instance types and AWS instance families",
-  card: "An AWS EC2 instance is a server, usually a virtual machine (VM).",
+  card: "AWS instance families are sets of EC2 instance types that differ only in size.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
@@ -15,12 +15,12 @@ export const term: GlossaryTerm = {
   definition: [
     {
       kind: "p",
-      text: "An AWS EC2 instance is a server, usually a virtual machine (VM). Each instance in AWS has an instance type, such as m7i.large, that sets its compute, memory and storage.",
+      text: "AWS instance families are sets of EC2 instance types that differ only in size. An AWS EC2 instance is a server, usually a virtual machine (VM). Each instance in AWS has an instance type, such as m7i.large, that sets its compute, memory and storage.",
     },
     {
       kind: "p",
       text: [
-        "AWS instance families are sets of EC2 instance types that differ only in size. Most families keep the same memory per virtual CPU (vCPU) at every size, except the ",
+        "Most families keep the same memory per virtual CPU (vCPU) at every size, except the ",
         { a: "burstable", href: "/learn/glossary/burstable-instance" },
         " T families.",
       ],

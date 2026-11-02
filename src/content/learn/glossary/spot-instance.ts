@@ -47,6 +47,10 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
+          text: "An EC2 instance rebalance recommendation signals that a spot instance is at higher risk of interruption. It can come before the two-minute interruption notice, so you can act sooner.",
+        },
+        {
+          kind: "p",
           text: "AWS suggests an Amazon EventBridge rule that catches both signals, then saves the work’s progress or shuts it down cleanly.",
         },
         {
