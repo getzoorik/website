@@ -126,9 +126,9 @@ const contentDates: Partial<Record<string, string>> = {
   [routes.privacy]: privacy.effective,
   [routes.terms]: termsCopy.effective,
   [routes.security]: securityPage.updated,
-  /* /open-source prints no day; the three guides print "Updated 1 November 2026". */
+  /* /open-source prints no day; each guide prints its own "Updated" day, else the guides' (1 November 2026). */
   [routes.openSource]: openSourceLastUpdated,
-  [openSourceGuides.helm.route]: openSourceUpdated,
+  [openSourceGuides.helm.route]: openSourceGuides.helm.updated ?? openSourceUpdated,
   [openSourceGuides.terraform.route]: openSourceUpdated,
   [openSourceGuides.contributing.route]: openSourceUpdated,
   /* The two troubleshooting pages print "Updated 1 November 2026". */

@@ -54,7 +54,7 @@ describe("social cards", () => {
     );
     expect(coral.title).toBe("Coral: Kubernetes optimization for AKS and EKS | Zoorik");
     expect(coral.description).toBe(
-      "Kubernetes optimization platform for AKS and EKS: Coral rebalances clusters to reduce your cloud cost, autonomously, without any downtime.",
+      "Kubernetes optimization platform for AKS and EKS. Coral is Kubernetes resource optimization software that rebalances requests and nodes to reduce cloud cost.",
     );
     /* No page of its own: the X card is the layout's, filled from openGraph. */
     expect(pages["/amoeba"]).not.toHaveProperty("twitter");

@@ -146,6 +146,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-qos-class",
     },
   ],
+  relatedTitle: "Terms related to burstable instances",
   next: {
     title: "Kubernetes node size best practices: large or small nodes",
     href: "/learn/kubernetes-node-size-best-practices",

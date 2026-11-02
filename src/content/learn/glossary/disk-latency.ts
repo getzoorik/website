@@ -114,6 +114,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/provisioned-iops",
     },
   ],
+  relatedTitle: "Disk performance terms related to latency",
   next: {
     title: "Azure disk IOPS vs throughput: what limits your disks",
     href: "/learn/azure-disk-iops-vs-throughput",

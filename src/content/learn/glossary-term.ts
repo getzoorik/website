@@ -63,6 +63,8 @@ export interface GlossaryTerm {
    */
   readonly sections: readonly ArticleSection[];
   readonly related: readonly GlossaryRelated[];
+  /** The Related terms row's heading where the term names its own; else `glossaryWords.related`. */
+  readonly relatedTitle?: string;
   /** "Read next": the Learn article the term leads to, at its address, by the words the draft gives it. */
   readonly next: { readonly title: string; readonly href: `/${string}` };
   readonly sources: readonly ArticleSource[];

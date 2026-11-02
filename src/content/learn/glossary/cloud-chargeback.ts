@@ -128,6 +128,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/cloud-unit-economics",
     },
   ],
+  relatedTitle: "Terms related to cloud chargeback",
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",
     href: "/cloud-cost-optimization",

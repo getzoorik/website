@@ -49,17 +49,17 @@ function demoView(product: ProductId): DemoView {
 /**
  * The whole of `/assessment`:
  *
- *   Hero           on the left "Built for Azure and AWS", the h1, what the assessment is (the site's hero deck) and,
+ *   Hero           on the left "Built for Azure and AWS", the h1, its one line under the h1 (the site's hero deck) and,
  *                  under them, "Choose the assessment you want." over the switch with categories; on the right, What you get's terminal with the chosen product's
  *                  one line to copy, how to sign in to the cloud and where Cloud Shell keeps the PDF, each cloud by its
  *                  mark. Dark, with no turning mark.
  *   What you get   Coral's run and Amoeba's run side by side, each typed once as it comes into view, then its example
  *                  report to download. Both always, whatever the switch says. The page's one tinted band.
  *   What it does   the navy band, three facts (Reads, Runs, only when, Sends), the GitHub and PyPI cards and
- *                  "Read-only · Sends nothing".
+ *                  "Read-only".
  *   Before you run it  three questions, each with its answer under a hairline: how long a run takes, the access it
  *                  needs and how the saving is worked out. The same on both products.
- *   After the run  "Send us your PDF" and "Book 30 minutes", then the code and how the estimate works.
+ *   After the run  "Send us your PDF" and "Book 30 minutes", then how the estimate works.
  *
  * ─── A SERVER COMPONENT, WITH ISLANDS ──────────────────────────────────────
  * The provider holds the product; the switch, the run line, the two facts and After the run's product lines read it.

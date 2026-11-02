@@ -112,6 +112,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-cost-allocation",
     },
   ],
+  relatedTitle: "Terms related to showback",
   next: {
     title: "AKS cost analysis: what the add-on shows and what it doesn’t",
     href: "/learn/aks-cost-analysis",

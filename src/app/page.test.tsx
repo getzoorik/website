@@ -61,13 +61,13 @@ describe("the home page", () => {
       [
         "coral",
         "/coral",
-        "Stop paying for idle Kubernetes capacity. Coral rebalances workloads and removes the nodes you don’t need. No code changes. Read our guide to Kubernetes cost optimization.",
+        "Stop paying for idle Kubernetes capacity. Coral rebalances workloads and removes the nodes you don’t need. Read our guide to Kubernetes cost optimization.",
         "Coral",
       ],
       [
         "amoeba",
         "/amoeba",
-        "Stop paying for empty disk space. Amoeba rightsizes Azure managed disks and Amazon EBS on Windows and Linux VMs, autonomously, without any downtime after the one switch.",
+        "Stop paying for empty disk space. Amoeba moves a VM’s data disks onto one btrfs pool and rightsizes it, without any downtime after the one switch.",
         "Amoeba",
       ],
     ] as const) {
@@ -132,8 +132,8 @@ describe("the home page", () => {
       /* The SEO heading pass (23 Oct 2026): each product section's h2 is its category. */
       "h2 Kubernetes cost optimization",
       "h2 Block storage cost optimization",
-      "h2 Autonomous cloud cost optimization, without the risk",
-      "h3 Reduce cloud cost",
+      "h2 Autonomous optimization, without the risk",
+      "h3 Pay for what your workloads use",
       "h3 Drains nodes safely, one at a time",
       "h3 Without any downtime or code changes",
       "h3 Full control and visibility",
@@ -234,7 +234,8 @@ describe("the home page", () => {
   it("opens each product's button on that product's assessment", () => {
     expect(hrefs("#amoeba a.btn-ink")).toEqual(["/assessment?p=amoeba"]);
     expect(hrefs("#coral a.btn-ink")).toEqual(["/assessment?p=coral"]);
-    expect(hrefs("#assess a.btn-ink")).toEqual(["/assessment"]);
+    /* The closing row is the dark card alone (2 Nov 2026): the offers' free card above sends to the assessment. */
+    expect(hrefs("#assess a.btn-ink")).toEqual([]);
   });
 
   it("says the hero's words, the h1 opening on the name", () => {
@@ -254,7 +255,7 @@ describe("the home page", () => {
       .join("");
     expect(tagline).toBe(" Reduce cloud cost, autonomously.");
     expect(page.querySelector(".hero .hero-sub")).toHaveTextContent(
-      /^Software that optimizes Kubernetes and block storage on its own, while your systems keep serving\.$/,
+      /^Software that optimizes Kubernetes and block storage on Azure and AWS\.$/,
     );
   });
 
@@ -270,33 +271,34 @@ describe("the home page", () => {
     expect(buttons[0]!.querySelector("svg path")).toHaveAttribute("d", "M5 12h14M13 5l7 7-7 7");
   });
 
-  it("says Estimate your saving five times, every one of them to the assessment", () => {
+  it("says Estimate your saving four times, every one of them to the assessment", () => {
     const calls = [...page.querySelectorAll<HTMLAnchorElement>("main a")].filter(
       (a) => a.textContent!.trim() === "Estimate your saving",
     );
-    /* The hero, each product, the free assessment's card, the closing row. */
+    /* The hero, each product and the free assessment's card; the closing row is the dark card alone. */
     expect(calls.map((a) => a.getAttribute("href"))).toEqual([
       "/assessment",
       "/assessment?p=coral",
       "/assessment?p=amoeba",
-      "/assessment",
       "/assessment",
     ]);
   });
 
   it("follows each product's button with what its page is about, to the product's page", () => {
     for (const [id, label] of [
-      ["amoeba", "Block storage cost optimization"],
+      ["amoeba", "Block storage cost optimization with Amoeba"],
       ["coral", "Kubernetes optimization with Coral"],
     ] as const) {
       const more = page.querySelectorAll<HTMLAnchorElement>(`#${id} .btns a.alink`);
       expect(more).toHaveLength(1);
       expect(more[0]).toHaveAttribute("href", `/${id}`);
-      /* Its own words in place of "Learn more": Amoeba's the category alone (owner, 23 Oct 2026), the h2's own
-         words; Coral's names the product (1 Nov 2026). */
+      /* Its own words in place of "Learn more", each naming the product: Coral's (1 Nov 2026), Amoeba's the h2's
+         words, then the product (2 Nov 2026). */
       expect(more[0]!.textContent).toBe(label);
       if (id === "amoeba")
-        expect(more[0]!.textContent).toBe(page.querySelector(`#${id} h2.st-h`)!.textContent);
+        expect(more[0]!.textContent).toBe(
+          `${page.querySelector(`#${id} h2.st-h`)!.textContent} with Amoeba`,
+        );
       expect(more[0]!.querySelector(".sr-only")).toBeNull();
       /* After the button, in the same row, and ending on the same arrow. */
       expect(more[0]!.previousElementSibling?.className).toBe("btn-ink");
@@ -304,21 +306,22 @@ describe("the home page", () => {
     }
   });
 
-  it("closes on two cards that open on their headlines", () => {
+  it("closes on the dark card alone, opening on its headline", () => {
     const row = page.querySelector("#assess")!;
-    /* The small uppercase labels are gone; the headlines carry the cards. They are `div.as-h`, not h2, so the words
-       that close every page stay out of its heading outline (1 Nov 2026). */
+    /* The small uppercase labels are gone; the headline carries the card. It is a `div.as-h`, not an h2, so the words
+       that close every page stay out of its heading outline (1 Nov 2026). The white card went (2 Nov 2026): the
+       offers' free card above offers the same PDF. */
     expect(row.querySelector(".kicker, .cta-kick")).toBeNull();
-    for (const card of [row.querySelector(".as-mini")!, row.querySelector(".as-cal")!]) {
-      expect(card.firstElementChild!.tagName).toBe("DIV");
-      expect(card.firstElementChild).toHaveClass("as-h");
-    }
+    expect(row.querySelector(".as-mini")).toBeNull();
+    const card = row.querySelector(".as-cal")!;
+    expect(card.firstElementChild!.tagName).toBe("DIV");
+    expect(card.firstElementChild).toHaveClass("as-h");
     expect(row.querySelector(".as-cal p")!.textContent).toBe(
       "Thirty minutes with the people who build Coral and Amoeba.",
     );
-    /* Home reveals: both cards rise, the dark one a step after the white. */
-    expect(row.querySelectorAll(".rise")).toHaveLength(2);
-    expect(row.querySelector("[data-i]")).toBe(row.querySelector("#contact"));
+    /* Home reveals: the one card rises, first. */
+    expect(row.querySelectorAll(".rise")).toHaveLength(1);
+    expect(row.querySelector("[data-i]")).toBeNull();
   });
 
   it("ends the hero on the marketplace line, after the one button, and draws no product tiles", () => {
@@ -493,9 +496,9 @@ describe("the home page", () => {
     const cards = [...band.querySelectorAll("article.pl")];
     /* The sentences left the screen and name the drawings, word for word. */
     expect(cards.map((card) => card.querySelector("figure")!.getAttribute("aria-label"))).toEqual([
-      "Pay for what your workloads use, not what was provisioned for the peak.",
-      "Nodes drain one at a time. A disk leaves the pool only when it is empty.",
-      "No code changes. Resizes happen while you keep serving.",
+      "Capacity follows what is used, not what was provisioned for the peak.",
+      "A disk leaves the pool only when it is empty.",
+      "No code changes, and the resize runs beside live traffic.",
       "You decide what each product manages, and see every change it makes.",
     ]);
     for (const [index, card] of cards.entries()) {

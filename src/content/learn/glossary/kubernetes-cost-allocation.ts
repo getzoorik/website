@@ -110,6 +110,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-cluster-utilization",
     },
   ],
+  relatedTitle: "Terms related to cost allocation",
   next: {
     title: "AKS cost analysis: what the add-on shows and what it doesn’t",
     href: "/learn/aks-cost-analysis",

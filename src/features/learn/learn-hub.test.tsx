@@ -107,15 +107,15 @@ const literal = (name: string) => name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 describe("/learn's metadata", () => {
   it("titles and describes the hub as its mock does, with the /learn card", () => {
-    expect(metadata.title).toBe("Cloud cost optimization guides");
+    expect(metadata.title).toBe("Kubernetes and block storage cost guides");
     expect(metadata.description).toBe(
-      "Cloud cost optimization guides and comparisons for Kubernetes and block storage on Azure and AWS, from where the money goes to the right fix.",
+      "Kubernetes blog articles and block storage guides on cloud cost for Azure and AWS: AKS and EKS nodes, pods and requests, Azure managed disks and Amazon EBS.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/learn" });
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/learn",
-      title: "Cloud cost optimization guides | Zoorik",
+      title: "Kubernetes and block storage cost guides | Zoorik",
       images: [pageCards["/learn"]],
     });
     /* The sitemap's date for the hub: a printed day, not ahead of today. */
@@ -126,7 +126,9 @@ describe("/learn's metadata", () => {
 describe("/learn", () => {
   it("has one h1 and its line, then the band, All articles, Watch and read and More from Zoorik, and no closing row", () => {
     const root = page();
-    expect([...root.querySelectorAll("h1")].map(text)).toEqual(["Zoorik Learn"]);
+    expect([...root.querySelectorAll("h1")].map(text)).toEqual([
+      "Zoorik Learn: Kubernetes and block storage cost guides",
+    ]);
     expect(text(root.querySelector(".doc-hero .doc-deck"))).toBe(learnPage.hero.deck);
     const parts = [...root.querySelectorAll("main > section")].map(
       (section) => section.id || section.getAttribute("aria-label"),
@@ -247,7 +249,7 @@ describe("/learn", () => {
     );
   });
 
-  it("links Value Lab, the tools, the two calculators, the community, the news and the glossary, Value Lab's figure read from the study", () => {
+  it("links the two calculators, the glossary, Value Lab, the tools, the community and the news, Value Lab's figure read from the study", () => {
     const root = page();
     const drawn = [...root.querySelectorAll("#more .dt a")].map((a) => [
       a.getAttribute("href"),
@@ -256,16 +258,17 @@ describe("/learn", () => {
     ]);
     expect(drawn).toEqual(learnMore.map((tile) => [tile.href, tile.title, tile.line]));
     expect(learnMore.map((tile) => tile.href)).toEqual([
-      routes.valueLab,
-      routes.cloudCostTools,
       routes.eksAndAksPricingCalculator,
       routes.ebsAndAzureDiskPricing,
+      routes.learnGlossary,
+      routes.valueLab,
+      routes.cloudCostTools,
       routes.community,
       routes.news,
-      routes.learnGlossary,
     ]);
-    /* The calculators are named by the words they are searched by, Coral's first, each with its tools-page line. */
-    expect(learnMore.slice(2, 4).map((tile) => [tile.title, tile.line])).toEqual([
+    /* The calculators first (2 Nov 2026), named by the words they are searched by, Coral's first, each with its
+       tools-page line. */
+    expect(learnMore.slice(0, 2).map((tile) => [tile.title, tile.line])).toEqual([
       [
         "EKS and AKS pricing calculator",
         "A node’s monthly list price on AKS or EKS, and how much of it your pods can use.",
@@ -275,7 +278,7 @@ describe("/learn", () => {
         "What an Azure managed disk or an EBS volume costs a month, and what its empty space costs.",
       ],
     ]);
-    expect(learnMore[0]!.line.startsWith(caseStudy.band.stats[0].value)).toBe(true);
+    expect(learnMore[3]!.line.startsWith(caseStudy.band.stats[0].value)).toBe(true);
     /* The glossary is linked once on the hub, by its h1. */
     expect([...root.querySelectorAll(`a[href="${routes.learnGlossary}"]`)].map(text)).toEqual([
       expect.stringContaining("Cloud cost glossary"),

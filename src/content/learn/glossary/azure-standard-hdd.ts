@@ -114,6 +114,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/disk-snapshot",
     },
   ],
+  relatedTitle: "Terms related to Azure Standard HDD",
   next: {
     title: "Premium SSD vs Standard SSD on Azure: what you pay for",
     href: "/learn/premium-ssd-vs-standard-ssd-azure",

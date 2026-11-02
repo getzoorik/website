@@ -607,4 +607,5 @@ export const article: Article = {
       href: "/coral-guide#nodes-held",
     },
   ],
+  relatedTitle: "More on pod markers and node lifecycle",
 };

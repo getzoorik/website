@@ -106,6 +106,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/amortized-cost",
     },
   ],
+  relatedTitle: "Terms related to AWS EDP",
   next: {
     title: "AWS cost optimization: how to reduce AWS costs",
     href: "/aws-cost-optimization",

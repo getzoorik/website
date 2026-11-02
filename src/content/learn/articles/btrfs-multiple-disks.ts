@@ -591,4 +591,5 @@ export const article: Article = {
       href: "/learn/btrfs-vs-lvm",
     },
   ],
+  relatedTitle: "More on btrfs pools and cloud disks",
 };

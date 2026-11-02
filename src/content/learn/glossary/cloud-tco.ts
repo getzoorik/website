@@ -140,6 +140,7 @@ export const term: GlossaryTerm = {
     },
     { title: "FinOps", line: "Shared ownership of cloud cost.", href: "/learn/glossary/finops" },
   ],
+  relatedTitle: "Cloud cost terms related to TCO",
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",
     href: "/cloud-cost-optimization",

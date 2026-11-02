@@ -114,6 +114,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/effective-savings-rate",
     },
   ],
+  relatedTitle: "Terms related to coverage and utilization",
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",
     href: "/cloud-cost-optimization",

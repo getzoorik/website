@@ -560,4 +560,5 @@ export const article: Article = {
       href: "/coral-faq#can-optimization-happen-without-downtime-for",
     },
   ],
+  relatedTitle: "More on pod sizing and requests",
 };

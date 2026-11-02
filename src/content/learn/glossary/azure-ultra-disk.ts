@@ -111,6 +111,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/azure-premium-ssd",
     },
   ],
+  relatedTitle: "Terms related to Azure Ultra Disk",
   next: {
     title: "Premium SSD v2 vs Premium SSD: which one costs less?",
     href: "/learn/premium-ssd-v2-vs-premium-ssd",

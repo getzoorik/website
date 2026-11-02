@@ -94,7 +94,10 @@ export function LearnFrame({
 export interface LearnSectionProps {
   readonly id: string;
   readonly title: ReactNode;
-  readonly lede: ReactNode;
+  /** The line beside the h2, where the section has one. */
+  readonly lede?: ReactNode;
+  /** A paragraph before the head row, where the page opens on it (a versus page's short answer, 2 Nov 2026). */
+  readonly intro?: ReactNode;
   readonly band?: boolean;
   readonly children: ReactNode;
 }
@@ -102,18 +105,20 @@ export interface LearnSectionProps {
 /** A section's classes: `band` lays it on the tinted band. */
 export const sectionClass = (band = false): string => (band ? "sec lv-sec sec-band" : "sec lv-sec");
 
-/** What a section holds (inside its `<section>`): the head row, its h2 and lede, then its body. */
+/** What a section holds (inside its `<section>`): any intro, the head row, its h2 and any lede, then its body. */
 export function LearnSectionBody({
   id,
   title,
   lede,
+  intro,
   children,
 }: Omit<LearnSectionProps, "band">): React.JSX.Element {
   return (
     <div className="wrap">
+      {intro ? <p className="lv-intro">{intro}</p> : null}
       <div className="lv-head">
         <h2 id={`${id}-h`}>{title}</h2>
-        <p>{lede}</p>
+        {lede ? <p>{lede}</p> : null}
       </div>
       {children}
     </div>
@@ -121,7 +126,7 @@ export function LearnSectionBody({
 }
 
 /**
- * A section of a Learn page: its h2 and lede in one head row, then its body; `band` lays it
+ * A section of a Learn page: its h2 and any lede in one head row, then its body; `band` lays it
  * on the tinted band.
  */
 export function LearnSection({ band = false, ...body }: LearnSectionProps): React.JSX.Element {

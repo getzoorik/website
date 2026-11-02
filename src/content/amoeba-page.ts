@@ -65,7 +65,9 @@ export const amoebaPageContent: ProductPageContent = {
     /* "Block storage" is tied with a no-break space, as the mock writes the h1:
        the longer line never leaves "Block" alone at a line end. */
     title: "Block\u00a0storage cost optimization",
-    line: elasticContent.body,
+    /* Its own line (2 Nov 2026): the home page's line for Amoeba changed with the home page's plan, and this
+       page's did not. */
+    line: "Stop paying for empty disk space. Amoeba rightsizes Azure managed disks and Amazon EBS on Windows and Linux VMs, autonomously, without any downtime after the one switch.",
     cta: { label: assessContent.assessment.cta.label, href: assessmentHref("amoeba") },
   },
   about: {

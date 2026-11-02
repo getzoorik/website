@@ -90,6 +90,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/df-vs-du",
     },
   ],
+  relatedTitle: "Terms related to thin provisioning",
   next: { title: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
   sources: [
     {

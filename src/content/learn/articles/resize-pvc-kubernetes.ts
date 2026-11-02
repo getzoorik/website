@@ -599,4 +599,5 @@ export const article: Article = {
       href: "/learn/increase-ebs-volume-size",
     },
   ],
+  relatedTitle: "More on resizing claims and cloud disks",
 };

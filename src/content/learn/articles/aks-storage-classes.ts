@@ -710,4 +710,5 @@ export const article: Article = {
       href: "/learn/premium-ssd-v2-vs-premium-ssd",
     },
   ],
+  relatedTitle: "More on AKS storage and Azure disks",
 };

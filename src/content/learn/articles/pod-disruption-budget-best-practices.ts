@@ -627,4 +627,5 @@ export const article: Article = {
       href: "/learn/karpenter-consolidation",
     },
   ],
+  relatedTitle: "More on drains, evictions and node scale-down",
 };

@@ -133,6 +133,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-headroom",
     },
   ],
+  relatedTitle: "Terms related to the HPA",
   next: { title: "VPA vs HPA", href: "/learn/vpa-vs-hpa" },
   sources: [
     {

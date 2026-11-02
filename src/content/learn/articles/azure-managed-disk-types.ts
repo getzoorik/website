@@ -512,4 +512,5 @@ export const article: Article = {
       href: "/learn/azure-disk-reservations",
     },
   ],
+  relatedTitle: "More on Azure disk types and pricing",
 };

@@ -28,9 +28,8 @@ export const site = {
       It opens with the name, for the same reason as the title. */
   homeDescription:
     "Zoorik is a cloud cost optimization company. Coral rebalances Kubernetes on AKS and EKS. Amoeba rightsizes Azure managed disks and Amazon EBS, autonomously.",
-  /** The company sentence (owner, 1 Nov 2026, O12): the layout's description,
-      the organisation's in the structured data, and the home hero's line
-      under its pitch (`heroContent.company`). The home page's meta
+  /** The company sentence (owner, 1 Nov 2026, O12): the layout's description
+      and the organisation's in the structured data. The home page's meta
       description is its own. */
   description:
     "Zoorik is a cloud cost optimization company. Coral reduces Kubernetes cost on AKS and EKS, and Amoeba reduces block storage cost on Azure and AWS, without any downtime.",

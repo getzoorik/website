@@ -640,4 +640,5 @@ export const article: Article = {
       href: "/coral-guide#what-never-leaves",
     },
   ],
+  relatedTitle: "More on namespace limits and pod requests",
 };

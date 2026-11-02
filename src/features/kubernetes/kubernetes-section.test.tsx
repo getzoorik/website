@@ -77,7 +77,7 @@ describe("KubernetesSection", () => {
     expect(h2.querySelector("a")).toHaveAttribute("href", "/coral");
     const line = container.querySelector(".st-body")!;
     expect(line.textContent).toBe(
-      "Stop paying for idle Kubernetes capacity. Coral rebalances workloads and removes the nodes you don’t need. No code changes. Read our guide to Kubernetes cost optimization.",
+      "Stop paying for idle Kubernetes capacity. Coral rebalances workloads and removes the nodes you don’t need. Read our guide to Kubernetes cost optimization.",
     );
     expect(line.querySelector('[translate="no"]')).toHaveTextContent("Coral");
     /* The guide's sentence links the subject's pillar, in the prose link's own style (no class). */

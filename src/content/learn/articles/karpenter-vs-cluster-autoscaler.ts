@@ -593,4 +593,5 @@ export const article: Article = {
       href: "/learn/kubernetes-autoscaling",
     },
   ],
+  relatedTitle: "More on choosing a node autoscaler",
 };

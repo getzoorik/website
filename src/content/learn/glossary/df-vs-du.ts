@@ -142,6 +142,7 @@ export const term: GlossaryTerm = {
     },
     { title: "Block storage", line: "What both disks are.", href: "/learn/glossary/block-storage" },
   ],
+  relatedTitle: "Terms related to df and du",
   next: {
     title: "Azure VM disk usage: check used vs provisioned",
     href: "/learn/azure-vm-disk-usage",

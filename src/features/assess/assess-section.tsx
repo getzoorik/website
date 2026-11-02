@@ -21,7 +21,8 @@ import { offSiteProps } from "@/lib/links";
  * ─── ONE COMPONENT, THREE SWITCHES ─────────────────────────────────────────
  *   · `product`: on a page that belongs to one product. The button opens that
  *     product's assessment and the dark card names only it.
- *   · `talkOnly`: /assessment, which is the assessment. Only the dark card, in
+ *   · `talkOnly`: /assessment, which is the assessment, and home, whose offers
+ *     card just above offers the same PDF (2 Nov 2026). Only the dark card, in
  *     `div.as-grid.as-solo` (its rules are /assessment's own).
  *   · `reveal`: on by default, for home and the two product pages, where the
  *     cards rise as they arrive (`<Reveal>` at order 0 and 1, so `.rise` and
@@ -31,7 +32,7 @@ import { offSiteProps } from "@/lib/links";
  *   /privacy and /terms have no closing row at all.
  *
  *   route                          props
- *   /                              none
+ *   /                              talkOnly
  *   /coral, /amoeba                product
  *   /docs                          reveal={false}
  *   the guides and FAQs            product, reveal={false}
@@ -51,7 +52,7 @@ export interface AssessSectionProps {
   /** On a page that belongs to one product: the button opens that product's
    *  assessment, and the dark card names only that product. */
   readonly product?: ProductId;
-  /** Only the dark card (/assessment). */
+  /** Only the dark card (/assessment, and home since 2 Nov 2026). */
   readonly talkOnly?: boolean;
   /** The cards rise as they arrive. Home and the product pages only. */
   readonly reveal?: boolean;

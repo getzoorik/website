@@ -31,7 +31,7 @@ describe("page metadata", () => {
       template: "%s | Zoorik",
     });
     expect(home).not.toHaveProperty("title");
-    expect(assessment.title).toBe("Free cloud cost assessment for Azure and AWS");
+    expect(assessment.title).toBe("Free cloud cost analysis for Azure and AWS");
     expect(login.title).toBe("Sign in");
     expect(amoeba.title).toBe("Block storage cost optimization for Azure and AWS");
     expect(coral.title).toBe("Coral: Kubernetes optimization for AKS and EKS");
@@ -56,7 +56,7 @@ describe("page metadata", () => {
       "Block storage cost optimization: Amoeba rightsizes Azure managed disks and Amazon EBS to your data, autonomously, without any downtime after the one switch.",
     );
     expect(coral.description).toBe(
-      "Kubernetes optimization platform for AKS and EKS: Coral rebalances clusters to reduce your cloud cost, autonomously, without any downtime.",
+      "Kubernetes optimization platform for AKS and EKS. Coral is Kubernetes resource optimization software that rebalances requests and nodes to reduce cloud cost.",
     );
     /* Coral is never shown on Windows or Linux. */
     expect(String(coral.description)).not.toMatch(/Windows|Linux/);
@@ -108,7 +108,7 @@ describe("the documents section's metadata", () => {
   it("titles, describes and canonicalises the Coral guide as its mock does", () => {
     expect(coralGuide.title).toBe("Coral product guide");
     expect(coralGuide.description).toBe(
-      "How to connect an AKS or EKS cluster to Coral, what it installs and changes, how it sizes pods and removes nodes, and how you stay in control.",
+      "Connect an AKS or EKS cluster to Coral: what it installs, how it rebalances requests and drains spare nodes, and the switches that keep you in control.",
     );
     expect(coralGuide.alternates).toEqual({ canonical: "/coral-guide" });
     expect(coralGuide).not.toHaveProperty("robots");
@@ -170,16 +170,17 @@ describe("the numbered-row pages' metadata", () => {
   });
 
   it("titles, describes and canonicalises /learn as its mock does, and indexes it", () => {
-    /* The hub's h1 is "Zoorik Learn"; its title goes through the template like every page's. */
-    expect(learn.title).toBe("Cloud cost optimization guides");
+    /* The hub's h1 is "Zoorik Learn: Kubernetes and block storage cost guides"; its title goes through the template
+       like every page's. */
+    expect(learn.title).toBe("Kubernetes and block storage cost guides");
     expect(learn.description).toBe(
-      "Cloud cost optimization guides and comparisons for Kubernetes and block storage on Azure and AWS, from where the money goes to the right fix.",
+      "Kubernetes blog articles and block storage guides on cloud cost for Azure and AWS: AKS and EKS nodes, pods and requests, Azure managed disks and Amazon EBS.",
     );
     expect(learn.alternates).toEqual({ canonical: "/learn" });
     expect(learn).not.toHaveProperty("robots");
     expect(learn.openGraph).toMatchObject({
       url: "/learn",
-      title: "Cloud cost optimization guides | Zoorik",
+      title: "Kubernetes and block storage cost guides | Zoorik",
     });
   });
 });

@@ -9,6 +9,7 @@ import {
   versusPages,
   versusRoute,
   type VersusPage as VersusEntry,
+  type VersusSource,
   type VersusTile,
 } from "@/content/learn-compare";
 import {
@@ -19,7 +20,7 @@ import {
   type VersusFacts,
 } from "@/content/learn-market";
 import { products } from "@/content/products";
-import type { ProseTile } from "@/content/prose-blocks";
+import type { ProseQuestion, ProseSection, ProseTile } from "@/content/prose-blocks";
 import { DocRows, UnnumberedRow, type DocRowsGroup } from "@/features/doc-rows/doc-rows";
 import { ProseBlocks, proseText, ReadMoreRow } from "@/features/documents/prose-blocks";
 import { plainText, richText } from "@/features/documents/rich-text";
@@ -42,10 +43,12 @@ import { offSiteProps } from "@/lib/links";
  *
  * ─── THE OPTIONAL PARTS (1 NOV 2026, THE DRAFTS' X1) ─────────────────────────────────────────────────────────────
  * A page that sets them (`learn-compare.ts`) prints, as its mock draws it (compare-<slug>.html, four_pages_mock.py):
- * the short answer under the deck (`.ar-short`, on the hero's ground); after the fine print, the Learn frame (each
- * section's name beside its text from 981px, the chips on a phone), its question rows (/pricing's, closed, with no
- * number column) and the sources of its prose; then Read more, before the closing row. A page that sets none prints
- * exactly as before, its kicker and fine print with the market's day (`marketChecked`), not its own (`checked`).
+ * the short answer, since 2 Nov 2026 the page's first paragraph before At a glance, with no label (the hero keeps the
+ * h1 and its one line); after the fine print, the Learn frame (each section's name beside its text from 981px, the
+ * chips on a phone), its question rows (/pricing's, closed, with no number column) and the sources of its prose; then
+ * Read more, before the closing row. Its own section names (`titles`) replace the shared ones. A page that sets none
+ * prints exactly as before, its kicker and fine print with the market's day (`marketChecked`), not its own
+ * (`checked`).
  *
  * ─── TWO DIFFERENCES FROM THE MOCK, BOTH FOR "EVERY CLAIM WITH ITS SOURCE" ───────────────────────────────────────
  *   - where a claim rests on several pages, the mock joins their addresses into one href (" ; "), which opens nothing:
@@ -117,9 +120,22 @@ function readMoreTile(tile: VersusTile): ProseTile {
   return { title: page.meta.title, href: versusRoute(page), line: page.line };
 }
 
-/** The optional frame: the page's sections, its questions and the sources of its prose, in the Learn frame. */
-function VersusFrame({ page }: { readonly page: VersusEntry }): React.JSX.Element | null {
-  const { sections = [], questions, sources = [] } = page;
+/**
+ * The optional frame: a page's sections, its questions and the sources of its prose, in the Learn frame. The versus
+ * pages and, since 2 Nov 2026, the alternatives pages draw it.
+ */
+export function LearnProseFrame({
+  sections = [],
+  questions,
+  sources = [],
+  sourcesTitle = versusFrameCopy.sources.title,
+}: {
+  readonly sections?: readonly ProseSection[];
+  readonly questions?: { readonly title: string; readonly rows: readonly ProseQuestion[] };
+  readonly sources?: readonly VersusSource[];
+  /** The sources' name, where the page has its own. */
+  readonly sourcesTitle?: string;
+}): React.JSX.Element | null {
   if (sections.length === 0 && !questions && sources.length === 0) return null;
   const groups: DocRowsGroup[] = sections.map((section) => ({
     id: section.id,
@@ -145,11 +161,10 @@ function VersusFrame({ page }: { readonly page: VersusEntry }): React.JSX.Elemen
     });
   }
   if (sources.length > 0) {
-    const { id, title } = versusFrameCopy.sources;
     groups.push({
-      id,
-      title,
-      chip: title,
+      id: versusFrameCopy.sources.id,
+      title: sourcesTitle,
+      chip: sourcesTitle,
       body: (
         <p className="ar-src">
           {sources.map((source, index) => (
@@ -181,14 +196,13 @@ export function VersusPage({ page }: { readonly page: VersusEntry }): React.JSX.
         kicker: versusCopy.kicker(checked),
         title: named(page.meta.title),
         deck: named(page.deck ?? page.meta.description),
-        after: page.short ? (
-          <p className="ar-short">
-            <b>{versusFrameCopy.short}</b> {richText(page.short)}
-          </p>
-        ) : undefined,
       }}
     >
-      <LearnSection id={glance.id} title={glance.title} lede={glance.lede}>
+      <LearnSection
+        id={glance.id}
+        title={named(page.titles?.glance ?? glance.title)}
+        intro={page.short ? richText(page.short) : undefined}
+      >
         <div className="vp-glance">
           <article className="vp-side vp-ours">
             <p className="vp-k">{named(ours.company)}</p>
@@ -201,7 +215,7 @@ export function VersusPage({ page }: { readonly page: VersusEntry }): React.JSX.
             </a>
           </article>
           <article className="vp-side">
-            <p className="vp-k">{tool.company}</p>
+            <p className="vp-k">{facts.company ?? tool.company}</p>
             <h3>{facts.name}</h3>
             <p>{facts.line}</p>
             <a className="vp-out" href={tool.url} {...offSiteProps(tool.url)}>
@@ -211,7 +225,7 @@ export function VersusPage({ page }: { readonly page: VersusEntry }): React.JSX.
           </article>
         </div>
       </LearnSection>
-      <LearnSection id={table.id} title={table.title} lede={table.lede} band>
+      <LearnSection id={table.id} title={named(page.titles?.table ?? table.title)} band>
         <div className="vp-tw">
           <table className="vp-t">
             <caption className="sr-only">{named(table.caption(product, facts.name))}</caption>
@@ -255,10 +269,15 @@ export function VersusPage({ page }: { readonly page: VersusEntry }): React.JSX.
           {fine.after}
         </p>
       </LearnSection>
-      <VersusFrame page={page} />
+      <LearnProseFrame
+        sections={page.sections}
+        questions={page.questions}
+        sources={page.sources}
+        sourcesTitle={page.titles?.sources}
+      />
       {page.readMore ? (
         <ReadMoreRow
-          title={versusFrameCopy.readMore(products[page.product].name)}
+          title={page.titles?.readMore ?? versusFrameCopy.readMore(products[page.product].name)}
           tiles={page.readMore.map(readMoreTile)}
         />
       ) : null}

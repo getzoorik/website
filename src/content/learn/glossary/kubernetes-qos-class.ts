@@ -109,6 +109,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/burstable-instance",
     },
   ],
+  relatedTitle: "Terms related to QoS classes",
   next: { title: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
   sources: [
     {

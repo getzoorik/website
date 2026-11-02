@@ -555,4 +555,5 @@ export const article: Article = {
       href: "/learn/premium-ssd-vs-standard-ssd-azure",
     },
   ],
+  relatedTitle: "More on choosing Azure managed disks",
 };

@@ -665,4 +665,5 @@ export const article: Article = {
       href: "/learn/btrfs-device-remove",
     },
   ],
+  relatedTitle: "More on btrfs pools, LVM and shrinking EBS",
 };

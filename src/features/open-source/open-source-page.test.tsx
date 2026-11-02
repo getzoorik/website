@@ -20,7 +20,7 @@ describe("/open-source", () => {
     expect(root.querySelectorAll("h1")).toHaveLength(1);
     expect(text(root.querySelector("h1"))).toBe("Open source");
     expect(text(root.querySelector(".doc-deck"))).toBe(
-      "zoorikctl, the assessment and the Terraform modules are open source, so you can read exactly what they do in your cluster and cloud account.",
+      "Read exactly what our CLI, assessment and Terraform modules do in your cluster and cloud account.",
     );
     /* Never "the parts you run yourself": the Coral agent's source is private. */
     expect(text(root)).not.toMatch(/parts of Zoorik you run yourself/i);
@@ -53,9 +53,8 @@ describe("/open-source", () => {
     expect(buttons[0]!.querySelector(".mkt-q")).toHaveTextContent("· Verified organization");
     const trust = top.querySelector(":scope > p.op-trust")!;
     expect(text(trust)).toBe(
-      "Our public GitHub repositories are open source under Apache-2.0. Every zoorikctl release since v0.3.0 is " +
-        "signed with Sigstore (opens in a new tab), and each PyPI release carries a provenance attestation from its " +
-        "GitHub release workflow.",
+      "Every zoorikctl release since v0.3.0 is signed with Sigstore (opens in a new tab), and each PyPI release " +
+        "carries a provenance attestation from its GitHub release workflow.",
     );
     expect(trust.querySelector("a")).toHaveAttribute(
       "href",

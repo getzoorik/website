@@ -603,4 +603,5 @@ export const article: Article = {
       href: "/learn/shrink-ebs-volume",
     },
   ],
+  relatedTitle: "More on shrinking filesystems and cloud disks",
 };

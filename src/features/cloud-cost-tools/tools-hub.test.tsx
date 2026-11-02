@@ -64,10 +64,10 @@ afterEach(() => {
 
 describe("/cloud-cost-optimization-library's metadata", () => {
   it("is titled, described and canonicalised as its mock, with its own card", () => {
-    /* Part 4 (1 Nov 2026): the title and description carry the page's searches. */
+    /* The 2 Nov 2026 plan: the title and description carry the page's searches. */
     expect(metadata.title).toBe("Cloud cost management tools and FinOps tools");
     expect(metadata.description).toBe(
-      "Cloud cost management tools for Azure and AWS: the cloud cost optimization tools and FinOps tools that reduce what you pay, and how each one acts.",
+      "Choose a cloud cost manager for Azure and AWS: Kubernetes, block storage and FinOps tools from Kubecost to Azure Advisor, what each does and how it acts.",
     );
     expect(`${String(metadata.title)} | Zoorik`.length).toBeLessThanOrEqual(60);
     expect(String(metadata.description).length).toBeLessThanOrEqual(158);
@@ -78,7 +78,7 @@ describe("/cloud-cost-optimization-library's metadata", () => {
       images: [pageCards["/cloud-cost-optimization-library"]],
     });
     expect(routes.cloudCostTools).toBe("/cloud-cost-optimization-library");
-    expect(cloudCostToolsLastUpdated).toBe("1 November 2026");
+    expect(cloudCostToolsLastUpdated).toBe("2 November 2026");
   });
 });
 
@@ -89,7 +89,7 @@ describe("/cloud-cost-optimization-library", () => {
     expect(root.querySelector("header.hero.doc-hero.lv-hero#top")).not.toBeNull();
     expect(text(root.querySelector("h1"))).toBe("Cloud cost management tools and FinOps tools");
     expect(text(root.querySelector(".doc-deck"))).toBe(
-      "These cloud cost management tools reduce what you pay on Azure and AWS. Each tile says what the tool does, how it acts and which clouds it supports. Filter them by cloud, or by kind: block storage, Kubernetes, FinOps tools or the cloud providers’ own.",
+      "Only cloud cost tools that reduce what you pay on Azure or AWS, whether they act or recommend.",
     );
     expect(root.querySelector(".vp-kick")).toBeNull();
     /* The mock has no search: the chips filter the tiles. */
@@ -110,6 +110,12 @@ describe("/cloud-cost-optimization-library", () => {
       ["calculators", "sec lv-sec", "Free calculators"],
       ["assess", "sec", ""],
     ]);
+    /* The questions after the calculators (2 Nov 2026): the versus pages' rows, in the Learn frame. */
+    const questions = root.querySelector("#calculators + div.sec.doc-body")!;
+    expect(questions.querySelector("section#questions h2")).toHaveTextContent(
+      "Questions about these tools",
+    );
+    expect(questions.querySelectorAll("section#questions details")).toHaveLength(5);
     for (const id of ["tools", "ours", "calculators"]) {
       const section = root.querySelector(`#${id}`)!;
       expect(section).toHaveAttribute("aria-labelledby", `${id}-h`);
@@ -191,7 +197,7 @@ describe("/cloud-cost-optimization-library", () => {
             mixed: "mk-mix",
           }[facts.acts],
         );
-        /* The clouds: Azure, then AWS, each a named image; then Google Cloud in words where its pages name it. */
+        /* The clouds: Azure, then AWS, each a named image, and no third cloud named (2 Nov 2026). */
         const marks = [...tile.querySelectorAll(".tl-cl > svg")];
         expect(marks.map((m) => [m.getAttribute("role"), m.getAttribute("aria-label")])).toEqual(
           facts.clouds.map((cloud) => ["img", cloud]),
@@ -199,9 +205,7 @@ describe("/cloud-cost-optimization-library", () => {
         expect(marks.map((m) => m.getAttribute("class"))).toEqual(
           facts.clouds.map((cloud) => (cloud === "AWS" ? "aws" : null)),
         );
-        expect(text(tile.querySelector(".tl-cl > small"))).toBe(
-          "googleCloud" in entry && entry.googleCloud ? "+ Google Cloud" : "",
-        );
+        expect(tile.querySelector(".tl-cl > small")).toBeNull();
         if ("ours" in entry) {
           /* Coral and Amoeba: first, with their marks, linking to their own pages. */
           expect(i).toBe(0);

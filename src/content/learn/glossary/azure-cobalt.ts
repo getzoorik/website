@@ -112,6 +112,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/node-pool",
     },
   ],
+  relatedTitle: "Terms related to Azure Cobalt",
   next: {
     title: "How to change an AKS node pool VM size",
     href: "/learn/change-aks-node-pool-vm-size",

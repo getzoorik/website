@@ -116,6 +116,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/savings-plan",
     },
   ],
+  relatedTitle: "Terms related to FinOps personas",
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",
     href: "/cloud-cost-optimization",

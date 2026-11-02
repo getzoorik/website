@@ -20,8 +20,7 @@ import { Text } from "@/features/learn/article-page";
  *
  * The heading is set in two spans (`.lm > span`) for the line mask: the outer
  * one clips, the inner one slides up into it when the head has risen
- * (engines.css). The h2 itself carries no class; its first words are a link to
- * the cloud cost pillar, inside the inner span, so they slide up with the rest.
+ * (engines.css). The h2 itself carries no class.
  *
  * `#why` is not in the nav. It has an id because every section does, and because
  * a link to it should not have to wait for one; the drawings' rules hang on it.

@@ -130,6 +130,7 @@ export const term: GlossaryTerm = {
     },
     { title: "EBS volume", line: "Block storage on AWS.", href: "/learn/glossary/ebs-volume" },
   ],
+  relatedTitle: "Terms related to XFS",
   next: {
     title: "Can you shrink an XFS filesystem?",
     href: "/learn/shrink-xfs-filesystem",

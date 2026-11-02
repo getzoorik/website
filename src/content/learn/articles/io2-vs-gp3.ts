@@ -530,4 +530,5 @@ export const article: Article = {
       href: "/learn/compute-optimizer-ebs",
     },
   ],
+  relatedTitle: "More on EBS volume types and cost",
 };

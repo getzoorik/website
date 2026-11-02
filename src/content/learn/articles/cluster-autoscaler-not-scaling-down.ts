@@ -631,4 +631,5 @@ export const article: Article = {
       href: "/coral-faq#how-does-coral-interact-with-cluster",
     },
   ],
+  relatedTitle: "More on node scale-down and disruption budgets",
 };

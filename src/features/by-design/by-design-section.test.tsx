@@ -8,7 +8,7 @@ import { byDesignCards } from "@/content/by-design";
 import { ByDesignSection } from "./by-design-section";
 
 /**
- * "Autonomous cloud cost optimization, without the risk": four drawings, each captioned
+ * "Autonomous optimization, without the risk": four drawings, each captioned
  * by its title, looping only while the band is on screen (`why_visuals.py`).
  */
 
@@ -49,15 +49,12 @@ afterEach(() => {
 const band = (container: HTMLElement) => container.querySelector<HTMLElement>("section#why")!;
 
 describe("without the risk", () => {
-  it("links its heading's first words to the cloud cost pillar, inside the line mask's inner span", () => {
+  it("sets its heading in plain words, inside the line mask's inner span, with no link", () => {
     const section = band(render(<ByDesignSection />).container);
     const h2 = section.querySelector(".sec-head h2")!;
-    expect(h2.textContent).toBe("Autonomous cloud cost optimization, without the risk");
-    const link = h2.querySelector(":scope > span.lm > span > a")!;
-    expect(link.textContent).toBe("cloud cost optimization");
-    expect(link).toHaveAttribute("href", "/cloud-cost-optimization");
-    expect(link).not.toHaveAttribute("class");
-    expect(h2.querySelectorAll("a")).toHaveLength(1);
+    expect(h2.textContent).toBe("Autonomous optimization, without the risk");
+    expect(h2.querySelector(":scope > span.lm > span")!.textContent).toBe(h2.textContent);
+    expect(h2.querySelector("a")).toBeNull();
   });
 
   it("is four cards, each a drawing named by its sentence, then its title", () => {
@@ -78,13 +75,13 @@ describe("without the risk", () => {
     });
     /* The four sentences, word for word: they left the screen, not the page. */
     expect(cards.map((card) => card.querySelector("figure")!.getAttribute("aria-label"))).toEqual([
-      "Pay for what your workloads use, not what was provisioned for the peak.",
-      "Nodes drain one at a time. A disk leaves the pool only when it is empty.",
-      "No code changes. Resizes happen while you keep serving.",
+      "Capacity follows what is used, not what was provisioned for the peak.",
+      "A disk leaves the pool only when it is empty.",
+      "No code changes, and the resize runs beside live traffic.",
       "You decide what each product manages, and see every change it makes.",
     ]);
     expect(cards.map((card) => card.querySelector("h3")!.textContent)).toEqual([
-      "Reduce cloud cost",
+      "Pay for what your workloads use",
       "Drains nodes safely, one at a time",
       "Without any downtime or code changes",
       "Full control and visibility",

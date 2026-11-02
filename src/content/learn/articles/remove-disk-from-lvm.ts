@@ -592,4 +592,5 @@ export const article: Article = {
       href: "/learn/shrink-azure-managed-disk",
     },
   ],
+  relatedTitle: "More on LVM and shrinking Linux disks",
 };

@@ -136,6 +136,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-resource-requests",
     },
   ],
+  relatedTitle: "Terms related to EKS",
   next: {
     title: "How to choose EKS instance types",
     href: "/learn/how-to-choose-eks-instance-types",

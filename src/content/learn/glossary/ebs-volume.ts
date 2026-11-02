@@ -132,6 +132,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/azure-managed-disk",
     },
   ],
+  relatedTitle: "Terms related to EBS volumes",
   next: {
     title: "How to shrink an EBS volume when AWS only lets it grow",
     href: "/learn/shrink-ebs-volume",

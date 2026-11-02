@@ -126,6 +126,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/block-storage",
     },
   ],
+  relatedTitle: "Terms related to instance store",
   next: {
     title: "How to change an EKS node group instance type",
     href: "/learn/change-eks-node-group-instance-type",

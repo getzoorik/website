@@ -117,6 +117,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/node-pool",
     },
   ],
+  relatedTitle: "Terms related to on-demand instances",
   next: {
     title: "Kubernetes node size best practices: large or small nodes",
     href: "/learn/kubernetes-node-size-best-practices",

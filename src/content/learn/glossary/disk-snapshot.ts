@@ -103,6 +103,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/azure-standard-hdd",
     },
   ],
+  relatedTitle: "Disk terms related to snapshots",
   next: {
     title: "Azure disk snapshot cost: incremental vs full snapshots",
     href: "/learn/azure-disk-snapshot-cost",

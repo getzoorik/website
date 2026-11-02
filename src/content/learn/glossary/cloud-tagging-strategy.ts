@@ -151,6 +151,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-cost-allocation",
     },
   ],
+  relatedTitle: "Cloud cost terms related to tagging strategy",
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",
     href: "/cloud-cost-optimization",

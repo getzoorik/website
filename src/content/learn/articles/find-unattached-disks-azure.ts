@@ -654,4 +654,5 @@ export const article: Article = {
       href: "/learn/premium-ssd-vs-standard-ssd-azure",
     },
   ],
+  relatedTitle: "More on Azure disk cost and cleanup",
 };

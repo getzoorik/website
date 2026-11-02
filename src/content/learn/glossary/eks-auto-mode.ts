@@ -126,6 +126,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/on-demand-instance",
     },
   ],
+  relatedTitle: "Terms related to EKS Auto Mode",
   next: {
     title: "What is Karpenter? How it picks and removes nodes",
     href: "/learn/what-is-karpenter",

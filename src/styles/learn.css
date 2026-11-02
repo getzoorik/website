@@ -47,6 +47,8 @@
 .lv-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px 24px;flex-wrap:wrap;margin-bottom:24px}
 .lv-head h2{font-size:clamp(1.5rem,1.2rem + 1vw,2rem);font-weight:600;letter-spacing:-.025em}
 .lv-head p{color:var(--muted);max-width:56ch}
+/* a versus page's short answer, its first paragraph before At a glance (2 Nov 2026) */
+.lv-intro{max-width:44rem;margin-bottom:clamp(36px,4.5vw,64px);font-size:1.0625rem;line-height:1.6}
 .lv-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:20px}
 .lv-chips button{font:500 .8125rem/1 var(--sans);padding:9px 13px;border:1px solid var(--line);border-radius:var(--r-pill);background:#fff;color:var(--text);cursor:pointer}
 .lv-chips button[aria-pressed="true"]{background:var(--text);border-color:var(--text);color:#fff}
@@ -272,13 +274,9 @@ p.fx-read{color:inherit;font-weight:inherit}
 .vx-src svg{width:11px;height:11px}
 .vp-fine{margin-top:16px;font-size:.8125rem;line-height:1.6;color:var(--muted)}
 .vp-fine a{color:var(--accent)}
-/* the versus template's optional parts (1 Nov 2026; the mocks' four-pages block, compare-<slug>.html): the Learn
-   article's short answer, under the deck on the hero's ground; then, in the Learn frame after the table, /pricing's
-   question rows (the FAQ's with no number column), their two rules started at the Learn hero, as works-with.css starts
-   them at the document hero */
-.lv-hero .ar-short{margin-top:24px;padding-top:20px;max-width:44rem;border-top:1px solid rgba(250,247,243,.16);
-  font-size:1rem;line-height:1.65;color:rgba(255,255,255,.78);text-wrap:pretty}
-.lv-hero .ar-short b{font-weight:600;color:#fff}
+/* the versus template's optional parts (1 Nov 2026; the mocks' four-pages block, compare-<slug>.html): in the Learn
+   frame after the table, /pricing's question rows (the FAQ's with no number column), their two rules started at the
+   Learn hero, as works-with.css starts them at the document hero; the short answer is `.lv-intro` (2 Nov 2026) */
 .lv-hero ~ .doc-body .pr-faq .fq summary{grid-template-columns:minmax(0,1fr) 16px}
 .lv-hero ~ .doc-body .pr-faq .fq > .fq-body{padding-left:0}
 .ap-q{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}

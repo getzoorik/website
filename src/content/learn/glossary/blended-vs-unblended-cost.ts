@@ -108,6 +108,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/showback",
     },
   ],
+  relatedTitle: "Terms related to blended and unblended cost",
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",
     href: "/cloud-cost-optimization",

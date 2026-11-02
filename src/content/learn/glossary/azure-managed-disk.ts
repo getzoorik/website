@@ -146,6 +146,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/ephemeral-os-disk",
     },
   ],
+  relatedTitle: "Terms related to Azure managed disks",
   next: { title: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
   sources: [
     {

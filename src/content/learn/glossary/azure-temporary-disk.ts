@@ -114,6 +114,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/thin-provisioning",
     },
   ],
+  relatedTitle: "Terms related to the Azure temp disk",
   next: {
     title: "Azure VM disk usage: check used vs provisioned",
     href: "/learn/azure-vm-disk-usage",

@@ -626,4 +626,5 @@ export const article: Article = {
       href: "/learn/karpenter-consolidation",
     },
   ],
+  relatedTitle: "More on packing and emptying nodes",
 };

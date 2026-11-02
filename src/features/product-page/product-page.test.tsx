@@ -8,11 +8,9 @@ import { amoebaDocs, amoebaOnePager, calendarUrl, routes } from "@/config/site";
 import { amoebaPageContent } from "@/content/amoeba-page";
 import { coralPageContent } from "@/content/coral-page";
 import { documents } from "@/content/documents";
-import { elasticContent } from "@/content/elastic";
 import { findArticle, learnSlugOf } from "@/content/learn/published";
 import { socialProfiles } from "@/content/footer";
 import { howItWorksSteps } from "@/content/how-it-works";
-import { kubernetesContent } from "@/content/kubernetes";
 import type { ArticleText } from "@/content/learn/article";
 import type { ProductPageContent, ReadMoreTile } from "@/content/product-page";
 import { productFilms, youtubeChannel } from "@/content/product-films";
@@ -161,12 +159,17 @@ describe.each(pages)("the product page %s", (path, content) => {
     expect(mark.nextElementSibling!.tagName).toBe("SPAN");
   });
 
-  it("says the home page's own line for the product under the h1", () => {
+  it("says one line under the h1, the page's own", () => {
     const page = renderPage(path, content);
     const line = page.querySelector(".pp-hero p.hero-sub")!;
-    const home = product === "coral" ? kubernetesContent : elasticContent;
-    expect(content.hero.line).toBe(home.body);
-    expect(line.textContent).toBe(home.body);
+    /* Coral's is the page's own (owner, 2 Nov 2026: the h1 and one small line under it); Amoeba's is the home
+       page's line for it before 2 Nov 2026, when that one changed. */
+    const expected =
+      product === "coral"
+        ? "Coral rebalances workloads and drains spare nodes so your autoscaler can remove them."
+        : "Stop paying for empty disk space. Amoeba rightsizes Azure managed disks and Amazon EBS on Windows and Linux VMs, autonomously, without any downtime after the one switch.";
+    expect(content.hero.line).toBe(expected);
+    expect(line.textContent).toBe(expected);
     expect(line.querySelector('[translate="no"]')).toHaveTextContent(name);
   });
 
@@ -234,7 +237,7 @@ describe.each(pages)("the product page %s", (path, content) => {
     expect(lead!.tagName).toBe("P");
     expect(lead!.textContent).toBe(plain(content.about.paragraphs[0]));
     expect(lead!.textContent).toMatch(new RegExp(`^${name} is a `));
-    /* The other two stay in the page, folded: closed, behind a quiet opener. */
+    /* The others stay in the page, folded: closed, behind a quiet opener. */
     expect(more!.tagName).toBe("DETAILS");
     expect(more).toHaveClass("pp-more");
     expect(more).not.toHaveAttribute("open");
@@ -249,7 +252,7 @@ describe.each(pages)("the product page %s", (path, content) => {
       expect(a).not.toHaveAttribute("class");
       expect(a).not.toHaveAttribute("target");
     }
-    expect(content.about.paragraphs).toHaveLength(3);
+    expect(content.about.paragraphs).toHaveLength(product === "coral" ? 5 : 3);
   });
 
   it("lists What it does as rows, each its drawing, its title and its line, and where it runs", () => {
@@ -673,7 +676,9 @@ describe("the Coral page", () => {
     const article = learnTile(coralPageContent);
     const section = page.querySelector("section#read-coral")!;
     expect(section).toHaveAttribute("aria-labelledby", "read-coral-h");
-    expect(text(section.querySelector("h2#read-coral-h"))).toBe("Coral docs and guides");
+    expect(text(section.querySelector("h2#read-coral-h"))).toBe(
+      "More on Coral: product guide, FAQ and Kubernetes guides",
+    );
     const all = section.querySelector(".sec-hrow a.alink")!;
     expect(text(all)).toBe("All docs");
     expect(all).toHaveAttribute("href", `${routes.docs}#coral`);

@@ -130,6 +130,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/azure-managed-disk",
     },
   ],
+  relatedTitle: "Terms related to IOPS",
   next: {
     title: "Azure disk IOPS vs throughput: what limits your disks",
     href: "/learn/azure-disk-iops-vs-throughput",

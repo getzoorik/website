@@ -492,4 +492,5 @@ export const article: Article = {
       href: "/coral-guide#hpas-and-vpas",
     },
   ],
+  relatedTitle: "More on KEDA, Karpenter and pod requests",
 };

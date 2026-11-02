@@ -490,4 +490,5 @@ export const article: Article = {
       href: "/coral-value-lab",
     },
   ],
+  relatedTitle: "More on node allocatable and pod requests",
 };

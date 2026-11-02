@@ -488,4 +488,5 @@ export const article: Article = {
       href: "/coral-value-lab",
     },
   ],
+  relatedTitle: "More on requests and node removal",
 };

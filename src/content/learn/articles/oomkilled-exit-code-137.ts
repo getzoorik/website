@@ -599,4 +599,5 @@ export const article: Article = {
       href: "/coral-faq#what-happens-if-an-optimized-pod",
     },
   ],
+  relatedTitle: "More on memory limits and OOM kills",
 };

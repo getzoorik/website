@@ -1,11 +1,12 @@
 import { eventsListUpdated, eventsPage, type EventEntry } from "@/content/events";
 import { DocumentPage } from "@/features/documents/document-page";
+import { FinOpsEvents } from "@/features/events/event-card";
 import { EventsList } from "@/features/events/events-list";
 
 /**
  * `/events`: the utility hero,
  * then the search, the filters, "Next up" with its banner, the first nine events by month and "More events"
- * (`EventsList`, the page's island), then where the dates come from. No closing assessment row: the mock draws
+ * (`EventsList`, the page's island), then where the dates come from, then the FinOps lines. No closing assessment row: the mock draws
  * none, so the page ends on its list and the footer.
  */
 export function EventsPage({
@@ -25,6 +26,7 @@ export function EventsPage({
         <div className="wrap">
           <EventsList events={events} buildDay={buildDay} />
           <p className="ev-src">{eventsPage.source}</p>
+          <FinOpsEvents events={events} />
           <EveryEventWithoutScripting />
         </div>
       </div>

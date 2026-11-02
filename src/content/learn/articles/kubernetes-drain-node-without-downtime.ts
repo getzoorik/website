@@ -630,4 +630,5 @@ export const article: Article = {
       href: "/learn/cluster-autoscaler-not-scaling-down",
     },
   ],
+  relatedTitle: "More on draining nodes safely",
 };

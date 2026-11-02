@@ -648,4 +648,5 @@ export const article: Article = {
       href: "/coral-faq#how-do-you-make-sure-node",
     },
   ],
+  relatedTitle: "More on pod placement and node scale-down",
 };

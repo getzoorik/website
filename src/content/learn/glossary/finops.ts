@@ -157,6 +157,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/cloud-chargeback",
     },
   ],
+  relatedTitle: "Terms related to FinOps",
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",
     href: "/cloud-cost-optimization",

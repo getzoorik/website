@@ -144,6 +144,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/savings-plan",
     },
   ],
+  relatedTitle: "Terms related to spot instances",
   next: {
     title: "Kubernetes cost optimization: requests, then nodes",
     href: "/kubernetes-cost-optimization",

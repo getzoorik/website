@@ -440,4 +440,5 @@ export const article: Article = {
       href: "/coral-value-lab",
     },
   ],
+  relatedTitle: "More on estimating Kubernetes cost",
 };

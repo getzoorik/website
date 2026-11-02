@@ -106,6 +106,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/cloud-cost-anomaly-detection",
     },
   ],
+  relatedTitle: "Terms related to the FinOps maturity model",
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",
     href: "/cloud-cost-optimization",

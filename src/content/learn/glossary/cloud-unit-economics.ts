@@ -122,6 +122,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/showback",
     },
   ],
+  relatedTitle: "Cloud cost terms related to unit economics",
   next: {
     title: "Kubernetes cost estimation: what a cluster costs",
     href: "/learn/kubernetes-cost-estimation",

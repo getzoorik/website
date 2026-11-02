@@ -118,6 +118,7 @@ export const term: GlossaryTerm = {
     { title: "gp3 in AWS", line: "The volume in the example.", href: "/learn/glossary/ebs-gp3" },
     { title: "EBS volume", line: "The AWS disk.", href: "/learn/glossary/ebs-volume" },
   ],
+  relatedTitle: "Terms related to EBS-optimized instances",
   next: {
     title: "io2 vs gp3: when Provisioned IOPS is worth the price",
     href: "/learn/io2-vs-gp3",

@@ -112,6 +112,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/eks-auto-mode",
     },
   ],
+  relatedTitle: "Terms related to max pods per node",
   next: {
     title: "Kubernetes bin packing: fewer nodes for the same pods",
     href: "/learn/kubernetes-bin-packing",

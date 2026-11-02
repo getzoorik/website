@@ -593,4 +593,5 @@ export const article: Article = {
       href: "/learn/kubernetes-autoscaling",
     },
   ],
+  relatedTitle: "More on scaling pods and their requests",
 };

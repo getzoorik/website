@@ -467,4 +467,5 @@ export const article: Article = {
       href: "/coral-guide#how-sizes-are-worked-out",
     },
   ],
+  relatedTitle: "More on setting pod requests and limits",
 };

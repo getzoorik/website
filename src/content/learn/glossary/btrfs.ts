@@ -169,6 +169,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/rightsizing",
     },
   ],
+  relatedTitle: "Terms related to btrfs",
   next: {
     title: "btrfs on multiple disks: how a btrfs pool works",
     href: "/learn/btrfs-multiple-disks",

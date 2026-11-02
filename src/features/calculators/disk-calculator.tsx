@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { diskCalculator, diskCalculatorUi, roundUpLine } from "@/content/calculators";
+import { diskCalculator, diskCalculatorUi } from "@/content/calculators";
 import { cloudPrices, regionNames } from "@/content/cloud-prices";
 import { richText } from "@/features/documents/rich-text";
 import {
@@ -210,16 +210,6 @@ export function DiskCalculator(): React.JSX.Element {
                     : ""}
                 </CalcRow>
               </dl>
-              <p className="calc-note" id="o-upline" hidden={!up}>
-                {up
-                  ? roundUpLine(
-                      ok.tier ?? "",
-                      amount(ok.pricedGib),
-                      amount(ok.roundUpGib ?? 0),
-                      usd(ok.roundUpUsdPerMonth ?? 0),
-                    )
-                  : ""}
-              </p>
             </>
           ) : null}
         </div>

@@ -621,4 +621,5 @@ export const article: Article = {
       href: "/coral-faq#does-optimization-ever-modify-hpa-minreplicas",
     },
   ],
+  relatedTitle: "More on KEDA and event-driven scaling",
 };

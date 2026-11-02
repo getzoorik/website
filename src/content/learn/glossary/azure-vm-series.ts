@@ -131,6 +131,7 @@ export const term: GlossaryTerm = {
     },
     { title: "Node pool", line: "Where you pick a VM size.", href: "/learn/glossary/node-pool" },
   ],
+  relatedTitle: "Terms related to Azure VM series",
   next: {
     title: "How to change an AKS node pool VM size",
     href: "/learn/change-aks-node-pool-vm-size",

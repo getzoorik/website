@@ -94,6 +94,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/amortized-cost",
     },
   ],
+  relatedTitle: "Terms related to effective savings rate",
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",
     href: "/cloud-cost-optimization",

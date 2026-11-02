@@ -127,6 +127,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/eks-auto-mode",
     },
   ],
+  relatedTitle: "Terms related to node pools",
   next: {
     title: "Kubernetes node size best practices: large or small nodes",
     href: "/learn/kubernetes-node-size-best-practices",

@@ -662,4 +662,5 @@ export const article: Article = {
       href: "/learn/aks-node-auto-provisioning",
     },
   ],
+  relatedTitle: "More on AKS VM sizes and node changes",
 };

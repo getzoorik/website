@@ -125,6 +125,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-resource-requests",
     },
   ],
+  relatedTitle: "Terms related to vCPUs",
   next: {
     title: "Kubernetes allocatable vs capacity: what pods can use",
     href: "/learn/kubernetes-allocatable-vs-capacity",

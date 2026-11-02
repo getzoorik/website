@@ -155,6 +155,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/azure-ultra-disk",
     },
   ],
+  relatedTitle: "Terms related to Azure disk sizes",
   next: { title: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
   sources: [
     {

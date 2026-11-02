@@ -479,4 +479,5 @@ export const article: Article = {
       href: "/learn/azure-disk-lrs-vs-zrs",
     },
   ],
+  relatedTitle: "More on Azure disk types and pricing",
 };

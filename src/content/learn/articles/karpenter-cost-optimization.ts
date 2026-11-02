@@ -576,4 +576,5 @@ export const article: Article = {
       href: "/learn/how-to-choose-eks-instance-types",
     },
   ],
+  relatedTitle: "More on Karpenter cost and pod requests",
 };

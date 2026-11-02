@@ -362,4 +362,5 @@ export const article: Article = {
       href: "/learn/vpa-vs-hpa",
     },
   ],
+  relatedTitle: "More on architecture and cloud cost",
 };

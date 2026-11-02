@@ -94,6 +94,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/rightsizing",
     },
   ],
+  relatedTitle: "Terms related to anomaly detection",
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",
     href: "/cloud-cost-optimization",

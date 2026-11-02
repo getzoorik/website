@@ -107,6 +107,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/daemonset",
     },
   ],
+  relatedTitle: "Terms related to AWS Graviton",
   next: {
     title: "How to choose EKS instance types",
     href: "/learn/how-to-choose-eks-instance-types",

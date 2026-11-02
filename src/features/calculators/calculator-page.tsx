@@ -17,8 +17,8 @@ import type { ReferenceTable } from "./reference-tables";
  * /ebs-and-azure-disk-pricing):
  *
  *   hero          the title and one line
- *   calculator    the two paragraphs, the form and its result side by side (stacked below 900px), then the formula
- *                 and the prices' sources with their day
+ *   calculator    its paragraph, the form and its result side by side (stacked below 900px), then the prices'
+ *                 sources with their day
  *   the frame     Worked example, How the calculator works, Sources (with the reference tables, closed) and Related
  *                 reading, each section's name beside its text: the guides' article frame
  *   closing row   one line on what the page was and where the reader's own figure is, then the site's row for the
@@ -119,15 +119,13 @@ export function CalculatorPage({
             ))}
           </div>
           {children}
-          <p className="mk-note calc-src">
-            {richText(copy.method)} {richText(copy.sourceFirst)}
-          </p>
+          <p className="mk-note calc-src">{richText(copy.sourceFirst)}</p>
         </div>
       </section>
       <DocRows
         frame="article"
         groups={copy.frame.map((section) => ({
-          id: sectionSlug(section.title),
+          id: section.id ?? sectionSlug(section.title),
           title: richText(section.title),
           chip: section.title,
           body: section.related ? (
@@ -143,7 +141,7 @@ export function CalculatorPage({
           ) : (
             <>
               <Blocks blocks={section.blocks ?? []} />
-              {section.title === "Sources" ? (
+              {section.id === "sources" ? (
                 <details className="fq gd-row" id="list-prices">
                   <summary>
                     <h3>{`${tablesLabel}, ${pricesRetrieved}`}</h3>

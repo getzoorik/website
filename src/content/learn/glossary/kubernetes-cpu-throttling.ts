@@ -132,6 +132,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-cluster-utilization",
     },
   ],
+  relatedTitle: "Terms related to CPU throttling",
   next: { title: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
   sources: [
     {

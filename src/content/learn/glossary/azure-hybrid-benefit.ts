@@ -92,6 +92,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/node-pool",
     },
   ],
+  relatedTitle: "Terms related to Azure Hybrid Benefit",
   next: { title: "AKS vs EKS cost", href: "/learn/aks-vs-eks-cost" },
   sources: [
     {

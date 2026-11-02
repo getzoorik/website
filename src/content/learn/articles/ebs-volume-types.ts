@@ -524,4 +524,5 @@ export const article: Article = {
       href: "/learn/shrink-ebs-volume",
     },
   ],
+  relatedTitle: "More on choosing and resizing EBS storage",
 };

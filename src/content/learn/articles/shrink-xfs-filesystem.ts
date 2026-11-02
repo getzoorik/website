@@ -493,4 +493,5 @@ export const article: Article = {
       href: "/learn/btrfs-multiple-disks",
     },
   ],
+  relatedTitle: "More on shrinking Linux filesystems and disks",
 };

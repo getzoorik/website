@@ -119,6 +119,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-cluster-utilization",
     },
   ],
+  relatedTitle: "Terms the VPA works with",
   next: { title: "VPA vs HPA", href: "/learn/vpa-vs-hpa" },
   sources: [
     {

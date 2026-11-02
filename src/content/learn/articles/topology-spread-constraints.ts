@@ -663,4 +663,5 @@ export const article: Article = {
       href: "/learn/kubernetes-descheduler",
     },
   ],
+  relatedTitle: "More on pod spread, placement and scale-down",
 };

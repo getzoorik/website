@@ -532,4 +532,5 @@ export const article: Article = {
       href: "/learn/how-to-choose-eks-instance-types",
     },
   ],
+  relatedTitle: "More on Karpenter, from consolidation to NAP",
 };

@@ -131,6 +131,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/node-pool",
     },
   ],
+  relatedTitle: "More terms on instance types and node pools",
   next: {
     title: "How to change an EKS node group instance type",
     href: "/learn/change-eks-node-group-instance-type",

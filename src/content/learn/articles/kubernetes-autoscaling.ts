@@ -503,4 +503,5 @@ export const article: Article = {
       href: "/coral-faq#do-i-need-coral-with-karpenter",
     },
   ],
+  relatedTitle: "More on pod and node autoscalers",
 };

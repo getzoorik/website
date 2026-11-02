@@ -19,7 +19,8 @@ import { routes } from "@/config/site";
  */
 
 /** The six pages print no day: the day their content last changed, for the sitemap. Move it in the PR that
- * changes it; a page changed on its own carries its own day (the Cluster Autoscaler page, 2 Nov 2026). */
+ * changes it; a page changed on its own carries its own day (the Cluster Autoscaler page, and KEDA's and Helm's
+ * glossary link words, 2 Nov 2026). */
 export const worksWithLastUpdated = "1 November 2026";
 
 /** The words every works-with page shares: the eyebrow over the h1, and Who does what's first column. */
@@ -401,7 +402,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
   },
   keda: {
     route: routes.coralWorksWithKeda,
-    lastUpdated: worksWithLastUpdated,
+    lastUpdated: "2 November 2026",
     meta: {
       title: "Coral works with KEDA",
       description:
@@ -504,13 +505,13 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
       "[Coral product guide: HPAs and VPAs](/coral-guide#hpas-and-vpas): which HPAs Coral creates, takes over or leaves alone.",
       "[Coral FAQ: Working with HPA](/coral-faq#working-with-hpa): who wins when the HPA and Coral both act.",
       "[KEDA vs Karpenter: pods, nodes and the requests in between](/learn/keda-vs-karpenter): what each one scales, and where Coral fits.",
-      "[What is Kubernetes HPA (Horizontal Pod Autoscaler)?](/learn/glossary/horizontal-pod-autoscaler): the autoscaler that KEDA creates and drives.",
+      "[Kubernetes HPA: the Horizontal Pod Autoscaler](/learn/glossary/horizontal-pod-autoscaler): the autoscaler that KEDA creates and drives.",
       "[Coral works with Karpenter](/coral-works-with-karpenter): how Coral and Karpenter share the nodes on EKS.",
     ],
   },
   helm: {
     route: routes.coralWorksWithHelm,
-    lastUpdated: worksWithLastUpdated,
+    lastUpdated: "2 November 2026",
     meta: {
       title: "Coral works with Helm",
       description:
@@ -609,7 +610,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
       "[Install Coral with Helm](/docs/install-coral-with-helm): the chart, its values, Argo CD and upgrades.",
       "[Coral product guide: Workload optimization](/coral-guide#workload-optimization): how sizes are worked out and applied, and how Coral treats HPAs.",
       "[Coral FAQ: Does Coral change my Git or GitOps manifests?](/coral-faq#does-coral-change-my-git-or): why Argo CD and Flux see no drift.",
-      "[What are resource requests in Kubernetes?](/learn/glossary/kubernetes-resource-requests): what Coral sizes, and why requests set your cloud cost.",
+      "[What are Kubernetes resource requests?](/learn/glossary/kubernetes-resource-requests): what Coral sizes, and why requests set your cloud cost.",
       "[Coral works with Terraform](/coral-works-with-terraform): Coral’s cloud permissions as code.",
     ],
   },

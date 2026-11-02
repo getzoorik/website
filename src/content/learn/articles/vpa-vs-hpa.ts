@@ -503,4 +503,5 @@ export const article: Article = {
       href: "/coral-guide#hpas-and-vpas",
     },
   ],
+  relatedTitle: "More on the HPA, the VPA and request sizing",
 };

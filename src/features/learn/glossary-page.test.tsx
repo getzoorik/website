@@ -92,7 +92,7 @@ const runsIn = (blocks: readonly ArticleBlock[]): readonly ArticleText[] =>
       case "callout":
         return [block.text];
       case "svg":
-        return [block.figure.caption];
+        return block.figure.caption ? [block.figure.caption] : [];
       case "ul":
       case "ol":
         return block.items.flatMap((item: ArticleItem) =>
@@ -111,7 +111,7 @@ const runsIn = (blocks: readonly ArticleBlock[]): readonly ArticleText[] =>
   });
 
 describe("the glossary index", () => {
-  it("lists every term file once, A–Z, each named by its slug: the sixty terms of the two 25 October plans", () => {
+  it("lists every term file once, A–Z, each named by its slug: the sixty terms of the two 25 October plans and the nine of the 2 November plan", () => {
     const files = readdirSync("src/content/learn/glossary")
       .filter((name) => name.endsWith(".ts"))
       .map((name) => name.slice(0, -3))
@@ -119,7 +119,7 @@ describe("the glossary index", () => {
     expect(glossaryFiles.map((entry) => entry.file)).toEqual(files);
     for (const { file, term } of glossaryFiles) expect(term.slug, file).toBe(file);
     expect(glossaryTerms.map((term) => term.slug)).toEqual(files);
-    expect(files).toHaveLength(60);
+    expect(files).toHaveLength(69);
   });
 
   it("dates every term by real ISO days, published on or before today, and updated no earlier", () => {
@@ -149,10 +149,10 @@ describe("the glossary index", () => {
     expect(cardFor("/learn/glossary/no-such-term")).toBe(pageCards[routes.learnGlossary]);
   });
 
-  it("files every term under one of the three groups: 13 Kubernetes, 19 block storage, 28 FinOps and pricing", () => {
+  it("files every term under one of the three groups: 17 Kubernetes, 21 block storage, 31 FinOps and pricing", () => {
     expect(
       glossaryGroups.map((group) => glossaryTerms.filter((term) => term.group === group.id).length),
-    ).toEqual([13, 19, 28]);
+    ).toEqual([17, 21, 31]);
   });
 
   it('says "cloud cost", never "bill", in its own words: only a vendor\'s own name or a source\'s address keeps it', () => {
@@ -271,7 +271,7 @@ describe.each(glossaryTerms.map((term) => term.slug))("/learn/glossary/%s", (slu
     }
     /* Related terms are the tiles under the frame, not a section of it. */
     expect(sections.map((section) => text(section.querySelector("h2")))).not.toContain(
-      "More cloud cost terms",
+      term.relatedTitle ?? "More cloud cost terms",
     );
     expect(frame.querySelector("details")).toBeNull();
     expect(
@@ -385,7 +385,9 @@ describe.each(glossaryTerms.map((term) => term.slug))("/learn/glossary/%s", (slu
   it("draws its Related terms as the articles' Related tiles, each a term with its line", async () => {
     const related = (await main(slug)).querySelector("section.sec.ar-rel#related")!;
     expect(related).toHaveAttribute("aria-labelledby", "related-h");
-    expect(text(related.querySelector("h2#related-h"))).toBe("More cloud cost terms");
+    expect(text(related.querySelector("h2#related-h"))).toBe(
+      term.relatedTitle ?? "More cloud cost terms",
+    );
     const tiles = [...related.querySelectorAll("article.dt > .dt-a")];
     expect(
       tiles.map((tile) => [

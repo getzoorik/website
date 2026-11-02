@@ -112,6 +112,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/reserved-instance",
     },
   ],
+  relatedTitle: "Terms related to savings plans",
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",
     href: "/cloud-cost-optimization",

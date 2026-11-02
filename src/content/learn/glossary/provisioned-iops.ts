@@ -89,6 +89,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/disk-throughput",
     },
   ],
+  relatedTitle: "Terms related to provisioned IOPS",
   next: {
     title: "io2 vs gp3: when Provisioned IOPS is worth the price",
     href: "/learn/io2-vs-gp3",

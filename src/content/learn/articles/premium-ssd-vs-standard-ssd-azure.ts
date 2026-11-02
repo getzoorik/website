@@ -490,4 +490,5 @@ export const article: Article = {
       href: "/learn/azure-managed-disk-types",
     },
   ],
+  relatedTitle: "More on choosing an Azure disk type",
 };

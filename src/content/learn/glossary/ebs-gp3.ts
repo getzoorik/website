@@ -132,6 +132,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/provisioned-iops",
     },
   ],
+  relatedTitle: "Terms related to gp3 volumes",
   next: { title: "gp2 vs gp3: pricing, performance and how to migrate", href: "/learn/gp2-vs-gp3" },
   sources: [
     {

@@ -12,20 +12,20 @@ import { researchPage } from "@/content/research";
 
 /**
  * `/cloud-cost-optimization-research-papers`: the metadata and card (its first address's, kept), the hero, one group per
- * subject as the Docs hub draws one, each paper a Read more tile to the publisher's page in a new tab, then the note
- * and the closing row.
+ * subject as the Docs hub draws one, each paper a Read more tile to the publisher's page in a new tab, then the
+ * closing row.
  */
 
 const text = (el: Element | null): string => (el?.textContent ?? "").replace(/[\s ]+/g, " ").trim();
 
 describe("/cloud-cost-optimization-research-papers", () => {
   it("is titled, described and canonicalised as its mock, with its own card", () => {
-    expect(metadata.title).toBe("Cloud cost optimization research papers");
+    expect(metadata.title).toBe("Cloud cost research papers");
     expect(String(metadata.description).length).toBeLessThanOrEqual(160);
     expect(metadata.alternates).toEqual({ canonical: "/cloud-cost-optimization-research-papers" });
     expect(metadata.openGraph).toMatchObject({
       url: "/cloud-cost-optimization-research-papers",
-      title: "Cloud cost optimization research papers | Zoorik",
+      title: "Cloud cost research papers | Zoorik",
       images: [
         {
           url: "/og/pages/research-cloud-cost-optimization.png",
@@ -38,8 +38,10 @@ describe("/cloud-cost-optimization-research-papers", () => {
   it("opens on Learn's hero, then the five groups, each its name, its line and its papers two by two", () => {
     const root = render(<Research />).container;
     expect(root.querySelector("main > header.hero.doc-hero.lv-hero#top h1")).toHaveTextContent(
-      "Cloud cost optimization research papers",
+      "Cloud cost research papers",
     );
+    /* The note under the papers is the hero's deck now (2 Nov 2026). */
+    expect(text(root.querySelector("main > header.hero .doc-deck"))).toBe(researchPage.hero.deck);
     const papers = root.querySelector("main > section.sec#papers")!;
     expect(papers).toHaveAttribute("aria-label", "Research papers");
     const groups = [...papers.querySelectorAll(":scope > .wrap > section.res-group")];
@@ -75,9 +77,7 @@ describe("/cloud-cost-optimization-research-papers", () => {
     expect(text(tiles[0]!.querySelector(".dt-l"))).toBe(
       "Abhishek Verma et al. · ACM EuroSys, 2015",
     );
-    expect(text(papers.querySelector(":scope > .wrap > p.cm-note"))).toBe(
-      "Other researchers wrote every paper here. Each link goes to the publisher’s page. The short note under each paper is in our own words.",
-    );
+    expect(papers.querySelector(":scope > .wrap > p.cm-note")).toBeNull();
     const row = root.querySelector("main > section#assess")!;
     expect(row.querySelector("a.btn-ink")).toHaveAttribute("href", "/assessment");
     expect(text(row.querySelector("#contact p"))).toBe(

@@ -89,6 +89,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-resource-requests",
     },
   ],
+  relatedTitle: "Terms related to rightsizing",
   next: { title: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
   sources: [
     {

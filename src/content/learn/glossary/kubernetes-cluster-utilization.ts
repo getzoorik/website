@@ -108,6 +108,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/vertical-pod-autoscaler",
     },
   ],
+  relatedTitle: "Terms related to cluster utilization",
   next: {
     title: "Kubernetes overprovisioning: what it is and how to measure it",
     href: "/learn/kubernetes-overprovisioning",

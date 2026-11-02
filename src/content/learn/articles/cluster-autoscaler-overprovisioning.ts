@@ -425,4 +425,5 @@ export const article: Article = {
       href: "/learn/karpenter-consolidation",
     },
   ],
+  relatedTitle: "More on node headroom and provisioning",
 };

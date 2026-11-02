@@ -125,6 +125,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/cloud-tagging-strategy",
     },
   ],
+  relatedTitle: "Terms related to cloud cost governance",
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",
     href: "/cloud-cost-optimization",

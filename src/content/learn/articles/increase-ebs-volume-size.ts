@@ -633,4 +633,5 @@ export const article: Article = {
       href: "/learn/azure-disk-expand-without-downtime",
     },
   ],
+  relatedTitle: "More on growing and shrinking EBS volumes",
 };

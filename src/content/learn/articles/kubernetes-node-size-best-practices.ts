@@ -530,4 +530,5 @@ export const article: Article = {
       href: "/learn/change-aks-node-pool-vm-size",
     },
   ],
+  relatedTitle: "More on choosing node sizes",
 };

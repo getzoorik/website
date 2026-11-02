@@ -655,4 +655,5 @@ export const article: Article = {
       href: "/coral-faq#do-i-need-coral-with-karpenter",
     },
   ],
+  relatedTitle: "More on Karpenter and draining nodes",
 };

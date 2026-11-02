@@ -95,6 +95,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/vertical-pod-autoscaler",
     },
   ],
+  relatedTitle: "Terms related to resource requests",
   next: { title: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
   sources: [
     {

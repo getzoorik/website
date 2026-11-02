@@ -35,7 +35,7 @@ export const alternativesLastUpdated = "2 November 2026";
 /**
  * The day Cloud cost optimization tools' content last changed, for the sitemap's `lastmod` only, as above. 1 Nov
  * 2026: Part 4's title, h1, description and deck, and the calculators' tile names; then its title and h1 again, and
- * its tools' section and group names. 2 Nov 2026: its description and deck, no Google Cloud, and its questions.
+ * its tools' section and group names. 2 Nov 2026: its description and deck, no third cloud named, and its questions.
  */
 export const cloudCostToolsLastUpdated = "2 November 2026";
 
@@ -193,8 +193,8 @@ export interface VersusPage {
   readonly card?: true;
   /*
    * The optional parts (the 1 Nov 2026 pages; their drafts' open item X1), each drawn only where it is set, so a page
-   * without them prints exactly as before: the short answer under the deck; the sections after the table, in the Learn
-   * frame; the questions; the sources of the prose; and Read more.
+   * without them prints exactly as before: the short answer, the first paragraph before At a glance (2 Nov 2026); the
+   * sections after the table, in the Learn frame; the questions; the sources of the prose; and Read more.
    */
   readonly short?: string;
   readonly sections?: readonly ProseSection[];
@@ -205,8 +205,6 @@ export interface VersusPage {
 
 /** What the 1 Nov 2026 versus pages print around their optional parts. */
 export const versusFrameCopy = {
-  /** Before the short answer, in bold. */
-  short: "Short answer.",
   sources: { id: "sources", title: "Sources" },
   /** Named for the product the page compares: "Coral docs and guides". */
   readMore: (product: string) => `${product} docs and guides`,
@@ -667,14 +665,12 @@ export const versusCopy = {
   glance: {
     id: "glance",
     title: "At a glance",
-    lede: "What each one is, in its maker’s words.",
     /** Our side's link to its product page. */
     see: (product: string) => `See ${product}`,
   },
   table: {
     id: "side-by-side",
     title: "Side by side",
-    lede: "From the product pages and docs of each.",
     caption: (ours: string, theirs: string) => `${ours} and ${theirs}, side by side`,
   },
   /** A claim's link to the page it comes from; numbered where a claim has more than one ("source 1", "source 2"). */
@@ -692,12 +688,10 @@ export const alternativesCopy = {
   choose: {
     id: "choose",
     title: "How to choose",
-    lede: "Four questions to ask before you pick a tool.",
   },
   options: {
     id: "options",
     title: "The options",
-    lede: "The tools you are likely to meet, what each does, and how it acts.",
   },
   /** A listed tool's link to its live versus page. */
   compare: (product: string) => `Compare with ${product}`,

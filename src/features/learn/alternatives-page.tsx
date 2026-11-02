@@ -12,13 +12,15 @@ import { products } from "@/content/products";
 import { named } from "@/features/legal/named";
 import { LearnFrame, LearnSection } from "@/features/learn/learn-parts";
 import { MarketHead, marketOurs, marketTool, OursRow, ToolRow } from "@/features/learn/market-rows";
-import { versusFactsOf } from "@/features/learn/versus-page";
+import { LearnProseFrame, versusFactsOf } from "@/features/learn/versus-page";
 
 /**
  * An alternatives page (`/cloud-cost-optimization-library/coral-alternatives` and `…/amoeba-alternatives`): the hero, then How to
  * choose (four questions), then The options: our product first on navy, then each tool in the page's order with its
  * owner, line, how it acts and clouds, a tool with a live versus page linking to it, and the note with the day it was
- * checked; then the closing row. Every fact is `learn-market.ts`'s. A server component with no script.
+ * checked; then, where the page has them (2 Nov 2026), its sections and its questions in the versus pages' Learn
+ * frame; then the closing row. Every fact in the list is `learn-market.ts`'s. A server component; only the frame's
+ * chips and folds hydrate.
  */
 
 /** The alternatives page at a route; a route that has none fails the build. */
@@ -53,7 +55,7 @@ export function AlternativesPage({
         deck: named(page.deck ?? page.meta.description),
       }}
     >
-      <LearnSection id={choose.id} title={page.titles?.choose ?? choose.title} lede={choose.lede}>
+      <LearnSection id={choose.id} title={page.titles?.choose ?? choose.title}>
         <div className="ap-q">
           {facts.questions.map((question, index) => (
             <article key={question.q}>
@@ -64,12 +66,7 @@ export function AlternativesPage({
           ))}
         </div>
       </LearnSection>
-      <LearnSection
-        id={options.id}
-        title={page.titles?.options ?? options.title}
-        lede={options.lede}
-        band
-      >
+      <LearnSection id={options.id} title={page.titles?.options ?? options.title} band>
         <MarketHead />
         <ol className="mk-list">
           <OursRow ours={marketOurs(page.product)} />
@@ -97,6 +94,7 @@ export function AlternativesPage({
           {note.after}
         </p>
       </LearnSection>
+      <LearnProseFrame sections={page.sections} questions={page.questions} />
     </LearnFrame>
   );
 }

@@ -122,7 +122,7 @@ const runsIn = (blocks: readonly ArticleBlock[]): readonly ArticleText[] =>
       case "callout":
         return [block.text];
       case "svg":
-        return [block.figure.caption];
+        return block.figure.caption ? [block.figure.caption] : [];
       case "steps":
         return block.items;
       case "ul":
@@ -418,7 +418,8 @@ describe.each(learnArticles.map((article) => [articleRoute(article), article.slu
         for (const id of svg.getAttribute("aria-labelledby")!.split(" "))
           expect(svg.querySelector(`#${id}`)?.textContent?.trim(), id).toBeTruthy();
         expect(svg.textContent).not.toMatch(/FIG \d+ \/\//);
-        expect(text(figure.querySelector("figcaption"))).not.toBe("");
+        if (drawn[index]!.caption) expect(text(figure.querySelector("figcaption"))).not.toBe("");
+        else expect(figure.querySelector("figcaption")).toBeNull();
         expect(drawn[index]!.markup.startsWith("<svg")).toBe(true);
       });
     });
@@ -503,7 +504,9 @@ describe.each(learnArticles.map((article) => [articleRoute(article), article.slu
     it("relates three to five pages, each named as its page names it, each anchor one its page still has", async () => {
       const related = (await main(slug)).querySelector("section.sec.ar-rel#related")!;
       expect(related).toHaveAttribute("aria-labelledby", "related-h");
-      expect(text(related.querySelector("h2#related-h"))).toBe(relatedTitle[article.topic]);
+      expect(text(related.querySelector("h2#related-h"))).toBe(
+        article.relatedTitle ?? relatedTitle[article.topic],
+      );
       expect(article.related.length).toBeGreaterThanOrEqual(3);
       expect(article.related.length).toBeLessThanOrEqual(5);
       const tiles = [...related.querySelectorAll("article.dt > .dt-a")];

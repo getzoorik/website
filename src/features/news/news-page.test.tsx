@@ -48,22 +48,22 @@ function iconOf(tile: Element): string {
 
 describe("/news's metadata", () => {
   it("titles the page through the template, and describes and canonicalises it", () => {
-    expect(metadata.title).toBe("News");
+    expect(metadata.title).toBe("Kubernetes news and cloud cost updates, weekly");
     expect(metadata.description).toBe(
-      "What Zoorik ships, and Zoorik Radar: what changed this week in cloud cost, Kubernetes and FinOps, each item with its source.",
+      "What Zoorik ships, and Zoorik Radar: this week’s Kubernetes, cloud cost and FinOps news, each item with its source. Also by email as our newsletter.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/news" });
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/news",
-      title: "News | Zoorik",
+      title: "Kubernetes news and cloud cost updates, weekly | Zoorik",
     });
     expect(routes.news).toBe("/news");
   });
 
   it("dates the content by the day its words last changed, after the week of its Radar", () => {
     expect(newsDay(newsRadar.week)).toBe("19 October 2026");
-    expect(newsLastUpdated).toBe("1 November 2026");
+    expect(newsLastUpdated).toBe("2 November 2026");
   });
 });
 
@@ -71,10 +71,12 @@ describe("/news", () => {
   it("names the page Zoorik News with its deck, then the latest, From Zoorik and Zoorik Radar", () => {
     const root = page();
     expect(root.querySelectorAll("h1")).toHaveLength(1);
-    expect(text(root.querySelector("header.hero.doc-hero h1"))).toBe("Zoorik News");
+    expect(text(root.querySelector("header.hero.doc-hero h1"))).toBe(
+      "Zoorik News: what we ship, plus Kubernetes news and cloud cost updates each week",
+    );
     expect(root.querySelector("header.hero h1 [translate='no']")).toHaveTextContent("Zoorik");
     expect(text(root.querySelector("header.hero .doc-deck"))).toBe(
-      "What we ship, and what changed this week in cloud cost, Kubernetes and FinOps.",
+      "We read AWS, Azure, the Kubernetes projects and the FinOps Foundation, and link each item to its source.",
     );
     expect(root.querySelector("header.hero nav, header.hero a")).toBeNull();
     expect(root.querySelector("a.skip")).toHaveAttribute("href", "#main");
@@ -108,7 +110,7 @@ describe("/news", () => {
       "Zoorik joins the NVIDIA Inception Program",
     );
     expect(text(latest!.querySelector("p:not(.nw-meta)"))).toBe(
-      "Zoorik is now a member of the NVIDIA Inception program, NVIDIA’s program for startups.",
+      "It’s NVIDIA’s program for startups.",
     );
     const button = latest!.querySelector("a.btn-ink")!;
     /* To the programs on /about, which keeps its hash. */
@@ -136,9 +138,8 @@ describe("/news", () => {
     expect(newsletter.querySelector(":scope > svg.nw-own")).toHaveAttribute("data-mark", "medium");
     expect(text(newsletter.querySelector("h2.as-h"))).toBe("Get Zoorik News by email");
     expect(newsletter.querySelector("h2 [translate='no']")).toHaveTextContent("Zoorik");
-    expect(text(newsletter.querySelector("p:not(.cta-fine)"))).toBe(
-      "Our newsletter on Medium: what we ship, and each week’s Zoorik Radar, in your inbox.",
-    );
+    /* No line under the heading (2 Nov 2026): the heading says it. */
+    expect(newsletter.querySelector("p:not(.cta-fine)")).toBeNull();
     const subscribe = newsletter.querySelector("a.cta-go")!;
     expect(text(subscribe)).toBe("Subscribe on Medium (opens in a new tab)");
     expectOffSite(subscribe, profile("medium"));
@@ -284,7 +285,7 @@ describe("/news", () => {
 
   it("closes Zoorik Radar on what it reads and the window it covers", () => {
     expect(text(page().querySelector("#radar .wrap > p.nw-note"))).toBe(
-      "Read every week from AWS, Azure, the Kubernetes projects and the FinOps Foundation, in our words, each linked to its source. 5 to 19 October 2026.",
+      "Cloud, Kubernetes and FinOps news from 5 to 19 October 2026, in our own words.",
     );
   });
 
@@ -334,6 +335,8 @@ describe("/news", () => {
       expect(code, file).not.toMatch(/localStorage|sessionStorage|indexedDB|document\.cookie/);
     }
     expect(islands).toEqual(["radar-streams.tsx"]);
-    expect(newsPage.hero.title).toBe("Zoorik News");
+    expect(newsPage.hero.title).toBe(
+      "Zoorik News: what we ship, plus Kubernetes news and cloud cost updates each week",
+    );
   });
 });

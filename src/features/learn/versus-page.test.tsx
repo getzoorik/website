@@ -249,7 +249,7 @@ describe.each(versusPages.map((entry) => [entry.slug, entry] as const))("%s", (_
     expect(text(mine!.querySelector("h3"))).toBe(ours);
     expect(mine!.querySelector("a.fx-read")).toHaveAttribute("href", `/${entry.product}`);
     expect(text(mine!.querySelector("a.fx-read"))).toBe(`See ${ours}`);
-    expect(text(theirs!.querySelector(".vp-k"))).toBe(tool.company);
+    expect(text(theirs!.querySelector(".vp-k"))).toBe(facts.company ?? tool.company);
     expect(text(theirs!.querySelector("h3"))).toBe(facts.name);
     expect(text(theirs!.querySelector("h3 + p"))).toBe(facts.line);
     const out = theirs!.querySelector("a.vp-out")!;
@@ -348,12 +348,12 @@ const questionIds: Readonly<Record<string, readonly string[]>> = {
 const blockTag = { p: "P", ul: "UL", ol: "OL", h3: "H3", table: "TABLE", links: "ASIDE" } as const;
 
 describe("the template's optional parts", () => {
-  it("are printed by the two pages of 1 Nov 2026 only, each checked, dated and carded that day", () => {
+  it("are printed by the two pages of 1 Nov 2026 only, each checked and carded that day, changed on 2 Nov", () => {
     const newer = versusPages.filter((entry) => entry.sections);
     expect(newer.map((entry) => entry.slug)).toEqual(Object.keys(questionIds));
     for (const entry of newer) {
       expect(entry.checked, entry.slug).toBe("1 November 2026");
-      expect(entry.lastUpdated, entry.slug).toBe("1 November 2026");
+      expect(entry.lastUpdated, entry.slug).toBe("2 November 2026");
       expect(entry.card, entry.slug).toBe(true);
       expect([entry.short, entry.questions, entry.sources, entry.readMore]).not.toContain(
         undefined,
@@ -367,7 +367,7 @@ describe("the template's optional parts", () => {
       .map((entry) => [entry.slug, entry]),
   )("leave %s exactly as it was", async (_slug, entry) => {
     const root = await page(entry);
-    expect(root.querySelector(".ar-short, .doc-body, .fq-chips, #read-more")).toBeNull();
+    expect(root.querySelector(".lv-intro, .doc-body, .fq-chips, #read-more")).toBeNull();
     expect([
       entry.checked,
       entry.lastUpdated,
@@ -385,7 +385,7 @@ describe("the template's optional parts", () => {
     const entry = versusPages.find((candidate) => candidate.slug === "coral-vs-stormforge")!;
     const { name } = factsOf(entry);
     const root = await page(entry);
-    expect(root.querySelector(".ar-short, #sources, #read-more")).toBeNull();
+    expect(root.querySelector(".lv-intro, #sources, #read-more")).toBeNull();
     expect([
       entry.checked,
       entry.lastUpdated,
@@ -431,13 +431,20 @@ describe.each(
   const sources = entry.sources!;
   const readMore = entry.readMore!;
 
-  it("puts the short answer under the deck, on the hero's ground", async () => {
+  it("opens on the short answer, the first paragraph before At a glance, with no label", async () => {
     const root = await page(entry);
-    const short = root.querySelector("header.lv-hero .hero-in > .doc-deck + p.ar-short")!;
+    /* The hero is the h1 and its one line (owner, 2 Nov 2026). */
+    expect(root.querySelector("header.lv-hero p:not(.vp-kick):not(.doc-deck)")).toBeNull();
+    const short = root.querySelector("section#glance > .wrap > p.lv-intro:first-child")!;
     expect(short).not.toBeNull();
-    expect(text(short.querySelector(":scope > b"))).toBe("Short answer.");
-    expect(text(short)).toBe(`Short answer. ${plain(entry.short!)}`);
+    expect(short.nextElementSibling).toHaveClass("lv-head");
+    expect(short.querySelector("b")).toBeNull();
+    expect(text(short)).toBe(plain(entry.short!));
     expect(short.querySelector('span[translate="no"]')).toHaveTextContent("Coral");
+    expect(text(root.querySelector("h2#glance-h"))).toBe(entry.titles?.glance ?? "At a glance");
+    expect(text(root.querySelector("h2#side-by-side-h"))).toBe(
+      entry.titles?.table ?? "Side by side",
+    );
   });
 
   it("sets each section's text open in the Learn frame, the chips naming every group", async () => {
@@ -452,7 +459,7 @@ describe.each(
     ).toEqual([
       ...sections.map((section) => [`#${section.id}`, plain(section.title)]),
       ["#questions", plain(questions.title)],
-      ["#sources", "Sources"],
+      ["#sources", entry.titles?.sources ?? "Sources"],
     ]);
     for (const section of sections) {
       const el = frame.querySelector(`section.fq-sec#${section.id}`)!;
@@ -495,7 +502,7 @@ describe.each(
 
   it("names the sources of its prose, each a new tab, set apart by semicolons and closed by a full stop", async () => {
     const section = (await page(entry)).querySelector("section.fq-sec#sources")!;
-    expect(text(section.querySelector("h2#sources-h"))).toBe("Sources");
+    expect(text(section.querySelector("h2#sources-h"))).toBe(entry.titles?.sources ?? "Sources");
     const line = section.querySelector(":scope > .fq-sec-b.doc-prose > p.ar-src")!;
     const links = [...line.querySelectorAll("a")];
     expect(links.map((a) => a.getAttribute("href"))).toEqual(sources.map((source) => source.url));
@@ -513,7 +520,7 @@ describe.each(
     const read = (await page(entry)).querySelector("main > section.sec#read-more")!;
     expect(read).toHaveAttribute("aria-labelledby", "read-more-h");
     expect(text(read.querySelector(".sec-hrow > h2#read-more-h"))).toBe(
-      `${entry.product === "coral" ? "Coral" : "Amoeba"} docs and guides`,
+      entry.titles?.readMore ?? `${entry.product === "coral" ? "Coral" : "Amoeba"} docs and guides`,
     );
     const tiles = [...read.querySelectorAll(".dt-grid > article.dt")];
     const expected = readMore.map((tile) => {
@@ -558,7 +565,7 @@ describe.each(
   it("keeps the site's words in its own copy, and every product name out of translation", async () => {
     const root = await page(entry);
     const parts = [
-      root.querySelector(".ar-short")!,
+      root.querySelector(".lv-intro")!,
       ...root.querySelectorAll("main > div.doc-body section.fq-sec:not(#sources)"),
       root.querySelector("#read-more")!,
     ];

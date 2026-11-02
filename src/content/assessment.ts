@@ -235,7 +235,6 @@ export const assessmentCopy = {
       cta: "Book a demo",
       href: calendarUrl,
     },
-    code: { label: "Read the code", href: openSourceLinks.assessment },
     how: "How the estimate works",
   },
 } as const;

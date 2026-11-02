@@ -460,4 +460,5 @@ export const article: Article = {
       href: "/learn/check-ebs-volume-usage",
     },
   ],
+  relatedTitle: "More on snapshot and EBS volume cost",
 };

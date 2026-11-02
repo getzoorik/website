@@ -532,4 +532,5 @@ export const article: Article = {
       href: "/learn/ebs-volume-types",
     },
   ],
+  relatedTitle: "More on resizing EBS volumes and choosing a type",
 };

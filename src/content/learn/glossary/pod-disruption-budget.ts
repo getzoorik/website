@@ -129,6 +129,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-cluster-utilization",
     },
   ],
+  relatedTitle: "Terms related to pod disruption budgets",
   next: {
     title: "Pod disruption budget best practices for AKS and EKS",
     href: "/learn/pod-disruption-budget-best-practices",

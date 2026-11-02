@@ -541,4 +541,5 @@ export const article: Article = {
       href: "/learn/btrfs-multiple-disks",
     },
   ],
+  relatedTitle: "More on shrinking disks with LVM and btrfs",
 };

@@ -552,4 +552,5 @@ export const article: Article = {
       href: "/coral-faq#after-node-and-workload-optimization-move",
     },
   ],
+  relatedTitle: "More on replacing and removing Kubernetes nodes",
 };

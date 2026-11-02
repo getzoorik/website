@@ -36,14 +36,14 @@ describe("/community's metadata", () => {
   it("has its title through the template, its description and its canonical", () => {
     expect(metadata.title).toBe("Community");
     expect(metadata.description).toBe(
-      "The communities that matter for FinOps and cloud cost on Kubernetes, Azure and AWS, with r/zoorik and Zoorik News on Medium.",
+      "Talk to the people who build Coral and Amoeba on r/zoorik, and find FinOps communities on Reddit and Slack for cloud cost on Kubernetes, Azure and AWS.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/community" });
     expect(metadata.openGraph).toMatchObject({
       url: "/community",
       title: "Community | Zoorik",
     });
-    expect(communityLastUpdated).toBe("1 November 2026");
+    expect(communityLastUpdated).toBe("2 November 2026");
   });
 });
 
@@ -54,7 +54,8 @@ describe("/community", () => {
     expect(text(root.querySelector("header.hero h1"))).toBe("Zoorik Community");
     expect(root.querySelector("header.hero h1 [translate='no']")).toHaveTextContent("Zoorik");
     expect(text(root.querySelector("header.hero .doc-deck"))).toBe(communityPage.hero.deck);
-    expect(root.querySelectorAll("header.hero .doc-deck [translate='no']")).toHaveLength(2);
+    /* The deck names no product (2 Nov 2026). */
+    expect(root.querySelectorAll("header.hero .doc-deck [translate='no']")).toHaveLength(0);
     expect([...root.querySelectorAll("main > section")].map((s) => s.id)).toEqual([
       "ours",
       "communities",
@@ -74,7 +75,7 @@ describe("/community", () => {
     expect(news!.querySelector("svg.cm-own")).toHaveAttribute("data-mark", "medium");
     expect(text(reddit!.querySelector("h2.as-h"))).toBe("r/zoorik");
     expect(text(reddit!.querySelector("p"))).toBe(
-      "Our community on Reddit. Ask about Coral and Amoeba, share your results and talk to the people who build them.",
+      "Ask about Coral and Amoeba, share your results and talk to the people who build them.",
     );
     expect(
       [...reddit!.querySelectorAll("p [translate='no']")].map((span) => span.textContent),
@@ -84,7 +85,7 @@ describe("/community", () => {
     expectOffSite(join, profile("reddit"));
     expect(text(news!.querySelector("h2.as-h"))).toBe("Zoorik News");
     expect(text(news!.querySelector("p"))).toBe(
-      "Our newsletter on Medium: what we ship, and each week’s Zoorik Radar, by email.",
+      "Our newsletter: what we ship, and each week’s Zoorik Radar, by email.",
     );
     const subscribe = news!.querySelector("a.cta-go")!;
     expect(text(subscribe)).toBe("Subscribe on Medium (opens in a new tab)");

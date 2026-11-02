@@ -130,6 +130,7 @@ export const term: GlossaryTerm = {
     },
     { title: "Node pool", line: "Nodes that share one setup.", href: "/learn/glossary/node-pool" },
   ],
+  relatedTitle: "Terms related to reserved instances",
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",
     href: "/cloud-cost-optimization",

@@ -100,6 +100,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/finops",
     },
   ],
+  relatedTitle: "Terms related to egress cost",
   next: {
     title: "Cloud cost optimization: how to reduce cloud costs",
     href: "/cloud-cost-optimization",

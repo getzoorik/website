@@ -134,6 +134,7 @@ export const term: GlossaryTerm = {
     },
     { title: "IOPS", line: "Reads and writes per second.", href: "/learn/glossary/iops" },
   ],
+  relatedTitle: "Terms related to Azure Premium SSD",
   next: {
     title: "Premium SSD vs Standard SSD on Azure: what you pay for",
     href: "/learn/premium-ssd-vs-standard-ssd-azure",

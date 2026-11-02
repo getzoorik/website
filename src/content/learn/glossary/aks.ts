@@ -181,6 +181,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-cluster-utilization",
     },
   ],
+  relatedTitle: "Terms related to AKS",
   next: {
     title: "How to choose AKS VM sizes",
     href: "/learn/how-to-choose-aks-node-sizes",

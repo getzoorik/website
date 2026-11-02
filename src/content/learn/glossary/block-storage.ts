@@ -119,6 +119,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/disk-throughput",
     },
   ],
+  relatedTitle: "Terms related to block storage",
   next: { title: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
   sources: [
     {
