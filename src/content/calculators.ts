@@ -306,7 +306,7 @@ export const diskCalculator = {
         { kind: "h3", text: "Azure managed disk pricing: rounded up to a size tier" },
         {
           kind: "p",
-          text: "Azure disk pricing rounds a managed disk's size up to the nearest tier. The disk then costs that tier's monthly price, whatever data it holds.",
+          text: "Azure Disk Storage pricing rounds a managed disk's size up to the nearest tier. The disk then costs that tier's monthly price, whatever data it holds.",
         },
         { kind: "h3", text: "EBS pricing on AWS: per GB you provision" },
         {

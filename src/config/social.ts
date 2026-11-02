@@ -682,8 +682,8 @@ const CARDS: readonly {
     paths: ["/learn/glossary/azure-macc"],
   },
   {
-    file: "glossary-azure-managed-disk-azure-disk",
-    words: "Azure disk: what is an Azure managed disk?",
+    file: "glossary-azure-managed-disk-azure-disk-storage",
+    words: "Azure Disk Storage: what is an Azure managed disk?",
     paths: ["/learn/glossary/azure-managed-disk"],
   },
   {

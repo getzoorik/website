@@ -4,9 +4,9 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/azure-manag
 export const term: GlossaryTerm = {
   slug: "azure-managed-disk",
   term: "Azure managed disk",
-  title: "Azure disk: what is an Azure managed disk?",
+  title: "Azure Disk Storage: what is an Azure managed disk?",
   meta: "A managed disk in Azure is your VM’s OS disk or a data disk. See how each Azure storage disk is charged by provisioned size, and why it can grow but not shrink.",
-  h1: "Azure disk: what is an Azure managed disk?",
+  h1: "Azure Disk Storage: what is an Azure managed disk?",
   card: "An Azure managed disk is a block storage volume that Azure manages for your virtual machine (VM).",
   group: "block-storage",
   product: "amoeba",
