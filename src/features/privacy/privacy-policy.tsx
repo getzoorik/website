@@ -35,7 +35,7 @@ import { offSiteProps } from "@/lib/links";
  *  - "(section 7(a) of the Act)" in §4 stays text: it is the DPDP Act's section,
  *    not this policy's §7, which the mock links it to.
  *  - In "sections 4.1, 4.3 (your Amoeba organisation), 4.4 and 4.7" every number
- *    is a link, where the mock links only the first. 32 cross-links, not 30.
+ *    is a link, where the mock links only the first. 39 cross-links, not 30.
  *  - Every table cell's content sits in one wrapper (the kit's `DocTable`), so a
  *    stacked cell on a phone stays one block beside its label. The mock deals a
  *    mixed cell out across the label and content columns at 640px and below.

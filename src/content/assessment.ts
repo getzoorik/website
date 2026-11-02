@@ -65,7 +65,7 @@ export const assessmentProducts: Readonly<Record<ProductId, AssessmentProduct>> 
     how: `${openSourceLinks.assessment}#how-the-estimate-works`,
     demo: {
       found: "3 clusters read",
-      saving: "$2,668 a month",
+      saving: "$2,668 a month (example)",
       file: "zoorik-coral-assessment.pdf",
       download: "zoorik-coral-assessment-example.pdf",
       document: "coral-assessment-example",
@@ -85,7 +85,7 @@ export const assessmentProducts: Readonly<Record<ProductId, AssessmentProduct>> 
     how: `${openSourceLinks.assessment}#how-the-estimate-works-1`,
     demo: {
       found: "8 VMs read",
-      saving: "$862 a month",
+      saving: "$862 a month (example)",
       file: "zoorik-amoeba-assessment.pdf",
       download: "zoorik-amoeba-assessment-example.pdf",
       document: "amoeba-assessment-example",

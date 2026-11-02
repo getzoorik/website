@@ -203,10 +203,10 @@ describe("sitemap.xml", () => {
       "/referrals": "2026-10-21",
       "/partners": "2026-11-01",
       "/design-partners": "2026-11-01",
-      "/privacy": "2026-10-19",
-      "/terms": "2026-10-06",
+      "/privacy": "2026-11-02",
+      "/terms": "2026-11-02",
       /* /security prints "Updated 1 November 2026". */
-      "/security": "2026-11-01",
+      "/security": "2026-11-02",
       /* The Trust center prints "Updated 1 November 2026". */
       "/trust": "2026-11-01",
     });

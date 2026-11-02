@@ -162,8 +162,10 @@ describe("/privacy anchors", () => {
       a.getAttribute("href"),
     ]);
     /* The mock's 30, plus "4.3", "4.4" and "4.7" in §4, less "section 7" of the Act;
-       plus version 1.2's three (YouTube in §6 and in §7's table). */
-    expect(refs).toHaveLength(35);
+       plus version 1.2's three (YouTube in §6 and in §7's table); plus version
+       1.5's four ("4.3" in §5's sign-in token, "section 4.2" in §4.4 and in §5,
+       and "section 4.3" in §7's GitHub row). */
+    expect(refs).toHaveLength(39);
     for (const [label, href] of refs) {
       const number = /^(?:[Ss]ections? )?(\d+(?:\.\d)?)$/.exec(label!)?.[1];
       expect(number, label!).toBeDefined();
@@ -202,7 +204,7 @@ describe("/privacy outline", () => {
     const column = main().querySelector(".doc-main")!;
     const lines = [...column.children].filter((el) => !el.matches("details"));
     expect(lines[0]).toHaveClass("pp-date");
-    expect(text(lines[0]!)).toBe("Effective 19 October 2026 · Version 1.4");
+    expect(text(lines[0]!)).toBe("Effective 2 November 2026 · Version 1.5");
     expect(text(lines[1]!)).toMatch(/^This policy explains what personal data Zoorik collects/);
     expect(lines[2]).toHaveAttribute("id", "short-version");
   });
@@ -317,9 +319,15 @@ describe("/privacy tables and callouts", () => {
         "zoorik-cluster",
         "zoorik-connect-os",
         "zk-el-view",
+        "zoorik-connect-install",
+        "zoorik-connect-cloud",
+        "zoorik-connect-tf-cloud",
+        "zk-older-plans:<cluster id>",
         "_cfPre_tabId",
         "__Host-amoeba_session",
-        "zoorik:vm",
+        "__Host-amoeba_oidc_txn",
+        "zoorik-amoeba-vm",
+        "_cfPre_tabId",
         "cf_clearance",
         "__cf_ob",
         "_cfPre_tabId",
@@ -334,6 +342,7 @@ describe("/privacy tables and callouts", () => {
     ]);
     expect(listed).toEqual([
       ["Registration", 4],
+      ["Heartbeat", 6],
       ["Inventory", 6],
       ["Events", 4],
       ["Node actions", 4],
@@ -392,13 +401,14 @@ describe("/privacy links", () => {
     }
   });
 
-  it("opens the four off-site addresses in a new tab, and says so", () => {
+  it("opens the five off-site addresses in a new tab, and says so", () => {
     const away = [...main().querySelectorAll('a[href^="http"]')];
     expect(away.map((a) => a.getAttribute("href"))).toEqual([
       "https://privacy.microsoft.com/privacystatement",
       "https://optout.aboutads.info",
       "https://policies.google.com/privacy",
       "https://cal.com/zoorik/talk",
+      "https://cal.com/zoorik/support",
     ]);
     for (const a of away) {
       expect(a).toHaveAttribute("target", "_blank");
@@ -424,10 +434,12 @@ describe("/privacy links", () => {
       }
     }
     expect(loose).toEqual([]);
-    /* 13 above §1 and 163 in §1 to §15: the mock's 170, and version 1.2's six
-       ("the Coral and Amoeba pages" in the short version, §6 and §11.5), and
-       version 1.4's four in §4.8 (Coral and Amoeba, twice each). */
-    expect(column.querySelectorAll('[translate="no"]')).toHaveLength(180);
+    /* 18 above §1 and 236 in §1 to §15: the mock's 170, and version 1.2's six
+       ("the Coral and Amoeba pages" in the short version, §6 and §11.5),
+       version 1.4's four in §4.8 (Coral and Amoeba, twice each), and version
+       1.5's 74 (Amoeba's sign-in and AWS, the Helm chart and Terraform modules,
+       and the new rows in §6, §7 and §10). */
+    expect(column.querySelectorAll('[translate="no"]')).toHaveLength(254);
   });
 });
 
@@ -443,7 +455,9 @@ describe("/privacy content", () => {
     expect(text(container)).not.toContain(
       "which we only link to. It does not cover LinkedIn, YouTube",
     );
-    expect(text(container)).toContain("It does not cover LinkedIn or X, which we only link to.");
+    expect(text(container)).toContain(
+      "It does not cover sites we only link to, such as LinkedIn, X, Reddit, Medium, our YouTube channel, and the AI assistants our footer opens with a question about the page (ChatGPT, Claude, Perplexity and Grok).",
+    );
   });
 
   it("discloses Microsoft Clarity where the policy does", () => {
@@ -583,9 +597,9 @@ describe("/privacy, word for word", () => {
 
   it("reads its date line and version from the policy", () => {
     expect(POLICY).toMatch(
-      /^# Privacy Policy\n\n\*\*Effective date:\*\* 19 October 2026 · \*\*Version:\*\* 1\.4\n/,
+      /^# Privacy Policy\n\n\*\*Effective date:\*\* 2 November 2026 · \*\*Version:\*\* 1\.5\n/,
     );
-    expect(text(main().querySelector(".pp-date"))).toBe("Effective 19 October 2026 · Version 1.4");
+    expect(text(main().querySelector(".pp-date"))).toBe("Effective 2 November 2026 · Version 1.5");
   });
 });
 

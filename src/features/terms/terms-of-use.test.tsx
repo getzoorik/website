@@ -38,7 +38,7 @@ describe("the terms of use", () => {
     expect(root.querySelectorAll("h1")).toHaveLength(1);
     const top = root.querySelector("article.gd-main > .fq-upd.gd-top > .pp-prose")!;
     expect(top.querySelector(".pp-date")!.textContent).toBe(
-      "Effective 6 October 2026 · Version 1.0",
+      "Effective 2 November 2026 · Version 1.1",
     );
     expect(top.querySelector("#short-version > .pp-short-t")!.textContent).toBe(
       "The short version",
@@ -149,6 +149,6 @@ describe("the terms of use", () => {
   });
   it("keeps the sitemap's copy of the date line equal to the document's", () => {
     expect(termsCopy.effective).toBe(terms.effective);
-    expect(terms.effective).toBe("Effective 6 October 2026 · Version 1.0");
+    expect(terms.effective).toBe("Effective 2 November 2026 · Version 1.1");
   });
 });

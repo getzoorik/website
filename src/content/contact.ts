@@ -154,7 +154,7 @@ export const contactPage = {
           },
           {
             term: "Privacy requests",
-            text: `Email us from the address you sign in with, or the address you used to contact us. Tell us what you want. For Amoeba, include your directory id. We reply within 30 days. Your rights are in the [Privacy policy](${routes.privacy}#your-rights).`,
+            text: `Email us from the address you sign in with, or the address you used to contact us. Tell us what you want. For Amoeba, include your Azure directory id or AWS account id. We reply within 30 days. Your rights are in the [Privacy policy](${routes.privacy}#your-rights).`,
           },
         ],
         grievance: true,
