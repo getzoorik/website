@@ -27,25 +27,25 @@ describe("page metadata", () => {
 
   it("titles every page through one template, and the home page takes the default", () => {
     expect(layout.title).toEqual({
-      default: "Zoorik | Kubernetes and block storage cost optimization",
+      default: "Zoorik | Kubernetes and block storage optimization",
       template: "%s | Zoorik",
     });
     expect(home).not.toHaveProperty("title");
     expect(assessment.title).toBe("Free cloud cost analysis for Azure and AWS");
     expect(login.title).toBe("Sign in");
-    expect(amoeba.title).toBe("Block storage cost optimization for Azure and AWS");
-    expect(coral.title).toBe("Coral: Kubernetes optimization for AKS and EKS");
+    expect(amoeba.title).toBe("Amoeba: Block storage optimization");
+    expect(coral.title).toBe("Coral: Kubernetes optimization");
   });
 
   it("keeps each full title within the 60 characters a search result shows", () => {
     /* "<title> | Zoorik", at most 60. */
     const { template } = layout.title as { template: string };
     const full = (title: unknown) => template.replace("%s", String(title));
-    expect(full(amoeba.title)).toBe("Block storage cost optimization for Azure and AWS | Zoorik");
-    expect(full(coral.title)).toBe("Coral: Kubernetes optimization for AKS and EKS | Zoorik");
+    expect(full(amoeba.title)).toBe("Amoeba: Block storage optimization | Zoorik");
+    expect(full(coral.title)).toBe("Coral: Kubernetes optimization | Zoorik");
     for (const title of [amoeba.title, coral.title, assessment.title])
       expect(full(title).length).toBeLessThanOrEqual(60);
-    expect((layout.title as { default: string }).default).toHaveLength(55);
+    expect((layout.title as { default: string }).default).toHaveLength(50);
   });
 
   it("describes the home page and each product page in its own words, and the right product's", () => {
@@ -53,7 +53,7 @@ describe("page metadata", () => {
       "Zoorik is a cloud cost optimization company. Coral rebalances Kubernetes on AKS and EKS. Amoeba rightsizes Azure managed disks and Amazon EBS, autonomously.",
     );
     expect(amoeba.description).toBe(
-      "Block storage cost optimization: Amoeba rightsizes Azure managed disks and Amazon EBS to your data, autonomously, without any downtime after the one switch.",
+      "Block storage optimization: Amoeba rightsizes Azure managed disks and Amazon EBS to your data, autonomously, without any downtime after the one switch.",
     );
     expect(coral.description).toBe(
       "Kubernetes optimization platform for AKS and EKS. Coral rebalances requests and nodes to reduce your cloud cost, autonomously, without any downtime.",

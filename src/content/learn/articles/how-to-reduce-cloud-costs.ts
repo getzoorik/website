@@ -404,7 +404,7 @@ export const article: Article = {
     text: "Coral rebalances Kubernetes on AKS and EKS, and Amoeba rightsizes block storage on Azure and AWS. We estimate 40–50% off AKS and EKS cost and 50–60% off block storage cost. They are estimated ranges, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Kubernetes optimization with Coral", href: "/coral" },
-      { label: "Block storage cost optimization with Amoeba", href: "/amoeba" },
+      { label: "Block storage optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment" },
     ],
   },

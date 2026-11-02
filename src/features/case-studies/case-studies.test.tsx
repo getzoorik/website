@@ -254,7 +254,9 @@ describe("/coral-value-lab", () => {
       ["10 → 6", "CPU, on 2 machines instead of 3", false],
       ["8 days", "from connecting Coral to the result", false],
     ]);
-    expect(text(band.querySelector(".doc-call p"))).toMatch(/^Coral is Zoorik’s Kubernetes cost/);
+    expect(text(band.querySelector(".doc-call p"))).toMatch(
+      /^Coral is Zoorik’s Kubernetes optimization/,
+    );
   });
 
   it("numbers the PDF's six sections, each name beside its text, with no On this page list", () => {
@@ -431,7 +433,7 @@ describe("/amoeba-value-lab", () => {
       ["8 min 14 s", "from our click to the smaller pool", false],
     ]);
     expect(text(band.querySelector(".doc-call p"))).toMatch(
-      /^Amoeba is Zoorik’s block storage cost optimization for Windows and Linux VMs on Azure and AWS\./,
+      /^Amoeba is Zoorik’s block storage optimization for Windows and Linux VMs on Azure and AWS\./,
     );
   });
 

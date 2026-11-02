@@ -454,7 +454,7 @@ export const article: Article = {
     product: "amoeba",
     text: "Amoeba moves an EC2 instance’s EBS data volumes onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one volume at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
-      { label: "Block storage cost optimization with Amoeba", href: "/amoeba" },
+      { label: "Block storage optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
     ],
   },

@@ -5,11 +5,12 @@
  * Each product has a name and one exact descriptor, and the same two appear in
  * the header's Docs menu, the Docs hub, on `/login` and on `/assessment`:
  *
- *   Coral is "Kubernetes cost optimization on AKS and EKS".
- *   Amoeba is "Block storage cost optimization on Azure and AWS".
+ *   Coral is "Kubernetes optimization on AKS and EKS".
+ *   Amoeba is "Block storage optimization on Azure and AWS".
  *
- * The site says "optimization" for both, as "cost optimization", the phrase
- * the site is found by; only the legal pages keep "rebalances" and
+ * The site says "optimization" for both, without "cost" (2 Nov 2026): "Kubernetes
+ * cost optimization" is the pillar page's search, and "Block storage optimization"
+ * carries "storage optimization". Only the legal pages keep "rebalances" and
  * "rightsizes", word for word. Kept in each
  * section's own content file they would be copies of a sentence that may not
  * drift by a word, so they are here and every surface reads them.
@@ -37,16 +38,16 @@ export const products: Readonly<Record<ProductId, Product>> = {
   amoeba: {
     id: "amoeba",
     name: "Amoeba",
-    descriptor: "Block storage cost optimization on Azure\u00a0and\u00a0AWS",
-    category: "Block storage cost optimization",
+    descriptor: "Block storage optimization on Azure\u00a0and\u00a0AWS",
+    category: "Block storage optimization",
     kind: "Block storage",
     anchor: "#amoeba",
   },
   coral: {
     id: "coral",
     name: "Coral",
-    descriptor: "Kubernetes cost optimization on AKS\u00a0and\u00a0EKS",
-    category: "Kubernetes cost optimization",
+    descriptor: "Kubernetes optimization on AKS\u00a0and\u00a0EKS",
+    category: "Kubernetes optimization",
     kind: "Kubernetes",
     anchor: "#coral",
   },

@@ -117,7 +117,7 @@ describe("sitemap.xml", () => {
          company sentence and the titles, 1 Nov 2026, for /amoeba). */
       "/": "2026-11-02",
       "/coral": "2026-11-02",
-      "/amoeba": "2026-11-01",
+      "/amoeba": "2026-11-02",
       /* The two Topic pages print no day: the day their content last changed (2 Nov 2026). */
       "/azure-cost-optimization": "2026-11-02",
       "/aws-cost-optimization": "2026-11-02",
@@ -132,7 +132,7 @@ describe("sitemap.xml", () => {
          Helm and Karpenter). */
       "/coral-works-with-cluster-autoscaler": "2026-11-02",
       "/coral-works-with-karpenter": "2026-11-02",
-      "/coral-works-with-aks-node-auto-provisioning": "2026-11-01",
+      "/coral-works-with-aks-node-auto-provisioning": "2026-11-02",
       "/coral-works-with-keda": "2026-11-02",
       "/coral-works-with-helm": "2026-11-02",
       "/coral-works-with-terraform": "2026-11-01",
@@ -142,9 +142,9 @@ describe("sitemap.xml", () => {
       "/docs": "2026-11-01",
       /* The 2 Nov 2026 plan's guide; the FAQ's Coral link's new words (O1), 1 Nov 2026. */
       "/coral-guide": "2026-11-02",
-      "/coral-faq": "2026-11-01",
-      /* The Amoeba guide and FAQ print "Updated 1 November 2026". */
-      ...(amoebaDocs ? { "/amoeba-guide": "2026-11-01", "/amoeba-faq": "2026-11-01" } : {}),
+      "/coral-faq": "2026-11-02",
+      /* The Amoeba guide and FAQ print "Updated 2 November 2026". */
+      ...(amoebaDocs ? { "/amoeba-guide": "2026-11-02", "/amoeba-faq": "2026-11-02" } : {}),
       /* The Helm guide prints "Updated 2 November 2026", Terraform and Contributing "Updated 1 November 2026";
          /open-source gives its content file's date. */
       "/docs/install-coral-with-helm": "2026-11-02",
@@ -197,9 +197,9 @@ describe("sitemap.xml", () => {
       /* /pricing and /contact print no day: the day their content last changed. */
       "/pricing": "2026-11-02",
       "/contact": "2026-11-01",
-      "/about": "2026-11-01",
+      "/about": "2026-11-02",
       "/careers": "2026-11-01",
-      "/brand-assets": "2026-11-01",
+      "/brand-assets": "2026-11-02",
       "/referrals": "2026-10-21",
       "/partners": "2026-11-01",
       "/design-partners": "2026-11-01",

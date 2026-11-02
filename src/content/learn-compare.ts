@@ -245,7 +245,7 @@ export const versusPages: readonly VersusPage[] = [
       description:
         "StormForge and Coral both reduce Kubernetes cost. See how each works with HPA and Karpenter, and its pricing, side by side, from each company’s own pages.",
     },
-    deck: "Both set pod requests on AKS and EKS, but only Coral empties spare nodes for your autoscaler to remove.",
+    deck: "Both set pod requests on AKS and EKS, but only Coral removes the nodes you don’t need.",
     titles: {
       glance: "StormForge and Coral at a glance",
       table: "StormForge vs Coral, feature by feature",

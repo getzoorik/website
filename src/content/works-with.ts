@@ -210,7 +210,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
         [
           "Removing spare nodes",
           "Consolidates the pools it is set to consolidate.",
-          "Leaves those pools to Karpenter. In other pools, it empties spare nodes for your autoscaler to remove.",
+          "Leaves those pools to Karpenter. In other pools, it removes the spare nodes.",
         ],
         [
           "Moving work to cheaper machines",
@@ -227,7 +227,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
     together: [
       "Coral rebalances each pod’s CPU and memory requests to real use, once you switch on “Automatically optimize”.",
       "With smaller requests, Karpenter can run fewer or smaller nodes in the pools it consolidates.",
-      "In other pools, Coral empties spare nodes one at a time, and your autoscaler removes them.",
+      "In other pools, Coral removes spare nodes one at a time.",
       "When a rebalance moves work to cheaper machines, Coral creates fixed-size NodePools, and Karpenter launches the new machines in them.",
       "Coral then drains and removes the old nodes one by one, and the new NodePools stay after the run.",
     ],
@@ -289,7 +289,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
   },
   nodeAutoProvisioning: {
     route: routes.coralWorksWithNodeAutoProvisioning,
-    lastUpdated: worksWithLastUpdated,
+    lastUpdated: "2 November 2026",
     meta: {
       title: "Coral works with AKS node auto provisioning",
       description:
@@ -322,7 +322,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
         [
           "Removing spare nodes",
           "Consolidates the pools it is set to consolidate.",
-          "Leaves those pools to NAP. In other pools, it empties spare nodes for your autoscaler to remove.",
+          "Leaves those pools to NAP. In other pools, it removes the spare nodes.",
         ],
         [
           "Moving work to cheaper machines",
@@ -445,7 +445,7 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
         [
           "Removing spare nodes",
           "Doesn’t add or remove nodes.",
-          "Empties spare nodes so your node autoscaler can remove them.",
+          "Removes the nodes you don’t need.",
         ],
       ],
     },

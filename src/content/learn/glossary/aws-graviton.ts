@@ -78,7 +78,7 @@ export const term: GlossaryTerm = {
             "Compare On-Demand prices for sizes with the same virtual CPUs (vCPUs) and memory, such as m7g.large and Intel-based m7i.large, in your Region. Prices change.",
             [
               { a: "Coral", href: "/coral" },
-              " rebalances CPU and memory requests on AKS and EKS to match real use. It drains spare nodes so your autoscaler can remove them.",
+              " rebalances CPU and memory requests on AKS and EKS to match real use. It removes the nodes you don’t need.",
             ],
           ],
         },

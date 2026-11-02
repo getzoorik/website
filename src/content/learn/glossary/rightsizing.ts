@@ -64,7 +64,7 @@ export const term: GlossaryTerm = {
               { a: "Coral", href: "/coral" },
               " rebalances CPU and memory requests on AKS and EKS to ",
               { a: "match real use", href: "/learn/kubernetes-pod-right-sizing" },
-              ". The same pods fit on fewer nodes, and Coral drains spare ones so your autoscaler can remove them.",
+              ". The same pods fit on fewer nodes, and Coral removes the spare ones.",
             ],
           ],
         },

@@ -136,7 +136,7 @@ export const caseStudy = {
     ],
     about: [
       { b: "Coral" },
-      " is Zoorik’s Kubernetes cost optimization for AKS and EKS. It sizes each app’s CPU and memory requests to real use, removes machines a cluster no longer needs, and rebalances onto cheaper machines, all within each app’s safety limits.",
+      " is Zoorik’s Kubernetes optimization for AKS and EKS. It sizes each app’s CPU and memory requests to real use, removes machines a cluster no longer needs, and rebalances onto cheaper machines, all within each app’s safety limits.",
     ] satisfies CaseStudyText,
   },
   /** The section names, as the mock prints them in the left column and the chips: plain text. */
@@ -490,7 +490,7 @@ export const amoebaStudy = {
     ],
     about: [
       { b: "Amoeba" },
-      " is Zoorik’s block storage cost optimization for Windows and Linux VMs on Azure and AWS. It moves a VM’s data disks onto one btrfs pool sized to the data, with room to grow. Then it rightsizes that pool, one disk at a time, while it stays mounted.",
+      " is Zoorik’s block storage optimization for Windows and Linux VMs on Azure and AWS. It moves a VM’s data disks onto one btrfs pool sized to the data, with room to grow. Then it rightsizes that pool, one disk at a time, while it stays mounted.",
     ] satisfies CaseStudyText,
   },
   sections: [

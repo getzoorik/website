@@ -153,7 +153,7 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " rebalances CPU and memory requests on AKS to match real use, so the same pods fit on fewer nodes. It drains spare nodes so your autoscaler can remove them.",
+            " rebalances CPU and memory requests on AKS to match real use, so the same pods fit on fewer nodes. It removes the nodes you don’t need.",
           ],
         },
       ],

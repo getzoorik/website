@@ -85,10 +85,7 @@ export const term: GlossaryTerm = {
               ".",
             ],
             "A spare node costs you until it’s removed.",
-            [
-              { a: "Coral", href: "/coral" },
-              " drains spare nodes so your autoscaler can remove them.",
-            ],
+            [{ a: "Coral", href: "/coral" }, " removes the nodes you don’t need."],
             "It rebalances CPU and memory requests to match real use, so the same pods fit on fewer nodes.",
           ],
         },

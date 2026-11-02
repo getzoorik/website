@@ -96,7 +96,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
     {
       term: "What Coral does",
       text: [
-        "Rebalances CPU and memory requests to real use, empties nodes you don’t need so your autoscaler can remove them, and moves work to cheaper machines.",
+        "Rebalances CPU and memory requests to real use, removes the nodes you don’t need, and moves work to cheaper machines.",
       ],
     },
     {
@@ -162,7 +162,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                   body: [
                     {
                       kind: "p",
-                      text: "Coral empties spare nodes for your autoscaler to remove. When you switch on automation, it also applies the new sizes.",
+                      text: "Coral removes the nodes you don’t need. When you switch on automation, it also applies the new sizes.",
                     },
                   ],
                 },
@@ -189,7 +189,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                 ],
                 [
                   "Node optimization",
-                  "Empties nodes you don’t need so your autoscaler can remove them. Rebalances onto cheaper machines when you ask.",
+                  "Removes the nodes you don’t need. Rebalances onto cheaper machines when you ask.",
                   "On from install, together with the Evictor, which moves pods off lightly used nodes.",
                 ],
               ],

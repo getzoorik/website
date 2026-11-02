@@ -10,7 +10,7 @@ import { products, type ProductId } from "@/content/products";
  */
 
 /** What the home page is, as a search names it. */
-const homePhrase = "Kubernetes and block storage cost optimization";
+const homePhrase = "Kubernetes and block storage optimization";
 
 export const site = {
   name: "Zoorik",

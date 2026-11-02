@@ -21,7 +21,7 @@ import { contactEmail } from "@/config/site";
  * The day /brand-assets's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /brand-assets's content moves this to that day in the same PR; never the build's date.
  */
-export const brandAssetsLastUpdated = "1 November 2026";
+export const brandAssetsLastUpdated = "2 November 2026";
 
 /** Where the kit's files are served (`public/brand-kit/`, a month in the browser: `public/_headers`). */
 export const brandKitDir = "/brand-kit";
@@ -269,8 +269,8 @@ export const brandAssetsPage = {
         note: "Always these exact words, in sentence case, with the comma and the full stop.",
       },
       { label: "Company line", text: brandCompanyLine },
-      { label: "Coral", text: "Coral: Kubernetes cost optimization on AKS and EKS." },
-      { label: "Amoeba", text: "Amoeba: block storage cost optimization on Azure and AWS." },
+      { label: "Coral", text: "Coral: Kubernetes optimization on AKS and EKS." },
+      { label: "Amoeba", text: "Amoeba: block storage optimization on Azure and AWS." },
       {
         label: "About Zoorik",
         text: `${brandCompanyLine} Coral rebalances Kubernetes on AKS and EKS. Amoeba rightsizes block storage: Azure managed disks and Amazon EBS. Both work autonomously, without any downtime, and show what you spend and what you save. Start with the free assessment at zoorik.com/assessment. Zoorik Private Limited, Bangalore, India.`,

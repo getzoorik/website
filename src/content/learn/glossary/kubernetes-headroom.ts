@@ -11,7 +11,7 @@ export const term: GlossaryTerm = {
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -72,7 +72,7 @@ export const term: GlossaryTerm = {
             "Requests far above real use add nodes you never planned, since the scheduler places pods by requests.",
             [
               { a: "Coral", href: "/coral" },
-              " rebalances CPU and memory requests on AKS and EKS to match real use. Then the same pods fit on fewer nodes, and Coral drains the spare ones so your autoscaler can remove them.",
+              " rebalances CPU and memory requests on AKS and EKS to match real use. Then the same pods fit on fewer nodes, and Coral removes the spare ones.",
             ],
             [
               "The ",

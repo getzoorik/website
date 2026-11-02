@@ -93,7 +93,7 @@ export const cin = "U62011KA2026PTC228102";
  * page does not print it. Whoever changes /about's content moves this to that
  * day in the same PR; never the build's date.
  */
-export const aboutLastUpdated = "1 November 2026";
+export const aboutLastUpdated = "2 November 2026";
 
 /** The year Zoorik Private Limited was incorporated: the Company facts' and the first milestone's. */
 const incorporated = "2026";
@@ -150,7 +150,7 @@ export const about = {
   meta: {
     title: "About",
     description:
-      "Zoorik Private Limited builds Coral, Kubernetes cost optimization on AKS and EKS, and Amoeba, block storage cost optimization on Azure and AWS.",
+      "Zoorik Private Limited builds Coral, Kubernetes optimization on AKS and EKS, and Amoeba, block storage optimization on Azure and AWS.",
   },
   hero: {
     title: "About Zoorik",
@@ -158,7 +158,7 @@ export const about = {
   },
   what: {
     section: { id: "what-we-build", title: "What we build" },
-    lede: "Zoorik reduces cloud cost, autonomously. Coral is Kubernetes cost optimization on AKS and EKS. Amoeba is block storage cost optimization on Azure and AWS.",
+    lede: "Zoorik reduces cloud cost, autonomously. Coral is Kubernetes optimization on AKS and EKS. Amoeba is block storage optimization on Azure and AWS.",
     /** One tile per product, Coral first: its mark, its name and its one line, to its page. */
     products: ["coral", "amoeba"] as const satisfies readonly ProductId[],
   },

@@ -1281,7 +1281,7 @@ export const versusFacts: readonly VersusFacts[] = [
         label: "Removes and replaces machines",
         ours: {
           mark: "yes",
-          note: "empties spare machines so the autoscaler removes them, and rebalances onto cheaper ones",
+          note: "removes spare machines, and rebalances onto cheaper ones",
           sources: [],
         },
         theirs: {
@@ -1570,7 +1570,7 @@ export const versusFacts: readonly VersusFacts[] = [
         label: "Spare AKS nodes",
         ours: {
           mark: "yes",
-          note: "empties them one at a time, so your autoscaler removes them",
+          note: "removes them one at a time",
           sources: [],
         },
         theirs: {

@@ -68,12 +68,12 @@ const CARDS: readonly {
   readonly words: string;
   readonly paths: readonly `/${string}`[];
 }[] = [
+  { file: "kubernetes-optimization-coral", words: "Kubernetes optimization", paths: ["/coral"] },
   {
-    file: "coral-kubernetes-optimization",
-    words: "Kubernetes optimization for AKS and EKS",
-    paths: ["/coral"],
+    file: "block-storage-optimization-amoeba",
+    words: "Block storage optimization",
+    paths: ["/amoeba"],
   },
-  { file: "amoeba", words: "Block storage cost optimization on Azure and AWS", paths: ["/amoeba"] },
   /* Each product on each cloud, then the six pages on what Coral works with (31 Oct 2026). */
   {
     file: "aks-cost-optimization",

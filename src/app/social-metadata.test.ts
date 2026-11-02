@@ -41,18 +41,18 @@ describe("social cards", () => {
   it("cards the home page with its title and its description", () => {
     /* The card repeats the page's head. */
     const home = pages["/"].openGraph as Record<string, unknown>;
-    expect(home.title).toBe("Zoorik | Kubernetes and block storage cost optimization");
+    expect(home.title).toBe("Zoorik | Kubernetes and block storage optimization");
     expect(home.description).toBe(pages["/"].description);
   });
 
   it("cards each product page with its full title and its description", () => {
     const amoeba = pages["/amoeba"].openGraph as Record<string, unknown>;
     const coral = pages["/coral"].openGraph as Record<string, unknown>;
-    expect(amoeba.title).toBe("Block storage cost optimization for Azure and AWS | Zoorik");
+    expect(amoeba.title).toBe("Amoeba: Block storage optimization | Zoorik");
     expect(amoeba.description).toBe(
-      "Block storage cost optimization: Amoeba rightsizes Azure managed disks and Amazon EBS to your data, autonomously, without any downtime after the one switch.",
+      "Block storage optimization: Amoeba rightsizes Azure managed disks and Amazon EBS to your data, autonomously, without any downtime after the one switch.",
     );
-    expect(coral.title).toBe("Coral: Kubernetes optimization for AKS and EKS | Zoorik");
+    expect(coral.title).toBe("Coral: Kubernetes optimization | Zoorik");
     expect(coral.description).toBe(
       "Kubernetes optimization platform for AKS and EKS. Coral rebalances requests and nodes to reduce your cloud cost, autonomously, without any downtime.",
     );
