@@ -67,8 +67,8 @@ export const securityPage = {
     title: "Security and data handling",
     deck: "What each product may change, what it sends us, and where we keep it.",
   },
-  /* 1 Nov 2026: what Amoeba deletes, as it runs now, with no going back and no 48-hour soak. */
-  updated: "Updated 1 November 2026",
+  /* 2 Nov 2026: privacy policy 1.5 (Google as a sub-processor, Cloudflare before both consoles, Amoeba's reports kept 3 to 4 days); 1 Nov: what Amoeba deletes, with no going back and no 48-hour soak. */
+  updated: "Updated 2 November 2026",
   /** The summary's title is a paragraph, the list a summary list. */
   summaryTitle: "Summary",
 } as const;
@@ -408,7 +408,7 @@ export const securityGroups: readonly SecurityGroup[] = [
             items: [
               "Coral’s and Amoeba’s databases, backups, key vault and container registry are in Microsoft Azure, Central India. Backups are kept for 7\u00a0days and are not copied to another region.",
               "Every connection from the internet uses HTTPS, with HSTS. Cloudflare re-encrypts traffic to our servers, and our gateway accepts connections only from Cloudflare. Coral reaches its database over TLS 1.2 or later. Azure encrypts the database and disks at rest.",
-              "Cluster data is kept while the cluster reports, then for 30\u00a0days. Amoeba’s agent reports sit in a cache for up to 72\u00a0hours.",
+              "Cluster data is kept while the cluster reports, then for 30\u00a0days. Amoeba keeps its agent’s reports until 72\u00a0hours after the end of the day (UTC) they arrived, so for 3 to 4\u00a0days.",
             ],
           },
           {
@@ -436,15 +436,20 @@ export const securityGroups: readonly SecurityGroup[] = [
               ],
               [
                 "Cloudflare",
-                "DNS and the secure proxy in front of Coral",
+                "DNS and the secure proxy in front of Coral and Amoeba",
                 "Every request in transit, agent uploads included. It decrypts and re-encrypts each request.",
+              ],
+              [
+                "Google (Workspace)",
+                "Zoorik’s email",
+                "Emails between us, such as the pilot report and support replies. They can name your clusters, nodes and workloads.",
               ],
             ],
           },
           {
             kind: "p",
             text: [
-              "These two handle the cluster and VM data we process for you. The full list is in the ",
+              "These three handle the cluster and VM data we process for you. The full list is in the ",
               { href: `${routes.privacy}#sharing`, text: "privacy policy" },
               ".",
             ],
