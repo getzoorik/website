@@ -673,12 +673,12 @@ describe("/learn/poor-architecture-cloud-bill, against its draft", () => {
     const frame = (await main(slug)).querySelector(".ar-frame")!;
     expect([...frame.querySelectorAll("section.fq-sec > h2")].map(text)).toEqual([
       "The hidden cost of architectural decisions",
-      "Containers vs virtual machines: the architectural trade-off",
+      "Container vs VM: the architectural trade-off",
       "Five places poor architecture adds cost",
       "How we review an architecture for cost",
       "What we found in that engagement",
       "Cloud cost is an engineering discipline",
-      "Where Coral fits",
+      "Where Coral fits once workloads share a cluster",
     ]);
     expect([...frame.querySelectorAll("section.fq-sec")].map((s) => s.id).slice(0, 6)).toEqual([
       "the-hidden-cost-of-architectural-decisions",
@@ -689,6 +689,8 @@ describe("/learn/poor-architecture-cloud-bill, against its draft", () => {
       "the-bigger-lesson-cloud-waste-is-often",
     ]);
     expect([...frame.querySelectorAll("h3[id]")].map(text)).toEqual([
+      "The difference between a VM and a container",
+      "Why a shared pool of nodes uses capacity better",
       "1. Overprovisioning compute and storage",
       "2. Running workloads in isolation when they could share capacity",
       "3. Scaling infrastructure instead of fixing the application",

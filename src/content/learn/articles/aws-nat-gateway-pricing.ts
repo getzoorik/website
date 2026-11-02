@@ -17,7 +17,7 @@ export const article: Article = {
   author: "zoorik",
   cover: "/learn-covers/zoorik-learn-aws-nat-gateway-pricing-1200x630.webp",
   coverAlt:
-    "AWS NAT gateway pricing: a private subnet’s traffic passes a NAT gateway with two meters, one for hours provisioned and one for GB processed",
+    "AWS NAT gateway pricing: a private subnet’s traffic passes a NAT gateway that meters hours provisioned and GB processed",
   short:
     "AWS NAT gateway pricing has two parts: a charge for each hour a NAT gateway runs, and one for each GB it processes. AWS’s US East (Ohio) rates, in November 2026, are $0.045 per NAT gateway-hour and $0.045 per GB processed, plus data transfer. Gateway endpoints and deleting unused gateways reduce it.",
   sections: [

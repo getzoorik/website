@@ -425,11 +425,7 @@ describe.each(pages)("the product page %s", (path, content) => {
       "i",
     );
     expect(page.textContent).not.toMatch(forbidden);
-    /* No em dash in the copy, except on the Helm card ("Coral is in early access — book a demo for a console
-       account"). */
-    for (const line of main.querySelectorAll("#install .iw-alt")) {
-      if (line.textContent!.startsWith("Coral is in early access — ")) line.remove();
-    }
+    /* No em dash in the copy, the Helm card's early access line included since 2 Nov 2026. */
     expect(main.textContent).not.toContain("—");
   });
 

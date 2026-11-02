@@ -88,7 +88,8 @@ describe("the calculators' metadata", () => {
       "On AWS and Azure, block storage pricing follows a disk's full size, however little data it holds. So empty space costs the same as space your data uses.",
     );
     /* The node page's cluster fees rest on AWS's and Azure's pricing pages, which its sources name. */
-    const sources = nodeCalculator.frame.find((section) => section.id === "sources")!;
+    const node: CalculatorCopy = nodeCalculator;
+    const sources = node.frame.find((section) => section.id === "sources")!;
     expect(JSON.stringify(sources.blocks)).toContain(
       "Cluster fees from AWS's [Amazon EKS pricing](https://aws.amazon.com/eks/pricing/), and from Microsoft Learn's [AKS pricing tiers](https://learn.microsoft.com/en-us/azure/aks/free-standard-pricing-tiers) and Azure's [AKS pricing](https://azure.microsoft.com/en-us/pricing/details/kubernetes-service/), checked 2 November 2026.",
     );

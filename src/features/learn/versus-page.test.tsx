@@ -323,21 +323,20 @@ describe.each(versusPages.map((entry) => [entry.slug, entry] as const))("%s", (_
   });
 });
 
-/** Each newer page's question rows' ids, as its mock writes them (`sectionSlug`: the question's first seven words). */
+/**
+ * Each newer page's question rows' ids, as its mock writes them (`sectionSlug`: the question's first seven words). The
+ * 2 Nov 2026 plan drops two questions from each, whose answers repeated a section above.
+ */
 const questionIds: Readonly<Record<string, readonly string[]>> = {
   "coral-vs-azure-advisor": [
     "what-is-azure-advisor",
     "is-azure-advisor-free",
-    "does-azure-advisor-rightsize-aks-pods",
-    "does-coral-replace-azure-advisor",
     "are-advisors-saving-figures-exact",
     "how-do-you-see-what-coral-would",
   ],
   "coral-vs-aws-compute-optimizer": [
     "what-is-aws-compute-optimizer",
     "is-aws-compute-optimizer-free",
-    "does-aws-compute-optimizer-support-eks",
-    "can-coral-and-aws-compute-optimizer-run",
     "does-coral-change-eks-managed-node-groups",
     "can-coral-move-eks-nodes-to-cheaper",
     "how-do-you-see-what-coral-would",

@@ -18,7 +18,7 @@ export const article: Article = {
   author: "zoorik",
   cover: "/learn-covers/zoorik-learn-kubernetes-explained-simply-1200x630.webp",
   coverAlt:
-    "Kubernetes explained as a restaurant: the manager is the control plane, the kitchen counters are nodes, the stations are pods and the cooks are containers",
+    "Kubernetes explained as a restaurant: manager and control plane, counters and nodes, stations and pods, cooks and containers",
   short:
     "Kubernetes is open-source software that runs your app’s containers across a cluster of machines. You say what should run, such as 3\u00a0copies of a service, and it keeps it so. When a container fails, Kubernetes restarts or replaces it, and it sends traffic only to copies that are ready.",
   sections: [

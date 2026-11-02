@@ -16,7 +16,7 @@ export const article: Article = {
   author: "zoorik",
   cover: "/learn-covers/zoorik-learn-kubernetes-taints-and-tolerations-1200x630.webp",
   coverAlt:
-    "Kubernetes taints and tolerations: a tainted node keeps out a pod with no toleration and lets in a pod that tolerates the taint",
+    "Kubernetes taints and tolerations: a tainted node keeps out a pod with no toleration and lets in one that tolerates the taint",
   sections: [
     {
       id: "what-a-taint-and-a-toleration-do",

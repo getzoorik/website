@@ -77,7 +77,9 @@ export function ProductAbout({ content }: { content: ProductPageContent }): Reac
                 </span>
                 <div>
                   <h3>{offering.label}</h3>
-                  <span className="tour-line">{offering.line}</span>
+                  <span className="tour-line">
+                    <NamedText text={offering.line} name={name} />
+                  </span>
                 </div>
               </li>
             ))}

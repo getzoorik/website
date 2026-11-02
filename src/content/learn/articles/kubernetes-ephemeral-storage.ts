@@ -16,7 +16,7 @@ export const article: Article = {
   author: "zoorik",
   cover: "/learn-covers/zoorik-learn-kubernetes-ephemeral-storage-1200x630.webp",
   coverAlt:
-    "Kubernetes ephemeral storage: images, writable layers, logs and emptyDir volumes fill one node disk, and below 10% free the kubelet frees space, then evicts pods",
+    "Kubernetes ephemeral storage: images, logs and emptyDir fill a disk; below 10% free the kubelet frees space, then evicts pods",
   sections: [
     {
       id: "what-counts-as-kubernetes-ephemeral-storage",

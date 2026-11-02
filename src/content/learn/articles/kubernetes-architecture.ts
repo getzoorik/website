@@ -16,7 +16,7 @@ export const article: Article = {
   author: "zoorik",
   cover: "/learn-covers/zoorik-learn-kubernetes-architecture-1200x630.webp",
   coverAlt:
-    "Kubernetes architecture: the control plane’s controllers, scheduler, etcd and API server above two worker nodes running pods, with every arrow meeting the API server",
+    "Kubernetes architecture: the control plane above two worker nodes running pods, with every arrow meeting the API server",
   short:
     "Kubernetes architecture is a control plane plus worker nodes. The control plane stores the cluster’s state and decides which node runs each pod. On every node, the kubelet has a container runtime start the pods placed there. On Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS), the cloud provider operates the control plane for you.",
   sections: [

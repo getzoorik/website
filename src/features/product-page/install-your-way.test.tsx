@@ -128,7 +128,7 @@ describe("Install your way", () => {
     );
     const note = card.querySelector(".iw-alt")!;
     expect(text(note)).toBe(
-      "Coral is in early access — book a demo (opens in a new tab) for a console account.",
+      "Coral is in early access: book a demo (opens in a new tab) for a console account.",
     );
     expect(note.querySelector('[translate="no"]')).toHaveTextContent("Coral");
     expect(note.querySelector("a")).toHaveAttribute("href", "https://cal.com/zoorik/talk");

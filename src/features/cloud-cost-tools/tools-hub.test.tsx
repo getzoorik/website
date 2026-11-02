@@ -381,6 +381,8 @@ describe("/cloud-cost-optimization-library", () => {
     expect(hrefs.filter((href) => href.startsWith(`${comparePath}/`))).toEqual([
       ...versusPages.map(versusRoute),
       ...alternativesPages.map((entry) => entry.route),
+      /* The Kubecost question's link, in the questions after the calculators (2 Nov 2026 plan). */
+      routes.compareCoralAlternatives,
     ]);
     expect(hrefs.some((href) => href.startsWith("/learn/compare"))).toBe(false);
     expect(root.querySelectorAll("main img")).toHaveLength(0);
