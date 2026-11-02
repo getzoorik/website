@@ -73,7 +73,7 @@ describe("KubernetesSection", () => {
     expect(copy).not.toMatch(/right-?siz/i);
     /* The h2 names the category and links to /coral; the line leads with what Coral stops (23 Oct 2026). */
     const h2 = container.querySelector("h2")!;
-    expect(h2.textContent).toBe("Kubernetes cost optimization");
+    expect(h2.textContent).toBe("Kubernetes optimization");
     expect(h2.querySelector("a")).toHaveAttribute("href", "/coral");
     const line = container.querySelector(".st-body")!;
     expect(line.textContent).toBe(

@@ -130,7 +130,7 @@ describe("the home page", () => {
     expect(headings).toEqual([
       "h1 Zoorik Reduce cloud cost, autonomously.",
       /* The SEO heading pass (23 Oct 2026): each product section's h2 is its category. */
-      "h2 Kubernetes cost optimization",
+      "h2 Kubernetes optimization",
       "h2 Block storage cost optimization",
       "h2 Autonomous optimization, without the risk",
       "h3 Pay for what your workloads use",

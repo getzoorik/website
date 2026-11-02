@@ -11,9 +11,9 @@ import { workedExample } from "@/content/savings";
  */
 export const kubernetesContent: ProductSectionContent = {
   product: "coral",
-  /* The SEO heading pass (owner, 23 Oct 2026): the h2 names the category and links to /coral; the line leads with
-     the old headline. */
-  headline: "Kubernetes cost optimization",
+  /* The h2 names Coral's category and links to /coral, which owns the search "Kubernetes optimization"; the pillar
+     owns "Kubernetes cost optimization" (owner, 2 Nov 2026). */
+  headline: "Kubernetes optimization",
   /* "No code changes" went (2 Nov 2026): the By design band's resize drawing says it for both products. */
   body: "Stop paying for idle Kubernetes capacity. Coral rebalances workloads and removes the nodes you don’t need.",
   /* The home page's link to the Kubernetes pillar, which owns this search (D229; owner, 1 Nov 2026). */

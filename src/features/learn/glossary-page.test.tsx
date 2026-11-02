@@ -111,7 +111,7 @@ const runsIn = (blocks: readonly ArticleBlock[]): readonly ArticleText[] =>
   });
 
 describe("the glossary index", () => {
-  it("lists every term file once, A–Z, each named by its slug: the sixty terms of the two 25 October plans and eight of the 2 November plan's nine (AWS EDP waits on the owner)", () => {
+  it("lists every term file once, A–Z, each named by its slug: the sixty terms of the two 25 October plans and the nine of the 2 November plan", () => {
     const files = readdirSync("src/content/learn/glossary")
       .filter((name) => name.endsWith(".ts"))
       .map((name) => name.slice(0, -3))
@@ -119,7 +119,7 @@ describe("the glossary index", () => {
     expect(glossaryFiles.map((entry) => entry.file)).toEqual(files);
     for (const { file, term } of glossaryFiles) expect(term.slug, file).toBe(file);
     expect(glossaryTerms.map((term) => term.slug)).toEqual(files);
-    expect(files).toHaveLength(68);
+    expect(files).toHaveLength(69);
   });
 
   it("dates every term by real ISO days, published on or before today, and updated no earlier", () => {
@@ -149,10 +149,10 @@ describe("the glossary index", () => {
     expect(cardFor("/learn/glossary/no-such-term")).toBe(pageCards[routes.learnGlossary]);
   });
 
-  it("files every term under one of the three groups: 17 Kubernetes, 21 block storage, 30 FinOps and pricing", () => {
+  it("files every term under one of the three groups: 17 Kubernetes, 21 block storage, 31 FinOps and pricing", () => {
     expect(
       glossaryGroups.map((group) => glossaryTerms.filter((term) => term.group === group.id).length),
-    ).toEqual([17, 21, 30]);
+    ).toEqual([17, 21, 31]);
   });
 
   it('says "cloud cost", never "bill", in its own words: only a vendor\'s own name or a source\'s address keeps it', () => {
