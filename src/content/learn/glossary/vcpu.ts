@@ -23,6 +23,10 @@ export const term: GlossaryTerm = {
       id: "vcpu-vs-core",
       title: "vCPU vs core: threads and hyper-threading",
       blocks: [
+        {
+          kind: "p",
+          text: "With simultaneous multithreading (SMT), also called hyper-threading, one CPU core runs more than one thread at once. Each thread is one vCPU.",
+        },
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
@@ -38,6 +42,10 @@ export const term: GlossaryTerm = {
       id: "vcpus-on-aws-ec2-and-azure",
       title: "vCPUs on AWS EC2 and Azure",
       blocks: [
+        {
+          kind: "p",
+          text: "On AWS, an m5.xlarge has 2 CPU cores with 2 threads each by default, so 4 vCPUs.",
+        },
         {
           kind: "p",
           text: [
@@ -135,6 +143,11 @@ export const term: GlossaryTerm = {
       publisher: "AWS",
       title: "“CPU options for Amazon EC2 instances”",
       url: "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-optimize-cpu.html",
+    },
+    {
+      publisher: "AWS",
+      title: "“Rules for specifying CPU options for an Amazon EC2 instance”",
+      url: "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-cpu-options-rules.html",
     },
     {
       publisher: "AWS",

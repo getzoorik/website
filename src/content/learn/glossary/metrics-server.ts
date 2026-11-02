@@ -68,6 +68,14 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
+          text: [
+            "On AKS, Metrics Server already runs in the ",
+            { code: "kube-system" },
+            " namespace, which every cluster gets by default.",
+          ],
+        },
+        {
+          kind: "p",
           text: "Amazon EKS doesn’t deploy Metrics Server by default. AWS’s current route is the Metrics Server community add-on. In the AWS console, open your cluster, choose Add-ons, then Get More Add-ons, then Metrics Server.",
         },
         {
@@ -213,6 +221,11 @@ export const term: GlossaryTerm = {
       publisher: "AWS",
       title: "“View resource usage with the Kubernetes Metrics Server”",
       url: "https://docs.aws.amazon.com/eks/latest/userguide/metrics-server.html",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“Azure Kubernetes Service (AKS) Core Concepts”",
+      url: "https://learn.microsoft.com/en-us/azure/aks/core-aks-concepts",
     },
   ],
 };

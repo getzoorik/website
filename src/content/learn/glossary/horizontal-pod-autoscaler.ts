@@ -69,6 +69,10 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: "The Horizontal Pod Autoscaler on EKS is built in. EKS lists Metrics Server as a prerequisite.",
         },
+        {
+          kind: "p",
+          text: "On AKS, Microsoft advises the HPA when a workload can run several identical replicas and its demand changes. When the replicas outgrow your nodes, Cluster Autoscaler or node autoprovisioning adds nodes.",
+        },
       ],
     },
     {
