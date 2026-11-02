@@ -73,7 +73,7 @@ export const coralFaqPage = {
     title: "Coral FAQ",
     deck: "Sizing, safety, HPA, nodes and autoscalers.",
   },
-  updated: "Updated 1 November 2026",
+  updated: "Updated 2 November 2026",
   /** The one download line after the last group: the FAQ's PDF, and no other. */
   download: { label: "FAQ PDF", document: "coral-faq" },
 } as const;
@@ -88,8 +88,8 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
         id: "what-is-coral",
         question: "What is Coral?",
         short: [
-          "Coral is Kubernetes cost optimization for Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS).",
-          "It sizes each container’s CPU and memory requests to what it really uses, and drains spare nodes one at a time so your autoscaler can remove them. No code changes.",
+          "Coral is Kubernetes optimization for Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS).",
+          "It sizes each container’s CPU and memory requests to what it really uses, and removes the nodes you don’t need, one at a time. No code changes.",
           [
             "More on the product page: ",
             { href: routes.coral, text: "Coral for AKS and EKS" },

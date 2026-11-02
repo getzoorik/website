@@ -296,8 +296,8 @@ describe("/careers's sections", () => {
     expect(labels[0]!.querySelector("svg")).toHaveAttribute("data-mark", "kubernetes");
     /* The home page's titles. */
     expect(products.map((product) => text(product.querySelector("h3")))).toEqual([
-      "Kubernetes cost optimization",
-      "Block storage cost optimization",
+      "Kubernetes optimization",
+      "Block storage optimization",
     ]);
 
     const see = products.map((product) => product.querySelector("a.alink")!);

@@ -337,7 +337,7 @@ export const azureCostOptimizationPage: TopicPage = {
         product: "coral",
         title: "Coral, for AKS",
         paragraphs: [
-          `[Coral](${routes.coral}) rebalances AKS clusters. It sizes each container's CPU and memory requests to what it really uses. Coral also empties spare nodes one at a time, so the Cluster Autoscaler or NAP can remove them.`,
+          `[Coral](${routes.coral}) rebalances AKS clusters. It sizes each container's CPU and memory requests to what it really uses. Coral also removes the nodes you don’t need, one at a time.`,
           `Coral works with the Horizontal Pod Autoscaler, KEDA, NAP and the Cluster Autoscaler, and needs no application code changes. Node optimization is on from install. Pod sizing waits until you switch on "Automatically optimize".`,
         ],
         link: { label: "AKS cost optimization with Coral", href: routes.aksCostOptimization },
@@ -479,7 +479,7 @@ export const awsCostOptimizationPage: TopicPage = {
               "[EKS](#eks-cost)",
               "In most clusters, mainly the EC2 instances the nodes run on.",
               "Fit pod requests to real use, then let spare nodes go.",
-              "Karpenter or the Cluster Autoscaler removes nodes. Coral rebalances the cluster.",
+              "Coral rebalances the cluster and removes the nodes you don’t need.",
             ],
             [
               "[Amazon S3](#s3-cost)",

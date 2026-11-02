@@ -41,7 +41,7 @@ describe("/about's metadata", () => {
   it("has its title through the template, the mock's description and its canonical", () => {
     expect(metadata.title).toBe("About");
     expect(metadata.description).toBe(
-      "Zoorik Private Limited builds Coral, Kubernetes cost optimization on AKS and EKS, and Amoeba, block storage cost optimization on Azure and AWS.",
+      "Zoorik Private Limited builds Coral, Kubernetes optimization on AKS and EKS, and Amoeba, block storage optimization on Azure and AWS.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/about" });
     expect(metadata).not.toHaveProperty("robots");
@@ -118,14 +118,14 @@ describe("/about", () => {
   it("draws one tile per product, Coral first, to its page", () => {
     const what = main().querySelector("#what-we-build")!;
     expect(text(what.querySelector(".sec-head p"))).toBe(
-      "Zoorik reduces cloud cost, autonomously. Coral is Kubernetes cost optimization on AKS and EKS. Amoeba is block storage cost optimization on Azure and AWS.",
+      "Zoorik reduces cloud cost, autonomously. Coral is Kubernetes optimization on AKS and EKS. Amoeba is block storage optimization on Azure and AWS.",
     );
     const tiles = [...what.querySelectorAll(".dt-grid.ab-prods > article.dt > a.dt-a")];
     expect(tiles.map((tile) => tile.getAttribute("href"))).toEqual(["/coral", "/amoeba"]);
     expect(tiles.map((tile) => text(tile.querySelector(".dt-t")))).toEqual(["Coral", "Amoeba"]);
     expect(tiles.map((tile) => text(tile.querySelector(".dt-l")))).toEqual([
-      "Kubernetes cost optimization on AKS and EKS",
-      "Block storage cost optimization on Azure and AWS",
+      "Kubernetes optimization on AKS and EKS",
+      "Block storage optimization on Azure and AWS",
     ]);
     for (const tile of tiles) {
       expect(tile.querySelector('.dt-t > span[translate="no"]')).not.toBeNull();
@@ -297,8 +297,8 @@ describe("/about", () => {
     expect(about.what.lede).toMatch(/^Zoorik reduces cloud cost, autonomously\. /);
   });
 
-  it("moves its sitemap date to the day its words were cleaned (1 Nov 2026)", () => {
-    expect(aboutLastUpdated).toBe("1 November 2026");
+  it("moves its sitemap date to the day its product names changed (2 Nov 2026)", () => {
+    expect(aboutLastUpdated).toBe("2 November 2026");
   });
 
   it("puts the two stores as buttons under Available on, naming no product", () => {

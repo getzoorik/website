@@ -14,11 +14,11 @@ import type { ProductPageContent, ReadMoreTile } from "@/content/product-page";
  * The Runs on chips and the line under the How it works cards are read from
  * `kubernetes.ts`, and the cards from `how-it-works.ts`, rather than copied: a
  * second copy would be a second claim free to drift. The hero's line is this
- * page's own (owner, 2 Nov 2026: the H1 and one small line under it), in the
- * pinned Coral help box's words. Nothing here is a new figure.
+ * page's own (2 Nov 2026: the H1 and one small line under it). Nothing here is a
+ * new figure.
  *
- * Coral's h1 is "Kubernetes optimization for AKS and EKS", and its `<title>`
- * "Coral: Kubernetes optimization for AKS and EKS" (owner, 1 Nov 2026, O1):
+ * Coral's h1 is "Kubernetes optimization", and its `<title>` "Coral: Kubernetes optimization"
+ * (2 Nov 2026):
  * the search "Kubernetes cost optimization" belongs to
  * /kubernetes-cost-optimization (D229), so neither carries it. It is never shown as running on Windows
  * or Linux.
@@ -44,15 +44,15 @@ export const coralFaqTile: ReadMoreTile = {
 export const coralPageContent: ProductPageContent = {
   product: "coral",
   meta: {
-    title: "Coral: Kubernetes optimization for AKS and EKS",
+    title: "Coral: Kubernetes optimization",
     description:
       "Kubernetes optimization platform for AKS and EKS. Coral rebalances requests and nodes to reduce your cloud cost, autonomously, without any downtime.",
     appDescription:
-      "Kubernetes cost optimization on AKS and EKS. Coral sizes pod requests to real use and drains spare nodes one at a time.",
+      "Kubernetes optimization on AKS and EKS. Coral sizes pod requests to real use and removes the nodes you don’t need.",
   },
   hero: {
-    title: "Kubernetes optimization for AKS and EKS",
-    line: "Coral rebalances workloads and drains spare nodes so your autoscaler can remove them.",
+    title: "Kubernetes optimization",
+    line: "Coral rebalances your workloads and nodes to reduce your cloud cost, autonomously, without any downtime.",
     cta: { label: assessContent.assessment.cta.label, href: assessmentHref("coral") },
   },
   about: {
@@ -107,7 +107,7 @@ export const coralPageContent: ProductPageContent = {
       id: "node-optimization",
       label: "Node optimization",
       drawing: "drain",
-      line: "Spare nodes drained one at a time; Coral never creates machines.",
+      line: "Spare nodes removed one at a time; Coral never creates machines.",
     },
   ],
   what: {

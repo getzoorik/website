@@ -212,7 +212,7 @@ describe("the home page's structured data", () => {
     expect(amoeba.description).toBe(amoebaPageContent.meta.appDescription);
     /* What "What is Amoeba?" says. */
     expect(amoeba.description).toBe(
-      "Block storage cost optimization for VMs on Azure and AWS. Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. Then it rightsizes that pool, one disk at a time.",
+      "Block storage optimization for VMs on Azure and AWS. Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. Then it rightsizes that pool, one disk at a time.",
     );
     /* The paragraph as its words: its one link, "btrfs pool", as the words it shows. */
     const whatIs = [amoebaPageContent.about.paragraphs[0]]
@@ -225,9 +225,9 @@ describe("the home page's structured data", () => {
             : "",
       )
       .join("");
-    expect(whatIs).toContain("block storage cost optimization platform for VMs on Azure and AWS");
+    expect(whatIs).toContain("block storage optimization platform for VMs on Azure and AWS");
     expect(whatIs).toContain(String(amoeba.description).split(". ")[1]!.replace(/\.$/, ""));
-    expect(amoeba.applicationSubCategory).toBe("Block storage cost optimization");
+    expect(amoeba.applicationSubCategory).toBe("Block storage optimization");
     expect(amoeba.featureList).toEqual([
       "Monitoring",
       "Savings insights",
@@ -237,9 +237,9 @@ describe("the home page's structured data", () => {
     expect(coral.name).toBe(products.coral.name);
     expect(coral.description).toBe(coralPageContent.meta.appDescription);
     expect(coral.description).toBe(
-      "Kubernetes cost optimization on AKS and EKS. Coral sizes pod requests to real use and drains spare nodes one at a time.",
+      "Kubernetes optimization on AKS and EKS. Coral sizes pod requests to real use and removes the nodes you don’t need.",
     );
-    expect(coral.applicationSubCategory).toBe("Kubernetes cost optimization");
+    expect(coral.applicationSubCategory).toBe("Kubernetes optimization");
     expect(coral.featureList).toEqual([
       "Kubernetes cost monitoring",
       "Recommendations",
@@ -281,8 +281,8 @@ describe("the home page's structured data", () => {
     expect(org.legalName).toBe("Zoorik Private Limited");
     expect(org.knowsAbout).toEqual([
       "Cloud cost optimization",
-      "Kubernetes cost optimization",
-      "Block storage cost optimization",
+      "Kubernetes optimization",
+      "Block storage optimization",
     ]);
     expect(org.email).toBe(contactEmail);
     expect(org.contactPoint).toEqual({

@@ -94,7 +94,7 @@ describe("/docs", () => {
     expect(text(h2)).toBe("Coral");
     /* The cloud pair is tied with no-break spaces, as the mock writes it. */
     expect(head.querySelector("p")!.textContent).toBe(
-      "Kubernetes cost optimization on AKS\u00a0and\u00a0EKS",
+      "Kubernetes optimization on AKS\u00a0and\u00a0EKS",
     );
     const link = head.querySelector("a")!;
     expect(link).toHaveClass("alink");
@@ -402,7 +402,7 @@ describe("the hub under each hold of the Amoeba documents", () => {
   it("nothing held: the mock's three tiles and the troubleshooting page, after Coral's group", async () => {
     const groups = await hubWith({ amoebaDocs: true, amoebaOnePager: true });
     expect(groups.map((group) => group.product)).toEqual(["coral", "amoeba"]);
-    expect(groups[1]!.line).toBe("Block storage cost optimization on Azure\u00a0and\u00a0AWS");
+    expect(groups[1]!.line).toBe("Block storage optimization on Azure\u00a0and\u00a0AWS");
     expect(groups[1]!.pageLink).toEqual({ label: "Product page", href: "/amoeba" });
     expect(amoebaTiles(groups)).toEqual([
       ["Product guide", "/amoeba-guide", "amoeba-guide"],

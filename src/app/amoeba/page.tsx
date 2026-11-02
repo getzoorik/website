@@ -5,7 +5,7 @@ import { ProductPage } from "@/features/product-page/product-page";
 import { productPageMetadata } from "@/features/product-page/product-page-meta";
 
 /**
- * `/amoeba` — Amoeba's own page: Block storage cost optimization for Windows
+ * `/amoeba` — Amoeba's own page: Block storage optimization for Windows
  * and Linux VMs on Azure and AWS. Indexed, and prerendered at build like every
  * page here: it reads no request data.
  */

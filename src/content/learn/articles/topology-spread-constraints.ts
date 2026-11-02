@@ -541,7 +541,7 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS. It rebalances CPU and memory requests, and it drains spare nodes so your autoscaler can remove them. Spread rules sit inside that drain decision.",
+            " optimizes Kubernetes on AKS and EKS. It rebalances CPU and memory requests, and it drains and removes the nodes you don’t need. Spread rules sit inside that drain decision.",
           ],
         },
         {
@@ -586,7 +586,7 @@ export const article: Article = {
   ],
   help: {
     product: "coral",
-    text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and drains spare nodes so your autoscaler can remove them. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and removes the nodes you don’t need. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Estimate your saving", href: "/assessment?p=coral" },

@@ -88,7 +88,7 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " rebalances CPU and memory requests on AKS and EKS to match real use. It drains spare nodes so your autoscaler can remove them, and works with your HPA.",
+            " rebalances CPU and memory requests on AKS and EKS to match real use. It removes the nodes you don’t need, and works with your HPA.",
           ],
         },
         {

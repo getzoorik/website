@@ -5,7 +5,7 @@ import { ProductPage } from "@/features/product-page/product-page";
 import { productPageMetadata } from "@/features/product-page/product-page-meta";
 
 /**
- * `/coral` — Coral's own page: Kubernetes cost optimization on AKS and EKS. Indexed,
+ * `/coral` — Coral's own page: Kubernetes optimization on AKS and EKS. Indexed,
  * and prerendered at build like every page here: it reads no request data.
  */
 export const metadata: Metadata = productPageMetadata(coralPageContent);

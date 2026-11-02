@@ -100,7 +100,7 @@ export const term: GlossaryTerm = {
             "Reserve more, and you pay for hours no VM uses.",
             [
               { a: "Coral", href: "/coral" },
-              " rebalances CPU and memory requests on AKS and EKS to match real use. It drains spare nodes so your autoscaler can remove them.",
+              " rebalances CPU and memory requests on AKS and EKS to match real use. It removes the nodes you don’t need.",
             ],
             [
               "Reserve only for the nodes you still need after you ",

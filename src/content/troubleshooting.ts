@@ -241,7 +241,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
         blocks: [
           {
             kind: "p",
-            text: "**Short answer.** As Coral rebalances your cluster, it empties nodes you don’t need, and your autoscaler removes them. A node often stays because a switch is off, a pod can’t move safely, there’s no room elsewhere, or the pool is at its minimum. Node list → “What’s holding them” shows the reason for each held node.",
+            text: "**Short answer.** As Coral rebalances your cluster, it removes the nodes you don’t need. A node often stays because a switch is off, a pod can’t move safely, there’s no room elsewhere, or the pool is at its minimum. Node list → “What’s holding them” shows the reason for each held node.",
           },
           { kind: "h3", text: "Check Node optimization and the Evictor are on" },
           { kind: "p", text: "**Look at:** Settings, and the Evictor’s “Advanced settings”." },

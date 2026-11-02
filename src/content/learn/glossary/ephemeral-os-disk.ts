@@ -109,10 +109,7 @@ export const term: GlossaryTerm = {
               },
               " a bigger default managed OS disk.",
             ],
-            [
-              { a: "Coral", href: "/coral" },
-              " drains spare nodes so your autoscaler can remove them.",
-            ],
+            [{ a: "Coral", href: "/coral" }, " removes the nodes you don’t need."],
           ],
         },
       ],

@@ -89,11 +89,11 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
     deck: "How to onboard a VM, what Amoeba changes, and how you stay in control.",
     downloads: [{ label: "PDF", document: "amoeba-guide" }],
   },
-  updated: "Updated 1 November 2026",
+  updated: "Updated 2 November 2026",
   summary: [
     {
       term: "Product page",
-      text: [[{ href: routes.amoeba, text: "Block storage cost optimization on Azure and AWS" }]],
+      text: [[{ href: routes.amoeba, text: "Block storage optimization on Azure and AWS" }]],
     },
     {
       term: "What Amoeba does",

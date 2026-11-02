@@ -78,7 +78,7 @@ export const term: GlossaryTerm = {
             "On AKS, it covers the virtual machines behind your nodes, if Microsoft lists their series as eligible.",
             [
               { a: "Coral", href: "/coral" },
-              " rebalances CPU and memory requests on AKS and EKS to match real use, and drains spare nodes so your autoscaler can remove them.",
+              " rebalances CPU and memory requests on AKS and EKS to match real use, and removes the nodes you don’t need.",
             ],
             [
               "The ",

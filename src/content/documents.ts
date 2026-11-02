@@ -76,7 +76,7 @@ export interface PublishedDocument {
  * `lastmod` only: the page does not print it. Whoever changes the hub's content
  * moves this to that day in the same PR; never the build's date.
  */
-export const docsHubLastUpdated = "1 November 2026";
+export const docsHubLastUpdated = "2 November 2026";
 
 export const documents: Readonly<Record<DocumentId, PublishedDocument>> = {
   "coral-guide": {
@@ -317,7 +317,7 @@ export const docsHub = {
   meta: {
     title: "Product docs",
     description:
-      "Product guides, FAQs and one-pagers for Coral (AKS and EKS cost optimization) and Amoeba (Azure managed disks and Amazon EBS), online or as PDFs.",
+      "Product guides, FAQs and one-pagers for Coral (Kubernetes optimization on AKS and EKS) and Amoeba (Azure managed disks and Amazon EBS), online or as PDFs.",
   },
   title: "Product docs",
   deck: "Read online or download as PDF.",

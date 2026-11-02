@@ -131,7 +131,7 @@ describe("the home page", () => {
       "h1 Zoorik Reduce cloud cost, autonomously.",
       /* The SEO heading pass (23 Oct 2026): each product section's h2 is its category. */
       "h2 Kubernetes optimization",
-      "h2 Block storage cost optimization",
+      "h2 Block storage optimization",
       "h2 Autonomous optimization, without the risk",
       "h3 Pay for what your workloads use",
       "h3 Drains nodes safely, one at a time",
@@ -286,7 +286,7 @@ describe("the home page", () => {
 
   it("follows each product's button with what its page is about, to the product's page", () => {
     for (const [id, label] of [
-      ["amoeba", "Block storage cost optimization with Amoeba"],
+      ["amoeba", "Block storage optimization with Amoeba"],
       ["coral", "Kubernetes optimization with Coral"],
     ] as const) {
       const more = page.querySelectorAll<HTMLAnchorElement>(`#${id} .btns a.alink`);

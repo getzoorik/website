@@ -102,9 +102,7 @@ describe.each(pages)("the product page %s", (path, content) => {
     const h1s = page.querySelectorAll("h1");
     expect(h1s).toHaveLength(1);
     expect(h1s[0].textContent).toBe(
-      product === "coral"
-        ? "Kubernetes optimization for AKS and EKS"
-        : "Block\u00a0storage cost optimization",
+      product === "coral" ? "Kubernetes optimization" : "Block\u00a0storage optimization",
     );
 
     const levels = [...page.querySelectorAll("main h1, main h2, main h3, main h4")].map((h) =>
@@ -166,7 +164,7 @@ describe.each(pages)("the product page %s", (path, content) => {
        page's line for it before 2 Nov 2026, when that one changed. */
     const expected =
       product === "coral"
-        ? "Coral rebalances workloads and drains spare nodes so your autoscaler can remove them."
+        ? "Coral rebalances your workloads and nodes to reduce your cloud cost, autonomously, without any downtime."
         : "Stop paying for empty disk space. Amoeba rightsizes Azure managed disks and Amazon EBS on Windows and Linux VMs, autonomously, without any downtime after the one switch.";
     expect(content.hero.line).toBe(expected);
     expect(line.textContent).toBe(expected);

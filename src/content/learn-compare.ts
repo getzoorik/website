@@ -245,7 +245,7 @@ export const versusPages: readonly VersusPage[] = [
       description:
         "StormForge and Coral both reduce Kubernetes cost. See how each works with HPA and Karpenter, and its pricing, side by side, from each company’s own pages.",
     },
-    deck: "Both set pod requests on AKS and EKS, but only Coral empties spare nodes for your autoscaler to remove.",
+    deck: "Both set pod requests on AKS and EKS, but only Coral removes the nodes you don’t need.",
     titles: {
       glance: "StormForge and Coral at a glance",
       table: "StormForge vs Coral, feature by feature",
@@ -303,7 +303,7 @@ export const versusPages: readonly VersusPage[] = [
     lastUpdated: NOV_2,
     card: true,
     short:
-      "Use both. Advisor's AKS advice leaves each change to you. Coral empties spare nodes and, once switched on, rebalances pod requests to real use.",
+      "Use both. Advisor's AKS advice leaves each change to you. Coral removes the nodes you don’t need and, once switched on, rebalances pod requests to real use.",
     sections: [
       {
         id: "which-to-use",
@@ -449,7 +449,7 @@ export const versusPages: readonly VersusPage[] = [
     lastUpdated: NOV_2,
     card: true,
     short:
-      "Use both. Compute Optimizer covers the AWS resources outside your clusters. Coral works inside EKS: it empties spare nodes and, once switched on, rebalances pod requests to real use.",
+      "Use both. Compute Optimizer covers the AWS resources outside your clusters. Coral works inside EKS: it removes the nodes you don’t need and, once switched on, rebalances pod requests to real use.",
     sections: [
       {
         id: "compute-optimizer-eks",

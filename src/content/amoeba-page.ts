@@ -16,7 +16,7 @@ import type { ProductPageContent, ReadMoreTile } from "@/content/product-page";
  * cards from `how-it-works.ts`, rather than copied: a second copy would be a
  * second claim free to drift. Nothing here is a new figure.
  *
- * Amoeba is "Block storage cost optimization" for Windows and Linux VMs on Azure
+ * Amoeba is "Block storage optimization" for Windows and Linux VMs on Azure
  * and AWS: the site's one name for what it does.
  */
 
@@ -48,23 +48,23 @@ export const amoebaGuideAndFaq: readonly ReadMoreTile[] = [
  * `lastmod` only: the page does not print it. Whoever changes /amoeba's content
  * moves this to that day in the same PR; never the build's date.
  */
-export const amoebaPageLastUpdated = "1 November 2026";
+export const amoebaPageLastUpdated = "2 November 2026";
 
 export const amoebaPageContent: ProductPageContent = {
   product: "amoeba",
   meta: {
-    title: "Block storage cost optimization for Azure and AWS",
+    title: "Amoeba: Block storage optimization",
     description:
-      "Block storage cost optimization: Amoeba rightsizes Azure managed disks and Amazon EBS to your data, autonomously, without any downtime after the one switch.",
+      "Block storage optimization: Amoeba rightsizes Azure managed disks and Amazon EBS to your data, autonomously, without any downtime after the one switch.",
     /* What "What is Amoeba?" says: structured data must say what the page
        says. */
     appDescription:
-      "Block storage cost optimization for VMs on Azure and AWS. Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. Then it rightsizes that pool, one disk at a time.",
+      "Block storage optimization for VMs on Azure and AWS. Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. Then it rightsizes that pool, one disk at a time.",
   },
   hero: {
     /* "Block storage" is tied with a no-break space, as the mock writes the h1:
        the longer line never leaves "Block" alone at a line end. */
-    title: "Block\u00a0storage cost optimization",
+    title: "Block\u00a0storage optimization",
     /* Its own line (2 Nov 2026): the home page's line for Amoeba changed with the home page's plan, and this
        page's did not. */
     line: "Stop paying for empty disk space. Amoeba rightsizes Azure managed disks and Amazon EBS on Windows and Linux VMs, autonomously, without any downtime after the one switch.",
@@ -75,7 +75,7 @@ export const amoebaPageContent: ProductPageContent = {
     paragraphs: [
       /* "btrfs pool" links the Learn article on how one works (owner, 1 Nov 2026). */
       [
-        "Amoeba is a block storage cost optimization platform for VMs on Azure and AWS. Cloud disks only grow: an Azure managed disk or an Amazon Elastic Block Store (EBS) volume can be made larger, but not smaller. Amoeba moves a VM’s data disks onto one ",
+        "Amoeba is a block storage optimization platform for VMs on Azure and AWS. Cloud disks only grow: an Azure managed disk or an Amazon Elastic Block Store (EBS) volume can be made larger, but not smaller. Amoeba moves a VM’s data disks onto one ",
         { a: "btrfs pool", href: learnPath("btrfs-multiple-disks") },
         " sized to your data, with room to grow. Then it rightsizes that pool while it stays mounted. You pay for the space your data uses, not the space you once provisioned.",
       ],

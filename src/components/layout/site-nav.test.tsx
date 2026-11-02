@@ -383,12 +383,12 @@ describe("the menus' rows", () => {
             {
               product: "amoeba",
               href: "/amoeba-guide",
-              line: "Block storage cost optimization on Azure\u00a0and\u00a0AWS",
+              line: "Block storage optimization on Azure\u00a0and\u00a0AWS",
             },
             {
               product: "amoeba",
               href: "/amoeba-faq",
-              line: "Block storage cost optimization on Azure\u00a0and\u00a0AWS",
+              line: "Block storage optimization on Azure\u00a0and\u00a0AWS",
             },
           ]
         : [],

@@ -132,7 +132,7 @@ export const term: GlossaryTerm = {
             "A pod that uses more than it requests is first in line when the kubelet evicts. Requests far above use fill nodes on paper while their CPU and memory sit mostly idle.",
             [
               { a: "Coral", href: "/coral" },
-              " rebalances CPU and memory requests on AKS and EKS to match real use, and drains spare nodes so your autoscaler can remove them.",
+              " rebalances CPU and memory requests on AKS and EKS to match real use, and removes the nodes you don’t need.",
             ],
             [
               "The ",

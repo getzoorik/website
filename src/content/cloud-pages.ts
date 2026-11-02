@@ -184,7 +184,7 @@ export const aksCostOptimizationPage: CoralCloudPage = {
   meta: {
     title: "AKS cost optimization",
     description:
-      "AKS cost optimization with Coral. Reduce AKS costs: Coral rebalances your Azure Kubernetes Service cluster, sizes pods to real use and empties spare nodes.",
+      "AKS cost optimization with Coral. Reduce AKS costs: Coral rebalances your Azure Kubernetes Service cluster, sizes pods to real use and removes spare nodes.",
   },
   hero: {
     eyebrow: "Coral for AKS",
@@ -196,7 +196,7 @@ export const aksCostOptimizationPage: CoralCloudPage = {
   about: {
     title: "How Coral reduces AKS costs",
     paragraphs: [
-      "Coral rebalances Azure Kubernetes Service (AKS) clusters. It sizes CPU and memory requests to what your containers really use. It also empties spare nodes one at a time, so the Cluster Autoscaler or AKS node auto provisioning (NAP) can remove them.",
+      "Coral rebalances Azure Kubernetes Service (AKS) clusters. It sizes CPU and memory requests to what your containers really use. It also removes the nodes you don’t need, one at a time, and works with the Cluster Autoscaler and AKS node auto provisioning (NAP).",
       "Adding nodes for demand stays with the Cluster Autoscaler or NAP, and Coral never creates machines itself. With NAP, Coral can also move work onto cheaper machines that NAP launches. The Horizontal Pod Autoscaler and KEDA keep setting how many pods run.",
       'You stay in control. Node optimization is on from install, and you can switch off any node pool it should leave alone. Pod sizing waits until you switch on "Automatically optimize".',
     ],
@@ -206,7 +206,7 @@ export const aksCostOptimizationPage: CoralCloudPage = {
     steps: cards("coral", [
       "One command in zoorikctl, our command-line tool, installs the agent and creates its managed identity in your Azure account. It uses your own `az` sign-in, and asks before every Azure change.",
       "Coral prices every node and workload from Azure's published rates for your region. You see the capacity you hold against what really runs.",
-      "Coral sizes requests to real use and empties spare nodes. The Cluster Autoscaler or NAP then removes them from your node pools.",
+      "Coral sizes requests to real use and removes the nodes you don’t need from your node pools.",
     ]),
   },
   setup: {
@@ -330,7 +330,7 @@ export const eksCostOptimizationPage: CoralCloudPage = {
   meta: {
     title: "EKS cost optimization",
     description:
-      "EKS cost optimization with Coral: it rebalances your cluster, sizes pods to real use and empties spare EC2 nodes. Autonomous EKS tuning, with no code changes.",
+      "EKS cost optimization with Coral: it rebalances your cluster, sizes pods to real use and removes spare EC2 nodes. Autonomous EKS tuning, with no code changes.",
   },
   hero: {
     eyebrow: "Coral for EKS",
@@ -351,7 +351,7 @@ export const eksCostOptimizationPage: CoralCloudPage = {
     steps: cards("coral", [
       "Sign in with the AWS CLI and run zoorikctl, our command-line tool. It installs the agent, binds its IAM role with EKS Pod Identity, and asks before every AWS change.",
       "Coral lists each EKS node and workload. You see how much capacity you hold beyond what your pods really use.",
-      "Coral drains spare EC2 nodes one at a time, within each pod's PodDisruptionBudget. Karpenter or the Cluster Autoscaler then terminates them.",
+      "Coral drains spare EC2 nodes one at a time, within each pod's PodDisruptionBudget, and removes them.",
     ]),
   },
   setup: {

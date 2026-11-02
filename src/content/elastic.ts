@@ -16,7 +16,7 @@ import { workedExample } from "@/content/savings";
 export const elasticContent: ProductSectionContent = {
   product: "amoeba",
   /* The SEO heading pass (owner, 23 Oct 2026): the h2 names the category and links to /amoeba. */
-  headline: "Block storage cost optimization",
+  headline: "Block storage optimization",
   /* "After the one switch" (owner, 1 Nov 2026): the services restart once, at the switch onto the pool, as the How it works
      card says. The pool in place of the clouds, the OSs and "autonomously" (2 Nov 2026): the description and the Runs on
      chips say those. */
@@ -32,6 +32,6 @@ export const elasticContent: ProductSectionContent = {
     label: "Estimate your saving",
   },
   /* The category, then the product (2 Nov 2026), as Coral's and the Learn help boxes word it. */
-  more: "Block storage cost optimization with Amoeba",
+  more: "Block storage optimization with Amoeba",
   caption: workedExample.amoeba,
 };

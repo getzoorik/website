@@ -97,7 +97,7 @@ export const term: GlossaryTerm = {
               { a: "fewer nodes", href: "/learn/kubernetes-node-size-best-practices" },
               ".",
             ],
-            "It drains spare nodes so your autoscaler can remove them, and it never moves DaemonSet pods.",
+            "It removes the nodes you don’t need, and it never moves DaemonSet pods.",
           ],
         },
       ],

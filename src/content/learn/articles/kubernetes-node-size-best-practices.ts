@@ -418,7 +418,7 @@ export const article: Article = {
             ],
             [
               { b: "Spare nodes." },
-              " Node optimization is on from install and works out from pod requests how many nodes each pool needs. Coral drains spare nodes one at a time for your Cluster Autoscaler, NAP or Karpenter to remove. Pools that Karpenter or NAP already consolidate are left to them.",
+              " Node optimization is on from install and works out from pod requests how many nodes each pool needs. Coral drains and removes the nodes you don’t need, one at a time. Pools that Karpenter or NAP already consolidate are left to them.",
             ],
             [
               { b: "Machine size." },
@@ -452,7 +452,7 @@ export const article: Article = {
   ],
   help: {
     product: "coral",
-    text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and drains spare nodes so your autoscaler can remove them. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and removes the nodes you don’t need. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Estimate your saving", href: "/assessment?p=coral" },

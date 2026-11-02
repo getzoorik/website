@@ -604,7 +604,7 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " rebalances CPU and memory requests on AKS and EKS, and drains spare nodes so your autoscaler can remove them. Its FAQ says it “changes only CPU and memory,” so each PVC keeps its class, size and disk.",
+            " rebalances CPU and memory requests on AKS and EKS, and removes the nodes you don’t need. Its FAQ says it “changes only CPU and memory,” so each PVC keeps its class, size and disk.",
           ],
         },
         {

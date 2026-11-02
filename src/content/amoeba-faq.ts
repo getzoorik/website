@@ -72,7 +72,7 @@ export const amoebaFaqPage = {
     title: "Amoeba FAQ",
     deck: "Safety, downtime, expanding, agent and costs.",
   },
-  updated: "Updated 1 November 2026",
+  updated: "Updated 2 November 2026",
 } as const;
 
 /** The 8 groups and 29 questions, in the mock's order. */
@@ -85,11 +85,11 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         id: "what-is-amoeba",
         question: "What is Amoeba?",
         short: [
-          "Amoeba is block storage cost optimization for VMs on Azure and AWS.",
+          "Amoeba is block storage optimization for VMs on Azure and AWS.",
           "It moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. It grows the pool before it fills, and shrinks it one disk at a time when your data goes down and stays down. So you pay for close to what you use.",
           [
             "More on the product page: ",
-            { href: routes.amoeba, text: "Block storage cost optimization on Azure and AWS" },
+            { href: routes.amoeba, text: "Block storage optimization on Azure and AWS" },
             ".",
           ],
         ],

@@ -333,7 +333,7 @@ export const article: Article = {
             ],
             [
               { b: "Nodes:" },
-              " from install, it drains spare nodes one at a time, on the node pools you choose, so your Cluster Autoscaler, Karpenter or AKS node auto provisioning (NAP) can remove them. Coral never adds nodes for demand. Pools that Karpenter or NAP already consolidate are left to them.",
+              " from install, it drains and removes the nodes you don’t need, one at a time, on the node pools you choose. Coral never adds nodes for demand. Pools that Karpenter or AKS node auto provisioning (NAP) already consolidate are left to them.",
             ],
             [
               { b: "Disruption:" },
@@ -404,7 +404,7 @@ export const article: Article = {
     text: "Coral rebalances Kubernetes on AKS and EKS, and Amoeba rightsizes block storage on Azure and AWS. We estimate 40–50% off AKS and EKS cost and 50–60% off block storage cost. They are estimated ranges, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Kubernetes optimization with Coral", href: "/coral" },
-      { label: "Block storage cost optimization with Amoeba", href: "/amoeba" },
+      { label: "Block storage optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment" },
     ],
   },

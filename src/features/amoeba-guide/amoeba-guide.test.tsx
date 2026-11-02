@@ -288,7 +288,7 @@ describe("/amoeba-guide page", () => {
   it("opens the column on the Updated line and the summary: the product page first", () => {
     const container = page();
     const top = container.querySelector("article.gd-main > .fq-upd")!;
-    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 1 November 2026");
+    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 2 November 2026");
     const list = top.querySelector("dl.doc-sum")!;
     expect([...list.querySelectorAll("dt")].map(text)).toEqual([
       "Product page",
