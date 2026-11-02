@@ -223,13 +223,13 @@ describe("What you get", () => {
     expect([...coral!.querySelectorAll(".ax-term-b .ln")].map(text)).toEqual([
       "$ npx -y zoorik assess coral",
       "✓ 3 clusters read",
-      "Estimated saving $2,668 a month",
+      "Estimated saving $2,668 a month (example)",
       "Report zoorik-coral-assessment.pdf",
     ]);
     expect([...amoeba!.querySelectorAll(".ax-term-b .ln")].map(text)).toEqual([
       "$ npx -y zoorik assess amoeba",
       "✓ 8 VMs read",
-      "Estimated saving $862 a month",
+      "Estimated saving $862 a month (example)",
       "Report zoorik-amoeba-assessment.pdf",
     ]);
     for (const demo of [coral!, amoeba!]) {
