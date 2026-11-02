@@ -185,7 +185,7 @@ describe("the glossary index", () => {
         true,
       );
       expect(term.sections.length, term.slug).toBeGreaterThanOrEqual(1);
-      expect(term.sections.length, term.slug).toBeLessThanOrEqual(4);
+      /* No upper limit: a term grows to what its plan needs (owner, 2 Nov 2026, D234). */
       expect(
         term.sections.map((section) => section.id),
         term.slug,

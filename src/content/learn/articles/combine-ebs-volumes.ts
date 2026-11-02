@@ -206,7 +206,17 @@ export const article: Article = {
         {
           kind: "code",
           lang: "bash",
-          code: "sudo pvcreate /dev/nvme3n1\nsudo vgextend data_vg /dev/nvme3n1\nsudo lvextend --size +<added-size> --resizefs data_vg/data_lv",
+          code: "sudo pvcreate /dev/nvme3n1\nsudo vgextend data_vg /dev/nvme3n1\nsudo lvextend --extents +100%FREE --resizefs data_vg/data_lv",
+        },
+        {
+          kind: "p",
+          text: [
+            "In this ",
+            { code: "lvextend" },
+            " example, ",
+            { code: "--extents +100%FREE" },
+            " adds all the remaining free space in the volume group to the LV. Here, that’s the whole new volume.",
+          ],
         },
         {
           kind: "h3",
@@ -241,9 +251,11 @@ export const article: Article = {
           label: "Watch out",
           text: [
             { code: "pvmove" },
-            " needs free extents on the other PVs, but the LV above, created with ",
-            { code: "--extents 100%FREE" },
-            ", leaves none. You then have to shrink the filesystem and the LV first.",
+            " needs free extents on the other PVs, and ",
+            { code: "100%FREE" },
+            " leaves none. Growing the LV by a smaller ",
+            { code: "--size" },
+            " keeps some free. Otherwise, shrink the filesystem and the LV first.",
           ],
         },
         {
@@ -636,6 +648,11 @@ export const article: Article = {
       publisher: "btrfs documentation",
       title: "“btrfs-device(8)”",
       url: "https://btrfs.readthedocs.io/en/latest/btrfs-device.html",
+    },
+    {
+      publisher: "man7.org",
+      title: "“lvextend(8)”",
+      url: "https://man7.org/linux/man-pages/man8/lvextend.8.html",
     },
   ],
   related: [

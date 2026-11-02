@@ -80,6 +80,38 @@ export const term: GlossaryTerm = {
       ],
     },
     {
+      id: "what-an-azure-sku-is",
+      title: "What an Azure SKU is",
+      blocks: [
+        {
+          kind: "p",
+          text: "SKUs in Azure are the options a resource comes in. Microsoft’s examples are a VM size and a storage account type. For a VM, the SKU is its size, such as Standard_D4s_v5.",
+        },
+        {
+          kind: "p",
+          text: [
+            "Not all Azure VM SKUs are offered in every region or zone, or to every subscription. Deploying a VM with a SKU that isn’t available there fails. The Azure portal’s activity log shows the error code ",
+            { code: "SkuNotAvailable" },
+            ", or ",
+            { code: "InvalidTemplateDeployment" },
+            " when you deploy from a template.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "To get the Azure VM SKU list for a region, run ",
+            { code: "az vm list-skus" },
+            " with ",
+            { code: "--location" },
+            " and ",
+            { code: "--all" },
+            ". The list shows each VM size and any restrictions, including sizes your subscription can’t use.",
+          ],
+        },
+      ],
+    },
+    {
       id: "why-it-matters-for-your-cloud-cost",
       title: "Why Azure VM sizing matters for your cloud cost",
       blocks: [
@@ -156,6 +188,11 @@ export const term: GlossaryTerm = {
       publisher: "Microsoft Learn",
       title: "“Esv5 size series”",
       url: "https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/memory-optimized/esv5-series",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“SKU not available errors”",
+      url: "https://learn.microsoft.com/en-us/azure/azure-resource-manager/troubleshooting/error-sku-not-available",
     },
     {
       publisher: "Microsoft Learn",

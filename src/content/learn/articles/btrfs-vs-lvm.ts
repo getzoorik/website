@@ -5,7 +5,7 @@ import { figure as figure2 } from "@/features/learn/figures/btrfs-vs-lvm/2";
 export const article: Article = {
   slug: "btrfs-vs-lvm",
   title: "btrfs vs ext4 vs XFS: which one can shrink?",
-  meta: "btrfs vs LVM with ext4 or XFS: which lets a cloud VM hand a disk back while mounted, with shrink steps, snapshots and subvolumes.",
+  meta: "btrfs vs LVM with ext4 or XFS: which lets a cloud VM hand a disk back while mounted, with shrink steps, snapshots, subvolumes and where ZFS fits.",
   h1: "btrfs vs ext4 vs XFS on LVM: which one can shrink?",
   deck: "Cloud disks never shrink in place, so what counts is which stack lets a whole disk leave.",
   card: "LVM grows while mounted, but ext4 and XFS decide the shrink. btrfs takes a disk out while it stays mounted.",
@@ -363,6 +363,27 @@ export const article: Article = {
       ],
     },
     {
+      id: "zfs-vs-btrfs-and-lvm-can-a",
+      title: "ZFS vs btrfs and LVM: can a ZFS pool shrink?",
+      blocks: [
+        {
+          kind: "p",
+          text: "LVM vs ZFS is a difference of layers. An LVM logical volume still needs a filesystem on top. A ZFS storage pool is “a logical collection of devices that provide space for datasets”.",
+        },
+        {
+          kind: "p",
+          text: [
+            { code: "zpool remove" },
+            " can take out a mirrored or non-redundant top-level virtual device (vdev). It copies the vdev’s data onto the other devices in the background, and removing the vdev reduces the pool’s total space.",
+          ],
+        },
+        {
+          kind: "p",
+          text: "No top-level vdev can be removed if the pool has a raidz top-level vdev, or top-level vdevs with different sector sizes. A removal also leaves a mapping table that uses memory.",
+        },
+      ],
+    },
+    {
       id: "btrfs-or-lvm-which-to-choose-on",
       title: "btrfs or LVM: which to choose on a cloud VM",
       blocks: [
@@ -512,6 +533,18 @@ export const article: Article = {
       publisher: "AWS",
       title: "“Modify an Amazon EBS volume using Elastic Volumes operations”",
       url: "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-modify-volume.html",
+    },
+    {
+      publisher: "Ubuntu manpages",
+      title: "“zfsconcepts(7)”",
+      url: "https://manpages.ubuntu.com/manpages/noble/man7/zfsconcepts.7.html",
+      note: " (Ubuntu 24.04 LTS)",
+    },
+    {
+      publisher: "Ubuntu manpages",
+      title: "“zpool-remove(8)”",
+      url: "https://manpages.ubuntu.com/manpages/noble/man8/zpool-remove.8.html",
+      note: " (Ubuntu 24.04 LTS)",
     },
   ],
   related: [
