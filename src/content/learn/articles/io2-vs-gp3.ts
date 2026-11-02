@@ -5,23 +5,23 @@ import { figure as figure3 } from "@/features/learn/figures/io2-vs-gp3/3";
 
 export const article: Article = {
   slug: "io2-vs-gp3",
-  title: "io2 vs gp3: when Provisioned IOPS is worth it",
-  meta: "io2 vs gp3 on AWS list prices, IOPS and latency limits, Multi-Attach and durability, with four checks for when io2 is worth paying for over gp3.",
-  h1: "io2 vs gp3: when Provisioned IOPS is worth the price",
-  deck: "gp3 now reaches 80,000\u00a0IOPS. What io2 adds beyond that, what it costs per GB and per IOPS, and how to choose.",
+  title: "io2 vs gp3: when io2 Block Express is worth it",
+  meta: "io2 Block Express vs gp3 on AWS: list prices, latency, Multi-Attach and durability, with four checks for when io2 is worth paying for over gp3.",
+  h1: "io2 vs gp3: when io2 Block Express is worth the price",
+  deck: "Since September 2025, gp3 reaches 80,000\u00a0IOPS, five times its old ceiling of 16,000.",
   card: "What io2 adds over gp3, what each costs per GB and per IOPS, and the checks that tell you which to use.",
   product: "amoeba",
   hub: "Block storage",
   topic: "AWS block storage",
   versus: ["io2", "gp3"],
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "swapna",
   cover: "/learn-covers/zoorik-learn-io2-vs-gp3-1200x630.webp",
   coverAlt:
-    "io2 vs gp3: with more IOPS the io2 price climbs far above the gp3 price, and gp3 drops out at the top",
+    "io2 vs gp3: as IOPS rise, the io2 price climbs far above gp3, and gp3 stops at its ceiling",
   short:
-    "In io2 vs gp3, gp3 is the default, and io2 costs more per GB and charges for every IOPS (input/output operations per second). Pay for io2 only when a volume needs more than gp3’s 80,000\u00a0IOPS, steady sub-millisecond latency, Multi-Attach or 99.999% durability.",
+    "io2 costs more per GB than gp3 and charges for every IOPS (input/output operations per second). Keep gp3 unless a volume needs more than gp3’s 80,000\u00a0IOPS, steady sub-millisecond latency, Multi-Attach or 99.999% durability.",
   sections: [
     {
       id: "io2-vs-gp3",
@@ -29,12 +29,12 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Picture a 1,000\u00a0GiB database volume that needs 16,000\u00a0IOPS and 500\u00a0MiB/s. At US East list prices, it costs $160 a month on gp3 and $1,165 on io2. Pay the difference only for a capability gp3 lacks.",
+          text: "Picture a 1,000\u00a0GiB database volume that needs 16,000\u00a0IOPS and 500\u00a0MiB/s. At US East list prices, it costs $160 a month on gp3 and $1,165 on io2.",
         },
         {
           kind: "p",
           text: [
-            "Both are solid-state drive (SSD) volume types in Amazon Elastic Block Store (EBS). Both let you set ",
+            "Both are solid-state drive (SSD) volume types in Amazon Elastic Block Store (EBS), and both let you set ",
             { a: "IOPS", href: "/learn/glossary/iops" },
             " apart from size.",
           ],
@@ -56,19 +56,12 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "On 26 September 2025, AWS raised gp3’s limits and kept its pricing model:",
+          text: "On 26 September 2025, AWS also raised gp3’s size limit from 16\u00a0TiB to 64\u00a0TiB, and its throughput from 1,000 to 2,000\u00a0MiB/s. It kept gp3’s pricing model.",
         },
-        {
-          kind: "ul",
-          items: [
-            "Size went from 16\u00a0TiB to 64\u00a0TiB.",
-            "IOPS went from 16,000 to 80,000.",
-            "Throughput went from 1,000\u00a0MiB/s to 2,000\u00a0MiB/s.",
-          ],
-        },
+        { kind: "h3", id: "what-is-io2-block-express", title: "What is io2 Block Express?" },
         {
           kind: "p",
-          text: "The io2 Block Express vs gp3 question is the same comparison. AWS says that as of 30 April 2025, every io2\u00a0volume, new or previously created, is io2 Block Express.",
+          text: "AWS says that as of 30 April 2025, every io2\u00a0volume, new or previously created, is io2 Block Express.",
         },
         {
           kind: "table",
@@ -184,21 +177,13 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Watch out",
-          text: "Rule out the cheaper cause first. AWS notes that consistently driving more IOPS than a volume has “can cause increased I/O latency”.",
-        },
-        {
-          kind: "p",
-          text: "AWS advises checking that the application isn’t asking for more IOPS or throughput than the volume is provisioned for. The VolumeIOPSExceededCheck and VolumeThroughputExceededCheck metrics return 1 when that happens.",
-        },
-        {
-          kind: "p",
-          text: "VolumeAvgReadLatency and VolumeAvgWriteLatency show the latency you get today. Raising gp3\u00a0IOPS costs far less than moving to io2.",
+          text: "Rule out under-provisioning first, since AWS notes that consistently driving more IOPS than a volume has “can cause increased I/O latency”. VolumeIOPSExceededCheck and VolumeThroughputExceededCheck return 1 when the application asks for more than the volume is provisioned for. VolumeAvgReadLatency and VolumeAvgWriteLatency show today’s latency, and raising gp3\u00a0IOPS costs far less than moving to io2.",
         },
       ],
     },
     {
       id: "multi-attach-needs-provisioned-iops-and-99",
-      title: "EBS Multi-Attach needs Provisioned IOPS, and 99.999% durability needs io2",
+      title: "EBS Multi-Attach works on io1 and io2, not on gp3",
       blocks: [
         {
           kind: "p",
@@ -216,6 +201,11 @@ export const article: Article = {
         {
           kind: "p",
           text: "A Multi-Attach volume can’t be a boot volume. Windows instances support Multi-Attach on io2 only.",
+        },
+        {
+          kind: "h3",
+          id: "aws-ebs-durability-io2-is-designed-for",
+          title: "AWS EBS durability: io2 is designed for 99.999%",
         },
         {
           kind: "p",
@@ -290,11 +280,7 @@ export const article: Article = {
         { kind: "svg", figure: figure2 },
         {
           kind: "p",
-          text: "In proportion, the gap is smallest on very large volumes with little performance. There it comes close to the 56% more per GB that io2’s storage costs.",
-        },
-        {
-          kind: "p",
-          text: "Small volumes that need about 3,000\u00a0IOPS see the widest gap. A 100\u00a0GiB volume at 3,000\u00a0IOPS costs $8.00 on gp3 and $207.50 on io2.",
+          text: "In proportion, the gap is smallest on large volumes with little performance, close to io2’s 56% more per GB. It’s widest on small volumes that need about 3,000\u00a0IOPS: 100\u00a0GiB at 3,000\u00a0IOPS costs $8.00 on gp3 and $207.50 on io2.",
         },
       ],
     },
@@ -317,9 +303,8 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "To ",
-            { a: "compare io1 vs io2 with every other EBS type", href: "/learn/ebs-volume-types" },
-            ", see EBS volume types.",
+            { a: "EBS volume types", href: "/learn/ebs-volume-types" },
+            " compares io1 and io2 with every other EBS type.",
           ],
         },
         { kind: "p", text: "So, of the three types:" },
@@ -421,30 +406,35 @@ export const article: Article = {
     },
     {
       id: "where-amoeba-fits",
-      title: "Where Amoeba fits",
+      title: "Where Amoeba fits after you choose a volume type",
       blocks: [
         {
           kind: "p",
-          text: "Once a data volume sits on gp3 at its included performance, you pay only for the GB you provisioned. The modify-volume command needs a target size “greater than or equal to the existing size of the volume”. So space you once needed is still charged after the data shrinks.",
+          text: "Once a data volume sits on gp3 at its included performance, you pay only for the GB you provisioned. And modify-volume can’t make a volume smaller, so space you once needed stays charged after the data shrinks.",
         },
         {
           kind: "p",
           text: [
             "The ",
             { a: "EBS pricing calculator", href: "/ebs-and-azure-disk-pricing" },
-            " shows what that empty space costs. The copy route to a smaller volume is in ",
+            " shows what that empty space costs, and ",
             { a: "how to shrink an EBS volume", href: "/learn/shrink-ebs-volume" },
-            ".",
+            " gives the copy route to a smaller volume.",
           ],
         },
-        { kind: "h3", id: "what-amoeba-does-on-aws", title: "What Amoeba does on AWS" },
+        {
+          kind: "h3",
+          id: "what-amoeba-does-on-aws",
+          title: "How Amoeba moves EBS data volumes onto one btrfs pool",
+        },
         {
           kind: "p",
           text: [
+            "On AWS, ",
             { a: "Amoeba", href: "/amoeba" },
-            " optimizes block storage on Azure and AWS. On AWS, its ",
+            " moves a running instance’s EBS data volumes onto one btrfs pool of gp3\u00a0volumes, as ",
             { a: "EBS cost optimization", href: "/ebs-cost-optimization" },
-            " moves a running instance’s EBS data volumes onto one btrfs pool of gp3\u00a0volumes. It never touches the root volume, and it leaves Multi-Attach volumes out.",
+            " explains. It never touches the root volume, and it leaves Multi-Attach volumes out.",
           ],
         },
         {
@@ -456,11 +446,11 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " The services that use those mounts restart once, at the switch onto the pool.",
+              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it.",
             ],
             [
               { b: "The old volumes." },
-              " Once the switch is checked, Amoeba snapshots and deletes each old volume, then deletes the snapshots 7 days later. You pay for both sets of volumes only while the move runs, then for the snapshots while they’re kept.",
+              " Once the switch is checked, Amoeba snapshots each old volume, deletes the volume, and keeps the snapshot for a few days before deleting it too. You pay for both sets of volumes only while the move runs, then for the snapshots while they’re kept.",
             ],
           ],
         },

@@ -4,14 +4,14 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/max-pods-pe
 export const term: GlossaryTerm = {
   slug: "max-pods-per-node",
   term: "Max pods per node",
-  title: "Max pods per node: meaning and cost impact",
-  meta: "Max pods per node caps how many pods one node can run. See the EKS and AKS defaults, how to change the cap on AKS, and why it can add nodes you pay for.",
-  h1: "Max pods per node: meaning and cost impact",
+  title: "Max pods per node in Kubernetes on EKS and AKS",
+  meta: "Kubernetes max pods per node defaults to 110. See how many pods per node EKS allows from ENI limits, how to raise it on AKS, and what it costs you.",
+  h1: "Max pods per node in Kubernetes on EKS and AKS",
   card: "Max pods per node is the most pods one Kubernetes node can run.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -39,8 +39,12 @@ export const term: GlossaryTerm = {
         {
           kind: "ul",
           items: [
-            "On AKS, each node pool sets it, up to 250. The default is 30 to 250, by network plugin.",
-            "To change max pods per node on AKS, add a pool with the new value and move your pods.",
+            "Each AKS node pool sets its own cap, up to 250. The default runs from 30 to 250, by network plugin.",
+            [
+              "On an existing cluster, add a node pool with the new ",
+              { code: "--max-pods" },
+              " value and move your pods to it. You pay for both pools until the old one goes.",
+            ],
           ],
         },
       ],
@@ -66,7 +70,7 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "You pay for each node, however many pods it runs. When slots fill first, paid CPU and memory sit unclaimed.",
+          text: "You pay for each node, however many pods it runs. When pod slots fill first, the CPU and memory you pay for sit unclaimed.",
         },
         {
           kind: "ul",

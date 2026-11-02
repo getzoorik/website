@@ -5,20 +5,20 @@ export const term: GlossaryTerm = {
   slug: "azure-standard-hdd",
   term: "Azure Standard HDD (with the OS disk retirement)",
   title: "What is Azure Standard HDD?",
-  meta: "Azure Standard HDD is the hard disk type of Azure managed disk. See its limits, how it’s charged, and what the 8 Sept 2028 OS disk retirement changes for you.",
+  meta: "Azure Standard HDD is the hard disk type of Azure managed disk. See its limits, how it’s charged, and what the 2028 Azure HDD retirement changes for OS disks.",
   h1: "What is Azure Standard HDD?",
   card: "Azure Standard HDD is the hard disk drive (HDD) type of Azure managed disk.",
   group: "block-storage",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
       text: [
         "Azure Standard HDD is the hard disk drive (HDD) type of ",
         { a: "Azure managed disk", href: "/learn/glossary/azure-managed-disk" },
-        ". It suits backup and other data you rarely use. It’s a poor fit for OS disks and databases that need low ",
+        ". It suits backup and rarely used data, not OS disks or databases that need low ",
         { a: "disk latency", href: "/learn/glossary/disk-latency" },
         ".",
       ],
@@ -48,7 +48,7 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "The Azure Standard HDD retirement covers OS disks only. Data disks, snapshots and Azure Site Recovery’s OS disks aren’t part of it.",
+          text: "The retirement covers OS disks only. Data disks, snapshots and Azure Site Recovery’s OS disks aren’t part of it.",
         },
         { kind: "svg", figure: figure1 },
         {

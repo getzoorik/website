@@ -5,16 +5,16 @@ import { figure as figure3 } from "@/features/learn/figures/ebs-volume-types/3";
 
 export const article: Article = {
   slug: "ebs-volume-types",
-  title: "EBS volume types compared: how to choose one",
-  meta: "EBS volume types compared: gp3, gp2, io2, io1, st1 and sc1 by size, IOPS and throughput, and the checks, in order, that pick one for your data.",
-  h1: "EBS volume types compared: how to choose one",
-  deck: "Six current types in two families, what each one charges for, and the checks that pick one for your data.",
+  title: "Amazon EBS volume types compared: how to choose one",
+  meta: "AWS EBS volume types compared by IOPS, throughput and size: six EBS types in two families, and the checks, in order, that pick one for your data.",
+  h1: "Amazon EBS volume types compared: how to choose one",
+  deck: "Each type’s list price beside its limits, and a 2\u00a0TiB log store priced on four of them.",
   card: "gp3, gp2, io2, io1, st1 and sc1 side by side on limits and list price, with the checks that pick one.",
   product: "amoeba",
   hub: "Block storage",
   topic: "AWS block storage",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "rupeshankar",
   cover: "/learn-covers/zoorik-learn-ebs-volume-types-1200x630.webp",
   coverAlt:
@@ -24,7 +24,7 @@ export const article: Article = {
   sections: [
     {
       id: "ebs-volume-types",
-      title: "EBS volume types compared: size, IOPS, throughput and price",
+      title: "Types of EBS volumes compared: size, IOPS and throughput",
       blocks: [
         {
           kind: "p",
@@ -71,7 +71,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "This EBS volume types comparison puts AWS’s limits beside the list prices for US East (N. Virginia), October 2026:",
+          text: "Prices are US East (N. Virginia) list prices, October 2026:",
         },
         {
           kind: "table",
@@ -187,7 +187,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Per GB, the six prices span more than eight to one, from $0.015 to $0.125. Of the HDD types, sc1 costs a third of st1. Among the SSDs, gp3 costs 20% less than gp2, and io2 and io1 cost 56% more than gp3.",
+          text: "Per GB, the six prices span more than eight to one, from $0.015 to $0.125. Of the HDD types, sc1 costs a third of st1. Among the SSDs, io2 and io1 cost 56% more than gp3.",
         },
         {
           kind: "p",
@@ -205,7 +205,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "On EBS, the I/O pattern settles SSD vs HDD. Three checks, asked in order, then pick one type.",
+          text: "On EBS, the I/O pattern settles SSD vs HDD.",
         },
         { kind: "h3", id: "measure-what-the-volume-does", title: "Measure what the volume does" },
         {
@@ -260,7 +260,6 @@ export const article: Article = {
           id: "volumes-you-already-have",
           title: "Volumes you already have: gp2 to gp3, and io1 vs io2",
         },
-        { kind: "p", text: "Two types are worth moving away from:" },
         {
           kind: "ul",
           items: [
@@ -272,7 +271,7 @@ export const article: Article = {
             ],
             [
               { b: "io1 to io2." },
-              " Both cost $0.125 per GB-month, and $0.065 per IOPS-month up to 32,000. Yet io2 allows 1,000\u00a0IOPS per GiB, against io1’s 50, and it’s designed for 99.999% durability.",
+              " Both cost $0.125 per GB-month, and $0.065 per IOPS-month up to 32,000. Yet io2 allows 1,000\u00a0IOPS per GiB, against io1’s 50.",
             ],
           ],
         },
@@ -306,7 +305,7 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Watch out",
-          text: "On st1 and sc1, each I/O of 1\u00a0MiB or less spends a full 1\u00a0MiB of credit. Only sequential I/Os merge into 1\u00a0MiB blocks, so small, random I/O drains the bucket fast.",
+          text: "On st1 and sc1, each I/O of 1\u00a0MiB or less uses a full 1\u00a0MiB of credit, so small, random I/O drains the bucket fast.",
         },
         {
           kind: "p",
@@ -325,7 +324,7 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Worked example",
-          text: "Take the 2\u00a0TiB (2,048\u00a0GiB) log store from the opening, at US East list prices for October 2026. On sc1 it costs 2,048 × $0.015 = $30.72 a month, and on st1 2,048 × $0.045 = $92.16.",
+          text: "Take the 2\u00a0TiB (2,048\u00a0GiB) log store at US East list prices for October 2026. It costs 2,048 × $0.015 = $30.72 a month on sc1, and $92.16 on st1.",
         },
         {
           kind: "p",
@@ -345,7 +344,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "At 80\u00a0MiB/s, an empty st1 bucket of that size refills in about 7.3\u00a0hours (2,097,152\u00a0MiB ÷ 80\u00a0MiB/s), well before the next night. The monthly archive suits sc1: 500 × $0.015 = $7.50 a month, against $40 on gp3.",
+          text: "At 80\u00a0MiB/s, an empty 2\u00a0TiB st1 bucket refills in about 7.3\u00a0hours (2,097,152\u00a0MiB ÷ 80\u00a0MiB/s), well before the next night.",
+        },
+        {
+          kind: "p",
+          text: "The monthly 500\u00a0GiB archive suits sc1, at 500 × $0.015 = $7.50 a month against $40 on gp3.",
         },
         { kind: "svg", figure: figure2 },
       ],
@@ -391,7 +394,7 @@ export const article: Article = {
     },
     {
       id: "where-amoeba-fits",
-      title: "Where Amoeba fits",
+      title: "Where Amoeba fits: the EBS size you pay for",
       blocks: [
         {
           kind: "p",
@@ -418,7 +421,7 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " The services that use those mounts restart once, at the switch onto the pool.",
+              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
             ],
             [
               { b: "Rightsizing." },
@@ -426,7 +429,7 @@ export const article: Article = {
             ],
             [
               { b: "The old volumes." },
-              " Once the switch is checked, Amoeba snapshots and deletes each old volume, then deletes the snapshots 7 days later. You pay for both sets of volumes only while the move runs, then for the snapshots while they’re kept.",
+              " Once the switch is checked, Amoeba snapshots each old volume, deletes the volume, and keeps the snapshot for a few days before deleting it too. You pay for both sets of volumes only while the move runs, then for the snapshots while they’re kept.",
             ],
           ],
         },

@@ -4,14 +4,14 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/cost-alloca
 export const term: GlossaryTerm = {
   slug: "cost-allocation-tags",
   term: "Cost allocation tags",
-  title: "What are cost allocation tags in AWS and Azure?",
-  meta: "Cost allocation tags label cloud resources so reports can split cloud cost by team or app. See how AWS cost allocation tags, Azure tags and EKS tags work.",
-  h1: "What are cost allocation tags in AWS and Azure?",
+  title: "AWS cost allocation tags, Azure tags and EKS tags",
+  meta: "Cost allocation tags, or cost tags, split cloud cost by team, app or cost center. See how AWS cost tags reach Cost Explorer, and how Azure and EKS use them.",
+  h1: "AWS cost allocation tags, Azure tags and EKS tags",
   card: "Cost allocation tags are labels on cloud resources that let cost reports split your cloud cost by team, app or environment.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -40,10 +40,18 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: "AWS cost allocation tags are user-defined tags you create, or AWS-generated tags such as aws:createdBy. Each one shows in Cost Explorer only after you activate it in the Billing and Cost Management console. In AWS Organizations, only the management account can activate tags.",
         },
+        {
+          kind: "p",
+          text: "Costs from before activation carry no tag. The management account can backfill tags for up to 12\u00a0months, but only where the tag was on the resource then.",
+        },
         { kind: "h3", id: "azure-cost-allocation-tags", title: "Azure cost allocation tags" },
         {
           kind: "p",
           text: "For Azure cost allocation tags, Microsoft Cost Management reads the tags on each usage record. Resource group and subscription tags reach them only with tag inheritance on.",
+        },
+        {
+          kind: "p",
+          text: "Tag inheritance copies those tags into cost data only, not onto your resources. Resources never inherit resource group or subscription tags on their own.",
         },
         { kind: "h3", id: "eks-cost-allocation-tags", title: "EKS cost allocation tags" },
         {
@@ -69,8 +77,8 @@ export const term: GlossaryTerm = {
           kind: "ul",
           items: [
             [
-              "The purpose of cost allocation tags is to show who owns your node, virtual machine (VM) and disk spend. Tags alone don’t ",
-              { a: "reduce cloud costs", href: "/cloud-cost-optimization" },
+              "Cost allocation tags show who owns your node, virtual machine (VM) and disk cost. Tags alone don’t ",
+              { a: "reduce cloud cost", href: "/cloud-cost-optimization" },
               ".",
             ],
             [
@@ -81,7 +89,6 @@ export const term: GlossaryTerm = {
               { a: "Amoeba", href: "/amoeba" },
               " moves a VM’s data disks onto one pool sized to your data, then rightsizes it.",
             ],
-            ["The ", { a: "free assessment", href: "/assessment" }, " works out your own figure."],
           ],
         },
       ],
@@ -133,6 +140,21 @@ export const term: GlossaryTerm = {
       publisher: "Microsoft Learn",
       title: "“Group and allocate costs using tag inheritance”",
       url: "https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/enable-tag-inheritance",
+    },
+    {
+      publisher: "AWS",
+      title: "“Backfill cost allocation tags”",
+      url: "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-allocation-backfill.html",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“Allocation”",
+      url: "https://learn.microsoft.com/en-us/cloud-computing/finops/framework/understand/allocation",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“Use tags to organize your Azure resources and management hierarchy”",
+      url: "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/tag-resources",
     },
   ],
 };

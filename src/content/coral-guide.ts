@@ -9,6 +9,7 @@ import type { GuideContent } from "@/content/guide";
  * section's opening blocks are its first row, under the name the mock gives it
  * ("The four steps", "What you need", "Step by step", "The components", "The
  * pages", "The figures", "The command"); its callout stays open over the rows.
+ * A section whose lede is "" prints none, and opens on its callout or rows.
  *
  * ─── THE ANCHOR IDS ARE A CONTRACT ─────────────────────────────────────────
  * Other pages, the PDFs' readers and shared links point at these ids: the
@@ -76,14 +77,14 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
   meta: {
     title: "Coral product guide",
     description:
-      "How to connect an AKS or EKS cluster to Coral, what it installs and changes, how it sizes pods and removes nodes, and how you stay in control.",
+      "Connect an AKS or EKS cluster to Coral: what it installs, how it rebalances requests and drains spare nodes, and the switches that keep you in control.",
   },
   hero: {
     title: "Coral product guide",
-    deck: "How to connect a cluster, what Coral changes, and how you stay in control.",
+    deck: "How to connect an AKS or EKS cluster, what Coral changes, and how you stay in control.",
     downloads: [{ label: "PDF", document: "coral-guide" }],
   },
-  updated: "Updated 1 November 2026",
+  updated: "Updated 2 November 2026",
   /* The product page first, then the PDF cover's three cards; the fine line is
      the last term's second paragraph, without the PDF's "This guide describes
      Coral as released in October 2026." */
@@ -95,7 +96,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
     {
       term: "What Coral does",
       text: [
-        "Sizes CPU and memory requests to real use, removes nodes you don’t need, and moves work to cheaper machines.",
+        "Rebalances CPU and memory requests to real use, empties nodes you don’t need so your autoscaler can remove them, and moves work to cheaper machines.",
       ],
     },
     {
@@ -107,7 +108,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
     {
       term: "You stay in control",
       text: [
-        "Nothing is resized until you switch on “Automatically optimize”. Every engine has its own switch.",
+        "Nothing is resized until you switch on “Automatically optimize”.",
         [
           "Node optimization and the Evictor start at install. For a careful start, see ",
           { ref: "stay-in-control", text: "“Stay in control”" },
@@ -120,7 +121,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
     {
       id: "how-coral-works",
       title: "How Coral works",
-      lede: "Coral rebalances your Kubernetes clusters. It sizes workloads to real use and removes nodes you don’t need, so you pay for what you use. Cost monitoring is always on.",
+      lede: "Coral rebalances your Kubernetes clusters so you pay for what you use. Cost monitoring is always on.",
       rows: [
         {
           id: "how-coral-works-the-four-steps",
@@ -152,7 +153,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                   body: [
                     {
                       kind: "p",
-                      text: "Coral works out the right size for every workload, the nodes you don’t need, and what that saves.",
+                      text: "Coral works out the request each workload needs, the nodes you don’t need, and what that saves.",
                     },
                   ],
                 },
@@ -183,7 +184,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               rows: [
                 [
                   "Workload optimization",
-                  "Sizes each container’s CPU and memory requests to real use, and can manage HPAs.",
+                  "Rebalances each container’s CPU and memory requests to real use, and can manage HPAs.",
                   "Recommendations only, until you switch on “Automatically optimize”.",
                 ],
                 [
@@ -200,7 +201,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
     {
       id: "before-you-start",
       title: "Before you start",
-      lede: "Check these before you connect a cluster.",
+      lede: "",
       rows: [
         {
           id: "before-you-start-what-you-need",
@@ -251,7 +252,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
     {
       id: "connect-a-cluster",
       title: "Connect a cluster",
-      lede: "Connecting takes one command. zoorikctl, Zoorik’s command-line tool, asks before every cloud change.",
+      lede: "",
       callouts: [
         {
           kind: "callout",
@@ -305,6 +306,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                 {
                   title: "Install zoorikctl",
                   body: [
+                    { kind: "p", text: "zoorikctl is Zoorik’s command-line tool." },
                     {
                       kind: "os",
                       options: [
@@ -351,7 +353,6 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                         'zoorikctl cluster connect --connect-token="zoorik_v1_…" --api-region="us"',
                       ],
                       prompt: "$ ",
-                      note: "Your own command, with its one-time token, comes from the console’s “Connect cluster” dialog.",
                     },
                   ],
                 },
@@ -478,7 +479,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
     {
       id: "the-console",
       title: "The console",
-      lede: "Overview lists every cluster. Pick a cluster to see its pages.",
+      lede: "Pick a cluster on Overview to open its pages.",
       rows: [
         {
           id: "the-console-the-pages",
@@ -576,7 +577,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
     {
       id: "workload-optimization",
       title: "Workload optimization",
-      lede: "Coral sets each container’s CPU and memory requests from what it really uses.",
+      lede: "Coral rebalances each container’s CPU and memory requests under the scaling policy its workload gets.",
       rows: [
         {
           id: "how-sizes-are-worked-out",
@@ -667,16 +668,10 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               ],
             },
             {
-              kind: "callout",
-              title: "Good to know",
-              body: [
-                {
-                  kind: "ul",
-                  items: [
-                    "Every built-in policy except readonly has the Optimization type “Both”: it sizes pods and manages HPAs. With automation on, Coral creates HPAs for eligible Deployments and Argo Rollouts, and takes over HPAs nothing else manages.",
-                    "On a built-in policy you can change only “Automatically optimize” and the Optimization type (Vertical or Both). Set it to “Vertical” to size pods only. Use “Duplicate…” for anything else.",
-                  ],
-                },
+              kind: "ul",
+              items: [
+                "Every built-in policy except readonly has the Optimization type “Both”: it sizes pods and manages HPAs. With automation on, Coral creates HPAs for eligible Deployments and Argo Rollouts, and takes over HPAs nothing else manages.",
+                "On a built-in policy you can change only “Automatically optimize” and the Optimization type (Vertical or Both). Set it to “Vertical” to size pods only. Use “Duplicate…” for anything else.",
               ],
             },
           ],
@@ -711,7 +706,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                         ],
                         [
                           { b: "CPU." },
-                          " Pick how busy a moment to size for. P80 means the app used this much or less 80% of the time. Go higher, up to P99.9 or max, for more room. Go lower to save more. Also set the extra room on top, and how far back Coral looks (3 hours to 8 days).",
+                          " Pick how busy a moment to size for. P80 means the app used this much or less 80% of the time. Go higher, up to P99.9 or max, for more room. Go below P80 to save more. Also set the extra room on top, and how far back Coral looks (3 hours to 8 days).",
                         ],
                         [
                           { b: "Memory." },
@@ -762,18 +757,12 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               ],
             },
             {
-              kind: "callout",
-              title: "Good to know",
-              body: [
-                {
-                  kind: "ul",
-                  items: [
-                    "Coral checks custom policies from top to bottom and uses the first one that matches. You can change the order later.",
-                    "If you picked a policy for a workload, or named one in its annotation, it keeps that policy. Rules don’t change it.",
-                    "To make Coral leave some workloads alone, create a policy with Automatically optimize off and a rule that matches them.",
-                    "With a new workload, Coral makes it smaller step by step while it learns, and only as far as its data allows. If a workload needs more, Coral gives it more straight away.",
-                  ],
-                },
+              kind: "ul",
+              items: [
+                "Coral checks custom policies from top to bottom and uses the first one that matches. You can change the order later.",
+                "If you picked a policy for a workload, or named one in its annotation, it keeps that policy. Rules don’t change it.",
+                "To make Coral leave some workloads alone, create a policy with Automatically optimize off and a rule that matches them.",
+                "With a new workload, Coral makes it smaller step by step while it learns, and only as far as its data allows. If a workload needs more, Coral gives it more straight away.",
               ],
             },
           ],
@@ -899,7 +888,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
     {
       id: "node-optimization",
       title: "Node optimization",
-      lede: "Coral empties nodes you don’t need. Your autoscaler removes them. Coral never creates machines itself.",
+      lede: "",
       rows: [
         {
           id: "consolidation",
@@ -951,9 +940,22 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                 [{ b: "Eviction:" }, " within the pod’s PodDisruptionBudget."],
               ],
             },
+            { kind: "p", text: "Warm handover isn’t possible for:" },
+            {
+              kind: "ul",
+              items: [
+                "StatefulSets.",
+                "Workloads with the Recreate strategy.",
+                "Workloads whose replicas Argo CD or Flux set.",
+                "Pods with ReadWriteOnce volumes.",
+                "GPU pods.",
+                "HPA-scaled pods outside a rebalance.",
+              ],
+            },
+            { kind: "p", text: "Without live migration, these pods get a short restart." },
             {
               kind: "p",
-              text: "Warm handover isn’t possible for StatefulSets, workloads with the Recreate strategy, workloads whose replicas Argo CD or Flux set, pods with ReadWriteOnce volumes, GPU pods, or HPA-scaled pods outside a rebalance. Without live migration, these pods get a short restart.",
+              text: "Docker live migration doesn’t apply here. Kubernetes removed dockershim in 1.24, and AKS Linux node pools and EKS-optimized Amazon Linux nodes run containerd.",
             },
           ],
         },
@@ -1217,7 +1219,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               items: [
                 "Prices are the cloud’s published list price for the region, refreshed nightly. Spot nodes are priced at the spot rate.",
                 "Discounts, reservations and savings plans are not included. A month is 730 hours.",
-                "Until data exists, figures read “Calculating” or “Fetching prices”, never a guess.",
+                "Until data exists, figures read “Calculating” or “Fetching prices”.",
               ],
             },
           ],
@@ -1228,7 +1230,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
     {
       id: "security-and-data",
       title: "Security and data",
-      lede: "The agent opens every connection itself. It sends summaries out, and Zoorik’s replies carry its instructions, recommendations and updates.",
+      lede: "The agent sends summaries out, and Zoorik’s replies carry its instructions, recommendations and updates.",
       rows: [
         {
           id: "what-leaves-your-cluster",
@@ -1267,7 +1269,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               kind: "ul",
               items: [
                 "The agent opens every connection to Zoorik itself, over HTTPS, and accepts none from outside the cluster. Inside it, the API server calls the webhook, and the node daemons talk to each other over mutual TLS.",
-                "The connect token works once, for 60 minutes. The agent swaps it for a cluster credential that rotates by itself.",
+                "The agent swaps the one-time connect token for a cluster credential that rotates by itself.",
                 "Admission policies limit the agent’s changes. For example, it may scale a Deployment by only one replica, and change only the HPAs and NodePools Coral manages.",
               ],
             },
@@ -1278,11 +1280,8 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
           title: "The live-migration daemon",
           body: [
             {
-              kind: "ul",
-              items: [
-                "zoorik-node runs privileged on every Linux node, so it can checkpoint and restore containers.",
-                "A checkpoint holds the pod’s memory, secrets included. It stays inside your cluster, moves between the two nodes over mutual TLS, and is deleted when the move ends.",
-              ],
+              kind: "p",
+              text: "A checkpoint holds the pod’s memory, secrets included. It stays inside your cluster, moves between the two nodes over mutual TLS, and is deleted when the move ends.",
             },
           ],
         },
@@ -1292,7 +1291,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
           body: [
             {
               kind: "p",
-              text: "Sign in with Microsoft or Google. Zoorik never sees your password. A session ends after 30 minutes of inactivity, or after 12 hours.",
+              text: "Zoorik never sees your Microsoft or Google password. A session ends after 30 minutes of inactivity, or after 12 hours.",
             },
           ],
         },

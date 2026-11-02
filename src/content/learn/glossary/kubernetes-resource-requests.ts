@@ -4,18 +4,18 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/kubernetes-
 export const term: GlossaryTerm = {
   slug: "kubernetes-resource-requests",
   term: "Resource requests (pod requests)",
-  title: "What are resource requests in Kubernetes?",
-  meta: "A resource request in Kubernetes is the CPU or memory a container asks for. See CPU and memory units, and why Kubernetes resource requests set node cost.",
-  h1: "What are resource requests in Kubernetes?",
-  card: "A resource request in Kubernetes is how much CPU, memory or another resource a container asks for.",
+  title: "What are Kubernetes resource requests?",
+  meta: "A Kubernetes resource request is the CPU or memory a container asks for. See Kubernetes CPU units and memory units, and why your cloud cost follows requests.",
+  h1: "What are Kubernetes resource requests?",
+  card: "A Kubernetes resource request is how much CPU, memory or another resource a container asks for.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
-      text: "A resource request in Kubernetes is how much CPU, memory or another resource a container asks for. The scheduler uses it to pick a node. Then the kubelet, the node’s agent, reserves at least that much.",
+      text: "A Kubernetes resource request is how much CPU, memory or another resource a container asks for. The scheduler uses it to pick a node. Then the kubelet, the node’s agent, reserves at least that much.",
     },
     {
       kind: "p",
@@ -59,7 +59,7 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "The Cluster Autoscaler, which adds and removes nodes, works from Kubernetes resource requests.",
+          text: "Your cloud cost follows requests, because the Cluster Autoscaler, which adds and removes nodes, works from them:",
         },
         {
           kind: "ul",
@@ -68,22 +68,11 @@ export const term: GlossaryTerm = {
             "By default, it removes a node only when its pods request under 50% of the node’s CPU and memory for pods.",
           ],
         },
-        { kind: "p", text: "So your cloud cost follows requests." },
         {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " rebalances CPU and memory requests on AKS and EKS to match real use, so the same pods fit on fewer nodes. Then it drains the spare nodes, so your autoscaler can remove them. The ",
-            { a: "free assessment", href: "/assessment?p=coral" },
-            " works out your own figure.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "For requests vs limits, and how to set each one, read ",
-            { a: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
-            ".",
+            " rebalances CPU and memory requests on AKS and EKS to match real use, so the same pods fit on fewer nodes. Then it drains the spare nodes, so your autoscaler can remove them.",
           ],
         },
       ],

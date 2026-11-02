@@ -10,7 +10,7 @@
  * The day /events's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /events's content moves this to that day in the same PR; never the build's date.
  */
-export const eventsLastUpdated = "1 November 2026";
+export const eventsLastUpdated = "2 November 2026";
 
 /** The topics, in the Topic filter's order: the list's `category`, and the name its tag and its chip print. */
 export const eventTopics = [
@@ -88,13 +88,13 @@ export const eventsPage = {
   meta: {
     title: "Kubernetes conferences and FinOps events",
     description:
-      "Kubernetes conferences such as KubeCon, FinOps conferences such as FinOps X, and cloud cost and storage events, with dates, places and each event’s page.",
+      "KubeCon, FinOps X and other Kubernetes conferences and FinOps events for 2026 and 2027, with dates, places and a link to each event’s own page.",
   },
   hero: {
     title: "Kubernetes conferences, FinOps and cloud cost events",
-    /** Its last sentence names the day the list was last checked (`eventsListUpdated`). */
+    /** It ends on the day the list was last checked (`eventsListUpdated`). */
     deck: (updated: string) =>
-      `Kubernetes conferences, FinOps events and community days worth the trip, with dates, places and each event’s own page. Updated ${updated}.`,
+      `What each event covers, who runs it, tickets and calls for talks, last checked ${updated}.`,
   },
   /** The search box and the two date menus above the filters. */
   find: {
@@ -154,6 +154,27 @@ export const eventsPage = {
     monthOnly: ", exact dates to be announced",
   },
   source: "Dates and places come from each organizer’s own page. Check there before you book.",
+  /**
+   * After the source line: one line for each kind of FinOps event on the list, by the names of its events. A line
+   * shows while one of its events is still to come on the build's day, and the section goes with the last of them.
+   */
+  finops: {
+    title: "FinOps conferences in 2026 and 2027",
+    lines: [
+      { events: ["Conf42 FinOps 2027"], text: "Conf42 FinOps 2027, a free online conference" },
+      {
+        events: [
+          "India FinOps Community Call: Building FinOps Agents",
+          "India FinOps Community Call: 2026 Year-end Recap and Vision for 2027",
+        ],
+        text: "The India FinOps Community Calls, one-hour virtual calls",
+      },
+      {
+        events: ["Gurugram FinOps Meetup"],
+        text: "The Gurugram FinOps Meetup, free and in person",
+      },
+    ],
+  },
 } as const;
 
 /* ─── THE LIST ─────────────────────────────────────────────────────────────────────────────────────────────────

@@ -5,15 +5,15 @@ import { figure as figure2 } from "@/features/learn/figures/change-eks-node-grou
 export const article: Article = {
   slug: "change-eks-node-group-instance-type",
   title: "How to change an EKS node group instance type",
-  meta: "Change an EKS node group instance type: create a group with aws eks create-nodegroup and drain the old one, or a launch template version replaces the nodes.",
+  meta: "Change an EKS node group instance type: create a group with aws eks create-nodegroup or eksctl create nodegroup, then drain and delete the old group.",
   h1: "How to change an EKS node group instance type",
-  deck: "A managed node group keeps the instance types it was created with. How to move to new ones, one node at a time.",
+  deck: "A new instance type always means new nodes, whether EKS swaps them in or you drain the old group yourself.",
   card: "New node group, cordon, drain within PDBs, delete: the route to new EKS instance types, step by step.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes cost basics",
   published: "2026-10-21",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "rupesh",
   cover: "/learn-covers/zoorik-learn-change-eks-node-group-instance-type-1200x630.webp",
   coverAlt: "Change EKS instance types: create a new node group, drain the old one, then delete it",
@@ -34,20 +34,24 @@ export const article: Article = {
           text: [
             "Picture a managed node group, ",
             { code: "ng-old" },
-            ", created with m5.xlarge in its list of instance types, that you want on m7i.xlarge. You create ",
+            ", on m5.xlarge, that you want on m7i.xlarge. You create ",
             { code: "ng-new" },
-            " beside it, move the pods across one node at a time, and delete ",
+            " beside it, move the pods across one node at a time, then delete ",
             { code: "ng-old" },
-            " once it’s empty. Until that delete, you pay for the instances in both groups.",
+            ". Until that delete, you pay for both groups.",
           ],
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
+          text: "A managed node group is an EC2 Auto Scaling group that EKS runs for you. Its instance types are set when the group is created.",
+        },
+        {
+          kind: "p",
           text: [
-            "A managed node group is an EC2 Auto Scaling group that EKS runs for you, and its instance types are set when the group is created. They live in one of two places: the node group’s ",
+            "Types live in the group’s ",
             { code: "instanceTypes" },
-            " list, which takes 0 to 20 types, or the launch template you supply, which takes zero or one. Setting a type in both places makes the create fail. With neither, EKS uses ",
+            " list, which takes 0 to 20, or in your launch template, which takes zero or one. Setting a type in both makes the create fail. With neither, EKS uses ",
             { code: "t3.medium" },
             ".",
           ],
@@ -57,14 +61,14 @@ export const article: Article = {
           text: [
             "Once the group exists, ",
             { code: "UpdateNodegroupConfig" },
-            " covers Kubernetes labels and taints, the scaling and update configuration, node repair and the warm pool. Instance types aren’t on that list, so a new type means new nodes. Where the type is set decides the route:",
+            " changes its Kubernetes labels and taints, its scaling and update settings, node repair and the warm pool. It can’t change instance types, so a new type means new nodes. Where the type is set decides the route:",
           ],
         },
         {
           kind: "ul",
           items: [
-            "If it’s in the node group’s list, or is the default, follow the steps below. A group created without a custom launch template can’t switch to one later, so this is its only route.",
-            "If your own launch template sets it, a new template version can carry a different type, and EKS recycles every node to match it.",
+            "If it’s in the node group’s list, or is the default, follow the steps below. A group created without a custom launch template can’t add one later.",
+            "If your own launch template sets it, a new template version carries the new type, and EKS recycles every node.",
             "With Karpenter, change the NodePool’s requirements.",
           ],
         },
@@ -82,15 +86,15 @@ export const article: Article = {
               { b: "Match the architecture." },
               " ",
               { a: "AWS Graviton types", href: "/learn/glossary/aws-instance-families" },
-              " are Arm-based, so every image the group runs, ",
+              " are Arm-based. Every image the group runs, ",
               { a: "DaemonSets", href: "/learn/glossary/daemonset" },
               " included, needs an arm64 build, and the group needs an Arm AMI type.",
             ],
             [
               { b: "Count pod slots, not only vCPUs." },
-              " With the Amazon VPC CNI, each pod takes its own IP address, so a type’s address-based ",
+              " With the Amazon VPC CNI, each pod takes its own IP address. So a type’s address-based ",
               { a: "pod cap", href: "/learn/glossary/max-pods-per-node" },
-              " follows its elastic network interfaces (ENIs) and the IPs on each, not its vCPUs. Spread the same vCPUs over more, smaller nodes and the total of pod slots can change. Without a custom AMI, managed node groups also cap a node at 110\u00a0pods for types under 30\u00a0vCPUs, and on AWS Nitro System types, prefix delegation in VPC CNI 1.9.0 or later raises the IPs per node.",
+              " follows its elastic network interfaces (ENIs) and the IPs on each, not its vCPUs. Spread the same vCPUs over more, smaller nodes, and the total of pod slots can change.",
             ],
             [
               { b: "Find pinned pods." },
@@ -106,6 +110,10 @@ export const article: Article = {
         },
         {
           kind: "p",
+          text: "Without a custom AMI, managed node groups also cap pods per node: 110 under 30\u00a0vCPUs, and 250 above 30\u00a0vCPUs. On AWS Nitro System types, prefix delegation in VPC CNI 1.9.0 or later raises the IPs per node.",
+        },
+        {
+          kind: "p",
           text: [
             {
               a: "How to choose EKS instance types",
@@ -113,7 +121,7 @@ export const article: Article = {
             },
             " covers the family and the size. The ",
             { a: "EKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
-            " gives the monthly list price of an EKS node group.",
+            " gives an EKS node group’s monthly list price.",
           ],
         },
       ],
@@ -134,7 +142,11 @@ export const article: Article = {
         {
           kind: "ol",
           items: [
-            "Read the settings of the group you’re replacing, so the new one can match them:",
+            [
+              "Read the old group’s settings with ",
+              { code: "aws eks describe-nodegroup" },
+              ", so the new group can match them:",
+            ],
           ],
         },
         {
@@ -147,26 +159,36 @@ export const article: Article = {
           text: [
             "If ",
             { code: "template" },
-            " is null, go to step 2. If not, the group runs on your own launch template: check whether the template version it names sets an instance type. If it holds the type, use the launch template section below. If it doesn’t, you still need a new group: in step 2, add ",
+            " is null, go to step 2. If not, check whether the launch template version it names sets an instance type. If it does, use the launch template section below.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "If it doesn’t, add ",
             { code: "--launch-template id=<launch-template-id>" },
-            " and leave out ",
+            " in step 2. Leave out ",
             { code: "--disk-size" },
-            ", plus ",
+            ", and ",
             { code: "--ami-type" },
-            " if the template sets a custom AMI, or the create fails.",
+            " too if the template sets a custom AMI, or the create fails.",
           ],
         },
         {
           kind: "ol",
           start: 2,
           items: [
-            [
-              "Create the new group with the new instance types and the old group’s subnets, node role, capacity type and disk size, sized to hold every pod it runs. Copy its labels and taints too, because pods that select those labels won’t schedule on nodes without them. Drop ",
-              { code: "--labels" },
-              " or ",
-              { code: "--taints" },
-              " if the old group had none.",
-            ],
+            "Create the new group with the new instance types and the old group’s subnets, node role, capacity type and disk size. Size it to hold every pod the old group runs.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "Copy the old group’s labels and taints too, because pods that select those labels won’t schedule on nodes without them. Drop ",
+            { code: "--labels" },
+            " or ",
+            { code: "--taints" },
+            " if it had none.",
           ],
         },
         {
@@ -176,7 +198,22 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Types of different sizes can give every node the smallest pod cap, as shown after step 7. If the Cluster Autoscaler runs with auto-discovery, it picks up the new group, because EKS tags managed node group resources for it. Leave the new group’s maximum size room to grow while pods move.",
+          text: [
+            "With eksctl, you create the node group with ",
+            { code: "eksctl create nodegroup" },
+            " instead. AWS’s procedure needs eksctl 0.215.0 or later, and ",
+            { code: "eksctl create nodegroup --help" },
+            " lists every option and default.",
+          ],
+        },
+        {
+          kind: "code",
+          lang: "bash",
+          code: "eksctl create nodegroup \\\n  --cluster <cluster-name> \\\n  --region <region-code> \\\n  --name <new-nodegroup> \\\n  --node-ami-family <ami-family> \\\n  --node-type <new-type> \\\n  --nodes <desired> \\\n  --nodes-min <min> \\\n  --nodes-max <max>",
+        },
+        {
+          kind: "p",
+          text: "Types of different sizes can give every node the smallest pod cap, as shown after step 7. If the Cluster Autoscaler runs with auto-discovery, it finds the new group by the tags EKS adds for it. Leave the new group’s maximum size room to grow while pods move.",
         },
         {
           kind: "ol",
@@ -200,11 +237,11 @@ export const article: Article = {
           items: [
             [
               { a: "Cordon", href: "/learn/cordon-vs-drain" },
-              " every old node, so evicted pods can’t land back on the old ones: ",
+              " every old node, so evicted pods can’t land back on them: ",
               { code: "kubectl cordon -l eks.amazonaws.com/nodegroup=<old-nodegroup>" },
               ".",
             ],
-            "Drain the old nodes one at a time. A drain evicts each pod on the node and deletes the data in its emptyDir volumes, so check first that no emptyDir there holds data you need.",
+            "Drain the old nodes one at a time. A drain deletes the data in each pod’s emptyDir volumes, so first check that none of them holds data you need.",
           ],
         },
         {
@@ -215,11 +252,11 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "The evictions go through the Kubernetes Eviction API, which respects your PDBs. If a PDB allows no disruption, the drain waits until the timeout, and ",
+            "The evictions go through the Kubernetes Eviction API, which respects your PDBs. If a PDB allows no disruption, ",
             { code: "|| break" },
-            " stops the loop there so you can fix the budget or add a replica. ",
+            " stops the loop at the timeout, so you can fix the budget or add a replica. ",
             {
-              a: "Draining without downtime",
+              a: "Draining a node without downtime",
               href: "/learn/kubernetes-drain-node-without-downtime",
             },
             " covers single-replica apps, which restart under any drain.",
@@ -232,14 +269,24 @@ export const article: Article = {
             [
               "Check that only DaemonSet pods are left on each old node, with ",
               { code: "kubectl get pods -A -o wide --field-selector spec.nodeName=<node-name>" },
-              ". Check the node IAM role too: if you gave the new group a different role and no other managed node group uses the old one, EKS removes it from the ",
-              { code: "aws-auth" },
-              " ConfigMap when you delete the group, and self-managed nodes that share the role go ",
-              { code: "NotReady" },
               ".",
             ],
-            "Delete the old group, which terminates its instances and can’t be undone:",
           ],
+        },
+        {
+          kind: "p",
+          text: [
+            "Check the node IAM role too. If the new group has a different role, and no other managed group uses the old one, the delete removes it from the ",
+            { code: "aws-auth" },
+            " ConfigMap. Self-managed nodes that share that role then go ",
+            { code: "NotReady" },
+            ".",
+          ],
+        },
+        {
+          kind: "ol",
+          start: 7,
+          items: ["Delete the old group, which terminates its instances and can’t be undone:"],
         },
         {
           kind: "code",
@@ -254,7 +301,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Listing several types makes a group easier to fill. But mixed sizes cost pod slots, because without a custom AMI, a managed node group applies the smallest pod cap across its types to every node.",
+          text: "Listing several types makes a group easier to fill. But without a custom AMI, a managed node group gives every node the smallest pod cap among its types.",
         },
         {
           kind: "callout",
@@ -267,12 +314,22 @@ export const article: Article = {
           text: [
             "A group holds one capacity type, On-Demand or ",
             { a: "Spot", href: "/learn/glossary/spot-instance" },
-            ", so to run both, create two groups. On-Demand groups use the ",
+            ", so to run both, create two groups.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "On-Demand groups use the ",
             { code: "prioritized" },
             " allocation strategy: EKS tries the types in the exact order you list them. Spot groups created in clusters on Kubernetes 1.28 or later use ",
             { code: "price-capacity-optimized" },
-            ". For Spot, AWS recommends several types, and where the Cluster Autoscaler scales the group, a set with the same vCPU and memory so nodes scale as expected.",
+            ".",
           ],
+        },
+        {
+          kind: "p",
+          text: "For Spot, AWS recommends several types. Where the Cluster Autoscaler scales the group, it recommends a set with the same vCPU and memory, so nodes scale as expected.",
         },
       ],
     },
@@ -283,7 +340,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "If you created the group with your own launch template and set the instance type there, a new template version changes it. This route is less work than a new group, with two limits: a launch template holds a single instance type, and the group stays on the template it was created with. Built on the current version with ",
+            "If your own launch template sets the instance type, a new template version changes it. This route has two limits: a launch template holds one instance type, and the group stays on the template it was created with. Built on the current version with ",
             { code: "--source-version" },
             ", the new version inherits the other launch parameters:",
           ],
@@ -295,7 +352,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "EKS then replaces the nodes itself, one node at a time by default. With the default update strategy, it launches new nodes first, and once a new node is Ready, it cordons and drains an old one, then terminates it 60\u00a0seconds after the last eviction. The minimal strategy terminates old nodes before creating new ones, which AWS describes as useful when you’re constrained on resources or cost, as with GPUs.",
+          text: "EKS then replaces the nodes itself, one at a time by default. With the default update strategy, it launches new nodes first. Once a new node is Ready, EKS cordons and drains an old one, then terminates it 60\u00a0seconds after the last eviction.",
+        },
+        {
+          kind: "p",
+          text: "The minimal strategy terminates old nodes before creating new ones. AWS describes it as useful when you’re constrained on resources or cost, as with GPUs.",
         },
         {
           kind: "p",
@@ -321,12 +382,12 @@ export const article: Article = {
             { a: "Karpenter", href: "/learn/what-is-karpenter" },
             ", at v1.15 in October 2026, has no node group to replace. A NodePool’s requirements, under ",
             { code: "spec.template.spec.requirements" },
-            ", decide which instance types Karpenter may launch, and narrowing them marks every existing node whose type no longer fits as drifted.",
+            ", decide which instance types Karpenter may launch. Narrowing them marks every existing node whose type no longer fits as drifted.",
           ],
         },
         {
           kind: "p",
-          text: "Karpenter replaces drifted nodes as a voluntary disruption. It taints the old node, launches any replacements it needs and waits until they’re ready, then evicts the old node’s pods through the Eviction API, which respects PDBs. A NodePool with no budget set lets 10% of its nodes be disrupted at once.",
+          text: "Drift is a voluntary disruption. Karpenter taints the old node and waits until any replacements it needs are ready, then evicts the pods within their PDBs. A NodePool with no budget set lets 10% of its nodes be disrupted at once.",
         },
         {
           kind: "p",
@@ -347,14 +408,14 @@ export const article: Article = {
     },
     {
       id: "how-coral-moves-eks-nodes-onto-cheaper",
-      title: "How Coral moves EKS nodes onto cheaper machines",
+      title: "How Coral rebalances EKS nodes onto cheaper machines",
       blocks: [
         {
           kind: "p",
           text: [
-            "A new instance type pays off only when the pods’ requests fit it well, and Karpenter chooses machines from pod requests without changing them. ",
+            "A new instance type pays off only when the pods’ requests fit it well, and Karpenter never changes requests. ",
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS: it rebalances each container’s CPU and memory requests to what it really uses, and what it can then do with your nodes depends on the autoscaler you run.",
+            " optimizes Kubernetes on AKS and EKS, rebalancing CPU and memory requests to real use. What it then does with your nodes depends on your autoscaler.",
           ],
         },
         {
@@ -369,11 +430,11 @@ export const article: Article = {
           items: [
             [
               { b: "With Karpenter:" },
-              " Coral can rebalance the nodes you choose onto cheaper machines that still fit the work, and you compare current and rebalanced cost before it starts. It creates fixed-size NodePools for the move, your Karpenter launches the new machines, and the old nodes are drained and removed one by one.",
+              " Coral rebalances the nodes you choose onto cheaper machines that still fit the work. You compare current and rebalanced cost before it starts. Coral creates fixed-size NodePools, your Karpenter launches the new machines, and the old nodes are drained and removed one by one.",
             ],
             [
               { b: "With only the Cluster Autoscaler:" },
-              " Coral empties spare nodes one at a time but never changes their size, and the Cluster Autoscaler removes them within its minimums. Changing a node group’s type is still the route above.",
+              " Coral empties spare nodes one at a time without changing their size, and the Cluster Autoscaler removes them. Changing a node group’s type is still the route above.",
             ],
             [
               { b: "With no autoscaler:" },
@@ -381,22 +442,30 @@ export const article: Article = {
               { code: "aws-auth" },
               ", that switches authentication to ",
               { code: "API_AND_CONFIG_MAP" },
-              ", which can’t be undone.",
+              " for good.",
             ],
           ],
         },
         {
           kind: "p",
-          text: "A rebalance can take nodes from an EKS managed node group too. Coral drains each one and terminates it through the group’s Auto Scaling group, reducing the desired count by one, and it never adds machines to the group. A group that the Cluster Autoscaler manages is left to it.",
+          text: "A rebalance can take nodes from an EKS managed node group too. Coral drains each one and terminates it through the group’s Auto Scaling group, reducing the desired count by one. It never adds machines to the group, and leaves groups the Cluster Autoscaler manages to that autoscaler.",
         },
         {
           kind: "p",
-          text: "A rebalance needs Node optimization on and the permission to remove nodes, which on EKS is an IAM role that can terminate instances in the cluster’s Auto Scaling groups. Where only a group’s minimum size blocks a removal, Coral can reduce that minimum, given the permission for it, and puts it back later.",
+          text: "A rebalance needs Node optimization on and an IAM role that can terminate instances in the cluster’s Auto Scaling groups. Where only a group’s minimum size blocks a removal, Coral can reduce that minimum, given the permission, and puts it back later.",
+        },
+        {
+          kind: "p",
+          text: "A rebalance never goes past a PDB, and a node that can’t be emptied in time is kept.",
+        },
+        {
+          kind: "p",
+          text: "Where a warm handover applies, Coral starts a new copy on another node first. It must stay Ready and serving, with no restarts, before the old pod goes. Pods that don’t qualify, such as StatefulSet pods or pods with ReadWriteOnce volumes, are evicted, and a single-replica app gets a short restart.",
         },
         {
           kind: "p",
           text: [
-            "A rebalance never goes past a PDB, and a node that can’t be emptied in time is kept. Where a warm handover applies, Coral starts a new copy on another node first, and it must stay Ready and serving, with no restarts, before the old pod goes. Pods that don’t qualify, such as StatefulSet pods or pods with ReadWriteOnce volumes, are evicted instead, and a single-replica app among them gets a short restart. The ",
+            "The ",
             { a: "Kubernetes cost optimization guide", href: "/kubernetes-cost-optimization" },
             " puts rebalancing and node removal in order.",
           ],

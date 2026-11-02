@@ -6,21 +6,21 @@ import { figure as figure3 } from "@/features/learn/figures/cluster-autoscaler-o
 export const article: Article = {
   slug: "cluster-autoscaler-overprovisioning",
   title: "Cluster Autoscaler overprovisioning with pause pods",
-  meta: "Cluster Autoscaler overprovisioning keeps node capacity warm with placeholder pods. The PriorityClass to set, a manifest, sizing and Karpenter notes.",
+  meta: "Cluster Autoscaler overprovisioning with placeholder pods: the Kubernetes priority class, a manifest, sizing, the cluster-proportional-autoscaler and Karpenter.",
   h1: "Cluster Autoscaler overprovisioning with placeholder pods",
-  deck: "Placeholder pods hold spare node capacity that real pods preempt. The priority, manifest and sizing that make it work.",
+  deck: "A real pod takes a placeholder’s room without waiting for a node, and the autoscaler adds one for the placeholder.",
   card: "Keep warm node capacity with low-priority placeholder pods: the -10 rule, a manifest and how to size it.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes autoscaling",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "somay",
   cover: "/learn-covers/zoorik-learn-cluster-autoscaler-overprovisioning-1200x630.webp",
   coverAlt:
-    "Cluster Autoscaler overprovisioning: a real pod takes a placeholder’s place, and the placeholder goes to a new node",
+    "On a full node, a real pod takes a placeholder’s place, and the placeholder starts again on a new node",
   short:
-    "Cluster Autoscaler overprovisioning keeps spare node capacity warm with placeholder pods, also called pause pods: a pending real pod preempts one instead of waiting for a node. Give them a priority from -10 to -1, because the Cluster Autoscaler adds nodes for their Pending replacements only at -10 or above.",
+    "Cluster Autoscaler overprovisioning keeps spare node capacity warm with placeholder pods, also called pause pods: a pending real pod preempts one. Give them a priority from -10 to -1, because the Cluster Autoscaler adds nodes for their Pending replacements only at -10 or above.",
   sections: [
     {
       id: "cluster-autoscaler-overprovisioning",
@@ -29,34 +29,33 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "This page is about headroom you reserve on purpose. Requests set far above what containers use are the other kind, covered in ",
+            "This kind of overprovisioning is headroom you reserve on purpose. Requests set far above what containers use are the other kind, covered in ",
             { a: "Kubernetes requests vs usage", href: "/learn/kubernetes-overprovisioning" },
             ".",
           ],
         },
         {
           kind: "p",
-          text: "Picture a node pool where every node is full. A Deployment scales out by one replica that requests 1\u00a0CPU, and the new pod waits Pending.",
+          text: "Picture a node pool where every node is full. A Deployment adds one replica that requests 1\u00a0CPU, and the new pod waits Pending.",
         },
         {
           kind: "p",
-          text: "The Cluster Autoscaler adds a node only when a pod can’t be scheduled for lack of resources, and a new node isn’t instant. The Amazon Elastic Kubernetes Service (EKS) best practices guide says nodes “can take multiple minutes to become available”. That can make pod scheduling latency an order of magnitude longer.",
+          text: "The Cluster Autoscaler adds a node only for a pod that can’t be scheduled. The Amazon Elastic Kubernetes Service (EKS) best practices guide says nodes “can take multiple minutes to become available”.",
         },
         {
           kind: "p",
-          text: "Overprovisioning, in the same guide’s words, “trades cost for scheduling latency”. You keep headroom, spare node capacity that is already running, so the new pod doesn’t wait for a machine.",
+          text: "In the same guide’s words, overprovisioning “trades cost for scheduling latency”. You keep headroom: spare node capacity that is already running when a pod arrives.",
         },
         {
           kind: "p",
-          text: "Placeholder pods hold it. Each one runs a minimal pause container and requests the CPU and memory you want to keep free. Its priority sits below every real workload’s.",
+          text: "Placeholder pods hold it. Each one runs a minimal pause container, requests the CPU and memory you want to keep free, and sits below every real workload’s priority.",
         },
-        { kind: "p", text: "From there, the cycle runs by itself:" },
         {
           kind: "ol",
           items: [
             "The placeholders run on your nodes and hold their requests.",
             "A real pod arrives and fits nowhere. The scheduler preempts (evicts) placeholders on one node, and the real pod takes their space.",
-            "The Deployment replaces the evicted placeholders. The replacements fit nowhere, so they stay Pending, and the Cluster Autoscaler adds a node for them.",
+            "The Deployment replaces the evicted placeholders. The replacements go Pending, and the Cluster Autoscaler adds a node for them.",
             "The placeholders start on the new node, and the headroom is back.",
           ],
         },
@@ -64,13 +63,13 @@ export const article: Article = {
         {
           kind: "callout",
           label: "For engineers",
-          text: "The node the Cluster Autoscaler adds is for the placeholders, not for the real pod in step 2. Its FAQ says it adds no node for a pending pod that waits for a pod with a smaller priority value to be preempted.",
+          text: "The node the Cluster Autoscaler adds is for the placeholders, not for the real pod in step 2. Its FAQ says it adds no node for a pending pod that is waiting on a preemption.",
         },
       ],
     },
     {
       id: "priority-10-is-the-lowest-the-cluster",
-      title: "Priority -10 is the lowest the Cluster Autoscaler still adds nodes for",
+      title: "The Kubernetes priority class: -10 is the lowest that still adds nodes",
       blocks: [
         {
           kind: "h3",
@@ -93,7 +92,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Preemption is what makes the placeholders give way. When a pod can’t be scheduled, the scheduler finds a node where evicting pods with less priority would let it fit, and evicts them. Workloads without a class keep the default of 0, so any of them can preempt a negative placeholder.",
+          text: "Preemption is what makes the placeholders give way. When a pod can’t be scheduled, the scheduler evicts pods with less priority from a node so the pod fits. Workloads at the default of 0 can preempt any negative placeholder.",
         },
         {
           kind: "h3",
@@ -102,28 +101,24 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The Cluster Autoscaler adds a rule of its own. Pods with a priority below its cutoff, -10 by default, are expendable to it. They don’t trigger scale-ups, and they don’t stop it removing the nodes they run on.",
+          text: "Pods with a priority below the Cluster Autoscaler’s cutoff, -10 by default, are expendable to it. They trigger no scale-up and don’t stop it removing the nodes they run on.",
         },
         {
           kind: "p",
           text: [
-            "Its FAQ reserves -10 for overprovisioning pods as “the lowest priority that triggers scaling clusters”. It also discourages changing the cutoff with the ",
+            "Its FAQ reserves -10 for overprovisioning pods, “the lowest priority that triggers scaling clusters”, and discourages changing ",
             { code: "--expendable-pods-priority-cutoff" },
-            " flag.",
+            ".",
           ],
         },
         {
           kind: "p",
-          text: "Microsoft’s documentation states the same rule for Azure Kubernetes Service (AKS). Nodes don’t scale up for pods with a PriorityClass value below -10.",
+          text: "Microsoft states the same rule for Azure Kubernetes Service (AKS): nodes don’t scale up for pods with a PriorityClass value below -10.",
         },
         {
           kind: "callout",
           label: "Watch out",
-          text: "The sample on kubernetes.io’s “Overprovision Node Capacity For A Cluster” page gives its PriorityClass a value of -1000, below the cutoff. Under the Cluster Autoscaler, nothing adds a node for those placeholders.",
-        },
-        {
-          kind: "p",
-          text: "They hold only space that is already free, and after a preemption the headroom returns only if other pods free the space. The autoscaler can also remove a node that runs only placeholders. With the Cluster Autoscaler, set the value to -10.",
+          text: "The sample on kubernetes.io’s “Overprovision Node Capacity For A Cluster” page gives its PriorityClass a value of -1000, below the cutoff. The Cluster Autoscaler adds no node for those placeholders, and can remove a node that runs only placeholders. Set the value to -10.",
         },
         { kind: "svg", figure: figure2 },
         {
@@ -131,7 +126,7 @@ export const article: Article = {
           text: [
             "A pod whose PriorityClass sets ",
             { code: "preemptionPolicy: Never" },
-            " can’t preempt anything. It waits in the queue until enough resources are free, usually on a new node, so the headroom doesn’t help it.",
+            " can’t preempt. It waits until enough resources are free, usually on a new node, so the headroom doesn’t help it.",
           ],
         },
       ],
@@ -144,12 +139,12 @@ export const article: Article = {
           kind: "ol",
           items: [
             [
-              "Create a namespace for the placeholders, outside kube-system. The Cluster Autoscaler FAQ lists ",
+              "Create a namespace for the placeholders, outside kube-system. Pods in kube-system without a PodDisruptionBudget (PDB) are among ",
               {
-                a: "the pods that can stop it removing a node",
+                a: "the pods that can stop the Cluster Autoscaler removing a node",
                 href: "/learn/cluster-autoscaler-not-scaling-down",
               },
-              ". Among them are kube-system pods that have no PodDisruptionBudget (PDB) and don’t run on the node by default.",
+              ".",
             ],
           ],
         },
@@ -161,7 +156,7 @@ export const article: Article = {
             [
               "Save this as ",
               { code: "capacity-reservation.yaml" },
-              ", which defines the PriorityClass and a Kubernetes placeholder pod Deployment with two replicas:",
+              ", which defines the PriorityClass and a placeholder Deployment with two replicas:",
             ],
           ],
         },
@@ -172,7 +167,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The headroom is replicas times requests: here 2 × (1\u00a0CPU, 2\u00a0GiB), so 2\u00a0CPU and 4\u00a0GiB. The other fields each do one job:",
+          text: "The headroom is replicas times requests: 2 × (1\u00a0CPU, 2\u00a0GiB) makes 2\u00a0CPU and 4\u00a0GiB.",
         },
         {
           kind: "ul",
@@ -228,32 +223,28 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "The placeholders’ requests are capacity you pay for around the clock, the same as the pods they make room for. So size the headroom to the wait you need to avoid. The ",
+            "The placeholders’ requests are capacity you pay for around the clock, so size the headroom to the wait you need to avoid. The ",
             { a: "EKS and AKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
             " shows what a node costs a month at list price.",
           ],
         },
         {
           kind: "p",
-          text: "Size each placeholder for the largest pod you want to start without waiting. Preemption works one node at a time, so a pod that requests 2\u00a0CPU can’t use two 1-CPU placeholders on two different nodes.",
+          text: "Size each placeholder for the largest pod that must start at once. Preemption works one node at a time, so a 2-CPU pod can’t use two 1-CPU placeholders on different nodes.",
         },
         {
           kind: "callout",
           label: "Worked example",
-          text: "On 4-CPU nodes, the manifest’s 2\u00a0CPU of headroom is about half a node (2 ÷ 4). Spread one per node, each placeholder holds 1\u00a0CPU and 2\u00a0GiB.",
-        },
-        {
-          kind: "p",
-          text: "A new pod that requests up to that fits in one placeholder’s room, but a 2-CPU pod can’t use the two together. To start 2-CPU pods without waiting, give each placeholder 2\u00a0CPU. The headroom then becomes 4\u00a0CPU (2 × 2), about a whole node.",
+          text: "On 4-CPU nodes, the manifest’s 2\u00a0CPU of headroom is about half a node (2 ÷ 4). To start 2-CPU pods without waiting, give each placeholder 2\u00a0CPU. The headroom then becomes 4\u00a0CPU (2 × 2), about a whole node.",
         },
         { kind: "svg", figure: figure3 },
         {
           kind: "p",
-          text: "Size the total for what arrives while one node is starting. The EKS guide compares how often you need a new node with how long one takes to arrive. If you need one every 30\u00a0seconds and EC2 takes 30\u00a0seconds to provision it, one node of headroom keeps a spare ready.",
+          text: "Size the total for what arrives while a node starts. The EKS guide’s example needs a new node every 30\u00a0seconds, and EC2 takes 30\u00a0seconds to provision one. One node of headroom then keeps a spare ready.",
         },
         {
           kind: "p",
-          text: "To improve zonal scheduling, the guide suggests overprovisioning as many nodes as your Auto Scaling group has Availability Zones. Then the scheduler can choose the best zone.",
+          text: "To improve zonal scheduling, the guide suggests overprovisioning as many nodes as your Auto Scaling group has Availability Zones.",
         },
         {
           kind: "h3",
@@ -262,7 +253,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "A fixed replica count doesn’t grow with the cluster. The Cluster Autoscaler FAQ pairs the placeholders with the cluster-proportional-autoscaler, for headroom set as a share of the cluster, such as 20%. That autoscaler raises the replica count as the cluster grows and reduces it when the cluster gets smaller.",
+          text: "A fixed replica count doesn’t grow with the cluster. The Cluster Autoscaler FAQ pairs the placeholders with the cluster-proportional-autoscaler, to hold headroom as a share of the cluster, such as 20%.",
         },
       ],
     },
@@ -272,14 +263,13 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "AKS overprovisioning with the Cluster Autoscaler works as described above. Node auto provisioning (NAP) on AKS is different, and the Karpenter notes below apply to it too. Microsoft says NAP is based on the open-source Karpenter project and provisions nodes in response to pending pod pressure.",
+          text: "On AKS, the Cluster Autoscaler works as described above. Microsoft says node auto provisioning (NAP) is based on the open-source Karpenter project, so the Karpenter notes below apply to it too.",
         },
         {
           kind: "p",
           text: [
-            "Karpenter overprovisioning uses the same Deployment. ",
             { a: "Karpenter", href: "/learn/what-is-karpenter" },
-            " launches nodes for pending pods, a pending placeholder included, by simulating how they would pack onto new machines. Two things behave differently:",
+            " launches nodes for pending pods, a pending placeholder included, so the same Deployment works. Two things behave differently:",
           ],
         },
         {
@@ -287,13 +277,13 @@ export const article: Article = {
           items: [
             [
               { b: "Preferences act like requirements." },
-              " Karpenter starts by treating preferred affinities as required, and relaxes them one at a time only when they can’t be met. As the kubernetes.io page warns, the replica count then also sets a minimum node count. With the anti-affinity above, 2\u00a0replicas keep at least 2\u00a0nodes, so drop it if you’d rather Karpenter pack the placeholders together.",
+              " Karpenter starts by treating preferred affinities as required, and relaxes them only when they can’t be met. With the anti-affinity above, 2\u00a0replicas keep at least 2\u00a0nodes, so drop it if you’d rather Karpenter pack the placeholders together.",
             ],
             [
               { b: "Consolidation counts placeholders as pods." },
               " ",
               { a: "Karpenter’s consolidation", href: "/learn/karpenter-consolidation" },
-              " deletes a node only if all of its pods can run on free capacity elsewhere. It replaces one only if they fit on other nodes plus one cheaper machine. When several nodes qualify, it prefers nodes whose pods have less priority. Preferred anti-affinity can also make consolidation less effective. Karpenter may keep a node to honor a preference, even when the scheduler could fit the pods elsewhere.",
+              " removes or replaces a node only if its pods fit elsewhere, and prefers nodes whose pods have less priority. Preferred anti-affinity can also make consolidation less effective: Karpenter may keep a node to honor it, even when the scheduler could fit the pods elsewhere.",
             ],
           ],
         },
@@ -307,12 +297,12 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            ", Zoorik’s Kubernetes optimization for AKS and EKS, keeps no idle spare nodes. It rebalances each container’s CPU and memory requests to measured use. The headroom sits inside each pod’s request.",
+            ", Zoorik’s Kubernetes optimization for AKS and EKS, keeps no idle spare nodes. It rebalances CPU and memory requests to measured use, so the headroom sits inside each pod’s request.",
           ],
         },
         {
           kind: "p",
-          text: "Sudden growth is handled by your autoscaler adding nodes. So a pending placeholder still gets its node from the Cluster Autoscaler, Karpenter or NAP.",
+          text: "Sudden growth is your autoscaler’s job, so a pending placeholder still gets its node from the Cluster Autoscaler, Karpenter or NAP.",
         },
         {
           kind: "h3",
@@ -322,19 +312,19 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "To keep warm node capacity as well, run the placeholder Deployment on Coral’s Read-only policy (",
+            "Run the placeholder Deployment on Coral’s Read-only policy (",
             { code: "readonly" },
-            "). The FAQ answer on ",
+            "), as the Coral FAQ answer on ",
             {
               a: "how much spare capacity is kept",
               href: "/coral-faq#how-much-spare-capacity-is-kept",
             },
-            " advises this.",
+            " advises.",
           ],
         },
         {
           kind: "p",
-          text: "A pause container uses almost no CPU or memory. So a policy with automation on would shrink the very requests that make up your headroom.",
+          text: "A pause container uses almost no CPU or memory, so a policy with automation on would shrink the very requests that make up your headroom.",
         },
         {
           kind: "ul",

@@ -39,30 +39,30 @@ export function termCard(term: GlossaryTerm): ShareImage {
 }
 
 /**
- * `/learn/glossary`, the hub: every string it prints. Its title goes through the layout's template ("Cloud cost and
- * FinOps glossary | Zoorik"); its h1 names what the glossary is about. Each term's trail names the hub by `crumb`.
+ * `/learn/glossary`, the hub: every string it prints. Its title goes through the layout's template ("Cloud computing
+ * terms: a cloud cost glossary | Zoorik"), and its h1 is the same words. Each term's trail names the hub by `crumb`.
  */
 export const glossaryPage = {
   path: routes.learnGlossary,
   meta: {
-    title: "Cloud cost and FinOps glossary",
+    title: "Cloud computing terms: a cloud cost glossary",
     description:
-      "Cloud cost glossary: plain answers to Kubernetes terms, disk IOPS and throughput, and FinOps terms like spot and reserved pricing for AKS, EKS, Azure and AWS.",
+      "Cloud computing terminology in plain words: AWS terms and definitions, Azure and Kubernetes terms, and the block storage and FinOps vocabulary of cloud cost.",
   },
   hero: {
     /** The small line over the h1, a link back to /learn. */
     kicker: "Learn",
-    title: "Cloud cost glossary",
-    deck: "Plain answers to the Kubernetes, block storage and pricing terms behind your cloud cost.",
+    title: "Cloud computing terms: a cloud cost glossary",
+    deck: "Every definition comes from the AWS, Azure, Kubernetes or Linux docs it cites.",
   },
   /**
    * The day the hub's own content last changed, for the sitemap; it is not printed. A new term moves the hub's sitemap
    * day on its own (`sitemap.ts`), so this moves only when the hub itself changes.
    */
-  updated: "Updated 1 November 2026",
+  updated: "Updated 2 November 2026",
   /** The hub's name in each term's trail, over its h1 and in the structured data. */
   crumb: "Glossary",
-  /** After a group's count, beside its head: "10 terms". */
+  /** After a group's count, beside its head: "10 terms", then the group's `about`. */
   count: { one: "term", many: "terms" },
   /** Its tile in /learn's More from Zoorik: the line under the h1. */
   line: "Plain answers to the terms behind your cloud cost.",
@@ -72,12 +72,23 @@ export const glossaryPage = {
     "block-storage": "Block storage terms",
     "finops-pricing": "FinOps and pricing terms",
   } satisfies Record<GlossaryGroupId, string>,
+  /** The words after each group's count, beside its head: "17 terms, a Kubernetes glossary from …". */
+  about: {
+    kubernetes: "a Kubernetes glossary from requests and limits to AKS and EKS",
+    "block-storage": "the AWS and Azure glossary of disks, volumes and Linux filesystems",
+    "finops-pricing":
+      "a cheat sheet of AWS and Azure terminology for pricing, discounts and FinOps",
+  } satisfies Record<GlossaryGroupId, string>,
 } as const;
 
-/** A group of the hub: its id (the section's anchor), its heading, and its terms A–Z by name. */
+/**
+ * A group of the hub: its id (the section's anchor), its heading, the words after its count, and its terms A–Z by
+ * name.
+ */
 export interface GlossaryHubGroup {
   readonly id: GlossaryGroupId;
   readonly title: string;
+  readonly about: string;
   readonly terms: readonly GlossaryTerm[];
 }
 
@@ -86,6 +97,7 @@ export const glossaryHubGroups: readonly GlossaryHubGroup[] = glossaryGroups
   .map((group) => ({
     id: group.id,
     title: glossaryPage.groups[group.id],
+    about: glossaryPage.about[group.id],
     terms: glossaryTerms
       .filter((term) => term.group === group.id)
       .sort((a, b) => termName(a).localeCompare(termName(b), "en", { sensitivity: "base" })),

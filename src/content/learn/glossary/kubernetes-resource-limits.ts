@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "kubernetes-resource-limits",
   term: "Resource limits (pod limits)",
   title: "Kubernetes resource limits: CPU and memory",
-  meta: "Kubernetes resource limits cap a container’s CPU and memory. See how a CPU limit in Kubernetes and a memory limit work, and when a limit sets your node cost.",
+  meta: "Resource limits cap a container’s CPU and memory. See how CPU limits throttle, how Kubernetes memory limits can lead to OOM kills, and when limits add nodes.",
   h1: "Kubernetes resource limits: CPU and memory",
   card: "A resource limit in Kubernetes is the most CPU or memory a container may use.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -49,8 +49,14 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "The docs’ frontend pod has two containers. Each requests 250m of CPU and 64\u00a0MiB of memory, with limits of 500m and 128\u00a0MiB. 250m means 250 millicpu, a quarter of one CPU.",
+          text: "The docs’ frontend pod has two containers. Each requests 250m of CPU and 64\u00a0MiB of memory, with limits of 500m and 128\u00a0MiB.",
         },
+        {
+          kind: "code",
+          lang: "yaml",
+          code: 'resources:\n  requests:\n    memory: "64Mi"\n    cpu: "250m"\n  limits:\n    memory: "128Mi"\n    cpu: "500m"',
+        },
+        { kind: "p", text: "250m means 250 millicpu, a quarter of one CPU." },
         { kind: "svg", figure: figure1 },
       ],
     },
@@ -73,26 +79,11 @@ export const term: GlossaryTerm = {
         {
           kind: "p",
           text: [
-            "Our guide to ",
-            { a: "requests and limits", href: "/learn/kubernetes-pod-right-sizing" },
-            " covers both.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
             { a: "Coral", href: "/coral" },
-            " rebalances CPU and memory requests on AKS and EKS to match real use. On regular pods it never reduces a CPU or memory limit. If a raised memory request needs it, the limit rises to 1.5 times the request.",
+            " rebalances CPU and memory requests on AKS and EKS to match real use. Its built-in policies never reduce a regular pod’s limits. They keep an existing memory limit at least 1.5 times a raised request.",
           ],
         },
-        {
-          kind: "p",
-          text: [
-            "With requests that match use, the same pods fit on fewer nodes. The ",
-            { a: "free assessment", href: "/assessment?p=coral" },
-            " works out your own figure.",
-          ],
-        },
+        { kind: "p", text: "With requests that match use, the same pods fit on fewer nodes." },
       ],
     },
   ],

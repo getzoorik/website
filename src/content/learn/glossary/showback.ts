@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "showback",
   term: "Showback",
   title: "What is showback in FinOps?",
-  meta: "Showback reports each team’s share of the cloud cost without charging it. See three common ways to split the cost between teams, and how chargeback differs.",
+  meta: "Showback meaning: cloud showback reports each team’s share of the cloud cost, with no charge. See three showback models from AWS, and how chargeback differs.",
   h1: "What is showback in FinOps?",
   card: "Showback is a report that splits your cloud cost by team, application or cost center.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -25,7 +25,7 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "In AWS’s example, the infrastructure engineering team learns its share of last month’s cost. A showback model is how you split the cost. AWS describes three common ones, from least to most effort:",
+          text: "A showback model is how you split the cost. AWS describes three common ones, from least to most effort:",
         },
         {
           kind: "ul",

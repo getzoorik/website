@@ -5,7 +5,7 @@ import { figure as figure2 } from "@/features/learn/figures/is-btrfs-stable/2";
 export const article: Article = {
   slug: "is-btrfs-stable",
   title: "Is btrfs stable in 2026? RAID1, RAID5 and RAID6",
-  meta: "Is btrfs stable in 2026? What the status table marks OK and unstable, whether btrfs RAID1 is stable, why RAID5/6 isn’t, and how to scrub and watch a pool.",
+  meta: "Is btrfs stable? What its status table marks OK and unstable, which btrfs RAID profiles are safe, why RAID5/6 isn’t, and how to scrub and watch a pool.",
   h1: "Is btrfs stable in 2026?",
   deck: "The official status table, read feature by feature, and what to check before you trust btrfs with data.",
   card: "What the btrfs status table marks OK, mostly OK and unstable, and why RAID5/6 is the one to avoid.",
@@ -13,12 +13,12 @@ export const article: Article = {
   hub: "Block storage",
   topic: "Linux filesystems",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "sourabh",
   cover: "/learn-covers/zoorik-learn-is-btrfs-stable-1200x630.webp",
   coverAlt: "Is btrfs stable? Snapshots and RAID1 yes, quotas mostly, RAID5/6 no",
   short:
-    "btrfs is stable for its core features, and the profile you pick decides most of the rest. The official status table for Linux kernel 7.3 rates snapshots, checksums, scrub, resize and the single, DUP and RAID1 profiles OK. RAID5 and RAID6 are rated unstable, not for production, and a few features, quotas among them, are mostly OK.",
+    "btrfs is stable for its core features. The official status table for Linux kernel 7.3 rates snapshots, checksums, scrub, resize and the single, DUP and RAID1 profiles OK. Quotas are mostly OK, and RAID5 and RAID6 are rated unstable, not for production.",
   sections: [
     {
       id: "is-btrfs-stable",
@@ -26,7 +26,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Picture a cloud VM whose data mounts sit on one btrfs filesystem across two disks. Each mount is a subvolume. You take a snapshot before a risky change, and you grow the filesystem when a disk grows.",
+          text: "Picture a cloud VM whose data mounts are subvolumes on one btrfs filesystem across two disks. You take a snapshot before a risky change, and grow the filesystem when a disk grows.",
         },
         {
           kind: "p",
@@ -35,20 +35,12 @@ export const article: Article = {
             { code: "single" },
             " profile and the metadata ",
             { code: "raid1" },
-            ". A profile is the setting for how many copies btrfs keeps of each chunk of data or metadata, and where.",
+            ". A profile is how btrfs does RAID itself: how many copies it keeps of each chunk of data or metadata, and where.",
           ],
         },
         {
           kind: "p",
-          text: "Look each feature up on btrfs’s status page, and every one is rated OK. That covers subvolumes, snapshots, resize, scrub and checksums, plus both profiles in use.",
-        },
-        {
-          kind: "p",
-          text: "Only one later step carries a caveat: taking a disk out. The page files it under device replace, rated mostly OK: the removal stops if a read fails.",
-        },
-        {
-          kind: "p",
-          text: "Switching the data to RAID5 or RAID6 would change the answer, since those are the only profiles the page marks unstable. Here is how it rates the features a data volume relies on.",
+          text: "Every feature that setup uses is rated OK on btrfs’s status page. Only taking a disk out is mostly OK: the page files it under device replace, and the removal stops if a read fails.",
         },
         {
           kind: "table",
@@ -83,15 +75,15 @@ export const article: Article = {
               { b: "Device replace." },
               " It and ",
               { a: "device delete", href: "/learn/btrfs-device-remove" },
-              " “insist on being able to read or reconstruct all data”, says the page. A read that fails with an IO error aborts the operation. Remove or replace the damaged data, then try again. So data btrfs can’t read or rebuild from another copy stops a replace or a removal until you deal with it.",
+              " “insist on being able to read or reconstruct all data”, says the page. A read that fails with an IO error aborts the operation, so remove or replace the damaged data, then try again.",
             ],
             [
               { b: "Quotas." },
-              " btrfs calls them qgroups. The note says qgroups with many snapshots slow down balance. That matters only on a filesystem that uses quotas, so if yours doesn’t, this row doesn’t apply.",
+              " btrfs calls them qgroups, and qgroups with many snapshots slow down balance. If your filesystem doesn’t use quotas, this row doesn’t apply.",
             ],
             [
               { b: "Defragmentation." },
-              " It rewrites data. Extents that snapshots or reflinked copies shared become separate copies and take more space.",
+              " It rewrites data, so extents that snapshots or reflinked copies shared become separate copies and take more space.",
             ],
           ],
         },
@@ -103,11 +95,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "One page of the btrfs documentation covers btrfs stability. Each feature on it gets a stability rating, a performance rating and a short note. The ratings are tied to one kernel.",
-        },
-        {
-          kind: "p",
-          text: "In October 2026 the page names “the latest released linux kernel: 7.3”. Check which kernel your distribution ships before you lean on a rating.",
+          text: "Each feature on the page gets a stability rating, a performance rating and a short note. The ratings are tied to one kernel: in October 2026 the page names “the latest released linux kernel: 7.3”. Check which kernel your distribution ships before you lean on a rating.",
         },
         { kind: "p", text: "The legend defines three ratings:" },
         {
@@ -126,18 +114,14 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Two columns are easy to mix up. Stability is about how complete the implementation is and which use cases it covers. Performance rates how far it could still be improved before it hits its inherent limits.",
-        },
-        {
-          kind: "p",
-          text: "A feature can score OK on stability and mostly OK on performance. RAID1 is one of those.",
+          text: "Stability rates how complete a feature is and which use cases it covers. Performance rates how far it could still improve before it hits its inherent limits. RAID1 is OK on the first and mostly OK on the second.",
         },
         {
           kind: "p",
           text: [
-            "Features still in development sit behind a separate kernel build option, ",
+            "Features still in development sit behind the ",
             { code: "CONFIG_BTRFS_EXPERIMENTAL" },
-            ". The status page lists them in a table of their own at the end, which the table above leaves out.",
+            " kernel build option. The page lists them in a separate table at the end, left out of the table above.",
           ],
         },
         {
@@ -148,17 +132,17 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Watch out",
-          text: "Search results still lead to an older page, the btrfs wiki at btrfs.wiki.kernel.org. It now redirects to an archive marked “OBSOLETE CONTENT”.",
+          text: "Search results still lead to btrfs.wiki.kernel.org, which now redirects to an archive marked “OBSOLETE CONTENT”.",
         },
         {
           kind: "p",
-          text: "The archive says it “has been archived and the content is no longer updated”. Its status table is based on kernel 6.0, so a rating read there can be out of date. For a current answer, use btrfs.readthedocs.io.",
+          text: "The archive says it “has been archived and the content is no longer updated”. Its status table rates features against kernel 6.0. For a current answer, use btrfs.readthedocs.io.",
         },
       ],
     },
     {
       id: "is-btrfs-raid-1-stable",
-      title: "Is btrfs RAID 1 stable?",
+      title: "Is btrfs RAID1 stable?",
       blocks: [
         {
           kind: "p",
@@ -166,23 +150,19 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Each is rated mostly OK for performance, and the note gives the reason: “reading from mirrors in parallel can be optimized further”.",
-        },
-        {
-          kind: "p",
           text: [
-            "That note is only about reads, which aren’t spread across the copies as evenly as they could be. A read balancing feature is in development behind ",
+            "Each is rated mostly OK for performance: “reading from mirrors in parallel can be optimized further”. Reads aren’t spread across the copies as evenly as they could be. A read balancing feature is in development behind ",
             { code: "CONFIG_BTRFS_EXPERIMENTAL" },
             ".",
           ],
         },
         {
           kind: "p",
-          text: "RAID1 keeps two complete copies, RAID1C3 three and RAID1C4 four. Each copy sits on a different device, so they need at least two, three and four devices.",
+          text: "RAID1, RAID1C3 and RAID1C4 keep two, three and four copies. Each copy sits on a different device, so they need at least that many devices.",
         },
         {
           kind: "p",
-          text: "That redundancy is what makes auto-repair possible. When btrfs reads a block whose checksum doesn’t match, it can repair it from a correct copy on another device. A scrub does the same for every block it reads.",
+          text: "That redundancy makes auto-repair possible. When a block’s checksum doesn’t match, btrfs repairs it from a correct copy on another device. A scrub does the same for every block it reads.",
         },
         { kind: "p", text: "Two limits come with RAID1:" },
         {
@@ -190,7 +170,7 @@ export const article: Article = {
           items: [
             [
               { b: "A two-device filesystem stays at two." },
-              " RAID1 needs two devices. So ",
+              " ",
               { code: "btrfs device remove" },
               " refuses to take a two-device RAID1 filesystem down to one. Removal “must satisfy the profile constraints, otherwise the command fails”, as its manual puts it.",
             ],
@@ -220,7 +200,7 @@ export const article: Article = {
         { kind: "h3", id: "the-write-hole", title: "The write hole" },
         {
           kind: "p",
-          text: "One problem the manual lists is the write hole. An unclean shutdown, such as a power loss mid-write, can leave a stripe part old, part new. Some blocks and the parity are from old writes, and some from new ones. btrfs doesn’t record which is which.",
+          text: "One problem the manual lists is the write hole. An unclean shutdown, such as a power loss mid-write, can leave a stripe part old and part new. btrfs doesn’t record which blocks are which.",
         },
         {
           kind: "p",
@@ -289,7 +269,7 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Rule of thumb",
-          text: "Give data a spare copy when you want btrfs to repair bad data blocks, not only detect them. Auto-repair needs a profile such as DUP or RAID1.",
+          text: "For btrfs to repair bad data blocks, not only detect them, give data a spare copy with a profile such as DUP or RAID1.",
         },
         {
           kind: "p",
@@ -301,7 +281,6 @@ export const article: Article = {
       id: "is-btrfs-good-for-a-data-volume",
       title: "Is btrfs good for a data volume? Yes, with scrub and device stats",
       blocks: [
-        { kind: "p", text: "Three commands cover most of the watching." },
         {
           kind: "ol",
           items: [
@@ -309,7 +288,7 @@ export const article: Article = {
               { b: "Check the error counters." },
               " ",
               { code: "btrfs device stats" },
-              " prints five persistent error counters for each device. They count write, read and flush IO errors, checksum or header corruption, and generation errors. With ",
+              " prints five persistent error counters for each device. With ",
               { code: "-c" },
               ", it adds 64 to the exit status when any counter isn’t zero. A cron job or a monitoring check can alert on that.",
             ],
@@ -337,7 +316,7 @@ export const article: Article = {
               { b: "Read the scrub’s error summary." },
               " ",
               { code: "btrfs scrub status" },
-              " shows a running scrub, or the last finished one. Its summary counts Corrected errors, “bad blocks that were repaired from another copy”. It also counts Uncorrectable errors, “errors detected at read time but not possible to repair from other copy”.",
+              " counts Corrected errors, “bad blocks that were repaired from another copy”. It also counts Uncorrectable errors, “errors detected at read time but not possible to repair from other copy”.",
             ],
           ],
         },
@@ -345,17 +324,32 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Some files sit outside these checks. Setting the NOCOW attribute (",
+            "Files with the NOCOW attribute (",
             { code: "chattr +C" },
-            ") on a file turns off its data checksums, so scrub can’t verify what’s in it. By default, systemd sets that attribute on its journals.",
+            ") have no data checksums, so scrub can’t verify them. systemd sets that attribute on its journals by default.",
           ],
+        },
+        {
+          kind: "h3",
+          id: "btrfs-check-repair-is-a-last-resort",
+          title: "btrfs check --repair is a last resort",
         },
         {
           kind: "p",
           text: [
-            "When something does go wrong, treat ",
-            { code: "btrfs check --repair" },
-            " as a last resort. Its manual says not to use it “unless you are advised to do so by a developer or an experienced user”.",
+            { code: "btrfs check" },
+            " verifies a filesystem’s structure, and its manual recommends unmounting the filesystem first. By default it doesn’t modify the device, and ",
+            { code: "--readonly" },
+            " makes that explicit:",
+          ],
+        },
+        { kind: "code", lang: "bash", code: "sudo btrfs check --readonly /dev/<device>" },
+        {
+          kind: "p",
+          text: [
+            "Its manual says not to use ",
+            { code: "--repair" },
+            " “unless you are advised to do so by a developer or an experienced user”.",
           ],
         },
       ],
@@ -381,7 +375,7 @@ export const article: Article = {
           items: [
             [
               { b: "The move." },
-              " The services that use those mounts restart once, at the switch onto the pool.",
+              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it.",
             ],
             [
               { b: "The check." },
@@ -389,7 +383,7 @@ export const article: Article = {
             ],
             [
               { b: "The old disks." },
-              " Once the switch is checked, Amoeba snapshots each old disk and deletes the disk. It keeps the snapshot for 7 days, then deletes it too.",
+              " Once the switch is checked, Amoeba snapshots each old disk and deletes the disk. It keeps the snapshot for a few days, then deletes it too.",
             ],
             [
               { b: "Growing." },

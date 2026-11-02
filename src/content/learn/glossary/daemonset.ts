@@ -4,18 +4,18 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/daemonset/1
 export const term: GlossaryTerm = {
   slug: "daemonset",
   term: "DaemonSet",
-  title: "What is a DaemonSet in Kubernetes?",
-  meta: "A Kubernetes DaemonSet runs one copy of a pod on each node it targets. See a DaemonSet example, DaemonSet vs Deployment, and why its requests repeat.",
-  h1: "What is a DaemonSet in Kubernetes?",
-  card: "A DaemonSet in Kubernetes runs one copy of a pod on each node.",
+  title: "What is a Kubernetes DaemonSet?",
+  meta: "A DaemonSet in Kubernetes runs one copy of a pod on each node it targets. See an example, DaemonSet vs Deployment, and why its requests repeat on every node.",
+  h1: "What is a Kubernetes DaemonSet?",
+  card: "A DaemonSet in Kubernetes runs one copy of a pod on each node it targets.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
-      text: "A DaemonSet in Kubernetes runs one copy of a pod on each node. A new node gets its copy. When a node leaves, Kubernetes removes its copy.",
+      text: "A DaemonSet in Kubernetes runs one copy of a pod on each node it targets. A joining node gets a copy, and a leaving node’s copy is removed.",
     },
     { kind: "svg", figure: figure1 },
     {
@@ -46,6 +46,11 @@ export const term: GlossaryTerm = {
         {
           kind: "p",
           text: "The docs’ example runs the fluentd-elasticsearch image. Each copy requests 100m of CPU, or 0.1\u00a0CPU, and 200Mi of memory, or 200 mebibytes.",
+        },
+        {
+          kind: "code",
+          lang: "yaml",
+          code: "apiVersion: apps/v1\nkind: DaemonSet\nmetadata:\n  name: fluentd-elasticsearch\n  namespace: kube-system\nspec:\n  selector:\n    matchLabels:\n      name: fluentd-elasticsearch\n  template:\n    metadata:\n      labels:\n        name: fluentd-elasticsearch\n    spec:\n      containers:\n      - name: fluentd-elasticsearch\n        image: quay.io/fluentd_elasticsearch/fluentd:v5.0.1\n        resources:\n          limits:\n            memory: 200Mi\n          requests:\n            cpu: 100m\n            memory: 200Mi",
         },
       ],
     },
@@ -93,11 +98,6 @@ export const term: GlossaryTerm = {
               ".",
             ],
             "It drains spare nodes so your autoscaler can remove them, and it never moves DaemonSet pods.",
-            [
-              "The ",
-              { a: "free assessment", href: "/assessment?p=coral" },
-              " works out your own figure.",
-            ],
           ],
         },
       ],

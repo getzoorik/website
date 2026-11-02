@@ -4,21 +4,21 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/azure-manag
 export const term: GlossaryTerm = {
   slug: "azure-managed-disk",
   term: "Azure managed disk",
-  title: "What is an Azure managed disk?",
-  meta: "An Azure managed disk is block storage for your VM, sold as Azure Disk Storage. See how it’s charged by provisioned size, and why it can grow but not shrink.",
-  h1: "What is an Azure managed disk?",
-  card: "An Azure managed disk is a block storage volume that Azure manages for your virtual machine (VM), sold as Azure Disk Storage.",
+  title: "Azure disk: what is an Azure managed disk?",
+  meta: "A managed disk in Azure is your VM’s OS disk or a data disk. See how each Azure storage disk is charged by provisioned size, and why it can grow but not shrink.",
+  h1: "Azure disk: what is an Azure managed disk?",
+  card: "An Azure managed disk is a block storage volume that Azure manages for your virtual machine (VM).",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
       text: [
         "An Azure managed disk is a ",
         { a: "block storage", href: "/learn/glossary/block-storage" },
-        " volume that Azure manages for your virtual machine (VM), sold as Azure Disk Storage. A managed disk in Azure is like a physical disk in a server, but virtual. “Managed” means you pick the ",
+        " volume that Azure manages for your virtual machine (VM). A managed disk in Azure is like a physical disk in a server, but virtual. “Managed” means you pick the ",
         { a: "disk type", href: "/learn/azure-managed-disk-types" },
         " and size, and Azure handles the rest.",
       ],
@@ -33,7 +33,7 @@ export const term: GlossaryTerm = {
         {
           kind: "ul",
           items: [
-            "The OS disk holds the operating system.",
+            "The OS disk holds the operating system and the boot volume. Every VM has one.",
             "A data disk holds your apps and data.",
           ],
         },
@@ -51,6 +51,15 @@ export const term: GlossaryTerm = {
           text: "Azure charges for the size you provision: all 1\u00a0TiB, not the 200\u00a0GiB you use.",
         },
         { kind: "svg", figure: figure1 },
+        { kind: "h3", id: "azure-disk-vs-azure-files", title: "Azure Disk vs Azure Files" },
+        {
+          kind: "p",
+          text: "An Azure disk attaches to a VM and holds data that isn’t needed outside that VM. Azure Files is a managed file share that machines mount over SMB or NFS.",
+        },
+        {
+          kind: "p",
+          text: "Use Azure Files when many VMs need the same files, such as shared tools or configuration files. Use a disk for one VM’s own data.",
+        },
       ],
     },
     {
@@ -63,6 +72,16 @@ export const term: GlossaryTerm = {
             "They’re designed for 99.999% availability, with three copies of your data.",
             "One subscription can hold up to 50,000\u00a0disks of each type per region.",
           ],
+        },
+      ],
+    },
+    {
+      id: "managed-vs-unmanaged-disks-in-azure",
+      title: "Managed vs unmanaged disks in Azure",
+      blocks: [
+        {
+          kind: "p",
+          text: "Microsoft fully retired unmanaged disks on 31 March 2026. VMs that still use them can’t start, so Microsoft says to migrate them to managed disks.",
         },
       ],
     },
@@ -143,6 +162,16 @@ export const term: GlossaryTerm = {
       publisher: "Microsoft Learn",
       title: "“Expand Virtual Hard Disks on a Linux VM”",
       url: "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/expand-disks",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“Unmanaged disks have been retired”",
+      url: "https://learn.microsoft.com/en-us/azure/virtual-machines/unmanaged-disks-deprecation",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“Introduction to Azure Storage”",
+      url: "https://learn.microsoft.com/en-us/azure/storage/common/storage-introduction",
     },
   ],
 };

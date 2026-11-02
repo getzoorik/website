@@ -4,22 +4,22 @@ import { figure as figure2 } from "@/features/learn/figures/premium-ssd-vs-stand
 
 export const article: Article = {
   slug: "premium-ssd-vs-standard-ssd-azure",
-  title: "Premium SSD vs Standard SSD on Azure: cost and IOPS",
-  meta: "Premium SSD vs Standard SSD on Azure, tier by tier: IOPS, throughput, East US prices, when Standard SSD transactions cost more, and what a switch gives up.",
-  h1: "Premium SSD vs Standard SSD on Azure: what you pay for",
-  deck: "Both charge by size tier. What the higher price buys, when transactions close the gap, and what a switch gives up.",
+  title: "Azure Premium SSD vs Standard SSD: what you pay for",
+  meta: "Azure premium vs standard storage, tier by tier: East US prices, when Standard SSD transactions cost more than Premium, and what a switch gives up.",
+  h1: "Azure Premium SSD vs Standard SSD: what you pay for",
+  deck: "Standard SSD lists at about half the price per tier, until a busy disk’s transaction charges catch up.",
   card: "Premium SSD and Standard SSD tier by tier: IOPS, East US prices, transaction charges and what a switch gives up.",
   product: "amoeba",
   hub: "Block storage",
   topic: "Azure block storage",
   versus: ["Premium SSD", "Standard SSD"],
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "udit",
   cover: "/learn-covers/zoorik-learn-premium-ssd-vs-standard-ssd-azure-1200x630.webp",
   coverAlt: "Premium SSD vs Standard SSD: Standard SSD for light I/O, Premium SSD for a busy disk",
   short:
-    "Premium SSD vs Standard SSD on Azure trades price for IOPS (input/output operations per second), and Standard SSD, which adds transaction charges, suits light I/O. A 512\u00a0GiB Premium SSD costs $73.22 a month for 2,300\u00a0IOPS, a Standard SSD $38.40 for up to 500 (East US, October 2026).",
+    "On Azure, Premium SSD buys provisioned IOPS (input/output operations per second). Standard SSD adds transaction charges and suits light I/O. A 512\u00a0GiB disk costs $73.22 a month as Premium SSD and $38.40 as Standard SSD (East US, October 2026).",
   sections: [
     {
       id: "premium-ssd-vs-standard-ssd-azure",
@@ -30,13 +30,9 @@ export const article: Article = {
           text: "Picture a 512\u00a0GiB data disk behind a web server, holding 100\u00a0GiB. As a P20 or an E20, you pay for all 512\u00a0GiB.",
         },
         {
-          kind: "p",
-          text: "The E20’s tier costs $34.82 a month less. But its transaction charges overtake that gap once the disk averages more than about 66 transactions a second.",
-        },
-        {
           kind: "h3",
           id: "both-types-charge-by-size-tier",
-          title: "Both types charge by size tier",
+          title: "How Azure rounds a disk up to a size tier",
         },
         {
           kind: "p",
@@ -66,12 +62,12 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "In East US the rate is $0.002 per 10,000 transactions on locally redundant storage (LRS). Each tier caps the paid transactions per hour. Anything above the cap in that hour costs nothing.",
+          text: "In East US, Standard SSD transactions cost $0.002 per 10,000 on locally redundant storage (LRS). Each tier caps the paid transactions per hour. Anything above the cap in that hour costs nothing.",
         },
         { kind: "h3", id: "east-us-prices-tier-by-tier", title: "East US prices, tier by tier" },
         {
           kind: "p",
-          text: "The table gives East US pay-as-you-go prices for Premium SSD LRS vs Standard SSD LRS, the SKUs Premium_LRS and StandardSSD_LRS. Prices are from Microsoft’s managed disks pricing page in October 2026. Performance is what Microsoft publishes for each tier.",
+          text: "The table gives East US pay-as-you-go prices for the SKUs Premium_LRS and StandardSSD_LRS, from Microsoft’s managed disks pricing page in October 2026. Performance is what Microsoft publishes for each tier.",
         },
         {
           kind: "table",
@@ -121,7 +117,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Zone-redundant storage (ZRS) costs more. A P20 ZRS lists at $109.81 and an E20 ZRS at $57.60, 1.5 times their LRS prices. ",
+            "Zone-redundant storage (ZRS) lists at 1.5 times LRS: $109.81 for a P20 and $57.60 for an E20. ",
             { a: "Azure disk LRS vs ZRS", href: "/learn/azure-disk-lrs-vs-zrs" },
             " covers the difference.",
           ],
@@ -138,12 +134,12 @@ export const article: Article = {
     },
     {
       id: "azure-standard-ssd-vs-premium-ssd-performance",
-      title: "Azure Standard SSD vs Premium SSD performance: the IOPS gap grows with size",
+      title: "Azure Standard SSD vs Premium SSD performance: the gap grows with size",
       blocks: [
         {
           kind: "p",
           text: [
-            "Premium SSD buys provisioned performance. Microsoft guarantees a Premium SSD’s capacity, ",
+            "Microsoft guarantees a Premium SSD’s capacity, ",
             { a: "IOPS", href: "/learn/glossary/iops" },
             " and throughput once it’s provisioned. It designs the disk to deliver single-digit millisecond latency and those targets 99.9% of the time.",
           ],
@@ -151,10 +147,6 @@ export const article: Article = {
         {
           kind: "p",
           text: "Standard SSD also targets single-digit milliseconds. But its IOPS and throughput are ceilings, met 99% of the time. Microsoft says actual figures can vary with traffic patterns.",
-        },
-        {
-          kind: "p",
-          text: "The IOPS gap opens with size: at 128\u00a0GiB the two match on paper, but above it Premium SSD climbs with size.",
         },
         {
           kind: "p",
@@ -338,12 +330,15 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Watch out",
-          text: "Check what the disk gives up first. A P30 drops from 5,000 provisioned IOPS to up to 500 and gains a transaction meter.",
+          text: "A P30 drops from 5,000 provisioned IOPS to up to 500 and gains a transaction meter.",
+        },
+        {
+          kind: "p",
+          text: "The size doesn’t change, so a half-empty P30 becomes a half-empty E30.",
         },
         {
           kind: "p",
           text: [
-            "The size doesn’t change, so a half-empty P30 becomes a half-empty E30. ",
             { a: "Disk reservations", href: "/learn/azure-disk-reservations" },
             " exist only for Premium SSD SKUs from P30 to P80. Each is bought for one SKU in one region, so a reservation won’t cover the converted disk.",
           ],
@@ -368,7 +363,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Disk type sets the price of each tier, and the tier sets how much space you pay for. Azure can grow a managed disk but not shrink it, as ",
+            "Azure can grow a managed disk but not shrink it, as ",
             {
               a: "Can you shrink an Azure managed disk?",
               href: "/learn/shrink-azure-managed-disk",
@@ -388,7 +383,7 @@ export const article: Article = {
           items: [
             [
               { b: "The move." },
-              " The services that use those mounts restart once, at the switch onto the pool.",
+              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it.",
             ],
             [
               { b: "Rightsizing." },
@@ -404,14 +399,6 @@ export const article: Article = {
         {
           kind: "p",
           text: "Neither pool type carries Standard SSD’s per-transaction meter. Data on Standard SSD or Standard HDD moves to one of those two types, at a higher rate per GiB in East US. So the saving there comes from the smaller size.",
-        },
-        {
-          kind: "p",
-          text: [
-            "On Azure, Amoeba prices disks from the Azure Retail Prices API. The ",
-            { a: "free block storage assessment", href: "/assessment?p=amoeba" },
-            " writes one PDF and sends nothing to Zoorik. Amoeba is in early access.",
-          ],
         },
         {
           kind: "p",

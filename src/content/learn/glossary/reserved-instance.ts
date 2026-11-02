@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "reserved-instance",
   term: "Reserved instance (AWS RIs, Azure reservations)",
   title: "What are reserved instances in AWS and Azure?",
-  meta: "AWS reserved instances (RIs) and Azure reservations trade a 1- or 3-year VM commitment for a discount. See how each works and why to reduce cloud costs first.",
+  meta: "AWS reserved instances (RIs) and Azure reservations trade a 1- or 3-year VM commitment for a discount. See how each works, how it’s priced and what to reserve.",
   h1: "What are reserved instances in AWS and Azure?",
   card: "A reserved instance is a one-year or three-year commitment to a virtual machine (VM) setup, in return for a discount.",
   group: "finops-pricing",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -28,7 +28,6 @@ export const term: GlossaryTerm = {
           kind: "ul",
           items: [
             "An RI covers only instances with matching attributes, such as instance type and region.",
-            "You pay for the whole term, used or not.",
             "You can’t cancel an RI, but you might be able to modify, exchange or sell it.",
             [
               "AWS recommends ",
@@ -37,7 +36,34 @@ export const term: GlossaryTerm = {
             ],
           ],
         },
+        { kind: "h3", id: "aws-reserved-instance-pricing", title: "AWS reserved instance pricing" },
+        {
+          kind: "p",
+          text: "Amazon EC2 Reserved Instance pricing depends on the instance’s attributes, the term, the payment option and the RI type. A three-year term gives a bigger discount than one year.",
+        },
+        { kind: "p", text: "You pay for the whole term, used or not." },
+        {
+          kind: "p",
+          text: "In October 2026, AWS quotes up to 72% off on-demand prices for Standard RIs, and up to 66% for Convertible RIs. AWS reserved instance prices change.",
+        },
+        {
+          kind: "h3",
+          id: "selling-ris-on-the-reserved-instance-marketplace",
+          title: "Selling RIs on the Reserved Instance Marketplace",
+        },
+        {
+          kind: "ul",
+          items: [
+            "A Standard RI must have been active for at least 30\u00a0days, with at least a month of its term left.",
+            "You can’t sell an RI bought with a volume discount.",
+            "AWS charges a 12% fee on the upfront price.",
+          ],
+        },
         { kind: "h3", id: "azure-reservations", title: "Azure Reservations" },
+        {
+          kind: "p",
+          text: "Azure reservations cover many services. For VMs, the Azure reserved instance is a Reserved Virtual Machine Instance, or Reserved VM Instance. It covers only compute, not software, Windows, networking or storage.",
+        },
         {
           kind: "ul",
           items: [
@@ -47,7 +73,7 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "In October 2026, both clouds quote up to 72% off on-demand prices. Prices change.",
+          text: "In October 2026, Microsoft quotes up to 72% off pay-as-you-go prices for reservations. Prices change.",
         },
       ],
     },
@@ -81,11 +107,6 @@ export const term: GlossaryTerm = {
               { a: "reduce cloud costs", href: "/cloud-cost-optimization" },
               ".",
             ],
-            [
-              "The ",
-              { a: "free assessment", href: "/assessment?p=coral" },
-              " works out your own figure.",
-            ],
           ],
         },
       ],
@@ -99,7 +120,7 @@ export const term: GlossaryTerm = {
     },
     {
       title: "Savings plan",
-      line: "An hourly spend commitment.",
+      line: "A commitment to an amount an hour.",
       href: "/learn/glossary/savings-plan",
     },
     {
@@ -123,6 +144,11 @@ export const term: GlossaryTerm = {
       publisher: "AWS",
       title: "“Amazon EC2 Reserved Instances”",
       url: "https://aws.amazon.com/ec2/pricing/reserved-instances/",
+    },
+    {
+      publisher: "AWS",
+      title: "“Sell Reserved Instances for Amazon EC2 in the Reserved Instance Marketplace”",
+      url: "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ri-market-general.html",
     },
     {
       publisher: "Microsoft Learn",

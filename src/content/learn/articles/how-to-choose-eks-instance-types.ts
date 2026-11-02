@@ -5,21 +5,21 @@ import { figure as figure2 } from "@/features/learn/figures/how-to-choose-eks-in
 export const article: Article = {
   slug: "how-to-choose-eks-instance-types",
   title: "EKS instance types: how to choose family and size",
-  meta: "AWS EKS instance types, chosen in order: the family that fits your pods’ requests, the processor, the size and Spot or On-Demand, with October 2026 prices.",
+  meta: "AWS EKS instance types are EC2 types. Choose the family that fits your pods’ requests, then Intel, AMD or Graviton Arm, the size, and Spot or On-Demand.",
   h1: "How to choose EKS instance types",
-  deck: "Match the family to your pods’ requests first. Then pick the processor, the size and how you pay.",
+  deck: "In one October 2026 example, the wrong instance family made the same pods cost 77% more to run.",
   card: "Family, processor, size, then Spot or On-Demand: the order to choose EKS instance types, with real prices.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes cost basics",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "swapna",
   cover: "/learn-covers/zoorik-learn-how-to-choose-eks-instance-types-1200x630.webp",
   coverAlt:
-    "Choose EKS instance types: too small can’t hold the pod requests, too large leaves room paid for, idle, the middle fits",
+    "Choose EKS instance types: too small can’t hold the pod requests, too large leaves paid room idle, the middle one fits",
   short:
-    "Choose EKS instance types in four steps: the family that fits your pods’ CPU-to-memory ratio, then the processor, the size, and On-Demand or Spot. The family matters most: in one example at October 2026 list prices, the wrong one made the same pool cost 77% more.",
+    "No single EKS instance type is best for every cluster. The best one is the type your pods’ requests fill with little left idle, and the instance family decides most of that.",
   sections: [
     {
       id: "eks-instance-types",
@@ -27,7 +27,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "In an Amazon Elastic Kubernetes Service (EKS) cluster, node groups and Karpenter launch EC2 instances as nodes. So the AWS EKS instance types you can pick are EC2 instance types, from what AWS calls a wide selection. There’s no single best instance type for EKS, but there is an order to choose in.",
+          text: "In an Amazon Elastic Kubernetes Service (EKS) cluster, node groups and Karpenter launch EC2 instances as nodes. So the AWS EKS instance types you can pick are EC2 instance types.",
         },
         {
           kind: "p",
@@ -76,7 +76,7 @@ export const article: Article = {
       id: "which-instance-type-is-best-for-eks",
       title: "Which instance type is best for EKS? Choose in this order",
       blocks: [
-        { kind: "p", text: "Make the choices in this order, since each one narrows the next:" },
+        { kind: "p", text: "Each choice narrows the next:" },
         {
           kind: "ol",
           items: [
@@ -193,7 +193,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Within a series and generation, the option letter names the processor. Prices differ by processor. At 8\u00a0vCPUs and 32\u00a0GiB, in the same Region and month:",
+          text: "At 8\u00a0vCPUs and 32\u00a0GiB, in the same Region and month, the price differs by processor:",
         },
         {
           kind: "ul",
@@ -279,7 +279,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Split pools by churn, too. AWS points small batch pods that start and stop often to the 4xlarge family. For Kafka, a low-churn service that takes 8\u00a0vCPU, it points to the 12xlarge family.",
+          text: "Split pools by churn, too. AWS points small batch pods that start and stop often to 4xlarge nodes. For Kafka, a low-churn service that takes 8\u00a0vCPU, it points to 12xlarge nodes.",
         },
         {
           kind: "p",
@@ -327,10 +327,12 @@ export const article: Article = {
               " can reduce EC2 cost by up to 66%, with no commitment to a type, family or Region.",
             ],
             "EC2 Instance Savings Plans reach up to 72%, but for one family in one Region.",
-            "Both commit you for 1 or 3 years.",
           ],
         },
-        { kind: "p", text: "So settle the family before you buy an EC2 Instance Savings Plan." },
+        {
+          kind: "p",
+          text: "Both commit you for 1 or 3 years, so settle the family before you buy an EC2 Instance Savings Plan.",
+        },
       ],
     },
     {
@@ -413,7 +415,7 @@ export const article: Article = {
             ],
             [
               { b: "With only the Cluster Autoscaler." },
-              " Coral drains spare nodes for it to remove, but never changes their size. A new instance type is still a new node group.",
+              " Coral drains spare nodes for it to remove, but never changes their instance type. A new type is still a new node group.",
             ],
             [
               { b: "With no autoscaler." },

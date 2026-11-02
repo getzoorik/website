@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "azure-disk-sizes",
   term: "Azure disk sizes (P10, P30, E10, S10 size names)",
   title: "What are Azure disk sizes (P10, P30, E10)?",
-  meta: "Azure disk sizes have names like P10, P30 and E10: a P10 is 128 GiB, a P30 1 TiB. Azure managed disk sizes from P1 to P80, and why you pay for the whole size.",
+  meta: "An Azure P10 disk is 128 GiB and an Azure P30 disk is 1 TiB. Every Azure managed disk size from P1 to P80, and why you pay for the whole size.",
   h1: "What are Azure disk sizes (P10, P30, E10)?",
   card: "Azure disk sizes are the fixed sizes Azure offers for three types of managed disk, the disks that Azure virtual machines (VMs) use.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -24,7 +24,7 @@ export const term: GlossaryTerm = {
     {
       kind: "p",
       text: [
-        "The letter gives the ",
+        "The letter in each name gives the ",
         { a: "disk type", href: "/learn/azure-managed-disk-types" },
         ", and the number gives the size:",
       ],
@@ -76,7 +76,7 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "So the Azure P10\u00a0disk size is 128\u00a0GiB, and an Azure P30\u00a0disk is 1\u00a0TiB. A charge named “P10 LRS Disk” means a P10 with locally redundant storage (LRS).",
+          text: "A charge named “P10 LRS Disk” means a P10 with locally redundant storage (LRS).",
         },
       ],
     },
@@ -98,7 +98,7 @@ export const term: GlossaryTerm = {
         {
           kind: "ul",
           items: [
-            "P, E and S disks charge for the whole size, however much data they hold.",
+            "Azure charges P, E and S disks for the whole size, however much data they hold.",
             [
               "Price a Premium SSD or Standard SSD size with our ",
               { a: "Azure disk pricing calculator", href: "/ebs-and-azure-disk-pricing" },
@@ -127,15 +127,7 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously. On Azure, it uses Premium SSD v2 where the region and zone offer it, and Premium SSD otherwise.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "The ",
-            { a: "free assessment", href: "/assessment?p=amoeba" },
-            " works out your own figure.",
+            " moves a VM’s data disks onto one btrfs pool sized to your data, then rightsizes it autonomously. On Azure, the pool uses Premium SSD v2 where your VM’s region and zone offer it, and Premium SSD otherwise.",
           ],
         },
       ],

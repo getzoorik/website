@@ -6,19 +6,18 @@ import { figure as figure3 } from "@/features/learn/figures/btrfs-unallocated-sp
 export const article: Article = {
   slug: "btrfs-unallocated-space",
   title: "btrfs balance: unallocated vs free space explained",
-  meta: "btrfs unallocated space is room no chunk holds yet. How it differs from free space, why writes fail while df shows room, and how btrfs balance gives it back.",
+  meta: "btrfs unallocated space is room no chunk holds yet. Why writes fail while df shows room, and how a btrfs rebalance with -dusage gives the space back.",
   h1: "btrfs balance and unallocated space vs free space, explained",
-  deck: "Why btrfs can run out of space while df shows room, and how btrfs balance turns allocated space back into unallocated.",
+  deck: "How to read btrfs filesystem usage, tell the out-of-space cases apart, and give balance room to work.",
   card: "Unallocated vs free space in btrfs: read filesystem usage, explain ENOSPC with room left, and fix it.",
   product: "amoeba",
   hub: "Block storage",
   topic: "Linux filesystems",
   published: "2026-10-28",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "sourabh",
   cover: "/learn-covers/zoorik-learn-btrfs-unallocated-space-1200x630.webp",
-  coverAlt:
-    "btrfs unallocated space: free covers the unallocated end and the unused room just before it",
+  coverAlt: "Free space covers the unallocated end and the unused room just before it",
   short: [
     "btrfs unallocated space is raw device space no chunk holds yet, and free space also counts the room inside data chunks. Data chunks can’t hold metadata, so once nothing is unallocated and metadata fills, writes can fail with “No space left on device” despite that room. A filtered ",
     { code: "btrfs balance" },
@@ -29,10 +28,6 @@ export const article: Article = {
       id: "btrfs-unallocated-space-is-room-no-chunk",
       title: "btrfs unallocated space is room no chunk has claimed yet",
       blocks: [
-        {
-          kind: "p",
-          text: "Picture a btrfs data disk that refuses writes for lack of space while gigabytes still sit free inside it. That free room has been set aside for file data, and the write needs room for metadata.",
-        },
         {
           kind: "p",
           text: "btrfs hands out a device’s raw space in two stages. First the chunk allocator claims a large range, called a chunk, for one type of content. Only then does the filesystem place file data or metadata inside it.",
@@ -138,14 +133,15 @@ export const article: Article = {
           text: [
             "The ",
             { code: "btrfs filesystem usage" },
-            " Unallocated section breaks the figure down per device. That matters across several disks, because raid1 keeps its two copies on two different devices. So a new raid1 block group needs unallocated space on two of them.",
+            " Unallocated section breaks the figure down per device. That matters across several disks, since a new raid1 block group needs unallocated space on two devices. ",
+            { a: "The guide to btrfs on multiple disks", href: "/learn/btrfs-multiple-disks" },
+            " explains the profiles.",
           ],
         },
         {
           kind: "p",
           text: [
-            { a: "The guide to btrfs on multiple disks", href: "/learn/btrfs-multiple-disks" },
-            " explains the profiles. The older ",
+            "The older ",
             { code: "btrfs filesystem df" },
             " prints only the per-type lines, and ",
             { code: "btrfs filesystem usage" },
@@ -182,7 +178,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "This is the case behind df showing room. Device unallocated reaches zero while the data block groups still have free space. Then the metadata block groups fill, and with nothing unallocated, btrfs can’t create another one, so writes fail with ENOSPC.",
+          text: "Device unallocated reaches zero while the data block groups still have free space. Then the metadata block groups fill, and with nothing unallocated, btrfs can’t create another one, so writes fail with ENOSPC.",
         },
         {
           kind: "p",
@@ -196,14 +192,10 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "The split between types is why mkfs.btrfs offers ",
+            "mkfs.btrfs offers ",
             { code: "--mixed" },
-            ", which keeps data and metadata in the same block groups. Its man page warns that separate block groups reserve space one type can’t use “and can lead to ENOSPC state.”",
+            ", which keeps data and metadata in the same block groups. Its man page recommends mixed mode under 1\u00a0GiB and suggests it, more loosely, under 5\u00a0GiB. You can set it only when you create the filesystem.",
           ],
-        },
-        {
-          kind: "p",
-          text: "It recommends mixed mode under 1\u00a0GiB and suggests it, more loosely, under 5\u00a0GiB. You can set it only when you create the filesystem.",
         },
         { kind: "h3", id: "how-to-tell-the-cases-apart", title: "How to tell the cases apart" },
         {
@@ -277,20 +269,10 @@ export const article: Article = {
           text: [
             "The documentation’s example starts higher, on data block groups about 85% full on average (64.44 / 75.81 = 0.85). A pass with ",
             { code: "-dusage=50" },
-            " relocates 2 block groups and brings the data total from 75.81\u00a0GiB to 74.03\u00a0GiB.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "Raising the filter to ",
+            " relocates 2 block groups, and a second pass with ",
             { code: "-dusage=85" },
-            " relocates 13 block groups and takes it to 68.03\u00a0GiB. That frees about 6\u00a0GiB for new data or metadata block groups.",
+            " relocates 13. Across both passes, the data total falls to 68.03\u00a0GiB, so 75.81 − 68.03 = 7.78\u00a0GiB goes back to unallocated.",
           ],
-        },
-        {
-          kind: "p",
-          text: "Data used barely moves, to 64.43\u00a0GiB. Across both passes, 75.81 − 68.03 = 7.78\u00a0GiB goes back to unallocated.",
         },
         { kind: "svg", figure: figure3 },
         {
@@ -322,11 +304,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Balance has an ENOSPC of its own, and it isn’t the same as free space running out. To relocate a block group, balance first needs work space: device space with no block group on it.",
-        },
-        {
-          kind: "p",
-          text: "A fully allocated filesystem has none. Balance can then fail while much of the allocated space sits empty.",
+          text: "To relocate a block group, balance first needs work space: device space with no block group on it. A fully allocated filesystem has none, so balance can fail while much of the allocated space sits empty.",
         },
         {
           kind: "p",
@@ -392,7 +370,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Detach and delete the cloud disk only once ",
+            "Take the extra device out with ",
+            { code: "btrfs device remove" },
+            ". Detach and delete the cloud disk only once ",
             { code: "btrfs filesystem show" },
             " no longer lists it. ",
             { a: "The guide to removing a device", href: "/learn/btrfs-device-remove" },
@@ -413,7 +393,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "A managed disk can’t shrink to fit its data. Microsoft says shrinking an existing disk “isn’t supported and might result in data loss,” as the guide on ",
+            "Microsoft says shrinking a managed disk “isn’t supported and might result in data loss,” as the guide on ",
             { a: "how to reduce Azure disk size", href: "/learn/shrink-azure-managed-disk" },
             " explains. Across several disks, you give space back by emptying one disk, taking it out of the filesystem and deleting it.",
           ],
@@ -434,17 +414,13 @@ export const article: Article = {
             ],
             [
               { b: "Growing." },
-              " Amoeba grows the pool while it stays mounted, before it fills, and sooner when data arrives fast. It also watches unallocated space. When too little is left for new metadata, it adds room to the pool.",
+              " Amoeba grows the pool while it stays mounted, before it fills, and sooner when data arrives fast. It also adds room when too little unallocated space is left for new metadata.",
             ],
             [
               { b: "Shrinking." },
               " When your data goes down and stays down, Amoeba shrinks the pool one disk at a time. It moves that disk’s data onto the others with ",
               { code: "btrfs device remove" },
-              ", then detaches the empty disk and deletes it. So you pay for close to what you use.",
-            ],
-            [
-              { b: "Safe shrinks." },
-              " Amoeba never takes a disk out while the pool is nearly full, or while it’s growing the pool.",
+              ", then detaches the empty disk and deletes it. It never takes a disk out while the pool is nearly full, or while it’s growing the pool.",
             ],
           ],
         },

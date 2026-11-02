@@ -4,22 +4,22 @@ import { figure as figure2 } from "@/features/learn/figures/btrfs-vs-lvm/2";
 
 export const article: Article = {
   slug: "btrfs-vs-lvm",
-  title: "btrfs vs LVM with ext4 or XFS: which can shrink?",
-  meta: "btrfs vs LVM on a cloud VM: both grow while mounted. What decides whether you can take a disk back out and stop paying for it, with ext4, XFS or btrfs.",
-  h1: "btrfs vs LVM: which one can shrink on a cloud VM?",
-  deck: "Both grow while mounted. What decides whether a disk can leave again, and why the filesystem matters more than LVM.",
+  title: "btrfs vs ext4 vs XFS: which one can shrink?",
+  meta: "btrfs vs LVM with ext4 or XFS: which lets a cloud VM hand a disk back while mounted, with shrink steps, snapshots and subvolumes.",
+  h1: "btrfs vs ext4 vs XFS on LVM: which one can shrink?",
+  deck: "Cloud disks never shrink in place, so what counts is which stack lets a whole disk leave.",
   card: "LVM grows while mounted, but ext4 and XFS decide the shrink. btrfs takes a disk out while it stays mounted.",
   product: "amoeba",
   hub: "Block storage",
   topic: "Linux filesystems",
   versus: ["btrfs", "LVM"],
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "sourabh",
   cover: "/learn-covers/zoorik-learn-btrfs-vs-lvm-1200x630.webp",
   coverAlt: "btrfs vs LVM: btrfs frees a disk directly, while LVM must shrink the filesystem first",
   short:
-    "In btrfs vs LVM, both can empty a disk while mounted, but only btrfs uses its own free space as room for that disk’s data. LVM’s pvmove needs free extents, and making them means shrinking the filesystem first: ext4 only while unmounted, XFS not in any useful way.",
+    "btrfs takes a disk out while mounted, using its own free space as room for that disk’s data. LVM’s pvmove needs free extents, and making them means shrinking the filesystem first: ext4 shrinks only while unmounted, and XFS can’t shrink.",
   sections: [
     {
       id: "on-a-cloud-vm-you-pay-for",
@@ -27,30 +27,26 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Picture an Azure VM whose data mount spans four 512\u00a0GiB managed disks, 2,048\u00a0GiB in all, holding 1,000\u00a0GiB. You pay for all 2,048\u00a0GiB.",
-        },
-        {
-          kind: "p",
-          text: "btrfs can empty one disk and let it go while mounted. LVM, with all four disks in one logical volume, can’t until the filesystem and the logical volume shrink.",
+          text: "Take an Azure VM whose data mount spans four 512\u00a0GiB managed disks, 2,048\u00a0GiB in all, holding 1,000\u00a0GiB. You pay for all 2,048\u00a0GiB.",
         },
         {
           kind: "p",
           text: [
-            "Azure charges for managed disks “according to their provisioned size”. Its example adds “regardless of the amount of data written to the disk”. The ",
+            "Azure charges for managed disks “according to their provisioned size”, whatever they hold. The ",
             { a: "Azure disk pricing calculator", href: "/ebs-and-azure-disk-pricing" },
             " shows what that empty space costs.",
           ],
         },
         {
           kind: "p",
-          text: "Neither cloud shrinks a disk in place. Microsoft Learn says shrinking an existing disk “isn’t supported and might result in data loss”. The Amazon Elastic Block Store (EBS) guide says “You can’t decrease the volume size”.",
+          text: "Microsoft Learn says shrinking an existing disk “isn’t supported and might result in data loss”. The Amazon Elastic Block Store (EBS) guide says “You can’t decrease the volume size”.",
         },
-        { kind: "p", text: "So on a running VM, paying for fewer GiB takes three steps:" },
+        { kind: "p", text: "On a running VM, paying for fewer GiB takes three steps:" },
         {
           kind: "ol",
           items: ["Empty a whole disk.", "Take it out of the stack.", "Detach and delete it."],
         },
-        { kind: "p", text: "The Logical Volume Manager (LVM) pools block devices in layers:" },
+        { kind: "p", text: "The Logical Volume Manager (LVM) pools disks in layers:" },
         {
           kind: "ul",
           items: [
@@ -134,11 +130,11 @@ export const article: Article = {
     },
     {
       id: "btrfs-vs-lvm",
-      title: "btrfs vs ext4 and XFS on LVM: the filesystem decides the shrink",
+      title: "XFS vs ext4 on LVM: the filesystem decides the shrink",
       blocks: [
         {
           kind: "p",
-          text: "Red Hat’s guide says “you can move data while your system is active using the pvmove command”. So emptying a PV while its filesystem stays mounted is routine.",
+          text: "Red Hat’s guide says pvmove can move data “while your system is active”, so emptying a PV with its filesystem mounted is routine.",
         },
         {
           kind: "p",
@@ -157,47 +153,38 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The catch: pvmove needs free extents on the other PVs for that disk’s data. Red Hat’s procedure adds a new PV first “If there are not enough free extents on the other physical volumes in the existing volume group”.",
+          text: "The catch: pvmove needs free extents on the other PVs for that disk’s data. When there aren’t enough, Red Hat’s procedure adds a new PV first.",
         },
         {
           kind: "p",
           text: [
-            "LVM sees extents, not files. Say you once ran ",
+            "LVM sees extents, not files. An LV you once grew with ",
             { code: "lvextend" },
-            " to give an LV the whole VG. Then every extent belongs to that LV, even when the filesystem inside it is mostly empty.",
+            " to the whole VG holds every extent, even when its filesystem is mostly empty.",
           ],
         },
-        { kind: "p", text: "Free space in the filesystem isn’t free space in the VG." },
         {
           kind: "callout",
           label: "Worked example",
-          text: "Take the four 512\u00a0GiB disks and empty disk 4, which leaves three that hold 3 × 512 = 1,536\u00a0GiB.",
-        },
-        {
-          kind: "p",
           text: [
-            "On btrfs with ",
+            "Empty disk 4 of the four 512\u00a0GiB disks, and the three left hold 1,536\u00a0GiB. On btrfs with ",
             { code: "single" },
-            " data (one copy), the roughly 2,048 − 1,000 = 1,048\u00a0GiB free is the room. The 1,000\u00a0GiB fits on three disks with roughly 1,536 − 1,000 = 536\u00a0GiB to spare. With disk 4 deleted, you pay for 1,536\u00a0GiB of data disks instead of 2,048.",
+            " data (one copy), the 1,000\u00a0GiB fits with roughly 536\u00a0GiB spare, so you pay for 1,536\u00a0GiB, not 2,048. On LVM, one LV holds every extent, so pvmove finds 0\u00a0GiB free until the filesystem and the LV shrink.",
           ],
-        },
-        {
-          kind: "p",
-          text: "On LVM, one LV holds every extent in the VG. So pvmove finds 0\u00a0GiB free until the filesystem and the LV shrink.",
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
-          text: "So making room means shrinking the LV, and an LV can only shrink after its filesystem does. Red Hat warns that the filesystem must not be “using the space in the logical volume that is being reduced”.",
+          text: "So making room means shrinking the LV, which can only follow its filesystem. Red Hat warns that the filesystem must not be “using the space in the logical volume that is being reduced”.",
         },
         {
           kind: "p",
           text: [
-            "To keep pvmove possible, leave free extents in the VG and grow each LV with ",
+            "Leaving free extents in the VG, and growing each LV with ",
             { code: "lvextend --resizefs" },
-            " only as its data needs. That helps until the data shrinks, because the LV doesn’t shrink with it. ",
+            " only as its data needs, keeps pvmove possible until the data shrinks. ",
             { a: "Removing a disk from LVM", href: "/learn/remove-disk-from-lvm" },
-            " walks through both cases.",
+            " covers both cases.",
           ],
         },
         {
@@ -207,9 +194,9 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The resize2fs man page says it can “enlarge or shrink an unmounted file system”. On a mounted one, it can only expand.",
+          text: "The resize2fs man page says it can “enlarge or shrink an unmounted file system”, but a mounted one can only grow.",
         },
-        { kind: "p", text: "Red Hat’s shrink procedure follows from that:" },
+        { kind: "p", text: "Red Hat’s shrink procedure takes four steps:" },
         {
           kind: "ol",
           items: [
@@ -222,9 +209,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Every service on that mount stops for the check and the resize. The steps and the minimum size are in ",
-            { a: "shrinking ext4 with resize2fs", href: "/learn/resize2fs-shrink-ext4" },
-            ".",
+            "Every service on that mount stops for the check and the resize. ",
+            { a: "Shrinking ext4 with resize2fs", href: "/learn/resize2fs-shrink-ext4" },
+            " has the steps and the minimum size.",
           ],
         },
         {
@@ -234,12 +221,12 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Red Hat states that “XFS does not support reducing the size of a volume formatted with an XFS file system”. With XFS on the LV, no LVM command can free those extents without losing data.",
+          text: "Red Hat states that “XFS does not support reducing the size of a volume formatted with an XFS file system”. So no LVM command can free those extents without losing data.",
         },
         {
           kind: "p",
           text: [
-            "The route is a copy onto a new, smaller filesystem, with a stop while you switch over. ",
+            "The route is a copy onto a new, smaller filesystem, with a stop at the switch. ",
             { a: "Shrinking an XFS filesystem", href: "/learn/shrink-xfs-filesystem" },
             " covers it.",
           ],
@@ -252,11 +239,11 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "A btrfs filesystem has no second layer to keep in step. Adding a device “is instant and does not affect existing data”. Removing one moves its data onto the others.",
+          text: "Unlike XFS on LVM, btrfs has no second layer to keep in step. Adding a device “is instant and does not affect existing data”, and removing one moves its data onto the others.",
         },
         {
           kind: "p",
-          text: "The docs warn “The operation can take long as it needs to move all data from the device”. Two rules decide whether a removal works:",
+          text: "The docs warn that a removal “can take long as it needs to move all data from the device”. It works only when two rules hold:",
         },
         {
           kind: "ul",
@@ -269,9 +256,9 @@ export const article: Article = {
             ],
             [
               { b: "Profile." },
-              " The docs say “Device removal must satisfy the profile constraints, otherwise the command fails”. A profile is btrfs’s allocation policy for data and metadata, such as single or RAID1. In the docs’ example, a RAID1 filesystem can’t drop to one device until it’s converted to another profile. The error reads “unable to go below two devices on raid1”. For the profiles, see ",
+              " The docs say “Device removal must satisfy the profile constraints, otherwise the command fails”. A profile is btrfs’s allocation policy for data and metadata, such as single or RAID1. In the docs’ example, a RAID1 filesystem can’t drop to one device until it’s converted to another profile. ",
               { a: "btrfs on multiple disks", href: "/learn/btrfs-multiple-disks" },
-              ".",
+              " covers the profiles.",
             ],
           ],
         },
@@ -289,25 +276,21 @@ export const article: Article = {
           text: [
             "Check that ",
             { code: "btrfs filesystem show" },
-            " no longer lists the device. Deleting is permanent, so first confirm the cloud disk’s name and resource ID, then detach and delete it.",
+            " no longer lists the device. Deleting is permanent, so confirm the cloud disk’s name and resource ID before you detach and delete it.",
           ],
         },
         {
           kind: "p",
           text: [
-            "Charges end with the delete, because Azure prorates a disk hourly, whatever it holds. The full steps are in ",
+            "Azure prorates a disk hourly, so its charges end with the delete. ",
             { a: "btrfs device remove", href: "/learn/btrfs-device-remove" },
-            ".",
+            " has the full steps.",
           ],
         },
         {
           kind: "callout",
           label: "Watch out",
-          text: "A btrfs filesystem on a single disk can shrink while mounted, but that doesn’t reduce what you pay.",
-        },
-        {
-          kind: "p",
-          text: "The docs say “The resize command does not manipulate the size of underlying partition”. Under it, the cloud disk can’t shrink at all. One btrfs filesystem across several smaller disks is the layout that pays.",
+          text: "A btrfs filesystem on a single disk can shrink while mounted, but the cloud disk under it can’t. Only one btrfs filesystem across several smaller disks reduces what you pay.",
         },
         {
           kind: "h3",
@@ -317,14 +300,14 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "LVM splits a VG into LVs, each a block device with its own size. Space one LV holds is free for another only after ",
+            "LVM splits a VG into LVs, each with a fixed size. Space one LV holds is free for another only after ",
             { code: "lvreduce" },
-            ", when “the freed up logical extents are returned to the volume group”.",
+            " returns its extents to the VG.",
           ],
         },
         {
           kind: "p",
-          text: "btrfs subvolumes share the single storage pool of the whole filesystem instead. On a VM with several data mounts, they all draw on one pool of free space, not one per LV.",
+          text: "btrfs subvolumes share the free space of the whole filesystem instead. So a VM’s data mounts all draw on one pool of free space, not one per LV.",
         },
         {
           kind: "callout",
@@ -345,7 +328,7 @@ export const article: Article = {
     },
     {
       id: "lvm-vs-btrfs-snapshots-and-why-lvm",
-      title: "LVM vs btrfs snapshots, and why LVM thin still needs free extents",
+      title: "btrfs snapshots vs LVM snapshots, and why LVM thin still needs free extents",
       blocks: [
         { kind: "p", text: "LVM has two kinds of snapshot, and btrfs has one:" },
         {
@@ -367,15 +350,15 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "On LVM thin vs btrfs, thin provisioning comes close to what btrfs does with subvolumes. Its LVs can be “larger than the available physical storage”, and “A thin pool allocates space on-demand to its LVs”.",
+          text: "LVM thin provisioning comes close to what btrfs does with subvolumes. “A thin pool allocates space on-demand to its LVs”, which can be “larger than the available physical storage”.",
         },
         {
           kind: "p",
-          text: "What it doesn’t change is the cloud disk. The thin pool sits on PVs on managed disks or EBS volumes, charged at their provisioned size. Taking a disk out from under it is still a pvmove that needs free extents.",
+          text: "But the thin pool sits on PVs on managed disks or EBS volumes, charged at their provisioned size. Taking a disk out from under it is still a pvmove that needs free extents.",
         },
         {
           kind: "p",
-          text: "In a thin pool and in btrfs alike, a snapshot goes on referencing the blocks it shares with its origin. So deleting files that were there when you took it doesn’t give their space back while the snapshot exists.",
+          text: "In a thin pool and in btrfs alike, a snapshot keeps the blocks it shares with its origin. So deleting files that were there when you took it doesn’t give their space back while the snapshot exists.",
         },
       ],
     },
@@ -405,15 +388,15 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Before you pick btrfs, check that your distribution ships it in its kernel, with the btrfs-progs tools. You must also trust the profile you plan to use, which ",
-            { a: "how stable btrfs is", href: "/learn/is-btrfs-stable" },
-            " goes through.",
+            "Before you pick btrfs, check that your distribution ships it in its kernel, with the btrfs-progs tools. Then make sure you trust the profile you plan to use. ",
+            { a: "How stable btrfs is", href: "/learn/is-btrfs-stable" },
+            " goes through that.",
           ],
         },
         {
           kind: "p",
           text: [
-            "Moving an existing ext4 or XFS mount onto a new btrfs filesystem is a copy with a short stop at the switch. It’s the same route as ",
+            "Moving an ext4 or XFS mount onto btrfs is a copy with a short stop at the switch, the same route as ",
             { a: "moving to a smaller Azure disk", href: "/learn/shrink-azure-managed-disk" },
             ".",
           ],
@@ -428,20 +411,20 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " optimizes block storage on Azure and AWS, on the btrfs side of this comparison. It works on the data disks of running Windows and Linux VMs, and never touches the OS disk.",
+            " optimizes block storage on Azure and AWS, from the btrfs side of this comparison. It works on the data disks of running Windows and Linux VMs, never the OS disk.",
           ],
         },
         {
           kind: "p",
-          text: "Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. Each data mount becomes a subvolume on the pool, mounted at its old path. So applications read and write where they did.",
+          text: "It moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. Each data mount becomes a subvolume on the pool, mounted at its old path.",
         },
         {
           kind: "p",
-          text: "The mounts it moves can be ext4, XFS or another block-backed filesystem, on LVM or not. Every disk under them must be a cloud data disk.",
+          text: "The mounts can be ext4, XFS or another block-backed filesystem, on LVM or not. Every disk under them must be a cloud data disk.",
         },
         {
           kind: "p",
-          text: "Getting there takes one copy, which Amoeba makes while your services run. Then it switches each mount to the pool, with a short restart of the services that use it.",
+          text: "Amoeba copies the data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it.",
         },
         {
           kind: "h3",
@@ -454,31 +437,27 @@ export const article: Article = {
           items: [
             [
               { b: "Data grows." },
-              " Amoeba grows the pool before it fills, and sooner when data arrives fast. It grows the pool’s disks or adds new ones, and the space goes in at once.",
+              " Amoeba grows the pool before it fills, and sooner when data arrives fast.",
             ],
             [
               { b: "Data shrinks." },
               " When your data goes down and stays down, Amoeba shrinks the pool one disk at a time. It moves that disk’s data onto the others with ",
               { code: "btrfs device remove" },
-              ". Then it detaches the empty disk and deletes it, with no snapshot, so its charges stop.",
+              ", then detaches the empty disk and deletes it.",
             ],
-            [
-              { b: "The limit." },
-              " Amoeba never detaches a disk while the pool is nearly full, or while it’s growing the pool.",
-            ],
+            [{ b: "The limit." }, " Amoeba never detaches a disk while the pool is nearly full."],
           ],
         },
         {
           kind: "p",
           text: [
-            "The pages on ",
             {
               a: "Azure managed disk cost optimization",
               href: "/azure-managed-disk-cost-optimization",
             },
             " and ",
             { a: "EBS cost optimization", href: "/ebs-cost-optimization" },
-            " cover each cloud in full.",
+            " cover each cloud.",
           ],
         },
       ],

@@ -5,22 +5,22 @@ import { figure as figure3 } from "@/features/learn/figures/kubernetes-drain-nod
 
 export const article: Article = {
   slug: "kubernetes-drain-node-without-downtime",
-  title: "kubectl drain node without downtime, step by step",
-  meta: "kubectl drain node without downtime: why a plain drain restarts single-replica apps, how kubectl rollout restart and PDBs avoid it, and the flags to use.",
-  h1: "How to drain a Kubernetes node without downtime",
-  deck: "Why a plain drain takes single-replica apps down, and the replicas, budgets and rolling restarts that keep them serving.",
+  title: "kubectl drain node without any downtime",
+  meta: "kubectl drain node without any downtime: why a plain drain restarts single-replica apps, how kubectl rollout restart and PDBs prevent it, and the flags to use.",
+  h1: "kubectl drain: how to drain a Kubernetes node without any downtime",
+  deck: "Cordon the node, move single-replica Deployments with a rollout restart, then drain with a timeout.",
   card: "The replicas, PDBs and kubectl drain flags that keep apps serving while a node drains on AKS or EKS.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Node lifecycle and scheduling",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "ajay",
   cover: "/learn-covers/zoorik-learn-kubernetes-drain-node-without-downtime-1200x630.webp",
   coverAlt:
-    "Drain a node without downtime: a plain drain leaves downtime, a new pod first keeps two copies serving",
+    "Drain a node without any downtime: a plain drain leaves downtime, a new pod first keeps two copies serving",
   short: [
-    "To drain a Kubernetes node without downtime, each app needs a second Ready replica elsewhere, a ",
+    "To drain a Kubernetes node without any downtime, each app needs a second Ready replica elsewhere, a ",
     { a: "PodDisruptionBudget (PDB)", href: "/learn/glossary/pod-disruption-budget" },
     " allowing one disruption, and spare node capacity. A plain ",
     { code: "kubectl drain" },
@@ -39,14 +39,6 @@ export const article: Article = {
           kind: "p",
           text: "The cache serves nothing from the moment its pod is evicted. It stays down until a replacement on another node has pulled its image, started and passed its readiness check.",
         },
-        {
-          kind: "p",
-          text: [
-            "We ",
-            { a: "measured that gap", href: "/coral-value-lab" },
-            " on our dev cluster during a Coral rebalance on 12 October. None of its single-copy apps qualified for the warm handover described below. Each was down for 5 to 82\u00a0seconds, and the 6 apps that run two copies were down for 0\u00a0seconds.",
-          ],
-        },
         { kind: "h3", id: "what-a-drain-does-to-each-pod", title: "What a drain does to each pod" },
         {
           kind: "p",
@@ -61,7 +53,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "An evicted pod is marked for deletion, and its endpoint stops receiving Service traffic. Its containers get SIGTERM and the pod’s grace period, 30\u00a0seconds by default. Then the kubelet kills any still running.",
+          text: "An evicted pod is marked for deletion, and its endpoint stops receiving Service traffic. Its containers then get SIGTERM and the pod’s grace period to shut down.",
         },
         { kind: "p", text: "Kubernetes never moves a pod to another node. It replaces the pod." },
         {
@@ -87,7 +79,7 @@ export const article: Article = {
     },
     {
       id: "kubernetes-drain-node-without-downtime",
-      title: "Five things each app needs to drain a Kubernetes node without downtime",
+      title: "Five things each app needs to drain a node without any downtime",
       blocks: [
         { kind: "p", text: "All five must hold:" },
         {
@@ -115,9 +107,7 @@ export const article: Article = {
               { b: "A clean shutdown." },
               " On SIGTERM, the app should finish in-flight requests and exit within ",
               { code: "terminationGracePeriodSeconds" },
-              ". A ",
-              { code: "preStop" },
-              " hook runs before the signal if you need one.",
+              ".",
             ],
             [
               { b: "Room for the replacement." },
@@ -145,12 +135,37 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "The last line is explained under hung drains. ",
             {
               a: "Pod disruption budget best practices",
               href: "/learn/pod-disruption-budget-best-practices",
             },
             " covers choosing the numbers.",
+          ],
+        },
+        {
+          kind: "h3",
+          id: "termination-grace-period-seconds",
+          title: "terminationGracePeriodSeconds: how long a pod gets to stop",
+        },
+        {
+          kind: "p",
+          text: "The grace period is 30\u00a0seconds by default. Once it runs out, the kubelet kills any container still running.",
+        },
+        {
+          kind: "p",
+          text: [
+            "Set it longer than the app’s slowest clean shutdown plus any ",
+            { code: "preStop" },
+            " time. Microsoft’s AKS rolling-upgrade guide asks for it on long-running pods too.",
+          ],
+        },
+        { kind: "h3", id: "prestop-hook", title: "preStop hook: a step that runs before SIGTERM" },
+        {
+          kind: "p",
+          text: [
+            "Containers in one pod get SIGTERM at different times and in no set order. Where shutdown order matters, the Pod Lifecycle docs suggest a ",
+            { code: "preStop" },
+            " hook to synchronize them.",
           ],
         },
       ],
@@ -221,8 +236,12 @@ export const article: Article = {
           kind: "p",
           text: [
             { code: "kubectl drain <node-name> --ignore-daemonsets --delete-emptydir-data" },
-            " is the form most drains need. Drain won’t proceed without the first flag while a DaemonSet pod is on the node. It won’t proceed without the second while a pod uses emptyDir.",
+            " is the form most drains need.",
           ],
+        },
+        {
+          kind: "p",
+          text: "Drain won’t proceed without the first flag while a DaemonSet pod is on the node. It won’t proceed without the second while a pod uses emptyDir.",
         },
         { kind: "p", text: "The flags, from the kubectl reference for Kubernetes v1.37:" },
         {
@@ -288,21 +307,6 @@ export const article: Article = {
           text: "A rolling restart gives a single-replica Deployment the overlap a plain drain can’t. It starts the new pod first, on another node because yours is cordoned.",
         },
         {
-          kind: "callout",
-          label: "Worked example",
-          text: [
-            "For a Deployment with 1\u00a0replica, the rolling update default ",
-            { code: "maxSurge" },
-            " of 25% is 0.25 of a pod, which rounds up to 1. The default ",
-            { code: "maxUnavailable" },
-            ", also 25%, is 0.25, which rounds down to 0.",
-          ],
-        },
-        {
-          kind: "p",
-          text: "So the restart can run 1 + 1 = 2\u00a0pods and must keep 1 − 0 = 1 available. The old pod stays until the new one is Ready.",
-        },
-        {
           kind: "code",
           lang: "bash",
           code: "kubectl rollout restart deployment/<name> -n <namespace>\nkubectl rollout status deployment/<name> -n <namespace>",
@@ -329,6 +333,26 @@ export const article: Article = {
           text: "A restart gives no overlap to a StatefulSet, a pod with a ReadWriteOnce volume or a Deployment with the Recreate strategy. Recreate kills all existing pods before it creates new ones. Those restart however you drain them, so move them in a quiet hour, or run a second replica where the app supports one.",
         },
         { kind: "svg", figure: figure2 },
+        {
+          kind: "h3",
+          id: "rolling-update-strategy",
+          title: "Rolling update strategy: maxSurge and maxUnavailable",
+        },
+        {
+          kind: "callout",
+          label: "Worked example",
+          text: [
+            "For a Deployment with 1\u00a0replica, the rolling update default ",
+            { code: "maxSurge" },
+            " of 25% is 0.25 of a pod, which rounds up to 1. The default ",
+            { code: "maxUnavailable" },
+            ", also 25%, is 0.25, which rounds down to 0.",
+          ],
+        },
+        {
+          kind: "p",
+          text: "So the restart can run 1 + 1 = 2\u00a0pods and must keep 1 − 0 = 1 available. The old pod stays until the new one is Ready.",
+        },
       ],
     },
     {
@@ -508,7 +532,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "That is why every single-copy app restarted on 12 October. Argo CD sets the replica count of some, and the rest are StatefulSets or use the Recreate strategy.",
+          text: [
+            "We ",
+            { a: "measured that restart", href: "/coral-value-lab" },
+            " on our dev cluster during a Coral rebalance on 12 October. No single-copy app qualified, since Argo CD sets the replica count of some and the rest are StatefulSets or use the Recreate strategy. Each was down for 5 to 82\u00a0seconds, while the 6 apps that run two copies were down for 0\u00a0seconds.",
+          ],
         },
         {
           kind: "p",

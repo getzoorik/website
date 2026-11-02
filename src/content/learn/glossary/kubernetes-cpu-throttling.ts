@@ -4,14 +4,14 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/kubernetes-
 export const term: GlossaryTerm = {
   slug: "kubernetes-cpu-throttling",
   term: "CPU throttling (Kubernetes)",
-  title: "What is CPU throttling in Kubernetes?",
-  meta: "CPU throttling in Kubernetes slows a container that reaches its CPU limit. See what causes it, how to check it, and how quick fixes can add nodes you pay for.",
-  h1: "What is CPU throttling in Kubernetes?",
+  title: "What is Kubernetes CPU throttling?",
+  meta: "What is CPU throttling in Kubernetes? The kernel slows a container at its CPU limit. See the causes, the CFS throttling metrics, and how a fix can add nodes.",
+  h1: "What is Kubernetes CPU throttling?",
   card: "CPU throttling in Kubernetes is when the Linux kernel holds back a container that hits its CPU limit.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -19,7 +19,7 @@ export const term: GlossaryTerm = {
     },
     {
       kind: "p",
-      text: "On Linux, a CPU limit becomes a quota of CPU time per period, 100 milliseconds by default. Once it’s spent, the container waits for the next period.",
+      text: "On Linux, a CPU limit becomes a quota of CPU time per period, 100 milliseconds by default. Once it’s used up, the container waits for the next period.",
     },
     { kind: "svg", figure: figure1 },
   ],
@@ -59,12 +59,14 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: [
-            "So ",
-            { code: "kubectl top" },
-            " can’t show throttling by itself. Two Prometheus counters show it for each container:",
-          ],
+          text: ["So ", { code: "kubectl top" }, " can’t show throttling by itself."],
         },
+        {
+          kind: "h3",
+          id: "prometheus-metrics-for-cpu-throttling",
+          title: "Prometheus metrics for CPU throttling",
+        },
+        { kind: "p", text: "Two Prometheus counters show throttling for each container:" },
         {
           kind: "ul",
           items: [
@@ -107,15 +109,7 @@ export const term: GlossaryTerm = {
             { a: "Coral", href: "/coral" },
             " rebalances CPU and memory requests on AKS and EKS to ",
             { a: "match real use", href: "/learn/kubernetes-pod-right-sizing" },
-            ", so the same pods fit on fewer nodes. It never reduces a limit on regular pods.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "The ",
-            { a: "free assessment", href: "/assessment?p=coral" },
-            " works out your own figure.",
+            ", so the same pods fit on fewer nodes. Its built-in policies never reduce a regular pod’s limit.",
           ],
         },
       ],

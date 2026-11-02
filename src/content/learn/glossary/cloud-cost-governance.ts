@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "cloud-cost-governance",
   term: "Cloud cost governance",
   title: "What is cloud cost governance?",
-  meta: "Cloud cost governance is the budgets, tag rules and deploy limits that keep cloud cost in bounds. See FinOps governance, Azure Policy and AWS budget alerts.",
+  meta: "Cloud cost governance is the cost part of cloud governance: budgets, budget alerts, tag rules and VM size limits. See FinOps, Azure Policy and AWS Budgets.",
   h1: "What is cloud cost governance?",
   card: "Cloud cost governance is the set of rules that keeps your cloud cost inside agreed limits.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -24,6 +24,10 @@ export const term: GlossaryTerm = {
       id: "what-is-finops-governance",
       title: "What is FinOps governance?",
       blocks: [
+        {
+          kind: "p",
+          text: "In Microsoft’s Cloud Adoption Framework, governance in cloud computing covers domains such as security, regulatory compliance, operations, data, resource provisioning and cost management. Cloud cost governance is the cost management domain.",
+        },
         {
           kind: "p",
           text: [
@@ -43,7 +47,7 @@ export const term: GlossaryTerm = {
               ".",
             ],
             [
-              "Alert on budgets and on unusual spend (",
+              "Alert on budgets and on unusual cost (",
               { a: "anomalies", href: "/learn/glossary/cloud-cost-anomaly-detection" },
               ").",
             ],
@@ -71,7 +75,11 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "On AWS, AWS Budgets alerts you when spend goes outside your policy. A budget action can also apply an access policy or stop chosen Amazon EC2 or Amazon RDS instances. It runs on its own or after your approval.",
+          text: "For AWS budgeting, AWS Budgets alerts you by email or through an Amazon SNS topic when actual or forecasted cost passes your threshold. Its data updates up to three times a day.",
+        },
+        {
+          kind: "p",
+          text: "A budget action can also apply an access policy or stop chosen Amazon EC2 or Amazon RDS instances. It runs on its own or after your approval.",
         },
       ],
     },
@@ -83,7 +91,6 @@ export const term: GlossaryTerm = {
           kind: "ul",
           items: [
             "A deny rule blocks a resource before it exists, so it never adds cost.",
-            "A forecast alert warns where spend is heading, not only what you’ve spent.",
             [
               "Rules and alerts set limits. To ",
               { a: "reduce cloud costs", href: "/cloud-cost-optimization" },
@@ -139,10 +146,21 @@ export const term: GlossaryTerm = {
       url: "https://learn.microsoft.com/en-us/azure/governance/policy/concepts/assignment-structure",
     },
     {
+      publisher: "Microsoft Learn",
+      title: "“Build a cloud governance team”",
+      url: "https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/govern/build-cloud-governance-team",
+      note: " (Cloud Adoption Framework)",
+    },
+    {
       publisher: "AWS",
       title: "“COST02-BP05 Implement cost controls”",
       url: "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/cost_govern_usage_controls.html",
       note: " (Cost Optimization Pillar)",
+    },
+    {
+      publisher: "AWS",
+      title: "“Managing your costs with AWS Budgets”",
+      url: "https://docs.aws.amazon.com/cost-management/latest/userguide/budgets-managing-costs.html",
     },
   ],
 };

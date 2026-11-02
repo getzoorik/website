@@ -4,14 +4,14 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/azure-tempo
 export const term: GlossaryTerm = {
   slug: "azure-temporary-disk",
   term: "Azure temporary disk",
-  title: "What is temporary storage in an Azure VM?",
-  meta: "Temporary storage in an Azure VM is the Azure temporary disk, or temp disk. See what it holds, when its data can be lost, and why it adds no disk charge.",
-  h1: "What is temporary storage in an Azure VM?",
+  title: "Azure temporary storage: what is the temp disk?",
+  meta: "Azure VM temporary storage is the temp drive your VM size comes with, drive D on Windows. See when its data can be lost and why it adds no disk charge.",
+  h1: "Azure temporary storage: what is the temp disk?",
   card: "The Azure temporary disk, or Azure temp disk, is the temporary storage that comes with most Azure virtual machines (VMs).",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",

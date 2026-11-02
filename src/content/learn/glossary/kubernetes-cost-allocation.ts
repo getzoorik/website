@@ -4,14 +4,14 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/kubernetes-
 export const term: GlossaryTerm = {
   slug: "kubernetes-cost-allocation",
   term: "Kubernetes cost allocation",
-  title: "What is Kubernetes cost allocation?",
-  meta: "Kubernetes cost allocation splits a cluster’s cost across pods and teams. EKS split cost allocation data charges each pod the larger of its request and use.",
-  h1: "What is Kubernetes cost allocation?",
+  title: "What does Kubernetes cost allocation mean?",
+  meta: "Kubernetes cost allocation splits a cluster’s cost by pod and team. See how EKS cost allocation uses split cost allocation data and how AKS shows idle cost.",
+  h1: "What does Kubernetes cost allocation mean?",
   card: "Kubernetes cost allocation splits a shared cluster’s cost across its pods, then adds up pod costs by namespace, label or team.",
   group: "finops-pricing",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -30,6 +30,10 @@ export const term: GlossaryTerm = {
         {
           kind: "p",
           text: "Split cost allocation data is an opt-in feature for Amazon Elastic Kubernetes Service (EKS). It adds each pod’s cost to your AWS Cost and Usage Report. Its Kubernetes label support for cost allocation turns up to 50 labels per pod into cost allocation tags, which you then activate.",
+        },
+        {
+          kind: "p",
+          text: "AWS Cost Explorer doesn’t show EKS split cost allocation data. It shows only in the Cost and Usage Report (CUR) and CUR 2.0, up to 24\u00a0hours after you opt in.",
         },
         {
           kind: "p",
@@ -78,11 +82,6 @@ export const term: GlossaryTerm = {
               "Our library lists FinOps tools and other ",
               { a: "cloud cost optimization tools", href: "/cloud-cost-optimization-library" },
               ", with what each one does.",
-            ],
-            [
-              "The ",
-              { a: "free assessment", href: "/assessment?p=coral" },
-              " works out your own figure.",
             ],
           ],
         },
@@ -135,6 +134,11 @@ export const term: GlossaryTerm = {
       publisher: "Microsoft Learn",
       title: "“Azure Kubernetes Service (AKS) cost analysis”",
       url: "https://learn.microsoft.com/en-us/azure/aks/cost-analysis",
+    },
+    {
+      publisher: "AWS",
+      title: "“Enabling split cost allocation data”",
+      url: "https://docs.aws.amazon.com/cur/latest/userguide/enabling-split-cost-allocation-data.html",
     },
   ],
 };

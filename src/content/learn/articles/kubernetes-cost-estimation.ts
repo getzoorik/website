@@ -5,23 +5,23 @@ import { figure as figure3 } from "@/features/learn/figures/kubernetes-cost-esti
 
 export const article: Article = {
   slug: "kubernetes-cost-estimation",
-  title: "Kubernetes cost estimation: what a cluster costs",
-  meta: "Kubernetes cost estimation in six steps. Is Kubernetes free? Running it isn’t: Kubernetes pricing covers the nodes, plus the control plane, disks and network.",
-  h1: "Kubernetes cost estimation: count the nodes, then price them",
-  deck: "Why requests set the node count, how to price AKS and EKS, and what the free assessment reads.",
+  title: "Kubernetes pricing: estimate what a cluster costs",
+  meta: "What sets the Kubernetes price: the nodes your requests need, the control plane, disks and network. Estimate Kubernetes hosting cost on AKS or EKS in six steps.",
+  h1: "Kubernetes pricing and cost estimation: count the nodes, then price them",
+  deck: "The scheduler fills nodes by what pods request, not what they use, so requests set the node count.",
   card: "Count the nodes your requests need, price them at list, and see what the free assessment reads.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes cost basics",
   published: "2026-10-21",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "shubankar",
   cover: "/learn-covers/zoorik-learn-kubernetes-cost-estimation-1200x630.webp",
   coverAlt: "Kubernetes cost estimation: nodes times hourly price times 730 hours",
   short: [
-    "Kubernetes cost estimation means pricing the machines a cluster needs, plus its control plane, disks and network. The arithmetic is short: nodes × each machine’s hourly list price × 730\u00a0hours a month. The node count is the hard part, because the scheduler fills nodes by the CPU and memory pods request, not by what they use. Estimate from measured use plus ",
+    "Kubernetes pricing is the cost of the machines a cluster needs, plus its control plane, disks and network. The arithmetic is short: nodes × each machine’s hourly list price × 730\u00a0hours a month. Count the nodes from measured use plus ",
     { a: "headroom", href: "/learn/glossary/kubernetes-headroom" },
-    ", and the same sum shows how many nodes you could do without.",
+    ", and the same sum shows how many you could do without.",
   ],
   sections: [
     {
@@ -51,6 +51,20 @@ export const article: Article = {
               " Disks, load balancers and public IP addresses, which Microsoft lists for AKS beside its VMs, and network traffic.",
             ],
           ],
+        },
+      ],
+    },
+    {
+      id: "is-kubernetes-free",
+      title: "Is Kubernetes free?",
+      blocks: [
+        {
+          kind: "p",
+          text: "The control plane can be free. On the AKS Free tier, cluster management is free, and you pay as you go for the resources the cluster consumes. Amazon EKS charges every cluster an hourly fee.",
+        },
+        {
+          kind: "p",
+          text: "Kubernetes gets expensive through its worker nodes, charged like any VM. Requests set above real use keep more of them running, as in the 9-node pool above.",
         },
       ],
     },
@@ -120,19 +134,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The Free tier has free cluster management and is recommended for clusters of fewer than 10\u00a0nodes. Standard and Premium carry a price of their own on the AKS pricing page and include an uptime service level agreement, which AKS cost analysis shows as a service charge.",
+          text: "Microsoft recommends the Free tier for clusters of fewer than 10\u00a0nodes. Standard and Premium carry their own price and an uptime service level agreement, shown in AKS cost analysis as a service charge.",
         },
         {
           kind: "p",
           text: "Two details change the node count. Every cluster needs a system node pool for system pods such as CoreDNS and metrics-server, and in production it needs at least two nodes (Microsoft recommends three), each with at least 4\u00a0vCPUs and 4\u00a0GB of memory. Reservations also grow with the machine, though more slowly: AKS reserves 140\u00a0millicores of CPU on a 4-core host (3.5%) and 260 on a 16-core host (1.6%).",
-        },
-        {
-          kind: "p",
-          text: [
-            "To price the nodes at list price, use our ",
-            { a: "AKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
-            ".",
-          ],
         },
         { kind: "h3", id: "eks-cost-estimation", title: "EKS cost estimation" },
         {
@@ -159,14 +165,6 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "To price the nodes at list price, use our ",
-            { a: "EKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
-            ".",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
             "To move a node group to a cheaper type, see ",
             {
               a: "how to change an EKS node group instance type",
@@ -183,7 +181,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Once a cluster runs, the invoice tells you what it costs, but the useful estimate is what it would cost on the nodes its workloads really need. Today’s requests decide how many nodes run, and measured use plus headroom decides how many they need. A node can be full by requests and close to idle: the Kubernetes documentation says the scheduler keeps the requests on each node within its capacity, and that even when real use on the node is very low, it “still refuses to place a Pod on a node if the capacity check fails.”",
+          text: "Once a cluster runs, the invoice tells you what it costs, but the useful estimate is what it would cost on the nodes its workloads really need. Measured use plus headroom decides how many they need. A node can be full by requests and close to idle: the Kubernetes documentation says the scheduler keeps the requests on each node within its capacity, and that even when real use on the node is very low, it “still refuses to place a Pod on a node if the capacity check fails.”",
         },
         { kind: "p", text: "Two commands show the gap:" },
         { kind: "code", lang: "bash", code: "kubectl describe node <node-name>\nkubectl top node" },

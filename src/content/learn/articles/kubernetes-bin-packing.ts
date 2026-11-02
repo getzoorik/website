@@ -7,19 +7,19 @@ export const article: Article = {
   title: "Kubernetes bin packing: same pods, fewer nodes",
   meta: "Kubernetes bin packing puts pods on as few nodes as fit. The scheduler scores by requests, not use: MostAllocated on AKS and EKS, and what empties the rest.",
   h1: "Kubernetes bin packing: fewer nodes for the same pods",
-  deck: "The scheduler scores nodes by requests, spreads pods by default and never moves a running one. What changes that.",
+  deck: "The default scheduler spreads pods, and no scoring strategy moves a pod that’s already running.",
   card: "How the scheduler scores nodes by requests, how to switch it to MostAllocated, and what empties the rest.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Node lifecycle and scheduling",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "rupesh",
   cover: "/learn-covers/zoorik-learn-kubernetes-bin-packing-1200x630.webp",
   coverAlt:
-    "Kubernetes bin packing: spread pods hold every node, but packed pods leave a node empty that can be removed",
+    "Kubernetes bin packing: spread pods hold every node, while packed pods leave one node empty that can be removed",
   short:
-    "Kubernetes bin packing places pods on as few nodes as their requests allow, so spare nodes can be removed. The default kube-scheduler spreads pods and MostAllocated makes it pack, but either way it counts requests, not use, and never moves a running pod.",
+    "Kubernetes bin packing places pods on as few nodes as their requests allow, so spare nodes can be removed. MostAllocated makes the kube-scheduler pack, but it counts requests, not use.",
   sections: [
     {
       id: "kubernetes-bin-packing",
@@ -40,13 +40,8 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Worked example",
-          text: "Suppose each pod peaks at 250m, a quarter of a CPU, and requests 300m, 50m above its peak. The six request 6 × 300m = 1.8\u00a0CPU, 45% of one node (1.8 ÷ 4), and under MostAllocated they all land on node-a.",
+          text: "Suppose each pod peaks at 250m and requests 300m, 50m above its peak. The six request 6 × 300m = 1.8\u00a0CPU, and under MostAllocated they all land on node-a. Even if LeastAllocated spreads them, each node is 15% requested, low enough for the Cluster Autoscaler to remove two if the pods can move.",
         },
-        {
-          kind: "p",
-          text: "Even when LeastAllocated spreads them, each node would be 15% requested (600m ÷ 4,000m). That is low enough for the Cluster Autoscaler to remove two of the three, one at a time, if the pods can move.",
-        },
-        { kind: "p", text: "The request change did more than the strategy change." },
         { kind: "svg", figure: figure1 },
       ],
     },
@@ -59,7 +54,7 @@ export const article: Article = {
           text: [
             "Bin packing is the classic problem of fitting items of different sizes into as few fixed-size bins as possible. In a cluster the bins are nodes and the items are pods, sized by their CPU and memory ",
             { a: "requests", href: "/learn/glossary/kubernetes-resource-requests" },
-            ". Microsoft’s Azure Kubernetes Service (AKS) guide calls it raising pod density on nodes instead of spreading pods across a pool.",
+            ". Microsoft’s Azure Kubernetes Service (AKS) guide calls it raising pod density on nodes.",
           ],
         },
         { kind: "p", text: "The kube-scheduler places each new pod once, in two phases:" },
@@ -72,7 +67,7 @@ export const article: Article = {
             ],
             [
               { b: "Scoring" },
-              " ranks the nodes left, and the pod goes to the one with the highest weighted sum of plugin scores. Kubernetes automated bin packing happens here, for every pod, without you naming a node.",
+              " ranks the nodes left, and the pod goes to the one with the highest weighted sum of plugin scores.",
             ],
           ],
         },
@@ -91,14 +86,14 @@ export const article: Article = {
         { kind: "svg", figure: figure2 },
         {
           kind: "p",
-          text: "A pool rarely packs to 100% either, because a pod can’t be split across nodes. A node with 4\u00a0CPU for pods takes two pods that request 1.5\u00a0CPU each. That strands the last 1\u00a0CPU, which no pod of that size can use.",
+          text: "A pool rarely packs to 100% either, because a pod can’t be split across nodes. On a node with 4\u00a0CPU for pods, two pods that request 1.5\u00a0CPU each strand the last 1\u00a0CPU.",
         },
         {
           kind: "p",
           text: [
-            "The filter checks every resource too. A node with spare CPU and no spare memory is full for a pod that needs memory. See ",
-            { a: "allocatable versus capacity", href: "/learn/kubernetes-allocatable-vs-capacity" },
-            " for how much of a node pods get.",
+            "The filter checks every resource too, so a node with spare CPU and no spare memory is full for a pod that needs memory. ",
+            { a: "Allocatable versus capacity", href: "/learn/kubernetes-allocatable-vs-capacity" },
+            " shows how much of a node pods get.",
           ],
         },
       ],
@@ -110,7 +105,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "There’s no separate Kubernetes bin packing scheduler to install. Packing is a scoring strategy of the default scheduler’s NodeResourcesFit plugin, set in the ",
+            "There’s no separate bin packing scheduler to install. Packing is a scoring strategy of the default scheduler’s NodeResourcesFit plugin, set in the ",
             { code: "kubescheduler.config.k8s.io/v1" },
             " configuration, stable since Kubernetes 1.25. The plugin offers three:",
           ],
@@ -143,14 +138,14 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "RequestedToCapacityRatio maps utilization to a score through a ",
+            "RequestedToCapacityRatio maps utilization to a score through a curve you define as its ",
             { code: "shape" },
-            ". A curve from score 0 at 0% utilization up to score 10 at 100% packs, and the reverse spreads.",
+            ". A curve rising from score 0 at 0% utilization to 10 at 100% packs, and the reverse spreads.",
           ],
         },
         {
           kind: "p",
-          text: "Microsoft’s recommended production profile for AKS uses a curve of its own. Its score reaches the top of 10 at 50% utilization and holds it to 85%. After that it drops to 5 at 90% and 0 at 100%, so nodes fill without running to the edge.",
+          text: "Microsoft’s recommended production profile for AKS uses a curve of its own. It scores 10 from 50% to 85% utilization, then 5 at 90% and 0 at 100%, so nodes fill without running to the edge.",
         },
         {
           kind: "callout",
@@ -166,9 +161,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "The NodeResourcesFit score is one of several, and spread scores push replicas onto different nodes. When a pod sets no ",
+            "The NodeResourcesFit score is one of several, and spread scores push replicas onto different nodes. A pod of a Service, ReplicaSet, StatefulSet or ReplicationController that sets no ",
             { a: "spread constraints", href: "/learn/topology-spread-constraints" },
-            " of its own, the scheduler applies built-in defaults. Only pods of a Service, ReplicaSet, StatefulSet or ReplicationController get them.",
+            " of its own gets built-in defaults.",
           ],
         },
         {
@@ -191,13 +186,7 @@ export const article: Article = {
           text: [
             "Pods that use such a profile also lose their declared spread rules, because PodTopologySpread disabled under ",
             { code: "multiPoint" },
-            " is off at every stage.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "To drop only the defaults, set ",
+            " is off at every stage. To drop only the defaults, set ",
             { code: "defaultConstraints: []" },
             " with ",
             { code: "defaultingType: List" },
@@ -212,7 +201,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "A node that is 20% requested keeps its pods until something evicts them. Changing the strategy “affects only future scheduling”, as the Karpenter docs note, and running pods are not moved.",
+          text: "A node that is 20% requested keeps its pods until something evicts them. Changing the strategy “affects only future scheduling”, as the Karpenter docs note.",
         },
         {
           kind: "p",
@@ -253,7 +242,7 @@ export const article: Article = {
           text: [
             "The ",
             { a: "Kubernetes cost optimization guide", href: "/kubernetes-cost-optimization" },
-            " takes a cluster through the same order: requests first, then nodes. The ",
+            " takes a cluster through that order. The ",
             { a: "descheduler guide", href: "/learn/kubernetes-descheduler" },
             " covers another way to move running pods.",
           ],
@@ -266,7 +255,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Packing leaves less unrequested room on each node, and some workloads live in that room. Take a pod whose limits sit above its requests. Karpenter’s docs warn it may be unable to burst into more memory, risking an out-of-memory (OOM) kill.",
+          text: "Packing leaves less unrequested room on each node. Karpenter’s docs warn that a pod whose limits sit above its requests may be unable to burst into more memory, risking an out-of-memory (OOM) kill.",
         },
         {
           kind: "p",
@@ -353,7 +342,7 @@ export const article: Article = {
             { code: "SchedulerConfiguration" },
             " resource named ",
             { code: "upstream" },
-            ". In October 2026 Microsoft’s setup guide, “Configure scheduler profiles”, asks for Azure CLI 2.90.0 or later. It asks for no extension or feature flag.",
+            ". In October 2026 Microsoft’s setup guide asks for Azure CLI 2.90.0 or later, with no extension or feature flag.",
           ],
         },
         { kind: "p", text: "Microsoft’s bin-packing guide still lists the preview prerequisites:" },
@@ -418,9 +407,8 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "A scoring strategy places new pods. It doesn’t make requests match use or empty the part-full nodes you already run. ",
             { a: "Coral optimizes Kubernetes", href: "/coral" },
-            " on AKS and EKS clusters running Kubernetes 1.30 or later, and works on both halves.",
+            " on AKS and EKS clusters running Kubernetes 1.30 or later. It works on the two things a scoring strategy leaves alone: requests and part-full nodes.",
           ],
         },
         {
@@ -454,7 +442,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "The guide’s section on ",
+            "The Coral guide’s section on ",
             { a: "consolidation", href: "/coral-guide#consolidation" },
             " lists the steps and the wait before removal. The FAQ explains ",
             {

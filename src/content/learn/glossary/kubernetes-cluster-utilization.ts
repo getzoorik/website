@@ -4,18 +4,18 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/kubernetes-
 export const term: GlossaryTerm = {
   slug: "kubernetes-cluster-utilization",
   term: "Kubernetes cluster utilization",
-  title: "What is Kubernetes cluster utilization?",
-  meta: "Kubernetes cluster utilization is the share of node CPU and memory your pods request or use. See both measures, an EKS example and what the gap costs.",
-  h1: "What is Kubernetes cluster utilization?",
+  title: "What does Kubernetes cluster utilization mean?",
+  meta: "Kubernetes cluster utilization is the share of node CPU and memory pods request or use. Measure it by requests or kubectl top nodes, and see what the gap costs.",
+  h1: "What does Kubernetes cluster utilization mean?",
   card: "Kubernetes cluster utilization is the share of your nodes’ CPU and memory that pods request or use.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
-      text: "Kubernetes cluster utilization is the share of your nodes’ CPU and memory that pods request or use. It’s Kubernetes resource utilization across the cluster.",
+      text: "Kubernetes cluster utilization is the share of your nodes’ CPU and memory that pods request or use.",
     },
   ],
   sections: [
@@ -27,11 +27,16 @@ export const term: GlossaryTerm = {
           kind: "ul",
           items: [
             "By requests: the sum of pod requests, divided by node capacity (what the nodes can give pods).",
-            [
-              "By use: the CPU and memory in use, divided by the same capacity. Metrics Server collects it. Run ",
-              { code: "kubectl top" },
-              " to see Kubernetes cluster usage per node and pod.",
-            ],
+            "By use: the CPU and memory in use, divided by the same capacity. Metrics Server collects it.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            { code: "kubectl top node" },
+            " shows each node’s CPU and memory in use, measured against its allocatable: the room it has for pods. Add ",
+            { code: "--show-capacity" },
+            " to measure against its total capacity instead.",
           ],
         },
         {
@@ -76,11 +81,6 @@ export const term: GlossaryTerm = {
               { a: "Coral", href: "/coral" },
               " rebalances CPU and memory requests on AKS and EKS to match real use. Then the same pods fit on fewer nodes, and Coral drains the spare ones so your autoscaler can remove them.",
             ],
-            [
-              "The ",
-              { a: "free assessment", href: "/assessment?p=coral" },
-              " works out your own figure.",
-            ],
           ],
         },
       ],
@@ -122,6 +122,11 @@ export const term: GlossaryTerm = {
       publisher: "Kubernetes",
       title: "“Resource metrics pipeline”",
       url: "https://kubernetes.io/docs/tasks/debug/debug-cluster/resource-metrics-pipeline/",
+    },
+    {
+      publisher: "Kubernetes",
+      title: "“kubectl top node”",
+      url: "https://kubernetes.io/docs/reference/kubectl/generated/kubectl_top/kubectl_top_node/",
     },
     {
       publisher: "Amazon Web Services",

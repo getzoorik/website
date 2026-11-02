@@ -7,15 +7,15 @@ export const article: Article = {
   slug: "how-to-reduce-cloud-costs",
   route: "/cloud-cost-optimization",
   title: "Cloud cost optimization: how to reduce cloud costs",
-  meta: "Cloud cost optimization on Azure and AWS, in order: tag the spend, fix the architecture, remove idle resources, shrink requests and disks, then commit.",
+  meta: "Cloud computing cost reduction on Azure and AWS, in order: see the cost, fix the architecture, remove idle resources, shrink requests and disks, then commit.",
   h1: "Cloud cost optimization: how to reduce cloud costs on Azure and AWS",
-  deck: "Where the money goes, which fixes move it most, and the order to make them in, on Azure and AWS.",
+  deck: "Where the money goes, which fixes move it most, and the order to make them in.",
   card: "The order that reduces Azure and AWS cost: tags, architecture, idle resources, Kubernetes, disks, commitments.",
   product: "both",
   hub: "Cloud cost",
   topic: "Cloud cost",
   published: "2026-10-21",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "udit",
   cover: "/learn-covers/zoorik-learn-how-to-reduce-cloud-costs-1200x630.webp",
   coverAlt: "Reduce cloud costs in order: use less first, commit last",
@@ -28,33 +28,39 @@ export const article: Article = {
   ],
   sections: [
     {
+      id: "what-is-cloud-cost-optimization",
+      title: "What is cloud cost optimization?",
+      blocks: [
+        {
+          kind: "p",
+          text: "Cloud cost optimization is the cost side of cloud optimization. It means paying only for the cloud resources your work uses, at the lowest price for them, and keeping it that way.",
+        },
+        {
+          kind: "p",
+          text: "It matters because many cloud services costs follow what you provision, used or not. A stopped VM that’s still allocated is charged for instance usage, and a disk for the space you provision. Cost savings in cloud computing start there.",
+        },
+      ],
+    },
+    {
       id: "cloud-cost-optimization-see-the-spend-first",
       title: "Cloud cost optimization strategies: see the cost first, commit last",
       blocks: [
         {
           kind: "p",
-          text: "Picture a team that buys a one-year Azure savings plan, a fixed hourly spend sized to this month’s compute, then deallocates its development VMs every night and lets two spare nodes go. You still pay for the plan in full every hour, though part of the usage it was sized for is gone. Whatever an hour doesn’t use expires.",
-        },
-        { kind: "p", text: "Take the ways to reduce cloud costs in order:" },
-        {
-          kind: "ol",
-          items: [
-            "See where the money goes.",
-            "Fix the architecture.",
-            "Remove what nothing uses.",
-            "Reduce Kubernetes requests, then nodes.",
-            "Bring disks back to the size of their data.",
-            "Commit to the baseline that’s left.",
-          ],
+          text: "Picture a team that buys a one-year Azure savings plan, a fixed hourly commitment sized to this month’s compute. Then it deallocates its development VMs every night and lets two spare nodes go. You still pay for the plan in full every hour, though part of the usage it was sized for is gone.",
         },
         { kind: "svg", figure: figure1 },
-        { kind: "h3", id: "see-where-the-money-goes", title: "See where the money goes" },
+        {
+          kind: "h3",
+          id: "see-where-the-money-goes",
+          title: "Cloud costing: see where the money goes",
+        },
         {
           kind: "p",
           text: [
-            "First, find out who owns each line in your cost reports. ",
+            "Cloud computing cost management starts with ownership: who owns each line in your cost reports. ",
             { a: "Tags", href: "/learn/glossary/cost-allocation-tags" },
-            " let Cost analysis in Microsoft Cost Management and AWS Cost Explorer split your spend by team, application and environment. On Azure, four rules decide whether and when a tag shows up:",
+            " let Cost analysis in Microsoft Cost Management and AWS Cost Explorer split your costs by team, application and environment. On Azure, four rules decide whether and when a tag shows up:",
           ],
         },
         {
@@ -81,11 +87,19 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Cloud cost management needs standing rules, or the spend drifts back up. For cloud governance to reduce costs, start with three: every resource carries the tags your reports group by, every subscription or account has a budget with an alert, and someone reads the biggest lines every month.",
+          text: "Cloud cost management needs standing rules, or costs drift back up. For cloud governance to reduce costs, start with three:",
+        },
+        {
+          kind: "ul",
+          items: [
+            "Every resource carries the tags your reports group by.",
+            "Every subscription or account has a budget with an alert.",
+            "Someone reads the biggest lines every month.",
+          ],
         },
         {
           kind: "p",
-          text: "Let those lines pick the fix that reduces your cost most: VM compute points to architecture and idle VMs, cluster node VMs to Kubernetes, and disks to block storage.",
+          text: "To manage cloud costs, let the biggest lines pick the fix. VM compute points to architecture and idle VMs, cluster node VMs to Kubernetes, and disks to block storage.",
         },
       ],
     },
@@ -175,7 +189,7 @@ export const article: Article = {
           kind: "p",
           text: "Node autoscalers such as the Cluster Autoscaler and Karpenter add nodes until every pod’s requests fit and remove underused nodes. The Kubernetes documentation says this removal (consolidation), like provisioning, considers only Pod requests and not real usage.",
         },
-        { kind: "p", text: "The fix has two steps:" },
+        { kind: "p", text: "To optimize cloud cost in a cluster, take two steps:" },
         {
           kind: "ol",
           items: [
@@ -280,7 +294,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "An Azure savings plan is a fixed hourly spend. Each hour, Azure applies it to eligible usage and charges anything beyond it at pay-as-you-go rates. Azure lets any unused part expire without rolling over.",
+          text: "An Azure savings plan is a fixed hourly commitment. Each hour, Azure applies it to eligible usage and charges anything beyond it at pay-as-you-go rates. Any unused part expires without rolling over.",
         },
         {
           kind: "p",
@@ -299,7 +313,7 @@ export const article: Article = {
     },
     {
       id: "where-coral-and-amoeba-fit",
-      title: "Where Coral and Amoeba fit",
+      title: "The steps that never finish: where Coral and Amoeba fit",
       blocks: [
         {
           kind: "p",
@@ -332,12 +346,22 @@ export const article: Article = {
           text: [
             "On ",
             { a: "our own AKS development cluster", href: "/coral-value-lab" },
-            ", Coral removed a spare 4-CPU node on its own, rebalanced the requests of 14 apps, and swapped the remaining node for a cheaper machine of the same size. Eight days after we connected it, the cluster’s machines cost $154.76 a month instead of $368.65 at Azure list prices, 58% less. None of its single-copy apps qualified for a warm handover, so during the swap each restarted once and was back up within 5 to 82\u00a0seconds. Coral prices each saving at list price and ",
+            ", Coral removed a spare 4-CPU node on its own and rebalanced the requests of 14 apps. Then it swapped the remaining node for a cheaper machine of the same size. Eight days after we connected it, the cluster’s machines cost $154.76 a month instead of $368.65 at Azure list prices, 58% less.",
+          ],
+        },
+        {
+          kind: "p",
+          text: "None of its single-copy apps qualified for a warm handover, so during the swap each restarted once and was back within 5 to 82\u00a0seconds.",
+        },
+        {
+          kind: "p",
+          text: [
+            "Coral prices its cloud cost savings at list price and ",
             {
               a: "leaves discounts, reservations and savings plans out",
               href: "/coral-faq#how-is-the-saving-worked-out",
             },
-            ", so check its figures against your own rates before you size a commitment.",
+            ". Check its figures against your own rates before you size a commitment.",
           ],
         },
         {
@@ -363,20 +387,12 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "On Linux, the systemd services that use the data mounts restart at the switch onto the pool, and every resize after it runs without unmounting.",
+          text: "On Linux, the services that use the data mounts restart at the switch onto the pool. Every resize after it runs without any downtime. Amoeba is in early access.",
         },
         {
           kind: "p",
           text: [
-            "We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. Amoeba is in early access, and ",
-            { a: "the free block storage assessment", href: "/assessment?p=amoeba" },
-            " works out your own figure.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "To compare Coral and Amoeba with other options, see ",
+            "To compare Coral and Amoeba with other cloud cost optimization services, see ",
             { a: "cloud cost optimization tools", href: "/cloud-cost-optimization-library" },
             ".",
           ],

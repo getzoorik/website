@@ -8,16 +8,17 @@ export const article: Article = {
   title: "How to check EBS volume usage: used vs paid space",
   meta: "How to check EBS volume usage: AWS/EBS metrics show I/O, not used space. Use df, lsblk or the agent’s disk_used_percent, then compare with the size you pay for.",
   h1: "How to check EBS volume usage: used space vs paid space",
-  deck: "AWS charges for the size you provision, and its EBS metrics measure I/O. How to read the used space and line the two up.",
+  deck: "Rank volumes by unused GiB, not percent full, since within one volume type more unused GiB costs more.",
   card: "EBS charges for the size you provision and its metrics measure I/O. Read used space per volume and compare.",
   product: "amoeba",
   hub: "Block storage",
   topic: "AWS block storage",
   published: "2026-10-23",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "swapnil",
   cover: "/learn-covers/zoorik-learn-check-ebs-volume-usage-1200x630.webp",
-  coverAlt: "Check EBS volume usage: df -hT shows the used part and the rest, paid for, not used",
+  coverAlt:
+    "Check EBS volume usage: df -hT shows the used part of a volume and the rest, paid for and not used",
   short: [
     "To check EBS volume usage, read used space inside the instance and compare it with the size you pay for. CloudWatch’s built-in metrics for each ",
     { a: "Amazon Elastic Block Store (EBS) volume", href: "/learn/glossary/ebs-volume" },
@@ -39,7 +40,7 @@ export const article: Article = {
           text: [
             "Picture a 500\u00a0GiB ",
             { a: "gp3", href: "/learn/glossary/ebs-gp3" },
-            " volume holding 50\u00a0GiB of data. AWS charges you for all 500\u00a0GiB, the same as a full volume of that size. Our ",
+            " volume holding 50\u00a0GiB of data. AWS charges for all 500\u00a0GiB, the same as for a full volume of that size. Our ",
             { a: "EBS pricing calculator", href: "/ebs-and-azure-disk-pricing" },
             " shows a volume’s monthly list price and what its empty space costs.",
           ],
@@ -47,68 +48,89 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Worked example",
-          text: "The volume is 50 ÷ 500 = 10% full, so the other 500 − 50 = 450\u00a0GiB, 90% of the size you pay for, holds no data. The gp3 example on the Amazon EBS pricing page uses a rate of $0.08 per GB-month. At that rate the volume costs 500 × $0.08 = $40 a month, and 450 × $0.08 = $36 of that pays for space that holds nothing. Rates vary by Region and change.",
+          text: "At 10% full, 450\u00a0GiB of the 500\u00a0GiB you pay for holds no data. The gp3 example on the Amazon EBS pricing page uses $0.08 per GB-month, and rates vary by Region and change. At that rate the volume costs $40 a month, and $36 of it pays for the empty 450\u00a0GiB.",
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
           text: [
-            "The pricing page’s rule covers every EBS volume type. Volume storage “is charged by the amount of GB you provision per month until you release the storage.” Detaching a volume doesn’t release it. A detached volume waits in the ",
+            "On every EBS volume type, storage “is charged by the amount of GB you provision per month until you release the storage.” A detached volume waits in the ",
             { code: "available" },
-            " state, still charged, until you delete it. ",
+            " state, still charged, until you delete it.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
             { a: "Snapshot storage", href: "/learn/ebs-snapshot-cost" },
-            " is the exception. It’s based on the space your data takes up in Amazon S3, and EBS “does not save empty blocks.”",
+            " is the exception: it’s based on the space your data takes up in Amazon S3, and EBS “does not save empty blocks.”",
           ],
         },
         {
           kind: "p",
           text: [
             { a: "Elastic Volumes", href: "/learn/ebs-elastic-volumes" },
-            ", AWS’s name for changing a volume in place, can make a volume larger, change its type or adjust its performance, but it can’t shrink one. In AWS’s words, “You can’t decrease the volume size.”",
+            ", AWS’s name for changing a volume in place, can grow a volume or change its type and performance. But in AWS’s words, “You can’t decrease the volume size.”",
           ],
         },
         {
           kind: "p",
-          text: "An increase made for a migration or a log spike is still charged after the data shrinks again. So an EBS cost review starts by measuring used space against provisioned space, one volume at a time.",
+          text: "An increase made for a migration or a log spike stays charged after the data shrinks. So an EBS cost review measures used space against provisioned space, volume by volume.",
         },
       ],
     },
     {
       id: "ebs-volume-utilization-in-cloudwatch-means-i",
-      title: "EBS volume utilization: AWS/EBS metrics in CloudWatch measure I/O",
+      title: "EBS metrics in CloudWatch measure I/O, not used space",
       blocks: [
         {
           kind: "p",
           text: [
             "How to check EBS volume utilization depends on which kind you mean: how busy a volume is (its I/O) or how full it is (its used space). The Monitoring tab on a volume in the EC2 console and the ",
             { code: "AWS/EBS" },
-            " namespace in CloudWatch cover only the first. That namespace receives 1-minute metrics at no charge for every attached volume: bytes and operations read and written, queue length, idle time, burst balance on gp2, st1 and sc1, and on Nitro instances average ",
-            { a: "IOPS", href: "/learn/glossary/iops" },
-            " (input/output operations per second), ",
-            { a: "throughput", href: "/learn/glossary/disk-throughput" },
-            " and ",
-            { a: "latency", href: "/learn/glossary/disk-latency" },
-            ". None of them reports used or free space, and AWS’s metrics page points you to the operating system for that.",
+            " namespace in CloudWatch cover only the first.",
           ],
+        },
+        {
+          kind: "p",
+          text: "That namespace receives 1-minute metrics at no charge for every attached volume:",
+        },
+        {
+          kind: "ul",
+          items: [
+            "Bytes and operations read and written.",
+            "Queue length and idle time.",
+            "Burst balance, on gp2, st1 and sc1.",
+            [
+              "On Nitro instances, average ",
+              { a: "IOPS", href: "/learn/glossary/iops" },
+              " (input/output operations per second), ",
+              { a: "throughput", href: "/learn/glossary/disk-throughput" },
+              " and ",
+              { a: "latency", href: "/learn/glossary/disk-latency" },
+              ".",
+            ],
+          ],
+        },
+        {
+          kind: "p",
+          text: "None of them reports used or free space, and AWS’s metrics page points you to the operating system for that.",
         },
         {
           kind: "p",
           text: [
             "The two measures don’t track each other. ",
             { code: "VolumeIdleTime" },
-            " counts the seconds in a period with no reads or writes, so a volume can sit idle while it’s nearly full of cold data, or stay busy all day on a filesystem that’s mostly empty. Only the mostly empty one is charged for space it doesn’t use.",
+            " counts the seconds with no reads or writes. So a volume nearly full of cold data can sit idle, while a mostly empty one stays busy all day.",
           ],
         },
+        { kind: "p", text: "Only the mostly empty one is charged for space it doesn’t use." },
       ],
     },
     {
       id: "how-to-check-ebs-volume-usage-on",
       title: "How to check EBS volume usage on Linux and Windows",
       blocks: [
-        {
-          kind: "p",
-          text: "Used space is known only to the filesystem, so the check starts on the instance and ends with the size you pay for.",
-        },
         {
           kind: "h3",
           id: "1-read-each-filesystems-size-and-use",
@@ -139,26 +161,22 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "On Linux, ",
-            { code: "lsblk" },
-            " lists the block devices as a tree, with each one’s size and mount point, and its ",
-            { code: "SERIAL" },
-            " column is the link to AWS. On instances built on the Nitro System, EBS volumes appear as NVMe devices, and AWS sets each device’s serial number to its EBS volume ID.",
+            "On instances built on the Nitro System, EBS volumes appear as NVMe devices, and AWS sets each device’s serial number to its EBS volume ID. So on Linux, ",
+            { code: "lsblk -o +SERIAL" },
+            " ties each device and its mount point to AWS.",
           ],
         },
         { kind: "code", lang: "bash", code: "lsblk -o +SERIAL" },
         {
           kind: "p",
           text: [
-            "The serial drops the hyphen. AWS’s ",
-            { code: "nvme id-ctrl" },
-            " example shows it as ",
+            "The serial drops the hyphen, ",
             { code: "vol01234567890abcdef" },
-            ", while ",
-            { code: "describe-volumes" },
-            " prints IDs in the form ",
+            " against ",
             { code: "vol-01234567890abcdef" },
-            ", so add the hyphen back before you match. On a partitioned volume the mount sits on a partition row such as ",
+            " in ",
+            { code: "describe-volumes" },
+            ", so add it back before you match. On a partitioned volume, the mount sits on a partition row such as ",
             { code: "nvme0n1p1" },
             ", and the serial on the disk row above it.",
           ],
@@ -166,9 +184,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Key your report on that volume ID, because device names move. AWS notes that an NVMe name such as ",
+            "Key your report on the volume ID, because device names move. AWS notes that an NVMe name such as ",
             { code: "/dev/nvme1n1" },
-            " follows the order devices respond at boot, can change on a later start, and can differ from the name you gave at attach time.",
+            " follows the order devices respond at boot, and can change on a later start.",
           ],
         },
         {
@@ -199,7 +217,7 @@ export const article: Article = {
             { code: "df" },
             " next to ",
             { code: "lsblk" },
-            " also shows two cases that ",
+            " shows two cases that ",
             { code: "df" },
             " alone hides:",
           ],
@@ -211,15 +229,13 @@ export const article: Article = {
               { b: "A filesystem smaller than its volume." },
               " ",
               { a: "Growing an EBS volume", href: "/learn/increase-ebs-volume-size" },
-              " is two jobs: Elastic Volumes grows the device, then you grow the partition and the filesystem. AWS’s sample output for extending a filesystem shows the gap. ",
+              " is two jobs: Elastic Volumes grows the device, then you grow the partition and the filesystem. In AWS’s sample output, ",
               { code: "lsblk" },
               " lists ",
               { code: "nvme1n1" },
-              " at 30G, mounted on ",
-              { code: "/data" },
-              ", while ",
+              " at 30G, while ",
               { code: "df -hT" },
-              " shows the XFS filesystem on it at 8.0G with 33M used. AWS charges for 30\u00a0GiB, and ",
+              " shows the XFS filesystem on it at 8.0G. AWS charges for 30\u00a0GiB, and ",
               { code: "df" },
               " never sees 22 of them.",
             ],
@@ -268,7 +284,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Systems Manager Run Command runs the same commands on every instance Systems Manager manages (AWS calls them managed nodes), so you don’t sign in to each one. These are Linux commands, so target a tag on Linux instances:",
+          text: "Systems Manager Run Command runs the same commands on every managed node (an instance Systems Manager manages), so you don’t sign in to each one. These are Linux commands, so target a tag on Linux instances:",
         },
         {
           kind: "code",
@@ -278,9 +294,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Each instance’s output is stored in the S3 bucket you name. Unless you set ",
+            "Each instance’s output lands in the S3 bucket you name. Unless you set ",
             { code: "--max-concurrency" },
-            ", the command runs on up to 50 managed nodes at the same time. For Windows instances, the send-command reference uses the ",
+            ", the command runs on up to 50 managed nodes at once. Windows instances use the ",
             { code: "AWS-RunPowerShellScript" },
             " document instead, which can run ",
             { code: "fsutil" },
@@ -298,9 +314,15 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Run Command tells you where each volume stands today. A trend needs the CloudWatch agent. It reads used space inside the instance and publishes it to CloudWatch in the ",
+            "Run Command shows where each volume stands today. A trend needs the CloudWatch agent, which reads used space inside the instance and publishes it to CloudWatch in the ",
             { code: "CWAgent" },
-            " namespace, and on Linux its ",
+            " namespace.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "On Linux, its ",
             { code: "disk" },
             " section collects ",
             { code: "disk_used" },
@@ -344,9 +366,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "The metrics the agent collects are charged, and each mount adds its own set, so on an instance with many mounts, list only the data mount points in ",
+            "The agent’s metrics are charged, and each mount adds its own set, so list only the data mount points in ",
             { code: "resources" },
-            ". To cover many instances, AWS’s page on viewing free disk space points to installing and configuring the agent through Systems Manager.",
+            ". To cover many instances, AWS points to installing and configuring the agent through Systems Manager.",
           ],
         },
       ],
@@ -357,8 +379,11 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
+          text: "An EBS usage report needs one row per volume: instance, mount, volume ID, provisioned size, used space, and unused GiB (size minus used space).",
+        },
+        {
+          kind: "p",
           text: [
-            "A usage report for EBS needs one row per volume: the instance, the mount, the volume ID, the provisioned size, the used space and the unused GiB, which is size minus used space. ",
             { code: "df" },
             " or ",
             { code: "disk_used" },
@@ -411,15 +436,19 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Sort the report by unused GiB, largest first, not by percent full. Of the two volumes on this page, AWS’s 30\u00a0GiB sample is the emptier by percent, with all but 33\u00a0MiB unused, yet the 500\u00a0GiB example’s 450 unused GiB rank higher. A disk-space alert ranks the fullest volumes first, because they’re the risk. A cost report puts the most unused space first, because within one volume type that’s the order of what the empty space costs.",
+          text: "Of this page’s two volumes, AWS’s 30\u00a0GiB sample is the emptier by percent, yet the 500\u00a0GiB example’s 450 unused GiB rank higher.",
+        },
+        {
+          kind: "p",
+          text: "A disk-space alert ranks the fullest volumes first, because they’re the risk. A cost report puts the most unused space first.",
         },
         { kind: "p", text: "Then work down the report:" },
         {
-          kind: "ul",
+          kind: "ol",
           items: [
             [
               { b: [{ code: "available" }, " volumes first."] },
-              " They’re charged in full and nothing reads them, but deleting one deletes its data, so confirm nobody needs it first.",
+              " They’re charged in full and nothing reads them. Deleting one deletes its data, so delete it only once nobody needs it.",
             ],
             [
               { b: "A filesystem smaller than its volume." },
@@ -427,8 +456,8 @@ export const article: Article = {
             ],
             [
               { b: "A data volume that’s mostly unused space." },
-              " EBS can’t take that space back in place, so it takes a copy to a smaller volume, and ",
-              { a: "shrinking an EBS volume", href: "/learn/shrink-ebs-volume" },
+              " EBS can’t take that space back in place, so copy the data to a smaller volume. ",
+              { a: "Shrinking an EBS volume", href: "/learn/shrink-ebs-volume" },
               " covers that copy and the downtime it needs.",
             ],
           ],
@@ -451,20 +480,20 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " by Zoorik optimizes Azure managed disks and Amazon EBS. On each instance you onboard, its agent installs through AWS Systems Manager Run Command and reports each mount’s size and use.",
+            " optimizes block storage: Azure managed disks and Amazon EBS. On each instance you onboard, its agent installs through AWS Systems Manager Run Command and reports each mount’s size and use.",
           ],
         },
         {
           kind: "p",
-          text: "Then Amoeba rightsizes. It moves the data on a running EC2 instance’s EBS data volumes onto one btrfs pool sized to your data, with room to grow. Amoeba builds the pool from gp3\u00a0volumes in the instance’s Availability Zone and never touches the root volume.",
+          text: "It moves a running EC2 instance’s EBS data volumes onto one btrfs pool of gp3\u00a0volumes, sized to your data with room to grow. It never touches the root volume.",
         },
         {
           kind: "p",
-          text: "The move copies your data while your services run. Then each mount switches to the pool, with a short restart of the services that use it, and keeps its path.",
+          text: "The move copies your data while your services run. Then each mount switches to the pool and keeps its path, with a short restart of the services that use it.",
         },
         {
           kind: "p",
-          text: "After the switch, Amoeba grows the pool before it fills, and sooner when data arrives fast. When your data goes down and stays down, it shrinks the pool one volume at a time. So you pay for close to what you use.",
+          text: "Then Amoeba rightsizes. It grows the pool before it fills, and shrinks it one volume at a time when your data goes down and stays down.",
         },
         {
           kind: "p",
@@ -481,14 +510,6 @@ export const article: Article = {
               { b: "On Linux:" },
               " it needs a recent kernel with btrfs, and every service that keeps a data mount open must run under systemd.",
             ],
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "The free block storage assessment covers Amazon EBS. It reads your instances and their volumes, ",
-            { a: "estimates your own figure", href: "/assessment?p=amoeba" },
-            ", proposes a gp3 pool, and writes one PDF without sending anything to Zoorik. Inside a running Linux instance, it reads used space only after you say yes, through Systems Manager.",
           ],
         },
         {

@@ -4,20 +4,23 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/ephemeral-o
 export const term: GlossaryTerm = {
   slug: "ephemeral-os-disk",
   term: "Ephemeral OS disk",
-  title: "What is an ephemeral OS disk?",
-  meta: "An Azure ephemeral OS disk keeps a VM’s OS on local storage. See what an ephemeral disk costs on AKS, what you give up, and when AKS uses a managed disk.",
-  h1: "What is an ephemeral OS disk?",
+  title: "What is an ephemeral disk? Azure ephemeral OS disks",
+  meta: "An Azure ephemeral OS disk keeps a VM’s OS on its local storage. See what an ephemeral VM gives up, what it costs on AKS, and how to enable it.",
+  h1: "What is an ephemeral disk? Azure ephemeral OS disks",
   card: "An Azure ephemeral OS disk is an operating system disk on the local storage of its virtual machine (VM).",
   group: "block-storage",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
       text: "An Azure ephemeral OS disk is an operating system disk on the local storage of its virtual machine (VM). It isn’t saved to Azure Storage.",
     },
-    { kind: "p", text: "It suits stateless apps. Reads and writes are faster." },
+    {
+      kind: "p",
+      text: "Microsoft calls a VM with one an ephemeral VM. It suits stateless apps that need fast deploys and reimages, and its OS disk has less read and write latency.",
+    },
     { kind: "p", text: "Azure Kubernetes Service (AKS) uses one by default when it fits." },
   ],
   sections: [
@@ -109,11 +112,6 @@ export const term: GlossaryTerm = {
             [
               { a: "Coral", href: "/coral" },
               " drains spare nodes so your autoscaler can remove them.",
-            ],
-            [
-              "The ",
-              { a: "free assessment", href: "/assessment?p=coral" },
-              " works out your figure.",
             ],
           ],
         },

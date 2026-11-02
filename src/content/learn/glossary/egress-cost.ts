@@ -4,42 +4,55 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/egress-cost
 export const term: GlossaryTerm = {
   slug: "egress-cost",
   term: "Egress cost (data transfer, bandwidth)",
-  title: "What is egress cost in the cloud?",
-  meta: "Egress cost is what a cloud charges for data leaving a Region; ingress from the internet is free. See how AWS data transfer and Azure bandwidth are charged.",
-  h1: "What is egress cost in the cloud?",
-  card: "Egress cost is the fee a cloud charges for data leaving a Region, to the internet or another Region.",
+  title: "What is data egress? Egress cost and fees explained",
+  meta: "Data egress is data leaving a cloud Region, and egress cost is its fee. Learn the egress and ingress meaning, and how AWS and Azure egress fees work.",
+  h1: "What is data egress? Egress cost and fees explained",
+  card: "Data egress is data leaving a cloud Region, such as your users’ downloads.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
-      text: "Egress cost is the fee a cloud charges for data leaving a Region, to the internet or another Region. Data egress is data going out, such as your users’ downloads. Data coming in from the internet (ingress) is free on Azure and AWS.",
+      text: "Data egress is data leaving a cloud Region, such as your users’ downloads. Egress cost is the per-GB fee for it, also called egress fees or egress charges.",
     },
   ],
   sections: [
     {
+      id: "egress-vs-ingress-whats-the-difference",
+      title: "Egress vs ingress: what’s the difference?",
+      blocks: [
+        {
+          kind: "p",
+          text: "Data ingress is data coming into a cloud Region, such as uploads. Egress and ingress are the two directions of cloud data transfer.",
+        },
+        {
+          kind: "p",
+          text: "Ingress from the internet is free on Azure and AWS. Both give you 100\u00a0GB a month out to the internet free (October 2026). Prices change.",
+        },
+      ],
+    },
+    {
       id: "egress-cost-in-aws-and-azure",
-      title: "AWS data transfer costs and Azure bandwidth costs",
+      title: "How AWS data transfer costs compare with Azure",
       blocks: [
         { kind: "p", text: "AWS calls egress fees data transfer, and Azure calls them bandwidth." },
         {
           kind: "ul",
           items: [
-            "On AWS, the rate depends on the service and the source Region.",
-            "The egress cost in Azure is charged per GB in tiers, by where data leaves and how it’s routed.",
-            "Both give you 100\u00a0GB a month out to the internet free (October 2026). Prices change.",
+            "AWS charges for data transfer by service and by source Region, so the AWS data transfer fee for a GB varies.",
+            "Azure egress cost is charged per GB, in tiers, by where data leaves and how it’s routed.",
+            "Azure egress charges apply when you copy data from Azure to an on-premises server over the internet, at the usual per-GB rates.",
             "Between Regions, both charge for data on the way out, not on arrival.",
           ],
         },
         { kind: "svg", figure: figure1 },
-      ],
-    },
-    {
-      id: "cross-az-data-transfer-cost-an-example",
-      title: "Cross-AZ data transfer cost: an example",
-      blocks: [
+        {
+          kind: "h3",
+          id: "cross-az-data-transfer-cost-an-example",
+          title: "AWS data transfer charges between Availability Zones: an example",
+        },
         {
           kind: "p",
           text: "AWS also charges for data between Availability Zones (AZs), the separate locations in one Region. It charges the sender and the receiver, but some services carry it free.",
@@ -58,17 +71,13 @@ export const term: GlossaryTerm = {
           kind: "ul",
           items: [
             "You pay per GB moved, so the cost grows with traffic, not machine size.",
+            "To estimate AWS egress charges before you build, use the free AWS Pricing Calculator. It works out your AWS egress cost from the AWS Price List.",
             [
               "A Service’s ",
               { code: "trafficDistribution" },
               " field, generally available since Kubernetes 1.33, can prefer same-zone pods.",
             ],
             "On EKS, the AWS Load Balancer Controller’s ip mode sends traffic straight to pods, skipping a cross-zone hop.",
-            [
-              "The ",
-              { a: "free assessment", href: "/assessment" },
-              " works out what your clusters and disks could save.",
-            ],
           ],
         },
       ],
@@ -77,7 +86,7 @@ export const term: GlossaryTerm = {
   related: [
     {
       title: "Cloud cost anomaly detection",
-      line: "Flags sudden spend spikes, egress included.",
+      line: "Flags sudden cost spikes, egress included.",
       href: "/learn/glossary/cloud-cost-anomaly-detection",
     },
     {
@@ -117,6 +126,11 @@ export const term: GlossaryTerm = {
       title: "“Cost Optimization - Networking”",
       url: "https://docs.aws.amazon.com/eks/latest/best-practices/cost-opt-networking.html",
       note: " (Amazon EKS Best Practices Guide)",
+    },
+    {
+      publisher: "AWS",
+      title: "“What is AWS Pricing Calculator?”",
+      url: "https://docs.aws.amazon.com/pricing-calculator/latest/userguide/what-is-pricing-calculator.html",
     },
   ],
 };

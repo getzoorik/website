@@ -7,11 +7,10 @@ import { NEW_TAB_HINT, isOffSite, offSiteProps } from "@/lib/links";
 /**
  * `/cloud-cost-optimization-research-papers`, on /community's frame (Learn's):
  *
- *   hero          the page's name and its deck
+ *   hero          the page's name and its deck: whose papers they are, and whose notes
  *   papers        one group per subject, drawn as the Docs hub draws a group (its name, its line, the hairline), its
  *                 papers on /community's Read more tiles, two by two: the paper's name as an h3, then who wrote it
  *                 and where, then our note; only the name is the link, and it opens the publisher's page in a new tab
- *   note          after the groups, in the community page's small type: whose papers they are, and whose notes
  *   closing row   the site's assessment row, for both products, as every Learn page ends
  *
  * A server component with no script of its own.
@@ -61,7 +60,7 @@ function Group({ group }: { readonly group: ResearchGroup }): React.JSX.Element 
 }
 
 export function ResearchPage(): React.JSX.Element {
-  const { hero, groups, note } = researchPage;
+  const { hero, groups } = researchPage;
   return (
     <LearnFrame hero={{ title: named(hero.title), deck: named(hero.deck) }}>
       <section className="sec" id="papers" aria-label={researchPage.label}>
@@ -69,7 +68,6 @@ export function ResearchPage(): React.JSX.Element {
           {groups.map((group) => (
             <Group group={group} key={group.id} />
           ))}
-          <p className="cm-note">{named(note)}</p>
         </div>
       </section>
     </LearnFrame>

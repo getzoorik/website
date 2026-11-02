@@ -7,20 +7,20 @@ export const article: Article = {
   title: "Azure VM disk usage: check used vs provisioned",
   meta: "Azure VM disk usage lives inside the guest, not in Azure disk metrics. Read used space with df, Run Command or Azure Monitor and match it to what you pay for.",
   h1: "Azure VM disk usage: how to check used vs provisioned space",
-  deck: "Azure charges for the size you provision, but its disk metrics can’t see inside it. How to read used space and compare.",
+  deck: "Match each mount inside the VM to the Azure disk behind it, whose size is what you pay for.",
   card: "You pay for provisioned size, but Azure’s disk metrics can’t see used space. Check it in the VM and at scale.",
   product: "amoeba",
   hub: "Block storage",
   topic: "Azure block storage",
   published: "2026-10-23",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "shubankar",
   cover: "/learn-covers/zoorik-learn-azure-vm-disk-usage-1200x630.webp",
   coverAlt: "Azure VM disk usage: df -Th shows the used space against each disk’s provisioned size",
   short: [
-    "Azure VM disk usage is two numbers: the provisioned size you pay for and the space your files use. A disk’s portal page and its charges show only the first, and Azure’s platform disk metrics report neither. Used space is known only to the filesystem inside the VM, so read it there, with ",
+    "Azure VM disk usage is two numbers: the provisioned size you pay for, and the space your files use. Azure’s disk metrics don’t report used space, which only the filesystem inside the VM knows. Read it there with ",
     { a: { code: "df -Th" }, href: "/learn/glossary/df-vs-du" },
-    " in a shell or through Run Command, or collect it with Azure Monitor Agent’s guest metrics. Compare the two, disk by disk.",
+    ", through Run Command or with Azure Monitor Agent, then compare the two, disk by disk.",
   ],
   sections: [
     {
@@ -34,7 +34,7 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Worked example",
-          text: "On that disk, 50 ÷ 500 = 10% of the provisioned size is in use, and the other 500 − 50 = 450\u00a0GiB, 90%, holds no data. That’s 500 ÷ 50 = 10\u00a0GiB provisioned per GiB of data.",
+          text: "On that disk, 50 ÷ 500 = 10% of the provisioned size is in use. The other 500 − 50 = 450\u00a0GiB, 90%, holds no data. That’s 500 ÷ 50 = 10\u00a0GiB provisioned per GiB of data.",
         },
         { kind: "p", text: "The same guide gives three cases:" },
         {
@@ -57,7 +57,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Azure’s disk metrics for VMs cover I/O, throughput, queue depth and latency, plus bursting credits and the share of a disk’s provisioned IOPS and bandwidth you consume. Used and free space aren’t among them. From outside the VM, a disk is a block device of a fixed size, and only the filesystem tracks which of its blocks hold live files.",
+          text: "Azure’s disk metrics for VMs cover I/O, throughput, queue depth, latency and bursting, and the share of provisioned IOPS and bandwidth you consume. Used and free space aren’t among them. From outside the VM, a disk is a block device of a fixed size, and only the filesystem tracks which blocks hold live files.",
         },
         { kind: "svg", figure: figure1 },
       ],
@@ -66,10 +66,6 @@ export const article: Article = {
       id: "how-to-check-disk-usage-in-an",
       title: "How to check disk usage in an Azure VM",
       blocks: [
-        {
-          kind: "p",
-          text: "The check has two halves. First, read each filesystem’s size and use inside the guest. Then tie each filesystem to the Azure disk behind it, whose size is the one you pay for.",
-        },
         {
           kind: "h3",
           id: "on-linux-read-each-filesystem-with-df",
@@ -104,7 +100,7 @@ export const article: Article = {
             { code: "df" },
             " measures the filesystem, and the filesystem can be smaller than the disk. ",
             { a: "Expanding a disk in Azure", href: "/learn/azure-disk-expand-without-downtime" },
-            " is half the job: Microsoft’s guide has you expand the managed disk first, then the partition and the filesystem inside Linux. A disk grown without the second step is charged for space ",
+            " is half the job: you expand the managed disk first, then the partition and the filesystem inside Linux. A disk grown without the second step is charged for space ",
             { code: "df" },
             " never counts, so always take the provisioned size from Azure.",
           ],
@@ -158,9 +154,15 @@ export const article: Article = {
             { code: "/opt/db/data" },
             " on the disk at LUN 1 and ",
             { code: "/opt/db/log" },
-            " on LUN 2. On a VM that exposes its disks through an NVMe controller, the ",
+            " on LUN 2.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "On a VM whose disks sit on an NVMe controller, the ",
             { code: "azure-nvme-id" },
-            " tool from the azure-vm-utils package prints each data disk with its LUN, in lines such as ",
+            " tool from the azure-vm-utils package prints each data disk with its LUN. Its lines read like ",
             { code: "/dev/nvme0n2: type=data, lun=0" },
             ".",
           ],
@@ -208,17 +210,25 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Matching a disk to Azure goes by LUN: comparing sizes can work, Microsoft notes, but not when several attached disks are the same size. In Disk Management, a disk’s Properties show the LUN in the Location field on the General tab. If the disks sit in a Storage Spaces pool, Server Manager lists each one’s LUN under Physical Disks instead. Then match it to Azure with steps 2 and 3 above.",
+          text: "Matching a disk to Azure goes by LUN: comparing sizes can work, Microsoft notes, but not when several attached disks are the same size.",
+        },
+        {
+          kind: "p",
+          text: "In Disk Management, a disk’s Properties show the LUN in the Location field on the General tab. If the disks sit in a Storage Spaces pool, Server Manager lists each one’s LUN under Physical Disks instead. Then match it to Azure with steps 2 and 3 above.",
         },
       ],
     },
     {
       id: "check-azure-vm-disk-space-without-ssh",
-      title: "Check Azure VM disk space with Run Command, without SSH or RDP",
+      title: "Use Azure Run Command to see disk usage without SSH or RDP",
       blocks: [
         {
           kind: "p",
-          text: "For one VM, or a VM whose SSH and RDP ports are both closed, Run Command runs a script inside the guest through the VM agent and returns the output. Microsoft calls it one of the only ways to troubleshoot a VM in that state. It’s also the shortest way to check current usage on an Azure VM disk from your own terminal:",
+          text: [
+            "Run Command runs a script inside the guest through the VM agent and returns the output, even when SSH and RDP are both closed. Microsoft calls it one of the only ways to troubleshoot a VM in that state. It’s also the shortest way to run ",
+            { code: "df" },
+            " on one VM from your own terminal:",
+          ],
         },
         {
           kind: "code",
@@ -259,7 +269,7 @@ export const article: Article = {
           text: [
             "With OpenTelemetry metrics, which Microsoft recommends for new deployments, the counter to collect is ",
             { code: "system.filesystem.usage" },
-            ": bytes per filesystem, with ",
+            ". It counts bytes per filesystem, with ",
             { code: "mountpoint" },
             " and ",
             { code: "state" },
@@ -285,11 +295,11 @@ export const article: Article = {
           text: [
             "Metric names and labels that contain dots go in quotes inside the braces, the UTF-8 syntax Prometheus 3.0 introduced. Grouping by ",
             { code: '"Microsoft.resourceid"' },
-            " makes each row name its VM, and dividing by 1024 three times turns bytes into GiB. The share query’s denominator includes reserved space. For the sample’s ",
+            " makes each row name its VM, and dividing by 1024 three times turns bytes into GiB. The share query counts reserved space too, so for the sample’s ",
             { code: "/opt/db/data" },
-            " it gives 30 ÷ 32 ≈ 94%, a little below the 98% that ",
+            " it gives 30 ÷ 32 ≈ 94%, a little below ",
             { code: "df" },
-            " prints.",
+            "’s 98%.",
           ],
         },
         {
@@ -297,9 +307,9 @@ export const article: Article = {
           text: [
             "If you collect classic performance counters into a Log Analytics workspace instead, the Linux counter is ",
             { code: "Logical Disk(*)\\% Free Space" },
-            ", where the asterisk gives each mount its own row. Windows’s default list has ",
+            ", with a row per mount. Windows’s default list has ",
             { code: "\\LogicalDisk(_Total)\\% Free Space" },
-            ", one figure for all drives together, so collect the counter per drive in your data collection rule if you want a row for each. The readings land in the Perf table:",
+            ", one figure for all drives together, so collect it per drive in your data collection rule. The readings land in the Perf table:",
           ],
         },
         {
@@ -327,7 +337,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "An Azure disk utilization report needs one row per mount: the VM, the mount, every LUN and disk behind it, their provisioned sizes added up, and the used space. Each source above holds one piece of that row:",
+          text: "An Azure disk utilization report needs one row per mount. Each row holds the VM, the mount, every LUN and disk behind it, their provisioned sizes added up, and the used space. Each source above fills one piece:",
         },
         {
           kind: "ul",
@@ -345,7 +355,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The device and LUN reads happen inside each VM, so a fleet report takes one SSH session or Run Command per VM, and the Run Command limits above apply. Then read each row in order:",
+          text: "The device and LUN reads happen inside each VM, so a fleet report takes one SSH session or Run Command per VM. The Run Command limits above apply. Then read each row in order:",
         },
         {
           kind: "ol",
@@ -362,7 +372,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Azure can’t take the empty space back in place. Microsoft’s expand guide says shrinking an existing disk “isn’t supported and might result in data loss.” Freeing blocks with TRIM doesn’t reduce the disk’s own cost either: Microsoft describes TRIM as saving money on storage charged by consumption, such as unmanaged standard disks and disk snapshots.",
+          text: "Azure can’t take the empty space back in place. Microsoft’s expand guide says shrinking an existing disk “isn’t supported and might result in data loss.”",
+        },
+        {
+          kind: "p",
+          text: "Freeing blocks with TRIM doesn’t reduce the disk’s own cost either. Microsoft describes TRIM as saving money on storage charged by consumption, such as unmanaged standard disks and disk snapshots.",
         },
         {
           kind: "p",
@@ -406,11 +420,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Then Amoeba rightsizes. It moves the VM’s data mounts onto one btrfs pool sized to your data, with room to grow. Each mount keeps its path.",
+          text: "Then Amoeba rightsizes. It copies the data onto one btrfs pool while your services run, and each mount keeps its path. At the switch onto the pool, the systemd services that use those mounts get a short restart.",
         },
         {
           kind: "p",
-          text: "It copies the data while services run, and the systemd services that use those mounts restart at the switch onto the pool. After that, the pool grows before it fills, and shrinks one disk at a time when your data goes down and stays down.",
+          text: "After that, the pool grows before it fills, and shrinks one disk at a time when your data goes down and stays down.",
         },
         {
           kind: "p",
@@ -420,14 +434,6 @@ export const article: Article = {
               href: "/azure-managed-disk-cost-optimization",
             },
             " covers the move and what a VM needs in full.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "To see the gap on your own VMs first, run the ",
-            { a: "free assessment", href: "/assessment?p=amoeba" },
-            " in your terminal or Cloud Shell. It runs a command inside your VMs only after you say yes, and sends nothing to Zoorik. What you get is one PDF with each VM’s estimated saving at list price.",
           ],
         },
       ],

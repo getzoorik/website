@@ -4,14 +4,14 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/instance-st
 export const term: GlossaryTerm = {
   slug: "instance-store",
   term: "Instance store (AWS EC2)",
-  title: "What is instance store in AWS?",
-  meta: "AWS instance store is temporary EC2 instance storage on the host, at no extra charge. See when its data is lost, instance store vs EBS, and what it costs.",
-  h1: "What is instance store in AWS?",
+  title: "What is AWS instance store (EC2 instance storage)?",
+  meta: "EC2 instance store is temporary AWS instance storage on its host, at no extra charge. See when its data is lost, instance store vs EBS, and what it costs.",
+  h1: "What is AWS instance store (EC2 instance storage)?",
   card: "Instance store in AWS is temporary block storage for an EC2 instance, a server in AWS.",
   group: "block-storage",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -36,6 +36,22 @@ export const term: GlossaryTerm = {
     { kind: "svg", figure: figure1 },
   ],
   sections: [
+    {
+      id: "what-is-ephemeral-storage",
+      title: "What is ephemeral storage in AWS, Azure and Kubernetes?",
+      blocks: [
+        {
+          kind: "p",
+          text: [
+            "In Kubernetes, each node’s ",
+            { a: "local ephemeral storage", href: "/learn/kubernetes-ephemeral-storage" },
+            " holds ",
+            { code: "emptyDir" },
+            " volumes, container logs and the writable layers of running containers.",
+          ],
+        },
+      ],
+    },
     {
       id: "an-example-a-cache-on-instance-store",
       title: "An example: a cache on instance store",
@@ -85,14 +101,6 @@ export const term: GlossaryTerm = {
             ],
           ],
         },
-        {
-          kind: "p",
-          text: [
-            "The ",
-            { a: "free assessment", href: "/assessment?p=amoeba" },
-            " works out what your disks could save.",
-          ],
-        },
       ],
     },
   ],
@@ -139,5 +147,10 @@ export const term: GlossaryTerm = {
       url: "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volumes.html",
     },
     { publisher: "AWS", title: "“Amazon EBS pricing”", url: "https://aws.amazon.com/ebs/pricing/" },
+    {
+      publisher: "Kubernetes",
+      title: "“Local ephemeral storage”",
+      url: "https://kubernetes.io/docs/concepts/storage/ephemeral-storage/",
+    },
   ],
 };

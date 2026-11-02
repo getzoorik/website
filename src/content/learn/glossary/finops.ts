@@ -5,21 +5,34 @@ export const term: GlossaryTerm = {
   slug: "finops",
   term: "FinOps",
   title: "What is FinOps? Cloud FinOps explained",
-  meta: "FinOps means finance, engineering and business teams sharing ownership of cloud cost. Learn the three phases of cloud FinOps and how it works on Azure and AWS.",
+  meta: "The FinOps meaning is in the name: finance plus DevOps, with teams sharing ownership of cloud cost. See the three FinOps phases, and FinOps on AWS and Azure.",
   h1: "What is FinOps? Cloud FinOps explained",
   card: "FinOps, or cloud FinOps, is a practice where finance, engineering and business teams share ownership of cloud cost.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
-      text: "FinOps, or cloud FinOps, is a practice where finance, engineering and business teams share ownership of cloud cost. The FinOps meaning is in its name: finance plus DevOps. Microsoft says its goal isn’t to save money, but to get more business value from the cloud.",
+      text: "FinOps, or cloud FinOps, is a practice where finance, engineering and business teams share ownership of cloud cost. The FinOps meaning is in its name: finance plus DevOps.",
     },
-    { kind: "p", text: "In simple terms, each team owns its cloud cost." },
+    {
+      kind: "p",
+      text: "Microsoft says FinOps means more business value from the cloud. Its goal isn’t to save money.",
+    },
   ],
   sections: [
+    {
+      id: "finops-vs-devops",
+      title: "FinOps vs DevOps",
+      blocks: [
+        {
+          kind: "p",
+          text: "DevOps combines development and operations, so developers also answer for how their changes run. FinOps adds finance, so engineers weigh cloud cost as well as uptime and performance.",
+        },
+      ],
+    },
     {
       id: "the-finops-framework-inform-optimize-operate",
       title: "The FinOps Framework: inform, optimize, operate",
@@ -58,11 +71,38 @@ export const term: GlossaryTerm = {
     },
     {
       id: "cloud-finops-in-azure-and-aws",
-      title: "Cloud FinOps in Azure and AWS",
+      title: "FinOps on AWS and Azure",
       blocks: [
         {
           kind: "p",
-          text: "Microsoft bases its Azure FinOps guidance largely on the FinOps Framework. For tracking cloud cost, it points to Microsoft Cost Management. AWS has a similar framework, Cloud Financial Management, with four pillars: see, save, plan and run.",
+          text: "Microsoft bases its Azure FinOps guidance largely on the FinOps Framework. For tracking cloud cost, it points to Microsoft Cost Management.",
+        },
+        {
+          kind: "h3",
+          id: "aws-cloud-financial-management-four-pillars",
+          title: "AWS Cloud Financial Management: four pillars",
+        },
+        {
+          kind: "p",
+          text: "FinOps is sometimes called cloud financial management. For FinOps in AWS, AWS Cloud Financial Management (CFM) lets finance, product, technology and business teams manage, optimize and plan costs. It has four pillars:",
+        },
+        {
+          kind: "ul",
+          items: [
+            "See measures where costs come from and holds teams accountable.",
+            "Save optimizes costs with pricing and resource recommendations.",
+            "Plan sets budgets and forecasts.",
+            "Run sets guardrails and governance.",
+          ],
+        },
+        {
+          kind: "h3",
+          id: "focus-one-format-for-cloud-cost-data",
+          title: "FOCUS: one format for cloud cost data",
+        },
+        {
+          kind: "p",
+          text: "Microsoft Cost Management offers a dataset in the FinOps Open Cost and Usage Specification (FOCUS). AWS Data Exports offers a FOCUS 1.0 table. So cost data from both clouds fits one schema.",
         },
       ],
     },
@@ -76,7 +116,7 @@ export const term: GlossaryTerm = {
             [
               "Reports alone don’t ",
               { a: "reduce cloud costs", href: "/cloud-cost-optimization" },
-              ". Cost falls when you change what runs, or the rate you pay.",
+              ". Changing what runs, or the rate you pay, does.",
             ],
             [
               "Our library lists ",
@@ -141,6 +181,21 @@ export const term: GlossaryTerm = {
       publisher: "AWS",
       title: "“Practice Cloud Financial Management”",
       url: "https://docs.aws.amazon.com/wellarchitected/latest/cost-optimization-pillar/practice-cloud-financial-management.html",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“What is DevOps?”",
+      url: "https://learn.microsoft.com/en-us/devops/what-is-devops",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“What is FOCUS?”",
+      url: "https://learn.microsoft.com/en-us/cloud-computing/finops/focus/what-is-focus",
+    },
+    {
+      publisher: "AWS",
+      title: "“FOCUS 1.0 with AWS columns”",
+      url: "https://docs.aws.amazon.com/cur/latest/userguide/table-dictionary-focus-1-0-aws.html",
     },
   ],
 };

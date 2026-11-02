@@ -4,18 +4,18 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/azure-hybri
 export const term: GlossaryTerm = {
   slug: "azure-hybrid-benefit",
   term: "Azure Hybrid Benefit",
-  title: "What is Azure Hybrid Benefit?",
-  meta: "Azure Hybrid Benefit (AHB) lets you use Windows Server, SQL Server, RHEL and SLES licenses you own on Azure. Who qualifies, what it removes and how AKS uses it.",
-  h1: "What is Azure Hybrid Benefit?",
-  card: "Azure Hybrid Benefit is an Azure offer that lets you use licenses you own on Azure.",
+  title: "What is Azure Hybrid Benefit (AHB)?",
+  meta: "Azure Hybrid Benefit (AHB) lets you use Windows Server, SQL Server, RHEL and SLES licenses you own on Azure. Who qualifies, and its Azure Windows license rules.",
+  h1: "What is Azure Hybrid Benefit (AHB)?",
+  card: "Azure Hybrid Benefit is an Azure benefit that lets you use licenses you own on Azure.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
-      text: "Azure Hybrid Benefit is an Azure offer that lets you use licenses you own on Azure. It covers Windows Server and SQL Server licenses with active Software Assurance or a qualifying subscription license. Red Hat Enterprise Linux (RHEL) and SUSE Linux Enterprise Server (SLES) subscriptions count too.",
+      text: "Azure Hybrid Benefit is an Azure benefit that lets you use licenses you own on Azure. It covers Windows Server and SQL Server licenses with active Software Assurance or qualifying subscription licenses. Red Hat Enterprise Linux (RHEL) and SUSE Linux Enterprise Server (SLES) subscriptions count too.",
     },
   ],
   sections: [

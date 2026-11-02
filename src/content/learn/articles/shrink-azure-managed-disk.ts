@@ -5,16 +5,16 @@ import { figure as figure3 } from "@/features/learn/figures/shrink-azure-managed
 
 export const article: Article = {
   slug: "shrink-azure-managed-disk",
-  title: "Reduce Azure disk size: can a managed disk shrink?",
-  meta: "You can’t reduce Azure disk size in place: managed disks only grow. The copy route step by step, the OS disk case, and how Amoeba rightsizes data disks.",
+  title: "Shrink an Azure managed disk: copy to a smaller one",
+  meta: "Azure won’t shrink a managed disk in place. The copy to a smaller disk, why an Azure OS disk swap needs the same size, and how Amoeba rightsizes data disks.",
   h1: "Can you shrink an Azure managed disk?",
-  deck: "Not in place. How to reduce Azure disk size by copying, what it costs you, and how Amoeba rightsizes data disks.",
+  deck: "Deleting files never reduces the cost: Azure charges a managed disk for its size, not its data.",
   card: "Not in place. The copy route, the OS disk case, and how Amoeba rightsizes data disks into one pool.",
   product: "amoeba",
   hub: "Block storage",
   topic: "Azure block storage",
   published: "2026-10-21",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "vineet",
   cover: "/learn-covers/zoorik-learn-shrink-azure-managed-disk-1200x630.webp",
   coverAlt:
@@ -22,7 +22,7 @@ export const article: Article = {
   short: [
     "No, you can’t shrink an ",
     { a: "Azure managed disk", href: "/learn/glossary/azure-managed-disk" },
-    " in place. A managed disk can grow but never get smaller: Microsoft Learn says shrinking an existing disk “isn’t supported and might result in data loss.” To reduce Azure disk size, you copy the data to a new, smaller disk, move the mount and delete the old disk. That works for data disks, but an OS disk needs a new VM.",
+    " in place: Microsoft Learn says shrinking an existing disk “isn’t supported and might result in data loss.” For a data disk, you copy the data to a new, smaller disk, move the mount and delete the old disk. An OS disk needs a new VM.",
   ],
   sections: [
     {
@@ -31,19 +31,19 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Picture a VM with four 512\u00a0GiB data disks, 2,048\u00a0GiB in all, holding 1,000\u00a0GiB. More than half of what you pay for (1,048\u00a0GiB) is empty. Deleting files won’t reduce the cost.",
+          text: "Picture a VM with four 512\u00a0GiB data disks, 2,048\u00a0GiB in all, holding 1,000\u00a0GiB. More than half of what you pay for (1,048\u00a0GiB) is empty.",
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
-          text: "You pay for a managed disk’s provisioned size, not for the data it holds. Azure “maps the provisioned size (rounded up) to the nearest offered disk size”. So a 200\u00a0GiB Standard SSD is charged at the 256\u00a0GiB size, which Azure calls E15.",
+          text: "Azure “maps the provisioned size (rounded up) to the nearest offered disk size”. So a 200\u00a0GiB Standard SSD is charged at the 256\u00a0GiB size, which Azure calls E15.",
         },
         {
           kind: "p",
           text: [
-            "Premium SSD and Standard SSD come in fixed ",
-            { a: "Azure disk sizes", href: "/learn/glossary/azure-disk-sizes" },
-            " that double from 4\u00a0GiB to 32,767\u00a0GiB. A 512\u00a0GiB ",
+            "Premium SSD and Standard SSD ",
+            { a: "sizes are fixed", href: "/learn/glossary/azure-disk-sizes" },
+            ", doubling from 4\u00a0GiB to 32,767\u00a0GiB. A 512\u00a0GiB ",
             { a: "Premium SSD", href: "/learn/glossary/azure-premium-ssd" },
             " (size P20) therefore costs the same whether it holds 500\u00a0GiB or 5\u00a0GiB.",
           ],
@@ -99,14 +99,14 @@ export const article: Article = {
     },
     {
       id: "the-manual-route-copy-to-a-smaller",
-      title: "How to reduce Azure disk size",
+      title: "How to shrink an Azure data disk by copying it",
       blocks: [
         {
           kind: "p",
           text: [
-            "On a Linux VM, you shrink an Azure data disk by copying its data to a new, smaller disk in two ",
+            "On a Linux VM, copy the data to a new, smaller disk in two ",
             { code: "rsync" },
-            " passes, stopping the services on that mount only for the second. The steps follow Microsoft Learn’s attach and detach guides, with ",
+            " passes, stopping services only for the second. The steps follow Microsoft Learn’s attach and detach guides, with ",
             { code: "/datadrive" },
             " as the data mount and ",
             { code: "/dev/sdc" },
@@ -131,14 +131,14 @@ export const article: Article = {
               { code: "df -Th" },
               ", then choose the new size. On Premium SSD and Standard SSD, pick a step size, since a 1,100\u00a0GiB disk is charged as 2,048\u00a0GiB. ",
               { a: "Premium SSD v2", href: "/learn/premium-ssd-v2-vs-premium-ssd" },
-              " has no steps, but it can’t be an OS disk. In most regions with availability zones, it attaches only to zonal VMs.",
+              " has no steps, but in most regions with availability zones it attaches only to zonal VMs.",
             ],
           ],
         },
         {
           kind: "callout",
           label: "Worked example",
-          text: "Spread evenly, the example’s 1,000\u00a0GiB puts 1,000 ÷ 4 = 250\u00a0GiB on each 512\u00a0GiB disk. Copying each one to the next step down, 256\u00a0GiB, halves the charged size to 1,024\u00a0GiB but leaves every new disk 98% full. So on Premium SSD and Standard SSD, copy a disk only when its data, plus the room you want, fits in half its charged size. This VM passes only if 6\u00a0GiB of room per disk (256 − 250) is enough.",
+          text: "Spread evenly, the example’s 1,000\u00a0GiB means 250\u00a0GiB per 512\u00a0GiB disk. Copying to the next step down, 256\u00a0GiB, halves the charged size to 1,024\u00a0GiB but leaves each new disk 98% full. So on Premium SSD and Standard SSD, copy a disk only when its data plus the room you want fits in half its charged size.",
         },
         {
           kind: "ol",
@@ -250,7 +250,7 @@ export const article: Article = {
             ],
           ],
         },
-        { kind: "h3", id: "what-the-copy-costs-you", title: "What the copy costs you" },
+        { kind: "h3", id: "what-the-copy-costs-you", title: "What the Azure disk copy costs you" },
         {
           kind: "ul",
           items: [
@@ -286,12 +286,16 @@ export const article: Article = {
     },
     {
       id: "can-you-reduce-the-os-disk-size",
-      title: "Can you reduce the OS disk size in Azure?",
+      title: "Can you swap an Azure OS disk for a smaller one?",
       blocks: [
         {
           kind: "p",
+          text: "No. Azure can swap a VM’s OS disk for another managed disk, but Microsoft requires that “the current and replacement OS disks are the same size.”",
+        },
+        {
+          kind: "p",
           text: [
-            "Not in place, and not by swapping in a smaller disk. Azure can swap a VM’s OS disk for another managed disk, but Microsoft requires that “the current and replacement OS disks are the same size.” The file copy above doesn’t fit an OS disk, which also holds the partitions the VM boots from (",
+            "The file copy above doesn’t fit an OS disk, which also holds the partitions the VM boots from (",
             { code: "/boot" },
             " and ",
             { code: "/boot/efi" },
@@ -300,7 +304,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "So a smaller OS disk means a new VM, and downtime from when your services stop on the old VM until they start on the new one.",
+          text: "So a smaller OS disk means a new VM. Your services are down from when they stop on the old VM until they start on the new one.",
         },
         {
           kind: "callout",
@@ -326,7 +330,7 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " makes the copy once, onto a pool of disks, then rightsizes that pool autonomously while your services keep running. It works on the data disks of running Windows and Linux VMs. It never touches the OS disk.",
+            " makes this copy for you, once, on the data disks of running Windows and Linux VMs. It never touches the OS disk.",
           ],
         },
         {
@@ -340,11 +344,11 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " The services that use those mounts restart once, at the switch onto the pool.",
+              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
             ],
             [
               { b: "The old disks." },
-              " Once the switch is checked, Amoeba snapshots each old disk and deletes the disk. It keeps each snapshot for 7 days, then deletes it too.",
+              " Once the switch is checked, Amoeba snapshots each old disk and deletes the disk. It keeps the snapshot for a few days before deleting it too.",
             ],
             [
               { b: "Rightsizing." },

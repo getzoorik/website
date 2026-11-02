@@ -4,14 +4,14 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/ebs-optimiz
 export const term: GlossaryTerm = {
   slug: "ebs-optimized-instance",
   term: "EBS-optimized instance",
-  title: "What is an EBS-optimized instance?",
-  meta: "An EBS-optimized instance gives Amazon EBS its own bandwidth. See which EC2 types get EBS optimization at no extra cost, and how its limit caps your volumes.",
-  h1: "What is an EBS-optimized instance?",
+  title: "What are Amazon EBS-optimized instances?",
+  meta: "An AWS EBS-optimized instance has its own EBS bandwidth. See which EC2 types get EBS optimization at no extra cost, and how its limits cap your volumes.",
+  h1: "What are Amazon EBS-optimized instances?",
   card: "An EBS-optimized instance is an Amazon EC2 instance, usually a virtual machine (VM), with its own bandwidth for Amazon Elastic Block Store (EBS).",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -47,9 +47,9 @@ export const term: GlossaryTerm = {
         {
           kind: "p",
           text: [
-            "Each AWS EBS-optimized instance type has its own EBS limits. An m6i.large has these, in ",
+            "Each instance type has its own EBS limits, for bandwidth and for ",
             { a: "input/output operations per second (IOPS)", href: "/learn/glossary/iops" },
-            " for 16\u00a0KiB operations:",
+            ". An m6i.large has these IOPS limits, for 16\u00a0KiB operations:",
           ],
         },
         {

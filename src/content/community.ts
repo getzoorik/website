@@ -3,7 +3,7 @@ import { designPartnerPlaces } from "@/content/design-partners";
 import { socialProfiles } from "@/content/footer";
 
 /**
- * `/community`, Zoorik Community: every string the page prints, verbatim from the approved mock.
+ * `/community`, Zoorik Community: every string the page prints, in the approved mock's layout.
  *
  * r/zoorik and Medium are read from the footer's profiles (`socialProfiles`). The other communities are the most
  * important three per group, each checked on its own page on the day `communities.checked` names, and none run by a
@@ -14,7 +14,7 @@ import { socialProfiles } from "@/content/footer";
  * The day /community's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /community's content moves this to that day in the same PR; never the build's date.
  */
-export const communityLastUpdated = "1 November 2026";
+export const communityLastUpdated = "2 November 2026";
 
 /** A profile of the footer's list, by its platform. */
 const profile = (platform: (typeof socialProfiles)[number]["platform"]): string =>
@@ -54,12 +54,12 @@ export const communityPage = {
   meta: {
     title: "Community",
     description:
-      "The communities that matter for FinOps and cloud cost on Kubernetes, Azure and AWS, with r/zoorik and Zoorik News on Medium.",
+      "Talk to the people who build Coral and Amoeba on r/zoorik, and find FinOps communities on Reddit and Slack for cloud cost on Kubernetes, Azure and AWS.",
   },
   /** The page's name (its h1) and the deck under it. */
   hero: {
     title: "Zoorik Community",
-    deck: "Talk to the people who build Coral and Amoeba, and find the communities that matter for FinOps and cloud cost on Kubernetes, Azure and AWS.",
+    deck: "Where to ask about cloud cost on Kubernetes, Azure and AWS, our own subreddit included.",
   },
   /** Our own two, on the band: r/zoorik on the white card, Zoorik News on Medium on the navy one. */
   ours: {
@@ -67,12 +67,12 @@ export const communityPage = {
     label: "Zoorik on Reddit and Medium",
     reddit: {
       title: "r/zoorik",
-      line: "Our community on Reddit. Ask about Coral and Amoeba, share your results and talk to the people who build them.",
+      line: "Ask about Coral and Amoeba, share your results and talk to the people who build them.",
       join: { label: "Join r/zoorik", href: profile("reddit") },
     },
     news: {
       title: "Zoorik News",
-      line: "Our newsletter on Medium: what we ship, and each week’s Zoorik Radar, by email.",
+      line: "Our newsletter: what we ship, and each week’s Zoorik Radar, by email.",
       subscribe: { label: "Subscribe on Medium", href: profile("medium") },
     },
   },
@@ -132,7 +132,7 @@ export const communityPage = {
         communities: [
           {
             name: "r/AZURE",
-            what: "Azure subreddit; cost and billing questions come up regularly.",
+            what: "Azure subreddit; cost questions come up regularly.",
             href: "https://www.reddit.com/r/AZURE/",
             logo: "reddit",
           },
@@ -144,7 +144,7 @@ export const communityPage = {
           },
           {
             name: "Cost Management on Microsoft Q&A",
-            what: "Questions on Azure cost tracking, billing and charges.",
+            what: "Questions on Azure cost tracking and charges.",
             href: "https://learn.microsoft.com/en-us/answers/tags/118/azure-cost-management/",
             logo: "azure",
           },
@@ -161,7 +161,7 @@ export const communityPage = {
           },
           {
             name: "AWS re:Post: Cloud Financial Management",
-            what: "AWS’s Q&A on billing, budgets, Savings Plans and cost optimization.",
+            what: "AWS’s Q&A on budgets, Savings Plans and cost optimization.",
             href: "https://repost.aws/topics/TAF-OeSePUTO6-bKAVIv7NqQ/cloud-financial-management",
             logo: "aws",
           },

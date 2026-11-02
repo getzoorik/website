@@ -4,14 +4,14 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/provisioned
 export const term: GlossaryTerm = {
   slug: "provisioned-iops",
   term: "Provisioned IOPS",
-  title: "What is provisioned IOPS?",
-  meta: "Provisioned IOPS (PIOPS) is the disk performance you set and pay for, used or not. See how AWS and Azure charge for it, with AWS’s own gp3 example.",
-  h1: "What is provisioned IOPS?",
+  title: "What is provisioned IOPS (PIOPS) on AWS and Azure?",
+  meta: "Provisioned IOPS (PIOPS) is the disk performance you set and pay for, used or not. See how Amazon EBS and Azure disks charge for it, with AWS’s gp3 example.",
+  h1: "What is provisioned IOPS (PIOPS) on AWS and Azure?",
   card: "Provisioned IOPS (PIOPS) is the disk performance you set and pay for, counted in input/output operations per second (IOPS).",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -61,14 +61,9 @@ export const term: GlossaryTerm = {
             "Your virtual machine (VM) caps IOPS too. IOPS above its limit are charged but never reached.",
             "You can change IOPS on a running disk on AWS, Premium SSD v2 and Ultra Disk. Azure allows four changes per disk in 24\u00a0hours.",
             [
-              "Before you choose io2, read ",
-              { a: "when more IOPS are worth the price", href: "/learn/io2-vs-gp3" },
-              ".",
-            ],
-            [
               "For disk size, ",
               { a: "Amoeba", href: "/amoeba" },
-              " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously.",
+              " moves a VM’s data disks onto one btrfs pool sized to your data, then rightsizes it autonomously.",
             ],
             [
               "The ",

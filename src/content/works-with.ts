@@ -5,8 +5,8 @@ import { routes } from "@/config/site";
  * works with, each in the footer's "Works with" list: /coral-works-with-cluster-autoscaler, -karpenter,
  * -aks-node-auto-provisioning, -keda, -helm and -terraform. One template draws all six (`WorksWithPage`): the eyebrow,
  * the h1 and the short answer, then Who does what, How they work together, what Coral leaves to the tool (What stays
- * yours on Helm and Terraform), Set up, Questions and Read more, each named after its pair ("Set up Coral with
- * Karpenter"; owner, 1 Nov 2026), then the closing row on Coral.
+ * yours on Helm and Terraform; none on the Cluster Autoscaler page), Set up, Questions and Read more, each named after
+ * its pair ("Set up Coral with Karpenter"; owner, 1 Nov 2026), then the closing row on Coral.
  *
  * Generated once from the checked drafts in `docs/website-seo/new-pages-2026-10-31/<slug>/page.md` through the mock's
  * own parser (`ux-design/website/_tools/ten_pages_mock.py`), so every string is the mock's: quotes and apostrophes as
@@ -19,7 +19,7 @@ import { routes } from "@/config/site";
  */
 
 /** The six pages print no day: the day their content last changed, for the sitemap. Move it in the PR that
- * changes it. */
+ * changes it; a page changed on its own carries its own day (the Cluster Autoscaler page, 2 Nov 2026). */
 export const worksWithLastUpdated = "1 November 2026";
 
 /** The words every works-with page shares: the eyebrow over the h1, and Who does what's first column. */
@@ -58,8 +58,9 @@ export interface WorksWithCopy {
   };
   /** How they work together: the numbered steps. */
   readonly together: readonly string[];
-  /** What Coral leaves to the tool, or What stays yours (Helm, Terraform), at `#leaves` either way. */
-  readonly leaves: { readonly title: string; readonly items: readonly string[] };
+  /** What Coral leaves to the tool, or What stays yours (Helm, Terraform), at `#leaves` either way. None on the Cluster
+   * Autoscaler page (2 Nov 2026): every line there repeated the table, the steps or the line under the h1. */
+  readonly leaves?: { readonly title: string; readonly items: readonly string[] };
   readonly setup: readonly string[];
   readonly questions: readonly WorksWithQuestion[];
   /** Each line a link, then what it holds. */
@@ -73,20 +74,20 @@ export type WorksWithId =
 export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
   clusterAutoscaler: {
     route: routes.coralWorksWithClusterAutoscaler,
-    lastUpdated: worksWithLastUpdated,
+    lastUpdated: "2 November 2026",
     meta: {
-      title: "Cluster Autoscaler and Coral on AKS and EKS",
+      title: "Coral works with Cluster Autoscaler on AKS and EKS",
       description:
-        "On AKS and EKS, Coral rebalances pod requests and empties spare nodes one at a time. The Cluster Autoscaler adds nodes and removes the ones Coral empties.",
+        "How Coral works with the Cluster Autoscaler on AWS EKS and Azure AKS: Coral rebalances pod requests and empties spare nodes; the autoscaler removes them.",
     },
     hero: {
       title: "Coral works with Cluster Autoscaler",
-      deck: "The Cluster Autoscaler adds nodes for pods that can’t be scheduled, and removes underused nodes whose pods fit elsewhere. To reduce cost, Coral rebalances CPU and memory requests to real use and empties spare nodes one at a time. The autoscaler removes them, and Coral never adds nodes for demand, so the two don’t fight.",
+      deck: "Coral empties spare nodes for the autoscaler to remove and never adds nodes for demand, so the two don’t fight.",
     },
     sections: {
       who: "What the Kubernetes Cluster Autoscaler does, and what Coral does",
       together: "How Coral and the Cluster Autoscaler work together",
-      setup: "Set up Coral with the Cluster Autoscaler",
+      setup: "Set up Coral with the Cluster Autoscaler on AKS and EKS",
       questions: "Questions about Coral and the Cluster Autoscaler",
       readMore: "More on the Cluster Autoscaler and Coral",
     },
@@ -121,70 +122,54 @@ export const worksWithPages: Readonly<Record<WorksWithId, WorksWithCopy>> = {
       ],
     },
     together: [
-      "When you switch on “Automatically optimize”, Coral rebalances each container’s requests to what it really uses.",
+      "With “Automatically optimize” on, Coral rebalances each container’s CPU and memory requests to what it really uses.",
       "Before it drains a node, Coral checks on the live cluster that every pod fits on another node.",
       "Coral cordons and drains one node at a time, within your PodDisruptionBudgets.",
-      "After the wait set in “Wait before removing empty nodes”, Coral hands the empty node to the Cluster Autoscaler.",
-      "The autoscaler’s own timers decide when that node goes, and it adds nodes again when demand grows.",
+      "After the “Wait before removing empty nodes” delay, Coral hands the empty node to the Cluster Autoscaler, whose own timers decide when it goes.",
     ],
-    leaves: {
-      title: "What Coral leaves to the Cluster Autoscaler",
-      items: [
-        "**Adding nodes.** Scale-up belongs to the autoscaler. Coral never adds capacity for demand.",
-        "**Deleting the nodes it runs.** Coral empties a node and hands it over. The autoscaler deletes it.",
-        "**When an empty node goes.** The autoscaler’s own timers decide.",
-        "**Room for future growth.** It is the autoscaler’s job. Coral keeps no idle spare nodes.",
-      ],
-    },
     setup: [
-      "**Your autoscaler stays.** Connect sets up NAP or Karpenter only on a cluster with no autoscaler. With the Cluster Autoscaler in place, it adds neither.",
-      "**Permission to remove nodes.** If you decline it at connect, pools the Cluster Autoscaler runs are optimized as usual. Fixed-size pools wait until you run `zoorikctl cluster grant-node-deletion`.",
-      "**Pool minimums.** That permission lets Coral reduce a pool’s minimum when that minimum alone keeps an emptied node. Our Terraform modules can leave this out.",
-      "**Node pools in Terraform.** Tell Terraform to ignore what the agent changes, or each apply undoes it. [Your own node pool code](/docs/install-coral-with-terraform#your-own-node-pool-code) shows how.",
-      "**A careful start.** Node optimization and the Evictor, which moves pods off lightly used nodes, start at connect. Put the Evictor in “Dry run”, and switch off the node pools you don’t want touched.",
+      "**Your autoscaler stays.** Connect leaves the Cluster Autoscaler in place, and sets up NAP or Karpenter only on a cluster with no autoscaler.",
+      "**Permission to remove nodes.** If you decline it, pools the Cluster Autoscaler runs are optimized as usual. Fixed-size pools wait for `zoorikctl cluster grant-node-deletion`.",
+      "**Pool minimums.** Our Terraform modules can leave out the permission to change a minimum, so each one stays as you set it.",
+      "**Node pools in Terraform.** Tell Terraform to ignore what the agent changes, or each apply undoes it. [The install guide’s node pool section](/docs/install-coral-with-terraform#your-own-node-pool-code) shows how.",
+      "**A careful start.** Node optimization and the Evictor, which moves pods off lightly used nodes, start at connect. Use the Evictor’s “Dry run”, and switch off the pools you want left alone.",
     ],
     questions: [
       {
         question: "Does the Cluster Autoscaler use requests or actual usage?",
         answer: [
-          "Requests. It adds nodes for pods that can’t be scheduled, and removes underused nodes whose pods fit elsewhere, judging both from the pods’ CPU and memory requests, not their real use. It doesn’t change the requests: Coral rebalances them to real use.",
-        ],
-      },
-      {
-        question: "Will Coral fight my Cluster Autoscaler?",
-        answer: [
-          "No. Scale-up stays the autoscaler’s job, and Coral never adds nodes for demand. Coral empties spare nodes, and the autoscaler’s own timers decide when each one goes.",
+          "Requests. It adds nodes for pods that can’t be scheduled, and removes underused nodes whose pods fit elsewhere, judging both from the pods’ CPU and memory requests, not their real use.",
         ],
       },
       {
         question: "Can Coral move work to cheaper machines with only the Cluster Autoscaler?",
         answer: [
-          "No. That needs Karpenter or NAP, and connect sets one up only on a cluster with no autoscaler. With only the Cluster Autoscaler, Coral removes nodes but never changes their size.",
+          "No. With only the Cluster Autoscaler, Coral removes nodes but never changes their size.",
         ],
       },
       {
         question: "Does Coral change my Cluster Autoscaler’s minimums?",
         answer: [
-          "By default, Coral may reduce a pool’s minimum when that minimum alone keeps a node it has emptied. It never raises a count, and disconnect puts the old minimum back. Our Terraform modules can leave out the permission to change a minimum.",
+          "By default, Coral may reduce a pool’s minimum when that minimum alone keeps a node it has emptied. It never raises one, and disconnect puts the old minimum back.",
         ],
       },
       {
         question: "What about pools the Cluster Autoscaler doesn’t run?",
         answer: [
-          "In a fixed-size pool that nothing else manages, Coral deletes the emptied machine itself. It needs the permission to remove nodes, which connect asks for.",
+          "In a fixed-size pool that nothing else manages, Coral deletes the emptied machine itself.",
         ],
       },
       {
         question: "What happens in a sudden surge?",
         answer: [
-          "The HPA adds pods, and pending pods trigger the Cluster Autoscaler to add nodes. Coral keeps no idle spare nodes, so the headroom sits inside each pod’s request.",
+          "The HPA adds pods, and pending pods make the Cluster Autoscaler add nodes. Coral keeps no idle spare nodes, so the headroom sits inside each pod’s request.",
         ],
       },
     ],
     readMore: [
-      "[Coral product guide: Node optimization](/coral-guide#node-optimization): how Coral empties nodes, and who removes them.",
-      "[Coral FAQ: How does Coral interact with Cluster Autoscaler or Karpenter decisions?](/coral-faq#how-does-coral-interact-with-cluster): who adds nodes, and who removes the ones Coral empties.",
-      "[Cluster Autoscaler not scaling down: what keeps nodes running](/learn/cluster-autoscaler-not-scaling-down): why an underused node stays, and the fix.",
+      "[Coral product guide: Node optimization](/coral-guide#node-optimization), on how Coral empties nodes and who removes them.",
+      "[Coral FAQ: How does Coral interact with Cluster Autoscaler or Karpenter decisions?](/coral-faq#how-does-coral-interact-with-cluster) Who adds nodes, and who removes the ones Coral empties.",
+      "[Cluster Autoscaler not scaling down: what keeps nodes running](/learn/cluster-autoscaler-not-scaling-down), why an underused node stays, and the fix.",
       "[Coral works with AKS node auto provisioning](/coral-works-with-aks-node-auto-provisioning): how rebalancing uses NAP on AKS.",
       "[Coral works with Karpenter](/coral-works-with-karpenter): how rebalancing uses Karpenter on EKS.",
     ],

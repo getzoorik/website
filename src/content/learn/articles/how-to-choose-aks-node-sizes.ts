@@ -6,21 +6,21 @@ import { figure as figure3 } from "@/features/learn/figures/how-to-choose-aks-no
 export const article: Article = {
   slug: "how-to-choose-aks-node-sizes",
   title: "AKS VM sizes: how to choose series and size",
-  meta: "How to choose AKS VM sizes: the system node pool rules, the VM series that fits your pods, what the a, p and d letters cost, and the size within a series.",
+  meta: "How to choose AKS VM sizes: system pool rules, the VM series that fits your pods, what the a, p and d letters cost, and checking a size with az vm list-skus.",
   h1: "How to choose AKS VM sizes",
-  deck: "System pool first, then the VM series, the letters and the size, priced at Azure list prices in East US.",
+  deck: "A VM series that doesn’t fit your pods leaves capacity you pay for but no pod requests.",
   card: "Pick AKS node sizes in order: system pool, VM series, letters, then size, with East US list prices.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes cost basics",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "vineet",
   cover: "/learn-covers/zoorik-learn-how-to-choose-aks-node-sizes-1200x630.webp",
   coverAlt:
     "Choose AKS node sizes: more CPU or more memory leaves room paid for, idle, and the size shaped to the pod requests fits",
   short:
-    "To choose AKS VM sizes for your node pools, size the system pool first, then match each user pool’s VM series to its pods’ memory per vCPU. Pick the processor and disk letters next, and the size last: a series usually lists every size at one price per vCPU.",
+    "To choose AKS VM sizes for your node pools, size the system pool first. Then match each user pool’s VM series to its pods’ memory per vCPU. Pick the processor and disk letters next, and the size last: a series usually lists every size at one price per vCPU.",
   sections: [
     {
       id: "how-to-choose-aks-node-sizes",
@@ -108,7 +108,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "User pools can go smaller. Their AKS minimum node size is 2\u00a0vCPUs and 2\u00a0GB of memory, and smaller sizes might not be usable by default. Everything below applies to user pools.",
+          text: "User pools can go smaller. Their AKS minimum node size is 2\u00a0vCPUs and 2\u00a0GB of memory, and smaller sizes might not be usable by default.",
         },
       ],
     },
@@ -138,7 +138,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "When a series and your pods differ, one resource fills first. The rest of the other sits unrequested, and you still pay for it.",
+          text: "When a series and your pods differ, one resource fills first. The rest of the other sits unrequested.",
         },
         { kind: "h3", id: "what-the-wrong-series-costs", title: "What the wrong series costs" },
         {
@@ -379,10 +379,6 @@ export const article: Article = {
             [
               { b: "Requests." },
               " Coral rebalances each container’s CPU and memory requests to what it really uses. That changes the memory per vCPU this guide starts from.",
-            ],
-            [
-              { b: "Spare nodes." },
-              " Coral drains spare nodes one at a time, so your Cluster Autoscaler or NAP can remove them.",
             ],
             [
               { b: "Machine size, with NAP." },

@@ -5,16 +5,16 @@ import { figure as figure3 } from "@/features/learn/figures/increase-ebs-volume-
 
 export const article: Article = {
   slug: "increase-ebs-volume-size",
-  title: "Increase EC2 volume size without downtime on Linux",
-  meta: "Increase EC2 volume size without downtime: modify the EBS volume, then growpart and xfs_growfs or resize2fs while mounted, and why you keep paying for it.",
-  h1: "How to increase EBS volume size without downtime on Linux",
-  deck: "Grow the volume with Elastic Volumes, then its partition and filesystem, while the instance keeps running.",
+  title: "Increase EC2 volume size without any downtime",
+  meta: "Change EC2 volume size without any downtime: modify the EBS volume, then grow the partition with growpart and the filesystem with xfs_growfs or resize2fs.",
+  h1: "How to increase EC2 volume size without any downtime on Linux",
+  deck: "AWS never lets a volume shrink back, so each size you grow to stays the size you pay for.",
   card: "Grow an attached EBS volume and its filesystem on Linux, the limits on changes, and why the new size stays.",
   product: "amoeba",
   hub: "Block storage",
   topic: "AWS block storage",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "swapna",
   cover: "/learn-covers/zoorik-learn-increase-ebs-volume-size-1200x630.webp",
   coverAlt:
@@ -31,7 +31,7 @@ export const article: Article = {
           text: [
             "Picture a 500\u00a0GiB data volume at ",
             { code: "/data" },
-            " on a running EC2 instance, too small for an import due tomorrow. You can grow it to 1,000\u00a0GiB while the application keeps writing. You then pay for 1,000\u00a0GiB from that day on.",
+            " on a running EC2 instance, too small for an import due tomorrow. You can grow it to 1,000\u00a0GiB while the application keeps writing.",
           ],
         },
         {
@@ -47,10 +47,6 @@ export const article: Article = {
           text: "Growing a volume is two jobs. EBS grows the block device, and you extend the partition and filesystem inside the instance, which keep their old size until you do.",
         },
         { kind: "svg", figure: figure1 },
-        {
-          kind: "p",
-          text: "Whether it works without a stop depends on your instance type and volume:",
-        },
         {
           kind: "table",
           columns: [
@@ -99,7 +95,7 @@ export const article: Article = {
               { b: "One at a time." },
               " Each modification must reach ",
               { code: "completed" },
-              " before the next can start, and a volume takes at most four in a rolling 24-hour period. If it fills again before the first one completes, you can’t grow it a second time. So add enough the first time.",
+              " before the next can start, and a volume takes at most four in a rolling 24\u00a0hours. So add enough the first time.",
             ],
             [
               { b: "Charged at once." },
@@ -125,7 +121,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Those numbers follow the order the devices answered at boot, which can change between starts. The ID is stable, and an NVMe EBS volume carries it as its serial number. Xen instances use names such as ",
+            "Those numbers can change between starts, but the volume ID can’t. An NVMe EBS volume carries the ID as its serial number. Xen instances use names such as ",
             { code: "/dev/xvdf" },
             ".",
           ],
@@ -135,9 +131,9 @@ export const article: Article = {
           kind: "p",
           text: [
             { code: "df -hT" },
-            " shows which device holds the mount that’s filling up, and its filesystem type. Then ",
+            " shows which device holds the mount that’s filling up, and its filesystem type. ",
             { code: "lsblk -o +SERIAL" },
-            " puts the volume ID next to that device.",
+            " puts the volume ID beside that device.",
           ],
         },
         { kind: "h3", id: "2-take-a-snapshot", title: "2. Take a snapshot" },
@@ -197,7 +193,7 @@ export const article: Article = {
           text: [
             "Don’t wait for ",
             { code: "completed" },
-            ". The whole modification can take from a few minutes to a few hours, and AWS says a 1\u00a0TiB volume can take up to six.",
+            ". The whole modification can take from a few minutes to a few hours, and AWS says up to six hours for a 1\u00a0TiB volume.",
           ],
         },
         { kind: "svg", figure: figure2 },
@@ -214,9 +210,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Rarely, a transient AWS fault ends a modification in a ",
+            "Rarely, a transient AWS fault ends a modification as ",
             { code: "failed" },
-            " state. AWS says that isn’t a sign of trouble with the volume. Retry it.",
+            ". AWS says that isn’t a sign of trouble with the volume, so retry it.",
           ],
         },
       ],
@@ -314,7 +310,7 @@ export const article: Article = {
           text: [
             "Both commands grow the filesystem while it’s mounted, so the application on ",
             { code: "/data" },
-            " keeps reading and writing throughout. You’re done when ",
+            " keeps reading and writing. You’re done when ",
             { code: "df -hT" },
             " shows the filesystem as large as the volume.",
           ],
@@ -366,7 +362,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Not out of the box. EBS has no reading of how full your filesystem is. An AWS Storage Blog post on automating the job notes that this figure comes only from the operating system.",
+          text: "Not out of the box. EBS can’t see how full your filesystem is. An AWS Storage Blog post on automating the job notes that this figure comes only from the operating system.",
         },
         {
           kind: "p",
@@ -375,7 +371,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "For the usage reading, the post names the Amazon CloudWatch agent as AWS’s option. The guide to ",
+            "For the usage reading, the post names the Amazon CloudWatch agent. The guide to ",
             { a: "checking EBS volume usage", href: "/learn/check-ebs-volume-usage" },
             " shows how to collect it.",
           ],
@@ -420,13 +416,12 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "EBS charges for capacity, not data. AWS’s pricing page says volume storage is charged by the GB you provision per month, until you release the storage. With the one-way rule on size, every time you expand an EBS volume, you set a new floor for its cost.",
+          text: "EBS charges for capacity, not data. AWS’s pricing page says volume storage is charged by the GB you provision per month, until you release the storage.",
         },
         {
           kind: "p",
           text: "Back to the volume from the opening. You grow it to 1,000\u00a0GiB to land the import. A week later, the staging files are deleted and 450\u00a0GiB of data remains.",
         },
-        { kind: "p", text: "You keep paying for 1,000\u00a0GiB every month." },
         {
           kind: "callout",
           label: "Worked example",
@@ -477,7 +472,7 @@ export const article: Article = {
               { b: "Change the performance when you need speed." },
               " Elastic Volumes can change ",
               { a: "IOPS", href: "/learn/glossary/iops" },
-              " on gp3, io1 and io2\u00a0volumes, and throughput on gp3, without adding a GiB. The new figures must stay within the volume type’s limits. ",
+              " on gp3, io1 and io2\u00a0volumes, and throughput on gp3, without adding a GiB. ",
               { a: "EBS Elastic Volumes", href: "/learn/ebs-elastic-volumes" },
               " covers type and performance changes in full.",
             ],
@@ -487,19 +482,19 @@ export const article: Article = {
     },
     {
       id: "how-amoeba-expands-a-pool-as-it",
-      title: "How Amoeba expands a pool as it fills",
+      title: "How Amoeba rightsizes a btrfs pool as your EBS data changes",
       blocks: [
         {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " optimizes block storage on Azure and AWS. The steps above leave one volume at a fixed size. Amoeba keeps an instance’s data in one pool instead, and rightsizes that pool as your data changes.",
+            " optimizes block storage on Azure and AWS. The steps above fix a volume at its largest size, while Amoeba’s pool follows your data both ways.",
           ],
         },
         {
           kind: "h3",
           id: "what-amoeba-does-with-your-volumes",
-          title: "What Amoeba does with your volumes",
+          title: "What Amoeba moves, and what it never touches",
         },
         {
           kind: "ul",
@@ -514,7 +509,7 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " The services that use those mounts restart once, at the switch onto the pool.",
+              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If a switch fails, it puts the original mounts back and tries again.",
             ],
             [
               { b: "Growing." },
@@ -522,11 +517,11 @@ export const article: Article = {
             ],
             [
               { b: "Shrinking." },
-              " When your data goes down and stays down, it shrinks the pool one volume at a time. So your cost stays close to what you use.",
+              " When your data goes down and stays down, it shrinks the pool one volume at a time. So you pay for close to what you use.",
             ],
             [
               { b: "The old volumes." },
-              " Once the switch is checked, Amoeba snapshots each old volume and deletes it. It keeps the snapshot for 7 days, then deletes that too.",
+              " Once the switch is checked, Amoeba snapshots each old volume and deletes it. It keeps the snapshot for a few days, then deletes that too.",
             ],
             [
               { b: "Cost during the move." },
@@ -534,11 +529,12 @@ export const article: Article = {
             ],
           ],
         },
-        { kind: "h3", id: "what-an-instance-needs", title: "What an instance needs" },
         {
-          kind: "p",
-          text: "Amoeba works on Windows and Linux instances. Each instance needs a few things:",
+          kind: "h3",
+          id: "what-an-instance-needs",
+          title: "What each instance needs before Amoeba starts",
         },
+        { kind: "p", text: "Amoeba works on Windows and Linux instances." },
         {
           kind: "ul",
           items: [

@@ -4,14 +4,14 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/ebs-gp3/1";
 export const term: GlossaryTerm = {
   slug: "ebs-gp3",
   term: "gp3 (EBS General Purpose SSD)",
-  title: "What is gp3 in AWS?",
-  meta: "gp3 in AWS is a General Purpose SSD type of EBS volume. See the IOPS and throughput every volume includes at any size, and how AWS charges for more.",
-  h1: "What is gp3 in AWS?",
+  title: "What is gp3 in AWS? EBS gp3 volumes explained",
+  meta: "AWS gp3 is a General Purpose SSD type of Amazon EBS volume. See the gp3 IOPS and throughput every volume includes, the most you can buy, and what more costs.",
+  h1: "What is gp3 in AWS? EBS gp3 volumes explained",
   card: "gp3 in AWS is a General Purpose SSD (solid-state drive) volume type in Amazon Elastic Block Store (EBS).",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -44,11 +44,15 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "You can pay for up to 80,000\u00a0IOPS and 2,000\u00a0MiB/s. Past 3,000\u00a0IOPS, a volume needs 1\u00a0GiB per 500\u00a0IOPS.",
-        },
-        {
-          kind: "p",
           text: "A gp3\u00a0volume doesn’t burst. It can hold the speed you set with no time limit.",
+        },
+        { kind: "h3", id: "gp3-max-iops-and-throughput", title: "gp3 max IOPS and throughput" },
+        {
+          kind: "ul",
+          items: [
+            "Up to 80,000\u00a0IOPS, at 500\u00a0IOPS per GiB, so the maximum needs a volume of 160\u00a0GiB or more.",
+            "Up to 2,000\u00a0MiB/s, at 0.25\u00a0MiB/s per provisioned IOPS, so the maximum needs 8,000\u00a0IOPS or more.",
+          ],
         },
       ],
     },
@@ -100,7 +104,7 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously. On AWS, the pool uses gp3, with IOPS and throughput set from the VM’s measured load.",
+            " moves a VM’s data disks onto one btrfs pool sized to your data, then rightsizes it autonomously. On AWS it uses gp3, with performance set from measured load.",
           ],
         },
         {

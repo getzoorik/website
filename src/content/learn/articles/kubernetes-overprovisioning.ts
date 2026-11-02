@@ -5,15 +5,15 @@ import { figure as figure2 } from "@/features/learn/figures/kubernetes-overprovi
 export const article: Article = {
   slug: "kubernetes-overprovisioning",
   title: "Kubernetes requests vs usage: measure the gap",
-  meta: "Kubernetes requests vs usage: the gap is Kubernetes overprovisioning, and idle nodes stay. Measure it with kubectl top pod and Prometheus, then reduce it.",
+  meta: "Kubernetes requests vs usage: the gap is overprovisioning that keeps idle nodes running. Measure it with kubectl top pod and Prometheus, then reduce it.",
   h1: "Kubernetes requests vs usage: how to measure the gap",
-  deck: "Pods that request more CPU and memory than they use keep nodes running. Why it happens, and how to reduce it.",
+  deck: "Compare requests from kubectl describe nodes with use from kubectl top pod and a week of Prometheus history.",
   card: "Requests set above real use keep nodes running at your cost. How to measure the gap and reduce it safely.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes cost basics",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "swapnil",
   cover: "/learn-covers/zoorik-learn-kubernetes-overprovisioning-1200x630.webp",
   coverAlt:
@@ -47,7 +47,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Kubernetes overprovisioning, which you’ll also see written as Kubernetes over provisioning, is the part of a request the container never uses. Some gap is deliberate, because a busy hour needs room. It becomes overprovisioning when the gap is far bigger than any peak, repeated on every container, and nobody chose its size.",
+          text: "Some gap between request and use is deliberate, because a busy hour needs room. It becomes overprovisioning when the gap is far bigger than any peak, repeated on every container, and nobody chose its size.",
         },
         {
           kind: "callout",
@@ -76,7 +76,7 @@ export const article: Article = {
               a: "Cluster Autoscaler overprovisioning with placeholder pods",
               href: "/learn/cluster-autoscaler-overprovisioning",
             },
-            " covers it. This page is about the accidental kind, spread across every container’s requests.",
+            " covers it.",
           ],
         },
       ],
@@ -92,10 +92,6 @@ export const article: Article = {
             { a: "EKS and AKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
             " shows what a node pool costs a month at list price.",
           ],
-        },
-        {
-          kind: "p",
-          text: "Requests decide how many nodes you buy, at three points: placing a pod, adding a node and removing one.",
         },
         { kind: "h3", id: "placing-a-pod", title: "Placing a pod" },
         {
@@ -223,7 +219,7 @@ export const article: Article = {
         {
           kind: "code",
           lang: "bash",
-          code: "kubectl top pod --containers --namespace <namespace>",
+          code: "kubectl top pod --containers --namespace <namespace>\nkubectl top pod -A --sort-by=cpu\nwatch kubectl top pod --namespace <namespace>",
         },
         {
           kind: "callout",
@@ -296,9 +292,9 @@ export const article: Article = {
               { b: "Set requests from measured use." },
               " CPU can follow a high percentile of the measured window plus ",
               { a: "headroom", href: "/learn/glossary/kubernetes-headroom" },
-              ", since a container short of CPU is slowed, not killed. Memory should follow the peak plus headroom. ",
+              ", since a container short of CPU is slowed, not killed. Memory should follow the peak plus headroom, with limits left alone until you know why they were set. ",
               { a: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
-              " covers how to pick the numbers and how requests and limits differ. Leave limits alone until you know why they were set.",
+              " covers how to pick the numbers and how requests and limits differ.",
             ],
             [
               { b: "Give every container that has only a limit a request of its own." },
@@ -358,7 +354,7 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Coral optimizes Kubernetes", href: "/coral" },
-            " on AKS and EKS clusters running Kubernetes 1.30 or later, and does steps 1 and 4 for you. It rebalances each container’s CPU and memory requests to what it uses. Then it drains the nodes this frees so your autoscaler can remove them.",
+            " on AKS and EKS clusters running Kubernetes 1.30 or later, and does steps 1 and 4 for you.",
           ],
         },
         {

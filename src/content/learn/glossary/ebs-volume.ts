@@ -4,39 +4,42 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/ebs-volume/
 export const term: GlossaryTerm = {
   slug: "ebs-volume",
   term: "EBS volume",
-  title: "What is an AWS EBS volume?",
-  meta: "EBS stands for Amazon Elastic Block Store. An AWS EBS volume is block storage for an EC2 instance. See how it’s charged, and why it can grow but never shrink.",
-  h1: "What is an AWS EBS volume?",
-  card: "An AWS EBS volume is a block-level storage device you attach to an EC2 instance, usually a virtual machine (VM).",
+  title: "What is AWS EBS? Amazon EBS volumes explained",
+  meta: "What is EBS in AWS? It’s Amazon Elastic Block Store: block storage for an EC2 instance. See how an EBS volume is charged, and why it can grow but never shrink.",
+  h1: "What is AWS EBS? Amazon EBS volumes explained",
+  card: "Amazon EBS is block storage for EC2 instances.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
       text: [
-        "An AWS EBS volume is a ",
-        { a: "block-level storage", href: "/learn/glossary/block-storage" },
-        " device you attach to an EC2 instance, usually a virtual machine (VM). Once attached, the volume works like a physical hard drive. EBS stands for Amazon Elastic Block Store.",
+        "Amazon EBS is ",
+        { a: "block storage", href: "/learn/glossary/block-storage" },
+        " for EC2 instances. An EBS volume is a block-level storage device you attach to an instance, usually a virtual machine (VM). Once attached, it works like a physical hard drive.",
       ],
     },
     {
       kind: "p",
-      text: "An EBS volume in AWS can be the system drive, or hold data such as a database. Two rules apply:",
-    },
-    {
-      kind: "ul",
-      items: [
-        "It must share its instance’s Availability Zone.",
-        "Its “Delete on termination” setting decides if it’s deleted with the instance.",
-      ],
+      text: "An EBS volume can be an EC2 instance’s root volume, the system drive it starts from, or a data volume for a database. It must share its instance’s Availability Zone.",
     },
   ],
   sections: [
     {
+      id: "ebs-full-form-and-meaning-in-aws",
+      title: "EBS full form and meaning in AWS",
+      blocks: [
+        {
+          kind: "p",
+          text: "EBS stands for Amazon Elastic Block Store. Elastic Block Store is the AWS block storage service, and an EBS volume is one drive it provides.",
+        },
+      ],
+    },
+    {
       id: "an-example-of-ebs-in-aws",
-      title: "An example of EBS in AWS",
+      title: "An example of an EBS volume in AWS",
       blocks: [
         {
           kind: "p",
@@ -47,8 +50,37 @@ export const term: GlossaryTerm = {
       ],
     },
     {
+      id: "delete-on-termination",
+      title: "Delete on termination: when a volume outlives its instance",
+      blocks: [
+        {
+          kind: "p",
+          text: "An EBS volume’s “Delete on termination” setting decides if it’s deleted with its instance.",
+        },
+        {
+          kind: "table",
+          columns: [
+            { label: "Volume", width: "24%" },
+            { label: "Attached", width: "40%" },
+            { label: "Default on termination", width: "36%" },
+          ],
+          rows: [
+            ["Root volume", "At launch", "Deleted"],
+            ["Root volume", "After launch", "Kept"],
+            ["Data volume", "At launch, from the console", "Kept"],
+            ["Data volume", "At launch, from the CLI", "Deleted"],
+            ["Data volume", "After launch", "Kept"],
+          ],
+        },
+        {
+          kind: "p",
+          text: "A kept volume is still charged until you delete it. You can change the setting at launch, overriding the default in the Amazon Machine Image (AMI), or later on a running instance.",
+        },
+      ],
+    },
+    {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why EBS volumes matter for your cloud cost",
+      title: "Why AWS EBS volumes matter for your cloud cost",
       blocks: [
         {
           kind: "p",
@@ -63,7 +95,6 @@ export const term: GlossaryTerm = {
         {
           kind: "ul",
           items: [
-            "A volume kept after its instance ends is still charged.",
             "You can grow a volume in place, then extend its file system.",
             "AWS says “You can’t decrease the volume size.” So you keep paying for an old peak’s size.",
             [
@@ -77,15 +108,7 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously. It works on EBS data volumes on Windows and Linux VMs, never the root volume.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "The ",
-            { a: "free assessment", href: "/assessment?p=amoeba" },
-            " works out your own figure.",
+            " moves a VM’s data disks onto one btrfs pool sized to your data, then rightsizes it autonomously. It works on EBS data volumes on Windows and Linux VMs, never the root volume.",
           ],
         },
       ],
@@ -114,6 +137,11 @@ export const term: GlossaryTerm = {
     href: "/learn/shrink-ebs-volume",
   },
   sources: [
+    {
+      publisher: "AWS",
+      title: "“What is Amazon Elastic Block Store?”",
+      url: "https://docs.aws.amazon.com/ebs/latest/userguide/what-is-ebs.html",
+    },
     {
       publisher: "AWS",
       title: "“Amazon EBS volumes”",

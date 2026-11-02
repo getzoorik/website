@@ -105,6 +105,8 @@ export interface CoralCloudPage extends CloudPageBase {
   /** The cluster's cloud: Install your way's Terraform card shows only its module (`coralInstall.terraform.modules`). */
   readonly cloud: InstallCloud;
   readonly worksWith: { readonly title: string; readonly tiles: readonly CloudTile[] };
+  /** Its own name for /coral's Install your way, where it is not `coralInstall.title` (2 Nov 2026). */
+  readonly installTitle?: string;
   /** A line under the closing row's "One PDF report…", to the pricing calculator. */
   readonly calculator?: string;
 }
@@ -123,6 +125,8 @@ export type CloudPageContent = CoralCloudPage | AmoebaCloudPage;
 
 /** The four pages' date: built 31 Oct 2026, then their search pass of 1 Nov 2026 (titles, lines, links and questions). */
 const NOV_1 = "1 November 2026";
+/** The plan sheet's pass of 2 Nov 2026: one line under the h1, and each repeat taken out (EKS, Azure and EBS). */
+const NOV_2 = "2 November 2026";
 
 /** The hero's button: the closing row's own words, to this product's assessment. */
 const estimate = (product: ProductId) => ({
@@ -320,25 +324,24 @@ export const aksCostOptimizationPage: CoralCloudPage = {
 export const eksCostOptimizationPage: CoralCloudPage = {
   product: "coral",
   path: routes.eksCostOptimization,
-  lastUpdated: NOV_1,
+  lastUpdated: NOV_2,
   cloud: "eks",
   meta: {
     title: "EKS cost optimization",
     description:
-      "EKS cost optimization with Coral: it rebalances your cluster to reduce EKS costs, sizes pods to real use, and its EKS node optimization empties spare nodes.",
+      "EKS cost optimization with Coral: it rebalances your cluster, sizes pods to real use and empties spare EC2 nodes. Autonomous EKS tuning, with no code changes.",
   },
   hero: {
     eyebrow: "Coral for EKS",
     title: "EKS cost optimization",
-    line: "Reduce EKS costs: stop paying for idle EC2 instances in your EKS clusters. Coral rebalances your workloads so spare nodes can go, with no code changes.",
+    line: "Stop paying for idle EC2 instances: Coral rebalances your workloads so spare nodes can go, with no code changes.",
     cta: estimate("coral"),
     runsOn: { label: "Runs on", platforms: ["eks"] },
   },
   about: {
-    title: "How Coral reduces EKS costs",
+    title: "How Coral reduces the cloud cost of your EKS clusters",
     paragraphs: [
-      "Coral rebalances Amazon Elastic Kubernetes Service (EKS) clusters. It sizes pod requests to real use, so fewer EC2 instances can carry the same work. It also empties spare instances one at a time.",
-      "On EKS, Karpenter or the Cluster Autoscaler still adds instances when demand grows. Coral never creates machines itself. With Karpenter, a rebalance can also move work onto cheaper EC2 instances that Karpenter launches.",
+      "On Amazon Elastic Kubernetes Service (EKS), Coral sizes pod requests to real use. Fewer EC2 instances can then carry the same work.",
       'Nothing changes pod sizes until you switch on "Automatically optimize". Node optimization starts at connect, and you pick the node pools it works on.',
     ],
   },
@@ -347,7 +350,7 @@ export const eksCostOptimizationPage: CoralCloudPage = {
     steps: cards("coral", [
       "Sign in with the AWS CLI and run zoorikctl, our command-line tool. It installs the agent, binds its IAM role with EKS Pod Identity, and asks before every AWS change.",
       "Coral lists each EKS node and workload. You see how much capacity you hold beyond what your pods really use.",
-      "Coral empties spare EC2 nodes one at a time, even before pod sizing is switched on. Karpenter or the Cluster Autoscaler then terminates them.",
+      "Coral drains spare EC2 nodes one at a time, within each pod's PodDisruptionBudget. Karpenter or the Cluster Autoscaler then terminates them.",
     ]),
   },
   setup: {
@@ -381,7 +384,7 @@ export const eksCostOptimizationPage: CoralCloudPage = {
     ],
   },
   worksWith: {
-    title: "Works with",
+    title: "What Coral works with on EKS",
     tiles: [
       {
         title: "Karpenter",
@@ -390,14 +393,20 @@ export const eksCostOptimizationPage: CoralCloudPage = {
       },
       clusterAutoscalerTile,
       kedaTile,
-      helmTile,
+      /* Helm and Terraform: what each works-with page says, as the install cards below already say how to install. */
+      {
+        title: "Helm",
+        href: routes.coralWorksWithHelm,
+        line: "Coral never edits your charts or templates and sizes pods as they start, so Argo CD and Flux see no drift.",
+      },
       {
         title: "Terraform",
         href: routes.coralWorksWithTerraform,
-        line: "Create Coral's AWS permissions as code with our Terraform module.",
+        line: "Tell Terraform which node group fields Coral changes, so an apply doesn't undo them.",
       },
     ],
   },
+  installTitle: "Install Coral on EKS your way",
   calculator: `Or see what one node adds to your [EKS cost](${routes.eksAndAksPricingCalculator}), at list price, in our pricing calculator.`,
   questions: {
     title: "Questions about Coral on EKS",
@@ -405,7 +414,7 @@ export const eksCostOptimizationPage: CoralCloudPage = {
       {
         question: "Does Coral replace Karpenter or the Cluster Autoscaler?",
         answer:
-          "No. Karpenter picks EC2 instances from pod requests, and the Cluster Autoscaler scales your Auto Scaling groups. Once Coral sizes those requests to real use, both can run fewer instances, and Karpenter can pick smaller ones.",
+          "No. Coral never creates machines, so both still add them: Karpenter picks EC2 instances from pod requests, and the Cluster Autoscaler scales your Auto Scaling groups. Once Coral sizes those requests to real use, both can run fewer instances, and Karpenter can pick smaller ones.",
       },
       {
         question: "What if my EKS cluster has no autoscaler?",
@@ -429,7 +438,7 @@ export const eksCostOptimizationPage: CoralCloudPage = {
     ],
   },
   readMore: {
-    title: "Coral docs and guides",
+    title: "Coral docs and EKS guides",
     allDocs: { label: "All docs", href: `${routes.docs}#coral` },
     tiles: [
       {
@@ -464,7 +473,7 @@ const AMOEBA_03 = "Rightsize the pool";
 export const azureManagedDiskCostOptimizationPage: AmoebaCloudPage = {
   product: "amoeba",
   path: routes.azureManagedDiskCostOptimization,
-  lastUpdated: NOV_1,
+  lastUpdated: NOV_2,
   meta: {
     title: "Azure managed disk cost optimization",
     description:
@@ -473,16 +482,16 @@ export const azureManagedDiskCostOptimizationPage: AmoebaCloudPage = {
   hero: {
     eyebrow: "Amoeba for Azure",
     title: "Azure managed disk cost optimization",
-    line: "Stop paying for empty disk space. Amoeba reduces your Azure disk costs: it rightsizes the managed data disks on your Windows and Linux VMs, autonomously.",
+    line: "Stop paying for empty disk space: Amoeba rightsizes the managed data disks on your VMs to fit your data.",
     cta: estimate("amoeba"),
     runsOn: { label: "Runs on", platforms: ["azure", "windows", "linux"] },
   },
   about: {
     title: "How Amoeba reduces Azure disk cost",
     paragraphs: [
-      "Amoeba rightsizes your data disks to reduce your Azure managed disk cost. A managed disk can be made larger, but not smaller. So you pay for the size you provisioned, however much data it holds.",
-      "Amoeba moves a VM's data disks onto one pool of Premium SSD v2 disks. Where the region or zone doesn't offer Premium SSD v2, it uses Premium SSD. It sizes the pool from your peak use and recent growth, with room to grow, not from the size of the old disks.",
-      "The services that use the data mounts restart at the switch onto the pool. After that, the pool changes size while they run, and you pay for close to the data you hold.",
+      "An Azure managed disk can be made larger, but not smaller. So you pay for the size you provisioned, however much data it holds.",
+      "Amoeba moves a VM's data disks onto one btrfs pool. It sizes the pool from your peak use and recent growth, with room to grow, not from the size of the old disks.",
+      "After the one switch onto the pool, the pool grows and shrinks without any downtime. So you pay for close to the data you hold.",
     ],
   },
   how: {
@@ -568,7 +577,7 @@ export const azureManagedDiskCostOptimizationPage: AmoebaCloudPage = {
       {
         question: "How is the saving worked out on Azure?",
         answer:
-          "At Azure's public list price for the disk type and region, measured against the source disks. A saving can be negative, for example when a pool has grown past the disks it replaced. Amoeba shows it as it is.",
+          "At Azure's public list price for the disk type and region, measured against the source disks. If a pool grows past the disks it replaced, Amoeba shows that it costs more.",
       },
     ],
   },
@@ -599,25 +608,24 @@ export const azureManagedDiskCostOptimizationPage: AmoebaCloudPage = {
 export const ebsCostOptimizationPage: AmoebaCloudPage = {
   product: "amoeba",
   path: routes.ebsCostOptimization,
-  lastUpdated: NOV_1,
+  lastUpdated: NOV_2,
   meta: {
     title: "EBS cost optimization",
     description:
-      "EBS cost optimization on EC2 instances. Reduce EBS costs: Amoeba moves data volumes onto one pool of gp3 volumes sized to your data, then grows and shrinks it.",
+      "EBS cost optimization for Windows and Linux EC2: Amoeba rightsizes data volumes by moving them onto one gp3 pool that grows and shrinks with your data.",
   },
   hero: {
     eyebrow: "Amoeba for AWS",
     title: "EBS cost optimization",
-    line: "Stop paying for empty EBS space. Amoeba rightsizes the data volumes on your Windows and Linux EC2 instances, autonomously.",
+    line: "Amoeba rightsizes the EBS data volumes on your EC2 instances, autonomously, so you stop paying for empty space.",
     cta: estimate("amoeba"),
     runsOn: { label: "Runs on", platforms: ["aws", "windows", "linux"] },
   },
   about: {
     title: "What Amoeba does on AWS",
     paragraphs: [
-      "Amoeba rightsizes the EBS data volumes on your EC2 instances to reduce your EBS cost. AWS lets you grow an EBS volume but never shrink it, and charges per GB-month for its full size. So a volume costs the same, however little data it holds.",
-      "Amoeba moves an instance's data volumes onto one pool of gp3 volumes, in the same Availability Zone. The pool is sized to your data, with room to grow. Encrypted data stays encrypted, with the KMS key of the first encrypted source volume.",
-      "When each mount switches to the gp3 pool, the services that use it stop and start again. After that, Amoeba adds, grows and removes gp3 volumes while your services run.",
+      "AWS charges per GB-month for an EBS volume's full size. It lets you grow a volume but never shrink it. So a volume costs the same, however little data it holds.",
+      "Amoeba moves an instance's data volumes onto one pool of gp3 volumes, in the same Availability Zone. The pool is sized to your data, with room to grow.",
     ],
   },
   how: {
@@ -663,7 +671,7 @@ export const ebsCostOptimizationPage: AmoebaCloudPage = {
     ],
   },
   needs: {
-    title: "What your VMs need",
+    title: "What your EC2 instances need",
     items: [
       "A running EC2 instance with at least one EBS data volume. The data must sit on mounted filesystems.",
       "The instance is managed by AWS Systems Manager, with the SSM agent connected.",
@@ -684,7 +692,7 @@ export const ebsCostOptimizationPage: AmoebaCloudPage = {
       {
         question: "Which EBS volume type does Amoeba's pool use?",
         answer:
-          "The pool uses gp3 volumes, in the instance's Availability Zone. Each instance gets one pool. Each pool volume gets at least the baseline performance gp3 includes, and more when the instance's own load needs it.",
+          "The pool uses gp3 volumes. Each pool volume gets at least the baseline performance gp3 includes, and more when the instance's own load needs it.",
       },
       {
         question: "Do my services on EC2 go down during the move?",
@@ -699,22 +707,17 @@ export const ebsCostOptimizationPage: AmoebaCloudPage = {
       {
         question: "How is the saving worked out on AWS?",
         answer:
-          "At list price from the AWS Price List API, measured against the source volumes. AWS charges for EBS per GB-month. A saving can be negative, and Amoeba shows it as it is.",
-      },
-      {
-        question: "Do you pay for unused space on an EBS volume?",
-        answer:
-          "Yes. AWS charges per GB-month for a volume's full size, so a volume costs the same, however little data it holds. Amoeba's pool is sized to your data, with room to grow.",
+          "At list price from the AWS Price List API, measured against the source volumes. A saving can be negative, and Amoeba shows it as it is.",
       },
       {
         question: "Can EBS volumes shrink automatically?",
         answer:
-          "No. AWS lets you grow an EBS volume but never shrink it. Amoeba's pool can: if your data shrinks and stays smaller, Amoeba removes one gp3 volume at a time, and the pool stays mounted throughout.",
+          "No. EBS Elastic Volumes can increase a volume's size, change its type or adjust its performance, but never decrease its size, automatically or by hand. Amoeba shrinks its pool by removing gp3 volumes instead.",
       },
     ],
   },
   readMore: {
-    title: "Amoeba docs and guides",
+    title: "Amoeba docs and EBS guides",
     allDocs: { label: "All docs", href: `${routes.docs}#amoeba` },
     tiles: [
       /* /amoeba's guide and FAQ tiles, behind its flag: drawn only while both are published. */

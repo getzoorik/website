@@ -5,17 +5,21 @@ export const term: GlossaryTerm = {
   slug: "azure-vm-series",
   term: "Azure VM series",
   title: "What is an Azure VM series?",
-  meta: "An Azure VM series is a group of VM sizes. See how Azure VM types and families relate, how to read Standard_D4s_v5, and the memory you get per vCPU.",
+  meta: "An Azure virtual machine series is a group of Azure VM sizes. See the Azure VM types and families, how to read Standard_D4s_v5 and the memory per vCPU.",
   h1: "What is an Azure VM series?",
   card: "An Azure VM series is a group of virtual machine (VM) sizes with similar hardware and features.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
-      text: "An Azure VM series is a group of virtual machine (VM) sizes with similar hardware and features. Each size in a series sets its virtual CPUs (vCPUs) and memory. Standard_D4s_v5 is one size in the Dsv5 series.",
+      text: "An Azure VM series is a group of virtual machine (VM) sizes with similar hardware and features. Each size sets the virtual CPUs (vCPUs) and memory your Azure VMs get. Standard_D4s_v5 is one size in the Dsv5 series.",
+    },
+    {
+      kind: "p",
+      text: "Azure instance types go by another name: what AWS calls an instance type, Azure calls a VM size. Microsoft says AWS instance types and Azure VM sizes have similar categories, but their RAM, CPU and storage differ.",
     },
   ],
   sections: [
@@ -33,14 +37,18 @@ export const term: GlossaryTerm = {
             "General purpose (such as B and D): balanced CPU and memory.",
             "Compute optimized (F family): more CPU for each GiB.",
             "Memory optimized (such as E and M): more memory for each vCPU.",
-            "Storage optimized (L family): high disk throughput.",
+            "Storage optimized (L family): high disk throughput and I/O. Microsoft says a storage optimized VM series is ideal for big data, SQL and NoSQL databases, and data warehousing.",
           ],
+        },
+        {
+          kind: "p",
+          text: "Microsoft’s overview of sizes for virtual machines in Azure is the full Azure VM size list. Each series page has a size chart: a table of vCPUs and memory.",
         },
       ],
     },
     {
       id: "the-azure-vm-size-naming-convention",
-      title: "The Azure VM size naming convention",
+      title: "How to read Azure VM sizes",
       blocks: [
         { kind: "p", text: "Read Standard_D4s_v5 left to right:" },
         {
@@ -73,7 +81,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why the Azure VM series matters for your cloud cost",
+      title: "Why Azure VM sizing matters for your cloud cost",
       blocks: [
         {
           kind: "ul",
@@ -82,6 +90,11 @@ export const term: GlossaryTerm = {
             "If it doesn’t fit your workload, CPU or memory sits idle.",
             "Esv5 has no temp disk, which Microsoft says reduces its entry price.",
             "Disks are charged separately from VMs.",
+            [
+              "On Azure Windows VM sizes, the pay-as-you-go rate also includes the Windows Server license, unless you use ",
+              { a: "Azure Hybrid Benefit", href: "/learn/glossary/azure-hybrid-benefit" },
+              ".",
+            ],
             [
               "Check real use before you ",
               { a: "change a node pool’s VM size", href: "/learn/change-aks-node-pool-vm-size" },
@@ -142,6 +155,16 @@ export const term: GlossaryTerm = {
       publisher: "Microsoft Learn",
       title: "“Esv5 size series”",
       url: "https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/memory-optimized/esv5-series",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“Compare AWS and Azure compute services”",
+      url: "https://learn.microsoft.com/en-us/azure/architecture/aws-professional/compute",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“Explore Azure Hybrid Benefit for Windows VMs”",
+      url: "https://learn.microsoft.com/en-us/azure/virtual-machines/windows/hybrid-use-benefit-licensing",
     },
   ],
 };

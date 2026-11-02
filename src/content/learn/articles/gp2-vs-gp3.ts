@@ -6,21 +6,21 @@ import { figure as figure3 } from "@/features/learn/figures/gp2-vs-gp3/3";
 export const article: Article = {
   slug: "gp2-vs-gp3",
   title: "gp2 vs gp3: pricing, performance and migration",
-  meta: "gp2 vs gp3 on Amazon EBS: why gp3 costs 20% less per GB, how it sets IOPS and throughput apart from size, and how to switch a volume while it stays in use.",
+  meta: "AWS EBS gp2 vs gp3: why gp3 costs 20% less per GB, how it sets IOPS and throughput apart from size, and how to convert gp2 to gp3 while the volume stays in use.",
   h1: "gp2 vs gp3: pricing, performance and how to migrate",
-  deck: "What gp3 changes about performance and price, and how to switch a gp2\u00a0volume while it stays in use.",
+  deck: "gp3 holds 3,000\u00a0IOPS at any size, which a gp2\u00a0volume reaches only at 1,000\u00a0GiB or in bursts.",
   card: "gp3 costs 20% less per GB and sets IOPS apart from size. How to switch a gp2 volume in place.",
   product: "amoeba",
   hub: "Block storage",
   topic: "AWS block storage",
   versus: ["gp2", "gp3"],
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "rupeshankar",
   cover: "/learn-covers/zoorik-learn-gp2-vs-gp3-1200x630.webp",
-  coverAlt: "gp2 vs gp3: gp2 IOPS follow volume size, while with gp3 you set IOPS yourself",
+  coverAlt: "gp2 IOPS follow volume size, while with gp3 you set IOPS yourself",
   short: [
-    "gp2 vs gp3 is a choice between performance that follows size and performance you set. The gp3 type includes 3,000\u00a0IOPS (input/output operations per second) and 125\u00a0MiB/s at any size, and costs 20% less per GB. On a supported instance, ",
+    "gp2 vs gp3 is a choice between performance that follows size and performance you set. The gp3 type costs 20% less per GB and sets IOPS (input/output operations per second) and throughput apart from size. On a supported instance, ",
     { code: "modify-volume" },
     " switches a volume to gp3 while it stays in use.",
   ],
@@ -125,7 +125,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The gp3 type doesn’t burst. AWS says gp3\u00a0volumes “can indefinitely sustain their full provisioned IOPS and throughput performance”. A gp2 baseline needs 1,000\u00a0GiB to reach the 3,000\u00a0IOPS that gp3 includes at any size.",
+          text: "The gp3 type doesn’t burst. AWS says gp3\u00a0volumes “can indefinitely sustain their full provisioned IOPS and throughput performance”.",
         },
         { kind: "svg", figure: figure1 },
         {
@@ -423,16 +423,15 @@ export const article: Article = {
     },
     {
       id: "where-amoeba-fits",
-      title: "Where Amoeba fits",
+      title: "How Amoeba rightsizes the GiB you pay for",
       blocks: [
         {
           kind: "p",
           text: [
-            "Switching to gp3 reduces the price of each GiB. ",
             { a: "Amoeba", href: "/amoeba" },
-            " optimizes block storage on Azure and AWS. On AWS, its ",
+            " optimizes block storage on Azure and AWS. The switch to gp3 changes each GiB’s price. ",
             { a: "EBS cost optimization", href: "/ebs-cost-optimization" },
-            " works on the number of GiB you pay for.",
+            " with Amoeba changes how many GiB you pay for.",
           ],
         },
         { kind: "h3", id: "what-amoeba-does-on-aws", title: "What Amoeba does on AWS" },
@@ -449,7 +448,7 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " The services that use those mounts restart once, at the switch onto the pool.",
+              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
             ],
             [
               { b: "Rightsizing." },
@@ -457,7 +456,7 @@ export const article: Article = {
             ],
             [
               { b: "The old volumes." },
-              " Once the switch is checked, Amoeba snapshots and deletes each old volume, then deletes the snapshots 7 days later. You pay for both sets only while the move runs, then for the snapshots.",
+              " Once the switch is checked, Amoeba snapshots and deletes each old volume, then deletes the snapshots a few days later. You pay for both sets only while the move runs, then for the snapshots.",
             ],
           ],
         },

@@ -16,7 +16,7 @@ import type { ProductId } from "@/content/products";
 export const openSourceUpdated = "1 November 2026";
 
 /** /open-source prints no date: the day its content last changed, for the sitemap. Move it in the PR that changes it. */
-export const openSourceLastUpdated = "1 November 2026";
+export const openSourceLastUpdated = "2 November 2026";
 
 export type GuideBlock =
   | { readonly kind: "p"; readonly text: string }
@@ -66,10 +66,11 @@ export type OpenSourceGuideId = "helm" | "terraform" | "contributing";
 export const openSourceGuides: Readonly<Record<OpenSourceGuideId, OpenSourceGuide>> = {
   helm: {
     route: "/docs/install-coral-with-helm",
+    updated: "2 November 2026",
     meta: {
       title: "Install Coral with Helm",
       description:
-        "Install Coral with Helm: the coral-agent Helm chart, its values, the cloud identity on AKS and EKS, upgrades, Argo CD ignoreDifferences, and uninstalling.",
+        "Install Coral with Helm: the coral-agent Helm chart, its values, cloud identity on AKS and EKS, Argo CD ignore differences, upgrades and uninstalling.",
     },
     hero: {
       title: "Install Coral with Helm",
@@ -83,7 +84,7 @@ export const openSourceGuides: Readonly<Record<OpenSourceGuideId, OpenSourceGuid
             kind: "ul",
             items: [
               "Kubernetes 1.30 or later, with nodes on amd64 or arm64.",
-              "A connect token from the Connect dialog in the Coral console. A token works once, within an hour of being issued. Coral is in early access — [book a demo](https://cal.com/zoorik/talk) for a console account.",
+              "A connect token from the Connect dialog in the Coral console. A token works once, within an hour of being issued. Coral is in early access, so [book a demo](https://cal.com/zoorik/talk) for a console account.",
               "The control plane origin the console names. It is the origin only: no path and no trailing slash.",
               "The cloud identity, if Coral is to remove nodes. [Install Coral with Terraform + Helm](/docs/install-coral-with-terraform) creates it as code, or `zoorikctl cluster grant-node-deletion` creates it from the command line.",
             ],
@@ -234,7 +235,7 @@ export const openSourceGuides: Readonly<Record<OpenSourceGuideId, OpenSourceGuid
         ],
       },
       {
-        title: "Argo CD ignoreDifferences and Flux",
+        title: "Argo CD ignore differences and Flux",
         id: "with-argo-cd-or-flux",
         blocks: [
           {
@@ -243,7 +244,7 @@ export const openSourceGuides: Readonly<Record<OpenSourceGuideId, OpenSourceGuid
           },
           {
             kind: "p",
-            text: "The pod webhook, the agent and the node daemon write to some objects after the install. Ignore these fields in an Argo CD application:",
+            text: "The pod webhook, the agent and the node daemon write to some objects after the install. List these fields under `ignoreDifferences` in an Argo CD application:",
           },
           {
             kind: "code",
@@ -274,7 +275,7 @@ export const openSourceGuides: Readonly<Record<OpenSourceGuideId, OpenSourceGuid
         blocks: [
           {
             kind: "p",
-            text: "`helm uninstall` removes the objects this chart installed, including both namespaces. It does not undo what the agent changed on nodes and workloads (Coral’s cordons and taints, HPA and VPA holds, rollout markers and deletion-cost settings); `zoorikctl cluster disconnect` does. Helm leaves the custom resource definitions in place.",
+            text: "`helm uninstall` removes the objects this chart installed and both namespaces, but not the custom resource definitions. `zoorikctl cluster disconnect` undoes what the agent changed on nodes and workloads: Coral’s cordons and taints, HPA and VPA holds, rollout markers and deletion-cost settings.",
           },
         ],
       },
@@ -558,16 +559,16 @@ export const openSourcePage = {
   meta: {
     title: "Open source",
     description:
-      "What is open source at Zoorik: zoorikctl, the free assessment, the Terraform modules and the Kubernetes test scenarios, all Apache-2.0, and how to contribute.",
+      "Zoorik’s open source: zoorikctl, the free assessment, Terraform modules and a Kubernetes optimization sandbox on kind, all Apache-2.0, and how to contribute.",
   },
   hero: {
     title: "Open source",
-    deck: "zoorikctl, the assessment and the Terraform modules are open source, so you can read exactly what they do in your cluster and cloud account.",
+    deck: "Read exactly what our CLI, assessment and Terraform modules do in your cluster and cloud account.",
   },
-  /** Under the "Published on" strip, the trust sentence as the facts allow it: the licence names the public
-   *  repositories, signing starts at v0.3.0, and PyPI's is a publish attestation. */
+  /** Under the "Published on" strip, the trust sentence as the facts allow it: signing starts at v0.3.0, and PyPI's
+   *  is a publish attestation. Each project row carries its own licence. */
   trust:
-    "Our public GitHub repositories are open source under Apache-2.0. Every zoorikctl release since v0.3.0 is [signed with Sigstore](https://github.com/getzoorik/zoorikctl#install), and each PyPI release carries a provenance attestation from its GitHub release workflow.",
+    "Every zoorikctl release since v0.3.0 is [signed with Sigstore](https://github.com/getzoorik/zoorikctl#install), and each PyPI release carries a provenance attestation from its GitHub release workflow.",
   projects: {
     title: "Projects",
     /* The Helm chart has no licence and no GitHub link: its source is private and it declares none. */

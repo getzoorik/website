@@ -5,25 +5,23 @@ import { figure as figure2 } from "@/features/learn/figures/btrfs-multiple-disks
 export const article: Article = {
   slug: "btrfs-multiple-disks",
   title: "btrfs on multiple disks: how a btrfs pool works",
-  meta: "btrfs on multiple disks: create one filesystem across disks of different sizes, choose single or raid1, add a disk while mounted, grow one and read usage.",
+  meta: "The btrfs commands for one filesystem on multiple disks: mkfs.btrfs with single, raid 0 or raid 1, adding a disk while mounted, growing one, reading usage.",
   h1: "btrfs on multiple disks: how a btrfs pool works",
-  deck: "One filesystem across several cloud disks: the profiles, adding or growing a disk while mounted, and the usage report.",
+  deck: "Disks can differ in size, and you can add one while the filesystem stays mounted.",
   card: "How one btrfs filesystem spans several disks, how to add a disk while it’s mounted, and how to read its usage.",
   product: "amoeba",
   hub: "Block storage",
   topic: "Linux filesystems",
   published: "2026-10-27",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "sourabh",
   cover: "/learn-covers/zoorik-learn-btrfs-multiple-disks-1200x630.webp",
   coverAlt:
     "btrfs on multiple disks: single uses every disk in full, while raid1 leaves part of the larger disk unused",
   short: [
-    "btrfs on multiple disks is one filesystem across several block devices, and ",
-    { code: "btrfs device add" },
-    " adds one while it’s mounted. The ",
+    "btrfs on multiple disks is one filesystem across several block devices. The ",
     { code: "single" },
-    " profile keeps one copy of each chunk and uses every disk in full, even at different sizes. ",
+    " profile keeps one copy of each chunk and uses every disk in full. ",
     { code: "raid1" },
     " keeps two copies on two different disks, so at most half the raw space is usable.",
   ],
@@ -136,7 +134,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "choosing-single-or-raid1-data-on-cloud",
-          title: "Choosing single or raid1 data on cloud disks",
+          title: "Choosing btrfs raid 1 or single data on cloud disks",
         },
         {
           kind: "p",
@@ -287,7 +285,7 @@ export const article: Article = {
           text: [
             "With ",
             { code: "single" },
-            " data, the new space is usable at once. New chunks go to the disk with the most unallocated space. While that’s the new disk, the next chunks land there.",
+            " data, the new space is usable at once. While the new disk has the most unallocated space, the next chunks land there.",
           ],
         },
         {
@@ -497,11 +495,11 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " The services that use those mounts restart once, at the switch onto the pool.",
+              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
             ],
             [
               { b: "The old disks." },
-              " Once the switch is checked, Amoeba snapshots each old disk and deletes the disk. It keeps the snapshot for 7 days, then deletes it too.",
+              " Once the switch is checked, Amoeba snapshots each old disk and deletes the disk. It keeps the snapshot for a few days, then deletes it too.",
             ],
             [
               { b: "Cost during the move." },

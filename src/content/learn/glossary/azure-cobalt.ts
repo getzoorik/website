@@ -4,14 +4,14 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/azure-cobal
 export const term: GlossaryTerm = {
   slug: "azure-cobalt",
   term: "Azure Cobalt (Arm-based Azure VMs)",
-  title: "What is Microsoft Azure Cobalt?",
-  meta: "Azure Cobalt is Microsoft’s own Arm CPU behind the Cobalt 100 VMs, Dpsv6, Dplsv6 and Epsv6. How these Azure Arm VMs compare to Graviton, and what AKS needs.",
-  h1: "What is Microsoft Azure Cobalt?",
+  title: "What is Microsoft Cobalt (Azure Cobalt)?",
+  meta: "Microsoft Cobalt 100 is the Arm CPU Microsoft designed itself, behind Dpsv6, Dplsv6 and Epsv6 Azure Arm VMs. How they compare to Graviton, and what AKS needs.",
+  h1: "What is Microsoft Cobalt (Azure Cobalt)?",
   card: "Azure Cobalt is Microsoft’s own Arm-based processor for Azure virtual machines (VMs).",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -56,7 +56,7 @@ export const term: GlossaryTerm = {
               { a: "DaemonSets", href: "/learn/glossary/daemonset" },
               " included.",
             ],
-            "Azure’s earlier Arm VMs, such as Dpsv5, use Ampere Altra chips, not Cobalt.",
+            "Not every Azure Arm VM uses Microsoft chips: earlier ones, such as Dpsv5, run on Ampere Altra, not Cobalt.",
           ],
         },
       ],

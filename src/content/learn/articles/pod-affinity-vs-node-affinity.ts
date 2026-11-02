@@ -5,23 +5,23 @@ import { figure as figure3 } from "@/features/learn/figures/pod-affinity-vs-node
 
 export const article: Article = {
   slug: "pod-affinity-vs-node-affinity",
-  title: "Pod affinity vs node affinity: what each decides",
-  meta: "Pod affinity vs node affinity: node affinity reads node labels, pod affinity and anti-affinity read running pods. Hard vs soft rules, and how they hold nodes.",
-  h1: "Pod affinity vs node affinity: what each rule decides",
-  deck: "What each rule matches, when it’s hard or soft, and how a strict rule keeps a node, and its cost, in the cluster.",
+  title: "Kubernetes node affinity vs pod affinity",
+  meta: "nodeAffinity reads node labels; pod affinity and pod anti-affinity read running pods. Hard vs soft rules, examples, and how a required rule keeps a node.",
+  h1: "Kubernetes node affinity vs pod affinity: what each rule decides",
+  deck: "Each affinity rule is a hard filter or a soft score; hard ones can keep a node in the cluster.",
   card: "Node affinity reads node labels, pod affinity reads other pods. Hard and soft rules, and the nodes they hold.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Node lifecycle and scheduling",
   versus: ["Pod affinity", "Node affinity"],
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "harsh",
   cover: "/learn-covers/zoorik-learn-pod-affinity-vs-node-affinity-1200x630.webp",
   coverAlt:
     "Pod affinity vs node affinity: pod affinity reads running pods, node affinity reads node labels",
   short:
-    "Pod affinity vs node affinity comes down to what each rule reads: the node’s own labels, or the pods running in a topology domain. Node affinity picks nodes by label, and pod affinity and anti-affinity place a pod near other pods or away from them.",
+    "Node affinity picks nodes by their own labels. Pod affinity and pod anti-affinity read the pods already running in a topology domain, and place a pod near them or away from them.",
   sections: [
     {
       id: "the-difference-between-pod-affinity-and-node",
@@ -29,20 +29,20 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Picture a web Deployment with 3\u00a0replicas that must stay in one node pool on Azure Kubernetes Service (AKS). No two replicas may share a node.",
+          text: "Take a web Deployment with 3\u00a0replicas that must stay in one Azure Kubernetes Service (AKS) node pool. No two replicas may share a node.",
         },
         {
           kind: "p",
-          text: "Staying in the pool depends only on the node’s own label, so it’s node affinity. Keeping replicas apart depends on which pods already run on each node, so it’s pod anti-affinity. Make that rule required, and the pool needs 3\u00a0nodes whatever the replicas request.",
+          text: "A rule to stay in the pool reads the node’s own label, so it’s node affinity. A rule to keep replicas apart reads the pods already on each node, so it’s pod anti-affinity. Made required, that rule needs 3\u00a0nodes, whatever the replicas request.",
         },
         {
           kind: "p",
           text: [
-            "Node affinity sits in ",
+            "Node affinity in Kubernetes sits in ",
             { code: ".spec.affinity.nodeAffinity" },
-            " and reads the node’s own labels. Those can be ",
+            " and reads the node’s own labels. Those can be a zone (",
             { code: "topology.kubernetes.io/zone" },
-            ", a node pool label your cloud adds, or one you add yourself.",
+            "), a node pool label your cloud adds, or one you add yourself.",
           ],
         },
         {
@@ -75,9 +75,8 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Scheduling a pod takes two passes. First the scheduler filters out every node where the pod can’t run. Then it scores the nodes that are left and picks the highest.",
+          text: "Scheduling a pod takes two passes. The scheduler filters out every node where the pod can’t run, then scores the rest and picks the highest.",
         },
-        { kind: "p", text: "Each kind of affinity comes in two strengths, one for each pass:" },
         {
           kind: "ul",
           items: [
@@ -98,14 +97,10 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Watch out",
-          text: "No affinity rule moves a running pod. Change a node’s labels, and its pods stay where they are.",
-        },
-        {
-          kind: "p",
           text: [
-            "Rules are checked only when a pod is scheduled, which is what IgnoredDuringExecution in each name means. The Karpenter docs note that Kubernetes never implemented any other variant. A rule applies again, in full, only when a pod is placed: on a rollout, a scale-up or a ",
+            "No affinity rule moves a running pod. IgnoredDuringExecution in each name means a rule is checked only when a pod is placed: on a rollout, a scale-up or a ",
             { a: "node drain", href: "/learn/kubernetes-drain-node-without-downtime" },
-            ".",
+            ". The Karpenter docs note that Kubernetes never implemented any other variant.",
           ],
         },
       ],
@@ -129,7 +124,7 @@ export const article: Article = {
             " is the simplest constraint: a map of labels. Kubernetes schedules the pod only onto nodes that carry every one of them.",
           ],
         },
-        { kind: "p", text: "Node affinity covers the same ground and adds three things:" },
+        { kind: "p", text: "Node affinity adds three things:" },
         {
           kind: "ul",
           items: [
@@ -148,9 +143,9 @@ export const article: Article = {
               { code: "Lt" },
             ],
             [
-              "OR logic: terms in ",
+              "OR across the terms in ",
               { code: "nodeSelectorTerms" },
-              " are ORed, and the expressions inside one term are ANDed",
+              ", with AND inside one term",
             ],
             "preferred rules, which only shift the score",
           ],
@@ -168,7 +163,11 @@ export const article: Article = {
         { kind: "code", lang: "bash", code: "kubectl get nodes --show-labels" },
         {
           kind: "p",
-          text: "This node affinity keeps a pod in one AKS node pool and prefers one zone inside it:",
+          text: [
+            "This ",
+            { code: "nodeAffinity" },
+            " keeps a pod in one AKS node pool and prefers one zone inside it:",
+          ],
         },
         {
           kind: "code",
@@ -177,7 +176,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "So the scheduler drops every node outside the pool, then adds 50 to the score of each remaining node in that zone.",
+          text: "The scheduler drops every node outside the pool, then adds 50 to the score of each remaining node in that zone.",
         },
         { kind: "svg", figure: figure2 },
         {
@@ -301,19 +300,19 @@ export const article: Article = {
         {
           kind: "h3",
           id: "pod-anti-affinity-vs-node-affinity",
-          title: "Pod anti-affinity vs node affinity",
+          title: "podAntiAffinity vs node affinity",
         },
         {
           kind: "p",
           text: [
             "Node affinity asks what the node is, and pod anti-affinity asks what already runs there. “Not on Spot nodes” is node affinity with ",
             { code: "NotIn" },
-            ". “Not on a node that already runs another replica” is pod anti-affinity.",
+            ". “Not beside another replica” is pod anti-affinity.",
           ],
         },
         {
           kind: "p",
-          text: "Sometimes “what runs there” really means “nodes of one kind”. Then label those nodes and use node affinity, which stays true as pods come and go.",
+          text: "When “what runs there” really means a kind of node, label those nodes and use node affinity. It stays true as pods come and go.",
         },
       ],
     },
@@ -420,7 +419,7 @@ export const article: Article = {
           text: [
             "Required anti-affinity on ",
             { code: "kubernetes.io/hostname" },
-            " is the plain case: a Deployment with 3\u00a0replicas runs one per node, so it needs 3\u00a0nodes. That holds whatever those replicas request.",
+            " is the plain case: a Deployment with 3\u00a0replicas runs one per node.",
           ],
         },
         {
@@ -443,7 +442,7 @@ export const article: Article = {
         { kind: "svg", figure: figure3 },
         {
           kind: "p",
-          text: "The docs’ web-and-cache example locks the same way. Both Deployments carry required hostname anti-affinity, and the web tier also requires a cache pod on its node. So in the docs’ three-node cluster, each node ends up with one pair that can’t move.",
+          text: "The docs’ web-and-cache example locks the same way. Both tiers carry required hostname anti-affinity, and each web pod also requires a cache pod on its node. So each node of the docs’ three-node cluster ends up with one pair that can’t move.",
         },
         {
           kind: "h3",
@@ -494,10 +493,6 @@ export const article: Article = {
       title: "Choosing the rule: preferred by default, required only where the app needs it",
       blocks: [
         {
-          kind: "p",
-          text: "Default to preferred, and make a rule required only where breaking it breaks the app.",
-        },
-        {
           kind: "ul",
           items: [
             "If the pod needs something only some nodes have, such as a zone, a pool, a GPU or On-Demand capacity, use required node affinity. For one exact label, nodeSelector is enough.",
@@ -541,8 +536,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
+            "When ",
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS. It rebalances CPU and memory requests and drains spare nodes so your autoscaler can remove them. When it consolidates nodes, its drain follows the same scheduling rules:",
+            " consolidates nodes, its drain follows the same scheduling rules:",
           ],
         },
         {
@@ -550,11 +546,11 @@ export const article: Article = {
           items: [
             [
               { b: "The check." },
-              " Before it drains a spare node, Coral simulates the scheduler on the live cluster. Every pod on the node must fit elsewhere, with its affinity, taints, spread, ports and zones. If one pod has nowhere to go, the node isn’t drained.",
+              " Before it drains a spare node, Coral simulates the scheduler on the live cluster, with affinity, taints, spread, ports and zones. If one pod has nowhere to go, the node isn’t drained.",
             ],
             [
               { b: "The limits." },
-              " It respects PodDisruptionBudgets and do-not-disrupt. By default, Coral may reduce a pool’s minimum when that minimum alone keeps a node it has emptied, and disconnect puts the old minimum back. Every pool keeps at least one node.",
+              " It respects PodDisruptionBudgets and do-not-disrupt. Where only a pool’s minimum keeps a node it has emptied, Coral can reduce that minimum, with permission, and puts it back later. Every pool keeps at least one node.",
             ],
             [
               { b: "The drain." },
@@ -564,7 +560,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Where requests sit above real use, rebalancing them leaves more room on the nodes that stay. So more pods fit elsewhere, and more nodes can go. A required one-per-node rule still keeps its nodes, because that floor comes from the rule and not from requests.",
+          text: "Rebalancing requests that sit above real use leaves more room on the nodes that stay, so more nodes can go. A required one-per-node rule still keeps its nodes, because that floor comes from the rule, not from requests.",
         },
         {
           kind: "p",

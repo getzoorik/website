@@ -17,7 +17,7 @@ import "@/styles/calculators.css";
  * island. At the site's root (owner, 30 Oct 2026: "At the root"), linked from Cloud cost optimization tools' Free
  * calculators and from the footer's Resources column, after Cloud cost optimization tools (owner, 30 Oct 2026).
  */
-/* Its title goes through the layout's template: "EKS pricing calculator: AKS and EKS node cost | Zoorik". */
+/* Its title goes through the layout's template: "EKS pricing and AKS pricing calculator for nodes | Zoorik". */
 export const metadata: Metadata = documentMetadata(
   routes.eksAndAksPricingCalculator,
   nodeCalculator.meta,

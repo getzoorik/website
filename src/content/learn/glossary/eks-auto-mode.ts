@@ -4,14 +4,14 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/eks-auto-mo
 export const term: GlossaryTerm = {
   slug: "eks-auto-mode",
   term: "EKS Auto Mode",
-  title: "What is EKS Auto Mode?",
-  meta: "EKS Auto Mode lets AWS run your EKS nodes for a fee on top of the EC2 price. See what it manages, how it compares to managed node groups, and its pricing.",
-  h1: "What is EKS Auto Mode?",
+  title: "What is Amazon EKS Auto Mode?",
+  meta: "AWS EKS Auto Mode runs your EKS nodes for a fee on top of the EC2 price. See what it manages, its pricing, and how it compares to managed node groups.",
+  h1: "What is Amazon EKS Auto Mode?",
   card: "EKS Auto Mode is a mode of Amazon Elastic Kubernetes Service (EKS), where AWS runs your nodes, not just the control plane.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -74,13 +74,28 @@ export const term: GlossaryTerm = {
       title: "Why EKS Auto Mode matters for your cloud cost",
       blocks: [
         {
+          kind: "p",
+          text: [
+            "Auto Mode sizes nodes to your pods’ requests, so EKS Auto Mode cost follows your ",
+            { a: "requests", href: "/learn/glossary/kubernetes-resource-requests" },
+            ", not real use.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            { a: "Coral", href: "/coral" },
+            " rebalances CPU and memory requests on AKS and EKS to match real use, so the same pods fit on fewer nodes.",
+          ],
+        },
+        {
           kind: "h3",
           id: "eks-auto-mode-pricing",
           title: "EKS Auto Mode pricing: a fee on top of EC2",
         },
         {
           kind: "p",
-          text: "EKS Auto Mode isn’t free. EKS Auto Mode pricing adds a fee per instance, on top of the EC2 price.",
+          text: "Auto Mode adds a management fee for each EC2 instance it launches, on top of the EC2 price. The fee is charged per second, with a one-minute minimum.",
         },
         {
           kind: "ul",
@@ -90,28 +105,6 @@ export const term: GlossaryTerm = {
           ],
         },
         { kind: "svg", figure: figure1 },
-        {
-          kind: "p",
-          text: [
-            "Auto Mode sizes nodes to your pods’ requests, so EKS Auto Mode cost follows your ",
-            { a: "requests", href: "/learn/glossary/kubernetes-resource-requests" },
-            ", not real use.",
-          ],
-        },
-        {
-          kind: "ul",
-          items: [
-            [
-              { a: "Coral", href: "/coral" },
-              " rebalances CPU and memory requests on AKS and EKS to match real use, so the same pods fit on fewer nodes.",
-            ],
-            [
-              "The ",
-              { a: "free assessment", href: "/assessment?p=coral" },
-              " works out your own figure.",
-            ],
-          ],
-        },
       ],
     },
   ],

@@ -4,19 +4,19 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/azure-ultra
 export const term: GlossaryTerm = {
   slug: "azure-ultra-disk",
   term: "Ultra Disk (Azure)",
-  title: "What is Ultra Disk in Azure?",
-  meta: "Ultra Disk in Azure is the fastest managed disk. See its size and speed limits, what it can’t do, and the three meters and vCPU fee that set what you pay.",
-  h1: "What is Ultra Disk in Azure?",
-  card: "Ultra Disk in Azure is the highest-performing type of Azure managed disk.",
+  title: "What is Azure Ultra Disk?",
+  meta: "Azure Ultra Disk, or Ultra SSD, is the fastest Azure managed disk. See its size and speed limits, what it can’t do, and the three meters and vCPU fee you pay.",
+  h1: "What is Azure Ultra Disk?",
+  card: "Azure Ultra Disk is the highest-performing type of Azure managed disk.",
   group: "block-storage",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
       text: [
-        "Ultra Disk in Azure is the highest-performing type of ",
+        "Azure Ultra Disk is the highest-performing type of ",
         { a: "Azure managed disk", href: "/learn/glossary/azure-managed-disk" },
         ". You set its size, input/output operations per second (",
         { a: "IOPS", href: "/learn/glossary/iops" },

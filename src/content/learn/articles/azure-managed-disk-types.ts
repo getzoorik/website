@@ -6,38 +6,29 @@ import { figure as figure3 } from "@/features/learn/figures/azure-managed-disk-t
 export const article: Article = {
   slug: "azure-managed-disk-types",
   title: "Azure disk types compared: how to choose one",
-  meta: "Azure disk types compared: how Ultra Disk, Premium SSD v2, Premium SSD, Standard SSD and Standard HDD charge, one disk priced on all five, and which to pick.",
-  h1: "Azure managed disk types: how to choose one",
-  deck: "Five disk types and two ways of charging, one disk priced on all five, and the type each of your disks needs.",
+  meta: "Azure managed disk types: how Ultra Disk, Premium SSD v2, Premium SSD, Standard SSD and Standard HDD charge, one disk priced on all five, and which to pick.",
+  h1: "Azure disk types: how to choose one for each disk",
+  deck: "Three types charge by size tier, two charge for the capacity and performance you set.",
   card: "The five Azure disk types side by side: how each charges, one disk priced on all five, and how to pick.",
   product: "amoeba",
   hub: "Block storage",
   topic: "Azure block storage",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "sheldon",
   cover: "/learn-covers/zoorik-learn-azure-managed-disk-types-1200x630.webp",
   coverAlt:
-    "Azure managed disk types: by cost a month, the cheapest crossed out, Premium SSD v2 ticked, then Premium SSD and Ultra Disk",
-  short:
-    "The five Azure disk types, all managed disks, are Ultra Disk, Premium SSD v2, Premium SSD, Standard SSD and Standard HDD. For most general-purpose data disks, Premium SSD v2 gives the best price performance, and Premium SSD is the fastest OS disk type.",
+    "Five Azure disk types by cost a month: the two cheapest crossed out, Premium SSD v2 ticked, then Premium SSD and Ultra Disk",
+  short: [
+    "The five Azure disk types, all ",
+    { a: "managed disks", href: "/learn/glossary/azure-managed-disk" },
+    ", are Ultra Disk, Premium SSD v2, Premium SSD, Standard SSD and Standard HDD. For most general-purpose data disks, Premium SSD v2 gives the best price performance, and Premium SSD is the fastest OS disk type.",
+  ],
   sections: [
     {
       id: "azure-disk-types",
       title: "Azure disk types compared",
       blocks: [
-        {
-          kind: "p",
-          text: [
-            "Microsoft offers five disk types for Azure virtual machines (VMs), and each one is a ",
-            { a: "managed disk", href: "/learn/glossary/azure-managed-disk" },
-            ". Azure keeps three copies of every managed disk’s data. The types differ in what you pay for, how fast they go and where you can use them.",
-          ],
-        },
-        {
-          kind: "p",
-          text: "The Azure disk types comparison below uses Microsoft’s published limits for each type.",
-        },
         {
           kind: "table",
           columns: [
@@ -125,14 +116,6 @@ export const article: Article = {
             " come in fixed ",
             { a: "size tiers", href: "/learn/glossary/azure-disk-sizes" },
             ", such as P30, E30 and S30 for 1,024\u00a0GiB. Azure rounds the size you provision up to the next tier. It charges that tier by the hour, however much data the disk holds.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "The ",
-            { a: "Azure disk pricing", href: "/ebs-and-azure-disk-pricing" },
-            " page lists what each Premium SSD and Standard SSD tier costs a month.",
           ],
         },
         {
@@ -230,7 +213,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The two standard types can’t reach 5,000\u00a0IOPS at this size. Of the three that can, v2 costs least. Its $95.46 adds up from three meters:",
+          text: "Of the three types that reach 5,000\u00a0IOPS, v2 costs least. Its $95.46 adds up from three meters:",
         },
         {
           kind: "ul",
@@ -331,24 +314,18 @@ export const article: Article = {
           ],
         },
         { kind: "svg", figure: figure3 },
-        {
-          kind: "callout",
-          label: "Rule of thumb",
-          text: "On a busy disk, price v2 first and move off it only for a limit it can’t meet. On a light or backup disk, price a standard type beside it, transactions included.",
-        },
       ],
     },
     {
       id: "settings-that-sit-on-top-of-the",
       title: "Settings that sit on top of the disk type",
       blocks: [
-        { kind: "p", text: "Three settings come after the type, and only some types offer them:" },
         {
           kind: "ul",
           items: [
             [
               { b: "Redundancy." },
-              " Every type offers LRS, which keeps the three copies in one datacenter. Only Premium SSD and Standard SSD also offer ZRS, which spreads them across three availability zones. In East US a P20 lists at $109.81 a month on ZRS, 1.5 times its LRS price of $73.22. ",
+              " Every type offers LRS, which keeps three copies of the data in one datacenter. Only Premium SSD and Standard SSD also offer ZRS, which spreads the copies across three availability zones. In East US a P20 lists at $109.81 a month on ZRS, 1.5 times its LRS price of $73.22. ",
               { a: "Azure disk LRS vs ZRS", href: "/learn/azure-disk-lrs-vs-zrs" },
               " covers when that’s worth it.",
             ],
@@ -377,6 +354,11 @@ export const article: Article = {
         {
           kind: "p",
           text: "Moving to Premium SSD also needs a VM size that supports Premium storage.",
+        },
+        {
+          kind: "code",
+          lang: "bash",
+          code: "az vm deallocate --resource-group <resource-group> --name <vm-name>\naz disk update --sku Premium_LRS --name <disk-name> --resource-group <resource-group>\naz vm start --resource-group <resource-group> --name <vm-name>",
         },
         {
           kind: "p",
@@ -410,7 +392,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Disk type sets the rate per GiB, and the provisioned size sets how many GiB you pay it on. Azure lets a managed disk grow but not shrink, as the article on how to ",
+            "Disk type sets the rate per GiB, and the provisioned size sets how many GiB you pay for. Azure lets a managed disk grow but not shrink, as the article on how to ",
             { a: "reduce Azure disk size", href: "/learn/shrink-azure-managed-disk" },
             " explains.",
           ],
@@ -435,7 +417,7 @@ export const article: Article = {
             ],
             [
               { b: "The move." },
-              " The services that use those mounts restart once, at the switch onto the pool.",
+              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
             ],
           ],
         },

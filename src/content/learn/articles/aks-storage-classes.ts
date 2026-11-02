@@ -5,21 +5,21 @@ import { figure as figure2 } from "@/features/learn/figures/aks-storage-classes/
 export const article: Article = {
   slug: "aks-storage-classes",
   title: "AKS storage classes: which Azure disk each creates",
-  meta: "AKS storage classes decide the Azure disk behind each PVC: its type, LRS or ZRS, and price. See what each Kubernetes storage class creates, and write your own.",
+  meta: "Kubernetes storage classes on AKS set the Azure disk behind each PVC: type, LRS or ZRS, and price. See what each Azure StorageClass creates and write your own.",
   h1: "AKS storage classes: which Azure disk each one creates",
-  deck: "What managed-csi and the other built-in classes create in Azure, and how the class sets a volume’s price.",
+  deck: "A claim sets only the size, and its class picks the disk type and redundancy you pay for.",
   card: "What each built-in AKS storage class creates in Azure, what it costs, and how to write a ZRS or LRS class.",
   product: "both",
   hub: "Kubernetes",
   topic: "Kubernetes storage",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "adil",
   cover: "/learn-covers/zoorik-learn-aks-storage-classes-1200x630.webp",
   coverAlt:
     "AKS storage classes: a PVC names a StorageClass, which sets the price of the Azure disk",
   short: [
-    "AKS storage classes pick the Azure storage behind each Persistent Volume Claim (PVC): its type and redundancy, which with the size largely set the price. The ",
+    "AKS storage classes pick the Azure storage behind each Persistent Volume Claim (PVC). The ",
     { code: "default" },
     " class creates a Standard SSD, ",
     { code: "managed-csi-premium" },
@@ -42,7 +42,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "So the chart set only the size. Its class picked the disk type and redundancy. Azure’s size tier added 56\u00a0GiB (256 − 200) that the claim never asked for.",
+          text: "That tier adds 56\u00a0GiB (256 − 200) that the claim never asked for.",
         },
         { kind: "svg", figure: figure1 },
         {
@@ -53,7 +53,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "A storage class is a Kubernetes StorageClass object. It names a provisioner and the parameters it uses when a claim needs a new volume. For Azure disks the provisioner is the Azure Disk CSI driver, ",
+            "A storage class in Kubernetes is a StorageClass object. It names a provisioner and the parameters it uses when a claim needs a new volume. For Azure disks the provisioner is the Azure Disk CSI driver, ",
             { code: "disk.csi.azure.com" },
             ".",
           ],
@@ -117,6 +117,18 @@ export const article: Article = {
           ],
         },
         {
+          kind: "p",
+          text: [
+            "The two ",
+            { code: "azureblob-*" },
+            " classes need the Azure Blob storage CSI driver. You turn it on with ",
+            {
+              code: "az aks update --name <cluster-name> --resource-group <resource-group> --enable-blob-driver",
+            },
+            ". A cluster without it may not list them.",
+          ],
+        },
+        {
           kind: "h3",
           id: "the-aks-storage-class-default",
           title: "The default storage class in AKS",
@@ -137,25 +149,13 @@ export const article: Article = {
             ".",
           ],
         },
-        {
-          kind: "p",
-          text: [
-            "A claim that sets ",
-            { code: 'storageClassName: ""' },
-            " is different. Kubernetes treats it as asking for no dynamic provisioning.",
-          ],
-        },
         { kind: "code", lang: "bash", code: "kubectl get sc" },
         {
           kind: "p",
           text: [
-            "The two ",
-            { code: "azureblob-*" },
-            " classes come with the Azure Blob storage CSI driver. You turn it on with ",
-            {
-              code: "az aks update --name <cluster-name> --resource-group <resource-group> --enable-blob-driver",
-            },
-            ". A cluster without that driver may not list them.",
+            "Setting ",
+            { code: 'storageClassName: ""' },
+            " is different: Kubernetes treats it as asking for no dynamic provisioning.",
           ],
         },
         {
@@ -191,7 +191,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "An Azure disk mounts as ReadWriteOnce, on one node at a time. Data that pods on several nodes must share belongs on an Azure Files class.",
+          text: "An Azure disk mounts as ReadWriteOnce, on one node at a time. Data that pods on several nodes share belongs on an Azure Files class.",
         },
       ],
     },
@@ -201,7 +201,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "An LRS disk, for locally redundant storage, keeps three copies in one datacenter. A ZRS disk, for zone-redundant storage, is copied synchronously across three availability zones and can recover from a zone failure.",
+          text: "LRS (locally redundant storage) keeps three copies of a disk in one datacenter. ZRS (zone-redundant storage) copies it synchronously across three availability zones, so it can recover from a zone failure.",
         },
         {
           kind: "p",
@@ -210,19 +210,15 @@ export const article: Article = {
             { code: "managed-csi" },
             " and ",
             { code: "managed-csi-premium" },
-            " create ZRS disks instead of LRS in a cluster deployed across availability zones. The ",
+            " create ZRS disks instead of LRS in a cluster spread across availability zones. The ",
             { code: "managed-csi-premium-v2" },
-            " class stays LRS, because Azure doesn’t support ZRS for Premium SSD v2.",
+            " class stays LRS, because Premium SSD v2 has no ZRS.",
           ],
         },
         { kind: "svg", figure: figure2 },
         {
           kind: "p",
-          text: "Check your cluster’s classes with the commands below.",
-        },
-        {
-          kind: "p",
-          text: "Microsoft says ZRS “comes at a higher cost” than LRS, and ZRS writes have more latency. In return, the Azure Disk CSI driver can schedule a ZRS disk onto a node in any zone. An LRS disk must sit in the same zone as the node it attaches to, so its pod stays in that zone.",
+          text: "Microsoft says ZRS “comes at a higher cost” than LRS, and its writes have more latency. In return, the Azure Disk CSI driver can schedule a ZRS disk onto a node in any zone. An LRS disk must sit in its node’s zone, so its pod stays in that zone.",
         },
         {
           kind: "p",
@@ -254,7 +250,7 @@ export const article: Article = {
             { code: "10Gi" },
             " claim on ",
             { code: "managed-csi-premium" },
-            " pays for a P3, the 16\u00a0GiB tier. The 200\u00a0GiB Standard SSD at the top of this page is Microsoft’s own example.",
+            " pays for a P3, the 16\u00a0GiB tier.",
           ],
         },
         {
@@ -315,14 +311,13 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "The size you request is the floor for the life of that volume. ",
             { a: "How to resize a PVC in Kubernetes", href: "/learn/resize-pvc-kubernetes" },
             " covers growing one.",
           ],
         },
         {
           kind: "p",
-          text: "On AKS, a Standard SSD or Premium SSD volume grows without downtime. The exception is a resize from 4\u00a0TiB or less to more than 4\u00a0TiB, which needs the disk unmounted and detached first. Premium SSD v2\u00a0volumes don’t have that 4\u00a0TiB limit.",
+          text: "On AKS, a Standard SSD or Premium SSD volume grows without any downtime. The exception is a resize from 4\u00a0TiB or less to more than 4\u00a0TiB, which needs the disk unmounted and detached first. Premium SSD v2\u00a0volumes don’t have that 4\u00a0TiB limit.",
         },
         {
           kind: "h3",
@@ -363,7 +358,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "The Azure Disk CSI driver applies a class’s parameters when it creates a disk. Microsoft notes that updating the storage class later “affects only newly provisioned volumes.” These AKS storage class parameters and fields move the price:",
+          text: "The Azure Disk CSI driver applies a class’s parameters when it creates a disk. Microsoft notes that updating the storage class later “affects only newly provisioned volumes.”",
         },
         {
           kind: "table",
@@ -438,7 +433,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Start from Microsoft’s own pattern to write an AKS ZRS storage class. The same pattern gives an LRS class for a zone-spread cluster where the less expensive disk fits better.",
+          text: "Microsoft’s own pattern gives a ZRS class. The same pattern gives the LRS class below, for a zone-spread cluster where the less expensive disk fits better.",
         },
         {
           kind: "code",
@@ -476,12 +471,8 @@ export const article: Article = {
           text: [
             "To make a class you wrote a default, add the annotation ",
             { code: 'storageclass.kubernetes.io/is-default-class: "true"' },
-            ".",
+            ". Kubernetes advises keeping a single default class. If several carry the annotation, a claim with no class gets the most recently created one.",
           ],
-        },
-        {
-          kind: "p",
-          text: "Kubernetes advises keeping a single default class. If several carry the annotation, a claim with no class gets the most recently created one.",
         },
       ],
     },
@@ -602,12 +593,8 @@ export const article: Article = {
     },
     {
       id: "where-coral-and-amoeba-fit",
-      title: "Where Coral and Amoeba fit",
+      title: "Coral and Amoeba leave your storage classes as they are",
       blocks: [
-        {
-          kind: "p",
-          text: "Neither Zoorik product changes your storage classes, your PVCs or the Azure disks behind them.",
-        },
         {
           kind: "h3",
           id: "how-coral-handles-pods-with-azure-disks",
@@ -617,17 +604,17 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS. It rebalances CPU and memory requests and drains spare nodes so your autoscaler can remove them. Its FAQ says it “changes only CPU and memory,” so each PVC keeps the class, size and disk type your claims and classes set.",
+            " rebalances CPU and memory requests on AKS and EKS, and drains spare nodes so your autoscaler can remove them. Its FAQ says it “changes only CPU and memory,” so each PVC keeps its class, size and disk.",
           ],
         },
         {
           kind: "p",
-          text: "Azure disks still shape how Coral moves pods, because each one is ReadWriteOnce. The FAQ names “a ReadWriteOnce volume” as a case where Coral can’t safely resize a single-replica pod straight away. There, the new size “waits for the pod’s next natural restart.”",
+          text: "Azure disks still shape how Coral moves pods, because each one is ReadWriteOnce. For a single-replica pod that uses one, the FAQ says its new CPU and memory size “waits for the pod’s next natural restart.”",
         },
         {
           kind: "p",
           text: [
-            "Each Azure disk mounts ReadWriteOnce, so when Coral drains a node, a single-replica pod that uses one is evicted within its ",
+            "When Coral drains a node, a single-replica pod that uses an Azure disk is evicted within its ",
             { a: "PodDisruptionBudget", href: "/learn/glossary/pod-disruption-budget" },
             " and gets a short restart. To reduce what requests and nodes cost, see the ",
             { a: "Kubernetes cost optimization guide", href: "/kubernetes-cost-optimization" },
@@ -639,16 +626,16 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " optimizes block storage on Azure and AWS, for the data disks of running VMs. Those are Azure managed disks and Amazon EBS volumes, on Windows and Linux VMs.",
+            " optimizes block storage on Azure and AWS, for the data disks of running Windows and Linux VMs. Those are Azure managed disks and Amazon EBS volumes.",
           ],
         },
         {
           kind: "p",
-          text: "Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. It grows the pool before it fills, and shrinks it one disk at a time when your data goes down and stays down. So you pay for close to what you use.",
+          text: "It moves a VM’s data disks onto one btrfs pool sized to your data. It grows the pool before it fills, and shrinks it one disk at a time when your data goes down and stays down.",
         },
         {
           kind: "p",
-          text: "On Azure the pool uses Premium SSD v2 where your VM’s region and zone offer it, and Premium SSD otherwise. Its disks are always locally redundant. Data that sat on ZRS disks therefore loses its zone redundancy, the same LRS trade described above.",
+          text: "On Azure the pool uses Premium SSD v2 where your VM’s region and zone offer it, and Premium SSD otherwise. Its disks are always locally redundant, so data from ZRS disks loses its zone redundancy.",
         },
       ],
     },

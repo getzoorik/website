@@ -4,21 +4,21 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/azure-premi
 export const term: GlossaryTerm = {
   slug: "azure-premium-ssd",
   term: "Premium SSD (Azure)",
-  title: "What is Premium SSD in Azure?",
-  meta: "Premium SSD in Azure, or Azure premium storage, is a fast managed disk for production VMs. See what Premium SSD LRS means and why you pay its whole size tier.",
-  h1: "What is Premium SSD in Azure?",
-  card: "Premium SSD in Azure, also called Azure premium storage, is a solid-state drive (SSD) type of Azure managed disk.",
+  title: "Azure Premium SSD: what is Azure premium storage?",
+  meta: "Premium storage in Azure means Premium SSD, the Azure premium disk for production VMs. See what Premium SSD LRS means and why you pay its whole size tier.",
+  h1: "Azure Premium SSD: what is Azure premium storage?",
+  card: "Azure Premium SSD, also called Azure premium storage, is a solid-state drive (SSD) type of Azure managed disk.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
       text: [
-        "Premium SSD in Azure, also called Azure premium storage, is a solid-state drive (SSD) type of ",
+        "Azure Premium SSD, also called Azure premium storage, is a solid-state drive (SSD) type of ",
         { a: "Azure managed disk", href: "/learn/glossary/azure-managed-disk" },
-        ". It’s for production apps needing high performance and low ",
+        ". It’s for production apps that need high performance and low ",
         { a: "latency", href: "/learn/glossary/disk-latency" },
         ".",
       ],
@@ -46,9 +46,9 @@ export const term: GlossaryTerm = {
         {
           kind: "p",
           text: [
-            "Input/output operations per second (",
+            "A Premium SSD’s input/output operations per second (",
             { a: "IOPS", href: "/learn/glossary/iops" },
-            ") and throughput depend on disk size.",
+            ") and throughput rise with its size, up to what its virtual machine (VM) allows.",
           ],
         },
         {
@@ -78,7 +78,7 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "In Microsoft’s example, a DS1 virtual machine (VM) caps its 1\u00a0TiB disk at 3,200\u00a0IOPS.",
+          text: "In Microsoft’s example, a DS1 VM caps its 1\u00a0TiB Premium SSD at 3,200\u00a0IOPS.",
         },
         { kind: "svg", figure: figure1 },
       ],
@@ -115,15 +115,7 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " moves a VM’s data disks onto one pool sized to your data. On Azure, it uses Premium SSD v2 where offered, and Premium SSD otherwise.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "The ",
-            { a: "free assessment", href: "/assessment?p=amoeba" },
-            " works out your own figure.",
+            " moves a VM’s data disks onto one btrfs pool sized to your data, then rightsizes it. On Azure, the pool is Premium SSD v2 where offered, and Premium SSD otherwise.",
           ],
         },
       ],

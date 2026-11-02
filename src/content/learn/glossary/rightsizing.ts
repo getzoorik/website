@@ -4,18 +4,18 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/rightsizing
 export const term: GlossaryTerm = {
   slug: "rightsizing",
   term: "Rightsizing (cloud)",
-  title: "What is rightsizing in cloud?",
-  meta: "Rightsizing in cloud matches VMs, disks and databases to what they need. See how AWS and Azure find oversized VMs, and why you pay for a disk’s full size.",
-  h1: "What is rightsizing in cloud?",
-  card: "Rightsizing in cloud cost optimization means matching a resource’s size to what it needs, based on measured use.",
+  title: "What is right sizing (rightsizing) in cloud?",
+  meta: "Rightsizing, or right sizing, means matching VMs, disks and databases to real use. See how AWS and Azure find oversized VMs, and why you pay a disk’s full size.",
+  h1: "What is right sizing (rightsizing) in cloud?",
+  card: "Rightsizing, or right sizing, in cloud cost optimization means matching a resource’s size to what it needs, from measured use.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
-      text: "Rightsizing in cloud cost optimization means matching a resource’s size to what it needs, based on measured use. It applies to virtual machines (VMs), disks and databases. You change the size, type or count, or shut down idle ones.",
+      text: "Rightsizing, or right sizing, in cloud cost optimization means matching a resource’s size to what it needs, from measured use. It applies to virtual machines (VMs), disks and databases. You change the size, type or count, or shut down idle ones.",
     },
   ],
   sections: [
@@ -27,13 +27,9 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: "Right sizing cloud storage compares the size you provisioned with the data on it. Azure managed disks and Amazon EBS volumes are charged by provisioned size.",
         },
-        { kind: "p", text: "Take Microsoft’s example:" },
         {
-          kind: "ul",
-          items: [
-            "A 1\u00a0TiB Standard SSD holds 120\u00a0GiB. You pay for all 1\u00a0TiB (the E30 tier).",
-            "Its snapshots are charged only for the 120\u00a0GiB used.",
-          ],
+          kind: "p",
+          text: "In Microsoft’s example, a 1\u00a0TiB Standard SSD holding 120\u00a0GiB is charged for all 1\u00a0TiB, the E30 tier. Its snapshots are charged only for the 120\u00a0GiB used.",
         },
         { kind: "svg", figure: figure1 },
       ],
@@ -45,7 +41,7 @@ export const term: GlossaryTerm = {
         {
           kind: "ul",
           items: [
-            "In AWS, the Well-Architected Framework says to rightsize instances whose peak CPU and memory stay under 40% for four weeks.",
+            "For AWS rightsizing, the Well-Architected Framework says to rightsize instances whose peak CPU and memory stay under 40% for four weeks.",
             "AWS Compute Optimizer and AWS Trusted Advisor give rightsizing advice.",
             "For rightsizing in Azure, Azure Advisor suggests a cheaper VM size that fits the current load. It reads CPU, memory and outbound network use over 7\u00a0days by default, or up to 90.",
           ],
@@ -62,7 +58,7 @@ export const term: GlossaryTerm = {
             "You pay for what you provision, busy or idle.",
             [
               { a: "Amoeba", href: "/amoeba" },
-              " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously. It works on Azure managed disks and Amazon EBS volumes, on Windows and Linux VMs.",
+              " moves a VM’s data disks onto one btrfs pool sized to your data, then rightsizes it autonomously. It works on Azure managed disks and Amazon EBS volumes, on Windows and Linux VMs.",
             ],
             [
               { a: "Coral", href: "/coral" },
@@ -70,7 +66,6 @@ export const term: GlossaryTerm = {
               { a: "match real use", href: "/learn/kubernetes-pod-right-sizing" },
               ". The same pods fit on fewer nodes, and Coral drains spare ones so your autoscaler can remove them.",
             ],
-            ["The ", { a: "free assessment", href: "/assessment" }, " works out your own figure."],
           ],
         },
       ],

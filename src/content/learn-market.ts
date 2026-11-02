@@ -10,8 +10,8 @@ import type { ProductId } from "@/content/products";
  * acts and clouds from its company's own pages. The record of that check holds every claim's source and the reasoning
  * behind it; the pricing rows' sources are read from it (the mocks' data prints the pricing text without them). Carried
  * here is only what the pages print: the check's notes, each tool's status and reasons stay in the data and the
- * record, the clouds are the two a row names (Azure, then AWS; a tile adds Google Cloud where the data names it, in
- * `shownGroups`), and the seven versus pages held back have no rows here. A throwaway script rewrites the three arrays
+ * record, the clouds are the two a row names (Azure, then AWS; the site names no other cloud, 2 Nov 2026), and the
+ * seven versus pages held back have no rows here. A throwaway script rewrites the three arrays
  * below from the data and the record, and Coral's own lines keep the site's verb.
  *
  * ─── THE ONLY PLACE COMPETITORS ARE NAMED ────────────────────────────────────────────────────────────────────────
@@ -757,7 +757,7 @@ export const marketGroups: readonly MarketGroup[] = [
         name: "nOps",
         company: "nOps (independent)",
         subgroup: "Commitments and discounts",
-        line: "Buys and manages RIs, Savings Plans and CUDs automatically; also offers cost visibility, allocation and AI cost tracking.",
+        line: "Buys and manages Reserved Instances and Savings Plans automatically; also offers cost visibility, allocation and AI cost tracking.",
         acts: "mixed",
         clouds: ["Azure", "AWS"],
         url: "https://www.nops.io",
@@ -767,7 +767,7 @@ export const marketGroups: readonly MarketGroup[] = [
         name: "ProsperOps",
         company: "Flexera (acquisition announced 6 Jan 2026; keeps its own brand)",
         subgroup: "Commitments and discounts",
-        line: "Autonomous commitment discount management on AWS, Azure and Google Cloud, plus a Scheduler for resource management.",
+        line: "Autonomous commitment discount management on AWS and Azure, plus a Scheduler for resource management.",
         acts: "mixed",
         clouds: ["Azure", "AWS"],
         url: "https://www.prosperops.com",
@@ -837,7 +837,7 @@ export const marketGroups: readonly MarketGroup[] = [
         name: "Xosphere IQ",
         company: "Xosphere (independent)",
         subgroup: "Spot automation",
-        line: "Autonomous Spot orchestration on AWS and GCP, Karpenter-integrated Kubernetes scaling, and AI spend optimization.",
+        line: "Autonomous Spot orchestration on AWS, Karpenter-integrated Kubernetes scaling, and AI cost optimization.",
         acts: "changes infrastructure",
         clouds: ["AWS"],
         url: "https://www.xosphere.io",
@@ -1034,8 +1034,6 @@ export interface ShownTool {
   readonly name: string;
   /** Its tile's line: the same facts as its checked line, in fewer words. The full line is the tile's title. */
   readonly short: string;
-  /** Its own pages name Google Cloud too, which the tile adds after the two clouds a row names. */
-  readonly googleCloud: boolean;
 }
 
 /** One kind of tool on Cloud cost optimization tools: its name, the market group its tools are in, and its tiles. */
@@ -1069,47 +1067,38 @@ export const shownGroups: readonly ShownGroup[] = [
       {
         name: "Cast AI",
         short: "Automates rightsizing, node autoscaling, Spot use and bin-packing.",
-        googleCloud: true,
       },
       {
         name: "ScaleOps",
         short: "Self-hosted; rightsizes pods in real time and manages replicas and nodes.",
-        googleCloud: true,
       },
       {
         name: "PerfectScale by DoiT",
         short: "Applies pod sizing automatically and tunes Karpenter settings.",
-        googleCloud: true,
       },
       {
         name: "Kubex",
         short: "Sizes pods at admission, tunes HPAs and recommends node types.",
-        googleCloud: true,
       },
       {
         name: "StormForge by CloudBolt",
         short: "Machine-learning rightsizing of container requests and limits.",
-        googleCloud: true,
       },
       {
         name: "Spot Ocean",
         short: "Bin-packs pods and mixes Spot, reserved and on-demand capacity.",
-        googleCloud: true,
       },
       {
         name: "Karpenter",
         short: "Launches right-fit nodes and consolidates onto fewer or cheaper ones.",
-        googleCloud: true,
       },
       {
         name: "Kubernetes Cluster Autoscaler",
         short: "Adds nodes for pending pods and removes underused ones.",
-        googleCloud: true,
       },
       {
         name: "Vertical Pod Autoscaler (VPA)",
         short: "Recommends pod CPU and memory requests and can apply them.",
-        googleCloud: false,
       },
     ],
   },
@@ -1126,22 +1115,18 @@ export const shownGroups: readonly ShownGroup[] = [
       {
         name: "Lucidity Disk AutoScaler (with Lumen)",
         short: "Grows and shrinks live cloud disks with an agent.",
-        googleCloud: true,
       },
       {
         name: "Datafy EBS AutoScaler (and EBS Sensor)",
         short: "Grows and shrinks Amazon EBS volumes on EC2 and EKS.",
-        googleCloud: false,
       },
       {
         name: "Zesty Disk",
         short: "Grows or shrinks an EC2 filesystem by adding and removing EBS volumes.",
-        googleCloud: false,
       },
       {
         name: "Sedai (Amazon EBS and Azure Managed Disks optimization)",
         short: "Picks EBS types and Azure disk tiers from usage; flags unattached disks.",
-        googleCloud: false,
       },
     ],
   },
@@ -1154,32 +1139,26 @@ export const shownGroups: readonly ShownGroup[] = [
       {
         name: "IBM Kubecost",
         short: "Kubernetes cost allocation with rightsizing advice and automation.",
-        googleCloud: true,
       },
       {
         name: "Vantage",
         short: "Allocates costs, recommends savings and can buy Savings Plans.",
-        googleCloud: true,
       },
       {
         name: "ProsperOps",
-        short: "Manages commitment discounts autonomously on AWS, Azure and Google Cloud.",
-        googleCloud: true,
+        short: "Manages commitment discounts autonomously on AWS and Azure.",
       },
       {
         name: "nOps",
-        short: "Buys and manages RIs, Savings Plans and CUDs automatically.",
-        googleCloud: true,
+        short: "Buys and manages Reserved Instances and Savings Plans automatically.",
       },
       {
         name: "Xosphere IQ",
-        short: "Autonomous Spot orchestration on AWS and GCP.",
-        googleCloud: true,
+        short: "Autonomous Spot orchestration on AWS.",
       },
       {
         name: "Cloud Custodian",
         short: "Open-source rules that stop, retype, tag or delete cloud resources.",
-        googleCloud: true,
       },
     ],
   },
@@ -1192,27 +1171,22 @@ export const shownGroups: readonly ShownGroup[] = [
       {
         name: "Azure Advisor",
         short: "Free Azure service that recommends cost and other improvements.",
-        googleCloud: false,
       },
       {
         name: "AKS node auto provisioning (NAP)",
         short: "Provisions VM sizes for pending pods and removes underused nodes.",
-        googleCloud: false,
       },
       {
         name: "AWS Compute Optimizer",
         short: "Recommends rightsizing and flags idle resources.",
-        googleCloud: false,
       },
       {
         name: "AWS Cost Optimization Hub",
         short: "Gathers rightsizing, idle and commitment advice across accounts.",
-        googleCloud: false,
       },
       {
         name: "Amazon EKS Auto Mode",
         short: "AWS manages compute autoscaling for EKS, on Karpenter.",
-        googleCloud: false,
       },
     ],
   },
@@ -1257,6 +1231,8 @@ export interface VersusFacts {
   readonly slug: string;
   readonly tool: string;
   readonly name: string;
+  /** Its maker, as At a glance labels it, where it is not the tool's owner as the market lists it (2 Nov 2026). */
+  readonly company?: string;
   /** What it is, in its maker's words (At a glance). */
   readonly line: string;
   readonly rows: readonly VersusRow[];
@@ -1332,7 +1308,7 @@ export const versusFacts: readonly VersusFacts[] = [
         ours: { mark: "yes", note: "Kubernetes 1.30 or later", sources: [] },
         theirs: {
           mark: "yes",
-          note: "'any distribution: EKS, AKS, GKE, minikube, kind, and others'",
+          note: "runs on any Kubernetes distribution, AKS and EKS among them",
           sources: ["https://docs.stormforge.io/docs/get-started/"],
         },
       },
@@ -1443,6 +1419,7 @@ export const versusFacts: readonly VersusFacts[] = [
     slug: "amoeba-vs-zesty-disk",
     tool: "Zesty Disk",
     name: "Zesty Disk",
+    company: "Zesty, an independent company",
     line: "Builds an EC2 filesystem from several EBS volumes, adding and removing volumes to grow or shrink capacity.",
     rows: [
       {
@@ -1521,7 +1498,7 @@ export const versusFacts: readonly VersusFacts[] = [
       },
       {
         label: "On AWS Marketplace",
-        ours: { mark: "no", note: "not listed yet", sources: [] },
+        ours: { mark: "yes", note: "Amoeba on AWS Marketplace", sources: [] },
         theirs: {
           mark: "yes",
           note: "Zesty Platform and Zesty Disk listings",
@@ -1533,7 +1510,7 @@ export const versusFacts: readonly VersusFacts[] = [
       },
       {
         label: "On Microsoft Marketplace",
-        ours: { mark: "no", note: "not listed yet", sources: [] },
+        ours: { mark: "yes", note: "Amoeba on Microsoft Marketplace", sources: [] },
         theirs: {
           mark: "no",
           note: "No publisher starting 'Zesty' in Microsoft's public Marketplace catalog (19 Oct)",
@@ -1665,7 +1642,7 @@ export const versusFacts: readonly VersusFacts[] = [
         label: "Applies changes on its own",
         ours: {
           mark: "yes",
-          note: "empties nodes from install, and sizes pods once you switch it on",
+          note: "empties spare nodes in the node pools you choose, and rebalances pod requests once you switch it on",
           sources: [],
         },
         theirs: {
@@ -1922,7 +1899,7 @@ export const alternativesFacts: readonly AlternativesFacts[] = [
     questions: [
       {
         q: "Does it act, or only recommend?",
-        a: "Some tools change requests and machines on their own; others write recommendations someone has to apply.",
+        a: "Goldilocks only suggests requests. IBM Kubecost advises, and can automate request sizing. Cast AI and ScaleOps change requests and nodes themselves.",
       },
       {
         q: "Does it work with your autoscaler?",
@@ -1930,7 +1907,7 @@ export const alternativesFacts: readonly AlternativesFacts[] = [
       },
       {
         q: "Does it run on AKS and EKS?",
-        a: "Many tools start on one cloud. If you run both, check both.",
+        a: "Every tool below runs on both AKS and EKS, except Harness Cluster Orchestrator, which is for Amazon EKS only.",
       },
       {
         q: "How does it install, and what leaves your cluster?",
@@ -1957,19 +1934,19 @@ export const alternativesFacts: readonly AlternativesFacts[] = [
     questions: [
       {
         q: "Does it shrink, or only grow?",
-        a: "Many tools only add space. Ask whether it also gives space back, and how.",
+        a: "Amazon EBS Elastic Volumes and Azure managed disks only grow. Lucidity, Datafy, Zesty Disk and Amoeba also shrink. Zesty Disk and Amoeba do it by removing disks from a filesystem or a pool.",
       },
       {
         q: "Is there downtime, or a reboot?",
-        a: "Some need a reboot to start, or a restart to resize. Ask when, and for how long.",
+        a: "Amoeba restarts each data mount’s services once, at the switch onto its pool. After that, the pool grows and shrinks without unmounting. Some Zesty Disk agent installs on RHEL or Rocky need one instance restart.",
       },
       {
         q: "Which disks and clouds?",
-        a: "Azure managed disks, Amazon EBS, Kubernetes volumes or VM disks: check it covers yours.",
+        a: "Datafy, Zesty Disk and Zesty PV autoscaling work on AWS only. Lucidity, Sedai, NetApp Cloud Volumes ONTAP and Amoeba run on Azure and AWS. On Kubernetes, pvc-autoresizer and VolumeAttributesClass handle the volumes.",
       },
       {
         q: "What runs on your machines?",
-        a: "An agent, a filesystem or a storage layer, and what it can see and send.",
+        a: "Lucidity, Zesty Disk and Amoeba run an agent on each VM. Zesty Disk and Amoeba also change the filesystem under your data. NetApp Cloud Volumes ONTAP is a storage appliance.",
       },
     ],
   },

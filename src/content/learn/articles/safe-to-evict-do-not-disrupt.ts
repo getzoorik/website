@@ -5,16 +5,16 @@ import { figure as figure3 } from "@/features/learn/figures/safe-to-evict-do-not
 
 export const article: Article = {
   slug: "safe-to-evict-do-not-disrupt",
-  title: "Safe-to-evict and do-not-disrupt annotations",
-  meta: "What the Kubernetes safe-to-evict annotation and karpenter.sh/do-not-disrupt do, which autoscaler reads each, and where emptyDir and hostPath pods hold nodes.",
-  h1: "The safe-to-evict and do-not-disrupt annotations explained",
-  deck: "One annotation on one pod can keep its whole node running, so it pays to know which autoscaler reads which.",
+  title: "Karpenter do-not-disrupt vs safe-to-evict",
+  meta: "What cluster-autoscaler.kubernetes.io/safe-to-evict and karpenter.sh/do-not-disrupt do, which autoscaler reads each, and when local volumes hold a node.",
+  h1: "Karpenter do-not-disrupt and the Kubernetes safe-to-evict annotation, explained",
+  deck: "A marked pod can keep a spare node running; an unmarked batch job can be evicted halfway and start over.",
   card: "What safe-to-evict and do-not-disrupt do, which autoscaler reads each, and why you keep paying for a held node.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Node lifecycle and scheduling",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "sonia",
   cover: "/learn-covers/zoorik-learn-safe-to-evict-do-not-disrupt-1200x630.webp",
   coverAlt:
@@ -525,14 +525,10 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "On our own AKS development cluster, Coral removed a spare 4-CPU worker, taking the machine cost from $368.65 to $221.19 a month. Then it swapped the remaining worker for a cheaper machine of the same size. Each time, single-copy apps restarted once.",
-        },
-        {
-          kind: "p",
           text: [
-            "Eight days after we connected Coral, ",
-            { a: "the cluster’s machines cost", href: "/coral-value-lab" },
-            " $154.76 a month instead of $368.65, 58% less.",
+            "On our AKS development cluster, Coral removed a spare 4-CPU worker, then swapped the remaining worker for a cheaper machine of the same size. Each time, single-copy apps restarted once. The two moves reduced ",
+            { a: "the cluster’s machine cost", href: "/coral-value-lab" },
+            " from $368.65 to $154.76 a month.",
           ],
         },
       ],

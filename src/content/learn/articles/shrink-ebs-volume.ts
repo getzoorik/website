@@ -5,16 +5,16 @@ import { figure as figure3 } from "@/features/learn/figures/shrink-ebs-volume/3"
 
 export const article: Article = {
   slug: "shrink-ebs-volume",
-  title: "How to shrink an EBS volume when it only grows",
-  meta: "You can’t shrink an EBS volume in place. How to copy your data to a smaller gp3 volume with rsync, what the switch costs you, and where Amoeba fits.",
+  title: "How to shrink an AWS EBS volume when it only grows",
+  meta: "AWS won’t shrink an EBS volume in place. Copy the data to a smaller gp3 volume, with rsync on Linux or robocopy on Windows, and see what the copy costs you.",
   h1: "How to shrink an EBS volume when AWS only lets it grow",
-  deck: "An EBS volume’s size only grows. The copy route that works, the downtime it needs, and what changes on gp2.",
+  deck: "AWS’s way out is a copy, with downtime at the switch and both volumes charged until it ends.",
   card: "EBS volumes only grow. The copy route to a smaller volume, its downtime, and where Amoeba fits.",
   product: "amoeba",
   hub: "Block storage",
   topic: "AWS block storage",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "vineet",
   cover: "/learn-covers/zoorik-learn-shrink-ebs-volume-1200x630.webp",
   coverAlt:
@@ -73,7 +73,7 @@ export const article: Article = {
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
-          text: "“You must increase the volume size. You can’t decrease the volume size,” says the Elastic Volumes limitations list. The same page names the way out: create a smaller volume and migrate the data with an application-level tool such as rsync.",
+          text: "“You must increase the volume size. You can’t decrease the volume size,” says the Elastic Volumes limitations list. The same page names the way out: create a smaller volume, then migrate the data with rsync on Linux instances or robocopy on Windows instances.",
         },
         { kind: "p", text: "Two shortcuts look promising and don’t get you there:" },
         {
@@ -296,7 +296,7 @@ export const article: Article = {
     },
     {
       id: "what-the-copy-costs-you",
-      title: "What the copy costs you",
+      title: "What the EBS volume copy costs you",
       blocks: [
         { kind: "p", text: "You pay for the copy in four ways:" },
         {
@@ -403,27 +403,23 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " optimizes block storage on Azure and AWS. On AWS it makes the copy above once, onto a pool of volumes, then rightsizes that pool autonomously. Amoeba works on the data volumes of running Windows and Linux instances, and never touches the root volume.",
+            " makes the copy above once, onto a ",
+            { a: "btrfs pool", href: "/learn/combine-ebs-volumes" },
+            " of ",
+            { a: "gp3", href: "/learn/glossary/ebs-gp3" },
+            " volumes in the instance’s Availability Zone, then rightsizes that pool autonomously. It works on the data volumes of running Windows and Linux instances, and never touches the root volume.",
           ],
         },
         {
           kind: "ul",
           items: [
             [
-              { b: "The pool." },
-              " Amoeba moves the instance’s EBS data volumes onto one ",
-              { a: "btrfs pool", href: "/learn/combine-ebs-volumes" },
-              " sized to your data, with room to grow. On AWS the pool uses ",
-              { a: "gp3", href: "/learn/glossary/ebs-gp3" },
-              " volumes in the instance’s Availability Zone.",
-            ],
-            [
               { b: "The move." },
-              " The services that use those mounts restart once, at the switch onto the pool.",
+              " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
             ],
             [
               { b: "The old volumes." },
-              " Once the switch is checked, Amoeba snapshots each old volume and deletes the volume. Amoeba keeps each snapshot for 7 days, then deletes it too.",
+              " Once the switch is checked, Amoeba snapshots each old volume, deletes the volume, and keeps the snapshot for a few days before deleting it too.",
             ],
             [
               { b: "Rightsizing." },

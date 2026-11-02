@@ -4,18 +4,18 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/disk-snapsh
 export const term: GlossaryTerm = {
   slug: "disk-snapshot",
   term: "Disk snapshot (Azure managed disk and EBS)",
-  title: "What is an AWS EBS snapshot or Azure disk snapshot?",
-  meta: "An EBS snapshot in AWS or a disk snapshot in Azure is a point-in-time copy of one disk. See how each works and is charged, and what an Azure VM snapshot covers.",
-  h1: "What is an AWS EBS snapshot or Azure disk snapshot?",
-  card: "An EBS snapshot in AWS, or a disk snapshot in Azure, is a point-in-time copy of one disk.",
+  title: "AWS snapshots and Azure disk snapshots explained",
+  meta: "An Amazon EBS snapshot or an Azure disk snapshot is a point-in-time copy of one disk. See how each is stored and charged, and what an Azure VM snapshot covers.",
+  h1: "AWS snapshots and Azure disk snapshots explained",
+  card: "For disks, a snapshot in AWS is an EBS snapshot, a point-in-time copy of one volume.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
-      text: "An EBS snapshot in AWS, or a disk snapshot in Azure, is a point-in-time copy of one disk. You can keep it as a backup, or create a new disk from it.",
+      text: "For disks, a snapshot in AWS is an EBS snapshot, a point-in-time copy of one volume. You can keep it as a backup, or create a new volume from it. An Azure disk snapshot does the same for one managed disk.",
     },
   ],
   sections: [
@@ -73,11 +73,7 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: [
-            "Once the switch to the pool is checked, Amoeba snapshots each old disk and deletes the disk. On Azure it’s an ",
-            { a: "incremental snapshot", href: "/learn/azure-disk-snapshot-cost" },
-            ", and on AWS an EBS snapshot. Amoeba keeps each snapshot for 7 days, then deletes it too.",
-          ],
+          text: "Once the switch to the pool is checked, Amoeba snapshots each old disk and deletes the disk. Amoeba keeps each snapshot for a few days, then deletes it too.",
         },
         {
           kind: "p",

@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "disk-latency",
   term: "Disk latency",
   title: "What is disk latency?",
-  meta: "Disk latency is how long one read or write takes. See Azure’s HDD and SSD latency targets, how AWS reports EBS latency, and what a high one can mean.",
+  meta: "Disk latency is how long one read or write takes. See Azure HDD latency and SSD latency targets, how AWS reports EBS latency, and what a high one can mean.",
   h1: "What is disk latency?",
   card: "Disk latency is how long one read or write takes to finish.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
@@ -97,14 +97,6 @@ export const term: GlossaryTerm = {
         {
           kind: "p",
           text: "Amoeba copies your data while your services run. If disk latency rises too high during the copy, Amoeba slows the copy.",
-        },
-        {
-          kind: "p",
-          text: [
-            "The ",
-            { a: "free assessment", href: "/assessment?p=amoeba" },
-            " estimates your own saving.",
-          ],
         },
       ],
     },

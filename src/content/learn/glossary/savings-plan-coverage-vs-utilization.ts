@@ -4,27 +4,29 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/savings-pla
 export const term: GlossaryTerm = {
   slug: "savings-plan-coverage-vs-utilization",
   term: "Savings plan coverage vs utilization (reservation coverage and utilization)",
-  title: "What is savings plan coverage vs utilization?",
-  meta: "Savings plan coverage vs utilization: coverage is how much usage your commitments cover, utilization how much of a commitment you use. See AWS’s examples.",
-  h1: "What is savings plan coverage vs utilization?",
-  card: "Savings plan coverage vs utilization compares two measures of a commitment discount, such as a savings plan.",
+  title: "RI utilization vs coverage for commitment discounts",
+  meta: "RI utilization is the share of a commitment you use; coverage is how much eligible usage commitments cover. See AWS’s two examples and how Azure tracks both.",
+  h1: "RI utilization vs coverage for commitment discounts",
+  card: "Utilization and coverage measure a commitment discount, such as a reserved instance (RI) or savings plan.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
       text: [
-        "Savings plan coverage vs utilization compares two measures of a commitment discount, such as a ",
+        "Utilization and coverage measure a commitment discount, such as a ",
+        { a: "reserved instance (RI)", href: "/learn/glossary/reserved-instance" },
+        " or ",
         { a: "savings plan", href: "/learn/glossary/savings-plan" },
-        ". Utilization is the share of your commitment that you use. Coverage is how much eligible usage your commitments cover.",
+        ". Utilization is the share of the commitment you use. Coverage is the share of eligible usage the commitment covers.",
       ],
     },
     {
       kind: "p",
       text: [
-        "A commitment discount is a reduced rate for committing to a level of usage or spend over a set period. Uncovered usage pays the ",
+        "A commitment discount is a reduced rate for committing to a usage level, or an amount an hour, for a set period. Uncovered usage pays the ",
         { a: "on-demand rate", href: "/learn/glossary/on-demand-instance" },
         ".",
       ],
@@ -33,31 +35,30 @@ export const term: GlossaryTerm = {
   sections: [
     {
       id: "aws-savings-plan-coverage-vs-utilization-two",
-      title: "AWS savings plan coverage vs utilization: two examples",
+      title: "Coverage vs utilization in AWS: two examples",
       blocks: [
-        { kind: "p", text: "Both are AWS’s examples:" },
         {
           kind: "ul",
           items: [
-            "Utilization: you commit to $10 an hour and use $9.80 of it in one hour. That’s 98%.",
-            "Coverage: Savings Plans cover 9 of your 10 identical instances, each $1.00 an hour on-demand. That’s $9 of $10, or 90%.",
+            "Utilization: you commit $10 an hour to a Savings Plan and use $9.80 of it in one hour, so utilization is 98%.",
+            "Coverage: Savings Plans cover 9 of your 10 identical instances, each $1.00 an hour on-demand, so coverage is $9 of $10, or 90%.",
           ],
         },
         { kind: "svg", figure: figure1 },
-        { kind: "h3", id: "ri-utilization-and-coverage", title: "RI utilization and coverage" },
+        {
+          kind: "h3",
+          id: "ri-utilization-and-coverage",
+          title: "Coverage and utilization for reserved instances",
+        },
         {
           kind: "p",
-          text: [
-            "Utilization is about the plan. Coverage is about your usage. The same two measures apply to a ",
-            { a: "reserved instance (RI)", href: "/learn/glossary/reserved-instance" },
-            ", so RI coverage vs utilization works the same way.",
-          ],
+          text: "AWS Cost Explorer has a report for each. RI utilization is the share of purchased RI hours that matching instances use. RI coverage is the share of your instance hours that reservations cover.",
         },
       ],
     },
     {
       id: "savings-plan-utilization-vs-coverage-in-azure",
-      title: "Savings plan utilization vs coverage in Azure",
+      title: "Utilization vs coverage in Azure",
       blocks: [
         {
           kind: "p",
@@ -86,11 +87,6 @@ export const term: GlossaryTerm = {
               { a: "cloud cost optimization", href: "/cloud-cost-optimization" },
               ", then commit to what’s left.",
             ],
-            [
-              "The ",
-              { a: "free assessment", href: "/assessment" },
-              " works out what your clusters and disks could save.",
-            ],
           ],
         },
       ],
@@ -99,7 +95,7 @@ export const term: GlossaryTerm = {
   related: [
     {
       title: "Savings plan",
-      line: "An hourly spend commitment.",
+      line: "A commitment to an amount an hour.",
       href: "/learn/glossary/savings-plan",
     },
     {
@@ -134,6 +130,12 @@ export const term: GlossaryTerm = {
       title: "“Understanding coverage metrics and calculations”",
       url: "https://docs.aws.amazon.com/savingsplans/latest/userguide/ce-sp-cr-metrics.html",
       note: " (Savings Plans User Guide)",
+    },
+    {
+      publisher: "AWS",
+      title: "“Using the default Cost Explorer reports”",
+      url: "https://docs.aws.amazon.com/cost-management/latest/userguide/ce-default-reports.html",
+      note: " (AWS Cost Management User Guide)",
     },
     {
       publisher: "Microsoft Learn",

@@ -5,17 +5,17 @@ export const term: GlossaryTerm = {
   slug: "block-storage",
   term: "Block storage",
   title: "What is block storage?",
-  meta: "Block storage, or block-level storage, is the disk you attach to a cloud VM. See how Azure and AWS charge for it by size, and block storage vs object storage.",
+  meta: "Block storage, also called block-level or block data storage, is the disk a cloud VM uses. See how AWS and Azure charge for it, and block vs object storage.",
   h1: "What is block storage?",
-  card: "Block storage, or block-level storage, is storage that a server uses as a disk.",
+  card: "Block storage, also called block-level or block-based storage, is storage a server uses as a disk.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   definition: [
     {
       kind: "p",
-      text: "Block storage, or block-level storage, is storage that a server uses as a disk. You pick its size and attach it to a cloud virtual machine (VM). It works like a local hard drive.",
+      text: "Block storage, also called block-level or block-based storage, is storage a server uses as a disk. In the cloud, you size it and attach it to a virtual machine (VM).",
     },
   ],
   sections: [
@@ -25,7 +25,11 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "Block storage in cloud computing is a disk you rent: Amazon Elastic Block Store (EBS) volumes on AWS, managed disks on Azure.",
+          text: "Block storage in cloud computing is a disk you rent from your cloud’s block storage service and attach to a VM.",
+        },
+        {
+          kind: "p",
+          text: "On AWS, that’s Amazon Elastic Block Store (EBS), whose volumes are block-level storage for EC2 instances. On Azure, it’s managed disks.",
         },
         { kind: "p", text: "Each Azure VM has these disks:" },
         {
@@ -48,13 +52,27 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "Object storage, such as Amazon S3, stores each file and its metadata as an object in a bucket. Apps fetch an object by its key, its unique name in the bucket, through a web API.",
+          text: "Object storage, such as Amazon S3 or Azure Blob Storage, keeps each file and its metadata as an object. Apps fetch it through a web API by its unique key.",
         },
         {
           kind: "p",
-          text: "Costs differ too. A disk charges for the size you provision, full or not. Amazon S3 charges only for what you actually use.",
+          text: "Cost shows the difference between block storage and object storage. An EBS volume or Azure disk is charged for its provisioned size, and Amazon S3 only for what you use.",
         },
         { kind: "svg", figure: figure1 },
+      ],
+    },
+    {
+      id: "block-vs-file-vs-object-storage",
+      title: "Block vs file vs object storage",
+      blocks: [
+        {
+          kind: "p",
+          text: "In block vs file storage, sharing sets the two apart. File storage is a shared file system that many machines mount at once, such as Amazon Elastic File System (EFS) or Azure Files. A block storage volume usually serves one VM.",
+        },
+        {
+          kind: "p",
+          text: "Block storage isn’t a file system on its own. AWS says new volumes are raw block devices, and you must create a file system on them before you can mount and use them.",
+        },
       ],
     },
     {
@@ -75,14 +93,9 @@ export const term: GlossaryTerm = {
             ],
             [
               { a: "Amoeba", href: "/amoeba" },
-              " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously. It never touches the OS disk or root volume.",
+              " moves a VM’s data disks onto one btrfs pool sized to your data, then rightsizes it autonomously. It never touches the OS disk or root volume.",
             ],
             "It works on Azure managed disks and Amazon EBS volumes, on Windows and Linux VMs.",
-            [
-              "The ",
-              { a: "free assessment", href: "/assessment?p=amoeba" },
-              " works out your own figure.",
-            ],
           ],
         },
       ],
@@ -127,6 +140,26 @@ export const term: GlossaryTerm = {
       publisher: "Amazon Web Services",
       title: "“What is Amazon S3?”",
       url: "https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html",
+    },
+    {
+      publisher: "Amazon Web Services",
+      title: "“Amazon EBS volumes”",
+      url: "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volumes.html",
+    },
+    {
+      publisher: "Amazon Web Services",
+      title: "“What is Amazon Elastic File System?”",
+      url: "https://docs.aws.amazon.com/efs/latest/ug/whatisefs.html",
+    },
+    {
+      publisher: "Amazon Web Services",
+      title: "“Make an Amazon EBS volume available for use”",
+      url: "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-using-volumes.html",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“Introduction to Azure Storage”",
+      url: "https://learn.microsoft.com/en-us/azure/storage/common/storage-introduction",
     },
   ],
 };

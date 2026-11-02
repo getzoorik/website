@@ -4,17 +4,17 @@ import { figure as figure2 } from "@/features/learn/figures/keda-vs-karpenter/2"
 
 export const article: Article = {
   slug: "keda-vs-karpenter",
-  title: "KEDA vs Karpenter: pods, nodes and pod requests",
-  meta: "KEDA vs Karpenter: KEDA sets how many pods run from events, Karpenter picks the nodes from pod requests. When to use each, and the order to set them up.",
+  title: "KEDA vs Karpenter: when to use each or both",
+  meta: "Karpenter vs KEDA in Kubernetes: KEDA sets the pod count from events, Karpenter picks nodes from pod requests. When to use each, and how they work together.",
   h1: "KEDA vs Karpenter: pods, nodes and the requests in between",
-  deck: "KEDA sets the pod count and Karpenter picks the nodes. When to use each, and the one number neither changes.",
+  deck: "Neither one sets a pod’s CPU and memory request, yet Karpenter sizes the nodes from it.",
   card: "KEDA sets how many pods run, Karpenter picks the nodes, and neither changes what each pod requests.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes autoscaling",
   versus: ["KEDA", "Karpenter"],
   published: "2026-10-24",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "aditya",
   cover: "/learn-covers/zoorik-learn-keda-vs-karpenter-1200x630.webp",
   coverAlt:
@@ -32,30 +32,16 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Neither tool changes the third layer, between pod count and node count: each pod’s CPU and memory request. A request is what a container asks the scheduler to reserve. If each worker requests 1\u00a0CPU and uses 0.25, Karpenter sizes the nodes for 1\u00a0CPU per pod, and three-quarters of that sits idle.",
-        },
-        { kind: "p", text: "Which you need depends on what waits:" },
-        {
-          kind: "ul",
-          items: [
-            [
-              { b: "Use KEDA when work waits for pods." },
-              " It sets the pod count from the backlog, down to zero.",
-            ],
-            [
-              { b: "Use a node autoscaler when pods wait for nodes." },
-              " That can be Karpenter, NAP on AKS, ",
-              { a: "EKS Auto Mode", href: "/learn/glossary/eks-auto-mode" },
-              " or the Cluster Autoscaler.",
-            ],
-            [{ b: "Run both for zero pods and zero nodes overnight." }],
-            [
-              { b: "Set requests from real use when pods reserve more than they use." },
-              " Neither tool does that for you.",
-            ],
+          text: [
+            "Karpenter’s part can also be played by another node autoscaler: node auto provisioning (NAP) on AKS, ",
+            { a: "EKS Auto Mode", href: "/learn/glossary/eks-auto-mode" },
+            " or the Cluster Autoscaler.",
           ],
         },
-        { kind: "p", text: "Here is Karpenter vs KEDA, point by point." },
+        {
+          kind: "p",
+          text: "A third layer sits between pod count and node count: each pod’s CPU and memory request. A request is what a container asks the scheduler to reserve.",
+        },
         {
           kind: "table",
           columns: [

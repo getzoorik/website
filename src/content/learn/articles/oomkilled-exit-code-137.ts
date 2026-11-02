@@ -4,22 +4,21 @@ import { figure as figure2 } from "@/features/learn/figures/oomkilled-exit-code-
 
 export const article: Article = {
   slug: "oomkilled-exit-code-137",
-  title: "OOMKilled exit code 137 in Kubernetes: how to fix",
-  meta: "OOMKilled exit code 137 means the OOM killer stopped your container with SIGKILL. Confirm it with kubectl, tell it from pod eviction, and fix it on AKS and EKS.",
-  h1: "OOMKilled exit code 137: why Kubernetes kills a container",
-  deck: "What 137 means, how to tell an OOM kill from the other kills, and how to size memory so it stops.",
+  title: "Exit code 137 (OOMKilled) in Kubernetes: how to fix",
+  meta: "Exit Code: 137, or exit status 137, means a container got SIGKILL. Confirm OOMKilled with kubectl, tell it from pod eviction, and fix it on AKS and EKS.",
+  h1: "Exit code 137 and OOMKilled: why Kubernetes kills a container",
+  deck: "The code only proves a SIGKILL, so the pod’s Reason field decides whether memory is to blame.",
   card: "Read the Reason field, tell an OOM kill from eviction and probe kills, then fix the memory or the leak.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes cost basics",
   published: "2026-11-01",
-  updated: "2026-11-01",
+  updated: "2026-11-02",
   author: "prashant",
   cover: "/learn-covers/zoorik-learn-oomkilled-exit-code-137-1200x630.webp",
-  coverAlt:
-    "OOMKilled, exit code 137: memory climbs to the memory limit, then SIGKILL stops the container with exit 137",
+  coverAlt: "Memory climbs to the memory limit, then SIGKILL stops the container with exit 137",
   short: [
-    "OOMKilled exit code 137 means the kernel’s out-of-memory (OOM) killer sent SIGKILL because a container passed its memory limit or the node ran out. The code alone only proves SIGKILL, so confirm OOMKilled with ",
+    "OOMKilled exit code 137 means the kernel’s out-of-memory (OOM) killer sent SIGKILL because a container passed its memory limit or the node ran out. Confirm OOMKilled with ",
     { code: "kubectl describe pod" },
     ", then raise the limit or, if memory keeps climbing, find the leak.",
   ],
@@ -32,20 +31,9 @@ export const article: Article = {
           kind: "p",
           text: "Picture a pod whose container has restarted five times. Nothing in its log says why.",
         },
-        {
-          kind: "p",
-          text: "After each kill, the kubelet restarts the container under the pod’s restartPolicy. It waits 10\u00a0seconds by default, then 20, then 40, up to a cap of 5\u00a0minutes.",
-        },
-        {
-          kind: "p",
-          text: "A container that keeps getting killed shows CrashLoopBackOff. One that runs for 10\u00a0minutes without trouble resets that back-off.",
-        },
         { kind: "p", text: "Start with the pod list:" },
         { kind: "code", lang: "bash", code: "kubectl get pods -n <namespace>" },
-        {
-          kind: "p",
-          text: "The STATUS column can read OOMKilled just after a kill, then CrashLoopBackOff while the kubelet waits. So read the record of the last run:",
-        },
+        { kind: "p", text: "Then read the record of the container’s last run:" },
         { kind: "code", lang: "bash", code: "kubectl describe pod <pod-name> -n <namespace>" },
         {
           kind: "p",
@@ -80,6 +68,27 @@ export const article: Article = {
           lang: "bash",
           code: "kubectl logs <pod-name> -n <namespace> --previous\nkubectl get events -n <namespace> --sort-by=.lastTimestamp",
         },
+        {
+          kind: "h3",
+          id: "crashloopbackoff-why-an-oomkilled-pod-keeps-restarting",
+          title: "CrashLoopBackOff: why an OOMKilled pod keeps restarting",
+        },
+        {
+          kind: "p",
+          text: "After each kill, the kubelet restarts the container under the pod’s restartPolicy. It waits 10\u00a0seconds by default, then 20, then 40, up to a cap of 5\u00a0minutes.",
+        },
+        {
+          kind: "p",
+          text: "The STATUS column can read OOMKilled just after a kill, then CrashLoopBackOff while the kubelet waits.",
+        },
+        {
+          kind: "p",
+          text: "A container that keeps getting killed shows CrashLoopBackOff. One that runs for 10\u00a0minutes without trouble resets that back-off.",
+        },
+        {
+          kind: "p",
+          text: "Each restart runs at the same memory limit, so the container is likely to be killed again. To fix a Kubernetes pod in CrashLoopBackOff from OOM kills, raise its memory or fix the leak. The Kubernetes troubleshooting steps for it include checking resource limits.",
+        },
       ],
     },
     {
@@ -112,12 +121,8 @@ export const article: Article = {
           text: [
             "On cgroup v1\u00a0nodes, or with the kubelet setting ",
             { code: "singleProcessOOMKill: true" },
-            ", the kernel may kill a single process instead. If that is the container’s main process (PID 1), the container ends, and otherwise it can keep running without it.",
+            ", the kernel may kill a single process instead. The container ends only if that is its main process (PID 1). Kubernetes 1.35 and later don’t start the kubelet on a cgroup v1\u00a0node by default.",
           ],
-        },
-        {
-          kind: "p",
-          text: "Kubernetes 1.35 and later don’t start the kubelet on a cgroup v1\u00a0node by default. So with default settings, expect the whole container to go.",
         },
       ],
     },
@@ -163,9 +168,29 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "When a pod is deleted, the kubelet asks the runtime to send SIGTERM to the main process of each container. It then waits, 30\u00a0seconds by default (",
+            "When a pod is deleted, the kubelet has the runtime send SIGTERM to each container’s main process. It waits ",
             { code: "terminationGracePeriodSeconds" },
-            "). Once that time is up, the KILL signal goes to any processes still running.",
+            ", 30\u00a0seconds by default, then any process still running gets KILL.",
+          ],
+        },
+      ],
+    },
+    {
+      id: "docker-exit-code-137-and-the-other",
+      title: "Docker exit code 137, and the other places 137 shows up",
+      blocks: [
+        {
+          kind: "p",
+          text: "The number comes from Linux. In a shell, a command ended by signal n gets the return code 128 + n. SIGKILL is signal 9, so return code 137 means SIGKILL: 128 + 9 = 137.",
+        },
+        {
+          kind: "p",
+          text: [
+            "In Kubernetes, ",
+            { code: "kubectl exec" },
+            " prints ",
+            { code: "command terminated with exit code 137" },
+            " when the command it ran inside the container got SIGKILL.",
           ],
         },
       ],
@@ -233,15 +258,15 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "A fast spike can beat the kubelet. It polls memory statistics at an interval, so it can miss the pressure. Then the kernel’s OOM killer picks a container itself.",
+          text: "A fast spike can beat the kubelet, which polls memory statistics at an interval and can miss the pressure. Then the kernel’s OOM killer picks a container itself.",
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
           text: [
-            "Each container gets an OOM score from its share of the node’s memory, plus an adjustment per ",
+            "Each container’s OOM score is its share of the node’s memory, plus an adjustment the kubelet sets for its ",
             { a: "Quality of Service (QoS) class", href: "/learn/glossary/kubernetes-qos-class" },
-            ". The kubelet sets that adjustment, and the OOM killer ends the highest score first.",
+            ". The OOM killer ends the highest score first.",
           ],
         },
         {
@@ -267,7 +292,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The Kubernetes documentation sums up the effect: containers in low-QoS pods that use a lot of memory compared with their requests go first.",
+          text: "So containers in low-QoS pods that use a lot of memory compared with their requests go first.",
         },
       ],
     },
@@ -290,7 +315,7 @@ export const article: Article = {
             {
               text: [
                 { b: "Read memory use over the hours before the kill." },
-                " Microsoft’s guide separates two shapes. Memory that stays high but steady means the workload needs that much, or its requests and limits are wrong. Memory that climbs and doesn’t return to a baseline after load falls typically means a leak, or something accumulating. On a cgroup v2\u00a0node, read the current figure in bytes:",
+                " Memory that stays high but steady means the workload needs that much, or its requests and limits are wrong. Memory that climbs and doesn’t return to a baseline after load falls typically means a leak. On a cgroup v2\u00a0node, read the current figure in bytes:",
               ],
               blocks: [
                 {
@@ -314,7 +339,7 @@ export const article: Article = {
             {
               text: [
                 { b: "If the use is expected, give the container more memory." },
-                " Raise the limit, and the request with it. The Kubernetes documentation puts it in that order: rule out a memory leak, then set a higher memory limit (and possibly request). ",
+                " Raise the limit, and the request with it. ",
                 { a: "Size it from the peak", href: "/learn/kubernetes-pod-right-sizing" },
                 " of a window that includes the workload’s busiest day, not from an average. Then put the same values in your manifest or Git, or the next deploy brings the old ones back. For a single-container Deployment:",
               ],
@@ -328,15 +353,15 @@ export const article: Article = {
             },
             [
               { b: "If memory keeps climbing, treat it as a leak." },
-              " A bigger limit only moves the kill later. Microsoft suggests raising the limit as a stopgap while the application team looks for the leak.",
+              " A bigger limit only moves the kill later. Raise it as a stopgap while the application team looks for the leak.",
             ],
             [
               { b: "Make the workloads that should go last Guaranteed." },
-              " Set CPU and memory requests equal to their limits in every container. The kubelet never evicts a Guaranteed pod because of another pod’s use. Its containers also get an oom_score_adj of -997.",
+              " Set CPU and memory requests equal to their limits in every container. The kubelet never evicts a Guaranteed pod because of another pod’s use.",
             ],
             [
               { b: "Count everything the limit covers." },
-              " A memory-backed emptyDir volume is tmpfs, and the kubelet tracks it as container memory use, so files written there can count toward the limit. For a Java or .NET app, Microsoft also asks you to check that it runs the latest runtime version.",
+              " The kubelet tracks a memory-backed emptyDir volume as container memory use, so files written there can count toward the limit. For a Java or .NET app, Microsoft also asks you to check that it runs the latest runtime version.",
             ],
           ],
         },
@@ -345,7 +370,7 @@ export const article: Article = {
           text: [
             "Requests sized from real use are also the first step of ",
             { a: "Kubernetes cost optimization", href: "/kubernetes-cost-optimization" },
-            ", before any change to nodes.",
+            ".",
           ],
         },
       ],
@@ -354,10 +379,7 @@ export const article: Article = {
       id: "oomkilled-on-aks-and-eks-where-the",
       title: "OOMKilled on AKS and EKS: where the memory history lives",
       blocks: [
-        {
-          kind: "p",
-          text: "The kubectl steps are the same on both clouds. The memory history lives in each cloud’s monitoring.",
-        },
+        { kind: "p", text: "The kubectl steps are the same on both clouds." },
         {
           kind: "h3",
           id: "aks-container-insights-in-the-azure-portal",
@@ -365,7 +387,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "On Azure Kubernetes Service (AKS), Container insights in the Azure portal shows that history:",
+          text: "On Azure Kubernetes Service (AKS), Container insights in the Azure portal shows the memory history:",
         },
         {
           kind: "ol",
@@ -409,7 +431,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "On Amazon Elastic Kubernetes Service (EKS), OOM killed containers leave a trail in Amazon CloudWatch. It appears once Container Insights with enhanced observability is collecting. Two of its metrics help:",
+          text: "On Amazon Elastic Kubernetes Service (EKS), OOM killed containers leave a trail in Amazon CloudWatch once Container Insights with enhanced observability is collecting. Two of its metrics help:",
         },
         {
           kind: "ul",
@@ -433,9 +455,8 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Coral is Zoorik’s ",
-            { a: "Kubernetes optimization for AKS and EKS", href: "/coral" },
-            ", and it rebalances each container’s CPU and memory requests from observed use. Until you switch on “Automatically optimize” for a policy or a workload, it only recommends.",
+            { a: "Coral", href: "/coral" },
+            " rebalances each container’s CPU and memory requests from observed use, on AKS and EKS. Until you switch on “Automatically optimize” for a policy or a workload, it only recommends.",
           ],
         },
         {
@@ -480,26 +501,14 @@ export const article: Article = {
           ],
         },
         {
-          kind: "p",
-          text: [
-            "On the console’s ",
-            { a: "Dashboard", href: "/coral-guide#the-console-the-pages" },
-            ", the cluster’s OOM kills show alongside its nodes and pods.",
-          ],
-        },
-        {
           kind: "h3",
           id: "what-coral-did-on-our-own-cluster",
           title: "What Coral did on our own cluster",
         },
         {
           kind: "p",
-          text: "We run Coral on our own AKS development cluster. By 12 October 2026 it had rebalanced the requests of 14 of the cluster’s apps. Most were reserving more than they used.",
-        },
-        {
-          kind: "p",
           text: [
-            "One app needed more memory, and Coral gave it more. The memory the apps reserve went from 6.4 to 5.4\u00a0GiB, 16% less. ",
+            "By 12 October 2026, Coral had rebalanced the requests of 14 apps on our own AKS development cluster, and given one of them more memory. The memory the apps reserve went from 6.4 to 5.4\u00a0GiB, 16% less. ",
             { a: "The Coral Value Lab study", href: "/coral-value-lab" },
             " has the full run.",
           ],
@@ -543,6 +552,11 @@ export const article: Article = {
       url: "https://man7.org/linux/man-pages/man7/signal.7.html",
     },
     {
+      publisher: "Linux man-pages",
+      title: "“bash(1)”",
+      url: "https://man7.org/linux/man-pages/man1/bash.1.html",
+    },
+    {
       publisher: "Microsoft Learn",
       title: "“Troubleshoot memory saturation in AKS clusters”",
       url: "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/availability-performance/identify-memory-saturation-aks",
@@ -556,6 +570,11 @@ export const article: Article = {
       publisher: "AWS",
       title: "“Amazon EKS and Kubernetes Container Insights with enhanced observability metrics”",
       url: "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-metrics-enhanced-EKS.html",
+    },
+    {
+      publisher: "Kubernetes source",
+      title: "“client-go/tools/remotecommand/v4.go”",
+      url: "https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/client-go/tools/remotecommand/v4.go",
     },
   ],
   related: [
