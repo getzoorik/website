@@ -204,7 +204,7 @@ describe("sitemap.xml", () => {
       "/partners": "2026-11-01",
       "/design-partners": "2026-11-01",
       "/privacy": "2026-10-19",
-      "/terms": "2026-10-06",
+      "/terms": "2026-11-02",
       /* /security prints "Updated 1 November 2026". */
       "/security": "2026-11-01",
       /* The Trust center prints "Updated 1 November 2026". */

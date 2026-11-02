@@ -9,7 +9,7 @@ export const termsCopy = {
    * here too for the sitemap, which a Worker runs where no file can be read; a
    * test holds the two equal.
    */
-  effective: "Effective 6 October 2026 · Version 1.0",
+  effective: "Effective 2 November 2026 · Version 1.1",
   meta: {
     title: "Terms of use",
     description:

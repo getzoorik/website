@@ -1,6 +1,6 @@
 # Terms of Use
 
-**Effective date:** 6 October 2026 · **Version:** 1.0
+**Effective date:** 2 November 2026 · **Version:** 1.1
 
 These terms are the agreement between Zoorik and the organisation that uses our products. Read them with our Privacy Policy (zoorik.com/privacy), which explains how we handle personal data.
 
@@ -9,7 +9,7 @@ These terms are the agreement between Zoorik and the organisation that uses our 
 - These terms cover zoorik.com, Coral, Amoeba, zoorikctl, our agents and the free assessment scripts.
 - Our products are for businesses. You accept these terms for your organisation.
 - Coral and Amoeba make real changes in your clusters and cloud accounts. Some Coral settings are on as soon as a cluster connects. Check these settings, and keep your own backups.
-- Amoeba deletes your original disks 48 hours after it moves their data, and their snapshots 7 days after that.
+- Once the switch to the new disks is checked, Amoeba deletes your original disks, and their snapshots 7 days after that.
 - Your data stays yours. We use it only to run our products for you.
 - Savings figures are estimates. We promise no level of savings or uptime unless a signed agreement does.
 - You can stop at any time. Indian law applies, and the courts in Bengaluru decide disputes.
@@ -59,11 +59,11 @@ Coral and Amoeba act in your clusters and cloud accounts. The settings you turn 
 **Amoeba.** Choosing a VM in Amoeba is your instruction to us to:
 - install the Amoeba agent on it;
 - copy its data disks onto a pool of new disks, inside the VM, then switch each disk over, which briefly stops and restarts the services that use it;
-- 48 hours later, once each original disk's snapshot has succeeded, delete the original disks;
+- once the switch is checked and each original disk's snapshot has succeeded, delete the original disks;
 - delete those snapshots 7 days after that;
 - grow and shrink the pool, deleting pool disks it no longer needs.
 
-Until the original disks are deleted, you can reverse the move in Amoeba; check your data on the new disks in that time. Once a snapshot is deleted, the data on that original disk cannot be recovered.
+A move only goes forward: Amoeba cannot move a VM back to its original disks. Once a snapshot is deleted, the data on that original disk cannot be recovered.
 
 **Your part.**
 - Check each setting before you rely on it, and try our products on systems you can afford to disturb first.
@@ -122,7 +122,7 @@ If the GDPR or the UK GDPR applies to that data, we will sign a data processing 
 
 **You can stop at any time.**
 - **Coral:** `zoorikctl cluster disconnect` removes Coral from your cluster and offers to remove the cloud identity it created. Running pods keep their current resources, and a node provisioner that connecting turned on stays in your cluster.
-- **Amoeba:** wait until no VM shows "Creating pool" in the Amoeba console. Within a VM's first 48 hours on its pool, you can instead go back to its original disks with "Reverse cutover". Then remove the Zoorik Storage Operator role assignment, or remove Zoorik's app from your directory, and run `systemctl disable --now amoeba-agent` on each VM. Your data stays on the `zoorik-amoeba-pool-…` disks, and nothing grows them once Amoeba stops, so keep them and watch their free space. Snapshots Amoeba has not deleted yet stay in your subscription until you delete them.
+- **Amoeba:** wait until no VM shows "Creating pool" in the Amoeba console. Then remove the Zoorik Storage Operator role assignment, or remove Zoorik's app from your directory, and run `systemctl disable --now amoeba-agent` on each VM. Your data stays on the `zoorik-amoeba-pool-…` disks, and nothing grows them once Amoeba stops, so keep them and watch their free space. Snapshots Amoeba has not deleted yet stay in your subscription until you delete them.
 - Stopping does not delete the data we hold straight away. We delete it within 30 days after you stop, or after you ask us at founders@zoorik.com, as section 9 of the Privacy Policy describes.
 
 **We may suspend or end your access** if you break these terms, do not pay, or your use puts others or our products at risk. We will tell you first, unless the risk is urgent or the law stops us.
