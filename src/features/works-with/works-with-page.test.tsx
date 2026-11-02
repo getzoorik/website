@@ -277,16 +277,9 @@ describe("the works-with pages", () => {
       pages.map((page) => page.route),
     );
     expect(worksWithLastUpdated).toBe("1 November 2026");
-    /* A page changed on its own carries its own day (2 Nov 2026): Cluster Autoscaler's plan, the link words KEDA,
-       Helm and Karpenter give the pages they link, after those pages' new h1s, and node auto provisioning's line on
-       spare nodes. */
-    const changed = new Set([
-      "clusterAutoscaler",
-      "keda",
-      "helm",
-      "karpenter",
-      "nodeAutoProvisioning",
-    ]);
+    /* A page changed on its own carries its own day (2 Nov 2026): Cluster Autoscaler's plan, and the link words KEDA,
+       Helm and Karpenter give the pages they link, after those pages' new h1s. */
+    const changed = new Set(["clusterAutoscaler", "keda", "helm", "karpenter"]);
     for (const [id, copy] of Object.entries(worksWithPages)) {
       expect(copy.lastUpdated, id).toBe(changed.has(id) ? "2 November 2026" : worksWithLastUpdated);
     }

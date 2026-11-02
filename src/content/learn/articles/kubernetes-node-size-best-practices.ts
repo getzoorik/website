@@ -418,7 +418,7 @@ export const article: Article = {
             ],
             [
               { b: "Spare nodes." },
-              " Node optimization is on from install and works out from pod requests how many nodes each pool needs. Coral drains spare nodes one at a time for your Cluster Autoscaler, NAP or Karpenter to remove. Pools that Karpenter or NAP already consolidate are left to them.",
+              " Node optimization is on from install and works out from pod requests how many nodes each pool needs. Coral drains and removes the nodes you don’t need, one at a time. Pools that Karpenter or NAP already consolidate are left to them.",
             ],
             [
               { b: "Machine size." },

@@ -333,7 +333,7 @@ export const article: Article = {
             ],
             [
               { b: "Nodes:" },
-              " from install, it drains spare nodes one at a time, on the node pools you choose, so your Cluster Autoscaler, Karpenter or AKS node auto provisioning (NAP) can remove them. Coral never adds nodes for demand. Pools that Karpenter or NAP already consolidate are left to them.",
+              " from install, it drains and removes the nodes you don’t need, one at a time, on the node pools you choose. Coral never adds nodes for demand. Pools that Karpenter or AKS node auto provisioning (NAP) already consolidate are left to them.",
             ],
             [
               { b: "Disruption:" },

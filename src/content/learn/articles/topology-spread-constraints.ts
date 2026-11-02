@@ -541,7 +541,7 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS. It rebalances CPU and memory requests, and it removes the nodes you don’t need. Spread rules sit inside that drain decision.",
+            " optimizes Kubernetes on AKS and EKS. It rebalances CPU and memory requests, and it drains and removes the nodes you don’t need. Spread rules sit inside that drain decision.",
           ],
         },
         {

@@ -472,7 +472,7 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS: it rebalances CPU and memory requests, then drains and removes the nodes you don’t need, one at a time. Coral honours the markers and holds below.",
+            " optimizes Kubernetes on AKS and EKS: it rebalances CPU and memory requests, and it drains and removes the nodes you don’t need, one at a time. Coral honours the markers and holds below.",
           ],
         },
         {

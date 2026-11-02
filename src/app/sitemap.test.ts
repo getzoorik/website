@@ -113,8 +113,8 @@ describe("sitemap.xml", () => {
       sitemap().map((entry) => [new URL(entry.url).pathname, entry.lastModified]),
     );
     expect(dates).toEqual({
-      /* A page that prints no day: the day its content last changed (the 2 Nov 2026 plan for home and /coral; the
-         company sentence and the titles, 1 Nov 2026, for /amoeba). */
+      /* A page that prints no day: the day its content last changed (the 2 Nov 2026 plan for home and /coral, and the
+         product names, 2 Nov 2026, for /amoeba). */
       "/": "2026-11-02",
       "/coral": "2026-11-02",
       "/amoeba": "2026-11-02",
@@ -132,15 +132,15 @@ describe("sitemap.xml", () => {
          Helm and Karpenter). */
       "/coral-works-with-cluster-autoscaler": "2026-11-02",
       "/coral-works-with-karpenter": "2026-11-02",
-      "/coral-works-with-aks-node-auto-provisioning": "2026-11-02",
+      "/coral-works-with-aks-node-auto-provisioning": "2026-11-01",
       "/coral-works-with-keda": "2026-11-02",
       "/coral-works-with-helm": "2026-11-02",
       "/coral-works-with-terraform": "2026-11-01",
       "/assessment": "2026-11-02",
       "/marketplaces": "2026-11-01",
-      /* The docs hub's own words (1 Nov 2026). */
-      "/docs": "2026-11-01",
-      /* The 2 Nov 2026 plan's guide; the FAQ's Coral link's new words (O1), 1 Nov 2026. */
+      /* The docs hub's product lines (2 Nov 2026). */
+      "/docs": "2026-11-02",
+      /* The 2 Nov 2026 plan's guide; the FAQ's What is Coral? answer (product names, 2 Nov 2026). */
       "/coral-guide": "2026-11-02",
       "/coral-faq": "2026-11-02",
       /* The Amoeba guide and FAQ print "Updated 2 November 2026". */
@@ -198,7 +198,7 @@ describe("sitemap.xml", () => {
       "/pricing": "2026-11-02",
       "/contact": "2026-11-01",
       "/about": "2026-11-02",
-      "/careers": "2026-11-01",
+      "/careers": "2026-11-02",
       "/brand-assets": "2026-11-02",
       "/referrals": "2026-10-21",
       "/partners": "2026-11-01",

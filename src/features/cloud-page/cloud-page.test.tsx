@@ -103,7 +103,7 @@ const cases: readonly (readonly [string, Case])[] = [
       content: aksCostOptimizationPage,
       title: "AKS cost optimization",
       description:
-        "AKS cost optimization with Coral. Reduce AKS costs: Coral rebalances your Azure Kubernetes Service cluster, sizes pods to real use and empties spare nodes.",
+        "AKS cost optimization with Coral. Reduce AKS costs: Coral rebalances your Azure Kubernetes Service cluster, sizes pods to real use and removes spare nodes.",
       eyebrow: "Coral for AKS",
       chips: ["AKS"],
       order: coralOrder,
@@ -155,7 +155,7 @@ const cases: readonly (readonly [string, Case])[] = [
       content: eksCostOptimizationPage,
       title: "EKS cost optimization",
       description:
-        "EKS cost optimization with Coral: it rebalances your cluster, sizes pods to real use and empties spare EC2 nodes. Autonomous EKS tuning, with no code changes.",
+        "EKS cost optimization with Coral: it rebalances your cluster, sizes pods to real use and removes spare EC2 nodes. Autonomous EKS tuning, with no code changes.",
       eyebrow: "Coral for EKS",
       chips: ["EKS"],
       order: coralOrder,

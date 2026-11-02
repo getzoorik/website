@@ -424,8 +424,8 @@ export const article: Article = {
           kind: "p",
           text: [
             "Coral is ",
-            { a: "Kubernetes optimization for AKS and EKS", href: "/coral" },
-            " clusters at Kubernetes 1.30 or later. It rebalances each container’s CPU and memory requests from observed use, through in-place resize where the node allows:",
+            { a: "Kubernetes optimization", href: "/coral" },
+            " for AKS and EKS clusters at Kubernetes 1.30 or later. It rebalances each container’s CPU and memory requests from observed use, through in-place resize where the node allows:",
           ],
         },
         {

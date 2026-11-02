@@ -303,7 +303,7 @@ export const versusPages: readonly VersusPage[] = [
     lastUpdated: NOV_2,
     card: true,
     short:
-      "Use both. Advisor's AKS advice leaves each change to you. Coral empties spare nodes and, once switched on, rebalances pod requests to real use.",
+      "Use both. Advisor's AKS advice leaves each change to you. Coral removes the nodes you don’t need and, once switched on, rebalances pod requests to real use.",
     sections: [
       {
         id: "which-to-use",
@@ -449,7 +449,7 @@ export const versusPages: readonly VersusPage[] = [
     lastUpdated: NOV_2,
     card: true,
     short:
-      "Use both. Compute Optimizer covers the AWS resources outside your clusters. Coral works inside EKS: it empties spare nodes and, once switched on, rebalances pod requests to real use.",
+      "Use both. Compute Optimizer covers the AWS resources outside your clusters. Coral works inside EKS: it removes the nodes you don’t need and, once switched on, rebalances pod requests to real use.",
     sections: [
       {
         id: "compute-optimizer-eks",

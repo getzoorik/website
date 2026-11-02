@@ -77,7 +77,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
   meta: {
     title: "Coral product guide",
     description:
-      "Connect an AKS or EKS cluster to Coral: what it installs, how it rebalances requests and drains spare nodes, and the switches that keep you in control.",
+      "Connect an AKS or EKS cluster to Coral: what it installs, how it rebalances requests and removes spare nodes, and the switches that keep you in control.",
   },
   hero: {
     title: "Coral product guide",

@@ -94,7 +94,7 @@ describe("the documents section's metadata", () => {
   it("titles, describes and canonicalises /docs in the mock's words", () => {
     expect(docs.title).toBe("Product docs");
     expect(docs.description).toBe(
-      "Product guides, FAQs and one-pagers for Coral (AKS and EKS cost optimization) and Amoeba (Azure managed disks and Amazon EBS), online or as PDFs.",
+      "Product guides, FAQs and one-pagers for Coral (Kubernetes optimization on AKS and EKS) and Amoeba (Azure managed disks and Amazon EBS), online or as PDFs.",
     );
     expect(docs.alternates).toEqual({ canonical: "/docs" });
     expect(docs).not.toHaveProperty("robots");
@@ -108,7 +108,7 @@ describe("the documents section's metadata", () => {
   it("titles, describes and canonicalises the Coral guide as its mock does", () => {
     expect(coralGuide.title).toBe("Coral product guide");
     expect(coralGuide.description).toBe(
-      "Connect an AKS or EKS cluster to Coral: what it installs, how it rebalances requests and drains spare nodes, and the switches that keep you in control.",
+      "Connect an AKS or EKS cluster to Coral: what it installs, how it rebalances requests and removes spare nodes, and the switches that keep you in control.",
     );
     expect(coralGuide.alternates).toEqual({ canonical: "/coral-guide" });
     expect(coralGuide).not.toHaveProperty("robots");

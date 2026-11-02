@@ -475,7 +475,7 @@ export const article: Article = {
             { a: "Coral", href: "/coral" },
             " optimizes Kubernetes on AKS and Amazon Elastic Kubernetes Service (EKS). It rebalances CPU and memory requests to what each container uses. Its ",
             { a: "node optimization", href: "/coral-guide#consolidation" },
-            " then drains and removes the nodes those smaller requests leave spare.",
+            " then removes the nodes those smaller requests leave spare.",
           ],
         },
         {

@@ -14,8 +14,8 @@ import type { ProductPageContent, ReadMoreTile } from "@/content/product-page";
  * The Runs on chips and the line under the How it works cards are read from
  * `kubernetes.ts`, and the cards from `how-it-works.ts`, rather than copied: a
  * second copy would be a second claim free to drift. The hero's line is this
- * page's own (owner, 2 Nov 2026: the H1 and one small line under it), in the
- * pinned Coral help box's words. Nothing here is a new figure.
+ * page's own (2 Nov 2026: the H1 and one small line under it). Nothing here is a
+ * new figure.
  *
  * Coral's h1 is "Kubernetes optimization", and its `<title>` "Coral: Kubernetes optimization"
  * (2 Nov 2026):
@@ -107,7 +107,7 @@ export const coralPageContent: ProductPageContent = {
       id: "node-optimization",
       label: "Node optimization",
       drawing: "drain",
-      line: "Spare nodes drained one at a time; Coral never creates machines.",
+      line: "Spare nodes removed one at a time; Coral never creates machines.",
     },
   ],
   what: {

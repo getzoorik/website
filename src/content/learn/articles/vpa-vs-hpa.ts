@@ -409,7 +409,7 @@ export const article: Article = {
             ],
             [
               { b: "Nodes." },
-              " Coral drains spare nodes one at a time so your Cluster Autoscaler, AKS node auto provisioning or Karpenter can remove them. Node optimization is on from install, and you can limit it to chosen node pools.",
+              " Coral drains and removes the nodes you don’t need, one at a time. Node optimization is on from install, and you can limit it to chosen node pools.",
             ],
             [
               { b: "Opt-in." },

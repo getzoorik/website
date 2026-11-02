@@ -1642,7 +1642,7 @@ export const versusFacts: readonly VersusFacts[] = [
         label: "Applies changes on its own",
         ours: {
           mark: "yes",
-          note: "empties spare nodes in the node pools you choose, and rebalances pod requests once you switch it on",
+          note: "removes the nodes you don’t need in the node pools you choose, and rebalances pod requests once you switch it on",
           sources: [],
         },
         theirs: {
@@ -1751,7 +1751,7 @@ export const versusFacts: readonly VersusFacts[] = [
         label: "Spare EKS nodes",
         ours: {
           mark: "yes",
-          note: "empties spare nodes one at a time, and Karpenter or the Cluster Autoscaler terminates them",
+          note: "removes them one at a time",
           sources: [],
         },
         theirs: {
