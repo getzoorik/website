@@ -221,7 +221,7 @@ export const nodeCalculator = {
       ],
     },
   ],
-  /* "without any downtime" stays until the owner confirms the plan dropping it (2 Nov 2026). */
+  /* "without any downtime" is the products' positioning (owner, 2 Nov 2026, D233). */
   close:
     "Coral rebalances AKS and EKS clusters to reduce your cloud cost, autonomously, without any downtime. Your own cluster's saving is one free assessment away.",
   tile: {

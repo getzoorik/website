@@ -46,7 +46,7 @@ export const coralPageContent: ProductPageContent = {
   meta: {
     title: "Coral: Kubernetes optimization for AKS and EKS",
     description:
-      "Kubernetes optimization platform for AKS and EKS. Coral is Kubernetes resource optimization software that rebalances requests and nodes to reduce cloud cost.",
+      "Kubernetes optimization platform for AKS and EKS. Coral rebalances requests and nodes to reduce your cloud cost, autonomously, without any downtime.",
     appDescription:
       "Kubernetes cost optimization on AKS and EKS. Coral sizes pod requests to real use and drains spare nodes one at a time.",
   },

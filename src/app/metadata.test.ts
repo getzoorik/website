@@ -56,7 +56,7 @@ describe("page metadata", () => {
       "Block storage cost optimization: Amoeba rightsizes Azure managed disks and Amazon EBS to your data, autonomously, without any downtime after the one switch.",
     );
     expect(coral.description).toBe(
-      "Kubernetes optimization platform for AKS and EKS. Coral is Kubernetes resource optimization software that rebalances requests and nodes to reduce cloud cost.",
+      "Kubernetes optimization platform for AKS and EKS. Coral rebalances requests and nodes to reduce your cloud cost, autonomously, without any downtime.",
     );
     /* Coral is never shown on Windows or Linux. */
     expect(String(coral.description)).not.toMatch(/Windows|Linux/);
