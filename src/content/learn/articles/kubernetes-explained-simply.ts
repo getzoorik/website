@@ -70,7 +70,7 @@ export const article: Article = {
     },
     {
       id: "designing-your-clusters-in-7-steps",
-      title: "Designing your clusters in 7 steps",
+      title: "How many Kubernetes clusters do I need? Design yours in 7 steps",
       blocks: [
         {
           kind: "steps",
