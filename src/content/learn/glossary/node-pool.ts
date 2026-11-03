@@ -5,50 +5,57 @@ export const term: GlossaryTerm = {
   slug: "node-pool",
   term: "Node pool",
   title: "What is a node pool in Kubernetes?",
-  meta: "A Kubernetes node pool, or nodepool, is a group of nodes with one configuration. See how AKS node pools and EKS node groups differ, and what nodes cost.",
+  meta: "A node pool is a group of Kubernetes nodes that share one configuration. How AKS node pools and EKS node groups work, and what their nodes cost.",
   h1: "What is a node pool in Kubernetes?",
-  card: "A node pool in Kubernetes is a group of nodes that share one configuration.",
+  card: "A node pool is a group of nodes in a Kubernetes cluster that share one configuration.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "A node pool in Kubernetes is a group of nodes that share one configuration. Each node is an Azure virtual machine (VM) on AKS, or an EC2 instance on EKS.",
+      text: "A node pool is a group of nodes in a Kubernetes cluster that share one configuration. Each node is an Azure virtual machine (VM) on AKS, or an EC2 instance on EKS.",
     },
   ],
   sections: [
     {
       id: "node-pool-vs-node-group",
-      title: "AKS node pool vs EKS managed node group",
+      title: "Node pool vs node group",
       blocks: [
         {
           kind: "p",
-          text: "A node pool and a node group are one idea with two names. AKS groups nodes into node pools, and EKS groups them into node groups.",
+          text: "AKS groups nodes into node pools, and EKS groups them into node groups. The idea is the same.",
         },
-        { kind: "h3", id: "how-an-aks-node-pool-works", title: "How an AKS node pool works" },
+        { kind: "h3", id: "how-an-aks-node-pool-works", title: "AKS node pools" },
         {
           kind: "ul",
           items: [
-            "An AKS node pool runs on a Virtual Machine Scale Set by default, with one VM size.",
-            "An AKS Virtual Machines node pool can mix up to five sizes from one family.",
+            [
+              "By default, a pool runs on a Virtual Machine Scale Set, with one VM size. To change the size later, see ",
+              {
+                a: "how to change an AKS node pool VM size",
+                href: "/learn/change-aks-node-pool-vm-size",
+              },
+              ".",
+            ],
+            "A Virtual Machines node pool can mix up to five sizes from one VM family.",
           ],
         },
         {
           kind: "h3",
           id: "how-an-eks-managed-node-group-works",
-          title: "How an EKS managed node group works",
+          title: "EKS node groups",
         },
         {
           kind: "p",
-          text: "In a managed node group, EKS creates, updates and removes the EC2 instances for you, in an EC2 Auto Scaling group it manages.",
+          text: "Each EKS node group runs its nodes in an EC2 Auto Scaling group. In a managed node group, EKS creates, updates and removes the instances for you. With self-managed nodes, you maintain them yourself.",
         },
         {
           kind: "ul",
           items: [
             [
-              "It can list several instance types. To switch them later, see ",
+              "A managed node group can list several instance types. To switch them later, see ",
               {
                 a: "how to change an EKS node group instance type",
                 href: "/learn/change-eks-node-group-instance-type",
@@ -62,7 +69,7 @@ export const term: GlossaryTerm = {
     },
     {
       id: "aks-system-node-pool-vs-user-node",
-      title: "AKS system node pool vs user node pool",
+      title: "System vs user node pools",
       blocks: [
         {
           kind: "p",
@@ -81,11 +88,11 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why node pools matter for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "p",
-          text: "You pay for nodes, not pools. AKS charges standard VM prices, and EKS adds no fee for managed node groups.",
+          text: "You pay for nodes, not pools. AKS charges nodes at standard VM prices, and EKS adds no fee for managed node groups.",
         },
         {
           kind: "ul",
@@ -93,17 +100,18 @@ export const term: GlossaryTerm = {
             [
               "Each node’s price depends on its ",
               { a: "VM size or instance type", href: "/learn/kubernetes-node-size-best-practices" },
-              ", and whether it’s ",
+              ", and on whether it runs as ",
               { a: "spot", href: "/learn/glossary/spot-instance" },
-              " or ",
+              ", ",
               { a: "on-demand", href: "/learn/glossary/on-demand-instance" },
-              ". The ",
+              " or under a commitment. The ",
               { a: "EKS and AKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
-              " gives one node’s monthly list price.",
+              " lists monthly prices for common node sizes.",
             ],
+            "A system pool’s two-node minimum costs money even when the cluster is idle.",
             [
               { a: "Coral", href: "/coral" },
-              " rebalances CPU and memory requests on AKS and EKS to match real use. It removes the nodes you don’t need.",
+              " rebalances CPU and memory requests on AKS and EKS to match real use. It removes the nodes you don’t need, without any downtime.",
             ],
           ],
         },
@@ -127,9 +135,9 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/eks-auto-mode",
     },
   ],
-  relatedTitle: "Terms related to node pools",
+  relatedTitle: "Related terms",
   next: {
-    title: "Kubernetes node size best practices: large or small nodes",
+    title: "Kubernetes node size best practices",
     href: "/learn/kubernetes-node-size-best-practices",
   },
   sources: [
@@ -157,6 +165,11 @@ export const term: GlossaryTerm = {
       publisher: "AWS",
       title: "“Maintain nodes yourself with self-managed nodes”",
       url: "https://docs.aws.amazon.com/eks/latest/userguide/worker.html",
+    },
+    {
+      publisher: "AWS",
+      title: "“Savings Plans types”",
+      url: "https://docs.aws.amazon.com/savingsplans/latest/userguide/plan-types.html",
     },
   ],
 };

@@ -6,148 +6,147 @@ import { figure as figure3 } from "@/features/learn/figures/what-is-karpenter/3"
 export const article: Article = {
   slug: "what-is-karpenter",
   title: "What is Karpenter? The Kubernetes node autoscaler",
-  meta: "Karpenter is an open-source Kubernetes node autoscaler. How NodePools shape the nodes it adds, how it removes them, and AWS Karpenter on EKS vs NAP on AKS.",
-  h1: "What is Karpenter? How the Kubernetes node autoscaler picks and removes nodes",
-  deck: "Unlike the Cluster Autoscaler, it picks a machine type for each node rather than growing preset node groups.",
-  card: "What Karpenter is, how a NodePool shapes the nodes it launches, and how it removes them on EKS and AKS.",
+  meta: "Karpenter is an open-source Kubernetes node autoscaler. How it launches and removes nodes, what a NodePool controls, and how it runs on EKS and AKS.",
+  h1: "What is Karpenter in Kubernetes?",
+  deck: "Unlike the Cluster Autoscaler, it picks a machine type for each new node instead of growing preset node groups.",
+  card: "How Karpenter launches and removes nodes, what a NodePool controls, and how it runs on EKS and AKS.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes autoscaling",
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "swati",
   cover: "/learn-covers/zoorik-learn-what-is-karpenter-1200x630.webp",
   coverAlt: "Karpenter launches a node for pending pods and removes the node once it is empty",
   short:
-    "Karpenter is an open-source Kubernetes node autoscaler that launches nodes sized to pending pods and removes underused ones or replaces them with cheaper machines. On Amazon EKS you run it yourself, EKS Auto Mode builds on it, and on AKS it runs as node auto provisioning (NAP).",
+    "Karpenter is an open-source Kubernetes node autoscaler. It launches nodes sized to the requests of pending pods, and removes empty or underused nodes or replaces them with cheaper ones. On Amazon EKS you install it yourself, or use EKS Auto Mode, which builds on it. On AKS, node auto provisioning (NAP) runs it for you.",
   sections: [
     {
       id: "what-is-karpenter",
-      title: "What is Karpenter in Kubernetes, and what is it used for?",
+      title: "What Karpenter does",
       blocks: [
         {
           kind: "p",
-          text: "Picture ten pending pods that each request 2\u00a0CPU and fit on no node. Karpenter adds up their requests, 20\u00a0CPU in all, and allows for node overhead and DaemonSets.",
+          text: "Say ten pending pods each request 2\u00a0CPU and fit on no node. Karpenter launches a node with room for all 20\u00a0CPU. When the pods finish and the node is empty, it deletes the node.",
         },
         {
           kind: "p",
-          text: "It then picks a machine type with room for all of it and launches a node. When the pods finish and leave the node empty, Karpenter deletes it.",
+          text: "Karpenter is one of two node autoscalers sponsored by Kubernetes SIG Autoscaling. The other, the Cluster Autoscaler, resizes node groups set up in advance. Karpenter launches individual virtual machines instead.",
         },
+        { kind: "p", text: "It does three jobs:" },
         {
-          kind: "p",
-          text: "A node autoscaler changes how many machines a cluster runs. Kubernetes SIG Autoscaling sponsors two of them: the Cluster Autoscaler and Karpenter.",
-        },
-        {
-          kind: "p",
-          text: "The Kubernetes docs say Cluster Autoscaler “adds or removes Nodes to pre-configured Node groups”. So every machine type it can use is set up in advance.",
+          kind: "ul",
+          items: [
+            [{ b: "Launching nodes" }, " for pods that no node has room for."],
+            [
+              { b: "Consolidation:" },
+              " deleting empty and underused nodes, or replacing them with cheaper ones.",
+            ],
+            [
+              { b: "Node lifecycle:" },
+              " replacing old or changed nodes, and draining spot nodes before the cloud takes them back.",
+            ],
+          ],
         },
         {
           kind: "p",
           text: [
-            "Karpenter works with individual virtual machines and doesn’t rely on cloud resource groups. ",
             {
               a: "Karpenter vs Cluster Autoscaler",
               href: "/learn/karpenter-vs-cluster-autoscaler",
             },
-            " compares how each one removes nodes.",
-          ],
-        },
-        { kind: "p", text: "Karpenter is used for three jobs:" },
-        {
-          kind: "ul",
-          items: [
-            [{ b: "Launching nodes" }, " for pending pods."],
-            [{ b: "Consolidation" }, " of empty and underused nodes."],
-            [
-              { b: "Node lifecycle," },
-              " including draining spot nodes before the cloud takes them back.",
-            ],
+            " compares the two. ",
+            { a: "Kubernetes autoscaling", href: "/learn/kubernetes-autoscaling" },
+            " shows where node autoscalers sit beside the HPA and VPA.",
           ],
         },
       ],
     },
     {
       id: "karpenter-sizes-a-new-node-from-the",
-      title: "Karpenter sizes a new node from the pending pods’ requests",
+      title: "How it launches nodes",
       blocks: [
         {
           kind: "p",
-          text: "Karpenter batches the pending pods that no node has room for. It bin-packs them by the CPU, memory and GPUs they request.",
-        },
-        {
-          kind: "p",
-          text: [
-            "It adds the node’s own overhead and the DaemonSets the new node will run. The ",
-            { a: "EKS and AKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
-            " shows how much of a node type your pods can use, and its monthly cost.",
-          ],
-        },
-        {
-          kind: "p",
-          text: "Each new node must also fit the NodePool the pods match. A NodePool is the resource you write to tell Karpenter what it may launch. It can restrict capacity type, zones, instance types and architectures.",
-        },
-        {
-          kind: "p",
-          text: "The Kubernetes docs say node autoscalers “don’t directly take into account the real resource usage of the Pods after they start running”. So the ten pods get room for 20\u00a0CPU, plus overhead, however little of it they use.",
-        },
-        { kind: "svg", figure: figure1 },
-        {
-          kind: "callout",
-          label: "For engineers",
-          text: "On AWS, Karpenter finds the instance type that packs the batch most efficiently and adds 59 larger types. It passes all 60 to the Amazon EC2 Fleet API, which chooses with its price-capacity-optimized allocation strategy.",
-        },
-        {
-          kind: "p",
-          text: "For on-demand capacity, the Karpenter FAQ says Fleet effectively picks the lowest-priced type. For spot, Fleet weighs price against the chance of interruption, so the result may not be the strictly cheapest spot type.",
-        },
-      ],
-    },
-    {
-      id: "a-karpenter-nodepool-limits-the-nodes-it",
-      title: "A Karpenter NodePool limits the nodes it launches, and a node class sets them up",
-      blocks: [
-        {
-          kind: "p",
-          text: "The Karpenter docs say a NodePool “sets constraints on the nodes that can be created by Karpenter”, and on the pods they can run.",
-        },
-        {
-          kind: "p",
-          text: [
-            "Its requirements use well-known node labels, such as ",
-            { code: "kubernetes.io/arch" },
-            " and ",
-            { code: "karpenter.sh/capacity-type" },
-            ". When a NodePool allows more than one capacity type, Karpenter prefers reserved capacity, then spot, then on-demand.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "If a requirement isn’t set for a well-known label, Karpenter may choose any value the cloud offers. So ",
-            { code: "requirements: []" },
-            " opens the pool to every instance type your provider supports.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "When several NodePools match a pod, the one with the highest ",
-            { code: "weight" },
-            " wins. The docs still recommend NodePools that don’t overlap.",
-          ],
-        },
-        {
-          kind: "callout",
-          label: "Watch out",
-          text: "A NodePool with no limits has no cap of its own, only your cloud quotas. Leave its requirements open too, and pending pods can get any instance type your provider supports, as many as those quotas allow.",
+          text: "Karpenter acts on pods the scheduler can’t place. It sizes a new node from their resource requests alone. Then it adds the requests of the DaemonSets the node will run, and the node’s reserved resources.",
         },
         {
           kind: "p",
           text: [
             "The ",
-            { code: "spec.limits" },
-            " field caps the total CPU and memory that the pool’s nodes can add up to. The example below sets 1,000\u00a0CPU and 1000Gi of memory.",
+            { a: "EKS and AKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
+            " shows how much of a node type your pods can use, and what it costs a month.",
           ],
+        },
+        {
+          kind: "p",
+          text: "The node must also fit the NodePool the pods match. A NodePool tells Karpenter what it may launch: capacity types, zones, instance types and architectures.",
+        },
+        {
+          kind: "p",
+          text: "Real usage plays no part. In the Kubernetes docs’ words, node autoscalers “don’t directly take into account the real resource usage of the Pods after they start running”. The ten pods get room for 20\u00a0CPU however little they use.",
+        },
+        { kind: "svg", figure: figure1 },
+        {
+          kind: "callout",
+          label: "For engineers",
+          text: "On AWS, Karpenter finds the instance type that packs the pods most efficiently, then adds 59 larger types. It passes all 60 to the Amazon EC2 Fleet API, which picks one with its price-capacity-optimized allocation strategy.",
+        },
+        {
+          kind: "p",
+          text: "For on-demand capacity, Fleet in effect picks the cheapest type. For spot, it also weighs the chance of interruption, so its pick may not be the cheapest spot type.",
+        },
+      ],
+    },
+    {
+      id: "a-karpenter-nodepool-limits-the-nodes-it",
+      title: "NodePools and node classes",
+      blocks: [
+        {
+          kind: "p",
+          text: [
+            "The Karpenter docs say a NodePool “sets constraints on the nodes that can be created by Karpenter”, and on the pods they run. Its requirements use well-known labels, such as ",
+            { code: "kubernetes.io/arch" },
+            " and ",
+            { code: "karpenter.sh/capacity-type" },
+            ".",
+          ],
+        },
+        {
+          kind: "ul",
+          items: [
+            [
+              { b: "Open labels." },
+              " A well-known label with no requirement can take any value the cloud offers. ",
+              { code: "requirements: []" },
+              " allows every instance type your provider supports.",
+            ],
+            [
+              { b: "Capacity types." },
+              " Where a NodePool allows several, Karpenter prefers reserved capacity, then spot, then on-demand.",
+            ],
+            [
+              { b: "Weight." },
+              " When several NodePools match a pod, Karpenter uses the one with the highest ",
+              { code: "weight" },
+              ". The docs still recommend NodePools that don’t overlap.",
+            ],
+            [
+              { b: "Limits." },
+              " ",
+              { code: "spec.limits" },
+              " caps the total CPU and memory of the pool’s nodes. At the cap, the pool launches no more nodes until some are removed.",
+            ],
+          ],
+        },
+        {
+          kind: "callout",
+          label: "Watch out",
+          text: "With open requirements and no limits, a NodePool restricts neither the instance types it launches nor their total CPU and memory.",
+        },
+        {
+          kind: "p",
+          text: "This example allows on-demand amd64 nodes from the c, m and r instance categories. It caps the pool at 1,000\u00a0CPU and 1000Gi of memory, and expires nodes after 720\u00a0hours.",
         },
         {
           kind: "code",
@@ -157,34 +156,34 @@ export const article: Article = {
         {
           kind: "h3",
           id: "karpenter-node-class-ec2nodeclass-on-aws-aksnodeclass",
-          title: "Karpenter node class: EC2NodeClass on AWS, AKSNodeClass on AKS",
+          title: "EC2NodeClass and AKSNodeClass",
         },
         {
           kind: "p",
           text: [
             "The ",
             { code: "nodeClassRef" },
-            " points to a node class, the cloud provider’s own resource for machine settings. That’s an EC2NodeClass on AWS and an AKSNodeClass on AKS.",
+            " points to a node class: the cloud’s own settings for the machine. On AWS it is an EC2NodeClass, which sets the AMIs, subnets, security groups and node IAM role. On AKS it is an AKSNodeClass, which holds the VM settings.",
           ],
         },
       ],
     },
     {
       id: "karpenter-removes-nodes-whose-pods-fit-elsewhere",
-      title: "Karpenter removes nodes whose pods fit elsewhere, and replaces old ones",
+      title: "How it removes nodes",
       blocks: [
         {
           kind: "p",
-          text: "Karpenter’s word for removing nodes is disruption, and consolidation is the method that reduces cost.",
+          text: "Karpenter calls removing nodes disruption. Consolidation is the method that reduces cost. Expiration, interruption and drift replace nodes for other reasons.",
         },
         {
           kind: "h3",
           id: "consolidation-deletes-or-replaces-underused-nodes",
-          title: "Consolidation deletes or replaces underused nodes",
+          title: "Consolidation",
         },
         {
           kind: "p",
-          text: "Consolidation deletes empty nodes in parallel. It also tries deleting one node, or several at once, launching at most one replacement.",
+          text: "Consolidation deletes empty nodes in parallel. It also tries to delete one node, or several at once, launching at most one replacement.",
         },
         {
           kind: "p",
@@ -193,38 +192,34 @@ export const article: Article = {
         { kind: "svg", figure: figure2 },
         {
           kind: "p",
-          text: [
-            "Three fields in the NodePool’s ",
-            { code: "disruption" },
-            " block decide how far it goes:",
-          ],
+          text: ["Three fields in the NodePool’s ", { code: "disruption" }, " block control it:"],
         },
         {
           kind: "table",
           columns: [
-            { label: "Field", width: "14%" },
-            { label: "What it sets", width: "84%" },
-            { label: "Default", width: "10%" },
+            { label: "Field", width: "24%" },
+            { label: "What it sets", width: "52%" },
+            { label: "Default", width: "24%" },
           ],
           rows: [
             [
               [{ code: "consolidationPolicy" }],
               [
                 { code: "WhenEmpty" },
-                " considers only empty nodes, whose pods all have no disruption cost, such as DaemonSet pods. ",
+                " considers only empty nodes. ",
                 { code: "WhenEmptyOrUnderutilized" },
-                " also considers underused nodes. ",
+                " also considers underused ones. ",
                 { code: "Balanced" },
-                " weighs the share of the NodePool’s cost an action saves against the share of its pod disruption it causes. It acts only when the saving is large enough.",
+                " acts only when the cost an action saves outweighs the pod disruption it causes.",
               ],
               [{ code: "WhenEmptyOrUnderutilized" }],
             ],
             [
               [{ code: "consolidateAfter" }],
               [
-                "How long Karpenter waits after a pod is added to or removed from a node before that node becomes a candidate. ",
+                "How long Karpenter waits after a pod is added to or removed from a node before it may consolidate that node. ",
                 { code: "Never" },
-                " turns consolidation off for that NodePool.",
+                " turns consolidation off.",
               ],
               [{ code: "0s" }],
             ],
@@ -237,23 +232,20 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Consolidation reads requests too. In the Kubernetes docs’ words, it “only considers Pod resource requests and not real resource usage when making decisions”. So a node full of pods that request far more than they use looks busy, and Karpenter keeps it.",
-        },
-        {
-          kind: "p",
           text: [
+            "Consolidation counts requests too. The Kubernetes docs say it “only considers Pod resource requests and not real resource usage when making decisions”. A node of pods that request far more than they use looks busy, so it stays. ",
             { a: "Karpenter consolidation", href: "/learn/karpenter-consolidation" },
-            " covers the policies and budgets in depth.",
+            " covers each policy and budget in depth.",
           ],
         },
         {
           kind: "h3",
           id: "expiration-interruption-and-drift-replace-nodes",
-          title: "Expiration, interruption and drift replace nodes",
+          title: "Expiration, interruption and drift",
         },
         {
           kind: "p",
-          text: "Karpenter also replaces nodes for age, interruptions and changed settings. Expiration and interruption are forceful: they start draining a node as soon as their condition is met. Drift is graceful.",
+          text: "Expiration and interruption are forceful: they start draining a node as soon as their condition is met. Drift is graceful, like consolidation, and budgets can pace it.",
         },
         {
           kind: "ul",
@@ -262,15 +254,15 @@ export const article: Article = {
               { b: "Expiration" },
               " drains and removes a node older than the NodePool’s ",
               { code: "expireAfter" },
-              ", which defaults to ",
+              ". The default is ",
               { code: "720h" },
-              ", or 30\u00a0days. Set it to ",
+              ", 30\u00a0days, and ",
               { code: "Never" },
-              " to stop nodes aging out.",
+              " turns it off.",
             ],
             [
               { b: "Interruption" },
-              " handling drains a node ahead of events such as a spot interruption. On AWS, a spot interruption comes with a 2-minute notice. Interruption handling there needs an SQS queue and EventBridge rules that send it those events.",
+              " drains a node ahead of events such as a spot interruption. On AWS, a spot interruption comes with a 2-minute notice, and handling it needs an SQS queue fed by EventBridge rules.",
             ],
             [
               { b: "Drift" },
@@ -285,175 +277,173 @@ export const article: Article = {
             { a: "do-not-disrupt annotation", href: "/learn/safe-to-evict-do-not-disrupt" },
             ", ",
             { code: 'karpenter.sh/do-not-disrupt: "true"' },
-            ", keeps consolidation off its node. It stops drift too, unless the node was created with a ",
+            ", keeps consolidation off its node. It blocks drift too, unless the node was created with a ",
             { code: "terminationGracePeriod" },
-            " from its NodePool. It isn’t a hard guarantee: the docs say it “does not exclude nodes from the forceful disruption methods”.",
+            " from its NodePool. It doesn’t stop expiration or interruption: the docs say it “does not exclude nodes from the forceful disruption methods”.",
           ],
         },
       ],
     },
     {
       id: "who-runs-karpenter-on-eks-and-aks",
-      title: "Who runs Karpenter on EKS and AKS: you, AWS or Microsoft",
+      title: "Karpenter on EKS and AKS",
       blocks: [
         {
           kind: "p",
-          text: "Karpenter isn’t tied to one cloud. The Kubernetes project publishes it as a library that cloud providers build their own node autoscaler on.",
-        },
-        {
-          kind: "p",
-          text: "AWS was the first provider, and Azure has one too. In October 2026, the shared project’s newest release line is Karpenter 1.15.",
+          text: "Karpenter isn’t tied to one cloud. The Kubernetes project publishes it as a library for cloud providers to build a node autoscaler on. AWS was the first, and Azure has one too.",
         },
         {
           kind: "h3",
           id: "what-is-karpenter-in-eks-and-aws",
-          title: "What is Karpenter in EKS and AWS?",
+          title: "Karpenter on AWS",
         },
         {
           kind: "p",
-          text: "On a standard Amazon EKS cluster, Karpenter is software you run. AWS describes it as “open-source software which AWS customers are responsible for installing, configuring, and managing in their Kubernetes clusters”.",
+          text: "On a standard Amazon EKS cluster, Karpenter is software you run. AWS calls it “open-source software which AWS customers are responsible for installing, configuring, and managing in their Kubernetes clusters”.",
         },
         {
           kind: "p",
-          text: "AWS gives technical support for Karpenter run unmodified, at a compatible version, on EKS. But no AWS Service Level Agreement covers it.",
+          text: "AWS gives technical support when Karpenter runs unmodified, at a compatible version, on EKS. No AWS Service Level Agreement covers it. Karpenter lists the Kubernetes versions each release supports, and AWS expects you to test each upgrade of Karpenter or the cluster.",
         },
         {
           kind: "p",
-          text: "Karpenter publishes the Kubernetes versions each release supports, and AWS asks you to test when you upgrade either Karpenter or the cluster.",
+          text: [
+            { a: "EKS Auto Mode", href: "/learn/glossary/eks-auto-mode" },
+            " is the managed route. AWS says it “builds upon Karpenter”, and AWS runs its scaling, consolidation and node deletion for you.",
+          ],
         },
         {
           kind: "p",
-          text: "EKS Auto Mode is the managed route. AWS says Auto Mode “builds upon Karpenter”, and AWS runs its scaling, consolidation and node deletion for you.",
-        },
-        {
-          kind: "p",
-          text: "Auto Mode ships default NodePools and NodeClasses that you shouldn’t edit. By default it terminates nodes after 336\u00a0hours (14\u00a0days), and no node lives more than 21\u00a0days.",
+          text: "You shouldn’t edit Auto Mode’s default NodePools and NodeClasses, but you can add your own beside them. By default it replaces nodes after 336\u00a0hours (14\u00a0days), and no node lives past 21\u00a0days.",
         },
         {
           kind: "h3",
           id: "install-the-karpenter-helm-chart-on-eks",
-          title: "Install the Karpenter Helm chart on EKS",
+          title: "Karpenter Helm chart",
         },
+        {
+          kind: "p",
+          text: "On EKS you install Karpenter with its Helm chart. Before that, Karpenter’s Getting Started guide sets up AWS:",
+        },
+        {
+          kind: "ol",
+          items: [
+            "Deploy a CloudFormation stack. It creates the node IAM role, the controller policies, and the SQS queue and EventBridge rules for interruptions.",
+            "Create the cluster with eksctl, including the controller’s IAM role.",
+          ],
+        },
+        { kind: "p", text: "Then install the chart:" },
         {
           kind: "code",
           lang: "bash",
           code: "helm upgrade --install karpenter oci://public.ecr.aws/karpenter/karpenter --version <version> \\\n  --namespace <namespace> --create-namespace \\\n  --set settings.clusterName=<cluster-name> \\\n  --set settings.interruptionQueue=<queue-name> \\\n  --set controller.resources.requests.cpu=1 \\\n  --set controller.resources.requests.memory=1Gi \\\n  --set controller.resources.limits.cpu=1 \\\n  --set controller.resources.limits.memory=1Gi \\\n  --wait",
         },
         {
+          kind: "p",
+          text: [
+            "Pick a ",
+            { code: "<version>" },
+            " that supports your cluster’s Kubernetes version. In November 2026 the guide uses 1.15.1 and the ",
+            { code: "kube-system" },
+            " namespace. ",
+            { code: "<queue-name>" },
+            " is the SQS queue from the stack.",
+          ],
+        },
+        {
           kind: "h3",
           id: "karpenter-on-aks-node-auto-provisioning",
-          title: "On AKS, NAP runs Karpenter for you",
+          title: "Karpenter on AKS: NAP",
         },
         {
           kind: "p",
-          text: "NAP deploys and manages Karpenter on your AKS cluster, built on the open-source project and the AKS Karpenter provider.",
-        },
-        {
-          kind: "p",
-          text: "You write NodePool and AKSNodeClass resources, and NAP shows the nodes it launches as NodeClaims. It comes preconfigured on AKS Automatic clusters.",
+          text: "On AKS, node auto provisioning (NAP) deploys and manages Karpenter for you. It is built on the open-source project and the AKS Karpenter provider. NAP comes preconfigured on AKS Automatic clusters, and you turn it on for AKS Standard.",
         },
         {
           kind: "p",
           text: [
-            "It doesn’t support Windows node pools or IPv6 clusters. ",
-            {
-              a: "How to enable AKS node auto provisioning",
-              href: "/learn/aks-node-auto-provisioning",
-            },
-            " covers turning it on.",
+            "You write NodePool and AKSNodeClass resources, and NAP shows the nodes it launches as NodeClaims. It doesn’t support Windows node pools or IPv6 clusters. ",
+            { a: "AKS node auto provisioning", href: "/learn/aks-node-auto-provisioning" },
+            " covers how to enable it.",
           ],
         },
       ],
     },
     {
       id: "karpenter-never-changes-the-requests-it-sizes",
-      title: "Karpenter never changes the requests it sizes nodes from",
+      title: "Oversized requests",
       blocks: [
         {
           kind: "p",
-          text: "Karpenter chooses and removes machines from the requests it’s given, and it never edits them. A container whose request is four times its real use gets four times the room, on any machine type.",
-        },
-        {
-          kind: "p",
-          text: [
-            "Even a carefully tuned NodePool pays for every request that’s set too high, which is the limit of ",
-            { a: "Karpenter cost optimization", href: "/learn/karpenter-cost-optimization" },
-            ".",
-          ],
+          text: "Karpenter sizes and removes nodes from the requests it’s given, and never changes them. A container that requests four times what it uses gets four times the room, on any machine type.",
         },
         {
           kind: "callout",
           label: "Worked example",
-          text: "Say the ten pods from the opening each use 0.5\u00a0CPU of their 2\u00a0CPU request. Karpenter provisions room for 10 × 2 = 20\u00a0CPU of requests, plus overhead.",
-        },
-        {
-          kind: "p",
-          text: "The pods use 10 × 0.5 = 5\u00a0CPU of it. That leaves 20 − 5 = 15\u00a0CPU reserved and idle, three-quarters of the requested CPU. That’s because each request is 2 ÷ 0.5 = 4 times its use.",
+          text: "Say the ten pods each use 0.5\u00a0CPU of their 2\u00a0CPU request. Karpenter provisions 10 × 2 = 20\u00a0CPU, plus overhead. The pods use 10 × 0.5 = 5\u00a0CPU, which leaves 20 − 5 = 15\u00a0CPU reserved and idle: three-quarters of the requests.",
         },
         { kind: "svg", figure: figure3 },
         {
           kind: "p",
           text: [
-            "Setting requests from measured use is a separate job, covered in ",
+            "No NodePool setting closes that gap, which is the limit of ",
+            { a: "Karpenter cost optimization", href: "/learn/karpenter-cost-optimization" },
+            ". Setting requests from measured use is a separate job, covered in ",
             { a: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
             ". The ",
             { a: "Kubernetes cost optimization guide", href: "/kubernetes-cost-optimization" },
-            " puts requests first, then nodes. ",
-            {
-              a: "Kubernetes autoscaling",
-              href: "/learn/kubernetes-autoscaling",
-            },
-            " shows which tool owns which layer.",
+            " does requests first, then nodes.",
           ],
         },
       ],
     },
     {
       id: "how-coral-works-with-karpenter",
-      title: "How Coral works with Karpenter",
+      title: "Coral and Karpenter",
       blocks: [
         {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS, at the layer Karpenter leaves alone. It rebalances CPU and memory requests to real use, so the same NodePools can run fewer or smaller nodes.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "Coral never adds nodes for demand, so scaling up stays Karpenter’s job. ",
-            { a: "Coral works with Karpenter", href: "/coral-works-with-karpenter" },
-            " sets out who does what.",
+            " works at the layer Karpenter leaves alone. It rebalances CPU and memory requests to real use on AKS and EKS, so the same NodePools can run fewer or smaller nodes.",
           ],
         },
         {
           kind: "ul",
           items: [
             [
-              { b: "Pools Karpenter already consolidates:" },
-              " Coral’s consolidation ",
-              { a: "leaves them to Karpenter", href: "/coral-faq#do-i-need-coral-with-karpenter" },
-              ".",
+              { b: "Scale-up." },
+              " Coral never adds nodes for demand, so scaling up stays Karpenter’s job.",
             ],
             [
-              { b: "Protected workloads:" },
+              { b: "Consolidation." },
+              " Coral ",
+              {
+                a: "leaves the pools Karpenter consolidates",
+                href: "/coral-faq#do-i-need-coral-with-karpenter",
+              },
+              " to Karpenter.",
+            ],
+            [
+              { b: "Marked workloads." },
               " Coral respects ",
               { code: "karpenter.sh/do-not-disrupt" },
-              " on pods and nodes. A marked pod is never moved and its node stays, and a marked node is kept.",
+              " on pods and nodes. A marked pod is never moved and keeps its node, and a marked node is kept.",
             ],
             [
-              { b: "Cheaper machines:" },
-              " where Karpenter runs, Coral can also move work to smaller or cheaper machines. Its rebalancing creates fixed-size NodePools named zoorik-rb-…, and your Karpenter launches the new machines. The old nodes are then drained and removed one by one.",
+              { b: "Cheaper machines." },
+              " Coral can move work to smaller or cheaper machines. It creates fixed-size NodePools, your Karpenter launches the new machines, and the old nodes are drained and removed one by one.",
             ],
           ],
         },
         {
           kind: "p",
           text: [
-            "If an EKS cluster has no node autoscaler yet, ",
-            { a: "connecting it to Coral", href: "/coral-guide#what-connect-asks-to-change" },
-            " can install Karpenter, with your approval.",
+            "On an EKS cluster with no node autoscaler, ",
+            { a: "connecting Coral", href: "/coral-guide#what-connect-asks-to-change" },
+            " can install Karpenter, with your approval. ",
+            { a: "Coral works with Karpenter", href: "/coral-works-with-karpenter" },
+            " sets out who does what.",
           ],
         },
       ],
@@ -461,7 +451,7 @@ export const article: Article = {
   ],
   help: {
     product: "coral",
-    text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and removes the nodes you don’t need. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Coral rebalances CPU and memory requests to real use on AKS and EKS, works with your HPA, and removes the nodes you don’t need. We estimate it reduces AKS and EKS cost by 40–50%. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Estimate your saving", href: "/assessment?p=coral" },
@@ -475,10 +465,30 @@ export const article: Article = {
     },
     {
       publisher: "Karpenter",
+      title: "“NodeClasses”",
+      url: "https://karpenter.sh/docs/concepts/nodeclasses/",
+    },
+    {
+      publisher: "Karpenter",
+      title: "“Scheduling”",
+      url: "https://karpenter.sh/docs/concepts/scheduling/",
+    },
+    {
+      publisher: "Karpenter",
       title: "“Disruption”",
       url: "https://karpenter.sh/docs/concepts/disruption/",
     },
     { publisher: "Karpenter", title: "“FAQs”", url: "https://karpenter.sh/docs/faq/" },
+    {
+      publisher: "Karpenter",
+      title: "“Getting Started with Karpenter”",
+      url: "https://karpenter.sh/docs/getting-started/getting-started-with-karpenter/",
+    },
+    {
+      publisher: "Karpenter",
+      title: "“CloudFormation”",
+      url: "https://karpenter.sh/docs/reference/cloudformation/",
+    },
     {
       publisher: "Kubernetes",
       title: "“Node Autoscaling”",
@@ -507,30 +517,30 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "Karpenter consolidation: policies, budgets and limits",
+      title: "Karpenter consolidation",
       where: "Learn",
       href: "/learn/karpenter-consolidation",
     },
     {
-      title: "Karpenter cost optimization: the requests it can’t fix",
+      title: "Karpenter cost optimization",
       where: "Learn",
       href: "/learn/karpenter-cost-optimization",
     },
     {
-      title: "Karpenter vs Cluster Autoscaler: how each removes nodes",
+      title: "Karpenter vs Cluster Autoscaler",
       where: "Learn",
       href: "/learn/karpenter-vs-cluster-autoscaler",
     },
     {
-      title: "AKS node auto provisioning (NAP): what it is, how to enable",
+      title: "KEDA vs Karpenter",
+      where: "Learn",
+      href: "/learn/keda-vs-karpenter",
+    },
+    {
+      title: "AKS node auto provisioning (NAP)",
       where: "Learn",
       href: "/learn/aks-node-auto-provisioning",
     },
-    {
-      title: "How to choose EKS instance types",
-      where: "Learn",
-      href: "/learn/how-to-choose-eks-instance-types",
-    },
   ],
-  relatedTitle: "More on Karpenter, from consolidation to NAP",
+  relatedTitle: "More on Karpenter",
 };

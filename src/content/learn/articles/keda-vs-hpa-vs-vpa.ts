@@ -4,56 +4,47 @@ import { figure as figure2 } from "@/features/learn/figures/keda-vs-hpa-vs-vpa/2
 
 export const article: Article = {
   slug: "keda-vs-hpa-vs-vpa",
-  title: "KEDA vs HPA: where event-driven scaling fits",
-  meta: "KEDA vs HPA: KEDA scales pods on events through an HPA it creates, a plain HPA needs an adapter for Kubernetes custom metrics, and the VPA sizes requests.",
-  h1: "KEDA vs HPA: where event-driven scaling fits",
+  title: "KEDA vs HPA vs VPA",
+  meta: "KEDA vs HPA vs VPA: how KEDA scales pods on events through an HPA, when the VPA can share a workload, and which autoscaler to run.",
+  h1: "KEDA vs HPA vs VPA",
   deck: "Pick KEDA or the HPA per workload, never both, and let the VPA size only what they don’t scale on.",
-  card: "How KEDA drives an HPA, where the VPA fits, and which pairs are safe to run on one workload.",
+  card: "How KEDA drives an HPA, where the VPA fits, and which pairs can share one workload.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes autoscaling",
   versus: ["KEDA · HPA", "VPA"],
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "shreya",
   cover: "/learn-covers/zoorik-learn-keda-vs-hpa-vs-vpa-1200x630.webp",
   coverAlt:
     "KEDA vs HPA vs VPA: KEDA drives the HPA to add pods, while the VPA makes each pod bigger",
   short:
-    "The Horizontal Pod Autoscaler (HPA) sets the pod count, usually from CPU. KEDA sets it from events, down to zero, through an HPA it creates. The Vertical Pod Autoscaler (VPA) sets each pod’s requests.",
+    "The Horizontal Pod Autoscaler (HPA) sets how many pods run, usually from CPU or memory. KEDA (Kubernetes Event-driven Autoscaling) sets that count from events, such as waiting jobs, and can scale to zero. It works through an HPA it creates, so it replaces a plain HPA rather than joining one. The Vertical Pod Autoscaler (VPA) sets each pod’s CPU and memory requests instead.",
   sections: [
     {
       id: "keda-vs-hpa-vs-vpa",
-      title: "KEDA, the HPA and the VPA: two set the pod count, one sets the pod size",
+      title: "Key differences",
       blocks: [
         {
           kind: "p",
           text: [
-            "An orders worker takes jobs from a queue and scales with an ",
+            { a: "KEDA", href: "/learn/what-is-keda" },
+            " and the ",
             { a: "HPA", href: "/learn/glossary/horizontal-pod-autoscaler" },
-            " on CPU. Overnight one pod runs with nothing waiting. By morning 400 jobs pile up, and the HPA still sees only CPU.",
-          ],
-        },
-        {
-          kind: "p",
-          text: "KEDA (Kubernetes Event-driven Autoscaling) reads the number of waiting jobs instead, through a ScaledObject. Its HPA asks for 8\u00a0pods, one for every 50 jobs. Once nothing has waited for 300\u00a0seconds, KEDA takes the worker back to zero.",
-        },
-        {
-          kind: "p",
-          text: [
-            "The ",
+            " decide how many pods run. The ",
             { a: "VPA", href: "/learn/glossary/vertical-pod-autoscaler" },
-            " sets a different number on the same worker: each pod’s ",
+            " decides each pod’s ",
             { a: "request", href: "/learn/glossary/kubernetes-resource-requests" },
-            ". That’s the CPU and memory a container asks the scheduler to reserve.",
+            ": the CPU and memory a container asks the scheduler to reserve.",
           ],
         },
         {
           kind: "p",
           text: [
-            "None of the three adds or removes nodes. The Cluster Autoscaler, Karpenter and AKS node auto provisioning do that, and the guide to ",
+            "None of the three adds or removes nodes. The Cluster Autoscaler, Karpenter and AKS node auto provisioning do that, as ",
             { a: "Kubernetes autoscaling", href: "/learn/kubernetes-autoscaling" },
-            " compares them.",
+            " explains.",
           ],
         },
         {
@@ -67,9 +58,9 @@ export const article: Article = {
           rows: [
             [
               "What it changes",
-              "The number of pods, through an HPA it creates",
-              "The number of pods",
-              "Each container’s CPU and memory requests, and limits with them",
+              "The pod count, through an HPA it creates",
+              "The pod count",
+              "Each container’s CPU and memory requests, and by default its limits in proportion",
             ],
             [
               "What it reads",
@@ -84,7 +75,7 @@ export const article: Article = {
               "Doesn’t apply: it never changes the pod count",
             ],
             [
-              "The object you write",
+              "Object you write",
               [{ code: "ScaledObject" }, ", or ", { code: "ScaledJob" }, " for Jobs"],
               [{ code: "HorizontalPodAutoscaler" }, " (", { code: "autoscaling/v2" }, ")"],
               [{ code: "VerticalPodAutoscaler" }, " (", { code: "autoscaling.k8s.io/v1" }, ")"],
@@ -105,72 +96,64 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "All three meet at the request. The HPA measures CPU and memory utilization as a percentage of the request. With no request set, it takes no action on that metric.",
+          text: "All three meet at the request. The HPA reads CPU and memory as a percentage of each pod’s request. It takes no action on a metric whose request isn’t set.",
         },
         {
           kind: "p",
-          text: "KEDA’s cpu and memory triggers work the same way. KEDA reads those metrics from the Kubernetes Metrics Server, and the pods must set requests (or limits) for them. Only the VPA moves the request, which is why the pairs further down matter.",
+          text: "KEDA’s cpu and memory triggers work the same way: they read from Metrics Server, and the pods must set requests (or limits). Only the VPA changes the request, which is why some pairs clash.",
         },
       ],
     },
     {
       id: "keda-vs-hpa-keda-creates-an-hpa",
-      title: "KEDA vs HPA: KEDA creates an HPA and feeds it events",
+      title: "How KEDA uses the HPA",
       blocks: [
         {
           kind: "p",
           text: [
-            "When you apply a ScaledObject, the keda-operator creates an HPA for the target workload and manages it from then on. KEDA names it ",
+            "When you apply a ScaledObject, the KEDA operator creates an HPA for the target workload and manages it. It’s named ",
             { code: "keda-hpa-<scaledobject-name>" },
-            " unless you set another name. The Amazon EKS user guide says you don’t create or edit it yourself.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "KEDA is a graduated Cloud Native Computing Foundation project, and 2.21 is its current release as of October 2026. ",
-            { a: "What KEDA is and how it scales", href: "/learn/what-is-keda" },
-            " covers its scalers and authentication.",
+            " unless you set another name. The Amazon EKS user guide says not to create or edit it yourself.",
           ],
         },
         {
           kind: "h3",
           id: "two-tracks-zero-to-one-then-one",
-          title: "Two tracks: zero to one, then one to N",
+          title: "Zero to one, one to N",
         },
         {
           kind: "ul",
           items: [
             [
-              { b: "Between zero and one replica, the keda-operator acts alone." },
-              " It checks each trigger every 30\u00a0seconds by default (",
+              { b: "Zero to one: the KEDA operator." },
+              " It checks each trigger every 30 seconds by default (",
               { code: "pollingInterval" },
-              "). It wakes the workload when a trigger turns active, and returns it to zero 300\u00a0seconds after the last active trigger (",
+              "). It starts the workload when a trigger turns active, and scales it back to zero 300 seconds after the last active trigger (",
               { code: "cooldownPeriod" },
               ").",
             ],
             [
-              { b: "Between one and N replicas, the HPA decides." },
-              " It asks for the metric every 15\u00a0seconds by default, and KEDA’s metrics API server answers from the event source.",
+              { b: "One to N: the HPA." },
+              " It asks for the metric every 15 seconds by default, and KEDA’s metrics server answers from the event source.",
             ],
           ],
         },
         {
           kind: "p",
-          text: "From one replica up, the HPA’s formula sets the count either way.",
+          text: "From one replica up, the HPA’s own formula sets the count, with KEDA or without it.",
         },
         {
           kind: "h3",
           id: "what-a-plain-hpa-needs-to-scale",
-          title: "What a plain HPA needs to scale on events",
+          title: "What a plain HPA needs",
         },
         {
           kind: "p",
-          text: "A plain HPA reads CPU and memory from the resource metrics API. Metrics Server usually serves that API, and it’s an add-on you launch separately.",
+          text: "A plain HPA reads CPU and memory from the resource metrics API. Metrics Server usually serves that API, and you install it separately.",
         },
         {
           kind: "p",
-          text: "For queue depth or any other outside signal, an HPA needs an adapter for the external metrics API. KEDA is that adapter. Its built-in scalers read sources such as:",
+          text: "For queue depth or another outside signal, an HPA needs an adapter for the external metrics API. KEDA is that adapter, with built-in scalers for sources such as:",
         },
         {
           kind: "ul",
@@ -181,30 +164,34 @@ export const article: Article = {
           ],
         },
         { kind: "svg", figure: figure1 },
-        { kind: "h3", id: "scale-to-zero-on-a-plain-hpa", title: "Scale to zero on a plain HPA" },
+        { kind: "h3", id: "scale-to-zero-on-a-plain-hpa", title: "Scale to zero without KEDA" },
         {
           kind: "p",
           text: [
-            "In Kubernetes 1.37 the ",
+            "Since Kubernetes 1.37, the ",
             { code: "HPAScaleToZero" },
-            " feature gate is beta and on by default. So an HPA on object or external metrics can set ",
+            " feature gate is beta and on by default. An HPA with an object or external metric can then set ",
             { code: "minReplicas: 0" },
             ".",
           ],
         },
         {
           kind: "p",
-          text: "CPU and memory still can’t reach zero, because they’re only measured on running pods. The external metric also still needs an adapter, and only one server can provide external metrics in a cluster. Where KEDA runs, KEDA is that server.",
+          text: "CPU and memory still can’t scale to zero, because they’re measured only on running pods. The external metric still needs an adapter, and a cluster can have only one external metrics server. Where KEDA runs, that server is KEDA.",
         },
       ],
     },
     {
       id: "keda-scaledobject-vs-hpa-one-owner-per",
-      title: "KEDA ScaledObject vs HPA: one owner per workload",
+      title: "ScaledObject vs HPA",
       blocks: [
         {
           kind: "p",
-          text: "A ScaledObject holds what an HPA holds (the target, the bounds, the scaling behavior) plus the event source. Here is the orders worker, reading waiting jobs from Prometheus:",
+          text: "A ScaledObject holds what an HPA holds (the target, the bounds, the scaling behavior), plus the event source.",
+        },
+        {
+          kind: "p",
+          text: "Take an orders worker that pulls jobs from a queue. An HPA on CPU sees CPU, not the jobs waiting. This ScaledObject scales the worker on waiting jobs, read from Prometheus:",
         },
         {
           kind: "code",
@@ -213,11 +200,14 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "At 400 waiting jobs, the threshold of 50 per pod gives 400 ÷ 50 = 8\u00a0pods, within the maximum of 20.",
+          text: "At 400 waiting jobs and 50 per pod, the HPA asks for 400 ÷ 50 = 8 pods, within the maximum of 20. When the queue has been empty for 300 seconds, KEDA scales the worker to zero.",
         },
         {
           kind: "p",
-          text: "The rule that matters most is one pod-count owner per workload. Microsoft’s AKS documentation recommends against a ScaledObject and an HPA on the same workload. KEDA runs an HPA underneath, so the two compete.",
+          text: [
+            { b: "Give each workload one pod-count owner." },
+            " Microsoft’s AKS docs recommend against a ScaledObject and an HPA on the same workload. KEDA runs an HPA underneath, so the two compete.",
+          ],
         },
         {
           kind: "p",
@@ -226,7 +216,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "find-a-second-hpa-with-kubectl-get",
-          title: "Find a second HPA with kubectl get hpa",
+          title: "Find a second HPA",
         },
         {
           kind: "callout",
@@ -239,7 +229,7 @@ export const article: Article = {
           text: [
             "KEDA’s HPA shows as ",
             { code: "keda-hpa-<scaledobject-name>" },
-            ". A workload named in two rows has two owners. Deleting your own HPA leaves KEDA in charge, and removing the ScaledObject leaves the plain HPA.",
+            ". A workload named in two rows has two owners. Delete your own HPA to leave KEDA in charge, or remove the ScaledObject to keep the plain HPA.",
           ],
         },
         {
@@ -252,25 +242,25 @@ export const article: Article = {
             " to that HPA’s name.",
           ],
         },
-        { kind: "h3", id: "on-aks-the-keda-add-on", title: "On AKS: the KEDA add-on" },
+        { kind: "h3", id: "on-aks-the-keda-add-on", title: "KEDA on AKS" },
         {
           kind: "p",
-          text: "On AKS Standard, KEDA is a managed add-on you turn on with the Azure CLI or an ARM template. AKS Automatic comes with KEDA preconfigured. The add-on has three limits:",
+          text: "AKS Automatic comes with KEDA preconfigured. On AKS Standard, turn on the managed KEDA add-on with the Azure CLI or an ARM template. The add-on has three limits:",
         },
         {
           kind: "ul",
           items: [
-            "The cluster’s Kubernetes version decides which KEDA version you get.",
+            "Your cluster’s Kubernetes version sets the KEDA version.",
             "You can’t change the CPU requests, limits or other Helm values of its operator or metrics server.",
-            "KEDA must be the only external metrics server in the cluster, and a second KEDA installation isn’t supported.",
+            "KEDA must be the cluster’s only external metrics server, and a second KEDA installation isn’t supported.",
           ],
         },
         {
           kind: "h3",
           id: "on-eks-install-keda-with-helm",
-          title: "On EKS: install KEDA with Helm",
+          title: "KEDA on EKS",
         },
-        { kind: "p", text: "The EKS user guide installs KEDA with Helm:" },
+        { kind: "p", text: "The Amazon EKS user guide installs KEDA with Helm:" },
         { kind: "ol", items: ["Add the KEDA chart repository, then update your repositories:"] },
         {
           kind: "code",
@@ -288,41 +278,41 @@ export const article: Article = {
           code: "helm install keda kedacore/keda --namespace keda --create-namespace",
         },
         {
-          kind: "ol",
-          start: 3,
-          items: [
-            "Install Metrics Server too if the cluster lacks it, because KEDA’s cpu and memory triggers and the HPA’s CPU scaling read from it.",
-          ],
+          kind: "p",
+          text: "If the cluster lacks Metrics Server, install it too for CPU and memory scaling.",
         },
       ],
     },
     {
       id: "keda-vs-vpa-they-work-together-when",
-      title: "KEDA vs VPA: they work together when they read different signals",
+      title: "KEDA and the VPA",
       blocks: [
-        { kind: "p", text: "The VPA has three parts:" },
+        {
+          kind: "p",
+          text: "KEDA and the VPA can share one workload when they read different signals. The VPA has three parts:",
+        },
         {
           kind: "ul",
           items: [
-            "Its recommender reads each container’s use and out-of-memory events, and stores a target recommendation with bounds around it.",
-            "Its updater brings running pods to that target.",
-            "Its admission webhook sizes new pods as they start.",
+            "A recommender reads each container’s use and out-of-memory events, and stores a target with bounds.",
+            "An updater brings running pods to that target.",
+            "An admission webhook sizes new pods as they start.",
           ],
         },
         {
           kind: "p",
-          text: "KEDA and the VPA can share one workload if they read different signals. The VPA project says not to use the VPA with the HPA on the same resource metric, CPU or memory.",
+          text: "The VPA project says not to run the VPA and the HPA on the same resource metric, CPU or memory. It allows an HPA on custom or external metrics, or on a different resource.",
         },
         {
           kind: "p",
-          text: "It allows an HPA on custom and external metrics, or on a separate resource metric. A ScaledObject is an HPA underneath, so the rule carries over to KEDA:",
+          text: "A ScaledObject is an HPA underneath, so the rule carries over to KEDA:",
         },
         {
           kind: "ul",
           items: [
             [
               { b: "An event trigger with a VPA on CPU and memory works." },
-              " KEDA sets the count from the work waiting in a queue, a stream or a Prometheus query. The VPA sets each pod’s size from its use.",
+              " KEDA sets the count from the waiting work, and the VPA sets each pod’s size from its use.",
             ],
             [
               { b: "A cpu trigger and a VPA on CPU feed each other." },
@@ -330,7 +320,7 @@ export const article: Article = {
             ],
             [
               { b: "A cpu trigger with a VPA limited to memory works." },
-              " It’s the separate-metric case the VPA project allows, set in the VPA’s resource policy with ",
+              " Set it in the VPA’s resource policy with ",
               { code: 'controlledResources: ["memory"]' },
               ".",
             ],
@@ -339,24 +329,24 @@ export const article: Article = {
         {
           kind: "h3",
           id: "when-a-cpu-trigger-and-the-vpa",
-          title: "When a cpu trigger and the VPA feed each other",
+          title: "The CPU feedback loop",
         },
         {
           kind: "callout",
           label: "Worked example",
-          text: "Say 4\u00a0pods each use 600m of CPU against a 1\u00a0CPU request (1,000m). That’s right at a 60% target, and the workload uses 4 × 600m = 2,400m in all.",
+          text: "Say 4 pods each use 600m of CPU against a 1 CPU request (1,000m). That’s right at a 60% target, and the workload uses 4 × 600m = 2,400m in all.",
         },
         {
           kind: "ol",
           items: [
             "The VPA sets the request to 750m. The same 600m now reads 600 ÷ 750 = 80%.",
-            "The HPA asks for 4 × 80 ÷ 60 = 5.33\u00a0pods, rounded up to 6.",
+            "The HPA asks for 4 × 80 ÷ 60 = 5.33 pods, rounded up to 6.",
             "Six pods share the same 2,400m at 400m each, and the VPA shrinks the request again.",
           ],
         },
         {
           kind: "p",
-          text: "Nothing about the work changed, yet 4\u00a0pods became 6. The count tracked the request.",
+          text: "The work didn’t change, yet 4 pods became 6. The count followed the request.",
         },
         { kind: "svg", figure: figure2 },
         {
@@ -366,17 +356,13 @@ export const article: Article = {
             " walks through the same loop with a plain HPA, and the order that avoids it.",
           ],
         },
+        { kind: "h3", id: "vpa-update-modes", title: "VPA update modes" },
         {
           kind: "p",
           text: [
-            "The ",
-            {
-              a: "VPA update modes",
-              href: "/learn/glossary/vertical-pod-autoscaler#vpa-update-modes",
-            },
-            ", set in the ",
+            "The mode, set in ",
             { code: "updateMode" },
-            " field, decide how far it acts on its targets:",
+            ", decides how far the VPA acts on its targets:",
           ],
         },
         {
@@ -391,7 +377,7 @@ export const article: Article = {
             ],
             [
               { code: "InPlace" },
-              " never evicts, but it’s alpha since VPA 1.7.0 and sits behind a feature gate.",
+              " never evicts. It’s alpha since VPA 1.7.0 and sits behind a feature gate.",
             ],
           ],
         },
@@ -399,7 +385,9 @@ export const article: Article = {
           kind: "p",
           text: [
             { code: "Auto" },
-            " has been deprecated since VPA 1.4.0. ",
+            " has been deprecated since VPA 1.4.0 and now acts as ",
+            { code: "Recreate" },
+            ". ",
             { a: "In-place pod resize", href: "/learn/in-place-pod-resize" },
             " explains the Kubernetes feature behind the in-place modes.",
           ],
@@ -408,23 +396,23 @@ export const article: Article = {
     },
     {
       id: "how-to-choose-between-keda-the-hpa",
-      title: "How to choose between KEDA, the HPA and the VPA",
+      title: "Which to use",
       blocks: [
         { kind: "p", text: "Match each workload to its signal:" },
         {
           kind: "ul",
           items: [
             [
-              { b: "Load shows up as CPU per pod, and the service must always run." },
-              " Use a plain HPA on CPU, once the requests match real use. ",
+              { b: "Load shows as CPU, and the service must always run." },
+              " Use a plain HPA on CPU, once requests match real use. ",
               { a: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
-              " shows how to get them there.",
+              " shows how.",
             ],
             [
               { b: "Work waits in a queue or a stream." },
-              " Use a KEDA ScaledObject on that source, with ",
-              { code: "minReplicaCount: 0" },
-              " if a cold start on the first event is acceptable.",
+              " Use a KEDA ScaledObject on that source. It scales to zero by default, so set ",
+              { code: "minReplicaCount: 1" },
+              " if a cold start on the first event isn’t acceptable.",
             ],
             [
               { b: "Each event is a batch task." },
@@ -434,11 +422,11 @@ export const article: Article = {
               { b: "Requests sit far from use." },
               " Run the VPA in ",
               { code: "Off" },
-              " mode and read its targets first. Then let it apply them only on resources that no HPA or KEDA trigger scales on.",
+              " mode and read its targets first. Then let it apply them only on resources no HPA or KEDA trigger scales on.",
             ],
             [
               { b: "Pods don’t fit, or nodes sit empty." },
-              " None of the three helps. That’s the node autoscaler’s layer, and ",
+              " None of the three helps. That’s the node autoscaler’s job, and ",
               { a: "KEDA vs Karpenter", href: "/learn/keda-vs-karpenter" },
               " shows where the two meet.",
             ],
@@ -448,21 +436,21 @@ export const article: Article = {
     },
     {
       id: "where-coral-fits",
-      title: "Where Coral fits under all three autoscalers",
+      title: "Where Coral fits",
       blocks: [
         {
           kind: "p",
           text: [
             "KEDA and the HPA take each pod’s request as given. ",
-            { a: "Coral optimizes Kubernetes", href: "/coral" },
-            " on AKS and EKS by rebalancing requests first, then nodes, as the ",
-            { a: "Kubernetes cost optimization guide", href: "/kubernetes-cost-optimization" },
-            " orders them.",
+            { a: "Coral", href: "/coral" },
+            " rebalances those requests to real use on AKS and EKS, then the nodes: the two steps of ",
+            { a: "Kubernetes cost optimization", href: "/kubernetes-cost-optimization" },
+            ".",
           ],
         },
         {
           kind: "p",
-          text: "On a workload that KEDA scales, KEDA keeps the scaling. Coral never takes over or converts the HPA that KEDA created. Its request sizing never changes that HPA’s minimum or maximum.",
+          text: "On a workload KEDA scales, KEDA keeps the pod count. Coral never takes over or converts the HPA that KEDA creates. Its request sizing never changes that HPA’s minimum or maximum.",
         },
         {
           kind: "p",
@@ -478,27 +466,22 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "A smaller request wins only if its saving beats the cost of unserved load and extra scaling. So in the cpu-trigger loop above, the request is sized with the HPA’s response in view, not from per-pod use alone. Event triggers aren’t part of the replay.",
+          text: "A smaller request wins only if its saving beats the cost of unserved load and extra scaling. So in the feedback loop above, the request is sized with the HPA’s response in view, not from per-pod use alone. Event triggers and paused ScaledObjects aren’t replayed.",
         },
         {
           kind: "p",
           text: [
-            "With automation on, Coral switches an active VPA to Off. It restores the VPA when you switch automation off. ",
+            "With automation on, Coral switches an active VPA to Off, and restores it when you switch automation off. The guide’s ",
             { a: "HPAs and VPAs", href: "/coral-guide#hpas-and-vpas" },
-            " in the product guide lists what Coral does with each.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
+            " section lists what Coral does with each. ",
             { a: "Coral works with KEDA", href: "/coral-works-with-keda" },
-            " shows how the work splits between the two.",
+            " shows how the work splits.",
           ],
         },
         {
           kind: "h3",
           id: "when-a-rebalance-moves-a-keda-scaled",
-          title: "When a rebalance moves a KEDA-scaled pod",
+          title: "KEDA pods in a rebalance",
         },
         {
           kind: "p",
@@ -509,19 +492,19 @@ export const article: Article = {
           items: [
             "Coral raises the ScaledObject’s minimum, so KEDA’s HPA adds a copy.",
             "It waits until the new pod is Ready and serving on another node, with no restarts.",
-            "It evicts the old pod within its PodDisruptionBudget, then scales back.",
+            "It evicts the old pod within its PodDisruptionBudget, then puts your minimum back.",
           ],
         },
         {
           kind: "p",
-          text: "Pods that don’t qualify are evicted within their PodDisruptionBudgets, so a single-replica app gets a short restart.",
+          text: "Other pods move by live migration where both nodes support it. The rest are evicted within their PodDisruptionBudgets.",
         },
       ],
     },
   ],
   help: {
     product: "coral",
-    text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and removes the nodes you don’t need. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Coral rebalances CPU and memory requests on AKS and EKS, works with KEDA and your HPA, and removes nodes you don’t need, without any downtime. We estimate it reduces AKS and EKS cost by 40–50%, a range rather than a promise. The free assessment works out your own figure.",
     links: [
       { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Estimate your saving", href: "/assessment?p=coral" },
@@ -573,25 +556,24 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "What is KEDA in Kubernetes? Event-driven scaling explained",
+      title: "What is KEDA in Kubernetes?",
       where: "Learn",
       href: "/learn/what-is-keda",
     },
     {
-      title: "KEDA vs Karpenter: pods, nodes and the requests in between",
+      title: "KEDA vs Karpenter",
       where: "Learn",
       href: "/learn/keda-vs-karpenter",
     },
     {
-      title: "VPA vs HPA: when to use which",
+      title: "HPA vs VPA in Kubernetes",
       where: "Learn",
       href: "/learn/vpa-vs-hpa",
     },
     {
-      title: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
+      title: "Kubernetes autoscaling",
       where: "Learn",
       href: "/learn/kubernetes-autoscaling",
     },
   ],
-  relatedTitle: "More on scaling pods and their requests",
 };

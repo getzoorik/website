@@ -5,94 +5,87 @@ export const term: GlossaryTerm = {
   slug: "finops-personas",
   term: "FinOps personas",
   title: "What are FinOps personas?",
-  meta: "FinOps personas are the roles that share cloud cost work. See FinOps roles and responsibilities for 7 core and 5 allied personas, and who owns usage and rates.",
+  meta: "FinOps personas are the roles that share cloud cost work. The core and allied personas, what each one does, and who owns usage and who owns rates.",
   h1: "What are FinOps personas?",
   card: "FinOps personas are the roles that take part in FinOps, the shared work of managing cloud cost.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
       text: [
         "FinOps personas are the roles that take part in ",
         { a: "FinOps", href: "/learn/glossary/finops" },
-        ", the shared work of managing cloud cost.",
+        ", the shared work of managing cloud cost. The FinOps Foundation defines them in its FinOps Framework.",
       ],
     },
     {
       kind: "p",
-      text: "They come from the FinOps Foundation’s FinOps Framework. Microsoft calls them stakeholders.",
+      text: "A persona is a group of people, not one person. In a small company, one person may cover several personas.",
     },
   ],
   sections: [
     {
       id: "core-and-allied-personas",
-      title: "FinOps roles and responsibilities: core and allied personas",
+      title: "Core and allied personas",
       blocks: [
-        { kind: "p", text: "Microsoft lists 7 FinOps core personas:" },
+        {
+          kind: "p",
+          text: "The FinOps Foundation names 6 core personas, always involved in FinOps:",
+        },
         {
           kind: "ul",
           items: [
-            "Procurement buys resources and negotiates contracts.",
-            "Finance budgets, forecasts and reports on cloud cost.",
-            "Leadership gets the most business value from the cloud.",
-            "Business owners drive strategy and budgets.",
-            "Product owners rank work by user needs and business value.",
-            "Engineering teams deliver high-quality, cost-effective services.",
-            "FinOps practitioners teach, standardize and promote FinOps practices.",
+            "FinOps practitioners connect business, engineering and finance, and build the FinOps culture.",
+            "Engineering designs, builds, runs and optimizes the infrastructure for cost, performance and reliability.",
+            "Finance budgets, forecasts and allocates technology cost.",
+            "Product sets requirements and ranks work by business value.",
+            "Procurement buys technology and manages vendors and contracts.",
+            "Leadership sets objectives and drives a culture of accountability.",
           ],
         },
         {
           kind: "p",
-          text: "Microsoft also names 5 FinOps allied personas: the sustainability, IT financial management, IT service management, IT asset management and security teams.",
+          text: "Its 5 allied personas work beside FinOps: sustainability, IT asset management (ITAM), IT financial management (ITFM), IT service management (ITSM) and security teams.",
+        },
+        {
+          kind: "p",
+          text: "Microsoft calls personas stakeholders. It lists 7 core stakeholders, with business owners and product owners listed separately.",
         },
       ],
     },
     {
       id: "who-owns-which-lever",
-      title: "Who owns cloud cost: usage and rates",
+      title: "Who owns usage and rates",
       blocks: [
-        {
-          kind: "p",
-          text: "Your cloud cost moves with what you use and the rate you pay. Microsoft gives each lever an owner.",
-        },
+        { kind: "p", text: "Your cloud cost moves with what you use and the rate you pay." },
         { kind: "svg", figure: figure1 },
         {
           kind: "ul",
           items: [
-            "Engineering teams own usage: node counts, disk sizes and idle resources.",
-            "A central team owns rates. Microsoft suggests one team or person buys commitments.",
-            "AWS says finance should advise on commitment discounts.",
+            "Engineering teams own usage, such as node counts and disk sizes. Microsoft’s FinOps principles say each team owns its technology usage.",
+            "A central team owns rates. Microsoft suggests one dedicated team or person buys commitment discounts.",
+            "AWS says finance should advise on spending for commitment discounts, such as Reserved Instances and Savings Plans.",
           ],
         },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why FinOps personas matter for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            "Engineers can weigh cost only when they see it. Microsoft asks for clear cost data, fast.",
+            "Engineers can weigh cost only when they see it. Microsoft asks for clear usage and cost data, given quickly to the right people.",
             [
-              "A discount reduces only the rate. Usage changes ",
+              "A discount reduces the rate, not the usage. Usage changes are the other way to ",
               { a: "reduce your cloud cost", href: "/cloud-cost-optimization" },
-              " by running less.",
+              ".",
             ],
-            "If engineers reduce usage below a commitment, it goes under-used. Microsoft warns this can lose money, though rarely.",
-            [
-              "Our library lists ",
-              { a: "FinOps tools", href: "/cloud-cost-optimization-library" },
-              " and other cloud cost optimization tools, with what each one does.",
-            ],
-            [
-              "The ",
-              { a: "free assessment", href: "/assessment" },
-              " works out what your clusters and disks could save.",
-            ],
+            "Usage and rate interact. If engineers reduce usage below a commitment, part of it goes unused. Microsoft warns this can lose money, though rarely.",
           ],
         },
       ],
@@ -102,7 +95,7 @@ export const term: GlossaryTerm = {
     { title: "FinOps", line: "The practice these personas share.", href: "/learn/glossary/finops" },
     {
       title: "FinOps maturity model",
-      line: "How a practice grows.",
+      line: "How a FinOps practice grows.",
       href: "/learn/glossary/finops-maturity-model",
     },
     {
@@ -116,12 +109,14 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/savings-plan",
     },
   ],
-  relatedTitle: "Terms related to FinOps personas",
-  next: {
-    title: "Cloud cost optimization: how to reduce cloud costs",
-    href: "/cloud-cost-optimization",
-  },
+  relatedTitle: "Related terms",
+  next: { title: "Cloud cost optimization", href: "/cloud-cost-optimization" },
   sources: [
+    {
+      publisher: "FinOps Foundation",
+      title: "“FinOps Personas”",
+      url: "https://www.finops.org/framework/personas/",
+    },
     {
       publisher: "Microsoft Learn",
       title: "“FinOps Framework overview”",

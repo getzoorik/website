@@ -37,10 +37,10 @@ import { sectionSlug } from "@/features/open-source/os-guide-page";
 import { offSiteProps } from "@/lib/links";
 
 /**
- * `/cloud-cost-optimization-library`, Cloud cost management tools and FinOps tools, on Learn's frame:
+ * `/cloud-cost-optimization-library`, Cloud cost management tools, on Learn's frame:
  *
  *   hero    the page's name and its line
- *   tools   Cloud cost optimization tools for Azure and AWS: the kind and cloud chips, then each kind's heading over
+ *   tools   Tools by kind: the kind and cloud chips, then each kind's heading over
  *           its tiles (Coral and Amoeba first in theirs, with their marks; every other tool by name, with its initial
  *           in place of a logo, drawn by CSS so the link's text starts with the name), each with its short line, how
  *           it acts and its clouds; then the note with the day they were checked

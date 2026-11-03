@@ -6,35 +6,35 @@ import { figure as figure3 } from "@/features/learn/figures/gp2-vs-gp3/3";
 export const article: Article = {
   slug: "gp2-vs-gp3",
   title: "gp2 vs gp3: pricing, performance and migration",
-  meta: "AWS EBS gp2 vs gp3: why gp3 costs 20% less per GB, how it sets IOPS and throughput apart from size, and how to convert gp2 to gp3 while the volume stays in use.",
-  h1: "gp2 vs gp3: pricing, performance and how to migrate",
-  deck: "gp3 holds 3,000\u00a0IOPS at any size, which a gp2\u00a0volume reaches only at 1,000\u00a0GiB or in bursts.",
-  card: "gp3 costs 20% less per GB and sets IOPS apart from size. How to switch a gp2 volume in place.",
+  meta: "gp2 vs gp3 on AWS: gp3 costs 20% less per GB and doesn’t tie IOPS or throughput to size. How to switch a volume to gp3 while it stays in use.",
+  h1: "gp2 vs gp3 on AWS",
+  deck: "Pricing, performance and the switch, with AWS’s list prices and the CLI steps.",
+  card: "gp3 costs 20% less per GB and doesn’t tie IOPS to size. How to switch a volume in place.",
   product: "amoeba",
   hub: "Block storage",
   topic: "AWS block storage",
   versus: ["gp2", "gp3"],
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "rupeshankar",
   cover: "/learn-covers/zoorik-learn-gp2-vs-gp3-1200x630.webp",
   coverAlt: "gp2 IOPS follow volume size, while with gp3 you set IOPS yourself",
   short: [
-    "gp2 vs gp3 is a choice between performance that follows size and performance you set. The gp3 type costs 20% less per GB and sets IOPS (input/output operations per second) and throughput apart from size. On a supported instance, ",
+    "gp2 ties IOPS (input/output operations per second) and throughput to volume size. gp3 includes 3,000\u00a0IOPS and 125\u00a0MiB/s at any size, lets you add more without growing the volume, and costs 20% less per GB. At the same performance, AWS says gp3 always costs less. On an instance that supports Elastic Volumes, ",
     { code: "modify-volume" },
     " switches a volume to gp3 while it stays in use.",
   ],
   sections: [
     {
       id: "gp2-vs-gp3",
-      title: "gp2 vs gp3: gp2 ties performance to size, and gp3 lets you set it",
+      title: "gp2 vs gp3 compared",
       blocks: [
         {
           kind: "p",
           text: [
-            "Picture a busy 100\u00a0GiB gp2\u00a0volume with a baseline of 300 ",
+            "Take a 100\u00a0GiB gp2\u00a0volume. Its baseline is 300 ",
             { a: "IOPS", href: "/learn/glossary/iops" },
-            ". A full balance of I/O credits lets it burst to 3,000\u00a0IOPS for 2,000\u00a0seconds, about 33\u00a0minutes. Then it falls back to its baseline.",
+            ". With a full balance of I/O credits, it can burst to 3,000\u00a0IOPS for 2,000\u00a0seconds, about 33\u00a0minutes. Then it drops back.",
           ],
         },
         {
@@ -42,15 +42,15 @@ export const article: Article = {
           text: [
             "On ",
             { a: "gp3", href: "/learn/glossary/ebs-gp3" },
-            ", the same volume holds 3,000\u00a0IOPS all day, ten times its gp2 baseline. It costs $8.00 a month instead of $10.00, at the list prices in the table below.",
+            ", the same volume holds 3,000\u00a0IOPS all day. It costs $8.00 a month instead of $10.00, at the list prices below.",
           ],
         },
         {
           kind: "p",
           text: [
-            "Both are General Purpose SSD types in Amazon Elastic Block Store (EBS). AWS released gp3 in December 2020, and documents the same single-digit millisecond ",
+            "Both are General Purpose SSD types in Amazon Elastic Block Store (EBS). AWS gives both the same single-digit millisecond ",
             { a: "latency", href: "/learn/glossary/disk-latency" },
-            " and 99.8 to 99.9 percent durability for both.",
+            " and 99.8 to 99.9 percent durability.",
           ],
         },
         {
@@ -64,28 +64,28 @@ export const article: Article = {
             [
               "Price, US East (N. Virginia), October 2026",
               "$0.10 per GB-month, performance included",
-              "$0.08 per GB-month, plus $0.005 per IOPS-month above 3,000 and $0.040 per MB/s-month above 125",
+              "$0.08 per GB-month, plus $0.005 per IOPS-month above 3,000 and $0.04 per MiB/s-month above 125",
             ],
             [
               "Baseline IOPS",
-              "3 per GiB: 100 at 33.33\u00a0GiB and below, 3,000 at 1,000\u00a0GiB, 16,000 from 5,334\u00a0GiB",
+              "3 per GiB: 100 up to 33.33\u00a0GiB, 3,000 at 1,000\u00a0GiB, 16,000 from 5,334\u00a0GiB",
               "3,000 at any size",
             ],
             [
               "Burst",
               "To 3,000\u00a0IOPS below 1\u00a0TiB, while I/O credits last",
-              "None: provisioned performance is sustained",
+              "None: performance is sustained",
             ],
-            ["Most IOPS per volume", "16,000", "80,000, at up to 500\u00a0IOPS per GiB"],
+            ["Most IOPS", "16,000", "80,000, at up to 500\u00a0IOPS per GiB"],
             [
               "Throughput",
-              "128\u00a0MiB/s at 170\u00a0GiB and below, 250\u00a0MiB/s from 334\u00a0GiB",
+              "128\u00a0MiB/s up to 170\u00a0GiB, bursts to 250\u00a0MiB/s above 170\u00a0GiB, 250\u00a0MiB/s from 334\u00a0GiB",
               "125\u00a0MiB/s included, up to 2,000\u00a0MiB/s at 0.25\u00a0MiB/s per IOPS",
             ],
             ["Size", "1\u00a0GiB to 16\u00a0TiB", "1\u00a0GiB to 64\u00a0TiB"],
             [
-              "Performance without more GiB",
-              "Not possible: performance follows size",
+              "More performance",
+              "Only by growing the volume",
               "Set IOPS and throughput on their own",
             ],
           ],
@@ -95,145 +95,100 @@ export const article: Article = {
           text: [
             "Prices differ by Region and change, so check the ",
             { a: "EBS pricing page", href: "https://aws.amazon.com/ebs/pricing/" },
-            " for yours. That page counts a GB as 1024³ bytes, which is a GiB. For the other types, see ",
+            " for yours. It counts a GB as 1024³ bytes, the same as a GiB. ",
             { a: "EBS volume types", href: "/learn/ebs-volume-types" },
-            ".",
+            " compares the other types.",
           ],
         },
       ],
     },
     {
       id: "gp2-vs-gp3-performance-gp3-sustains-what",
-      title: "gp2 vs gp3 performance: gp3 sustains what gp2 bursts to",
+      title: "Performance",
       blocks: [
         {
           kind: "p",
           text: [
-            "Under 1,000\u00a0GiB, a gp2\u00a0volume reaches 3,000\u00a0IOPS only in bursts paid for with I/O credits. Its baseline is 3\u00a0IOPS per GiB, with a floor of 100 and a ceiling of 16,000. The ",
+            "Under 1,000\u00a0GiB, a gp2\u00a0volume reaches 3,000\u00a0IOPS only in bursts paid for with I/O credits. The ",
             { code: "BurstBalance" },
             " metric in Amazon CloudWatch shows the percentage of credits left.",
           ],
         },
-        { kind: "p", text: "Throughput follows size too:" },
-        {
-          kind: "ul",
-          items: [
-            [{ b: "170\u00a0GiB or less:" }, " up to 128\u00a0MiB/s."],
-            [{ b: "Over 170 and under 334\u00a0GiB:" }, " bursts of up to 250\u00a0MiB/s."],
-            [{ b: "334\u00a0GiB or more:" }, " 250\u00a0MiB/s."],
-          ],
-        },
         {
           kind: "p",
-          text: "The gp3 type doesn’t burst. AWS says gp3\u00a0volumes “can indefinitely sustain their full provisioned IOPS and throughput performance”.",
+          text: "A gp3\u00a0volume doesn’t burst. AWS says gp3\u00a0volumes “can indefinitely sustain their full provisioned IOPS and throughput performance”.",
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "callout",
           label: "For engineers",
-          text: "A gp2\u00a0volume starts with 5.4 million I/O credits, the most it can hold. It earns them back at 3 credits per GiB per second while its I/O stays at or below baseline.",
+          text: "A gp2\u00a0volume starts with 5.4 million I/O credits, the most it can hold. It earns 3 credits per GiB per second while its I/O stays at or below baseline. A 100\u00a0GiB volume refills an empty balance in 18,000\u00a0seconds, or 5\u00a0hours.",
         },
         {
           kind: "p",
-          text: "In AWS’s 100\u00a0GiB example, a full refill takes 18,000\u00a0seconds (5\u00a0hours).",
+          text: "On gp3, IOPS and throughput are separate settings, each with a ratio. At 500\u00a0IOPS per GiB, 80,000\u00a0IOPS needs a volume of 160\u00a0GiB or more. At 0.25\u00a0MiB/s per IOPS, 2,000\u00a0MiB/s needs at least 8,000\u00a0IOPS.",
         },
         {
           kind: "p",
-          text: [
-            { a: "gp3\u00a0IOPS and throughput", href: "/learn/glossary/ebs-gp3" },
-            " are two separate settings:",
-          ],
-        },
-        {
-          kind: "ul",
-          items: [
-            [
-              { b: "IOPS:" },
-              " 3,000 included, up to 80,000, at no more than 500\u00a0IOPS per GiB. So the maximum needs 160\u00a0GiB or more.",
-            ],
-            [
-              { b: "Throughput:" },
-              " 125\u00a0MiB/s included, up to 2,000\u00a0MiB/s, at no more than 0.25\u00a0MiB/s per provisioned IOPS. So 2,000\u00a0MiB/s needs at least 8,000\u00a0IOPS.",
-            ],
-          ],
-        },
-        {
-          kind: "p",
-          text: "Elastic Volumes, AWS’s name for changing a volume in place, can change either setting later without touching the size.",
+          text: "Elastic Volumes, AWS’s way to change a volume in place, can change either setting later without touching the size.",
         },
         {
           kind: "callout",
           label: "Watch out",
-          text: "A gp2\u00a0volume of 334\u00a0GiB or more delivers 250\u00a0MiB/s, twice the 125\u00a0MiB/s gp3 includes. One above 1,000\u00a0GiB has a baseline above 3,000\u00a0IOPS.",
-        },
-        {
-          kind: "p",
-          text: "Left at gp3’s baseline, such a volume gets less than it had. Raise its throughput or IOPS in the switch if its workload uses them.",
+          text: "A gp2\u00a0volume of 334\u00a0GiB or more delivers 250\u00a0MiB/s, twice what gp3 includes. One above 1,000\u00a0GiB has a baseline above 3,000\u00a0IOPS. At gp3’s baseline, such a volume gets less, so set its throughput or IOPS in the switch if its workload uses them.",
         },
         {
           kind: "p",
           text: [
             "The instance has ",
             { a: "EBS limits", href: "/learn/glossary/ebs-optimized-instance" },
-            " of its own, which no volume setting changes. On Nitro instances other than bare metal, two CloudWatch metrics report when an application tries to go past them: ",
+            " of its own, which no volume setting lifts. On Nitro instances other than bare metal, ",
             { code: "InstanceEBSIOPSExceededCheck" },
             " and ",
             { code: "InstanceEBSThroughputExceededCheck" },
-            ".",
+            " in CloudWatch report when an application tries to go past them.",
           ],
         },
         {
           kind: "p",
           text: [
-            "For latency-sensitive workloads, AWS recommends io2 Block Express, which ",
+            "For latency-sensitive workloads, AWS recommends io2 Block Express. ",
             { a: "io2 vs gp3", href: "/learn/io2-vs-gp3" },
-            " compares.",
+            " compares the two.",
           ],
         },
       ],
     },
     {
       id: "gp2-vs-gp3-pricing-gp3-costs-less",
-      title: "gp2 vs gp3 pricing: gp3 costs less even with performance matched",
+      title: "Pricing",
       blocks: [
         {
           kind: "p",
-          text: "A gp2\u00a0volume has one price, per GB-month, with its IOPS and throughput included. A gp3\u00a0volume has three, the last two only when you provision them:",
-        },
-        {
-          kind: "ul",
-          items: [
-            "Storage, at 20% less per GB.",
-            "IOPS above 3,000.",
-            "Throughput above 125\u00a0MiB/s.",
-          ],
+          text: "A gp2\u00a0volume has one price, per GB-month, with its IOPS and throughput included. A gp3\u00a0volume costs 20% less per GB. Above its included 3,000\u00a0IOPS and 125\u00a0MiB/s, you pay for the IOPS and throughput you provision.",
         },
         {
           kind: "p",
-          text: "AWS’s Prescriptive Guidance says gp3\u00a0volumes “are always cheaper than gp2\u00a0volumes if they’re configured at the same performance levels”.",
+          text: "AWS’s Prescriptive Guidance says gp3\u00a0volumes “are always cheaper than gp2\u00a0volumes if they’re configured at the same performance levels”. Its examples, at the table’s rates:",
         },
-        { kind: "p", text: "The same guidance prices three cases at the table’s rates:" },
         {
           kind: "ul",
           items: [
             [
               { b: "100\u00a0GiB:" },
-              " $10.00 a month on gp2, against $8.00 on gp3, or $8.12 with throughput set to gp2’s 128\u00a0MiB/s.",
+              " $10.00 a month on gp2. On gp3, $8.00, or $8.12 with throughput set to gp2’s 128\u00a0MiB/s.",
             ],
-            [
-              { b: "1,000\u00a0GiB:" },
-              " $100 on gp2, against $80 on gp3, rising to $85 with 250\u00a0MiB/s.",
-            ],
+            [{ b: "1,000\u00a0GiB:" }, " $100 on gp2. On gp3, $80, or $85 with 250\u00a0MiB/s."],
           ],
         },
         {
           kind: "callout",
           label: "Worked example",
-          text: "The third case is a 6,000\u00a0GiB gp2\u00a0volume at 16,000\u00a0IOPS and 250\u00a0MiB/s. On gp2 it costs 6,000 × $0.10 = $600 a month.",
+          text: "AWS’s third case is a 6,000\u00a0GiB gp2\u00a0volume at 16,000\u00a0IOPS and 250\u00a0MiB/s. On gp2 it costs 6,000 × $0.10 = $600 a month.",
         },
         {
           kind: "p",
-          text: "On gp3 the same performance costs $550 a month, which is $50, or 8%, less:",
+          text: "On gp3, the same performance costs $550 a month, which is $50, or 8%, less:",
         },
         {
           kind: "ul",
@@ -245,25 +200,25 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "In AWS’s examples, gp2 to gp3 cost savings run from that 8%, with performance matched in full, to 20% at the gp3 baseline. Where you land depends on what you use.",
+          text: "So in AWS’s examples, the gp2 to gp3 saving runs from 8%, with performance matched in full, to 20% at the gp3 baseline.",
         },
         {
           kind: "p",
-          text: "A 1,000\u00a0GiB volume that never drives more than 125\u00a0MiB/s has no reason to pay $5 a month for 250. AWS’s General Purpose SSD page links a calculator for the saving on your own gp2\u00a0volumes.",
+          text: "Match only what a volume uses. A 1,000\u00a0GiB volume that never passes 125\u00a0MiB/s has no reason to pay $5 a month for 250. AWS’s General Purpose SSD page links a calculator for the saving on your own gp2\u00a0volumes.",
         },
       ],
     },
     {
       id: "a-gp2-to-gp3-migration-in-five",
-      title: "A gp2 to gp3 migration in five steps",
+      title: "Migrate gp2 to gp3",
       blocks: [
         {
           kind: "p",
-          text: "A gp2 to gp3 migration changes the type of the volume you already have. It keeps the size, so there’s nothing to grow inside the instance afterwards.",
+          text: "The migration changes the type of the volume you already have. The size stays the same, so there’s nothing to grow inside the instance afterwards.",
         },
         {
           kind: "p",
-          text: "New volumes can still arrive as gp2. The EC2 console selects gp3 when you create a volume or an AMI from a snapshot. In other cases, AWS says “gp2 is the default selection”, so check your launch templates and scripts before you migrate what they made.",
+          text: "New volumes can still arrive as gp2. The EC2 console picks gp3 when you create a volume, or an AMI from a snapshot. In other cases, AWS says “gp2 is the default selection”, so check your launch templates and scripts too.",
         },
         {
           kind: "ol",
@@ -279,7 +234,7 @@ export const article: Article = {
               ],
             },
             {
-              text: "Check what each volume uses. A gp2\u00a0volume under 1,000\u00a0GiB never goes above its 3,000\u00a0IOPS burst ceiling, so the gp3 baseline covers its IOPS.",
+              text: "Check what each volume uses. One under 1,000\u00a0GiB never goes above its 3,000\u00a0IOPS burst ceiling, so the gp3 baseline covers its IOPS.",
               blocks: [
                 {
                   kind: "p",
@@ -288,7 +243,7 @@ export const article: Article = {
                     { code: "VolumeAvgIOPS" },
                     " and ",
                     { code: "VolumeAvgThroughput" },
-                    " report each minute’s average IOPS and throughput, the second in KiB/s. Compare a larger volume’s peak IOPS with 3,000. A throughput peak above 128,000\u00a0KiB/s, which is 125\u00a0MiB/s, is a sign the volume needs more than the gp3 baseline.",
+                    " report each minute’s average IOPS and throughput, the second in KiB/s. For a larger volume, compare its peak IOPS with 3,000. A volume whose throughput peaks above 128,000\u00a0KiB/s, which is 125\u00a0MiB/s, needs more than the gp3 baseline.",
                   ],
                 },
               ],
@@ -296,10 +251,10 @@ export const article: Article = {
             [
               "Take a ",
               { a: "snapshot", href: "/learn/glossary/disk-snapshot" },
-              " if the volume holds data you care about, so you can roll back.",
+              " if the volume holds data you care about, so you have a copy to restore from.",
             ],
             {
-              text: "Change the type and name both performance values. You can’t cancel a modification once it’s submitted, so check the volume ID and the values first.",
+              text: "Change the type and set both performance values. A modification can’t be cancelled once it’s submitted, so check the volume ID and the values first.",
               blocks: [
                 {
                   kind: "p",
@@ -316,7 +271,7 @@ export const article: Article = {
                 },
                 {
                   kind: "p",
-                  text: "Leave IOPS and throughput out, and the EBS user guide says EBS provisions the gp2\u00a0volume’s equivalent or the gp3 baseline, whichever is higher. The AWS CLI reference lists 3,000\u00a0IOPS and 125\u00a0MiB/s as the defaults instead. Name both, and the result doesn’t depend on which applies.",
+                  text: "If you leave both out, the EBS user guide says EBS matches the gp2\u00a0volume’s performance or the gp3 baseline, whichever is higher. The AWS CLI reference gives 3,000\u00a0IOPS and 125\u00a0MiB/s as the defaults instead. Set both, and the result is the same either way.",
                 },
               ],
             },
@@ -336,7 +291,7 @@ export const article: Article = {
     },
     {
       id: "gp2-to-gp3-migration-downtime-the-volume",
-      title: "gp2 to gp3 migration downtime: the volume stays in use",
+      title: "Downtime and timing",
       blocks: [
         {
           kind: "p",
@@ -351,47 +306,47 @@ export const article: Article = {
             { code: "optimizing" },
             " and ",
             { code: "completed" },
-            ". While it’s optimizing, AWS says performance sits between the source and target configurations. Unless you’re reducing IOPS, it “will be no less than the source volume performance”.",
+            ". While it’s optimizing, AWS says performance sits between the old and new settings. It stays at or above gp2’s, unless you’re reducing IOPS.",
           ],
         },
         {
           kind: "p",
-          text: "AWS gives a few minutes to a few hours for a performance change, and typically about 6\u00a0hours for a fully used 1\u00a0TiB volume. A volume that isn’t fully initialized can take more than 24\u00a0hours.",
+          text: "A performance change takes a few minutes to a few hours. AWS says a fully used 1\u00a0TiB volume typically takes about 6\u00a0hours. One that isn’t fully initialized can take more than 24\u00a0hours.",
         },
         { kind: "svg", figure: figure2 },
         {
           kind: "p",
           text: [
-            "Each volume takes one modification at a time, up to four in a rolling 24-hour period. To tune IOPS straight after the switch, wait for ",
+            "A volume takes one modification at a time, and up to four in a rolling 24-hour period. To tune IOPS after the switch, wait for ",
             { code: "completed" },
             " first.",
           ],
         },
         {
           kind: "p",
-          text: "AWS has a fallback for a previous-generation instance type that doesn’t support Elastic Volumes, or after an error from the modify call. Detach a non-root volume, modify it and attach it again. For a root volume, stop the instance.",
+          text: "On a previous-generation instance type, or after an error from the modify call, AWS gives a fallback. Detach a non-root volume, modify it and attach it again. For a root volume, stop the instance first.",
         },
         {
           kind: "p",
           text: [
-            "A volume attached before 3 November 2016 at 23:40 UTC needs Elastic Volumes support initialized first. For other type and size changes, see ",
+            "A volume attached before 3 November 2016 at 23:40 UTC needs Elastic Volumes support initialized first. ",
             { a: "EBS Elastic Volumes", href: "/learn/ebs-elastic-volumes" },
-            ".",
+            " covers the other changes you can make.",
           ],
         },
       ],
     },
     {
       id: "switching-to-gp3-keeps-every-gib-you",
-      title: "Switching to gp3 keeps every GiB you provision",
+      title: "Empty space still costs",
       blocks: [
         {
           kind: "p",
-          text: "AWS charges for volume storage by “the amount of GB you provision per month until you release the storage”. Elastic Volumes can’t make a volume smaller, either: “You can’t decrease the volume size.”",
+          text: "AWS charges for “the amount of GB you provision per month until you release the storage”. Elastic Volumes can grow a volume, but “You can’t decrease the volume size.”",
         },
         {
           kind: "p",
-          text: "Take a 1,000\u00a0GiB gp2\u00a0volume that holds 300\u00a0GiB of data. After the switch it costs $80 a month at the gp3 baseline instead of $100. Yet 700\u00a0GiB of it still holds nothing.",
+          text: "Take a 1,000\u00a0GiB gp2\u00a0volume that holds 300\u00a0GiB of data. After the switch, it costs $80 a month at the gp3 baseline instead of $100. Yet 700\u00a0GiB of it still holds nothing.",
         },
         {
           kind: "p",
@@ -400,7 +355,7 @@ export const article: Article = {
         { kind: "svg", figure: figure3 },
         {
           kind: "p",
-          text: "Reducing that takes a copy. AWS’s route is to create a smaller volume and move the data with an application-level tool such as rsync.",
+          text: "Reducing it takes a copy. AWS’s route is to create a smaller volume and move the data with an application-level tool such as rsync. Create the new volume as gp3, and one copy changes both type and size.",
         },
         {
           kind: "p",
@@ -408,33 +363,27 @@ export const article: Article = {
             { a: "How to shrink an EBS volume", href: "/learn/shrink-ebs-volume" },
             " has the steps, including the short stop the move needs. ",
             { a: "Checking EBS volume usage", href: "/learn/check-ebs-volume-usage" },
-            " shows how to measure the used space first.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "If a volume is mostly empty, create the new one as gp3, and the copy changes type and size in one move. The ",
+            " shows how to measure used space first, and the ",
             { a: "EBS pricing calculator", href: "/ebs-and-azure-disk-pricing" },
-            " prices a volume’s empty space on gp2 or gp3.",
+            " prices the empty space.",
           ],
         },
       ],
     },
     {
       id: "where-amoeba-fits",
-      title: "How Amoeba rightsizes the GiB you pay for",
+      title: "Where Amoeba fits",
       blocks: [
         {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " optimizes block storage on Azure and AWS. The switch to gp3 changes each GiB’s price. ",
+            " optimizes block storage on Azure and AWS. The switch to gp3 changes what each GiB costs. ",
             { a: "EBS cost optimization", href: "/ebs-cost-optimization" },
             " with Amoeba changes how many GiB you pay for.",
           ],
         },
-        { kind: "h3", id: "what-amoeba-does-on-aws", title: "What Amoeba does on AWS" },
+        { kind: "h3", id: "what-amoeba-does-on-aws", title: "What Amoeba does" },
         {
           kind: "ul",
           items: [
@@ -452,11 +401,11 @@ export const article: Article = {
             ],
             [
               { b: "Rightsizing." },
-              " Amoeba grows the pool before it fills. When your data goes down and stays down, it shrinks the pool one volume at a time. So the GiB you pay for follow your data.",
+              " Amoeba rightsizes the pool without any downtime. It grows the pool before it fills. When your data goes down and stays down, it shrinks the pool one volume at a time. So you pay for close to what you use.",
             ],
             [
               { b: "The old volumes." },
-              " Once the switch is checked, Amoeba snapshots and deletes each old volume, then deletes the snapshots a few days later. You pay for both sets only while the move runs, then for the snapshots.",
+              " Once the switch is checked, Amoeba snapshots each old volume, deletes it, and keeps the snapshot for 7\u00a0days before deleting it too. You pay for both sets only while the move runs, then for the snapshots.",
             ],
           ],
         },
@@ -474,7 +423,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves an EC2 instance’s EBS data volumes onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one volume at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves an EC2 instance’s EBS data volumes onto one pool sized to your data, then rightsizes it autonomously, without any downtime, one volume at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
@@ -520,30 +469,30 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "EBS volume types compared: how to choose one",
+      title: "Amazon EBS volume types",
       where: "Learn",
       href: "/learn/ebs-volume-types",
     },
     {
-      title: "io2 vs gp3: when Provisioned IOPS is worth the price",
+      title: "io2 vs gp3: when io2 is worth it",
       where: "Learn",
       href: "/learn/io2-vs-gp3",
     },
     {
-      title: "EBS Elastic Volumes: what you can change, and what you can’t",
+      title: "EBS Elastic Volumes",
       where: "Learn",
       href: "/learn/ebs-elastic-volumes",
     },
     {
-      title: "How to shrink an EBS volume when AWS only lets it grow",
+      title: "How to shrink an EBS volume",
       where: "Learn",
       href: "/learn/shrink-ebs-volume",
     },
     {
-      title: "What AWS Compute Optimizer recommends for EBS volumes",
+      title: "AWS Compute Optimizer for EBS",
       where: "Learn",
       href: "/learn/compute-optimizer-ebs",
     },
   ],
-  relatedTitle: "More on EBS volume types and sizes",
+  relatedTitle: "More on EBS volumes",
 };

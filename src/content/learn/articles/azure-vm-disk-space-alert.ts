@@ -5,89 +5,56 @@ import { figure as figure2 } from "@/features/learn/figures/azure-vm-disk-space-
 export const article: Article = {
   slug: "azure-vm-disk-space-alert",
   title: "Azure VM disk space alert in Azure Monitor",
-  meta: "An Azure VM disk space alert needs data from inside the guest, since host metrics have no free-space metric. Two ways to collect it and alert per mount.",
-  h1: "Azure VM disk space alert: how to set one up in Azure Monitor",
-  deck: "Host metrics can’t see free space. Collect it from the guest, then alert on each mount with a metric or log rule.",
-  card: "Why Azure has no free-space metric for a VM, and two ways to alert on low disk space in Azure Monitor.",
+  meta: "An Azure VM disk space alert needs free-space data from inside the VM. Set one up per mount with a PromQL metric alert or a KQL log search alert.",
+  h1: "How to set up an Azure VM disk space alert",
+  deck: "Azure’s host metrics can’t see free space, so collect it inside the VM and alert on each mount.",
+  card: "Azure has no host metric for free space. Two ways to alert on a nearly full VM disk in Azure Monitor.",
   product: "amoeba",
   hub: "Block storage",
   topic: "Azure block storage",
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "rupeshankar",
   cover: "/learn-covers/zoorik-learn-azure-vm-disk-space-alert-1200x630.webp",
   coverAlt:
     "Azure VM disk space alert: a reading from inside the VM fires the alert, while host metrics can’t see it",
   short: [
-    "An Azure VM disk space alert needs data that Azure Monitor Agent collects inside the VM, because host metrics never report free space. Turn on enhanced monitoring, then alert on ",
+    "Azure Monitor’s host metrics never report free space, so an Azure VM disk space alert needs data from inside the VM. Turn on enhanced monitoring, which installs Azure Monitor Agent. Then alert on ",
     { code: "system.filesystem.usage" },
-    " in a query-based metric alert (preview) or ",
+    " with a query-based metric alert (preview), or on ",
     { code: "FreeSpacePercentage" },
-    " in a log search alert.",
+    " with a log search alert.",
   ],
   sections: [
     {
       id: "azure-vm-disk-space-alert",
-      title: "Azure VM disk space alert: host metrics can’t see free space",
+      title: "Host metrics miss free space",
       blocks: [
         {
           kind: "p",
-          text: [
-            "Picture a 32\u00a0GiB data disk mounted at ",
-            { code: "/data" },
-            " on a VM. Azure Monitor collects host metrics for every VM without setup, but none of them says how much of those 32\u00a0GiB is still free.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "Microsoft’s guide to VM alerts adds that virtual machines have no preconfigured alert rules. The recommended rules Azure can add when you turn on monitoring use host metrics, unless OpenTelemetry metrics are on. Until an alert rule reads data collected inside the guest, nothing warns you as ",
-            { code: "/data" },
-            " fills.",
-          ],
-        },
-        {
-          kind: "p",
-          text: "The host metrics for disks report IOPS, throughput and latency, but never free space. The disk metrics include these, each split by LUN (the disk’s logical unit number):",
-        },
-        {
-          kind: "ul",
-          items: [
-            "Data Disk IOPS Consumed Percentage",
-            "Data Disk Latency",
-            "Data Disk Queue Depth",
-            "bytes and operations per second",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "Data Disk Used Burst IO Credits Percentage and Data Disk Used Burst BPS Credits Percentage sound closer than they are. Both count burst credits, not space. Nothing in Microsoft’s metric list for ",
-            { code: "Microsoft.Compute/virtualMachines" },
-            " reports how full a filesystem is.",
-          ],
+          text: "Azure Monitor collects host metrics for every VM with no setup. For data disks, they report IOPS, throughput, latency, queue depth and burst credits, each per LUN (the disk’s logical unit number). None of them reports free space. The Data Disk Used Burst IO and BPS Credits Percentage metrics sound close, but they count burst credits, not space.",
         },
         {
           kind: "p",
           text: [
             "A ",
             { a: "managed disk", href: "/learn/glossary/azure-managed-disk" },
-            " is a block device, and Azure sees blocks being read and written. The filesystem that decides which blocks hold data runs in your guest operating system. Free space is a filesystem fact, so Azure VM disk space monitoring starts with an agent in the guest.",
+            " is a block device: Azure sees only blocks read and written. The filesystem that tracks free space runs in your guest operating system, so the reading has to come from an agent there.",
           ],
+        },
+        {
+          kind: "p",
+          text: "Virtual machines also have no preconfigured alert rules. The recommended rules Azure can add use host metrics, unless OpenTelemetry metrics are on. Until a rule reads data from inside the guest, nothing warns you as a disk fills.",
         },
       ],
     },
     {
       id: "azure-monitor-agent-collects-free-space-under",
-      title: "Azure Monitor Agent collects free space, under a different name per path",
+      title: "Where free space comes from",
       blocks: [
         {
           kind: "p",
-          text: "Azure Monitor Agent collects the data on Windows and Linux, and it’s the only agent this guide uses. It takes its instructions from a data collection rule (DCR). By default it samples performance counters every 60\u00a0seconds.",
-        },
-        {
-          kind: "p",
-          text: "Each path names the free-space signal differently, which is why answers disagree about the counter:",
+          text: "Azure Monitor Agent collects guest data on Windows and Linux. A data collection rule (DCR) tells it what to collect, and it samples every 60\u00a0seconds by default. Each path below names the free-space signal differently:",
         },
         {
           kind: "table",
@@ -99,22 +66,22 @@ export const article: Article = {
           ],
           rows: [
             [
-              "OpenTelemetry metrics, Microsoft’s recommended experience",
+              "OpenTelemetry metrics (recommended)",
               "Azure Monitor workspace",
               [
                 { code: "system.filesystem.usage" },
-                " in bytes, with ",
+                " in bytes, split by ",
                 { code: "state" },
-                " free, reserved or used, per ",
+                " (free, reserved, used) and ",
                 { code: "mountpoint" },
               ],
-              "Query-based metric alert in PromQL, the Prometheus Query Language (preview)",
+              "Query-based metric alert in PromQL (preview)",
             ],
             [
               "VM insights, logs-based (classic)",
               ["Log Analytics workspace, ", { code: "InsightsMetrics" }, " table"],
               ["Namespace ", { code: "LogicalDisk" }, ", name ", { code: "FreeSpacePercentage" }],
-              "Log search alert in KQL, the Kusto Query Language",
+              "Log search alert in KQL",
             ],
             [
               "A DCR you write",
@@ -122,17 +89,16 @@ export const article: Article = {
               [
                 "Linux: ",
                 { code: "Logical Disk(*)\\% Free Space" },
-                ", and ",
+                " and ",
                 { code: "Free Megabytes" },
-                " from the same object. Windows: ",
+                ". Windows: ",
                 { code: "% Free Space" },
                 " and ",
                 { code: "Free Megabytes" },
-                " in the ",
+                " in ",
                 { code: "LogicalDisk" },
-                " object, read per volume instance, since ",
+                ", read per volume, not ",
                 { code: "_Total" },
-                " covers all volumes together",
               ],
               "Log search alert in KQL",
             ],
@@ -140,43 +106,39 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Starting fresh, take the first path. Microsoft recommends it, and its standard set of counters is collected at no cost.",
+          text: "Starting fresh, take the first path. Microsoft recommends it, and its standard set of counters is collected at no cost. Take the second if your team already keeps VM data in a Log Analytics workspace, or would rather avoid a preview alert type.",
         },
         {
           kind: "p",
-          text: "Take the second path when your team already keeps VM data in a Log Analytics workspace. It also fits when you’d rather not depend on a preview alert type.",
-        },
-        {
-          kind: "p",
-          text: "Both paths use the same names on Windows and Linux. So an Azure Linux VM disk space alert and a Windows one differ mainly in their mount names.",
+          text: "The first two paths use the same names on Windows and Linux. A Linux alert and a Windows one differ mainly in their mount names.",
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "callout",
           label: "Watch out",
-          text: "On Linux, VM insights reports a data disk only when it’s formatted XFS or ext2, ext3 or ext4. Run the logs path’s per-disk query once, since a mount with no row there never alerts as it fills.",
+          text: "On Linux, VM insights reports a data disk only when it’s formatted XFS, ext2, ext3 or ext4. Run the per-disk query from the log search steps once. A mount with no row there never alerts.",
         },
       ],
     },
     {
       id: "how-to-set-up-an-azure-monitor",
-      title: "How to set up an Azure Monitor VM disk space alert on metrics",
+      title: "Set up a metric alert",
       blocks: [
         {
           kind: "p",
-          text: "On the metrics path, the agent sends each mount’s usage in bytes to an Azure Monitor workspace. The rule is a query-based metric alert, in preview in October 2026.",
+          text: "On the metrics path, the rule is a query-based metric alert written in PromQL (the Prometheus Query Language). It’s still in preview in November 2026.",
         },
         {
           kind: "h3",
           id: "turn-on-collection-and-check-the-data",
-          title: "Turn on collection and check the data",
+          title: "Turn on collection",
         },
         {
           kind: "ol",
           items: [
             [
-              { b: "Turn on collection." },
-              " Open the VM in the Azure portal and select Monitor. If enhanced monitoring isn’t on yet, select Configure. Leave OpenTelemetry metrics selected, keep or choose the Azure Monitor workspace, then select Review + Enable and Enable.",
+              { b: "Turn on monitoring." },
+              " Open the VM in the Azure portal and select Monitor. If enhanced monitoring is off, select Configure. Leave OpenTelemetry metrics selected, choose the Azure Monitor workspace, then select Review + Enable and Enable.",
             ],
             [
               { b: "Wait for the agent." },
@@ -186,21 +148,21 @@ export const article: Article = {
               { b: "Check the data." },
               " Run a PromQL query scoped to the Azure Monitor workspace. The query ",
               { code: '{"system.filesystem.usage", state="free"}' },
-              " should return a series for each mount point.",
+              " should return one series per mount point.",
             ],
           ],
         },
-        { kind: "h3", id: "create-the-metric-alert-rule", title: "Create the metric alert rule" },
+        { kind: "h3", id: "create-the-metric-alert-rule", title: "Create the metric rule" },
         {
           kind: "ol",
           items: [
             [
               { b: "Scope the rule." },
-              " In Monitor, select Alerts, then Create and Alert rule. Scope it to the Azure Monitor workspace, so one rule covers every VM that sends metrics there. A rule scoped to a VM, resource group or subscription also works, but only after the workspace has resource-centric access turned on.",
+              " In Monitor, select Alerts, then Create and Alert rule. Scope it to the Azure Monitor workspace, so one rule covers every VM that sends metrics there. To scope it to a VM, resource group or subscription instead, first turn on resource-centric access for the workspace.",
             ],
             [
               { b: "Enter the query." },
-              " For the signal, choose Custom PromQL query and enter this query. It returns each mount, on each VM, that has less than 10% free, and it leaves out tmpfs:",
+              " For the signal, choose Custom PromQL query. This query returns each mount, on each VM, with less than 10% free, and leaves out tmpfs:",
             ],
           ],
         },
@@ -215,27 +177,31 @@ export const article: Article = {
           items: [
             [
               { b: "Set the timing." },
-              " Under the alerting options, Check every sets how often the rule runs. Wait for sets how long the condition must hold before the alert fires. That way, a brief dip during a large write doesn’t page anyone.",
+              " Under the alerting options, Check every sets how often the rule runs. Wait for sets how long the condition must hold before the alert fires, so a brief dip during a large write doesn’t page anyone.",
             ],
             [
               { b: "Add an identity and an action group." },
-              " Give the rule a user-assigned managed identity, created beforehand with the Monitoring Reader role on the rule’s scope. Add an action group to send the email.",
+              " Give the rule a managed identity with the Monitoring Reader role on its scope. A user-assigned identity needs that role beforehand. A system-assigned one gets it automatically if you’re allowed to assign roles. Then add an action group to send an email.",
             ],
           ],
         },
         {
           kind: "callout",
           label: "For engineers",
-          text: "A query-based rule’s query works like the expression of a Prometheus alerting rule.",
+          text: [
+            "The rule’s query and its Wait for setting match a Prometheus alerting rule’s expression and ",
+            { code: "for" },
+            " clause.",
+          ],
         },
         {
           kind: "ul",
           items: [
-            "The metric splits each filesystem’s bytes by state: free, reserved and used. So the query’s division gives the share of each filesystem that’s still free.",
-            "The comparison on the query’s last line decides which mounts alert, so the condition stays a static threshold.",
-            ["The Wait for setting is the rule’s ", { code: "for" }, " property, such as PT5M."],
+            "The metric splits each filesystem’s bytes into free, reserved and used. So the division gives the share of each filesystem still free.",
+            "The comparison on the last line picks which mounts alert, so the threshold is static.",
+            ["Wait for is stored as the rule’s ", { code: "for" }, " property, such as PT5M."],
             [
-              "Keep the quotes around metric and label names that contain dots, such as ",
+              "Keep the quotes around metric and label names with dots, such as ",
               { code: '"Microsoft.resourceid"' },
               " and ",
               { code: '"system.filesystem.usage"' },
@@ -247,12 +213,12 @@ export const article: Article = {
     },
     {
       id: "set-an-azure-vm-alert-on-low",
-      title: "Set an Azure VM alert on low disk space with a log search rule",
+      title: "Set up a log search alert",
       blocks: [
         {
           kind: "p",
           text: [
-            "The logs path builds the same Azure Monitor disk space alert from KQL instead of PromQL. Setup starts on the same Configure page: select the logs-based option and a Log Analytics workspace. VM insights then writes its counters to the ",
+            "The logs path builds the same alert in KQL (the Kusto Query Language). It starts on the same Configure page: select the logs-based option and a Log Analytics workspace. VM insights then writes its counters to the ",
             { code: "InsightsMetrics" },
             " table, and you can’t change which ones it collects.",
           ],
@@ -262,12 +228,12 @@ export const article: Article = {
           kind: "ol",
           items: [
             [
-              { b: "Create the rule." },
-              " In Monitor, select Alerts, then Create and Alert rule. Set the scope to the Log Analytics workspace, so one rule covers every machine that reports to it.",
+              { b: "Scope the rule." },
+              " In Monitor, select Alerts, then Create and Alert rule. Scope it to the Log Analytics workspace, so one rule covers every machine that reports there.",
             ],
             [
               { b: "Enter the query." },
-              " On the Condition tab, choose Custom log search and use Microsoft’s per-disk query:",
+              " On the Condition tab, choose Custom log search and enter Microsoft’s per-disk query:",
             ],
           ],
         },
@@ -296,37 +262,37 @@ export const article: Article = {
             ],
             [
               { b: "Set the threshold." },
-              " Under Alert logic, use a static threshold, an operator of less than, and a value of 10. Set Frequency of evaluation to 15\u00a0minutes to match the query’s bin. It can be anything from one minute to one day.",
+              " Under Alert logic, choose a static threshold, the operator Less than and the value 10. Set Frequency of evaluation to 15\u00a0minutes to match the bin. It can be anything from one minute to one day.",
             ],
             [
               { b: "Add the action and auto-resolve." },
-              " Add an action group on the Actions tab. On the Details tab, set the severity and select Automatically resolve alerts. The alert then closes once space comes back.",
+              " Add an action group on the Actions tab. On the Details tab, set the severity and select Automatically resolve alerts, so the alert closes once space comes back.",
             ],
           ],
         },
-        { kind: "h3", id: "what-a-log-search-rule-costs", title: "What a log search rule costs" },
+        { kind: "h3", id: "what-a-log-search-rule-costs", title: "What the rule costs" },
         {
           kind: "p",
-          text: "The rule’s price depends on its type, its dimensions and how often it runs. Each Computer and Disk pair is its own time series. Microsoft’s docs say each one “triggers its own alert and is charged separately.”",
+          text: "A rule’s price depends on its type, its dimensions and how often it runs. Each Computer and Disk pair is its own time series, and Microsoft’s docs say each one “triggers its own alert and is charged separately.”",
         },
         {
           kind: "p",
-          text: "A 1-minute frequency sees a fast fill sooner than a 15-minute one, so weigh that against the price. Read the Alert rules section of the Azure Monitor pricing page before one rule spreads across hundreds of VMs.",
+          text: "A 1-minute frequency catches a fast fill sooner than a 15-minute one, so weigh that against the price. Read the Alert rules section of the Azure Monitor pricing page before one rule covers hundreds of VMs.",
         },
       ],
     },
     {
       id: "how-to-pick-a-disk-space-alert",
-      title: "How to pick a disk space alert threshold",
+      title: "Pick a threshold",
       blocks: [
         {
           kind: "p",
-          text: "A percentage treats every disk alike, so one rule can page far too early on a large disk and too late on a small one.",
+          text: "A percentage treats every disk alike. One rule can page far too early on a large disk and too late on a small one.",
         },
         {
           kind: "callout",
           label: "Worked example",
-          text: "A 4\u00a0TiB disk holds 4 × 1,024 = 4,096\u00a0GiB, so 10% free on it is 409.6\u00a0GiB. On the opening’s 32\u00a0GiB disk, 10% free is 32 × 0.10 = 3.2\u00a0GiB.",
+          text: "A 4\u00a0TiB disk holds 4 × 1,024 = 4,096\u00a0GiB, so 10% free on it is 409.6\u00a0GiB. On a 32\u00a0GiB disk, 10% free is 32 × 0.10 = 3.2\u00a0GiB.",
         },
         {
           kind: "p",
@@ -336,7 +302,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Pair the percentage with a floor in bytes. On the metrics path, that’s a second rule comparing ",
+            "So pair the percentage with a floor in bytes. On the metrics path, that’s a second rule comparing ",
             { code: '{"system.filesystem.usage", state="free"}' },
             " with your floor, since that metric is already in bytes. On the logs path, it’s a second log search rule on ",
             { code: "Free Megabytes" },
@@ -345,19 +311,19 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "A fixed threshold also can’t tell how fast a disk is filling. Whether the mount took a month or an hour to get there, the rule fires at the same level. Evaluation frequency then sets how long a fast fill runs before anyone hears about it.",
+          text: "A fixed threshold also can’t see how fast a disk fills. A mount that took a month to get there and one that took an hour fire at the same level. The evaluation frequency then sets how long a fast fill runs before anyone hears about it.",
         },
         {
           kind: "h3",
           id: "what-to-do-when-the-alert-fires",
-          title: "What to do when the alert fires",
+          title: "When the alert fires",
         },
-        { kind: "p", text: "Find what grew before you add space. Each step has its own page:" },
+        { kind: "p", text: "Find what grew before you add space:" },
         {
           kind: "ul",
           items: [
             [
-              { a: "Checking Azure VM disk usage", href: "/learn/azure-vm-disk-usage" },
+              { a: "Azure VM disk usage", href: "/learn/azure-vm-disk-usage" },
               " covers the queries and commands that find it.",
             ],
             [
@@ -374,7 +340,7 @@ export const article: Article = {
             [
               "The ",
               { a: "Azure disk pricing calculator", href: "/ebs-and-azure-disk-pricing" },
-              " shows what a larger disk would cost a month.",
+              " shows what a larger disk costs a month.",
             ],
             [
               {
@@ -389,7 +355,7 @@ export const article: Article = {
     },
     {
       id: "when-amoeba-adds-space-on-its-own",
-      title: "When Amoeba adds space on its own",
+      title: "How Amoeba adds space",
       blocks: [
         {
           kind: "p",
@@ -417,25 +383,25 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "So the disks no longer need to be sized ahead for growth you expect, and you pay for close to what you use.",
+          text: "So you no longer size disks ahead for growth you expect, and you pay for close to what you use.",
         },
         {
           kind: "p",
-          text: "Keep your alert as a backstop. Amoeba works on data disks only, so the OS disk still needs one.",
+          text: "Keep your alert as a backstop. Amoeba works on data disks only, so the OS disk still needs one. Amoeba also can’t grow a pool while its agent is disconnected, or after you remove Zoorik’s role.",
         },
         {
           kind: "p",
-          text: "On a Linux VM, a logs-path backstop can’t see the pool. The pool is btrfs, and VM insights reports data disks only on XFS and ext. Amoeba also can’t grow a pool while its agent is disconnected, or after you remove Zoorik’s role.",
+          text: "On a Linux VM, a logs-path alert can’t see the pool. The pool is btrfs, and VM insights reports data disks only on XFS and ext.",
         },
         {
           kind: "p",
           text: [
-            "The page on ",
+            "For Amoeba on Azure in full, see ",
             {
               a: "Azure managed disk cost optimization",
               href: "/azure-managed-disk-cost-optimization",
             },
-            " covers Amoeba on Azure in full.",
+            ".",
           ],
         },
       ],
@@ -443,7 +409,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
@@ -493,12 +459,12 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "Azure VM disk usage: how to check used vs provisioned space",
+      title: "How to check Azure VM disk usage",
       where: "Learn",
       href: "/learn/azure-vm-disk-usage",
     },
     {
-      title: "How to expand an Azure disk without downtime",
+      title: "Expand an Azure disk without downtime",
       where: "Learn",
       href: "/learn/azure-disk-expand-without-downtime",
     },
@@ -508,7 +474,7 @@ export const article: Article = {
       href: "/learn/shrink-azure-managed-disk",
     },
     {
-      title: "btrfs on multiple disks: how a btrfs pool works",
+      title: "btrfs on multiple disks: single or RAID 1",
       where: "Learn",
       href: "/learn/btrfs-multiple-disks",
     },

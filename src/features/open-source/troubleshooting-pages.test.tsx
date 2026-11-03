@@ -52,10 +52,10 @@ const pages = [
     guide: troubleshootingGuides.coral,
     product: "coral",
     title: "Coral troubleshooting",
-    updated: "2 November 2026",
+    updated: "3 November 2026",
     topics: [
-      ["coral-is-not-connecting-to-my-cluster", "Coral is not connecting to my cluster"],
-      ["coral-is-not-removing-a-node", "Coral is not removing a node"],
+      ["coral-is-not-connecting-to-my-cluster", "Cluster not connecting"],
+      ["coral-is-not-removing-a-node", "Node not removed"],
     ],
   },
   {
@@ -65,10 +65,10 @@ const pages = [
     guide: troubleshootingGuides.amoeba,
     product: "amoeba",
     title: "Amoeba troubleshooting",
-    updated: "1 November 2026",
+    updated: "3 November 2026",
     topics: [
-      ["amoeba-is-not-showing-my-vm", "Amoeba is not showing my VM"],
-      ["amoeba-has-not-rightsized-my-disks-yet", "Amoeba has not rightsized my disks yet"],
+      ["amoeba-is-not-showing-my-vm", "VM not showing"],
+      ["amoeba-has-not-rightsized-my-disks-yet", "Disks not rightsized"],
     ],
   },
 ] as const;
@@ -161,7 +161,17 @@ describe("the troubleshooting pages", () => {
     }
   });
 
-  it("addresses each section as the mocks do: its first seven words, apostrophes dropped", () => {
+  it("keeps each topic's first address, and addresses other sections by their first seven words, apostrophes dropped", () => {
+    expect(troubleshootingGuides.coral.sections.map((section) => section.id)).toEqual([
+      "coral-is-not-connecting-to-my-cluster",
+      "coral-is-not-removing-a-node",
+      undefined,
+    ]);
+    expect(troubleshootingGuides.amoeba.sections.map((section) => section.id)).toEqual([
+      "amoeba-is-not-showing-my-vm",
+      "amoeba-has-not-rightsized-my-disks-yet",
+      undefined,
+    ]);
     expect(sectionSlug("Coral is not connecting to my cluster")).toBe(
       "coral-is-not-connecting-to-my-cluster",
     );
@@ -177,29 +187,28 @@ describe("the troubleshooting pages", () => {
     expect(sectionSlug("With Argo CD or Flux")).toBe("with-argo-cd-or-flux");
   });
 
-  it("Coral: a cluster not connecting in ten checks, then a node not removed in eight, with four command wells and three tables", () => {
+  it("Coral: a cluster not connecting in ten checks, then a node not removed in seven, with four command wells and four tables", () => {
     const root = draw(pages[0]);
     expect(checks(root, "coral-is-not-connecting-to-my-cluster")).toEqual([
-      "Check the cluster is supported",
-      "Check the command points at the right cluster",
-      "Check the connect command is new",
-      "Check your cloud tools and permissions",
-      "Check the network",
-      "Check what connect set up in your cloud",
-      "Wait for the first report",
-      "Check your Helm install if it says a resource already exists",
-      "If the cluster shows “Not reporting”",
-      "If the Agent release card says “Re-run connect”",
+      "Supported cluster",
+      "Cluster access",
+      "Connect token",
+      "Cloud tools and permissions",
+      "Network access",
+      "Cloud changes",
+      "Waiting for the first report",
+      "Helm install problems",
+      "“Not reporting”",
+      "“Re-run connect”",
     ]);
     expect(checks(root, "coral-is-not-removing-a-node")).toEqual([
-      "Check Node optimization and the Evictor are on",
-      "Check the node’s pool is enabled",
-      "Check what is holding the node",
-      "Check the other nodes have room",
-      "Check the pool is above its minimum",
-      "Check who removes the empty node",
-      "Check the node is not cordoned",
-      "Check the drain finished",
+      "Switches",
+      "Held nodes",
+      "Room on other nodes",
+      "Pool minimum",
+      "Empty node still running",
+      "Cordoned nodes",
+      "Drain not finished",
     ]);
     const wells = [...root.querySelectorAll(".as-well.doc-well:not(.is-yaml) pre")];
     expect(wells.map((pre) => pre.textContent!.split("\n")[0])).toEqual([
@@ -208,13 +217,11 @@ describe("the troubleshooting pages", () => {
       "$ zoorikctl cluster grant-node-deletion",
       "$ zoorikctl cluster grant-node-deletion",
     ]);
-    expect(root.querySelectorAll("table.doc-tbl")).toHaveLength(3);
+    expect(root.querySelectorAll("table.doc-tbl")).toHaveLength(4);
   });
 
   it("Coral: only hostPath data holds a node, as the Learn article it links says", () => {
-    const table = check(draw(pages[0]), "Check what is holding the node").find(
-      (el) => el.tagName === "TABLE",
-    )!;
+    const table = check(draw(pages[0]), "Held nodes").find((el) => el.tagName === "TABLE")!;
     const reasons = [...table.querySelectorAll("tbody tr")].map((row) =>
       text(row.querySelector("th, td")),
     );
@@ -222,32 +229,30 @@ describe("the troubleshooting pages", () => {
     expect(reasons.join(" ")).not.toMatch(/emptyDir/);
   });
 
-  it("Amoeba: a VM not showing in eight checks, then disks not rightsized in seven, a link from one to the other", () => {
+  it("Amoeba: a VM not showing in six checks, then disks not rightsized in seven, a link from one to the other", () => {
     const root = draw(pages[1]);
     expect(checks(root, "amoeba-is-not-showing-my-vm")).toEqual([
-      "Read the line under the list",
-      "Check the cloud connection",
-      "Check the VM’s subscription is included",
-      "Check the VM is running and has a data disk",
-      "Give the list a moment",
-      "On AWS, check the instance and Systems Manager",
-      "Check the agent has reported",
-      "If the install failed or the agent stopped",
+      "Onboarding list",
+      "Azure connection",
+      "Subscription not included",
+      "EC2 instances",
+      "Waiting for the first report",
+      "Failed install or stopped agent",
     ]);
     expect(checks(root, "amoeba-has-not-rightsized-my-disks-yet")).toEqual([
-      "Check the agent is reporting",
-      "Check whether Amoeba declined the VM",
-      "Check whether the move paused",
-      "Check the Linux requirements",
-      "Check the shrink setting",
-      "Give it time after the move",
-      "Read why a shrink can’t run",
+      "Agent not reporting",
+      "Declined VM",
+      "Paused move",
+      "Linux requirements",
+      "Shrink timing",
+      "Shrink setting",
+      "“Can’t shrink now”",
     ]);
     /* Where the agent has not reported, the second topic sends the reader up to the first. */
-    const up = check(root, "Check the agent is reporting")
+    const up = check(root, "Agent not reporting")
       .flatMap((el) => [...el.querySelectorAll("a")])
       .map((a) => [text(a), a.getAttribute("href")]);
-    expect(up).toEqual([["Amoeba is not showing my VM", "#amoeba-is-not-showing-my-vm"]]);
+    expect(up).toEqual([["VM not showing", "#amoeba-is-not-showing-my-vm"]]);
   });
 
   it.each(pages)(

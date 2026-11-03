@@ -64,21 +64,20 @@ afterEach(() => {
 
 describe("/cloud-cost-optimization-library's metadata", () => {
   it("is titled, described and canonicalised as its mock, with its own card", () => {
-    /* The 2 Nov 2026 plan: the title and description carry the page's searches. */
-    expect(metadata.title).toBe("Cloud cost management tools and FinOps tools");
+    expect(metadata.title).toBe("Cloud cost management and FinOps tools");
     expect(metadata.description).toBe(
-      "Choose a cloud cost manager for Azure and AWS: Kubernetes, block storage and FinOps tools from Kubecost to Azure Advisor, what each does and how it acts.",
+      "Cloud cost management tools for Azure and AWS, from Kubecost to AWS Cost Optimization Hub: what each does, and whether it acts or only recommends.",
     );
     expect(`${String(metadata.title)} | Zoorik`.length).toBeLessThanOrEqual(60);
     expect(String(metadata.description).length).toBeLessThanOrEqual(158);
     expect(metadata.alternates).toEqual({ canonical: "/cloud-cost-optimization-library" });
     expect(metadata.openGraph).toMatchObject({
       url: "/cloud-cost-optimization-library",
-      title: "Cloud cost management tools and FinOps tools | Zoorik",
+      title: "Cloud cost management and FinOps tools | Zoorik",
       images: [pageCards["/cloud-cost-optimization-library"]],
     });
     expect(routes.cloudCostTools).toBe("/cloud-cost-optimization-library");
-    expect(cloudCostToolsLastUpdated).toBe("2 November 2026");
+    expect(cloudCostToolsLastUpdated).toBe("3 November 2026");
   });
 });
 
@@ -87,9 +86,9 @@ describe("/cloud-cost-optimization-library", () => {
     const root = page();
     expect(root.querySelectorAll("h1")).toHaveLength(1);
     expect(root.querySelector("header.hero.doc-hero.lv-hero#top")).not.toBeNull();
-    expect(text(root.querySelector("h1"))).toBe("Cloud cost management tools and FinOps tools");
+    expect(text(root.querySelector("h1"))).toBe("Cloud cost management tools");
     expect(text(root.querySelector(".doc-deck"))).toBe(
-      "Only cloud cost tools that reduce what you pay on Azure or AWS, whether they act or recommend.",
+      "Tools that reduce Azure and AWS costs, and whether each one acts on its own or only recommends.",
     );
     expect(root.querySelector(".vp-kick")).toBeNull();
     /* The mock has no search: the chips filter the tiles. */
@@ -105,16 +104,14 @@ describe("/cloud-cost-optimization-library", () => {
     );
     const sections = [...root.querySelectorAll("main > section")];
     expect(sections.map((s) => [s.id, s.className, text(s.querySelector("h2"))])).toEqual([
-      ["tools", "sec lv-sec", "Cloud cost optimization tools for Azure and AWS"],
+      ["tools", "sec lv-sec", "Tools by kind"],
       ["ours", "sec lv-sec sec-band", "Compare Coral and Amoeba"],
       ["calculators", "sec lv-sec", "Free calculators"],
       ["assess", "sec", ""],
     ]);
-    /* The questions after the calculators (2 Nov 2026): the versus pages' rows, in the Learn frame. */
+    /* The questions after the calculators: the versus pages' rows, in the Learn frame. */
     const questions = root.querySelector("#calculators + div.sec.doc-body")!;
-    expect(questions.querySelector("section#questions h2")).toHaveTextContent(
-      "Questions about these tools",
-    );
+    expect(questions.querySelector("section#questions h2")).toHaveTextContent("Questions");
     expect(questions.querySelectorAll("section#questions details")).toHaveLength(5);
     for (const id of ["tools", "ours", "calculators"]) {
       const section = root.querySelector(`#${id}`)!;
@@ -381,8 +378,10 @@ describe("/cloud-cost-optimization-library", () => {
     expect(hrefs.filter((href) => href.startsWith(`${comparePath}/`))).toEqual([
       ...versusPages.map(versusRoute),
       ...alternativesPages.map((entry) => entry.route),
-      /* The Kubecost question's link, in the questions after the calculators (2 Nov 2026 plan). */
+      /* The questions' links, after the calculators: Kubecost's to the Kubernetes tools, CloudBolt's to its versus
+         page. */
       routes.compareCoralAlternatives,
+      `${comparePath}/coral-vs-stormforge`,
     ]);
     expect(hrefs.some((href) => href.startsWith("/learn/compare"))).toBe(false);
     expect(root.querySelectorAll("main img")).toHaveLength(0);
@@ -445,12 +444,13 @@ describe("/cloud-cost-optimization-library", () => {
     expect(text(row)).toContain("Thirty minutes with the people who build Coral and Amoeba.");
   });
 
-  it("is the footer's Cloud cost optimization tools, the words its tools' h2 starts with", () => {
+  it("is the footer's Cloud cost optimization tools, the words its first question asks about", () => {
     const root = page();
     const link = root.querySelector(`footer a[href="${routes.cloudCostTools}"]`)!;
     expect(text(link)).toBe("Cloud cost optimization tools");
-    /* The h1 leads with "Cloud cost management tools", and the tools' h2 carries the footer's words (1 Nov 2026). */
-    expect(cloudCostToolsPage.tools.title.startsWith(text(link))).toBe(true);
-    expect(text(root.querySelector("#tools h2")).startsWith(text(link))).toBe(true);
+    /* The h1 is "Cloud cost management tools"; the first question carries the footer's words. */
+    expect(cloudCostToolsPage.questions.rows[0]!.question.toLowerCase()).toContain(
+      text(link).toLowerCase(),
+    );
   });
 });

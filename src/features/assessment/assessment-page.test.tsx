@@ -42,17 +42,15 @@ describe("the hero", () => {
     expect(text(badge)).toBe("Built for Azure and AWS");
     expect(badge.nextElementSibling).toBeNull();
     expect(hero.querySelector(".ax-hero-t > .hero-badges + h1")).not.toBeNull();
-    expect(text(hero.querySelector("h1"))).toBe(
-      "Free cloud cost analysis for Kubernetes and block storage",
-    );
+    expect(text(hero.querySelector("h1"))).toBe("Free cloud cost assessment");
     /* Under the title, its one line, set as the site's hero deck (W32). */
     expect(text(hero.querySelector(".ax-hero-t > h1 + p.doc-deck.ax-lead"))).toBe(
-      "One command estimates what you could save, at list price.",
+      "One read-only command estimates your saving at list price.",
     );
     /* Then the line to choose over the switch. */
     const pick = hero.querySelector(".ax-hero-t > h1 + .ax-lead + .ax-pick")!;
     expect(text(pick.querySelector(":scope > p.ax-sub:first-child"))).toBe(
-      "Choose the assessment you want.",
+      "Choose what to assess.",
     );
     expect(pick.querySelector(":scope > p.ax-sub + nav.ax-switch")).not.toBeNull();
     const links = within(
@@ -85,7 +83,7 @@ describe("the hero", () => {
     const [signIn, under] = [...hero.querySelectorAll(".ax-under")];
     /* Each cloud by its mark, its name kept for the ear. */
     expect(text(signIn)).toBe(
-      "Sign in to your cloud first: Azure: az login or AWS: aws sso login in your terminal, or run it directly in Cloud Shell.",
+      "Sign in to your cloud first: Azure: az login or AWS: aws sso login in your terminal, or run it in Cloud Shell.",
     );
     for (const line of [signIn!, under!]) {
       expect(
@@ -394,27 +392,27 @@ describe("Before you run it", () => {
       );
       /* The four access answers are a short list. */
       expect([...access!.querySelectorAll(":scope > ul > li")].map(text)).toEqual([
-        "For AKS, it needs read access to your clusters and the Azure Kubernetes Service Cluster User Role on each.",
-        "For EKS, it needs read-only EKS, EC2 and pricing actions, and an EKS access entry.",
-        "For block storage on Azure, it needs Reader on the subscriptions, plus Run Command for the used-space read.",
-        "For block storage on AWS, it needs read-only EC2, Systems Manager, CloudWatch and pricing actions, plus Systems Manager Run Command for the used-space read.",
+        "AKS: read access to your clusters, and the Azure Kubernetes Service Cluster User Role on each.",
+        "EKS: read-only EKS, EC2 and pricing actions, and an EKS access entry.",
+        "Block storage on Azure: Reader on the subscriptions, plus Run Command for the used-space read.",
+        "Block storage on AWS: read-only EC2, Systems Manager, CloudWatch and pricing actions, plus Systems Manager Run Command for the used-space read.",
       ]);
       /* The saving, a line for each product (2 Nov 2026). */
       expect([...saving!.querySelectorAll(":scope > ul > li")].map(text)).toEqual([
-        "For Kubernetes, it sets each container’s request from its peak use and counts the nodes needed. The saving is (nodes today − nodes needed) × hourly list price × 730.",
-        "For block storage, it sizes a pool to the used space on each VM it could read. The saving is the list price of the disks the pool replaces, less the pool’s.",
+        "Kubernetes: it sets each container’s request from its peak use and counts the nodes needed. The saving is (nodes today − nodes needed) × hourly list price × 730 hours.",
+        "Block storage: it sizes a pool to the used space on each VM it can read. The saving is the list price of the disks the pool replaces, less the pool’s.",
       ]);
     }
   });
 });
 
 describe("the page's description", () => {
-  it("says what the assessment is in 150 characters, and never says bill", () => {
+  it("says what the assessment is in 143 characters, and never says bill", () => {
     const { description } = assessmentCopy.meta;
     expect(description).toBe(
-      "A free cloud computing cost analysis for AKS, EKS and block storage on Azure and AWS: read-only, in your terminal, one PDF with your estimated saving.",
+      "A free, read-only assessment for AKS, EKS and block storage on Azure and AWS. One command in your terminal, one PDF with your estimated saving.",
     );
-    expect(description).toHaveLength(150);
+    expect(description).toHaveLength(143);
     expect(description).not.toMatch(/\bbill/i);
   });
 });

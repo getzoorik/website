@@ -7,23 +7,25 @@ import {
   wikidataEntity,
 } from "@/config/entity";
 import { calendarUrl, contactEmail, routes, site } from "@/config/site";
-import { caseStudy } from "@/content/case-studies";
+import { amoebaStudy, caseStudy } from "@/content/case-studies";
 import type { FooterSocialPlatform } from "@/content/footer";
 import { memberships } from "@/content/memberships";
 import { newsFromZoorik } from "@/content/news";
 import { platformLabel, products, type ProductId } from "@/content/products";
 
 /**
- * `/about`: every string the page prints, verbatim from the mock. It is built
+ * `/about`: every string the page prints, from the mock as the zero-noise
+ * content pass (3 Nov 2026) left it. It is built
  * on the live site's own sections at the full width, with no founders, and
  * "Available on" as the two stores' buttons with no product named, then
  * Milestones and the "Zoorik on the web" card.
  *
  * 🔴 THE SITE'S WORDING STAYS. The mock's hero deck ("to cut cloud cost while
- * your systems keep serving") and "What we build" line ("reduces cloud cost,
- * continuously") went back to retired words: the deck says "reduce …
- * autonomously, without any downtime" and the line "autonomously", as the rest
- * of the site does.
+ * your systems keep serving") went back to retired words: the deck says
+ * "reduce … autonomously, without any downtime", as the rest of the site does.
+ * The "What we build" line says what each product does, in its own verb (Coral
+ * rebalances, Amoeba rightsizes), since the tiles under it already name each
+ * product's category and clouds.
  *
  * Product names are written plainly here; the page keeps each one out of a
  * translator's hands (`named()`), as the mock marks them.
@@ -93,7 +95,7 @@ export const cin = "U62011KA2026PTC228102";
  * page does not print it. Whoever changes /about's content moves this to that
  * day in the same PR; never the build's date.
  */
-export const aboutLastUpdated = "2 November 2026";
+export const aboutLastUpdated = "3 November 2026";
 
 /** The year Zoorik Private Limited was incorporated: the Company facts' and the first milestone's. */
 const incorporated = "2026";
@@ -138,9 +140,10 @@ const assessmentVersion = assessment.title.match(/\d+\.\d+/)![0];
 const programs = { id: "programs", title: "Programs" } as const;
 const inception = announced(`${routes.about}#${programs.id}`);
 
-/* The case study's own figures: its label (the first part of its kicker, "Value Lab"), its headline figure
-   (−58%), the machine cost on the day Coral was connected and today's, and the day it was published. */
-const studyLabel = caseStudy.hero.kicker.split(" · ")[0]!;
+/* The Coral case study's own figures: its headline figure and what it measures (−58% machine cost), the machine cost
+   on the day Coral was connected and today's, and the day it was published. The Amoeba study's: its headline figure
+   (−25%) and its day. */
+const studyHeadline = caseStudy.band.stats[0];
 const studySteps = caseStudy.result.costs.steps;
 const studyBefore = studySteps[0]!.label;
 const studyAfter = studySteps[studySteps.length - 1]!.label;
@@ -150,7 +153,7 @@ export const about = {
   meta: {
     title: "About",
     description:
-      "Zoorik Private Limited builds Coral, Kubernetes optimization on AKS and EKS, and Amoeba, block storage optimization on Azure and AWS.",
+      "Zoorik Private Limited is a cloud cost optimization company in Bangalore. It builds Coral for Kubernetes and Amoeba for block storage, on Azure and AWS.",
   },
   hero: {
     title: "About Zoorik",
@@ -158,7 +161,7 @@ export const about = {
   },
   what: {
     section: { id: "what-we-build", title: "What we build" },
-    lede: "Zoorik reduces cloud cost, autonomously. Coral is Kubernetes optimization on AKS and EKS. Amoeba is block storage optimization on Azure and AWS.",
+    lede: "Coral rebalances Kubernetes workloads and nodes. Amoeba rightsizes block storage on Windows and Linux VMs.",
     /** One tile per product, Coral first: its mark, its name and its one line, to its page. */
     products: ["coral", "amoeba"] as const satisfies readonly ProductId[],
   },
@@ -176,7 +179,7 @@ export const about = {
       },
       {
         title: "Figures you can check",
-        body: "Coral and Amoeba show where each figure comes from. One they can’t know shows a dash and the reason.",
+        body: "Coral and Amoeba show the source of every figure. A figure they can’t know shows a dash and the reason.",
       },
       {
         title: "Outbound only",
@@ -205,7 +208,7 @@ export const about = {
   },
   /**
    * Milestones: public, dated facts only; no customer, revenue or user figure until there is one to state. The
-   * case study's figures are read from the study (`case-studies.ts`); "eight days" is its "8 days"
+   * case studies' figures are read from the studies (`case-studies.ts`); "eight days" is the Coral study's "8 days"
    * (`band.stats[3]`), in words as its prose and the hub's card say it. The Helm and Terraform milestone's day, the
    * assessment's day and version, and the NVIDIA Inception milestone's day and title are read from their
    * announcements on /news (`newsFromZoorik`).
@@ -220,12 +223,9 @@ export const about = {
       },
       {
         date: day(caseStudy.band.date),
-        title: `${studyLabel}: ${caseStudy.band.stats[0].value} on our own cluster`,
+        title: `${products.coral.name} case study: ${studyHeadline.value} ${studyHeadline.label}`,
         line: `${products.coral.name} reduced our own ${platformLabel.aks} development cluster’s machine cost from ${studyBefore} to ${studyAfter} a month in eight days.`,
-        link: {
-          text: `Read the ${products.coral.name} ${studyLabel} study`,
-          href: caseStudy.route,
-        },
+        link: { text: "Read the case study", href: caseStudy.route },
       },
       {
         date: dayOf(installs.date),
@@ -240,9 +240,15 @@ export const about = {
         link: { text: "Run it", href: routes.assessment },
       },
       {
+        date: day(amoebaStudy.band.date),
+        title: `${products.amoeba.name} case study: ${amoebaStudy.band.stats[0].value} pool size`,
+        line: `${products.amoeba.name} rightsized the btrfs pool on our own Azure lab VM while it stayed mounted, with no test app errors.`,
+        link: { text: "Read the case study", href: amoebaStudy.route },
+      },
+      {
         date: dayOf(inception.date),
         title: inception.title,
-        line: "Zoorik is now a member of NVIDIA’s program for startups.",
+        line: "Inception is NVIDIA’s program for startups.",
       },
     ] satisfies readonly AboutMilestone[] as readonly AboutMilestone[],
   },

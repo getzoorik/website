@@ -5,25 +5,25 @@ import { figure as figure2 } from "@/features/learn/figures/kubernetes-persisten
 export const article: Article = {
   slug: "kubernetes-persistent-volume",
   title: "Kubernetes persistent volume and PVC explained",
-  meta: "A k8s persistent volume is cluster storage that outlives any pod, and a PVC claims it. How binding, access modes and reclaim policies work, with YAML.",
-  h1: "Kubernetes persistent volumes and PVCs: how a pod gets a disk",
+  meta: "A Kubernetes persistent volume (PV) is storage that outlives any pod, and a PVC claims it. How binding, access modes and reclaim policies work, with YAML.",
+  h1: "Kubernetes persistent volumes and PVCs",
   deck: "On AKS and EKS, a claim usually becomes an Azure disk or EBS volume, charged by its size.",
   card: "What a PV and a PVC are, how a claim binds to its disk, and how that disk is charged on AKS and EKS.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes storage",
   published: "2026-11-02",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "zoorik",
   cover: "/learn-covers/zoorik-learn-kubernetes-persistent-volume-1200x630.webp",
   coverAlt:
     "Kubernetes persistent volume: a pod mounts a PVC, the PVC binds to a PV, and the PV points to an Azure disk or an EBS volume",
   short:
-    "A persistent volume (PV) is a piece of cluster storage whose lifecycle is independent of any pod that uses it. A PersistentVolumeClaim (PVC) is a request for that storage: it asks for a size and an access mode, and binds to one matching PV. Pods mount the claim, so the data stays when a pod is deleted or replaced.",
+    "A persistent volume (PV) is cluster storage whose life doesn’t depend on any pod. A PersistentVolumeClaim (PVC) asks for storage by size and access mode, and binds to one matching PV. Pods mount the claim, so the data stays when a pod is deleted or replaced.",
   sections: [
     {
       id: "why-pods-need-persistent-volumes",
-      title: "Why pods need persistent volumes",
+      title: "Why pods need PVs",
       blocks: [
         {
           kind: "p",
@@ -37,30 +37,30 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Ephemeral volumes", href: "/learn/kubernetes-ephemeral-storage" },
-            " have a lifetime linked to one pod. Kubernetes destroys them when the pod ceases to exist, but it doesn’t destroy persistent volumes.",
+            " live and die with one pod. Persistent volumes don’t: Kubernetes keeps them when the pod is gone.",
           ],
         },
         {
           kind: "p",
-          text: "A PV is a resource in the cluster, just as a node is. The PV object records the details of the storage behind it, be that NFS, iSCSI or a cloud provider’s storage system.",
+          text: "A PV is a resource of the cluster, just as a node is. It records the storage behind it, be that NFS, iSCSI or a cloud provider’s storage system.",
         },
       ],
     },
     {
       id: "what-a-kubernetes-pvc-is-and-how",
-      title: "What a Kubernetes PVC is and how it binds",
+      title: "How a Kubernetes PVC binds",
       blocks: [
         {
           kind: "p",
-          text: "A PVC is a user’s request for storage. Just as a pod requests CPU and memory from a node, a claim requests a size and access modes from a PV. It usually names a StorageClass too, and it lives in the same namespace as the pods that use it.",
+          text: "A PVC is a user’s request for storage. A pod asks a node for CPU and memory, and a claim asks a PV for a size and access modes. It usually names a StorageClass, and it lives in the namespace of the pods that use it.",
         },
         {
           kind: "p",
-          text: "A control loop in the control plane watches for new claims and binds each one to a matching PV. The binding is one to one, and no other claim can use that PV. A claim always gets at least the size it asked for, and the PV may be larger.",
+          text: "A control loop in the control plane binds each new claim to a matching PV. The binding is one to one, and no other claim can use that PV. A claim gets at least the size it asked for, and the PV may be larger.",
         },
         {
           kind: "p",
-          text: "A claim with no match stays unbound until one appears. In the docs’ example, a cluster with many 50\u00a0GiB PVs can’t bind a claim for 100\u00a0GiB. It binds once a 100\u00a0GiB PV is added.",
+          text: "A claim with no match stays unbound until one appears. A cluster with many 50 GiB PVs can’t bind a claim for 100 GiB until a 100 GiB PV is added.",
         },
         { kind: "p", text: "A PV is always in one of four phases:" },
         {
@@ -78,7 +78,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Deleting a claim that a pod still uses doesn’t remove it at once, because that could lose data. The claim shows ",
+            "Deleting a claim that a pod still uses doesn’t remove it at once. The claim shows ",
             { code: "Terminating" },
             ", with the ",
             { code: "kubernetes.io/pvc-protection" },
@@ -93,7 +93,7 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "A PV is provisioned in one of two ways. Statically, a cluster administrator creates PVs ahead of time, each one pointing at real storage. Dynamically, when no static PV matches a claim, the cluster can create one for it from the claim’s StorageClass.",
+          text: "Statically, a cluster administrator creates PVs ahead of time, each one pointing at real storage. Dynamically, when no static PV matches a claim, the cluster can create one from the claim’s StorageClass.",
         },
         { kind: "svg", figure: figure1 },
         {
@@ -115,7 +115,7 @@ export const article: Article = {
             { code: "managed-csi" },
             ", one of the built-in ",
             { a: "AKS storage classes", href: "/learn/aks-storage-classes" },
-            ". It creates a Standard SSD managed disk. From Kubernetes 1.29, on clusters deployed across multiple availability zones, that disk is zone-redundant (ZRS) instead of locally redundant (LRS).",
+            ". It creates a Standard SSD managed disk. From Kubernetes 1.29, on clusters across multiple availability zones, that disk is zone-redundant (ZRS) instead of locally redundant (LRS).",
           ],
         },
         {
@@ -123,7 +123,7 @@ export const article: Article = {
           text: [
             "On EKS, the Amazon EBS CSI driver, ",
             { code: "ebs.csi.aws.com" },
-            ", creates EBS volumes for persistent volumes. EKS Auto Mode needs no EBS CSI controller installed. Its storage classes must name its own provisioner, ",
+            ", creates EBS volumes for persistent volumes. AWS recommends installing it as an EKS add-on. EKS Auto Mode needs no EBS CSI controller installed, but its storage classes must name its own provisioner, ",
             { code: "ebs.csi.eks.amazonaws.com" },
             ".",
           ],
@@ -135,7 +135,7 @@ export const article: Article = {
             { code: "volumeBindingMode" },
             " sets when it makes the volume. ",
             { code: "Immediate" },
-            ", the default, binds and provisions it as soon as the claim is created, without knowing where its pod will run. For storage that some nodes can’t reach, such as a disk in one zone, that can leave the pod unschedulable.",
+            ", the default, binds and provisions it as soon as the claim is created, without knowing where its pod will run. For storage some nodes can’t reach, such as a disk in one zone, that can leave the pod unschedulable.",
           ],
         },
         {
@@ -145,7 +145,12 @@ export const article: Article = {
             " waits for a pod that uses the claim. The volume is then placed to suit the pod’s scheduling constraints, such as the zone it can run in.",
           ],
         },
-        { kind: "h3", id: "access-modes", title: "Access modes" },
+      ],
+    },
+    {
+      id: "access-modes",
+      title: "Access modes",
+      blocks: [
         {
           kind: "p",
           text: "A claim asks for one or more access modes, and Kubernetes matches it to a PV that offers them:",
@@ -168,12 +173,17 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "An Azure disk is mounted as ",
+            "A volume is mounted with only one access mode at a time, even if it supports several. An Azure disk is mounted as ",
             { code: "ReadWriteOnce" },
-            ", so only one node can use it. For pods on several nodes at once, Microsoft points to Azure Files. A volume is mounted with only one access mode at a time, even if it supports several.",
+            ", so only one node can use it. For pods on several nodes at once, Microsoft points to Azure Files.",
           ],
         },
-        { kind: "h3", id: "reclaim-policies", title: "Reclaim policies" },
+      ],
+    },
+    {
+      id: "reclaim-policies",
+      title: "Reclaim policies",
+      blocks: [
         {
           kind: "p",
           text: "A PV’s reclaim policy decides what happens to it after its claim is deleted:",
@@ -195,9 +205,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "A dynamically provisioned PV inherits its class’s reclaim policy, and a class that sets none defaults to ",
+            "A dynamically provisioned PV takes its class’s reclaim policy, which defaults to ",
             { code: "Delete" },
-            ". AKS’s built-in disk classes delete the Azure disk when its persistent volume is deleted.",
+            ". AKS’s built-in disk classes delete the Azure disk when its PV is deleted.",
           ],
         },
         {
@@ -215,14 +225,14 @@ export const article: Article = {
     },
     {
       id: "a-kubernetes-persistent-volume-example",
-      title: "A Kubernetes persistent volume example",
+      title: "PVC and pod example",
       blocks: [
         {
           kind: "p",
           text: [
-            "The claim below asks for 10\u00a0GiB, read-write on one node, from AKS’s ",
+            "The claim below asks for 10 GiB, read-write on one node, from AKS’s ",
             { code: "managed-csi" },
-            " class. On EKS, name a StorageClass that uses the EBS CSI driver instead. The pod after it mounts the claim at ",
+            " class. On EKS, name a StorageClass that uses the EBS CSI driver instead. The pod mounts the claim at ",
             { code: "/data" },
             ".",
           ],
@@ -251,7 +261,7 @@ export const article: Article = {
           text: [
             "Delete the pod and create it again, and the files in ",
             { code: "/data" },
-            " are still there. The claim and its PV outlive the pod.",
+            " are still there.",
           ],
         },
         {
@@ -267,7 +277,7 @@ export const article: Article = {
     },
     {
       id: "kubernetes-persistent-storage-on-aks-and-eks",
-      title: "Kubernetes persistent storage on AKS and EKS: what you pay for",
+      title: "What a PV costs",
       blocks: [
         {
           kind: "p",
@@ -275,7 +285,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "So a claim is charged by its size, not by its data. A 128\u00a0GiB claim holding 20\u00a0GiB is charged for all 128\u00a0GiB.",
+          text: "So a claim is charged by its size, not by its data. A 128 GiB claim holding 20 GiB is charged for all 128 GiB.",
         },
         { kind: "svg", figure: figure2 },
         {
@@ -347,22 +357,22 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "AKS storage classes: which Azure disk each one creates",
+      title: "Kubernetes storage classes on AKS",
       where: "Learn",
       href: "/learn/aks-storage-classes",
     },
     {
-      title: "How to expand or resize a PVC in Kubernetes, and why it can’t shrink",
+      title: "Expand a PVC in Kubernetes",
       where: "Learn",
       href: "/learn/resize-pvc-kubernetes",
     },
     {
-      title: "StatefulSet vs Deployment in Kubernetes: which one your app needs",
+      title: "StatefulSet vs Deployment",
       where: "Learn",
       href: "/learn/statefulset-vs-deployment",
     },
     {
-      title: "Kubernetes ephemeral storage: requests, limits and eviction",
+      title: "The node was low on resource: ephemeral-storage",
       where: "Learn",
       href: "/learn/kubernetes-ephemeral-storage",
     },

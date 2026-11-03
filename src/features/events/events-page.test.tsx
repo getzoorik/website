@@ -97,15 +97,15 @@ function expected(day: string) {
 
 describe("/events's metadata", () => {
   it("has the mock's title through the template, its description and its canonical", () => {
-    expect(metadata.title).toBe("Kubernetes conferences and FinOps events");
+    expect(metadata.title).toBe("KubeCon, FinOps and cloud conferences");
     expect(metadata.description).toBe(
-      "KubeCon, FinOps X and other Kubernetes conferences and FinOps events for 2026 and 2027, with dates, places and a link to each event’s own page.",
+      "Upcoming KubeCon, FinOps X and other Kubernetes, FinOps and cloud conferences, with dates, places, tickets and a link to each event’s page.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/events" });
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/events",
-      title: "Kubernetes conferences and FinOps events | Zoorik",
+      title: "KubeCon, FinOps and cloud conferences | Zoorik",
     });
   });
 });
@@ -114,28 +114,27 @@ describe("/events", () => {
   it("opens on the utility hero and ends on where the dates come from, then the FinOps lines, with no closing row", () => {
     const main = page().querySelector("main#main")!;
     const hero = main.querySelector(":scope > header.hero.doc-hero#top")!;
-    expect(text(hero.querySelector("h1"))).toBe(
-      "Kubernetes conferences, FinOps and cloud cost events",
-    );
+    expect(text(hero.querySelector("h1"))).toBe("Kubernetes, FinOps and cloud conferences");
     expect(text(hero.querySelector(".doc-deck"))).toBe(
-      `What each event covers, who runs it, tickets and calls for talks, last checked ${eventsListUpdated}.`,
+      `Dates, places and tickets for KubeCon, FinOps X, community days and meetups, checked ${eventsListUpdated}.`,
     );
     const wrap = main.querySelector(":scope > .sec.doc-body > .wrap")!;
     expect(wrap.firstElementChild).toHaveClass("ev-find");
     expect(wrap.firstElementChild!.nextElementSibling).toHaveClass("ev-filters");
     /* Last, the style that shows every event without scripting. */
     expect(wrap.lastElementChild!.tagName).toBe("NOSCRIPT");
-    /* Before it, the FinOps lines (2 Nov 2026): an h2 and a line for each kind of FinOps event still to come. */
+    /* Before it, the FinOps lines: an h2 and a line for each kind of FinOps event still to come (FinOps X, Conf42
+       FinOps, the India calls and the Gurugram meetup on 19 Oct 2026). */
     const finops = wrap.lastElementChild!.previousElementSibling!;
     expect(finops).toHaveClass("doc-prose", "ev-finops");
     expect(text(finops.querySelector("section#finops-conferences > h2#finops-conferences-h"))).toBe(
-      "FinOps conferences in 2026 and 2027",
+      "FinOps events",
     );
-    expect(finops.querySelectorAll("li")).toHaveLength(3);
+    expect(finops.querySelectorAll("li")).toHaveLength(4);
     const source = finops.previousElementSibling!;
     expect(source).toHaveClass("ev-src");
     expect(text(source)).toBe(
-      "Dates and places come from each organizer’s own page. Check there before you book.",
+      "Dates and places are from each organizer’s page. Check there before you book.",
     );
     expect(source.previousElementSibling).toHaveClass("ev-morebtn");
     expect(main.querySelector("#contact")).toBeNull();

@@ -4,48 +4,57 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/kubernetes-
 export const term: GlossaryTerm = {
   slug: "kubernetes-cluster-utilization",
   term: "Kubernetes cluster utilization",
-  title: "What does Kubernetes cluster utilization mean?",
-  meta: "Kubernetes cluster utilization is the share of node CPU and memory pods request or use. Measure it by requests or kubectl top nodes, and see what the gap costs.",
-  h1: "What does Kubernetes cluster utilization mean?",
+  title: "What is Kubernetes cluster utilization?",
+  meta: "Kubernetes cluster utilization is the share of node CPU and memory that pods request or use. How to measure it, and what the unused part costs.",
+  h1: "What is Kubernetes cluster utilization?",
   card: "Kubernetes cluster utilization is the share of your nodes’ CPU and memory that pods request or use.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "Kubernetes cluster utilization is the share of your nodes’ CPU and memory that pods request or use.",
+      text: "Kubernetes cluster utilization is the share of your nodes’ CPU and memory that pods request or use. The rest is capacity you pay for and don’t use.",
     },
   ],
   sections: [
     {
       id: "requests-or-use",
-      title: "How to measure Kubernetes cluster utilization",
+      title: "How to measure it",
       blocks: [
         {
           kind: "ul",
           items: [
-            "By requests: the sum of pod requests, divided by node capacity (what the nodes can give pods).",
-            "By use: the CPU and memory in use, divided by the same capacity. Metrics Server collects it.",
+            [
+              "By requests: the sum of pod requests, divided by the nodes’ ",
+              { a: "allocatable", href: "/learn/kubernetes-allocatable-vs-capacity" },
+              ", the room they have for pods.",
+            ],
+            [
+              "By use: the CPU and memory in use, divided by the same amount. ",
+              { a: "Metrics Server", href: "/learn/glossary/metrics-server" },
+              " collects it.",
+            ],
           ],
         },
         {
           kind: "p",
           text: [
             { code: "kubectl top node" },
-            " shows each node’s CPU and memory in use, measured against its allocatable: the room it has for pods. Add ",
+            " shows each node’s CPU and memory in use, against its allocatable. Add ",
             { code: "--show-capacity" },
-            " to measure against its total capacity instead.",
+            " to use its total capacity instead.",
           ],
         },
-        {
-          kind: "p",
-          text: "Pods can use more than they request. If a container sets only a limit, Kubernetes uses that limit as its request, unless a default request applies.",
-        },
+        { kind: "h3", id: "requests-vs-use", title: "Requests vs use" },
         {
           kind: "p",
           text: "The scheduler places pods by requests. A node whose requests fill it takes no new pods, even when real use is low.",
+        },
+        {
+          kind: "p",
+          text: "Pods can also use more than they request. A container that sets only a limit gets that limit as its request, unless a default request applies.",
         },
       ],
     },
@@ -55,18 +64,18 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "The Amazon EKS guide gives this illustration: 10\u00a0nodes, each at 60% utilization. So 40% of the capacity you run isn’t used.",
+          text: "The Amazon EKS guide gives this example: 10 nodes, each at 60% utilization. So 40% of the capacity you run isn’t used.",
         },
         {
           kind: "p",
-          text: "With same-size nodes, that’s 4\u00a0nodes’ worth, but no node is empty.",
+          text: "With same-size nodes, that’s 4 nodes’ worth, yet no node is empty.",
         },
         { kind: "svg", figure: figure1 },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why cluster utilization matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
@@ -79,7 +88,7 @@ export const term: GlossaryTerm = {
             ],
             [
               { a: "Coral", href: "/coral" },
-              " rebalances CPU and memory requests on AKS and EKS to match real use. Then the same pods fit on fewer nodes, and Coral removes the spare ones.",
+              " rebalances CPU and memory requests on AKS and EKS to match real use. The same pods then fit on fewer nodes, and Coral removes the spare ones, without any downtime.",
             ],
           ],
         },
@@ -108,9 +117,9 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/vertical-pod-autoscaler",
     },
   ],
-  relatedTitle: "Terms related to cluster utilization",
+  relatedTitle: "Related terms",
   next: {
-    title: "Kubernetes overprovisioning: what it is and how to measure it",
+    title: "Kubernetes overprovisioning",
     href: "/learn/kubernetes-overprovisioning",
   },
   sources: [

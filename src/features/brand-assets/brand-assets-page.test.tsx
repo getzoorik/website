@@ -94,7 +94,7 @@ describe("/brand-assets", () => {
     expect(text(hero.querySelector("h1"))).toBe("Brand assets");
     const deck = hero.querySelector(".doc-deck")!;
     expect(text(deck)).toBe(
-      "The Zoorik logo, colours and words, ready to use. Use the files as they are: never redraw or retype the logo.",
+      "The Zoorik logo, colours and words. Use the files as they are: never redraw or retype the logo.",
     );
     expect(deck.querySelector('span[translate="no"]')).toHaveTextContent("Zoorik");
 

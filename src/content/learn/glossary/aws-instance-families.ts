@@ -4,61 +4,57 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/aws-instanc
 export const term: GlossaryTerm = {
   slug: "aws-instance-families",
   term: "AWS instance families",
-  title: "EC2 instance types and AWS instance families",
-  meta: "AWS instance types set an EC2 instance’s CPU, memory and storage. See what EC2 instance families are, how to read c7gn.xlarge, and how they shape cloud cost.",
-  h1: "EC2 instance types and AWS instance families",
+  title: "EC2 instance types and families",
+  meta: "EC2 instance types set an instance’s CPU, memory and storage. How to read a type name such as c7gn.xlarge, and how the family shapes cloud cost.",
+  h1: "EC2 instance types and families",
   card: "AWS instance families are sets of EC2 instance types that differ only in size.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "AWS instance families are sets of EC2 instance types that differ only in size. An AWS EC2 instance is a server, usually a virtual machine (VM). Each instance in AWS has an instance type, such as m7i.large, that sets its compute, memory and storage.",
+      text: "AWS instance families are sets of EC2 instance types that differ only in size. EC2 instances are servers in AWS, usually virtual machines (VMs). Each has an instance type, such as m7i.large, that sets its compute, memory and storage.",
     },
     {
       kind: "p",
-      text: [
-        "Most families keep the same memory per virtual CPU (vCPU) at every size, except the ",
-        { a: "burstable", href: "/learn/glossary/burstable-instance" },
-        " T families.",
-      ],
+      text: "AWS sorts current instance types into six categories: general purpose, compute optimized, memory optimized, storage optimized, accelerated computing and high-performance computing.",
     },
   ],
   sections: [
     {
       id: "aws-instance-family-vs-type",
-      title: "How to read AWS EC2 instance types, such as c7gn.xlarge",
+      title: "How to read a type name",
       blocks: [
         {
           kind: "p",
-          text: "AWS names each instance type by its instance family and size. In c7gn.xlarge, the instance family is c7gn, the part before the period:",
+          text: "In c7gn.xlarge, the instance family is c7gn, the part before the period:",
         },
         {
           kind: "ul",
           items: [
-            "c is the compute optimized series.",
+            "c is the series: compute optimized.",
             "7 is the generation.",
             [
-              "gn holds the options: g for Arm-based ",
+              "gn are the options: g for Arm-based ",
               { a: "Graviton", href: "/learn/glossary/aws-graviton" },
               " processors, n for network and ",
-              { a: "EBS-optimized", href: "/learn/glossary/ebs-optimized-instance" },
+              { a: "EBS optimized", href: "/learn/glossary/ebs-optimized-instance" },
               ".",
             ],
-            "xlarge is the size.",
+            "xlarge, after the period, is the size.",
           ],
         },
         {
           kind: "p",
-          text: "The series letter shows the instance class, one of six categories AWS sorts EC2 types into.",
+          text: "Other common options are a for AMD processors, i for Intel and d for local instance store volumes.",
         },
       ],
     },
     {
       id: "three-ec2-instance-families-at-one-size",
-      title: "Compute optimized vs memory optimized: three EC2 instance families at one size",
+      title: "One size, three families",
       blocks: [
         { kind: "p", text: "At the large size, each has 2\u00a0vCPUs but different memory:" },
         {
@@ -70,35 +66,45 @@ export const term: GlossaryTerm = {
           ],
         },
         { kind: "svg", figure: figure1 },
+        {
+          kind: "p",
+          text: [
+            "In these families, memory per vCPU is the same at every size: 2\u00a0GiB for c7i, 4 for m7i and 8 for r7i. The ",
+            { a: "burstable", href: "/learn/glossary/burstable-instance" },
+            " T families differ: every T3 size up to t3.large has 2\u00a0vCPUs, with 0.5 to 8\u00a0GiB.",
+          ],
+        },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "EC2 instance sizing: why the family matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "p",
           text: [
-            "If a family doesn’t match your pods’ ",
+            "EC2 instance sizing starts with the family. If its memory per vCPU doesn’t match your pods’ ",
             { a: "requests", href: "/learn/glossary/kubernetes-resource-requests" },
-            ", one resource runs out first. Part of the other sits idle on every node.",
+            ", one resource fills first and part of the other sits idle.",
           ],
         },
         {
           kind: "p",
-          text: "Say each pod requests 0.5\u00a0vCPU and 4\u00a0GiB, and compare two AWS EC2 instance sizes. The illustration ignores what a node keeps for the system.",
+          text: "Say each pod requests 0.5\u00a0vCPU and 4\u00a0GiB. Ignore what a node keeps for the system:",
         },
         {
           kind: "ul",
           items: [
-            "An m7i.xlarge has 4\u00a0vCPUs and 16\u00a0GiB. Memory fills after 4\u00a0pods, so 2\u00a0vCPUs sit idle.",
-            "An r7i.xlarge has 4\u00a0vCPUs and 32\u00a0GiB. It fits 8\u00a0pods exactly.",
+            "An m7i.xlarge (4\u00a0vCPUs, 16\u00a0GiB) fills its memory with 4\u00a0pods, so 2\u00a0vCPUs sit idle.",
+            "An r7i.xlarge (4\u00a0vCPUs, 32\u00a0GiB) fits 8\u00a0pods exactly.",
           ],
         },
         {
           kind: "p",
           text: [
-            "So AWS EC2 sizing for 8\u00a0pods means two m7i.xlarge nodes or one r7i.xlarge. Compare the price per pod before you ",
+            "So 8\u00a0pods need two m7i.xlarge nodes or one r7i.xlarge. Compare the price per pod before you ",
+            { a: "choose EKS instance types", href: "/learn/how-to-choose-eks-instance-types" },
+            " or ",
             {
               a: "change a node group’s instance type",
               href: "/learn/change-eks-node-group-instance-type",
@@ -117,7 +123,7 @@ export const term: GlossaryTerm = {
     },
     {
       title: "Burstable instance",
-      line: "The T series, with burstable performance.",
+      line: "The T families, which run on CPU credits.",
       href: "/learn/glossary/burstable-instance",
     },
     {
@@ -131,7 +137,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/node-pool",
     },
   ],
-  relatedTitle: "More terms on instance types and node pools",
+  relatedTitle: "Related terms",
   next: {
     title: "How to change an EKS node group instance type",
     href: "/learn/change-eks-node-group-instance-type",

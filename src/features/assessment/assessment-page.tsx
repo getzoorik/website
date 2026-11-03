@@ -50,7 +50,7 @@ function demoView(product: ProductId): DemoView {
  * The whole of `/assessment`:
  *
  *   Hero           on the left "Built for Azure and AWS", the h1, its one line under the h1 (the site's hero deck) and,
- *                  under them, "Choose the assessment you want." over the switch with categories; on the right, What you get's terminal with the chosen product's
+ *                  under them, "Choose what to assess." over the switch with categories; on the right, What you get's terminal with the chosen product's
  *                  one line to copy, how to sign in to the cloud and where Cloud Shell keeps the PDF, each cloud by its
  *                  mark. Dark, with no turning mark.
  *   What you get   Coral's run and Amoeba's run side by side, each typed once as it comes into view, then its example

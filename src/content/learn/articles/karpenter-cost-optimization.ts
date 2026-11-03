@@ -5,74 +5,59 @@ import { figure as figure2 } from "@/features/learn/figures/karpenter-cost-optim
 export const article: Article = {
   slug: "karpenter-cost-optimization",
   title: "Karpenter cost optimization: the request gap",
-  meta: "Karpenter cost optimization starts with pod requests: how it picks and removes nodes, Karpenter best practices for spot instances, and finding the request gap.",
-  h1: "Karpenter cost optimization: the requests it can’t fix",
-  deck: "Karpenter picks low-cost machines well, but only for the requests your pods already set.",
-  card: "What Karpenter does to reduce node cost, and why over-requested pods still buy machines they don’t use.",
+  meta: "Karpenter cost optimization: the NodePool, spot and scheduler settings worth checking, and how to find pod requests set above real use.",
+  h1: "Karpenter cost optimization",
+  deck: "Settings that help Karpenter buy cheaper nodes, and the oversized requests it can’t fix.",
+  card: "Settings that help Karpenter reduce node cost, and the oversized requests it can’t fix.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes autoscaling",
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "adil",
   cover: "/learn-covers/zoorik-learn-karpenter-cost-optimization-1200x630.webp",
   coverAlt:
     "Karpenter cost optimization: requests as set stand tall, requests near use stand short, with the same use in both",
   short:
-    "Karpenter cost optimization comes from two jobs: launching low-priced instance types that fit pending pods, and consolidating nodes into fewer or cheaper ones. Much of the remaining saving can sit in requests set above what pods use.",
+    "Karpenter reduces node cost in two ways. It launches a low-priced instance type that fits the pending pods, and consolidation deletes or replaces underused nodes. You help it by allowing many instance types and spot capacity, and by packing pods tightly. Neither job changes pod requests, so requests set above real use still buy capacity your pods don’t use.",
   sections: [
     {
       id: "karpenter-cost-savings-come-from-two-jobs",
-      title: "Karpenter cost savings come from two jobs, both sized by requests",
+      title: "How Karpenter reduces cost",
       blocks: [
         {
+          kind: "h3",
+          id: "launching-a-low-cost-type-that-fits",
+          title: "Launching",
+        },
+        {
           kind: "p",
-          text: "Picture a Deployment of 30\u00a0replicas, each requesting 1\u00a0CPU and 2\u00a0GiB of memory. Their containers peak at 0.25\u00a0CPU and 0.8\u00a0GiB.",
+          text: "Karpenter watches for pods the Kubernetes scheduler (kube-scheduler) can’t place. It batches them and bin-packs them “based on CPU, memory, and GPUs required”.",
         },
         {
           kind: "p",
           text: [
-            "Karpenter has to buy room for 30\u00a0CPU, plus ",
+            "The packing counts node overhead and the ",
             { a: "DaemonSets", href: "/learn/glossary/daemonset" },
-            " and node overhead. The pods use 7.5\u00a0CPU at their busiest. Both cost jobs take the 30\u00a0CPU as given.",
+            " that will run on the new node. The smallest instance type that holds the batch is the most efficient fit. Karpenter sends it to Amazon EC2 Fleet with 59 larger types, 60 options in all.",
           ],
-        },
-        {
-          kind: "h3",
-          id: "launching-a-low-cost-type-that-fits",
-          title: "Launching: a low-cost type that fits",
-        },
-        {
-          kind: "p",
-          text: "The first job is launching. Karpenter watches for pods that the Kubernetes scheduler (kube-scheduler) can’t place. It batches them and bin-packs them “based on CPU, memory, and GPUs required”.",
-        },
-        {
-          kind: "p",
-          text: "The packing counts node overhead and the DaemonSets that will run on the new node. Then Karpenter launches a low-cost instance type that fits.",
         },
         {
           kind: "callout",
           label: "For engineers",
-          text: "Karpenter’s FAQ defines the most efficient fit as the smallest type that can hold the batch. That type goes to Amazon EC2 Fleet along with 59 larger types, 60 options in all.",
-        },
-        {
-          kind: "p",
-          text: "Fleet then applies the price-capacity-optimized allocation strategy, which for on-demand capacity works out the same as choosing the lowest price. For spot, Fleet weighs price against the chance of interruption, so you may not get the strictly cheapest spot type.",
+          text: "Fleet chooses with the price-capacity-optimized allocation strategy. For on-demand capacity, that works out the same as the lowest price. For spot, it weighs price against the chance of interruption, so you may not get the cheapest spot type.",
         },
         {
           kind: "h3",
           id: "consolidation-delete-or-replace",
-          title: "Consolidation: delete or replace",
+          title: "Consolidation",
         },
-        {
-          kind: "p",
-          text: "Consolidation is the second job. Karpenter’s disruption docs describe two actions:",
-        },
+        { kind: "p", text: "Consolidation takes one of two actions:" },
         {
           kind: "ul",
           items: [
             "Deletion removes a node when all its pods fit on free capacity elsewhere.",
-            "Replacement applies when the pods fit on a mix of free capacity and one new, cheaper node.",
+            "Replacement applies when a node’s pods fit on a mix of free capacity and one new, cheaper node.",
           ],
         },
         {
@@ -86,36 +71,36 @@ export const article: Article = {
             { code: "consolidateAfter" },
             " to ",
             { code: "0s" },
-            ". So underused nodes are candidates from the start.",
+            ", so underused nodes are candidates at once.",
           ],
         },
         {
           kind: "p",
           text: [
             { a: "Karpenter consolidation", href: "/learn/karpenter-consolidation" },
-            " covers the policies, timers and budgets. This article follows the v1.15 docs, the latest on karpenter.sh in October 2026.",
+            " covers policies, timers and budgets. This article follows the Karpenter v1.15 docs.",
           ],
         },
       ],
     },
     {
       id: "what-does-karpenter-cost-to-run",
-      title: "What does Karpenter cost to run?",
+      title: "What Karpenter costs",
       blocks: [
         {
           kind: "p",
           text: [
             { a: "Karpenter", href: "/learn/what-is-karpenter" },
-            " is an open-source project, so the software has no licence fee. The Karpenter cost that matters is the EC2 instances it launches. Our ",
+            " is open source, so there is no licence fee. You pay for the EC2 instances it launches. The ",
             { a: "EKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
             " prices a node pool’s instances at list price.",
           ],
         },
-        { kind: "p", text: "Around the instances sit two small items:" },
+        { kind: "p", text: "Two small items sit beside the instances:" },
         {
           kind: "ul",
           items: [
-            "The controller, which the Helm chart installs as a Deployment. AWS advises running it on a small node group with at least one worker node, or on EKS Fargate. Never run it on a node that Karpenter manages.",
+            "The controller. AWS advises running it on a small node group with at least one worker node, or on EKS Fargate. Never run it on a node Karpenter manages.",
             [
               "An Amazon SQS queue, if you use spot. Interruption handling reads it, and you name it in the controller’s ",
               { code: "--interruption-queue" },
@@ -128,32 +113,28 @@ export const article: Article = {
           text: [
             "A NodePool without ",
             { code: "spec.limits" },
-            " keeps adding capacity as pods need it. Only your cloud provider’s quotas cap it. There is no cluster-wide limit, only one per NodePool.",
+            " keeps adding capacity as pods need it, up to your cloud provider’s quotas. Limits apply per NodePool. There is no cluster-wide limit. AWS recommends setting limits, plus billing alarms that warn you when spend passes a threshold.",
           ],
-        },
-        {
-          kind: "p",
-          text: "AWS recommends setting limits and creating alarms that warn you when your cost passes a threshold.",
         },
       ],
     },
     {
       id: "karpenter-cost-optimization",
-      title: "Karpenter best practices for cost: the settings worth checking",
+      title: "Cost settings to check",
       blocks: [
         {
           kind: "p",
-          text: "The cost advice in the EKS Best Practices Guide and Karpenter’s own docs comes down to a few choices. Each one helps Karpenter buy fewer or cheaper machines for the same requests.",
+          text: "Each setting below helps Karpenter buy fewer or cheaper machines for the same requests.",
         },
         {
           kind: "h3",
           id: "let-karpenter-choose-from-many-instance-types",
-          title: "Let Karpenter choose from many instance types",
+          title: "Allow many instance types",
         },
         {
           kind: "p",
           text: [
-            "By default, Karpenter can use every instance type EC2 offers in your cluster’s region and Availability Zones. AWS advises against narrowing that list too far, especially with ",
+            "By default, Karpenter may use every instance type EC2 offers in your cluster’s Region and Availability Zones. AWS advises against narrowing that list too far, especially with ",
             { a: "Spot Instances", href: "/learn/glossary/spot-instance" },
             ".",
           ],
@@ -161,36 +142,30 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "The more instance types Karpenter may use, the better EC2 can keep your spot instances running. To keep out machines you never want, exclude them with ",
+            "The more types Karpenter may use, the better EC2 can keep your spot instances running. To keep out types you never want, exclude them with ",
             { code: "NotIn" },
             " on ",
             { code: "node.kubernetes.io/instance-type" },
-            ". Don’t list only a few types you like.",
+            ", rather than listing a few you like.",
           ],
         },
         {
           kind: "h3",
           id: "allow-spot-for-pods-that-can-move",
-          title: "Karpenter spot instances: allow spot for pods that can move",
+          title: "Allow spot capacity",
         },
         {
           kind: "p",
           text: [
             "The ",
             { code: "karpenter.sh/capacity-type" },
-            " requirement takes three values: ",
+            " requirement takes ",
             { code: "reserved" },
             ", ",
             { code: "spot" },
             " and ",
             { code: "on-demand" },
-            ". When a NodePool allows more than one, Karpenter tries them in that order.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "It moves down the list whenever the type it wants has no capacity. Here ",
+            ". When a NodePool allows more than one, Karpenter tries them in that order. It falls back to the next when one has no capacity. Here ",
             { code: "reserved" },
             " means EC2 capacity reservations, not ",
             { a: "Reserved Instances", href: "/learn/glossary/reserved-instance" },
@@ -199,10 +174,19 @@ export const article: Article = {
         },
         {
           kind: "p",
+          text: "Spot suits pods that can move. Turn on interruption handling. When a spot instance gets its 2-minute notice, Karpenter starts a new node so pods can move before the instance is reclaimed.",
+        },
+        {
+          kind: "h3",
+          id: "fill-commitments-first",
+          title: "Fill commitments first",
+        },
+        {
+          kind: "p",
           text: [
             "If you have bought ",
             { a: "Savings Plans", href: "/learn/glossary/savings-plan" },
-            " or Reserved Instances, the scheduling docs suggest a separate NodePool for those instance types. Give it a higher ",
+            " or Reserved Instances, give those instance types their own NodePool. Karpenter’s scheduling docs suggest a higher ",
             { code: "weight" },
             " and ",
             { code: "limits" },
@@ -210,19 +194,22 @@ export const article: Article = {
           ],
         },
         {
-          kind: "p",
-          text: "With spot, turn on interruption handling. When a spot instance gets its 2-minute notice, Karpenter starts a new node so the pods can move before the instance is reclaimed.",
+          kind: "h3",
+          id: "example-nodepool",
+          title: "Example NodePool",
         },
         {
           kind: "p",
-          text: "A general-purpose NodePool along these lines allows both capacity types. It uses the C, M and R instance types of generation 3 or later, which Karpenter’s FAQ recommends for most generic workloads.",
+          text: "This general-purpose NodePool allows spot and on-demand C, M and R instance types of generation 3 or later. Karpenter’s FAQ recommends those for most generic workloads.",
         },
         {
           kind: "p",
           text: [
             "The ",
             { code: "limits" },
-            " block caps the pool. Consolidation considers a node once no pod has been added to it or removed from it for one minute:",
+            " block caps the pool. With ",
+            { code: "consolidateAfter: 1m" },
+            ", a node becomes a candidate once no pod has been added or removed for one minute:",
           ],
         },
         {
@@ -234,12 +221,12 @@ export const article: Article = {
     },
     {
       id: "karpenter-spot-to-spot-consolidation-a-feature",
-      title: "Karpenter spot-to-spot consolidation: a feature gate and a 15-type floor",
+      title: "Spot-to-spot consolidation",
       blocks: [
         {
           kind: "p",
           text: [
-            "Out of the box, consolidation can delete spot nodes, but it won’t replace one with a cheaper spot node. That takes the ",
+            "By default, consolidation can delete a spot node but won’t replace it with a cheaper spot node. That needs the ",
             { code: "SpotToSpotConsolidation" },
             " feature gate. It has been alpha since v0.34 and is still off by default in v1.15.",
           ],
@@ -247,7 +234,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "You turn it on in the Karpenter deployment, with the ",
+            "Turn it on in the Karpenter deployment, with the ",
             { code: "FEATURE_GATES" },
             " environment variable or the ",
             { code: "--feature-gates" },
@@ -258,27 +245,27 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Even with the gate on, a one-for-one spot replacement needs at least 15 instance types priced below the current node in the launch. Replacing several spot nodes with one has no such floor.",
+          text: "Even with the gate on, replacing one spot node with one cheaper spot node needs at least 15 instance types priced below the current node. Replacing several spot nodes with one has no such floor.",
         },
         {
           kind: "p",
-          text: "The floor exists because the cheapest spot type isn’t always the one launched, given its interruption risk. Consolidating again and again down to the cheapest type could land on one with very high rates of interruption. Karpenter’s docs call that a “race to the bottom”.",
+          text: "The floor exists because the cheapest spot type isn’t always launched, given its interruption risk. Without it, repeated swaps could end on types with very high interruption rates. Karpenter’s docs call that a “race to the bottom”.",
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
-          text: "A spot NodePool narrowed to a handful of instance types can’t meet the floor for single-node swaps. That is another reason to keep the list wide.",
+          text: "A spot NodePool narrowed to a few instance types can’t meet the floor for one-for-one swaps. That is one more reason to keep the list wide.",
         },
       ],
     },
     {
       id: "pack-pods-the-way-karpenter-does",
-      title: "Pack pods the way Karpenter does",
+      title: "Pack pods tightly",
       blocks: [
         {
           kind: "p",
           text: [
-            "Karpenter packs pods tightly in its simulation, but kube-scheduler places them. Its default ",
+            "Karpenter simulates a tight bin-packing of pending pods, but kube-scheduler places them. The scheduler’s default ",
             { code: "LeastAllocated" },
             " scoring spreads pods across nodes.",
           ],
@@ -288,79 +275,65 @@ export const article: Article = {
           text: [
             "Karpenter’s scheduling docs recommend the ",
             { code: "MostAllocated" },
-            " strategy instead. The scheduler’s placement then matches Karpenter’s packing, and more nodes empty out for consolidation to remove. On EKS you set it through advanced control plane configuration, on Kubernetes 1.31 or later.",
+            " strategy instead. Placement then matches Karpenter’s packing, and lightly used nodes get no new pods, so consolidation can remove them. On EKS, you set it through advanced control plane configuration, on Kubernetes 1.31 or later.",
           ],
         },
         {
           kind: "p",
           text: [
-            "Tighter packing leaves less room for pods to burst above their requests. So a pod can be killed for running out of memory (an ",
-            { a: "OOM kill", href: "/learn/oomkilled-exit-code-137" },
-            ") or have its ",
-            { a: "CPU throttled", href: "/learn/glossary/kubernetes-cpu-throttling" },
-            " sooner.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "More pods are also affected when one node fails. ",
+            "The trade-offs: more pods are affected when one node fails, and new pods can wait in Pending while capacity is added. ",
             { a: "Kubernetes bin packing", href: "/learn/kubernetes-bin-packing" },
-            " covers both strategies.",
+            " compares both strategies.",
           ],
         },
       ],
     },
     {
       id: "karpenter-buys-what-pods-request-not-what",
-      title: "Karpenter buys what pods request, not what they use",
+      title: "The request gap",
       blocks: [
         {
           kind: "p",
           text: [
-            "None of the settings above changes the ",
+            "None of these settings changes pod ",
             { a: "requests", href: "/learn/glossary/kubernetes-resource-requests" },
-            ". Karpenter’s docs say so directly: “Instance type selection math only uses ",
+            ". Karpenter’s docs say so: “Instance type selection math only uses ",
             { code: "requests" },
             "”.",
           ],
         },
         {
           kind: "p",
-          text: "The kube-scheduler works the same way. Its documentation says the scheduler refuses to place a Pod on a node if the capacity check fails. That holds even when “actual memory or CPU resource usage on nodes is very low”.",
+          text: "The kube-scheduler works the same way. It refuses a node where a pod’s requests don’t fit, even when “actual memory or CPU resource usage on nodes is very low”. So the EKS Best Practices Guide asks for accurate requests on every workload, especially when you use consolidation.",
         },
         {
           kind: "p",
-          text: "AWS names the consequence. Karpenter launches the best-fitting nodes “when its information about your workloads requirements is accurate.”",
-        },
-        {
-          kind: "p",
-          text: "DaemonSets multiply the effect. When Karpenter sizes a node, it adds the requests of every DaemonSet that will run there to the pending pods’ requests. So an oversized DaemonSet request is paid for on every node the DaemonSet runs on.",
+          text: "DaemonSets multiply the gap. When Karpenter sizes a node, it adds the requests of every DaemonSet that will run there. An oversized DaemonSet request is paid for on every node it runs on.",
         },
         {
           kind: "h3",
           id: "the-30-replicas-worked-through",
-          title: "The 30\u00a0replicas, worked through",
+          title: "Example: 30 replicas",
         },
         {
           kind: "callout",
           label: "Worked example",
-          text: "For CPU, the opening’s 30\u00a0replicas request 30 × 1 = 30\u00a0CPU and use 30 × 0.25 = 7.5\u00a0CPU at peak. So 30 − 7.5 = 22.5\u00a0CPU, three quarters of it, sits idle.",
+          text: "A Deployment runs 30 replicas, each requesting 1 CPU and 2 GiB of memory. At peak, each uses 0.25 CPU and 0.8 GiB. Together they request 30 CPU but use 7.5 CPU, so 22.5 CPU, three quarters, sits idle.",
         },
         {
           kind: "p",
-          text: "For memory, they request 30 × 2 = 60\u00a0GiB and use 30 × 0.8 = 24\u00a0GiB. If the nodes are packed tightly by requests, consolidation finds nothing to remove.",
+          text: "For memory, they request 60 GiB and use 24 GiB. Karpenter buys room for all of it, plus DaemonSets and node overhead. If the nodes are packed tightly by requests, consolidation finds nothing to remove.",
         },
         {
           kind: "p",
-          text: "Now set the requests a little above the peak, say 0.3\u00a0CPU and 1\u00a0GiB. The same replicas then ask for 30 × 0.3 = 9\u00a0CPU and 30 × 1 = 30\u00a0GiB. That is 30 − 9 = 21\u00a0CPU and 60 − 30 = 30\u00a0GiB less.",
+          text: "Now set the requests a little above the peak, say 0.3 CPU and 1 GiB. The replicas then request 9 CPU and 30 GiB: 21 CPU and 30 GiB less.",
         },
         {
           kind: "p",
           text: [
-            "The ",
+            "That leaves 1.5 CPU and 6 GiB of ",
             { a: "headroom", href: "/learn/glossary/kubernetes-headroom" },
-            " over the peak is 9 − 7.5 = 1.5\u00a0CPU and 30 − 24 = 6\u00a0GiB. Karpenter’s next launches are sized for that. Nodes that the old requests held become candidates to delete or replace.",
+            " over the peak. Karpenter sizes its next launches for the new requests. Nodes the old requests held become candidates to delete or replace.",
           ],
         },
         { kind: "svg", figure: figure2 },
@@ -368,7 +341,7 @@ export const article: Article = {
     },
     {
       id: "how-to-find-the-request-gap-on",
-      title: "How to find the request gap on a Karpenter node",
+      title: "Find the request gap",
       blocks: [
         { kind: "p", text: "Three commands show it." },
         { kind: "ol", items: ["List the nodes Karpenter launched for one NodePool."] },
@@ -384,9 +357,7 @@ export const article: Article = {
             [
               "Read what a node’s pods request. The ",
               { code: "Allocated resources" },
-              " block of ",
-              { code: "kubectl describe nodes" },
-              " totals the CPU and memory requests and limits of the node’s pods. Each total comes with a percentage.",
+              " block totals their CPU and memory requests and limits, each with its share of the node.",
             ],
           ],
         },
@@ -398,7 +369,7 @@ export const article: Article = {
             [
               "Read what the pods use, namespace by namespace. ",
               { code: "kubectl top" },
-              " shows figures from the cluster’s metrics pipeline. A new pod’s figures can take a few minutes to appear.",
+              " reads the cluster’s metrics pipeline, so a new pod’s figures can take a few minutes to appear.",
             ],
           ],
         },
@@ -412,47 +383,46 @@ export const article: Article = {
           text: "A node at 90% of its CPU requested, whose pods use a small share of that, is the gap Karpenter can’t see.",
         },
         {
-          kind: "callout",
-          label: "Watch out",
-          text: "Requests below real use let Karpenter put too many pods on one node. The EKS Best Practices Guide says scheduling and consolidation compare requests with allocatable capacity and ignore limits.",
-        },
-        {
-          kind: "p",
-          text: "So pods whose memory limit sits above their request can burst together and be OOM-killed. For memory and other non-CPU resources, AWS recommends setting requests equal to limits when you use consolidation. Aim for measured use plus headroom, not small requests everywhere.",
-        },
-        {
           kind: "p",
           text: [
-            "Size from a window that includes your peaks. ",
             { code: "kubectl top" },
-            " reports use only at the moment you run it.",
+            " shows use only at the moment you run it. Size from a window that includes your peaks.",
+          ],
+        },
+        {
+          kind: "callout",
+          label: "Watch out",
+          text: [
+            "Requests below real use let Karpenter put too many pods on one node. Scheduling and consolidation compare requests with allocatable capacity and ignore limits. So pods whose memory limit sits above their request can burst together and be ",
+            { a: "OOM-killed", href: "/learn/oomkilled-exit-code-137" },
+            ". A pod using more memory than it requests is also likely to be evicted when its node runs short.",
           ],
         },
         {
           kind: "p",
-          text: "When a container uses more memory than its request and its node runs short of memory, its pod is likely to be evicted. A container that uses more than its memory limit may be terminated by the kernel in an OOM kill.",
+          text: "For memory and other non-CPU resources, AWS recommends setting requests equal to limits when you use consolidation. Aim for measured use plus headroom.",
         },
         {
           kind: "p",
           text: [
             { a: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
-            " covers choosing requests from usage history, the headroom to leave and how to roll changes out. The ",
+            " covers choosing requests from usage history and rolling changes out. The ",
             { a: "Kubernetes cost optimization guide", href: "/kubernetes-cost-optimization" },
-            " sets out the order: requests, then nodes.",
+            " sets the order: requests first, then nodes.",
           ],
         },
       ],
     },
     {
       id: "where-coral-fits-with-karpenter",
-      title: "Where Coral fits with Karpenter",
+      title: "Where Coral fits",
       blocks: [
         {
           kind: "p",
           text: [
-            "Karpenter, and node auto provisioning on AKS, choose and remove machines from requests they don’t change. ",
+            "Karpenter, and node auto provisioning (NAP) on AKS, choose and remove machines from requests they don’t change. ",
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS, and it rebalances those requests to real use.",
+            " rebalances those requests to real use on AKS and EKS, so the same autoscaler can run fewer or smaller nodes.",
           ],
         },
         {
@@ -466,19 +436,15 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Pod sizing starts only when you switch on “Automatically optimize” for a policy or a workload. Running pods are resized in place on Kubernetes 1.33+ nodes, and on older nodes they restart one at a time within their ",
+            "Pod sizing starts only when you switch on “Automatically optimize” for a policy or a workload. Running pods are resized in place on Kubernetes 1.33+ nodes. On older nodes they restart one at a time, within their ",
             { a: "PodDisruptionBudgets", href: "/learn/glossary/pod-disruption-budget" },
-            ".",
+            ". A smaller request reduces cost once the freed capacity lets a node go.",
           ],
         },
         {
           kind: "p",
-          text: "The same Karpenter can then run fewer or smaller nodes. A smaller request reduces your cloud cost once the freed capacity lets a node go.",
-        },
-        {
-          kind: "p",
           text: [
-            "Coral leaves the pools Karpenter consolidates to Karpenter, and never changes your Karpenter settings. A pod or node marked ",
+            "Coral never changes your Karpenter settings, and leaves the pools Karpenter consolidates to Karpenter. A pod or node marked ",
             { code: 'karpenter.sh/do-not-disrupt: "true"' },
             " stays where it is.",
           ],
@@ -490,9 +456,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "If an EKS cluster has no autoscaler, connecting it to Coral sets up Karpenter, with your approval. ",
+            "On an EKS cluster with no autoscaler, connecting Coral sets up Karpenter, with your approval. ",
             { a: "Coral works with Karpenter", href: "/coral-works-with-karpenter" },
-            " sets out who does what. The FAQ covers ",
+            " sets out who does what. The FAQ answers ",
             {
               a: "whether you need Coral with Karpenter",
               href: "/coral-faq#do-i-need-coral-with-karpenter",
@@ -548,25 +514,30 @@ export const article: Article = {
       title: "“Resource Management for Pods and Containers”",
       url: "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
     },
+    {
+      publisher: "Kubernetes",
+      title: "“kubectl top pod”",
+      url: "https://kubernetes.io/docs/reference/kubectl/generated/kubectl_top/kubectl_top_pod/",
+    },
   ],
   related: [
     {
-      title: "What is Karpenter? How it picks and removes nodes",
+      title: "What is Karpenter in Kubernetes?",
       where: "Learn",
       href: "/learn/what-is-karpenter",
     },
     {
-      title: "Karpenter consolidation: policies, budgets and limits",
+      title: "Karpenter consolidation",
       where: "Learn",
       href: "/learn/karpenter-consolidation",
     },
     {
-      title: "Kubernetes pod right sizing: set requests from real use",
+      title: "Kubernetes requests vs limits",
       where: "Learn",
       href: "/learn/kubernetes-pod-right-sizing",
     },
     {
-      title: "Kubernetes bin packing: fewer nodes for the same pods",
+      title: "Kubernetes bin packing",
       where: "Learn",
       href: "/learn/kubernetes-bin-packing",
     },
@@ -576,5 +547,5 @@ export const article: Article = {
       href: "/learn/how-to-choose-eks-instance-types",
     },
   ],
-  relatedTitle: "More on Karpenter cost and pod requests",
+  relatedTitle: "More on Karpenter and requests",
 };

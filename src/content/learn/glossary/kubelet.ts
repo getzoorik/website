@@ -4,74 +4,79 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/kubelet/1";
 export const term: GlossaryTerm = {
   slug: "kubelet",
   term: "kubelet",
-  title: "What is the kubelet in Kubernetes?",
-  meta: "The kubelet is the agent on every Kubernetes node. It starts and checks your pods, reserves node capacity, and evicts pods when memory or disk runs short.",
-  h1: "What is the kubelet in Kubernetes?",
-  card: "The kubelet is the primary node agent that runs on each Kubernetes node.",
+  title: "What is the kubelet?",
+  meta: "The kubelet is the agent on every Kubernetes node. It runs your pods, checks their health, holds back system capacity and evicts pods under pressure.",
+  h1: "What is the kubelet?",
+  card: "The kubelet is the agent that runs on every Kubernetes node.",
   group: "kubernetes",
   product: "coral",
   published: "2026-11-02",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "The kubelet is the primary node agent that runs on each Kubernetes node. It makes sure the containers in each pod spec, the YAML or JSON that describes a pod, are running and healthy.",
-    },
-    {
-      kind: "p",
-      text: "It takes pod specs mainly from the API server. It doesn’t manage containers that Kubernetes didn’t create.",
+      text: "The kubelet is the agent that runs on every Kubernetes node. It reads each pod’s spec, mostly from the API server, and keeps the containers it describes running and healthy.",
     },
     { kind: "svg", figure: figure1 },
   ],
   sections: [
     {
       id: "what-the-kubelet-does-on-each-node",
-      title: "What the kubelet does on each node",
+      title: "What the kubelet does",
       blocks: [
         {
           kind: "ul",
           items: [
-            "Registers its node with the API server. That’s the default, and the pattern most distributions use.",
-            "Runs each container’s probes: startup, liveness and readiness. They decide when it has started, when to restart it and when it can take traffic.",
+            "Registers its node with the API server, by default.",
+            "Runs each container’s probes: startup (has it started?), liveness (should it restart?) and readiness (can it take traffic?).",
             [
-              "Sends its node’s heartbeats: status updates, and a Lease in the ",
+              "Sends heartbeats: node status updates and a Lease in the ",
               { code: "kube-node-lease" },
-              " namespace. If they stop, the control plane marks the node Unknown. By default, it starts evicting the node’s pods 5\u00a0minutes later.",
+              " namespace. If they stop, the node is marked Unknown, and by default its pods are evicted 5 minutes later.",
             ],
             [
-              "Caps how many pods its node can run through its ",
+              "Limits its node to 110 pods by default, through its ",
               { a: "max pods", href: "/learn/glossary/max-pods-per-node" },
-              " setting, which defaults to 110.",
+              " setting.",
             ],
             [
-              "Serves the CPU and memory use of its node and its pods at ",
+              "Serves its node’s and pods’ CPU and memory use at ",
               { code: "/metrics/resource" },
-              ". ",
+              ", which ",
               { a: "Metrics Server", href: "/learn/glossary/metrics-server" },
-              " collects them from each kubelet.",
+              " collects.",
             ],
+            "Doesn’t manage containers that Kubernetes didn’t create.",
           ],
         },
       ],
     },
     {
       id: "how-the-kubelet-reserves-node-capacity",
-      title: "How the kubelet reserves node capacity",
+      title: "Reserved capacity",
       blocks: [
         {
           kind: "p",
-          text: "By default, pods can use a node’s whole capacity. The kubelet’s Node Allocatable feature reserves CPU, memory and ephemeral storage for system daemons. Kube-reserved covers the kubelet and the container runtime, and system-reserved covers OS daemons.",
+          text: "By default, pods can use all of a node’s capacity. The kubelet’s Node Allocatable feature holds some back:",
+        },
+        {
+          kind: "ul",
+          items: [
+            "Kube-reserved, for Kubernetes daemons such as the kubelet and the container runtime.",
+            "System-reserved, for OS daemons such as sshd.",
+            "The hard eviction threshold, for memory and ephemeral storage.",
+          ],
         },
         {
           kind: "p",
-          text: "Allocatable, what pods can use, is capacity minus those two reserves and, for memory and storage, the hard eviction threshold. The Kubernetes docs’ example node, with 16\u00a0CPUs and 32Gi of memory, leaves pods 14.5\u00a0CPUs and 28.5Gi.",
+          text: "Allocatable, what pods can use, is capacity minus those three. In the Kubernetes docs’ example, a node with 16 CPUs and 32Gi of memory leaves pods 14.5 CPUs and 28.5Gi.",
         },
         {
           kind: "p",
           text: [
-            "AKS sets CPU and memory reserves on every node for you, so a node’s ",
+            "AKS sets CPU and memory reserves on every node, so a node’s ",
             {
-              a: "allocatable is less than its total",
+              a: "allocatable is less than its capacity",
               href: "/learn/kubernetes-allocatable-vs-capacity",
             },
             ".",
@@ -81,55 +86,61 @@ export const term: GlossaryTerm = {
     },
     {
       id: "how-the-kubelet-evicts-pods-under-node",
-      title: "How the kubelet evicts pods under node pressure",
+      title: "Node-pressure eviction",
       blocks: [
         {
           kind: "p",
+          text: "The kubelet watches memory, disk space, inodes and process IDs on its node. When one crosses a threshold, it first frees what it can, such as dead containers and unused images. Then it evicts pods.",
+        },
+        {
+          kind: "p",
           text: [
-            "The kubelet watches memory, disk space, filesystem inodes and process IDs on its node. When one crosses a threshold, it first frees node resources, such as unused container images. Then it evicts pods, ignoring ",
+            "The default hard thresholds on Linux are ",
+            { code: "memory.available<100Mi" },
+            ", ",
+            { code: "nodefs.available<10%" },
+            ", ",
+            { code: "imagefs.available<15%" },
+            ", ",
+            { code: "nodefs.inodesFree<5%" },
+            " and ",
+            { code: "imagefs.inodesFree<5%" },
+            ". On a hard threshold, the kubelet stops the pod at once.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "Eviction ignores ",
             { a: "PodDisruptionBudgets", href: "/learn/glossary/pod-disruption-budget" },
-            " and, on a hard threshold, any grace period.",
+            " and the pod’s own grace period. Pods go in this order:",
           ],
         },
         {
           kind: "ul",
           items: [
             [
-              "The default hard thresholds on Linux nodes are ",
-              { code: "memory.available<100Mi" },
-              ", ",
-              { code: "nodefs.available<10%" },
-              ", ",
-              { code: "imagefs.available<15%" },
-              ", ",
-              { code: "nodefs.inodesFree<5%" },
-              " and ",
-              { code: "imagefs.inodesFree<5%" },
-              ".",
+              { a: "BestEffort and Burstable pods", href: "/learn/glossary/kubernetes-qos-class" },
+              " using more than they request go first, by priority, then by how far over they are.",
             ],
-            [
-              {
-                a: "BestEffort and Burstable pods",
-                href: "/learn/glossary/kubernetes-qos-class",
-              },
-              " that use more than they request go first, by priority, then by how far over they are. Guaranteed pods, and Burstable pods under their requests, go last.",
-            ],
+            "Guaranteed pods, and Burstable pods using less than they request, go last, by priority.",
           ],
         },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why the kubelet matters for your cloud cost",
+      title: "Why it matters for cost",
       blocks: [
         {
           kind: "p",
-          text: "The kubelet’s reserves come off every node you pay for. The scheduler fills only what’s left, by pod requests.",
+          text: "The kubelet’s reserves come off every node you pay for. The scheduler places pods into what’s left by their requests, not their real use.",
         },
         {
           kind: "ul",
           items: [
-            "A pod that uses more than it requests is first in line when the kubelet evicts. Requests far above use fill nodes on paper while their CPU and memory sit mostly idle.",
+            "Requests far above real use fill nodes on paper while their CPU and memory sit idle. You pay for more nodes than the pods need.",
+            "Requests below real use put pods first in line when the kubelet evicts.",
             [
               { a: "Coral", href: "/coral" },
               " rebalances CPU and memory requests on AKS and EKS to match real use, and removes the nodes you don’t need.",
@@ -137,7 +148,7 @@ export const term: GlossaryTerm = {
             [
               "The ",
               { a: "free assessment", href: "/assessment?p=coral" },
-              " works out your own figure.",
+              " estimates what your clusters could save.",
             ],
           ],
         },
@@ -147,7 +158,7 @@ export const term: GlossaryTerm = {
   related: [
     {
       title: "Metrics Server",
-      line: "Collects each kubelet’s CPU and memory figures.",
+      line: "Collects each kubelet’s CPU and memory use.",
       href: "/learn/glossary/metrics-server",
     },
     {
@@ -162,12 +173,13 @@ export const term: GlossaryTerm = {
     },
     {
       title: "QoS class",
-      line: "A guide to which pods the kubelet evicts first.",
+      line: "A rough guide to eviction order.",
       href: "/learn/glossary/kubernetes-qos-class",
     },
   ],
+  relatedTitle: "Related terms",
   next: {
-    title: "Kubernetes allocatable vs capacity: what pods can use",
+    title: "Kubernetes allocatable vs capacity",
     href: "/learn/kubernetes-allocatable-vs-capacity",
   },
   sources: [
@@ -184,7 +196,7 @@ export const term: GlossaryTerm = {
     {
       publisher: "Kubernetes",
       title: "“Liveness, Readiness, and Startup Probes”",
-      url: "https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/",
+      url: "https://kubernetes.io/docs/concepts/workloads/pods/probes/",
     },
     {
       publisher: "Kubernetes",

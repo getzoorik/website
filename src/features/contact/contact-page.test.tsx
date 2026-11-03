@@ -27,7 +27,7 @@ describe("/contact", () => {
   it("is titled, described and canonicalised as its draft, with its own card", () => {
     expect(metadata.title).toBe("Contact");
     expect(metadata.description).toBe(
-      "Book a demo with the people who build Coral and Amoeba, or email founders@zoorik.com. For early access, partners, press, security and privacy.",
+      "Book a demo with the people who build Coral and Amoeba, or email founders@zoorik.com about early access, partners, press, security or privacy.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/contact" });
     expect(metadata.openGraph).toMatchObject({
@@ -86,7 +86,7 @@ describe("/contact", () => {
     ]);
     expect(groups.map((group) => [...group.querySelectorAll(".doc-sum dt")].map(text))).toEqual([
       [
-        "A demo",
+        "Pricing",
         "Early access",
         "Your assessment report",
         "Help with Coral or Amoeba",

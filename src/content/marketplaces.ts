@@ -10,7 +10,8 @@ import {
 import { channels, type ChannelId } from "@/config/open-source";
 
 /**
- * `/marketplaces`, where to find Zoorik: every string the page prints, verbatim from the approved mock.
+ * `/marketplaces`, where to find Zoorik: every string the page prints, from the approved mock, tightened in the
+ * zero-noise content pass (3 Nov 2026).
  *
  * Only real listings link: the stores' listings are `src/config/marketplaces.ts`'s, the registries
  * `src/config/open-source.ts`'s channels, and the review sites and profiles `src/config/entity.ts`'s. No rating or
@@ -22,7 +23,7 @@ import { channels, type ChannelId } from "@/config/open-source";
  * The day /marketplaces's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /marketplaces's content moves this to that day in the same PR; never the build's date.
  */
-export const marketplacesLastUpdated = "1 November 2026";
+export const marketplacesLastUpdated = "3 November 2026";
 
 /**
  * The assessment's package on npm, `zoorik` (unscoped; `npx zoorik assess coral`). The tile points at the package, as
@@ -56,7 +57,7 @@ export const marketplacesPage = {
   /** The page's name (its h1) and the line under it. */
   hero: {
     title: "Where to find Zoorik",
-    deck: "Buy Coral and Amoeba through your cloud’s marketplace, read and write reviews, install from the registries you already use, and find us across the web.",
+    deck: "Buy Coral and Amoeba on your cloud’s marketplace, read reviews, install our tools and find us on the web.",
   },
   /** The pair on the band: the two cards. */
   band: {
@@ -68,8 +69,8 @@ export const marketplacesPage = {
     },
     /** The navy card: a private offer, by a ready email to the founders. */
     offer: {
-      title: "Want to buy through your marketplace?",
-      line: "We can set up a private offer on AWS or Microsoft Marketplace.",
+      title: "Need a private offer?",
+      line: "We can set one up on AWS or Microsoft Marketplace.",
       write: { label: "Write to us", subject: "Marketplace" },
     },
   },
@@ -80,13 +81,13 @@ export const marketplacesPage = {
       {
         icon: "/marketplace-logos/g2.svg",
         name: "Reviews of Coral",
-        line: "Read what teams say about Coral, or leave a review of your own.",
+        line: "Read what teams say, or leave your own review.",
         href: g2Coral,
       },
       {
         icon: "/marketplace-logos/g2.svg",
         name: "Zoorik on G2",
-        line: "Our seller page on G2.",
+        line: "Our seller page.",
         href: g2Seller,
       },
     ] as readonly MarketplacesLink[],

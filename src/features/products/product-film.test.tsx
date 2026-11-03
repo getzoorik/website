@@ -58,9 +58,9 @@ describe("ProductFilm", () => {
 
   it("names each film's figures as examples, first", () => {
     for (const id of productOrder) {
-      expect(homeFilms[id].label).toMatch(/^(Coral|Amoeba) product preview with example figures: /);
+      expect(homeFilms[id].label).toMatch(/^(Coral|Amoeba) console with example figures: /);
       expect(homeFilms[id].caption).toBe(
-        `${id === "coral" ? "Coral" : "Amoeba"} product preview with example figures.`,
+        `${id === "coral" ? "Coral" : "Amoeba"} console with example figures.`,
       );
     }
   });

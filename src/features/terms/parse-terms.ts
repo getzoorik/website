@@ -15,7 +15,7 @@ import { privacySectionIds } from "@/content/privacy";
  *  - "**Effective date:** … · **Version:** …" is the small date line.
  *  - A line that is bold on its own ("**Your part.**") is a run-in head (.pp-k).
  *  - Two paragraphs are callouts: "**Rebalancing and PodDisruptionBudgets.** …",
- *    titled without its full stop, and "Until the original disks …", untitled.
+ *    titled without its full stop. (CALLOUT_PLAIN below matches a paragraph the terms no longer carry.)
  *  - "Privacy Policy" links to /privacy, and "section N of the Privacy Policy" /
  *    "Privacy Policy, section N" link, as a whole phrase, to that section there.
  *    A bare "section N" links to this page's section N. "Sections 7, 8, 9, 12

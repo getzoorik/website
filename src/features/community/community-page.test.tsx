@@ -36,14 +36,14 @@ describe("/community's metadata", () => {
   it("has its title through the template, its description and its canonical", () => {
     expect(metadata.title).toBe("Community");
     expect(metadata.description).toBe(
-      "Talk to the people who build Coral and Amoeba on r/zoorik, and find FinOps communities on Reddit and Slack for cloud cost on Kubernetes, Azure and AWS.",
+      "Where to talk about cloud cost: r/zoorik for Coral and Amoeba, plus the main FinOps, Kubernetes, Azure and AWS communities.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/community" });
     expect(metadata.openGraph).toMatchObject({
       url: "/community",
       title: "Community | Zoorik",
     });
-    expect(communityLastUpdated).toBe("2 November 2026");
+    expect(communityLastUpdated).toBe("3 November 2026");
   });
 });
 
@@ -75,7 +75,7 @@ describe("/community", () => {
     expect(news!.querySelector("svg.cm-own")).toHaveAttribute("data-mark", "medium");
     expect(text(reddit!.querySelector("h2.as-h"))).toBe("r/zoorik");
     expect(text(reddit!.querySelector("p"))).toBe(
-      "Ask about Coral and Amoeba, share your results and talk to the people who build them.",
+      "Ask the people who build Coral and Amoeba, and share your results.",
     );
     expect(
       [...reddit!.querySelectorAll("p [translate='no']")].map((span) => span.textContent),
@@ -85,7 +85,7 @@ describe("/community", () => {
     expectOffSite(join, profile("reddit"));
     expect(text(news!.querySelector("h2.as-h"))).toBe("Zoorik News");
     expect(text(news!.querySelector("p"))).toBe(
-      "Our newsletter: what we ship, and each week’s Zoorik Radar, by email.",
+      "Our newsletter: what we ship, plus the week’s Kubernetes, cloud cost and FinOps news.",
     );
     const subscribe = news!.querySelector("a.cta-go")!;
     expect(text(subscribe)).toBe("Subscribe on Medium (opens in a new tab)");
@@ -95,7 +95,7 @@ describe("/community", () => {
 
   it("lists three communities in each of four groups, each its own page in a new tab with its own logo", () => {
     const section = page().querySelector("main > section#communities")!;
-    expect(text(section.querySelector(".sec-hrow h2"))).toBe("FinOps and cloud cost communities");
+    expect(text(section.querySelector(".sec-hrow h2"))).toBe("Cloud cost communities");
     const groups = [...section.querySelectorAll(":scope > .wrap > .cm-sub")];
     expect(groups.map((group) => text(group.querySelector("h3.cm-sl")))).toEqual([
       "FinOps",

@@ -13,7 +13,7 @@ import "@/styles/learn.css";
  * share card. Learn teaches only: the market map, the news and the community have their own pages, which the hub
  * links.
  */
-/* Its title goes through the layout's template: "Kubernetes and block storage cost guides | Zoorik". */
+/* Its title goes through the layout's template: "Kubernetes, block storage and cloud cost guides | Zoorik". */
 export const metadata: Metadata = documentMetadata(learnPage.path, learnPage.meta);
 
 export default function Learn(): React.JSX.Element {

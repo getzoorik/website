@@ -4,35 +4,174 @@ import { figure as figure2 } from "@/features/learn/figures/karpenter-vs-cluster
 
 export const article: Article = {
   slug: "karpenter-vs-cluster-autoscaler",
-  title: "Karpenter vs Cluster Autoscaler on EKS and AKS",
-  meta: "Karpenter vs Cluster Autoscaler: how each adds and removes nodes, which to pick for EKS autoscaling or on AKS, and whether the two can share a cluster.",
-  h1: "Karpenter vs Cluster Autoscaler: how each removes nodes",
-  deck: "The Cluster Autoscaler shrinks preset node groups, and Karpenter can swap a node for a cheaper one.",
-  card: "How the Cluster Autoscaler and Karpenter add and remove nodes on EKS and AKS, and whether to run both at once.",
+  title: "Karpenter vs Cluster Autoscaler on AWS and Azure",
+  meta: "How Karpenter and the Cluster Autoscaler add and remove nodes, which autoscaler to run on AWS (EKS) or Azure (AKS), and whether to run both.",
+  h1: "Karpenter vs Cluster Autoscaler",
+  deck: "How each node autoscaler removes nodes, which to run on AWS or Azure, and whether to run both.",
+  card: "How the Cluster Autoscaler and Karpenter remove nodes, and which to run on EKS or AKS.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes autoscaling",
   versus: ["Karpenter", "Cluster Autoscaler"],
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "sushant",
   cover: "/learn-covers/zoorik-learn-karpenter-vs-cluster-autoscaler-1200x630.webp",
   coverAlt:
     "Karpenter vs Cluster Autoscaler: Karpenter swaps in a cheaper node, the Cluster Autoscaler keeps the same size",
   short:
-    "The Cluster Autoscaler removes a node when its pods request under 50% of its CPU and memory. Karpenter deletes or replaces nodes, with no threshold to tune. Both count pod requests, not real use, and can share a cluster if taints keep each workload on one autoscaler’s nodes.",
+    "The Cluster Autoscaler grows and shrinks node groups you set up in advance. It removes a node when its pods request under 50% of its CPU and memory. Karpenter launches individual machines to fit pending pods, and can swap a node for a cheaper one. On AWS, Karpenter suits spiky or varied workloads, and on Azure, node auto provisioning (NAP) runs it for you. Both count pod requests, not real use.",
   sections: [
     {
-      id: "two-underused-nodes-what-each-autoscaler-leaves",
-      title: "Two underused nodes: what each autoscaler leaves you",
+      id: "karpenter-vs-cluster-autoscaler",
+      title: "Key differences",
       blocks: [
         {
           kind: "p",
-          text: "Picture a node group of two on-demand nodes, minimum size 1. Each has 8\u00a0CPU allocatable, the share of its capacity offered to pods. Their pods request 1.5\u00a0CPU per node, and memory and DaemonSet requests are small.",
+          text: [
+            "The Cluster Autoscaler adds and removes nodes in node groups set up in advance, which usually map to cloud groups of virtual machines (VMs). ",
+            { a: "Karpenter", href: "/learn/what-is-karpenter" },
+            " works with individual VMs. The Kubernetes docs say both should feel alike to a cluster user.",
+          ],
         },
         {
           kind: "p",
-          text: "The Cluster Autoscaler ends with one 8-CPU node holding 3\u00a0CPU of requests. Karpenter can end with one 4-CPU node, if its NodePool, the rules you write for what it may launch, allows that type.",
+          text: [
+            "Kubernetes SIG Autoscaling sponsors both, and both run on Amazon Elastic Kubernetes Service (EKS) and Azure Kubernetes Service (AKS). AWS builds EKS Auto Mode on Karpenter, and Azure builds node auto provisioning (NAP) on it. Both sit below the pod autoscalers, which the guide to ",
+            { a: "Kubernetes autoscaling", href: "/learn/kubernetes-autoscaling" },
+            " compares.",
+          ],
+        },
+        {
+          kind: "table",
+          columns: [
+            { label: "What differs", width: "14%" },
+            { label: "Cluster Autoscaler", width: "40%" },
+            { label: "Karpenter", width: "46%" },
+          ],
+          rows: [
+            [
+              "What it changes",
+              "The node count of groups you set up in advance: Auto Scaling groups on EKS, node pools on AKS",
+              "Individual machines, within the rules of a NodePool you write",
+            ],
+            [
+              "Machine types",
+              "Fixed per group: every machine in a group is the same size",
+              "Chosen per batch of pending pods from the types the NodePool allows. On AWS it passes up to 60 instance types to EC2 Fleet",
+            ],
+            [
+              "Adding nodes",
+              "When a pod is unschedulable. It checks every 10\u00a0seconds and picks a group with an expander (upstream default: the group left with the least idle CPU)",
+              "When a pod is unschedulable. It batches pending pods and packs them by the CPU, memory and GPUs they request",
+            ],
+            [
+              "Removing nodes",
+              "When CPU and memory requests are both under 50% of allocatable, every pod can move, and the node has been unneeded for 10\u00a0minutes",
+              [
+                "When its pods fit on other nodes (delete), or on those plus one cheaper node (replace). No wait by default (",
+                { code: "consolidateAfter: 0s" },
+                ")",
+              ],
+            ],
+            ["Cheaper machine swap", "No", "Yes, the replace action"],
+            [
+              "Pace of removal",
+              "One non-empty node at a time. Empty nodes up to 10 at once",
+              "A disruption budget per NodePool: 10% of its nodes by default",
+            ],
+            [
+              "Node lifecycle",
+              "Node count only",
+              [
+                "Also replaces nodes that drift from their NodePool, drains nodes past ",
+                { code: "expireAfter" },
+                " (720h by default), and repairs unhealthy nodes (alpha, off by default)",
+              ],
+            ],
+            [
+              "Kubernetes versions",
+              "More tightly coupled, per AWS’s best practices",
+              "Less tightly coupled. A compatibility matrix lists the supported versions per release",
+            ],
+            [
+              "On EKS",
+              "You run it against Auto Scaling groups",
+              "You install and run it, or use EKS Auto Mode, which builds on it",
+            ],
+            ["On AKS", "Built in: you switch it on per node pool", "NAP runs it for you"],
+          ],
+        },
+      ],
+    },
+    {
+      id: "which-autoscaler-to-choose-on-eks-and",
+      title: "Which to choose",
+      blocks: [
+        {
+          kind: "h3",
+          id: "eks-karpenter-vs-cluster-autoscaler",
+          title: "AWS autoscalers on EKS",
+        },
+        { kind: "p", text: "AWS documents three ways to scale EKS nodes:" },
+        {
+          kind: "ul",
+          items: [
+            [{ b: "EKS Auto Mode," }, " which AWS says “builds upon Karpenter.”"],
+            [
+              { b: "Karpenter" },
+              " itself, open-source software you install and manage. AWS gives technical support when it runs unmodified at a compatible version, but no Service Level Agreement (SLA).",
+            ],
+            [{ b: "The Cluster Autoscaler," }, " which works through Auto Scaling groups."],
+          ],
+        },
+        {
+          kind: "callout",
+          label: "Rule of thumb",
+          text: "AWS’s best practices say Karpenter suits clusters “with workloads that encounter periods of high, spiky demand or have diverse compute requirements”. Managed node groups and Auto Scaling groups suit workloads “that tend to be more static and consistent”.",
+        },
+        {
+          kind: "p",
+          text: "The same guide says to consider other autoscalers if you need a feature Karpenter lacks.",
+        },
+        {
+          kind: "p",
+          text: "Karpenter also handles Spot capacity. With an Amazon Simple Queue Service (SQS) interruption queue, it starts a new node when a Spot instance gets its 2-minute interruption notice. Pods can then move before the instance is reclaimed.",
+        },
+        {
+          kind: "h3",
+          id: "karpenter-vs-aks-autoscaler-nap-or-the",
+          title: "Azure autoscalers on AKS",
+        },
+        {
+          kind: "p",
+          text: [
+            "On AKS, the cluster autoscaler is built in. You switch it on per node pool and tune it with ",
+            { code: "az aks update --cluster-autoscaler-profile" },
+            ". Microsoft lists the same defaults as upstream: a 0.5 utilization threshold, a 10-minute unneeded time and a 10-second scan interval.",
+          ],
+        },
+        {
+          kind: "p",
+          text: "NAP is Microsoft’s managed Karpenter. You write NodePool and AKSNodeClass resources, and NAP picks VM sizes from pending pods’ requests.",
+        },
+        {
+          kind: "p",
+          text: [
+            "Microsoft’s comparison sets the cluster autoscaler’s “Preexisting node pools with single VM size per pool” against NAP’s “Dynamic provisioning of mixed VM sizes”. It adds that the cluster autoscaler “is maintained, with minimal feature enhancements”. ",
+            { a: "AKS node auto provisioning", href: "/learn/aks-node-auto-provisioning" },
+            " covers enabling it.",
+          ],
+        },
+      ],
+    },
+    {
+      id: "two-underused-nodes-what-each-autoscaler-leaves",
+      title: "A worked example",
+      blocks: [
+        {
+          kind: "p",
+          text: "Take a node group of two on-demand nodes, minimum size 1. Each has 8\u00a0CPU allocatable, the share of its capacity offered to pods. Pods request 1.5\u00a0CPU per node, and memory and DaemonSet requests are small.",
         },
         {
           kind: "callout",
@@ -41,15 +180,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Once one node has been unneeded for 10\u00a0minutes, the Cluster Autoscaler evicts its pods onto the other node. The survivor then holds 1.5 + 1.5 = 3\u00a0CPU of requests, and 3 ÷ 8 = 37.5%.",
+          text: "Once one node has been unneeded for 10\u00a0minutes, the Cluster Autoscaler evicts its pods onto the other. The survivor holds 1.5 + 1.5 = 3\u00a0CPU of requests, 37.5% of 8. It stays, because its pods have nowhere else to go.",
         },
         {
           kind: "p",
-          text: "That’s still under the threshold, but its pods have nowhere else to go. It stays.",
-        },
-        {
-          kind: "p",
-          text: "Karpenter, on its default policy, can delete one node for the same reason. Then it can replace the survivor with one cheaper node that still fits its pods and DaemonSets. Its default budget, 2 × 10% = 0.2\u00a0nodes rounded up to 1, lets it disrupt one node at a time.",
+          text: "Karpenter, on its default policy, can delete one node the same way. It can then replace the survivor with one cheaper node that still fits its pods, such as 4\u00a0CPU, if the NodePool allows that type. Its default budget, 10% of 2 nodes rounded up to 1, lets it disrupt one node at a time.",
         },
         { kind: "svg", figure: figure1 },
         {
@@ -77,123 +212,12 @@ export const article: Article = {
       ],
     },
     {
-      id: "karpenter-vs-cluster-autoscaler",
-      title: "Karpenter vs Cluster Autoscaler: node groups or individual machines",
-      blocks: [
-        {
-          kind: "p",
-          text: [
-            "The Cluster Autoscaler “adds or removes Nodes to pre-configured Node groups”, which usually map to a cloud group of virtual machines (VMs). ",
-            { a: "Karpenter", href: "/learn/what-is-karpenter" },
-            " works with individual VMs and doesn’t rely on those groups.",
-          ],
-        },
-        {
-          kind: "p",
-          text: "To a cluster user, the Kubernetes docs say, the two should feel alike. Both add nodes for pods that can’t be scheduled, and both consolidate nodes that are “no longer optimally utilized.”",
-        },
-        {
-          kind: "p",
-          text: "Kubernetes SIG Autoscaling sponsors both node autoscalers. The Cluster Autoscaler’s cloud integrations are part of the Kubernetes project. Karpenter is a library that cloud providers such as AWS and Azure build their autoscalers on.",
-        },
-        {
-          kind: "p",
-          text: [
-            "Both sit one layer below the pod autoscalers, which the guide to ",
-            {
-              a: "Kubernetes autoscaling",
-              href: "/learn/kubernetes-autoscaling",
-            },
-            " compares. Each runs on Amazon Elastic Kubernetes Service (EKS) and Azure Kubernetes Service (AKS).",
-          ],
-        },
-        {
-          kind: "table",
-          columns: [
-            { label: "What you decide on", width: "14%" },
-            { label: "Cluster Autoscaler", width: "40%" },
-            { label: "Karpenter", width: "46%" },
-          ],
-          rows: [
-            [
-              "What it changes",
-              "The node count of node groups you set up in advance: Auto Scaling groups on EKS, node pools on AKS",
-              "Individual machines, within the rules of a NodePool you write",
-            ],
-            [
-              "Machine types",
-              "Set in advance per group. Its FAQ assumes every machine in a group has identical capacity and labels",
-              "Chosen per batch of pending pods from the types the NodePool allows. On AWS it passes up to 60 instance types to EC2 Fleet",
-            ],
-            [
-              "When it adds a node",
-              "A pod is unschedulable. It checks every 10\u00a0seconds and picks which group to grow with an expander (upstream default: the group left with the least idle CPU)",
-              "A pod is unschedulable. It batches pending pods and bin-packs them by the CPU, memory and GPUs they request",
-            ],
-            [
-              "When it removes a node",
-              "CPU and memory requests both under 50% of allocatable, every pod can move, and the node has been unneeded for 10\u00a0minutes",
-              [
-                "Its pods fit on other nodes (delete), or on those plus one cheaper node (replace). No wait by default (",
-                { code: "consolidateAfter: 0s" },
-                ")",
-              ],
-            ],
-            ["Swaps a node for a cheaper one", "No", "Yes, the replace action"],
-            [
-              "Pace of removal",
-              "One non-empty node at a time. Empty nodes up to 10 at once",
-              "A NodePool disruption budget: 10% of the pool’s nodes by default",
-            ],
-            [
-              "Node lifecycle",
-              "Node autoscaling only",
-              [
-                "Also replaces nodes that drift from their NodePool or fail health checks (node auto repair, alpha, when enabled), and drains nodes past ",
-                { code: "expireAfter" },
-                " (720h by default)",
-              ],
-            ],
-            [
-              "Kubernetes version",
-              "More tightly coupled to Kubernetes versions, per AWS’s best practices",
-              "Not as tightly coupled. A compatibility matrix lists the supported Kubernetes versions per release",
-            ],
-            [
-              "On EKS",
-              "You run it against Auto Scaling groups",
-              "You install and run it, or use EKS Auto Mode, which builds on it",
-            ],
-            [
-              "On AKS",
-              "Built in: you switch it on per node pool",
-              "Node auto provisioning (NAP), which runs Karpenter for you",
-            ],
-          ],
-        },
-      ],
-    },
-    {
       id: "the-cluster-autoscaler-removes-whole-nodes-and",
-      title: "The Cluster Autoscaler removes whole nodes and never resizes them",
+      title: "Cluster Autoscaler scale-down",
       blocks: [
         {
           kind: "p",
-          text: "The Cluster Autoscaler’s FAQ assumes that inside a node group “all machines have identical capacity”. So when nodes are too big for their pods, it can only remove whole ones.",
-        },
-        {
-          kind: "p",
-          text: [
-            "Moving to smaller machines is a change you make yourself, usually a new group and a drain. It’s covered for ",
-            { a: "EKS node groups", href: "/learn/change-eks-node-group-instance-type" },
-            " and ",
-            { a: "AKS node pools", href: "/learn/change-aks-node-pool-vm-size" },
-            ".",
-          ],
-        },
-        {
-          kind: "p",
-          text: "Every 10\u00a0seconds, when no scale-up is needed, it checks for unneeded nodes. A node counts as unneeded only when all three hold:",
+          text: "Every 10\u00a0seconds, when no scale-up is needed, the Cluster Autoscaler looks for unneeded nodes. A node is unneeded only when all three hold:",
         },
         {
           kind: "ul",
@@ -213,11 +237,21 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "A node that stays unneeded for 10\u00a0minutes is terminated. To empty it, the autoscaler evicts its pods through the eviction API, which honours PodDisruptionBudgets (PDBs). It also taints the node so the pods aren’t scheduled back onto it.",
+          text: "A node unneeded for 10\u00a0minutes is removed. The autoscaler taints it so pods aren’t scheduled back, and evicts its pods through the eviction API, which respects PodDisruptionBudgets (PDBs).",
         },
         {
           kind: "p",
-          text: "Non-empty nodes go one at a time, and empty ones in bulk, up to 10 at once. Scale-down also stops at the node group’s minimum size. After any scale-up, the autoscaler waits 10\u00a0minutes before it looks at scale-down again.",
+          text: "Non-empty nodes go one at a time, and empty ones up to 10 at once. Scale-down stops at the node group’s minimum size, and waits 10\u00a0minutes after any scale-up.",
+        },
+        {
+          kind: "p",
+          text: [
+            "It never resizes a node. Its FAQ assumes that inside a group “all machines have identical capacity”, so oversized nodes can only go whole. Moving to smaller machines is a change you make yourself, usually a new group and a drain. The steps are covered for ",
+            { a: "EKS node groups", href: "/learn/change-eks-node-group-instance-type" },
+            " and ",
+            { a: "AKS node pools", href: "/learn/change-aks-node-pool-vm-size" },
+            ".",
+          ],
         },
         {
           kind: "p",
@@ -233,7 +267,7 @@ export const article: Article = {
     },
     {
       id: "karpenter-deletes-or-replaces-nodes-with-no",
-      title: "Karpenter deletes or replaces nodes, with no threshold to tune",
+      title: "Karpenter consolidation",
       blocks: [
         {
           kind: "p",
@@ -246,7 +280,7 @@ export const article: Article = {
             [{ b: "Replace," }, " when they fit on that free capacity plus one cheaper node."],
           ],
         },
-        { kind: "p", text: "Karpenter looks for candidates in a set order:" },
+        { kind: "p", text: "Karpenter looks for candidates in this order:" },
         {
           kind: "ol",
           items: [
@@ -258,14 +292,13 @@ export const article: Article = {
         {
           kind: "h3",
           id: "which-nodes-count-and-how-fast-they",
-          title: "Which nodes count, and how fast they go",
+          title: "Policy and pace",
         },
         {
           kind: "p",
           text: [
-            "Microsoft’s migration guide maps the Cluster Autoscaler’s utilization threshold to ",
             { code: "consolidationPolicy" },
-            ". That field decides which nodes count.",
+            " decides which nodes count. Microsoft’s migration guide maps the Cluster Autoscaler’s utilization threshold to it.",
           ],
         },
         {
@@ -275,7 +308,7 @@ export const article: Article = {
             { code: "WhenEmptyOrUnderutilized" },
             ", considers any node that can be removed or replaced to reduce cost. ",
             { code: "WhenEmpty" },
-            " waits until only pods with no disruption cost, such as DaemonSet pods, are left. ",
+            " considers only nodes left with pods that have no disruption cost, such as DaemonSet pods. ",
             { a: "Karpenter consolidation", href: "/learn/karpenter-consolidation" },
             " covers the third value, ",
             { code: "Balanced" },
@@ -285,19 +318,13 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Two fields set the pace. The first, ",
+            "Two fields set the pace. ",
             { code: "consolidateAfter" },
-            ", is how long a node must go without pods arriving or leaving before it becomes a candidate. Its default is ",
+            " is how long a node must go without pods arriving or leaving before it becomes a candidate, ",
             { code: "0s" },
-            ".",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "The second, a disruption budget, caps how many of a NodePool’s nodes can be disrupted at once. When you set none, Karpenter uses ",
+            " by default. A disruption budget caps how many of a NodePool’s nodes go at once: ",
             { code: "nodes: 10%" },
-            ", rounded up.",
+            ", rounded up, when you set none.",
           ],
         },
         {
@@ -318,27 +345,23 @@ export const article: Article = {
           text: [
             "It also drains nodes older than ",
             { code: "expireAfter" },
-            ", which defaults to 720\u00a0hours (30\u00a0days). Disruption budgets don’t hold expiry back.",
+            ", 720\u00a0hours (30\u00a0days) by default. Disruption budgets don’t hold expiry back.",
           ],
         },
       ],
     },
     {
       id: "can-karpenter-and-cluster-autoscaler-work-together",
-      title: "Can Karpenter and Cluster Autoscaler work together?",
+      title: "Running both at once",
       blocks: [
         {
           kind: "p",
-          text: "Yes, if each workload can land on only one autoscaler’s nodes. Karpenter’s FAQ says it “can work alongside Cluster Autoscaler”, and its NodePools are designed to sit beside static capacity such as EKS managed node groups.",
-        },
-        {
-          kind: "p",
-          text: "The catch is that both react to the same trigger: a pod “the Kubernetes scheduler has marked as unschedulable.”",
+          text: "Karpenter’s FAQ says it “can work alongside Cluster Autoscaler”, and its NodePools are designed to sit beside static capacity such as EKS managed node groups. The catch is that both react to a pod “the Kubernetes scheduler has marked as unschedulable.” So each workload must land on only one autoscaler’s nodes.",
         },
         {
           kind: "callout",
           label: "Watch out",
-          text: "Microsoft warns that the AKS cluster autoscaler and NAP both “react to pending pod pressure, and can lead to double provisioning of nodes”. Its fix is a taint on each side and a toleration that sends each workload to one of them.",
+          text: "Microsoft warns that the AKS cluster autoscaler and NAP both “react to pending pod pressure, and can lead to double provisioning of nodes”. Its fix is a taint on each side, and a toleration that sends each workload to one of them.",
         },
         { kind: "svg", figure: figure2 },
         {
@@ -346,17 +369,17 @@ export const article: Article = {
           text: [
             "Running both on AKS needs the ",
             { code: "AllowClusterAutoscalerAndNAP" },
-            " feature flag. Microsoft treats the pairing as a migration step. It warns that keeping it indefinitely can make scaling unpredictable.",
+            " feature flag. Microsoft treats the pairing as a migration step, and warns that keeping it indefinitely can make scaling unpredictable.",
           ],
         },
         {
           kind: "h3",
           id: "how-to-migrate-from-cluster-autoscaler-to",
-          title: "How to migrate from Cluster Autoscaler to Karpenter on EKS",
+          title: "Migrating to Karpenter on EKS",
         },
         {
           kind: "p",
-          text: "On EKS, Karpenter’s migration guide ends the overlap once Karpenter is running:",
+          text: "Karpenter’s migration guide ends the overlap once Karpenter is running:",
         },
         {
           kind: "ol",
@@ -378,7 +401,7 @@ export const article: Article = {
           items: [
             [
               { b: "Shrink the old node group" },
-              " to a fixed size for Karpenter and critical add-ons such as CoreDNS: 2 instances for one group spread across Availability Zones. That shrink drains the extra nodes. Without PDBs, the guide warns, workloads will be unavailable.",
+              " to a fixed size for Karpenter and critical add-ons such as CoreDNS: 2 instances for one group across Availability Zones. The shrink drains the extra nodes. Without PDBs, the guide warns, workloads will be unavailable.",
             ],
             [
               { b: "Keep that group." },
@@ -389,81 +412,8 @@ export const article: Article = {
       ],
     },
     {
-      id: "which-autoscaler-to-choose-on-eks-and",
-      title: "Which autoscaler to choose on EKS and AKS",
-      blocks: [
-        {
-          kind: "h3",
-          id: "eks-karpenter-vs-cluster-autoscaler",
-          title: "Which AWS autoscaler to run on EKS",
-        },
-        { kind: "p", text: "On EKS, AWS documents three routes:" },
-        {
-          kind: "ul",
-          items: [
-            [{ b: "EKS Auto Mode," }, " which AWS says “builds upon Karpenter.”"],
-            [
-              { b: "Karpenter" },
-              " itself, open-source software you install and manage. It gets AWS technical support when it runs unmodified at a compatible version, but no AWS Service Level Agreement.",
-            ],
-            [
-              {
-                b: [
-                  "The ",
-                  { a: "Cluster Autoscaler", href: "/coral-works-with-cluster-autoscaler" },
-                ],
-              },
-              ", which works through Auto Scaling groups.",
-            ],
-          ],
-        },
-        {
-          kind: "callout",
-          label: "Rule of thumb",
-          text: "AWS’s best practices guide says Karpenter suits clusters “with workloads that encounter periods of high, spiky demand or have diverse compute requirements”.",
-        },
-        {
-          kind: "p",
-          text: "The same guide says managed node groups and Auto Scaling groups suit workloads “that tend to be more static and consistent”. It also says to consider other autoscalers if you need a feature Karpenter lacks.",
-        },
-        {
-          kind: "p",
-          text: "Karpenter can also mix Spot and on-demand capacity. With an Amazon Simple Queue Service (SQS) interruption queue, it starts a new node when a Spot instance gets its 2-minute interruption notice. Pods can then move before the instance is reclaimed.",
-        },
-        {
-          kind: "h3",
-          id: "karpenter-vs-aks-autoscaler-nap-or-the",
-          title: "Which Azure autoscaler to run on AKS",
-        },
-        {
-          kind: "p",
-          text: [
-            "On AKS, the cluster autoscaler is built in. You switch it on per node pool. You tune it through the cluster’s autoscaler profile with ",
-            { code: "az aks update --cluster-autoscaler-profile" },
-            ".",
-          ],
-        },
-        {
-          kind: "p",
-          text: "Microsoft lists the same defaults as upstream: a 0.5 utilization threshold, a 10-minute unneeded time and a 10-second scan interval.",
-        },
-        {
-          kind: "p",
-          text: "NAP is Microsoft’s managed Karpenter on AKS. You write NodePool and AKSNodeClass resources, and NAP chooses VM sizes from pending pods’ requests.",
-        },
-        {
-          kind: "p",
-          text: [
-            "Microsoft’s comparison sets the cluster autoscaler’s “Preexisting node pools with single VM size per pool” against NAP’s “Dynamic provisioning of mixed VM sizes”. It also says the cluster autoscaler “is maintained, with minimal feature enhancements”. ",
-            { a: "AKS node auto provisioning", href: "/learn/aks-node-auto-provisioning" },
-            " covers enabling it.",
-          ],
-        },
-      ],
-    },
-    {
       id: "how-coral-works-with-either-autoscaler",
-      title: "How Coral works with either autoscaler",
+      title: "Coral with either autoscaler",
       blocks: [
         {
           kind: "p",
@@ -474,18 +424,18 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Rebalancing CPU and memory requests to measured use lets the same autoscaler run fewer or smaller nodes. What Coral does with the nodes depends on the autoscaler:",
+          text: "Coral rebalances CPU and memory requests to real use without any downtime, so the same autoscaler can run fewer or smaller nodes. What it does with the nodes depends on the autoscaler:",
         },
         {
           kind: "ul",
           items: [
             [
               { b: "With the Cluster Autoscaler:" },
-              " Coral checks on the live cluster that every pod on a node fits on another Ready node. Then it cordons and drains one node at a time. It hands each empty node to your Cluster Autoscaler, whose own timers decide when it goes. Coral empties nodes but never changes their size.",
+              " Coral checks on the live cluster that every pod on a spare node fits on another node. It drains one node at a time and hands each empty node to the Cluster Autoscaler, whose own timers decide when it goes. It never changes a node’s size.",
             ],
             [
               { b: "With Karpenter or NAP:" },
-              " Coral leaves the pools they already consolidate to them. It can also rebalance the nodes you choose onto cheaper machines that still fit the work. After you compare current and rebalanced cost, Coral creates fixed-size NodePools. Your autoscaler then launches the new machines, and the old nodes are drained and removed one by one.",
+              " Coral leaves the pools they consolidate to them. It can also rebalance the nodes you choose onto cheaper machines. After you compare current and rebalanced cost, it adds fixed-size NodePools. Your autoscaler launches the new machines, and the old nodes are drained and removed one by one.",
             ],
             [
               { b: "With no node autoscaler:" },
@@ -495,18 +445,18 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "When a node is removed, a pod whose replacement can’t start first gets a short restart.",
+          text: "Coral moves each pod by warm handover, by live migration where both nodes support it, or by eviction within its PDB.",
         },
         {
           kind: "p",
           text: [
-            {
-              a: "Coral works with Cluster Autoscaler",
-              href: "/coral-works-with-cluster-autoscaler",
-            },
+            "Each pairing has its own page: ",
+            { a: "Cluster Autoscaler", href: "/coral-works-with-cluster-autoscaler" },
+            ", ",
+            { a: "Karpenter", href: "/coral-works-with-karpenter" },
             " and ",
-            { a: "Coral works with Karpenter", href: "/coral-works-with-karpenter" },
-            " cover each pairing.",
+            { a: "NAP", href: "/coral-works-with-aks-node-auto-provisioning" },
+            ".",
           ],
         },
         {
@@ -565,33 +515,39 @@ export const article: Article = {
       title: "“Migrate from cluster autoscaler to node auto-provisioning”",
       url: "https://learn.microsoft.com/en-us/azure/aks/migrate-from-autoscaler-to-node-auto-provisioning",
     },
+    {
+      publisher: "Microsoft Learn",
+      title:
+        "“Understand Networking Configurations for Node Auto-Provisioning (NAP) in Azure Kubernetes Service (AKS)”",
+      url: "https://learn.microsoft.com/en-us/azure/aks/node-auto-provisioning-networking",
+    },
   ],
   related: [
     {
-      title: "What is Karpenter? How it picks and removes nodes",
+      title: "What is Karpenter in Kubernetes?",
       where: "Learn",
       href: "/learn/what-is-karpenter",
     },
     {
-      title: "Karpenter consolidation: policies, budgets and limits",
+      title: "Karpenter consolidation",
       where: "Learn",
       href: "/learn/karpenter-consolidation",
     },
     {
-      title: "Cluster Autoscaler not scaling down: what keeps nodes running",
+      title: "Cluster Autoscaler not scaling down",
       where: "Learn",
       href: "/learn/cluster-autoscaler-not-scaling-down",
     },
     {
-      title: "AKS node auto provisioning (NAP): what it is, how to enable",
+      title: "AKS node auto provisioning (NAP)",
       where: "Learn",
       href: "/learn/aks-node-auto-provisioning",
     },
     {
-      title: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
+      title: "Kubernetes autoscaling",
       where: "Learn",
       href: "/learn/kubernetes-autoscaling",
     },
   ],
-  relatedTitle: "More on choosing a node autoscaler",
+  relatedTitle: "More on node autoscalers",
 };

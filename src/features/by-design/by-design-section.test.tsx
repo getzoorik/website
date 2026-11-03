@@ -76,13 +76,13 @@ describe("without the risk", () => {
     /* The four sentences, word for word: they left the screen, not the page. */
     expect(cards.map((card) => card.querySelector("figure")!.getAttribute("aria-label"))).toEqual([
       "Capacity follows what is used, not what was provisioned for the peak.",
-      "A disk leaves the pool only when it is empty.",
+      "A node or a disk is removed only once it is empty.",
       "No code changes, and the resize runs beside live traffic.",
       "You decide what each product manages, and see every change it makes.",
     ]);
     expect(cards.map((card) => card.querySelector("h3")!.textContent)).toEqual([
-      "Pay for what your workloads use",
-      "Drains nodes safely, one at a time",
+      "Pay for what you use",
+      "Drains safely, one at a time",
       "Without any downtime or code changes",
       "Full control and visibility",
     ]);

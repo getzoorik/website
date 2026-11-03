@@ -38,9 +38,7 @@ describe("What we offer", () => {
       "ofx-side ofx-in mo-r",
       "ofx-scale",
     ]);
-    expect(section.querySelector(".ofx-side > h2#offers-h")).toHaveTextContent(
-      "Cloud cost assessment",
-    );
+    expect(section.querySelector(".ofx-side > h2#offers-h")).toHaveTextContent("What you can save");
     expect(section.querySelectorAll("h2")).toHaveLength(1);
   });
 
@@ -59,7 +57,7 @@ describe("What we offer", () => {
       "ofx-free-c",
       "btn btn-light ofx-free-go",
     ]);
-    expect(text(free.querySelector(".ofx-free-l"))).toBe("Free assessment");
+    expect(text(free.querySelector(".ofx-free-l"))).toBe("Assessment");
     const slot = free.querySelector(".ofx-free-l > .ofx-free-i")!;
     expect(slot).toHaveAttribute("aria-hidden", "true");
     /* Zoorik's own mark, with the rings the nav's sheet turns opposite ways. */
@@ -68,7 +66,7 @@ describe("What we offer", () => {
     expect(text(free.querySelector(".ofx-free-n"))).toBe("Free");
     expect(free.querySelector(".ofx-free-n")).not.toHaveAttribute("role");
     expect(text(free.querySelector(".ofx-free-c"))).toBe(
-      "Your estimated saving at list price, in one PDF report, from one line in your cloud console.",
+      "One command in your terminal, one PDF with your estimated saving at list price.",
     );
   });
 
@@ -96,8 +94,8 @@ describe("What we offer", () => {
       (h) => `${h.tagName.toLowerCase()} ${h.className} ${text(h)}`,
     );
     expect(headings).toEqual([
-      "h2  Cloud cost assessment",
-      "h3 ofx-free-l Free assessment",
+      "h2  What you can save",
+      "h3 ofx-free-l Assessment",
       "h3 ofx-h Coral",
       "h3 ofx-h Amoeba",
       "h3 ofx-h Coral and Amoeba together",

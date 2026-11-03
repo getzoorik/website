@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "aks",
   term: "AKS (Azure Kubernetes Service)",
   title: "What is AKS (Azure Kubernetes Service)?",
-  meta: "Azure AKS is Microsoft’s managed Kubernetes service. See what an AKS cluster is made of, AKS Automatic vs Standard, and what drives its cost.",
+  meta: "Azure AKS is Microsoft’s managed Kubernetes service. What an AKS cluster is made of, Automatic vs Standard, and what you pay for.",
   h1: "What is AKS (Azure Kubernetes Service)?",
   card: "Azure Kubernetes Service (AKS) is Microsoft’s managed Kubernetes service in Azure.",
   group: "kubernetes",
   product: "coral",
   published: "2026-11-02",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
@@ -25,30 +25,30 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "Kubernetes is the open-source system that runs containerized apps across a cluster of machines. AKS is Kubernetes on Azure, certified by the Cloud Native Computing Foundation (CNCF). Azure takes care of the control plane’s health monitoring and maintenance.",
+          text: "Kubernetes is the open-source system that runs containerized apps across a cluster of machines. AKS is Kubernetes on Azure, certified by the Cloud Native Computing Foundation (CNCF).",
         },
-        { kind: "p", text: "AKS also ties your cluster into Azure:" },
+        { kind: "p", text: "AKS also connects your cluster to Azure:" },
         {
           kind: "ul",
           items: [
-            "Kubernetes access through Microsoft Entra ID, based on your existing users and groups.",
-            "Azure Policy guardrails for compliance controls.",
+            "Microsoft Entra ID for Kubernetes access, from your existing users and groups.",
+            "Azure Policy for compliance guardrails.",
             "Azure Disks and Azure Files for storage, through their Container Storage Interface (CSI) drivers.",
-            "Container Insights, in Azure Monitor, for your cluster’s health and performance.",
+            "Container Insights, in Azure Monitor, for cluster health and performance.",
           ],
         },
       ],
     },
     {
       id: "what-an-aks-cluster-is-made-of",
-      title: "What an AKS cluster is made of",
+      title: "Inside an AKS cluster",
       blocks: [
         {
           kind: "p",
           text: [
             "Every AKS cluster has at least one node. Each node runs the ",
             { a: "kubelet", href: "/learn/glossary/kubelet" },
-            ", a container runtime and kube-proxy. Clusters that use Azure CNI powered by Cilium run Cilium instead of kube-proxy.",
+            ", a container runtime and kube-proxy. Clusters on Azure CNI powered by Cilium run Cilium instead of kube-proxy.",
           ],
         },
         {
@@ -57,7 +57,7 @@ export const term: GlossaryTerm = {
             [
               "Nodes are grouped into ",
               { a: "node pools", href: "/learn/glossary/node-pool" },
-              ". By default, a node pool uses Virtual Machine Scale Sets to manage its VMs.",
+              ". By default, a node pool manages its VMs with Virtual Machine Scale Sets.",
             ],
             "A system node pool hosts critical system pods, such as CoreDNS. User node pools host your apps.",
             "AKS puts the cluster’s VMs, scale sets and storage in a second resource group, the node resource group.",
@@ -68,11 +68,11 @@ export const term: GlossaryTerm = {
     },
     {
       id: "aks-automatic-vs-aks-standard",
-      title: "AKS Automatic vs AKS Standard",
+      title: "AKS Automatic vs Standard",
       blocks: [
         {
           kind: "p",
-          text: "AKS has two cluster modes. AKS Automatic is fully managed, with production-ready defaults. AKS Standard gives you full control of cluster configuration and node pools.",
+          text: "AKS has two cluster modes. Automatic is fully managed, with production-ready defaults. Standard gives you full control of cluster configuration and node pools.",
         },
         {
           kind: "table",
@@ -83,9 +83,9 @@ export const term: GlossaryTerm = {
           ],
           rows: [
             [
-              "Node management",
+              "Nodes",
               [
-                "Azure creates, scales and upgrades nodes with ",
+                "Azure creates, scales and upgrades them with ",
                 { a: "node auto-provisioning", href: "/learn/aks-node-auto-provisioning" },
               ],
               "You create and manage node pools",
@@ -101,7 +101,7 @@ export const term: GlossaryTerm = {
               "Manual by default, with the cluster autoscaler and KEDA optional",
             ],
             [
-              "Cluster upgrades",
+              "Upgrades",
               "Automatic, on the stable channel",
               "Manual by default, with an automatic upgrade channel optional",
             ],
@@ -110,23 +110,23 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "Microsoft recommends AKS Automatic for most new workloads. AKS Standard fits when you need Windows node pools, custom networking, or VM sizes not yet in Automatic.",
+          text: "Microsoft recommends Automatic for most new workloads. Standard fits when you need Windows node pools, custom networking, or VM sizes not yet in Automatic.",
         },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why AKS matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "p",
-          text: "Your nodes are charged as standard Azure VMs, by VM type and how long they run, and Azure reservations apply. A node costs the same however little its pods use.",
+          text: "Nodes are charged as standard Azure VMs, by VM type and how long they run, and Azure reservations apply. A node costs the same however little its pods use.",
         },
         { kind: "p", text: "Cluster management has three pricing tiers:" },
         {
           kind: "ul",
           items: [
-            "Free: no charge for cluster management, and no financially backed uptime service level agreement (SLA).",
+            "Free: no cluster management charge, and no financially backed uptime service level agreement (SLA).",
             "Standard: a paid tier, with an uptime SLA and up to 5,000\u00a0nodes.",
             "Premium: Standard’s uptime SLA, plus Long Term Support (LTS) for Kubernetes versions.",
           ],
@@ -134,7 +134,7 @@ export const term: GlossaryTerm = {
         {
           kind: "p",
           text: [
-            "AKS Automatic has its own control plane and compute pricing, with the Standard tier included. ",
+            "AKS Automatic has its own control plane fee, and includes the Standard tier at no extra charge. ",
             { a: "AKS vs EKS cost", href: "/learn/aks-vs-eks-cost" },
             " lists each fee, and the ",
             { a: "EKS and AKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
@@ -144,7 +144,7 @@ export const term: GlossaryTerm = {
         {
           kind: "p",
           text: [
-            "The control plane’s scheduler places pods on nodes by their ",
+            "The scheduler places pods on nodes by their ",
             { a: "requests", href: "/learn/glossary/kubernetes-resource-requests" },
             ", not their real use. Requests set above real use keep more nodes running, and you pay for each one.",
           ],
@@ -181,7 +181,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-cluster-utilization",
     },
   ],
-  relatedTitle: "Terms related to AKS",
+  relatedTitle: "Related terms",
   next: {
     title: "How to choose AKS VM sizes",
     href: "/learn/how-to-choose-aks-node-sizes",

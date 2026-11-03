@@ -16,9 +16,9 @@ import AmoebaFaqPage from "@/app/amoeba-faq/page";
 
 /**
  * `/amoeba-faq`: the ids shared links depend on, the first group "About
- * Amoeba", the groups and their two callouts, the 29 questions that open in
- * place with their short answers, the four facts still to come, and what the
- * page never carries. The body is rendered on its own, as it renders whatever
+ * Amoeba", the groups and their two callouts, the 30 questions that open in
+ * place with their short answers, no fact still to come, and what the page
+ * never carries. The body is rendered on its own, as it renders whatever
  * the flag says; the route is checked held (404) and, with the flag mocked on,
  * published. Its metadata is in `src/app/metadata.test.ts`.
  */
@@ -51,6 +51,7 @@ const QUESTION_IDS = [
   "does-the-copy-slow-down-my",
   "what-disk-performance-does-the-pool",
   "how-fast-does-amoeba-expand-when",
+  "when-does-amoeba-shrink-the-pool",
   "does-manual-stop-amoeba-from-expanding",
   "what-happens-if-the-agent-stops",
   "what-does-the-agent-send-to",
@@ -68,30 +69,9 @@ const QUESTION_IDS = [
   "what-does-amoeba-need-on-aws",
 ];
 
-/* The mock's bullets per question, 01 to 29. */
+/* The bullets per question, 01 to 30. */
 const BULLETS = [
-  3, 3, 3, 2, 2, 1, 4, 4, 3, 4, 3, 3, 3, 4, 1, 3, 3, 3, 4, 1, 3, 5, 4, 3, 2, 2, 2, 3, 3,
-];
-
-/* Every "To come" on the page: the question, the bullet it fills (1-based), and
-   its text, verbatim. The mock answers the rest (AWS, pricing). */
-const PLACEHOLDERS = [
-  [
-    "what-happens-if-the-switch-onto",
-    2,
-    "To come: what happens to writes made on the pool if a late check fails after the services restarted",
-  ],
-  ["does-the-copy-slow-down-my", 3, "To come: measured effect of the copy on disk latency"],
-  [
-    "how-fast-does-amoeba-expand-when",
-    4,
-    "To come: typical time from the trigger to the added capacity",
-  ],
-  [
-    "does-amoeba-work-on-windows-vms",
-    1,
-    "To come: Windows support: versions, filesystems, and how the pool works on Windows",
-  ],
+  3, 3, 5, 2, 3, 2, 4, 4, 3, 4, 3, 2, 4, 3, 5, 1, 4, 6, 3, 3, 1, 2, 5, 4, 3, 3, 3, 2, 3, 4,
 ];
 
 const text = (el: Element | null): string => (el?.textContent ?? "").replace(/[\s ]+/g, " ").trim();
@@ -104,7 +84,7 @@ describe("the body", () => {
   });
 
   describe("its ids", () => {
-    it("has all 8 group ids and all 29 question ids, each exactly once", () => {
+    it("has all 8 group ids and all 30 question ids, each exactly once", () => {
       for (const id of [...SECTION_IDS, ...QUESTION_IDS]) {
         expect(page.querySelectorAll(`[id="${id}"]`), id).toHaveLength(1);
       }
@@ -115,9 +95,9 @@ describe("the body", () => {
       expect(sections.map((section) => section.id)).toEqual(SECTION_IDS);
       expect(sections.map((section) => text(section.querySelector(":scope > h2")))).toEqual([
         "About Amoeba",
-        "Safety and data",
+        "Data safety",
         "Downtime and performance",
-        "Expanding when data grows",
+        "Expanding and shrinking",
         "The agent",
         "Platforms and disk types",
         "Costs and savings",
@@ -164,8 +144,8 @@ describe("the body", () => {
     ).toEqual([
       [
         "downtime-and-performance",
-        "Services restart at the switch",
-        "Moving a VM onto its pool restarts the systemd services that use its data mounts. After that, the pool expands and shrinks while it stays mounted.",
+        "No downtime to grow or shrink",
+        "The pool stays mounted while it grows and shrinks. Only the move onto the pool restarts the services that use the data mounts.",
       ],
       [
         "expanding-when-data-grows",
@@ -179,10 +159,10 @@ describe("the body", () => {
   it("opens its column on the Updated line, over the questions", () => {
     const top = page.querySelector("article.fq-main > .fq-upd")!;
     expect(top).toBe(page.querySelector("article.fq-main")!.firstElementChild);
-    expect(text(top)).toBe("Updated 2 November 2026");
+    expect(text(top)).toBe("Updated 3 November 2026");
   });
 
-  it("ends after question 29: no download line, no PDF, and links out only from About Amoeba", () => {
+  it("ends after question 30: no download line, no PDF, and links out only where an answer needs it", () => {
     const article = page.querySelector("article.fq-main")!;
     expect(article.lastElementChild).toHaveAttribute("id", "getting-started");
     expect(page.querySelector(".fq-dl, a[download], a[href$='.pdf']")).toBeNull();
@@ -193,15 +173,25 @@ describe("the body", () => {
         a.getAttribute("href"),
       ]),
     ).toEqual([
-      ["what-is-amoeba", "Block storage optimization on Azure and AWS", "/amoeba"],
-      ["how-much-can-amoeba-save", "free block storage cost assessment", "/assessment?p=amoeba"],
+      ["what-is-amoeba", "block storage optimization", "/amoeba"],
+      ["what-is-amoeba", "btrfs", "/learn/glossary/btrfs"],
+      ["what-does-onboarding-a-vm-change", "Amoeba product guide", "/amoeba-guide"],
+      ["how-much-can-amoeba-save", "free assessment", "/assessment?p=amoeba"],
+      ["how-much-can-amoeba-save", "Amoeba case study", "/amoeba-value-lab"],
+      [
+        "when-does-amoeba-shrink-the-pool",
+        "Amoeba troubleshooting",
+        "/amoeba-troubleshooting#amoeba-has-not-rightsized-my-disks-yet",
+      ],
+      ["what-does-amoeba-cost", "priced per GB it manages", "/pricing"],
+      ["how-do-i-see-what-my", "block storage cost assessment", "/assessment?p=amoeba"],
     ]);
   });
 
   describe("each question", () => {
     it("is a summary of its numeral, its h3 and a chevron, and a body of short bullets", () => {
       const questions = [...page.querySelectorAll("details.fq")];
-      expect(questions).toHaveLength(29);
+      expect(questions).toHaveLength(30);
       questions.forEach((question, index) => {
         const summary = question.querySelector(":scope > summary")!;
         expect([...summary.children].map((child) => child.tagName.toLowerCase())).toEqual([
@@ -229,7 +219,7 @@ describe("the body", () => {
       );
       const snapshot = page.querySelector("#can-i-go-back-to-my li:nth-child(2)")!.textContent!;
       expect(snapshot).toBe(
-        "It deletes a source disk only after that disk’s own snapshot is complete.",
+        "It deletes the disk only after that snapshot is complete, and keeps the snapshot for 7\u00a0days.",
       );
       expect(text(page.querySelector("#does-manual-stop-amoeba-from-expanding h3"))).toBe(
         "Does “Manual” stop Amoeba from expanding?",
@@ -245,30 +235,9 @@ describe("the body", () => {
     });
   });
 
-  it("carries the four facts to come as whole bullets, in the mock's places", () => {
-    const placeholders = [...page.querySelectorAll(".ph")];
-    expect(placeholders).toHaveLength(4);
-    expect(
-      placeholders.map((ph) => {
-        const li = ph.parentElement!;
-        return [
-          li.closest("details")!.id,
-          [...li.parentElement!.children].indexOf(li) + 1,
-          ph.textContent,
-        ];
-      }),
-    ).toEqual(PLACEHOLDERS);
-    for (const ph of placeholders) {
-      expect(ph.tagName).toBe("SPAN");
-      expect(ph.parentElement!.tagName).toBe("LI");
-      expect(ph.parentElement!.childNodes).toHaveLength(1);
-    }
-    /* "To come: " is the placeholder's own text, at 500, and a search result never quotes it. */
-    for (const ph of placeholders) {
-      expect(ph).toHaveAttribute("data-nosnippet");
-      expect(ph.firstElementChild).toHaveClass("ph-k");
-      expect(ph.firstElementChild!.textContent).toBe("To come: ");
-    }
+  it("answers every question: no fact is still to come", () => {
+    expect(page.querySelectorAll(".ph")).toHaveLength(0);
+    expect(page.textContent).not.toContain("To come");
   });
 
   describe("what it never carries", () => {
@@ -357,13 +326,13 @@ describe("the route", () => {
       expect(page.querySelectorAll("h1")).toHaveLength(1);
       expect(text(page.querySelector("h1"))).toBe("Amoeba FAQ");
       expect(text(page.querySelector(".doc-deck"))).toBe(
-        "Safety, downtime, expanding, agent and costs.",
+        "Data safety, downtime, requirements and costs.",
       );
       expect(page.querySelector(".doc-hero .dl, .doc-hero-grid, .doc-date, .doc-crumb")).toBeNull();
       expect(within(page).getByRole("navigation", { name: "Choose a product" })).toHaveClass(
         "as-switch",
       );
-      expect(page.querySelectorAll("details.fq")).toHaveLength(29);
+      expect(page.querySelectorAll("details.fq")).toHaveLength(30);
       expect(page.querySelector(".doc-rail, .doc-toc, .doc-sum, .doc-fine")).toBeNull();
     });
 

@@ -5,35 +5,27 @@ import { figure as figure3 } from "@/features/learn/figures/ebs-volume-types/3";
 
 export const article: Article = {
   slug: "ebs-volume-types",
-  title: "Amazon EBS volume types compared: how to choose one",
-  meta: "AWS EBS volume types compared by IOPS, throughput and size: six EBS types in two families, and the checks, in order, that pick one for your data.",
-  h1: "Amazon EBS volume types compared: how to choose one",
-  deck: "Each type’s list price beside its limits, and a 2\u00a0TiB log store priced on four of them.",
-  card: "gp3, gp2, io2, io1, st1 and sc1 side by side on limits and list price, with the checks that pick one.",
+  title: "Amazon EBS volume types: how to choose",
+  meta: "AWS EBS volume types compared: gp3, gp2, io2, io1, st1 and sc1 by size, IOPS, throughput and price, and three checks that pick one.",
+  h1: "Amazon EBS volume types",
+  deck: "Limits and list prices for all six types, and three checks that pick one.",
+  card: "gp3, gp2, io2, io1, st1 and sc1 by limits and list price, and three checks that pick one.",
   product: "amoeba",
   hub: "Block storage",
   topic: "AWS block storage",
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "rupeshankar",
   cover: "/learn-covers/zoorik-learn-ebs-volume-types-1200x630.webp",
   coverAlt:
     "EBS volume types: gp3, gp2 and io2 by price per GB-month, with gp3 the cheapest SSD type",
   short:
-    "Amazon EBS volume types come in two families, SSD (gp3, gp2, io2 and io1) and HDD (st1 and sc1). Use gp3 by default, with 3,000\u00a0IOPS included, io2 only past gp3’s limits, and st1 or sc1 only for large, sequential data.",
+    "Amazon EBS volume types come in two families. The SSD types are gp3, gp2, io2 Block Express and io1. The HDD types, st1 and sc1, cost less per GB. Use gp3 by default, io2 only past gp3’s limits, and st1 or sc1 only for large, sequential I/O.",
   sections: [
     {
       id: "ebs-volume-types",
-      title: "Types of EBS volumes compared: size, IOPS and throughput",
+      title: "The six types",
       blocks: [
-        {
-          kind: "p",
-          text: "Picture one new EC2 instance with three data volumes. A 200\u00a0GiB database makes small, random reads and writes all day. A 2\u00a0TiB log store is scanned in full each night, and a 500\u00a0GiB archive is read once a month.",
-        },
-        {
-          kind: "p",
-          text: "Each suits a different EBS volume type, and the wrong one costs more or runs slower.",
-        },
         {
           kind: "p",
           text: [
@@ -41,23 +33,23 @@ export const article: Article = {
             { a: "Amazon Elastic Block Store (EBS) volume", href: "/learn/glossary/ebs-volume" },
             " is ",
             { a: "block storage", href: "/learn/glossary/block-storage" },
-            " that you attach to an EC2 instance. AWS EBS volume types differ in performance and price, and you choose one for each volume.",
+            " that you attach to an EC2 instance. Each volume has one type, and the types differ in performance and price.",
           ],
         },
         {
           kind: "p",
-          text: "The current generation has six types of EBS volumes, in two families:",
+          text: "There are six current types of EBS volumes, in two families:",
         },
         {
           kind: "ul",
           items: [
             [
               { b: "SSD, solid-state drive." },
-              " For transactional work with frequent, small reads and writes, where ",
+              " For frequent, small reads and writes, where ",
               { a: "input/output operations per second (IOPS)", href: "/learn/glossary/iops" },
               " matter most. General Purpose SSD is ",
               { a: "gp3", href: "/learn/glossary/ebs-gp3" },
-              " and gp2, and ",
+              " and gp2. ",
               { a: "Provisioned IOPS", href: "/learn/glossary/provisioned-iops" },
               " SSD is io2 Block Express and io1.",
             ],
@@ -71,143 +63,139 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Prices are US East (N. Virginia) list prices, October 2026:",
+          text: "US East (N. Virginia) list prices, October 2026:",
         },
         {
           kind: "table",
           columns: [
-            { label: "Type", width: "14%" },
-            { label: "Use cases AWS lists", width: "37%" },
-            { label: "Size", width: "14%" },
-            { label: "Most IOPS", width: "14%" },
-            { label: "Most throughput", width: "14%" },
-            { label: "Storage, per GB-month", width: "14%" },
-            { label: "Charged on top", width: "10%" },
+            { label: "Type", width: "12%" },
+            { label: "Use cases", width: "24%" },
+            { label: "Size", width: "13%" },
+            { label: "Most IOPS", width: "11%" },
+            { label: "Most throughput", width: "12%" },
+            { label: "Storage, per GB-month", width: "11%" },
+            { label: "Also charged", width: "17%" },
           ],
           rows: [
             [
               "gp3",
               "Most workloads: boot volumes, medium-sized databases, interactive apps, dev and test",
-              "1\u00a0GiB to 64\u00a0TiB",
+              "1 GiB to 64 TiB",
               "80,000",
-              "2,000\u00a0MiB/s",
+              "2,000 MiB/s",
               "$0.08",
-              "IOPS above 3,000 at $0.005, and MB/s above 125 at $0.040, each per month",
+              "IOPS above 3,000 at $0.005, and MiB/s above 125 at $0.04, each per month",
             ],
             [
               "gp2",
-              "The same as gp3, with performance set by size",
-              "1\u00a0GiB to 16\u00a0TiB",
+              "Same as gp3, with performance tied to size",
+              "1 GiB to 16 TiB",
               "16,000",
-              "250\u00a0MiB/s",
+              "250 MiB/s",
               "$0.10",
-              "Nothing: I/O is included",
+              "Nothing",
             ],
             [
               "io2 Block Express",
-              "Steady sub-millisecond latency, or more than 80,000\u00a0IOPS or 2,000\u00a0MiB/s",
-              "4\u00a0GiB to 64\u00a0TiB",
+              "Steady sub-millisecond latency, or over 80,000 IOPS or 2,000 MiB/s",
+              "4 GiB to 64 TiB",
               "256,000",
-              "4,000\u00a0MiB/s",
+              "4,000 MiB/s",
               "$0.125",
-              "Every IOPS, from $0.065 per IOPS-month, with smaller rates past 32,000 and 64,000",
+              "Each IOPS: $0.065 a month up to 32,000, less above",
             ],
             [
               "io1",
               "I/O-intensive databases",
-              "4\u00a0GiB to 16\u00a0TiB",
+              "4 GiB to 16 TiB",
               "64,000",
-              "1,000\u00a0MiB/s",
+              "1,000 MiB/s",
               "$0.125",
-              "Every IOPS, at $0.065 per IOPS-month",
+              "Each IOPS: $0.065 a month",
             ],
             [
               "st1",
               "Big data, data warehouses, log processing",
-              "125\u00a0GiB to 16\u00a0TiB",
-              "500, at 1\u00a0MiB per I/O",
-              "500\u00a0MiB/s",
+              "125 GiB to 16 TiB",
+              "500, at 1 MiB per I/O",
+              "500 MiB/s",
               "$0.045",
-              "Nothing: I/O is included",
+              "Nothing",
             ],
             [
               "sc1",
-              "Data read infrequently, where storage cost matters most",
-              "125\u00a0GiB to 16\u00a0TiB",
-              "250, at 1\u00a0MiB per I/O",
-              "250\u00a0MiB/s",
+              "Data read rarely, where storage price matters most",
+              "125 GiB to 16 TiB",
+              "250, at 1 MiB per I/O",
+              "250 MiB/s",
               "$0.015",
-              "Nothing: I/O is included",
+              "Nothing",
             ],
           ],
         },
         {
           kind: "p",
-          text: "AWS calls Provisioned IOPS SSD its highest-performance volumes, and io2 Block Express is the faster of the two. It’s also the only type designed for 99.999% durability, against 99.8% to 99.9% for the rest.",
+          text: "Provisioned IOPS SSD is AWS’s highest-performance type. io2 Block Express is also the only type designed for 99.999% durability. The rest are designed for 99.8% to 99.9%.",
         },
         {
           kind: "p",
           text: [
-            "Each instance has its own ",
+            "An instance also has its own ",
             { a: "EBS limits", href: "/learn/glossary/ebs-optimized-instance" },
             ", and a volume gets no more than they allow.",
           ],
         },
         {
           kind: "p",
-          text: "Magnetic (standard) volumes are the previous generation, from 1\u00a0GiB to 1\u00a0TiB, with a maximum of 40 to 200\u00a0IOPS. AWS recommends a current type when you need more performance, or steadier performance.",
+          text: "Magnetic (standard) volumes are the previous generation: 1 GiB to 1 TiB, with 40 to 200 IOPS at most. AWS recommends a current type for more performance, or steadier performance.",
         },
       ],
     },
     {
       id: "ebs-volume-types-pricing-what-each-type",
-      title: "What each EBS volume type charges for",
+      title: "Pricing",
       blocks: [
         {
           kind: "p",
-          text: "Every type charges for capacity. AWS charges volume storage “by the amount of GB you provision per month”, until you release it. So a volume costs its full size, however little data it holds.",
+          text: "Every type charges for capacity. AWS charges storage “by the amount of GB you provision per month”, until you release it. So a volume costs its full size, however little data it holds.",
         },
-        { kind: "p", text: "Beyond storage, the types charge in three ways:" },
+        { kind: "p", text: "The types charge in three ways:" },
         {
           kind: "ul",
           items: [
             [
               { b: "Storage only: gp2, st1 and sc1." },
-              " “I/O is included in the price of the volumes,” AWS says. The performance comes with the size you choose.",
+              " “I/O is included in the price of the volumes,” AWS says. Performance comes with the size you choose.",
             ],
             [
               { b: "Storage plus extra performance: gp3." },
-              " Each volume includes 3,000\u00a0IOPS and 125\u00a0MiB/s. You pay only for the IOPS and throughput you add above those.",
+              " Each volume includes 3,000 IOPS and 125 MiB/s. You pay only for what you add above those.",
             ],
             [
               { b: "Storage plus every IOPS: io2 and io1." },
-              " You pay for each IOPS you provision. On io2, the rate per IOPS steps down past 32,000 on a volume, and again past 64,000.",
+              " You pay for each IOPS you provision. On io2, the rate steps down past 32,000 IOPS on a volume, and again past 64,000.",
             ],
           ],
-        },
-        {
-          kind: "p",
-          text: "Per GB, the six prices span more than eight to one, from $0.015 to $0.125. Of the HDD types, sc1 costs a third of st1. Among the SSDs, io2 and io1 cost 56% more than gp3.",
         },
         {
           kind: "p",
           text: [
             "Prices differ by Region and change, so check AWS’s pricing page for yours. The ",
             { a: "EBS pricing calculator", href: "/ebs-and-azure-disk-pricing" },
-            " shows what a gp3 or gp2\u00a0volume costs a month at list price, and what its empty space costs.",
+            " shows a gp3 or gp2 volume’s monthly list price, and what its empty space costs.",
           ],
         },
       ],
     },
     {
       id: "how-to-choose-an-ebs-volume-type",
-      title: "How to choose an EBS volume type, in order",
+      title: "How to choose",
       blocks: [
         {
           kind: "p",
-          text: "On EBS, the I/O pattern settles SSD vs HDD.",
+          text: "The I/O pattern settles SSD or HDD, so measure it first.",
         },
-        { kind: "h3", id: "measure-what-the-volume-does", title: "Measure what the volume does" },
+        { kind: "h3", id: "measure-what-the-volume-does", title: "Measure the volume" },
         {
           kind: "p",
           text: [
@@ -215,7 +203,7 @@ export const article: Article = {
             { code: "VolumeAvgIOPS" },
             " and ",
             { code: "VolumeAvgThroughput" },
-            " give each minute’s average IOPS, and its throughput in KiB/s.",
+            " give each minute’s average IOPS, and its throughput in KiB/s. The volume’s Monitoring tab in the EC2 console also graphs average read and write size, in KiB per operation.",
           ],
         },
         {
@@ -224,33 +212,33 @@ export const article: Article = {
             { code: "VolumeIOPSExceededCheck" },
             " and ",
             { code: "VolumeThroughputExceededCheck" },
-            " read 1 when the application keeps asking for more than the volume has. On gp2, st1 and sc1, ",
+            " read 1 when the application keeps asking for more than the volume provides. On gp2, st1 and sc1, ",
             { code: "BurstBalance" },
-            " shows the share of credits left.",
+            " shows the percentage of burst credits left.",
           ],
         },
         {
           kind: "h3",
           id: "three-checks-that-pick-the-type",
-          title: "Three checks that pick the type",
+          title: "Three checks",
         },
         { kind: "p", text: "Ask these in order, and stop at the first yes:" },
         {
           kind: "ol",
           items: [
             [
-              { b: "Does one volume need more than gp3 can give?" },
-              " That means more than 80,000\u00a0IOPS or 2,000\u00a0MiB/s, steady sub-millisecond latency, or 99.999% durability. It also covers Multi-Attach, one volume attached to several instances, which only io1 and io2 support. If so, use io2. ",
+              { b: "Does one volume need more than gp3 gives?" },
+              " That means over 80,000 IOPS or 2,000 MiB/s, steady sub-millisecond latency, or 99.999% durability. It also covers Multi-Attach, one volume on several instances, which only io1 and io2 support. If so, use io2. ",
               { a: "io2 vs gp3", href: "/learn/io2-vs-gp3" },
               " prices each case.",
             ],
             [
               { b: "Is the I/O large and sequential?" },
-              " HDD fits only a data volume of 125\u00a0GiB or more, since st1 and sc1 can’t boot. AWS points small, random I/O to SSD instead. If so, use st1 or sc1, as the next section explains.",
+              " If so, use st1 or sc1, compared below. Neither can be a boot volume, so this fits only a data volume of 125 GiB or more.",
             ],
             [
               { b: "Everything else gets gp3." },
-              " Provision the IOPS and throughput you measured, above the included 3,000 and 125\u00a0MiB/s.",
+              " Provision the IOPS and throughput you measured, above the included 3,000 IOPS and 125 MiB/s.",
             ],
           ],
         },
@@ -258,20 +246,20 @@ export const article: Article = {
         {
           kind: "h3",
           id: "volumes-you-already-have",
-          title: "Volumes you already have: gp2 to gp3, and io1 vs io2",
+          title: "Existing gp2 and io1 volumes",
         },
         {
           kind: "ul",
           items: [
             [
               { b: "gp2 to gp3." },
-              " gp3 costs 20% less per GB and includes 3,000\u00a0IOPS at any size. A gp2\u00a0volume of 334\u00a0GiB or more has 250\u00a0MiB/s, though, so set gp3’s throughput to match. ",
+              " gp3 costs 20% less per GiB and includes 3,000 IOPS and 125 MiB/s at any size. A gp2 volume over 1,000 GiB has more than 3,000 IOPS, at 3 per GiB. One of 334 GiB or more has 250 MiB/s. Set gp3 to match what the volume uses. ",
               { a: "gp2 vs gp3", href: "/learn/gp2-vs-gp3" },
               " has the steps.",
             ],
             [
               { b: "io1 to io2." },
-              " Both cost $0.125 per GB-month, and $0.065 per IOPS-month up to 32,000. Yet io2 allows 1,000\u00a0IOPS per GiB, against io1’s 50.",
+              " Storage costs the same, $0.125 per GB-month, and so does each IOPS up to 32,000. Above that, io2 charges less per IOPS. It also allows 1,000 IOPS per GiB, against io1’s 50.",
             ],
           ],
         },
@@ -279,7 +267,7 @@ export const article: Article = {
     },
     {
       id: "st1-vs-sc1-two-hdd-types-for",
-      title: "st1 vs sc1: two HDD types for large, sequential data",
+      title: "st1 vs sc1",
       blocks: [
         {
           kind: "p",
@@ -290,102 +278,99 @@ export const article: Article = {
           items: [
             [
               { b: "st1" },
-              " builds credits at 40\u00a0MiB/s per TiB and bursts at 250\u00a0MiB/s per TiB, up to 500\u00a0MiB/s. At 2\u00a0TiB, that’s 80\u00a0MiB/s baseline and 500\u00a0MiB/s burst.",
+              " builds credits at 40 MiB/s per TiB and bursts at 250 MiB/s per TiB, up to 500 MiB/s. At 2 TiB, that’s 80 MiB/s baseline and 500 MiB/s burst.",
             ],
             [
               { b: "sc1" },
-              " builds credits at 12\u00a0MiB/s per TiB and bursts at 80\u00a0MiB/s per TiB, up to 250\u00a0MiB/s. At 2\u00a0TiB, that’s 24\u00a0MiB/s and 160\u00a0MiB/s.",
+              " builds credits at 12 MiB/s per TiB and bursts at 80 MiB/s per TiB, up to 250 MiB/s. At 2 TiB, that’s 24 MiB/s and 160 MiB/s.",
             ],
           ],
         },
         {
           kind: "p",
-          text: "A full bucket holds enough credits for one full scan of the volume. AWS’s advice is to use st1 when scans must finish fast or run several times a day. Use sc1 when the data is read rarely and 250\u00a0MiB/s is enough.",
+          text: "A full bucket holds enough credits for one full scan of the volume. AWS advises st1 when scans must finish fast or run several times a day. It advises sc1 when the data is read rarely and 250 MiB/s is enough.",
         },
         {
           kind: "callout",
           label: "Watch out",
-          text: "On st1 and sc1, each I/O of 1\u00a0MiB or less uses a full 1\u00a0MiB of credit, so small, random I/O drains the bucket fast.",
+          text: "On st1 and sc1, an I/O of 1 MiB or less counts as a full 1 MiB of credit. Sequential I/O is merged into 1 MiB blocks, but small, random I/O drains the bucket fast.",
         },
         {
           kind: "p",
           text: [
-            "While a snapshot of an st1 or sc1\u00a0volume runs, its performance may drop as far as its baseline. So schedule ",
+            "While a snapshot of an st1 or sc1 volume runs, its performance may drop as far as its baseline. So schedule ",
             { a: "snapshots", href: "/learn/glossary/disk-snapshot" },
-            " away from the nightly scan.",
+            " away from heavy scans.",
           ],
         },
       ],
     },
     {
       id: "what-a-2-tib-log-store-costs",
-      title: "What a 2\u00a0TiB log store costs on each type",
+      title: "Example: a 2 TiB log store",
       blocks: [
         {
           kind: "callout",
           label: "Worked example",
-          text: "Take the 2\u00a0TiB (2,048\u00a0GiB) log store at US East list prices for October 2026. It costs 2,048 × $0.015 = $30.72 a month on sc1, and $92.16 on st1.",
-        },
-        {
-          kind: "p",
-          text: "From a full bucket, AWS’s scan-time table puts a full 2\u00a0TiB scan at about 3.64\u00a0hours on sc1 and 1.17\u00a0hours on st1. Matching st1’s 500\u00a0MiB/s on gp3 costs more, since gp3 includes only 125\u00a0MiB/s:",
+          text: "A 2 TiB (2,048 GiB) log store is scanned in full each night. Here is its monthly cost on four types, at US East list prices for October 2026.",
         },
         {
           kind: "ul",
           items: [
-            "Storage is 2,048 × $0.08 = $163.84.",
-            "The 375\u00a0MB/s above 125 add 375 × $0.040 = $15.",
-            "That’s $178.84 a month, sustained rather than burst.",
+            "sc1: 2,048 × $0.015 = $30.72. A full scan takes about 3.64 hours.",
+            "st1: 2,048 × $0.045 = $92.16. A full scan takes about 1.17 hours.",
+            "gp3 at st1’s 500 MiB/s: 2,048 × $0.08 = $163.84, plus 375 MiB/s above the included 125 at $0.04 each, or $15. That’s $178.84.",
+            "gp2: 2,048 × $0.10 = $204.80, at 250 MiB/s.",
           ],
         },
         {
           kind: "p",
-          text: "On gp2, the same volume costs 2,048 × $0.10 = $204.80, at 250\u00a0MiB/s. So for one scan a night, st1 does the job for about half the price of gp3.",
+          text: "The scan times are AWS’s, from a full bucket. gp3 and gp2 hold their rate, while st1 and sc1 burst only while credits last.",
         },
         {
           kind: "p",
-          text: "At 80\u00a0MiB/s, an empty 2\u00a0TiB st1 bucket refills in about 7.3\u00a0hours (2,097,152\u00a0MiB ÷ 80\u00a0MiB/s), well before the next night.",
+          text: "So for one scan a night, st1 does the job for about half the price of gp3. An empty 2 TiB st1 bucket refills at the 80 MiB/s baseline in about 7.3 hours (2,097,152 MiB ÷ 80 MiB/s). That’s well before the next night.",
         },
         {
           kind: "p",
-          text: "The monthly 500\u00a0GiB archive suits sc1, at 500 × $0.015 = $7.50 a month against $40 on gp3.",
+          text: "A 500 GiB archive read once a month suits sc1: 500 × $0.015 = $7.50 a month, against $40 on gp3.",
         },
         { kind: "svg", figure: figure2 },
       ],
     },
     {
       id: "the-type-can-change-later-the-size",
-      title: "The type can change later, the size only grows",
+      title: "Changing a volume later",
       blocks: [
         {
           kind: "p",
-          text: "Elastic Volumes is AWS’s name for changing a volume in place. On an instance that supports it, you can change a volume’s type, IOPS and throughput while it stays in use. The change itself costs nothing, and the new price applies from its start.",
+          text: "Elastic Volumes is AWS’s name for changing a volume in place. On an instance that supports it, you can change a volume’s type, IOPS and throughput while it stays in use. The change is free, and the new price applies from its start.",
         },
         {
           kind: "p",
-          text: "So the type isn’t a final choice. Each volume takes up to four changes in a rolling 24\u00a0hours, each after the last has completed.",
+          text: "So the type isn’t final. A volume takes up to four changes in a rolling 24 hours, each after the last completes.",
         },
         {
           kind: "p",
-          text: "The new size and performance must fit the target type. A 100\u00a0GiB gp3\u00a0volume becomes st1 only if it also grows to 125\u00a0GiB. A root volume of type io1, io2, gp2, gp3 or standard can’t become st1 or sc1 at all.",
+          text: "The new size and performance must fit the target type. A 100 GiB gp3 volume becomes st1 only if it also grows to 125 GiB. A root volume can’t become st1 or sc1 at all.",
         },
         {
           kind: "p",
-          text: "Size is the one setting that only grows. AWS says: “You can’t decrease the volume size.” A smaller volume means a new volume and a copy of the data.",
+          text: "Size only grows. AWS says: “You can’t decrease the volume size.” A smaller volume means a new volume and a copy of the data.",
         },
         { kind: "svg", figure: figure3 },
         {
           kind: "p",
-          text: "So keep the size tight. Give a volume what its data needs, with room for near-term growth, and grow it when it fills.",
+          text: "So keep the size tight: what the data needs, with room for near-term growth. Grow it when it fills.",
         },
         {
           kind: "p",
           text: [
-            "A size increase usually takes effect within seconds, and ",
-            { a: "increasing EBS volume size", href: "/learn/increase-ebs-volume-size" },
+            "A size increase usually takes effect within seconds. ",
+            { a: "Increasing EBS volume size", href: "/learn/increase-ebs-volume-size" },
             " shows how to grow the filesystem while it stays mounted. ",
             { a: "Shrinking an EBS volume", href: "/learn/shrink-ebs-volume" },
-            " takes the copy and a short stop. ",
+            " takes a copy and a short stop. ",
             { a: "EBS Elastic Volumes", href: "/learn/ebs-elastic-volumes" },
             " covers every change and its limits.",
           ],
@@ -394,7 +379,7 @@ export const article: Article = {
     },
     {
       id: "where-amoeba-fits",
-      title: "Where Amoeba fits: the EBS size you pay for",
+      title: "Where Amoeba fits",
       blocks: [
         {
           kind: "p",
@@ -404,10 +389,10 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " optimizes block storage on Azure and AWS, and on AWS it targets that second number.",
+            " optimizes block storage on Azure and AWS. On AWS, it works on that second number: the size.",
           ],
         },
-        { kind: "h3", id: "what-amoeba-does-on-aws", title: "What Amoeba does on AWS" },
+        { kind: "h3", id: "what-amoeba-does-on-aws", title: "What it does on AWS" },
         {
           kind: "ul",
           items: [
@@ -417,7 +402,7 @@ export const article: Article = {
             ],
             [
               { b: "The pool." },
-              " Amoeba moves an instance’s EBS data volumes onto one btrfs pool of gp3\u00a0volumes, sized to your data, with room to grow. Each pool volume gets at least gp3’s included performance, and more when the instance’s load needs it.",
+              " Amoeba moves an instance’s data volumes onto one btrfs pool of gp3 volumes, sized to your data, with room to grow. Each pool volume gets at least gp3’s included performance, and more when the instance’s load needs it.",
             ],
             [
               { b: "The move." },
@@ -425,26 +410,22 @@ export const article: Article = {
             ],
             [
               { b: "Rightsizing." },
-              " It grows the pool before it fills. When your data goes down and stays down, it shrinks the pool one volume at a time.",
+              " Amoeba rightsizes the pool without any downtime. It grows the pool before it fills. When your data goes down and stays down, it shrinks the pool one volume at a time. So you pay for close to what you use.",
             ],
             [
               { b: "The old volumes." },
-              " Once the switch is checked, Amoeba snapshots each old volume, deletes the volume, and keeps the snapshot for a few days before deleting it too. You pay for both sets of volumes only while the move runs, then for the snapshots while they’re kept.",
+              " Once the switch is checked, Amoeba snapshots each old volume and deletes it. It keeps each snapshot for 7 days, then deletes that too. You pay for both sets of volumes only while the move runs, then for the snapshots while they’re kept.",
             ],
           ],
         },
-        { kind: "h3", id: "which-volumes-suit-a-gp3-pool", title: "Which volumes suit a gp3 pool" },
+        { kind: "h3", id: "which-volumes-suit-a-gp3-pool", title: "Which volumes fit" },
         {
           kind: "p",
-          text: "Amoeba acts only on the instances you onboard. Because the pool is gp3, it stops at gp3’s limits, so leave out an instance whose volumes need io2 under the first check above.",
+          text: "Amoeba acts only on the instances you onboard. Its pool is gp3, so it stops at gp3’s limits. Leave out an instance whose volumes need io2 under the first check.",
         },
         {
           kind: "p",
-          text: "Per GiB, gp3 also costs more than either HDD type. At list price, sc1 costs 19% of gp3 and st1 56% ($0.015 and $0.045 against $0.08).",
-        },
-        {
-          kind: "p",
-          text: "So run the numbers before you onboard an instance with st1 or sc1\u00a0volumes. A pool reduces cost there only when it needs far fewer GiB than the volumes have.",
+          text: "gp3 also costs more per GB than either HDD type: $0.08, against $0.045 for st1 and $0.015 for sc1. So with st1 or sc1 volumes, run the numbers before you onboard. A pool reduces cost there only when it needs far fewer GiB than the volumes have.",
         },
         {
           kind: "p",
@@ -458,7 +439,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves an EC2 instance’s EBS data volumes onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one volume at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves an EC2 instance’s EBS data volumes onto one pool sized to your data, then rightsizes it autonomously, without any downtime, one volume at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
@@ -499,30 +480,30 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "gp2 vs gp3: pricing, performance and how to migrate",
+      title: "gp2 vs gp3 on AWS",
       where: "Learn",
       href: "/learn/gp2-vs-gp3",
     },
     {
-      title: "io2 vs gp3: when Provisioned IOPS is worth the price",
+      title: "io2 vs gp3: when io2 is worth it",
       where: "Learn",
       href: "/learn/io2-vs-gp3",
     },
     {
-      title: "EBS Elastic Volumes: what you can change, and what you can’t",
+      title: "EBS Elastic Volumes",
       where: "Learn",
       href: "/learn/ebs-elastic-volumes",
     },
     {
-      title: "How to increase EBS volume size without downtime on Linux",
+      title: "Increase EBS volume size without downtime",
       where: "Learn",
       href: "/learn/increase-ebs-volume-size",
     },
     {
-      title: "How to shrink an EBS volume when AWS only lets it grow",
+      title: "How to shrink an EBS volume",
       where: "Learn",
       href: "/learn/shrink-ebs-volume",
     },
   ],
-  relatedTitle: "More on choosing and resizing EBS storage",
+  relatedTitle: "More on EBS volumes",
 };

@@ -13,9 +13,9 @@ import type { ProductId } from "@/content/products";
  *
  *   Coral   6 nodes, 77 workloads, 22 CPU held, 15.53 requested, 3.09 of real
  *           work, $608.76 a month becoming $194.88, which is 67.99% removed.
- *   Amoeba  four 512 GiB disks holding 1,000 GiB, moved onto one 1,208 GiB pool
- *           (data + 20% + 8 GiB), and $292.88 a month becoming $97.00, which is
- *           66.88% removed.
+ *   Amoeba  four 512 GiB disks holding 1,000 GiB, moved onto one 1,208 GiB pool,
+ *           and $292.88 a month becoming $97.00, which is 66.88% removed. The page
+ *           states no sizing rule: the pool is "sized to your data, with room to grow".
  *
  * Edit a number here and the picture beside it becomes a lie — so a change to
  * any figure below is a change to the mark's proportion on the same card.
@@ -118,13 +118,13 @@ const amoebaSteps: readonly Step[] = [
     title: "Move onto one pool",
     note: "Services restart at the switch",
     description:
-      "The data mounts move onto one btrfs pool sized to the data plus 20 percent, and the systemd services using those mounts are restarted. 1,000 GiB of data on a 1,208 GiB pool releases 840 GiB.",
+      "The data mounts move onto one btrfs pool sized to your data, with room to grow. The services using those mounts restart at the switch. 1,000 GiB of data on a 1,208 GiB pool releases 840 GiB.",
     mark: { kind: "rule", split: "48.83fr 10.16fr 41.02fr" },
     figure: {
       caption: "Moved onto one pool",
       value: "1,208",
       unit: "GiB",
-      sub: "data + 20% + 8 GiB",
+      sub: "down from 2,048 GiB",
     },
     legend: [{ label: "Released", value: "840 GiB", tone: "line" }],
   },

@@ -58,9 +58,7 @@ describe("/learn/glossary's metadata", () => {
 describe("/learn/glossary", () => {
   it("has one h1 under its link back to /learn, then its line", () => {
     const root = page();
-    expect([...root.querySelectorAll("h1")].map(text)).toEqual([
-      "Cloud computing terms: a cloud cost glossary",
-    ]);
+    expect([...root.querySelectorAll("h1")].map(text)).toEqual(["Cloud computing terms"]);
     const hero = root.querySelector("header.hero.doc-hero.lv-hero#top")!;
     const kicker = hero.querySelector("p.vp-kick")!;
     expect(kicker.nextElementSibling!.tagName).toBe("H1");

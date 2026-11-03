@@ -5,83 +5,76 @@ export const term: GlossaryTerm = {
   slug: "finops-maturity-model",
   term: "FinOps maturity model (crawl, walk, run)",
   title: "What is the FinOps maturity model?",
-  meta: "The FinOps maturity model rates each FinOps capability crawl, walk or run. See each stage, how to assess your FinOps maturity, and why run isn’t required.",
+  meta: "The FinOps maturity model rates each FinOps capability as crawl, walk or run. What each stage means, how to assess maturity, and why run isn’t required.",
   h1: "What is the FinOps maturity model?",
-  card: "The FinOps maturity model rates your team’s progress in each FinOps capability.",
+  card: "The FinOps maturity model rates your team’s progress in each FinOps capability as crawl, walk or run.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
       text: [
         "The FinOps maturity model rates your team’s progress in each ",
         { a: "FinOps", href: "/learn/glossary/finops" },
-        " capability. A capability is one area of FinOps work, such as budgeting or forecasting. Crawl, walk and run are its three stages.",
+        " capability as crawl, walk or run. A capability is one area of FinOps work, such as budgeting or forecasting. The model is part of the FinOps Foundation’s FinOps Framework.",
       ],
     },
   ],
   sections: [
     {
       id: "finops-maturity-stages-crawl-walk-run",
-      title: "FinOps maturity stages: crawl, walk, run",
+      title: "Crawl, walk, run",
       blocks: [
-        {
-          kind: "p",
-          text: "This is the FinOps Foundation maturity model, from its FinOps Framework. Microsoft describes each stage:",
-        },
+        { kind: "p", text: "Microsoft’s FinOps training describes each stage:" },
         {
           kind: "ul",
           items: [
-            "At crawl, there’s little reporting or tooling. Basic processes exist, but not all major teams follow them.",
-            "At walk, the organization follows the process. Automation or processes cover most needs.",
-            "At run, all teams follow it, and hard cases are handled. Automation is preferred.",
+            "Crawl: little reporting or tooling. Basic processes exist, but not all major teams follow them.",
+            "Walk: the organization understands and follows the process. Automation or processes cover most needs.",
+            "Run: all teams follow it, and hard edge cases are handled. Automation is preferred.",
           ],
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
-          text: "FinOps doesn’t require every organization to reach run. The right stage depends on your goals and the value you want.",
+          text: "FinOps doesn’t require every organization to reach run. The right stage depends on its goals and the value it wants.",
         },
       ],
     },
     {
       id: "an-example-a-first-round",
-      title: "How to assess FinOps maturity: a first round",
+      title: "How to assess it",
       blocks: [
         {
-          kind: "p",
-          text: "Microsoft advises rating each capability on its own, so your FinOps maturity levels can differ. For a first round, it suggests three to five capabilities.",
+          kind: "ol",
+          items: [
+            "Pick the capabilities that matter most. For a first round, Microsoft suggests three to five.",
+            "Rate each one on its own, so a team can be at walk in one and crawl in another.",
+            "Plan the steps that move each one up.",
+            "Rate again every 3 to 6\u00a0months.",
+          ],
         },
         {
           kind: "p",
-          text: "Say your picks include reporting and budgeting. You rate reporting at walk and budgeting at crawl. You plan steps to move budgeting up, then rate again in 3 to 6\u00a0months.",
+          text: "Say you rate reporting at walk and budgeting at crawl. You plan steps to move budgeting up, then rate both again a few months later.",
         },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why the FinOps maturity model matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
             "At crawl, some major teams skip the process, so their cloud cost gets fewer checks.",
+            "A stage alone doesn’t reduce your cloud cost. Changing what you use, or the rate you pay, does.",
             [
-              "A stage alone doesn’t ",
-              { a: "reduce your cloud cost", href: "/cloud-cost-optimization" },
-              ". Changing what you use, or the rate you pay, does.",
-            ],
-            [
-              "Our library lists ",
-              { a: "FinOps tools", href: "/cloud-cost-optimization-library" },
-              " and other cloud cost optimization tools, with what each one does.",
-            ],
-            [
-              "The ",
-              { a: "free assessment", href: "/assessment" },
-              " works out what your clusters and disks could save.",
+              "Our ",
+              { a: "library of FinOps tools", href: "/cloud-cost-optimization-library" },
+              " says what each one does.",
             ],
           ],
         },
@@ -106,9 +99,9 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/cloud-cost-anomaly-detection",
     },
   ],
-  relatedTitle: "Terms related to the FinOps maturity model",
+  relatedTitle: "Related terms",
   next: {
-    title: "Cloud cost optimization: how to reduce cloud costs",
+    title: "Cloud cost optimization",
     href: "/cloud-cost-optimization",
   },
   sources: [

@@ -4,71 +4,68 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/provisioned
 export const term: GlossaryTerm = {
   slug: "provisioned-iops",
   term: "Provisioned IOPS",
-  title: "What is provisioned IOPS (PIOPS) on AWS and Azure?",
-  meta: "Provisioned IOPS (PIOPS) is the disk performance you set and pay for, used or not. See how Amazon EBS and Azure disks charge for it, with AWS’s gp3 example.",
-  h1: "What is provisioned IOPS (PIOPS) on AWS and Azure?",
-  card: "Provisioned IOPS (PIOPS) is the disk performance you set and pay for, counted in input/output operations per second (IOPS).",
+  title: "What is provisioned IOPS (PIOPS)?",
+  meta: "Provisioned IOPS (PIOPS) is disk performance you set and pay for, used or not. How it works on AWS io1, io2 and gp3, and on Azure disks.",
+  h1: "What is provisioned IOPS (PIOPS)?",
+  card: "Provisioned IOPS (PIOPS) is disk performance you set and pay for, counted in input/output operations per second (IOPS).",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "Provisioned IOPS (PIOPS) is the disk performance you set and pay for, counted in input/output operations per second (IOPS). That’s the reads and writes a disk can do each second. You pay for that number, whether your app uses it or not.",
+      text: "Provisioned IOPS (PIOPS) is disk performance you set and pay for, counted in input/output operations per second (IOPS). That’s the reads and writes a disk can do each second. You pay for the number you set, whether your app uses it or not.",
     },
   ],
   sections: [
     {
       id: "provisioned-iops-in-aws-and-azure",
-      title: "Provisioned IOPS on Amazon EBS and Azure disks",
+      title: "PIOPS on AWS and Azure",
       blocks: [
+        { kind: "h3", id: "provisioned-iops-on-aws", title: "On AWS" },
         {
           kind: "ul",
           items: [
-            "On AWS, io1 and io2 Block Express are the Provisioned IOPS SSD types. You pay for every IOPS you set.",
-            "gp3 has EBS provisioned IOPS too: 3,000 come with the storage, and you pay for the rest.",
-            "On Azure, Premium SSD v2 and Ultra Disk charge for size, IOPS and throughput separately.",
-            "Premium SSD v2 gives 3,000\u00a0IOPS free.",
-            "Premium SSD ties IOPS to size: a 4\u00a0TiB P50\u00a0disk gets 7,500 base IOPS.",
+            "io1 and io2 Block Express are the Provisioned IOPS SSD volume types. You pay for every IOPS you set.",
+            "io1 takes up to 64,000\u00a0IOPS, at most 50 per GiB.",
+            "io2 Block Express takes up to 256,000\u00a0IOPS, at most 1,000 per GiB.",
+            [
+              { a: "gp3", href: "/learn/glossary/ebs-gp3" },
+              " includes 3,000\u00a0IOPS with the storage. You can set up to 80,000 and pay for the rest.",
+            ],
+          ],
+        },
+        { kind: "svg", figure: figure1 },
+        { kind: "h3", id: "provisioned-iops-on-azure", title: "On Azure" },
+        {
+          kind: "ul",
+          items: [
+            "Premium SSD v2 and Ultra Disk charge for size, IOPS and throughput separately.",
+            "Premium SSD v2 includes 3,000\u00a0IOPS free, and you can set up to 80,000.",
+            [
+              { a: "Ultra Disk", href: "/learn/glossary/azure-ultra-disk" },
+              " goes up to 400,000\u00a0IOPS.",
+            ],
+            "Premium SSD ties IOPS to size: a 4\u00a0TiB P50 disk gets 7,500 base IOPS.",
           ],
         },
       ],
     },
     {
-      id: "an-example-from-aws",
-      title: "An example from AWS",
-      blocks: [
-        {
-          kind: "p",
-          text: "AWS’s pricing page uses a 2,000\u00a0GB gp3\u00a0volume set to 10,000\u00a0IOPS.",
-        },
-        {
-          kind: "ul",
-          items: ["3,000\u00a0IOPS come free.", "The other 7,000 are charged as extra."],
-        },
-        { kind: "svg", figure: figure1 },
-      ],
-    },
-    {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why provisioned IOPS matter for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            "Set IOPS for your busiest hour, and you pay that level in quiet hours.",
-            "Your virtual machine (VM) caps IOPS too. IOPS above its limit are charged but never reached.",
+            "Set IOPS for your busiest hour, and you pay that level in quiet hours too.",
+            "Your virtual machine (VM) has its own IOPS limit. IOPS you set above it are charged but never reached.",
             "You can change IOPS on a running disk on AWS, Premium SSD v2 and Ultra Disk. Azure allows four changes per disk in 24\u00a0hours.",
             [
               "For disk size, ",
               { a: "Amoeba", href: "/amoeba" },
-              " moves a VM’s data disks onto one btrfs pool sized to your data, then rightsizes it autonomously.",
-            ],
-            [
-              "The ",
-              { a: "free assessment", href: "/assessment?p=amoeba" },
-              " works out your own figure.",
+              " moves a VM’s data disks onto one btrfs pool sized to your data, then rightsizes it autonomously, without any downtime.",
             ],
           ],
         },
@@ -78,20 +75,24 @@ export const term: GlossaryTerm = {
   related: [
     { title: "IOPS", line: "The unit itself, on any disk.", href: "/learn/glossary/iops" },
     {
-      title: "Azure managed disks",
-      line: "Azure’s five disk types, Standard HDD to Ultra Disk.",
-      href: "/learn/glossary/azure-managed-disk",
+      title: "EBS gp3",
+      line: "Includes 3,000 IOPS at any size.",
+      href: "/learn/glossary/ebs-gp3",
     },
-    { title: "EBS volume", line: "The AWS disk.", href: "/learn/glossary/ebs-volume" },
+    {
+      title: "Azure Ultra Disk",
+      line: "Size, IOPS and throughput, each set separately.",
+      href: "/learn/glossary/azure-ultra-disk",
+    },
     {
       title: "Disk throughput",
-      line: "The other speed limit, in data moved per second.",
+      line: "The other speed limit: bytes per second.",
       href: "/learn/glossary/disk-throughput",
     },
   ],
-  relatedTitle: "Terms related to provisioned IOPS",
+  relatedTitle: "Related terms",
   next: {
-    title: "io2 vs gp3: when Provisioned IOPS is worth the price",
+    title: "io2 vs gp3: when io2 is worth it",
     href: "/learn/io2-vs-gp3",
   },
   sources: [

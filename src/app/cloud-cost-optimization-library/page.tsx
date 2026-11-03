@@ -12,13 +12,13 @@ import "@/styles/community.css";
 import "@/styles/cloud-cost-tools.css";
 
 /**
- * `/cloud-cost-optimization-library`: Cloud cost management tools and FinOps tools: the tools that reduce cloud cost,
- * then Coral and Amoeba compared, each tile one of the pages under it, then the two free calculators and its questions
- * (2 Nov 2026). Indexed, listed in the sitemap and prerendered at build like every page here; linked from the footer's
- * Resources column, after News. Its old address, /compare, redirects here (next.config.ts). It is drawn on Learn's
- * frame and carries Learn's sheet and /community's, as the mock does, then its own; it takes the site's default card.
+ * `/cloud-cost-optimization-library`: Cloud cost management tools: the tools that reduce cloud cost, by kind, then
+ * Coral and Amoeba compared, each tile one of the pages under it, then the two free calculators and its questions.
+ * Indexed, listed in the sitemap and prerendered at build like every page here; linked from the footer's Resources
+ * column, after News. Its old address, /compare, redirects here (next.config.ts). It is drawn on Learn's frame and
+ * carries Learn's sheet and /community's, as the mock does, then its own; it takes its own card (`social.ts`).
  */
-/* Its title goes through the layout's template: "Cloud cost management tools and FinOps tools | Zoorik". */
+/* Its title goes through the layout's template: "Cloud cost management and FinOps tools | Zoorik". */
 export const metadata: Metadata = documentMetadata(routes.cloudCostTools, cloudCostToolsPage.meta);
 
 export default function CloudCostOptimizationTools(): React.JSX.Element {

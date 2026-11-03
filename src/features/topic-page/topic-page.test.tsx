@@ -25,9 +25,9 @@ import {
 } from "@/content/topic-pages";
 
 /**
- * The two Topic pages, `/azure-cost-optimization` and `/aws-cost-optimization`: one template, two contents, word for
- * word from their checked drafts and drawn as their mocks draw them. What is checked is what the drafts and the mocks
- * ask of each page as a whole: the title and description, the card, the hero, the Learn frame and its chips, every
+ * The two Topic pages, `/azure-cost-optimization` and `/aws-cost-optimization`: one template, two contents
+ * (`topic-pages.ts`, rewritten 2 Nov 2026), drawn as their mocks draw them. What is checked is what the content and
+ * the mocks ask of each page as a whole: the title and description, the card, the hero, the Learn frame and its chips, every
  * section's blocks, the band of Coral and Amoeba cards, the questions, Read more and the closing row; that every link
  * lands, a Learn page not published yet set as its words; the cross-links to the library's versus pages; and that the
  * page keeps the site's words and names no competitor.
@@ -61,6 +61,8 @@ interface Case {
   readonly eyebrow: string;
   /** The card's file in public/og/pages. */
   readonly card: string;
+  /** The words the card's picture still shows; redrawn with the title, they become `title`. */
+  readonly cardWords: string;
   /** The sections' anchors, in order, as the mock writes them. */
   readonly sections: readonly string[];
   /** Each question's id, as the mock writes it. */
@@ -78,11 +80,12 @@ const cases: readonly (readonly [string, Case])[] = [
       Page: AzureCostOptimization,
       metadata: azureCostOptimizationMeta,
       content: azureCostOptimizationPage,
-      title: "Azure cost optimization: how to reduce Azure costs",
+      title: "Azure cost optimization",
       description:
-        "Microsoft Azure cost optimization, line by line: what drives the cost of Azure VMs, managed disks, AKS and data transfer, and how to reduce each one.",
+        "What drives Microsoft Azure cost, line by line: VMs, managed disks, AKS, data transfer and commitments, and how to reduce each one.",
       eyebrow: "Azure",
       card: "azure-cost-optimization",
+      cardWords: "Azure cost optimization: how to reduce Azure costs",
       sections: [
         "azure-cost-management",
         "azure-cost-optimization-by-line",
@@ -106,17 +109,18 @@ const cases: readonly (readonly [string, Case])[] = [
       Page: AwsCostOptimization,
       metadata: awsCostOptimizationMeta,
       content: awsCostOptimizationPage,
-      title: "AWS cost optimization: how to reduce AWS costs",
+      title: "AWS cost optimization",
       description:
-        "Cost optimization on AWS, line by line: stop idle EC2 instances, rightsize with AWS Compute Optimizer, fit EKS, EBS and S3 to real use, then buy Savings Plans.",
+        "AWS cost optimization, line by line: how to reduce EC2, EBS, EKS, S3 and data transfer costs, then size Savings Plans to what's left.",
       eyebrow: "AWS",
       card: "aws-cost-optimization",
+      cardWords: "AWS cost optimization: how to reduce AWS costs",
       sections: awsCostOptimizationPage.sections.map((section) => section.id),
       questions: [
         "where-do-you-start-to-reduce-aws",
         "does-a-stopped-ec2-instance-still-cost",
         "can-an-ebs-volume-shrink",
-        "savings-plan-or-spot-which-should-you",
+        "savings-plan-or-spot",
         "does-zoorik-replace-cost-explorer-or-aws",
       ],
       cardLinks: [routes.eksCostOptimization, routes.ebsCostOptimization],
@@ -136,7 +140,7 @@ describe("the two Topic pages", () => {
       routes.azureCostOptimization,
       routes.awsCostOptimization,
     ]);
-    expect(topicPages.map((page) => page.lastUpdated)).toEqual(Array(2).fill("2 November 2026"));
+    expect(topicPages.map((page) => page.lastUpdated)).toEqual(Array(2).fill("3 November 2026"));
     /* Built in the article frame: the header marks nothing, and an in-page link keeps its address, as the mocks'
        `data-keep-hash` asks. */
     for (const page of topicPages) {
@@ -173,7 +177,7 @@ describe.each(cases)("%s", (path, c) => {
     expect(c.metadata.description).toBe(c.description);
     expect(c.description.length).toBeLessThanOrEqual(160);
     expect(c.metadata.alternates).toEqual({ canonical: path });
-    const card = { url: `/og/pages/${c.card}.png`, alt: `Zoorik. ${c.title}.` };
+    const card = { url: `/og/pages/${c.card}.png`, alt: `Zoorik. ${c.cardWords}.` };
     expect(pageCards[path]).toMatchObject(card);
     expect(c.metadata.openGraph).toMatchObject({
       url: path,
@@ -389,11 +393,7 @@ describe.each(cases)("%s", (path, c) => {
   it("ends on Read more, six tiles, then the closing row naming both products", () => {
     const page = renderPage(path, c);
     const read = page.querySelector("main > section.sec#read-more")!;
-    expect(text(read.querySelector(".sec-hrow > h2#read-more-h"))).toBe(
-      path === routes.azureCostOptimization
-        ? "More on Azure cost optimization"
-        : "More on AWS cost optimization",
-    );
+    expect(text(read.querySelector(".sec-hrow > h2#read-more-h"))).toBe("Read more");
     const tiles = [...read.querySelectorAll(".dt-grid > article.dt")];
     expect(tiles).toHaveLength(6);
     expect(

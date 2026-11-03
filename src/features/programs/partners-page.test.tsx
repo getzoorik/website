@@ -140,7 +140,7 @@ describe("/partners", () => {
       ],
       [
         "Resellers and marketplace partners",
-        "Zoorik is on AWS Marketplace and Microsoft Marketplace.",
+        "Offer Coral and Amoeba to the teams you already sell to.",
         null,
       ],
     ]);
@@ -161,7 +161,7 @@ describe("/partners", () => {
       ],
       [
         "Terraform modules",
-        "AKS and EKS modules on the Terraform Registry.",
+        "Create Coral’s cloud permissions on AKS and EKS.",
         routes.docsInstallTerraform,
       ],
     ]);

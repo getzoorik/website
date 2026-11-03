@@ -53,8 +53,8 @@ describe("/open-source", () => {
     expect(buttons[0]!.querySelector(".mkt-q")).toHaveTextContent("· Verified organization");
     const trust = top.querySelector(":scope > p.op-trust")!;
     expect(text(trust)).toBe(
-      "Every zoorikctl release since v0.3.0 is signed with Sigstore (opens in a new tab), and each PyPI release " +
-        "carries a provenance attestation from its GitHub release workflow.",
+      "Every zoorikctl release since v0.3.0 is signed with Sigstore (opens in a new tab). Each assessment release " +
+        "on PyPI carries a provenance attestation from its GitHub release workflow.",
     );
     expect(trust.querySelector("a")).toHaveAttribute(
       "href",
@@ -63,7 +63,7 @@ describe("/open-source", () => {
     expect(page().querySelector("svg.op-ok")).toBeNull();
   });
 
-  it("lists the six projects 01–06 with their licence and links; the Helm chart has neither licence nor GitHub", () => {
+  it("lists the six projects 01–06 with their licence and links; the Helm chart has neither licence nor GitHub; the chart and modules end on their install guide", () => {
     const rows = [...page().querySelectorAll("#projects .op-row")];
     expect(
       rows.map((row) => [
@@ -125,6 +125,7 @@ describe("/open-source", () => {
             "EKS module on the Terraform Registry (opens in a new tab)",
             "https://registry.terraform.io/modules/getzoorik/zoorik-coral/aws",
           ],
+          ["Install", "/docs/install-coral-with-terraform"],
         ],
       ],
       [
@@ -142,6 +143,7 @@ describe("/open-source", () => {
             "Artifact Hub (opens in a new tab)",
             "https://artifacthub.io/packages/helm/zoorik/coral-agent",
           ],
+          ["Install", "/docs/install-coral-with-helm"],
         ],
       ],
     ]);

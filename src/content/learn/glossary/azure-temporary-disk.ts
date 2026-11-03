@@ -4,30 +4,38 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/azure-tempo
 export const term: GlossaryTerm = {
   slug: "azure-temporary-disk",
   term: "Azure temporary disk",
-  title: "Azure temporary storage: what is the temp disk?",
-  meta: "Azure VM temporary storage is the temp drive your VM size comes with, drive D on Windows. See when its data can be lost and why it adds no disk charge.",
-  h1: "Azure temporary storage: what is the temp disk?",
-  card: "The Azure temporary disk, or Azure temp disk, is the temporary storage that comes with most Azure virtual machines (VMs).",
+  title: "What is the Azure temp drive?",
+  meta: "The Azure temp drive is the temporary disk most Azure VMs come with, drive D on Windows. When its data is lost, how big it is, and what it costs.",
+  h1: "What is the Azure temp drive?",
+  card: "The Azure temp drive, or temporary disk, is short-term storage that comes with most Azure virtual machines (VMs).",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
       text: [
-        "The Azure temporary disk, or Azure temp disk, is the temporary storage that comes with most Azure virtual machines (VMs). Microsoft says it isn’t a ",
+        "The Azure temp drive, or temporary disk, is short-term storage that comes with most Azure virtual machines (VMs). It isn’t a ",
         { a: "managed disk", href: "/learn/glossary/azure-managed-disk" },
-        " and should hold only data such as page files, swap files or SQL Server tempdb files.",
+        ". Microsoft says it should hold only data such as page files, swap files or SQL Server tempdb files.",
+      ],
+    },
+    {
+      kind: "p",
+      text: [
+        "On Windows it’s drive D by default. On Linux it’s usually ",
+        { code: "/dev/disk/azure/resource" },
+        ".",
       ],
     },
   ],
   sections: [
     {
       id: "when-its-data-can-be-lost",
-      title: "When data on the Azure temp disk can be lost",
+      title: "When data can be lost",
       blocks: [
-        { kind: "p", text: "Data on the temporary disk in an Azure VM might be lost when:" },
+        { kind: "p", text: "Data on the temp drive might be lost when:" },
         {
           kind: "ul",
           items: ["Azure runs a maintenance event", "You redeploy the VM", "You stop the VM"],
@@ -38,38 +46,34 @@ export const term: GlossaryTerm = {
     },
     {
       id: "an-example-azure-vm-temporary-disk-size",
-      title: "An example: Azure VM temporary disk size",
+      title: "Temp drive size",
       blocks: [
         {
           kind: "p",
-          text: "The temporary disk’s size depends on the VM size you pick, as the Ddsv5 series shows:",
+          text: "The VM size you pick sets the temp drive’s size. In the Ddsv5 series:",
         },
         {
           kind: "ul",
           items: [
-            "Standard_D2ds_v5 comes with a 75\u00a0GiB temporary disk.",
-            "Standard_D96ds_v5 comes with 3,600\u00a0GiB.",
+            "Standard_D2ds_v5 comes with a 75 GiB temp drive.",
+            "Standard_D96ds_v5 comes with 3,600 GiB.",
           ],
         },
-        {
-          kind: "p",
-          text: "Some VM sizes have no temporary disk at all. Windows shows it as drive D by default, and on Linux it’s usually /dev/disk/azure/resource.",
-        },
+        { kind: "p", text: "Some VM sizes have no temp drive at all." },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why Azure temporary storage matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            "The VM price covers the temporary disk, so it has no separate charge.",
-            "Data you need to keep belongs on managed data disks.",
-            "You pay for those by the size you provision, not what you write. Empty space on them still costs money.",
+            "The VM price includes the temp drive. It has no separate charge.",
+            "Data you need to keep belongs on managed data disks. Azure charges those by the size you provision, not the data you write.",
             [
-              "Check each disk’s ",
-              { a: "used vs provisioned space", href: "/learn/azure-vm-disk-usage" },
+              "To see how much of each disk holds data, ",
+              { a: "check used vs provisioned space", href: "/learn/azure-vm-disk-usage" },
               ".",
             ],
           ],
@@ -78,15 +82,7 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously. It works on data disks only and never touches the OS disk or the Azure temporary disk.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "The ",
-            { a: "free assessment", href: "/assessment?p=amoeba" },
-            " works out your own figure.",
+            " moves a VM’s data disks onto one btrfs pool sized to your data, then rightsizes it autonomously. It works on managed data disks only, never the OS disk or the temp drive.",
           ],
         },
       ],
@@ -95,7 +91,7 @@ export const term: GlossaryTerm = {
   related: [
     {
       title: "Azure managed disk",
-      line: "The disk charged by the size you provision.",
+      line: "The persistent disk, charged by its provisioned size.",
       href: "/learn/glossary/azure-managed-disk",
     },
     {
@@ -104,19 +100,19 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/ephemeral-os-disk",
     },
     {
-      title: "Block storage",
-      line: "The kind of storage a managed disk is, like a physical disk but virtual.",
-      href: "/learn/glossary/block-storage",
+      title: "Instance store",
+      line: "The AWS version: temporary storage on the host.",
+      href: "/learn/glossary/instance-store",
     },
     {
-      title: "Thin provisioning",
-      line: "Space taken as you write.",
-      href: "/learn/glossary/thin-provisioning",
+      title: "Block storage",
+      line: "Storage you attach to a VM as a disk.",
+      href: "/learn/glossary/block-storage",
     },
   ],
-  relatedTitle: "Terms related to the Azure temp disk",
+  relatedTitle: "Related terms",
   next: {
-    title: "Azure VM disk usage: check used vs provisioned",
+    title: "How to check Azure VM disk usage",
     href: "/learn/azure-vm-disk-usage",
   },
   sources: [

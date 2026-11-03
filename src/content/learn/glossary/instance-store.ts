@@ -4,61 +4,54 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/instance-st
 export const term: GlossaryTerm = {
   slug: "instance-store",
   term: "Instance store (AWS EC2)",
-  title: "What is AWS instance store (EC2 instance storage)?",
-  meta: "EC2 instance store is temporary AWS instance storage on its host, at no extra charge. See when its data is lost, instance store vs EBS, and what it costs.",
-  h1: "What is AWS instance store (EC2 instance storage)?",
-  card: "Instance store in AWS is temporary block storage for an EC2 instance, a server in AWS.",
+  title: "What is AWS instance store?",
+  meta: "AWS instance store is ephemeral EC2 instance storage on the host, at no extra charge. When its data is lost, and how instance store compares with EBS.",
+  h1: "What is AWS instance store?",
+  card: "Instance store is temporary block storage for an Amazon EC2 instance, on disks attached to its host computer.",
   group: "block-storage",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
       text: [
-        "Instance store in AWS is temporary ",
+        "Instance store is temporary ",
         { a: "block storage", href: "/learn/glossary/block-storage" },
-        " for an EC2 instance, a server in AWS. Its disks are physically attached to the instance’s host computer. You see it as one or more instance store volumes.",
+        " for an Amazon EC2 instance, on disks attached to its host computer. It costs nothing extra. Its data survives a reboot but not a stop, so it suits caches, buffers and scratch data.",
       ],
     },
     {
       kind: "p",
       text: [
-        "AWS says it suits data that changes often, such as caches and scratch data. Not every ",
+        "Not every ",
         { a: "instance type", href: "/learn/glossary/aws-instance-families" },
-        " has it.",
+        " has it. The number and size of its volumes depend on the instance type and size.",
       ],
     },
-    {
-      kind: "p",
-      text: "A reboot keeps the data. It’s lost when the instance stops, hibernates or terminates, or when AWS retires or recovers it. If a disk fails, its data is lost.",
-    },
-    { kind: "svg", figure: figure1 },
   ],
   sections: [
     {
-      id: "what-is-ephemeral-storage",
-      title: "What is ephemeral storage in AWS, Azure and Kubernetes?",
+      id: "when-instance-store-data-is-lost",
+      title: "When data is lost",
       blocks: [
         {
           kind: "p",
-          text: [
-            "In Kubernetes, each node’s ",
-            { a: "local ephemeral storage", href: "/learn/kubernetes-ephemeral-storage" },
-            " holds ",
-            { code: "emptyDir" },
-            " volumes, container logs and the writable layers of running containers.",
+          text: "An instance store volume lasts only as long as its instance. What happens to its data:",
+        },
+        {
+          kind: "ul",
+          items: [
+            "Kept: a reboot, a restart from the operating system, or a power failure.",
+            "Lost: a stop, hibernate or terminate, including a shutdown from the operating system. AWS erases every block.",
+            "Lost: a change of instance type, an instance retirement or an automatic recovery.",
+            "Lost on one disk: when that disk fails.",
           ],
         },
-      ],
-    },
-    {
-      id: "an-example-a-cache-on-instance-store",
-      title: "An example: a cache on instance store",
-      blocks: [
+        { kind: "svg", figure: figure1 },
         {
           kind: "p",
-          text: "Say a web server keeps its cache on an EC2 instance store volume. After a reboot, the cache is still there. After an overnight stop, it starts with a blank volume.",
+          text: "To keep the data, copy it first to an Amazon EBS volume, an Amazon S3 bucket or an Amazon EFS file system.",
         },
       ],
     },
@@ -67,34 +60,83 @@ export const term: GlossaryTerm = {
       title: "Instance store vs EBS",
       blocks: [
         {
+          kind: "p",
+          text: [
+            "An ",
+            { a: "Amazon Elastic Block Store (EBS) volume", href: "/learn/glossary/ebs-volume" },
+            " is the durable alternative.",
+          ],
+        },
+        {
+          kind: "table",
+          columns: [
+            { label: "", width: "26%" },
+            { label: "Instance store", width: "37%" },
+            { label: "EBS volume", width: "37%" },
+          ],
+          rows: [
+            ["Lifetime", "The instance’s life only", "Independent of the instance"],
+            [
+              "Attach",
+              "At launch only. It can’t move to another instance",
+              "To an instance in the same Availability Zone",
+            ],
+            ["Charge", "In the instance’s price", "Per GB provisioned, each month"],
+            ["Suits", "Caches, buffers and scratch data", "Data you keep, such as databases"],
+          ],
+        },
+      ],
+    },
+    {
+      id: "what-is-ephemeral-storage",
+      title: "Ephemeral storage",
+      blocks: [
+        {
+          kind: "p",
+          text: "Ephemeral storage is temporary storage tied to one machine. Its data can be lost when the machine stops or fails. Each platform has its own:",
+        },
+        {
           kind: "ul",
           items: [
             [
-              "An instance store volume exists only for the life of its instance. An ",
-              { a: "Amazon Elastic Block Store (EBS) volume", href: "/learn/glossary/ebs-volume" },
-              " persists on its own.",
+              { b: "AWS:" },
+              " instance store. Its volumes are named in order, from ",
+              { code: "ephemeral0" },
+              " up to ",
+              { code: "ephemeral23" },
+              ".",
             ],
-            "You get instance store only at launch. You can’t detach it and attach it to another instance.",
+            [
+              { b: "Azure:" },
+              " the ",
+              { a: "temporary disk", href: "/learn/glossary/azure-temporary-disk" },
+              " on most virtual machines. A restart keeps its data, but a stop, a redeploy or maintenance can lose it.",
+            ],
+            [
+              { b: "Kubernetes:" },
+              " a node’s ",
+              { a: "local ephemeral storage", href: "/learn/kubernetes-ephemeral-storage" },
+              ". It holds ",
+              { code: "emptyDir" },
+              " volumes, container images, logs and writable layers.",
+            ],
           ],
         },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why instance store matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
-        {
-          kind: "p",
-          text: "There’s no extra charge in AWS instance store pricing. The volumes are part of the instance’s usage cost. Data you need to keep belongs on storage such as EBS or Amazon S3, which cost extra.",
-        },
         {
           kind: "ul",
           items: [
-            "EBS storage is charged per provisioned GB each month, empty or not, until you delete the volume.",
+            "Scratch data on instance store adds no storage charge. On EBS, the same data is charged per GB provisioned each month until you release the volume.",
+            "Data you must keep still needs paid storage, so instance store avoids a storage charge only for data you can lose.",
             [
-              "A change of instance type loses instance store data, so plan for it before you ",
+              "Plan for the loss of instance store data before you ",
               {
-                a: "switch a node group’s type",
+                a: "change a node group’s instance type",
                 href: "/learn/change-eks-node-group-instance-type",
               },
               ".",
@@ -126,7 +168,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/block-storage",
     },
   ],
-  relatedTitle: "Terms related to instance store",
+  relatedTitle: "Related terms",
   next: {
     title: "How to change an EKS node group instance type",
     href: "/learn/change-eks-node-group-instance-type",
@@ -148,6 +190,11 @@ export const term: GlossaryTerm = {
       url: "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-volumes.html",
     },
     { publisher: "AWS", title: "“Amazon EBS pricing”", url: "https://aws.amazon.com/ebs/pricing/" },
+    {
+      publisher: "Microsoft Learn",
+      title: "“Overview of Azure Disk Storage”",
+      url: "https://learn.microsoft.com/en-us/azure/virtual-machines/managed-disks-overview",
+    },
     {
       publisher: "Kubernetes",
       title: "“Local ephemeral storage”",

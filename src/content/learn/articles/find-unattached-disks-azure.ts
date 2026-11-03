@@ -4,63 +4,63 @@ import { figure as figure2 } from "@/features/learn/figures/find-unattached-disk
 
 export const article: Article = {
   slug: "find-unattached-disks-azure",
-  title: "Find unattached disks in Azure and clean them up",
-  meta: "How to find unattached disks in Azure with one Resource Graph query across your subscriptions, price each disk, then snapshot and delete what you don’t need.",
-  h1: "How to find unattached disks in Azure and stop paying for them",
+  title: "Find and delete unattached disks in Azure",
+  meta: "Find unattached disks in Azure across every subscription with one Resource Graph query, price them, then snapshot and delete the ones nobody needs.",
+  h1: "How to find unattached disks in Azure",
   deck: "One query covers every subscription you can access, from the portal, the Azure CLI or PowerShell.",
   card: "One Resource Graph query for every subscription, what each disk costs, and a snapshot-then-delete routine.",
   product: "amoeba",
   hub: "Block storage",
   topic: "Azure block storage",
   published: "2026-10-21",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "sonu",
   cover: "/learn-covers/zoorik-learn-find-unattached-disks-azure-1200x630.webp",
   coverAlt:
     "Unattached Azure disks: attached disks sit under their VMs, and an unattached disk has no VM but is still charged",
   short: [
-    "To find unattached disks in Azure, query Azure Resource Graph for managed disks whose disk state is ",
+    "Query Azure Resource Graph for managed disks whose disk state is ",
     { code: "Unattached" },
-    ". Almost all of them are still charged for their provisioned size. Price them, check owners, take an ",
+    ". Each one is still charged for its provisioned size, unless it’s empty and was never used. Price them, check with their owners, take an ",
     { a: "incremental snapshot", href: "/learn/glossary/disk-snapshot" },
     ", then delete what nobody needs.",
   ],
   sections: [
     {
       id: "why-an-unattached-disk-stays-on-the",
-      title: "Why an unattached disk keeps costing you",
+      title: "Why unattached disks cost money",
       blocks: [
         {
           kind: "p",
-          text: "Picture a VM someone deleted last quarter. Its 1\u00a0TiB Premium SSD data disk wasn’t set to delete with it, so the disk still sits in its resource group. Nothing reads it now.",
+          text: "Picture a VM someone deleted last quarter. Its 1\u00a0TiB Premium SSD data disk wasn’t set to delete with it, so the disk still sits in its resource group. Nothing reads it.",
         },
         {
           kind: "p",
           text: [
-            "At that size a ",
+            "A 1\u00a0TiB ",
             { a: "Premium SSD", href: "/learn/glossary/azure-premium-ssd" },
             " is a P30 by default, one of the fixed ",
             { a: "Azure disk sizes", href: "/learn/glossary/azure-disk-sizes" },
-            ". It is charged at the P30 tier, with or without a VM, until someone deletes it.",
+            ". It’s charged at the P30 tier, with or without a VM, until someone deletes it.",
           ],
         },
         {
           kind: "p",
-          text: "When you delete a VM, Azure keeps its disks by default. Microsoft says this guards against losing data to a mistaken delete. It adds that after a VM is deleted, “you will continue to pay for unattached disks.”",
+          text: "When you delete a VM, Azure keeps its disks by default, to guard against losing data to a mistaken delete. Microsoft adds that “you will continue to pay for unattached disks.”",
         },
-        { kind: "p", text: "Azure orphaned disks usually come from one of three places:" },
+        { kind: "p", text: "Unattached disks usually come from one of three places:" },
         {
           kind: "ul",
           items: [
             [
               { b: "Deleted VMs." },
-              " A deleted VM leaves its disks, NICs and public IPs behind unless their delete option was set to Delete. A VM created with the Azure CLI or PowerShell detaches its OS disk on delete by default.",
+              " A deleted VM leaves its disks, NICs and public IPs behind unless their delete option is Delete. VMs created with the Azure CLI or PowerShell detach their OS disk on delete by default.",
             ],
             [
               { b: "Disks detached by hand." },
-              " A disk detached after a migration, or after the copy route for ",
-              { a: "shrinking a managed disk", href: "/learn/shrink-azure-managed-disk" },
-              ", stays in its resource group until someone deletes it.",
+              " A disk detached after a migration, or left over after you ",
+              { a: "shrink a managed disk", href: "/learn/shrink-azure-managed-disk" },
+              " by copying, stays until someone deletes it.",
             ],
             [
               { b: "Kubernetes volumes." },
@@ -72,20 +72,20 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "One kind costs nothing. Microsoft’s guide to disk charges says an empty disk that hasn’t been used incurs no storage charges. Its storage is allocated only on first use, such as its first attach or upload.",
+          text: "One kind costs nothing: an empty disk that was never used. Azure allocates its storage only on first use, such as its first attach or upload.",
         },
       ],
     },
     {
       id: "what-azure-disk-state-unattached-means-and",
-      title: "What Azure disk state Unattached means, and which states you still pay for",
+      title: "Disk states you pay for",
       blocks: [
         {
           kind: "p",
           text: [
-            "Every managed disk carries a ",
+            "Every managed disk has a ",
             { code: "diskState" },
-            " property. Attached, Reserved, Frozen and Unattached disks are all charged for what was provisioned, apart from the empty, never-used kind above.",
+            " property. Attached, Reserved, Frozen and Unattached disks are all charged for their provisioned size, except the empty, never-used kind.",
           ],
         },
         {
@@ -116,21 +116,21 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Reserved disks, attached to a deallocated VM, never appear in an unattached list, so review any VM left deallocated for months.",
+          text: "A Reserved disk belongs to a deallocated VM, so it never shows in an unattached list. Review any VM left deallocated for months.",
         },
         { kind: "svg", figure: figure1 },
       ],
     },
     {
       id: "how-to-find-unattached-disks-in-azure",
-      title: "How to find unattached disks in Azure across every subscription",
+      title: "One query for every subscription",
       blocks: [
         {
           kind: "p",
           text: [
             "Resource Graph reads across subscriptions, so one query replaces a loop of ",
             { code: "az disk list" },
-            " calls. Save this as ",
+            " calls. Save it as ",
             { code: "unattached-disks.kql" },
             ":",
           ],
@@ -147,7 +147,7 @@ export const article: Article = {
             { code: "unattachedSince" },
             " reads ",
             { code: "LastOwnershipUpdateTime" },
-            ", which records when the disk was last attached or detached, or when its VM was deallocated or started. On a new disk it stays blank until the state first changes, so read a blank as unknown rather than recent.",
+            ": when the disk was last attached or detached, or its VM deallocated or started. It stays blank on a new disk until its state first changes, so read a blank as unknown, not recent.",
           ],
         },
         {
@@ -157,7 +157,7 @@ export const article: Article = {
             { code: "createOption" },
             " set to ",
             { code: "Empty" },
-            " and a blank date may never have been attached. That would make it the kind that costs nothing, so confirm it in Cost analysis before you count it as free.",
+            " and a blank date may never have been attached, so it may cost nothing. Confirm it in Cost analysis before you count it as free.",
           ],
         },
         {
@@ -165,57 +165,57 @@ export const article: Article = {
           text: [
             "To keep only disks detached more than 30\u00a0days ago, add ",
             { code: "| where unattachedSince < ago(30d)" },
-            " as the last line. Review the blank-date rows separately, since that filter drops them.",
+            " as the last line. That filter drops the blank-date rows, so review those separately.",
           ],
         },
         {
           kind: "p",
           text: [
-            "The query skips disks that read ",
+            "The query leaves out disks in ",
             { code: "ActiveSAS" },
             ", ",
             { code: "ReadyToUpload" },
             " or ",
             { code: "ActiveUpload" },
-            ", since those have an open export link or a pending upload.",
+            ", which have an open export link or a pending upload.",
           ],
         },
         {
           kind: "p",
           text: [
             { code: "managedBy" },
-            " holds the attached VM’s ID. To list every disk with an empty ",
+            " holds the ID of the VM a disk is attached to. To list every disk with an empty ",
             { code: "managedBy" },
             ", swap the second ",
             { code: "where" },
             " line for ",
             { code: "| where isempty(managedBy)" },
-            ". Then read the ",
+            ". Then check each row’s ",
             { code: "diskState" },
-            " column before you act on a row.",
+            " before you act on it.",
           ],
         },
         { kind: "h3", id: "in-the-azure-portal", title: "In the Azure portal" },
         {
           kind: "p",
-          text: "Open Resource Graph Explorer, paste the query and run it. Azure Advisor’s Cost tab also carries a preview recommendation, “Review disks that aren’t attached to a VM and evaluate if you still need the disks.”",
+          text: "Open Resource Graph Explorer, paste the query and run it. Azure Advisor’s Cost tab also lists these disks. Its preview recommendation reads: “Review disks that aren’t attached to a VM and evaluate if you still need the disks.”",
         },
         {
           kind: "h3",
           id: "find-unattached-disks-with-the-azure-cli",
-          title: "Find unattached disks with the Azure CLI",
+          title: "With the Azure CLI",
         },
         {
           kind: "p",
           text: [
             { code: "az graph query" },
-            " comes from the resource-graph extension, which installs on first use (or with ",
+            " comes from the resource-graph extension, which installs on first use, or with ",
             { code: "az extension add --name resource-graph" },
-            "). With no ",
+            ". Without ",
             { code: "--subscriptions" },
-            " argument it queries every subscription you can access, and ",
+            ", it queries every subscription you can access. ",
             { code: "--first" },
-            " accepts 1 to 1,000 rows per call:",
+            " takes 1 to 1,000 rows per call:",
           ],
         },
         {
@@ -228,7 +228,7 @@ export const article: Article = {
           text: [
             "The disks come back in the ",
             { code: "data" },
-            " array of the JSON it prints. For a quick read, add ",
+            " array of the JSON. For a quick read, add ",
             { code: "--query data --output table" },
             ".",
           ],
@@ -236,9 +236,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "With ",
+            "Don’t use ",
             { code: "--output table" },
-            " alone the disk rows don’t appear, because table output skips nested objects. The table also hides the ",
+            " alone: table output skips nested objects, so the disk rows don’t appear. It also hides the ",
             { code: "id" },
             " column, so take disk IDs from the JSON.",
           ],
@@ -261,17 +261,17 @@ export const article: Article = {
         {
           kind: "h3",
           id: "find-unattached-disks-with-powershell",
-          title: "Find unattached disks with PowerShell",
+          title: "With PowerShell",
         },
         {
           kind: "p",
           text: [
             { code: "Search-AzGraph" },
-            ", from the Az.ResourceGraph module, runs the query across all available subscriptions in the current tenant when you add ",
+            ", from the Az.ResourceGraph module, runs the query across every subscription you can access in the current tenant when you add ",
             { code: "-UseTenantScope" },
             ". Its ",
             { code: "-First" },
-            " accepts 1 to 1,000.",
+            " takes 1 to 1,000:",
           ],
         },
         {
@@ -283,26 +283,30 @@ export const article: Article = {
           kind: "callout",
           label: "Watch out",
           text: [
-            "A list that stops at exactly 100 or 1,000\u00a0disks may be only the first page. ",
+            "A list of exactly 100 or 1,000\u00a0disks may be only the first page. ",
             { code: "Search-AzGraph" },
             " returns at most 100 rows unless you set ",
             { code: "-First" },
-            ". For the next page, pass the skip token from the result: ",
+            ". For the next page, pass the skip token: ",
             { code: "--skip-token" },
             " in the CLI, or ",
             { code: "-SkipToken $result.SkipToken" },
-            " in PowerShell.",
+            " in PowerShell, with the first page saved in ",
+            { code: "$result" },
+            ". Keep the ",
+            { code: "id" },
+            " column in the query, or no skip token comes back.",
           ],
         },
       ],
     },
     {
       id: "what-unattached-disks-cost-in-azure",
-      title: "What unattached disks cost in Azure",
+      title: "What unattached disks cost",
       blocks: [
         {
           kind: "p",
-          text: "For what you were charged, open Cost analysis in Microsoft Cost Management, filter to the managed disk resource type and group by resource. Match those rows against the IDs from the query.",
+          text: "For what you were charged, open Cost analysis in Microsoft Cost Management. Filter to the managed disk resource type, group by resource, and match the rows to the query’s disk IDs.",
         },
         {
           kind: "p",
@@ -315,21 +319,21 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Multiply each row’s count by that tier’s monthly price in that region on the managed disks pricing page. Prices differ by region and change, so check them on the day.",
+          text: "Multiply each row’s count by that tier’s monthly price in that region, from the managed disks pricing page. Prices vary by region and change, so check them on the day.",
         },
         {
           kind: "ul",
           items: [
-            [{ b: "Premium SSD." }, " It’s charged at its performance tier."],
+            [{ b: "Premium SSD." }, " Charged at its performance tier."],
             [
               { b: "Standard SSD and Standard HDD." },
-              " They’re charged at the tier their provisioned size falls in. In Microsoft’s guide to disk charges, a Standard SSD grown from 1\u00a0TiB to 3\u00a0TiB is charged at E50.",
+              " Charged at the tier their provisioned size falls in. In Microsoft’s example, a Standard SSD grown from 1\u00a0TiB to 3\u00a0TiB is charged at E50.",
             ],
             [
               { b: "Ultra Disk and Premium SSD v2." },
-              " They have no tiers and are charged per GiB, so price those from ",
+              " No tiers: they’re charged per GiB, so price them from ",
               { code: "sizeGiB" },
-              ", plus the performance in the ",
+              " plus the ",
               { code: "iops" },
               " and ",
               { code: "mbps" },
@@ -340,7 +344,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "For one disk’s monthly list price, use our ",
+            "For one disk’s monthly list price, use the ",
             { a: "Azure disk pricing calculator", href: "/ebs-and-azure-disk-pricing" },
             ".",
           ],
@@ -349,33 +353,33 @@ export const article: Article = {
           kind: "callout",
           label: "Worked example",
           text: [
-            "Microsoft’s own Premium SSD v2 example is 512\u00a0GiB set to 40,000\u00a0IOPS and 200\u00a0MB/s. Detached, it’s still charged for 512\u00a0GiB, for 37,000\u00a0IOPS (40,000 minus the free 3,000) and for 75\u00a0MB/s (200 less the free 125). In the cost query its ",
+            "Microsoft’s Premium SSD v2 example is 512\u00a0GiB set to 40,000\u00a0IOPS and 200\u00a0MB/s. Detached, it’s still charged for 512\u00a0GiB, 37,000\u00a0IOPS (40,000 less the free 3,000) and 75\u00a0MB/s (200 less the free 125). The cost query shows its ",
             { code: "iops" },
-            " reads 40000 and its ",
+            " as 40000 and its ",
             { code: "mbps" },
-            " 200, so subtract the free baselines before pricing.",
+            " as 200, so subtract the free amounts before pricing.",
           ],
         },
       ],
     },
     {
       id: "four-checks-before-you-delete-anything",
-      title: "Four checks before you delete anything",
+      title: "Four checks before you delete",
       blocks: [
         {
           kind: "p",
-          text: "An unattached disk can still hold someone’s data.",
+          text: "An unattached disk can still hold someone’s data. Check four things first.",
         },
         {
           kind: "ul",
           items: [
             [
               { b: "Kubernetes volumes." },
-              " If you run Kubernetes, a disk behind a PersistentVolume detaches when no pod uses it. A disk behind a ",
+              " A disk behind a PersistentVolume detaches whenever no pod uses it. If the volume is ",
               { code: "Bound" },
-              " volume still belongs to a claim, so leave it, while a ",
+              ", a claim still owns the disk, so leave it. If it’s ",
               { code: "Released" },
-              " volume means its claim was deleted and the disk is yours to review. This lists each volume’s disk, claim and phase:",
+              ", its claim was deleted and the disk is yours to review. This lists each volume’s disk, claim and phase:",
             ],
           ],
         },
@@ -389,13 +393,13 @@ export const article: Article = {
           items: [
             [
               { b: "Site Recovery replicas." },
-              " Advisor’s own recommendation “excludes unattached replica disks associated with Azure Site Recovery,” so leave any disk your recovery setup created alone.",
+              " Advisor’s recommendation “excludes unattached replica disks associated with Azure Site Recovery,” so leave the disks your recovery setup created.",
             ],
             [
               { b: "OS disks." },
               " A row with an ",
               { code: "osType" },
-              " is a full operating system disk, such as the OS disk of a deleted VM, so if anyone might rebuild that VM, keep it until its owner decides.",
+              " is an operating system disk, such as a deleted VM’s. If anyone might rebuild that VM, keep the disk until its owner decides.",
             ],
             [
               { b: "The owner’s call." },
@@ -415,18 +419,18 @@ export const article: Article = {
     },
     {
       id: "snapshot-then-delete-an-unattached-disk-in",
-      title: "Snapshot, then delete an unattached disk in Azure",
+      title: "Snapshot, then delete",
       blocks: [
         {
           kind: "p",
-          text: "Advisor’s recommendation spells out the routine: “Create a snapshot before deletion and confirm the data is no longer needed.” Make it incremental.",
+          text: "Advisor’s recommendation gives the routine: “Create a snapshot before deletion and confirm the data is no longer needed.” Make the snapshot incremental.",
         },
         {
           kind: "p",
           text: [
-            "An incremental snapshot sits on Standard HDD storage whatever the disk type, and you pay for its used size only. It’s a resource of its own that stays when you delete the disk. As the ",
+            "An incremental snapshot is stored on Standard HDD whatever the disk type, and charged for its used size only. It’s a resource of its own, so it stays after you delete the disk. As the ",
             { a: "Azure disk snapshot cost guide", href: "/learn/azure-disk-snapshot-cost" },
-            " explains, the first incremental snapshot is a full copy, so you pay for everything the disk holds.",
+            " explains, the first one is a full copy, so you pay for all the data the disk holds.",
           ],
         },
         { kind: "ol", items: ["Take the snapshot, in the same subscription as the disk."] },
@@ -440,7 +444,7 @@ export const article: Article = {
           start: 2,
           items: [
             [
-              "For Premium SSD v2 or Ultra Disk, wait for the background copy. Unless you enabled instant access when you created it, the snapshot can’t be used to create a disk until ",
+              "For Premium SSD v2 or Ultra Disk, wait for the background copy. Unless you enabled instant access when you took it, the snapshot can’t create a disk until ",
               { code: "completionPercent" },
               " reads 100. Snapshots of other disk types always report 100.",
             ],
@@ -456,7 +460,7 @@ export const article: Article = {
           start: 3,
           items: [
             [
-              "Delete the disk. This step can’t be undone: in Advisor’s words, “Deleting a disk is irreversible.” The ",
+              "Delete the disk. In Advisor’s words, “Deleting a disk is irreversible.” The ",
               { code: "--yes" },
               " flag skips the confirmation prompt, so check the ID twice.",
             ],
@@ -467,7 +471,7 @@ export const article: Article = {
           kind: "ol",
           start: 4,
           items: [
-            "Tag the snapshot with the date to review it, and delete it once the owner confirms nobody needs the data.",
+            "Tag the snapshot with a review date, and delete it once the owner confirms nobody needs the data.",
           ],
         },
         {
@@ -478,7 +482,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "In PowerShell the same steps are ",
+            "In PowerShell, the same steps are ",
             { code: "New-AzSnapshotConfig -Incremental" },
             " with ",
             { code: "New-AzSnapshot" },
@@ -490,7 +494,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "stop-new-orphans",
-          title: "Stop new orphaned disks when you delete a VM",
+          title: "Stop new orphaned disks",
         },
         {
           kind: "p",
@@ -501,12 +505,12 @@ export const article: Article = {
             { code: "--data-disk-delete-option Delete" },
             " to ",
             { code: "az vm create" },
-            ", so that deleting the VM later deletes its disks and their data with it.",
+            ". Deleting the VM later then deletes its disks and their data with it.",
           ],
         },
         {
           kind: "p",
-          text: "For an existing VM, the delete guide’s PowerShell example, shown here without its network interface line, sets the option in place:",
+          text: "For an existing VM, this PowerShell sets the option in place. It is Microsoft’s example from its delete guide, without the network interface line:",
         },
         {
           kind: "code",
@@ -515,29 +519,25 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Shared disks are the exception, since their delete option can only be Detach or blank, so check them by hand after you delete the VMs that share them.",
+          text: "Shared disks are the exception: their delete option can only be Detach or blank. Check them by hand after you delete the VMs that share them.",
         },
       ],
     },
     {
       id: "how-amoeba-handles-the-disks-it-frees",
-      title: "How Amoeba handles the disks it frees",
+      title: "Where Amoeba fits",
       blocks: [
         {
           kind: "p",
           text: [
-            "A query of disk states can’t show the rest of the space you pay for and don’t use. It sits on attached data disks of running VMs, provisioned past the data they hold. ",
+            "A disk-state query can’t see the other space you pay for and don’t use: attached data disks provisioned past the data they hold. ",
             { a: "Amoeba", href: "/amoeba" },
             " works on that part.",
           ],
         },
         {
           kind: "p",
-          text: "Amoeba moves a VM’s data disks onto one btrfs pool sized to your data. It grows the pool before it fills. When your data goes down and stays down, it shrinks the pool one disk at a time.",
-        },
-        {
-          kind: "p",
-          text: "On Linux, the services that use the data mounts restart at the switch onto the pool, and again only if Amoeba retries a failed switch.",
+          text: "Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, then rightsizes the pool without any downtime. It grows the pool before it fills. When your data goes down and stays down, it shrinks the pool one disk at a time.",
         },
         { kind: "p", text: "Amoeba doesn’t leave the disks it frees behind as unattached disks:" },
         {
@@ -545,21 +545,21 @@ export const article: Article = {
           items: [
             [
               { b: "A disk a shrink empties." },
-              " Amoeba first moves its data onto the other pool disks, then detaches and deletes the empty disk, with no snapshot.",
+              " Amoeba moves its data onto the other pool disks, then detaches and deletes the empty disk, with no snapshot.",
             ],
             [
-              { b: "The source disks." },
-              " Once the switch is checked, Amoeba detaches each source disk, snapshots it and deletes the disk. It keeps each snapshot for a few days before deleting it too, and only ever deletes its own.",
+              { b: "The original disks." },
+              " Once the switch to the pool is checked, Amoeba detaches each original disk, snapshots it and deletes the disk. It keeps each snapshot for 7\u00a0days, then deletes it too, and only ever deletes its own.",
             ],
             [
               { b: "Every other disk." },
-              " Amoeba works only on the data disks of running VMs, never the OS disk. Apart from its own source disks during cleanup, the disks your query found stay yours to review.",
+              " Amoeba works only on the data disks of running VMs, never the OS disk. Apart from its own original disks during cleanup, the disks your query found stay yours to review.",
             ],
           ],
         },
         {
           kind: "p",
-          text: "If you run the query while a move finishes, a source disk can show as Unattached between its detach and its deletion. You pay for both sets of disks only while the move runs, and then for the snapshots while they’re kept.",
+          text: "Run the query while a move finishes, and an original disk can show as Unattached between its detach and its deletion. You pay for both sets of disks only while the move runs, then for the snapshots while they’re kept.",
         },
         {
           kind: "p",
@@ -568,15 +568,7 @@ export const article: Article = {
               a: "Azure managed disk cost optimization",
               href: "/azure-managed-disk-cost-optimization",
             },
-            " covers the move and what a VM needs in full.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "For the rest of your disk cost, see ",
-            { a: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
-            ".",
+            " covers the move and what a VM needs.",
           ],
         },
       ],
@@ -584,7 +576,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
@@ -608,6 +600,11 @@ export const article: Article = {
     },
     {
       publisher: "Microsoft Learn",
+      title: "“Output formats for Azure CLI commands”",
+      url: "https://learn.microsoft.com/en-us/cli/azure/format-output-azure-cli",
+    },
+    {
+      publisher: "Microsoft Learn",
       title: "“Search-AzGraph (Az.ResourceGraph)”",
       url: "https://learn.microsoft.com/en-us/powershell/module/az.resourcegraph/search-azgraph",
     },
@@ -615,6 +612,11 @@ export const article: Article = {
       publisher: "Microsoft Learn",
       title: "“Understand Azure Disk Storage billing”",
       url: "https://learn.microsoft.com/en-us/azure/virtual-machines/disks-understand-billing",
+    },
+    {
+      publisher: "Kubernetes",
+      title: "“Persistent Volumes”",
+      url: "https://kubernetes.io/docs/concepts/storage/persistent-volumes/",
     },
     {
       publisher: "Microsoft Learn",
@@ -639,7 +641,7 @@ export const article: Article = {
       href: "/learn/azure-disk-reservations",
     },
     {
-      title: "Azure disk snapshot cost: incremental vs full snapshots",
+      title: "Azure snapshot pricing: incremental vs full",
       where: "Learn",
       href: "/learn/azure-disk-snapshot-cost",
     },
@@ -649,10 +651,10 @@ export const article: Article = {
       href: "/learn/shrink-azure-managed-disk",
     },
     {
-      title: "Premium SSD vs Standard SSD on Azure: what you pay for",
+      title: "Azure Premium SSD vs Standard SSD",
       where: "Learn",
       href: "/learn/premium-ssd-vs-standard-ssd-azure",
     },
   ],
-  relatedTitle: "More on Azure disk cost and cleanup",
+  relatedTitle: "More on Azure disk cost",
 };

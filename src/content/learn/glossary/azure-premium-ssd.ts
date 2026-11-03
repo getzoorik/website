@@ -4,51 +4,51 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/azure-premi
 export const term: GlossaryTerm = {
   slug: "azure-premium-ssd",
   term: "Premium SSD (Azure)",
-  title: "Azure Premium SSD: what is Azure premium storage?",
-  meta: "Premium storage in Azure means Premium SSD, the Azure premium disk for production VMs. See what Premium SSD LRS means and why you pay its whole size tier.",
-  h1: "Azure Premium SSD: what is Azure premium storage?",
-  card: "Azure Premium SSD, also called Azure premium storage, is a solid-state drive (SSD) type of Azure managed disk.",
+  title: "What is Azure Premium SSD?",
+  meta: "Azure Premium SSD, or premium storage, is the managed disk type for production VMs. Its sizes and limits, LRS vs ZRS, and what you pay for.",
+  h1: "What is Azure Premium SSD?",
+  card: "Azure Premium SSD is a solid-state drive (SSD) type of Azure managed disk for production apps that need high performance and low latency.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-26",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
       text: [
-        "Azure Premium SSD, also called Azure premium storage, is a solid-state drive (SSD) type of ",
+        "Azure Premium SSD is a solid-state drive (SSD) type of ",
         { a: "Azure managed disk", href: "/learn/glossary/azure-managed-disk" },
-        ". It’s for production apps that need high performance and low ",
+        " for production apps that need high performance and low ",
         { a: "latency", href: "/learn/glossary/disk-latency" },
-        ".",
+        ". Microsoft also calls it premium storage, and only virtual machine (VM) sizes that support premium storage can use it.",
       ],
     },
   ],
   sections: [
     {
       id: "what-is-premium-ssd-lrs",
-      title: "What is Premium SSD LRS?",
+      title: "LRS vs ZRS",
       blocks: [
+        { kind: "p", text: "Premium SSD comes with one of two redundancy options:" },
         {
-          kind: "p",
-          text: "LRS means locally redundant storage: three copies in one data center. It guards against rack and drive failures, not zone failures.",
-        },
-        {
-          kind: "p",
-          text: "Premium SSD also comes as ZRS, zone-redundant storage. It copies your data across three availability zones in the region. Writes have a little more latency than on LRS.",
+          kind: "ul",
+          items: [
+            "Locally redundant storage (LRS) keeps three copies in one data center. It protects against rack and drive failures, not a zone failure.",
+            "Zone-redundant storage (ZRS) copies your data across three availability zones in the region. Writes take a little longer than on LRS.",
+          ],
         },
       ],
     },
     {
       id: "a-disk-held-back-by-its-vm",
-      title: "A disk held back by its VM",
+      title: "Sizes and performance",
       blocks: [
         {
           kind: "p",
           text: [
             "A Premium SSD’s input/output operations per second (",
             { a: "IOPS", href: "/learn/glossary/iops" },
-            ") and throughput rise with its size, up to what its virtual machine (VM) allows.",
+            ") and throughput rise with its size:",
           ],
         },
         {
@@ -78,26 +78,28 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "In Microsoft’s example, a DS1 VM caps its 1\u00a0TiB Premium SSD at 3,200\u00a0IOPS.",
+          text: "The VM has its own limits, and the lower one wins. In Microsoft’s example, a DS1 VM caps its 1\u00a0TiB Premium SSD at 3,200\u00a0IOPS.",
         },
         { kind: "svg", figure: figure1 },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why Premium SSD matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            [
-              "You pay for the ",
-              { a: "size tier", href: "/learn/glossary/azure-disk-sizes" },
-              " the disk rounds up to, however little data it holds.",
-            ],
+            "You pay for the size tier the disk rounds up to, however little data it holds.",
+            "Bursting on P20 and smaller disks is free. On-demand bursting, for P30 and larger, adds an hourly fee, plus a charge for I/O above the disk’s target.",
             [
               { a: "Premium SSD v2", href: "/learn/premium-ssd-v2-vs-premium-ssd" },
               " is charged per GiB, plus IOPS above 3,000 and throughput above 125\u00a0MB/s.",
+            ],
+            [
+              "A one-year reservation gives a discount on P30 and larger disks. See ",
+              { a: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
+              ".",
             ],
           ],
         },
@@ -106,9 +108,7 @@ export const term: GlossaryTerm = {
           text: [
             "Our ",
             { a: "Azure disk pricing calculator", href: "/ebs-and-azure-disk-pricing" },
-            " gives a Premium SSD’s monthly list price. ",
-            { a: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
-            " shows ways to reduce it.",
+            " gives a Premium SSD’s monthly list price.",
           ],
         },
         {
@@ -129,14 +129,14 @@ export const term: GlossaryTerm = {
     },
     {
       title: "Azure managed disk",
-      line: "Its disk family.",
+      line: "The disk family it belongs to.",
       href: "/learn/glossary/azure-managed-disk",
     },
     { title: "IOPS", line: "Reads and writes per second.", href: "/learn/glossary/iops" },
   ],
-  relatedTitle: "Terms related to Azure Premium SSD",
+  relatedTitle: "Related terms",
   next: {
-    title: "Premium SSD vs Standard SSD on Azure: what you pay for",
+    title: "Azure Premium SSD vs Standard SSD",
     href: "/learn/premium-ssd-vs-standard-ssd-azure",
   },
   sources: [

@@ -5,46 +5,46 @@ import { figure as figure3 } from "@/features/learn/figures/increase-ebs-volume-
 
 export const article: Article = {
   slug: "increase-ebs-volume-size",
-  title: "Increase EC2 volume size without any downtime",
-  meta: "Change EC2 volume size without any downtime: modify the EBS volume, then grow the partition with growpart and the filesystem with xfs_growfs or resize2fs.",
-  h1: "How to increase EC2 volume size without any downtime on Linux",
-  deck: "AWS never lets a volume shrink back, so each size you grow to stays the size you pay for.",
-  card: "Grow an attached EBS volume and its filesystem on Linux, the limits on changes, and why the new size stays.",
+  title: "Increase EBS volume size without downtime",
+  meta: "Increase EBS volume size without downtime on Linux: modify the volume, then grow its partition (growpart) and filesystem (xfs_growfs or resize2fs).",
+  h1: "Increase EBS volume size without downtime",
+  deck: "Steps for Linux. A volume can’t shrink back, so you keep paying for the larger size.",
+  card: "Grow a mounted EBS volume, its partition and its filesystem on Linux, within AWS’s limits.",
   product: "amoeba",
   hub: "Block storage",
   topic: "AWS block storage",
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "swapna",
   cover: "/learn-covers/zoorik-learn-increase-ebs-volume-size-1200x630.webp",
   coverAlt:
     "Grow an EBS volume: the EBS volume, its partition and its filesystem each grow while mounted",
   short:
-    "You can increase EBS volume size without downtime on any current-generation EC2 instance, but you can’t shrink the volume again. Raise the size with Elastic Volumes, wait for the optimizing state, then grow the partition (growpart) and filesystem (xfs_growfs or resize2fs) while mounted.",
+    "Request the new size with Elastic Volumes. Once the modification reaches optimizing, usually within seconds, grow the partition with growpart and the filesystem with xfs_growfs or resize2fs. The volume stays mounted throughout. This works on any current-generation EC2 instance, but the volume can never shrink again.",
   sections: [
     {
       id: "increase-ebs-volume-size-without-downtime",
-      title: "When you can increase EBS volume size without downtime",
+      title: "Requirements and limits",
       blocks: [
-        {
-          kind: "p",
-          text: [
-            "Picture a 500\u00a0GiB data volume at ",
-            { code: "/data" },
-            " on a running EC2 instance, too small for an import due tomorrow. You can grow it to 1,000\u00a0GiB while the application keeps writing.",
-          ],
-        },
         {
           kind: "p",
           text: [
             "Elastic Volumes is AWS’s name for changing an ",
             { a: "Amazon Elastic Block Store (EBS) volume", href: "/learn/glossary/ebs-volume" },
-            " in place. On an instance that supports it, a volume can grow, change type or change its performance. AWS says this works “without detaching the volume or restarting the instance,” and root volumes grow this way too.",
+            " in place: its size, type or performance. On a supported instance, AWS says this works “without detaching the volume or restarting the instance.” Root volumes grow this way too.",
           ],
         },
         {
           kind: "p",
-          text: "Growing a volume is two jobs. EBS grows the block device, and you extend the partition and filesystem inside the instance, which keep their old size until you do.",
+          text: [
+            "Take a 500 GiB data volume at ",
+            { code: "/data" },
+            ", too small for tomorrow’s import. You can grow it to 1,000 GiB while the application keeps writing.",
+          ],
+        },
+        {
+          kind: "p",
+          text: "Growing is two jobs. EBS grows the block device. You then grow the partition and filesystem inside the instance, which keep their old size until you do.",
         },
         { kind: "svg", figure: figure1 },
         {
@@ -63,7 +63,7 @@ export const article: Article = {
             [
               "Previous-generation C1, C3, C4, G2, I2, M1, M3, M4, R3 or R4",
               "Yes",
-              "The same steps. AWS notes that m3.large, m3.xlarge and m3.2xlarge might not support every modification feature",
+              "The same steps. AWS says m3.large, m3.xlarge and m3.2xlarge might not support every change",
             ],
             [
               "Any other previous-generation type, or a modification that returns an error",
@@ -77,16 +77,16 @@ export const article: Article = {
             ],
             [
               "Root volume on an AMI with MBR partitioning",
-              "Up to 2\u00a0TiB (2,048\u00a0GiB)",
-              "Linux AMIs need a GUID partition table (GPT) and GRUB 2 to boot from a volume of 2\u00a0TiB or more. Data volumes don’t have this boot limit, but no volume can grow past what its partitioning scheme and filesystem support",
+              "Up to 2 TiB (2,048 GiB)",
+              "Linux AMIs need a GUID partition table (GPT) and GRUB 2 to boot from 2 TiB or more. Data volumes have no boot limit, but no volume can outgrow its partitioning scheme and filesystem",
             ],
           ],
         },
-        { kind: "p", text: "Every modification follows four rules:" },
+        { kind: "p", text: "Four rules apply to every modification:" },
         {
           kind: "ul",
           items: [
-            [{ b: "Up only." }, " AWS doesn’t let you decrease a volume’s size."],
+            [{ b: "Up only." }, " You can’t decrease a volume’s size."],
             [
               { b: "No cancel." },
               " A submitted request can’t be cancelled, so check the number before you confirm.",
@@ -95,11 +95,11 @@ export const article: Article = {
               { b: "One at a time." },
               " Each modification must reach ",
               { code: "completed" },
-              " before the next can start, and a volume takes at most four in a rolling 24\u00a0hours. So add enough the first time.",
+              " before the next can start, and a volume takes at most four in a rolling 24 hours.",
             ],
             [
               { b: "Charged at once." },
-              " You pay for the new size as soon as the modification starts.",
+              " You pay for the new size from the moment the modification starts.",
             ],
           ],
         },
@@ -107,25 +107,20 @@ export const article: Article = {
     },
     {
       id: "how-to-modify-ebs-volume-size",
-      title: "How to modify EBS volume size",
+      title: "Modify the volume",
       blocks: [
         { kind: "h3", id: "1-find-the-volume-id", title: "1. Find the volume ID" },
         {
           kind: "p",
           text: [
-            "To increase EBS volume size on an EC2 instance, work from the volume’s ID. On instances built on the Nitro System, EBS volumes appear as NVMe devices named ",
+            "Work from the volume ID, because device names can change. On Nitro instances, EBS volumes appear as NVMe devices named ",
             { code: "/dev/nvme<x>n1" },
-            ".",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "Those numbers can change between starts, but the volume ID can’t. An NVMe EBS volume carries the ID as its serial number. Xen instances use names such as ",
+            ", and the numbers can change between starts. Xen instances use names such as ",
             { code: "/dev/xvdf" },
             ".",
           ],
         },
+        { kind: "p", text: "An NVMe EBS volume carries its volume ID as its serial number:" },
         { kind: "code", lang: "bash", code: "df -hT\nsudo lsblk -o +SERIAL" },
         {
           kind: "p",
@@ -133,7 +128,7 @@ export const article: Article = {
             { code: "df -hT" },
             " shows which device holds the mount that’s filling up, and its filesystem type. ",
             { code: "lsblk -o +SERIAL" },
-            " puts the volume ID beside that device.",
+            " shows the volume ID beside each device.",
           ],
         },
         { kind: "h3", id: "2-take-a-snapshot", title: "2. Take a snapshot" },
@@ -142,13 +137,13 @@ export const article: Article = {
           text: [
             "AWS calls a ",
             { a: "snapshot", href: "/learn/glossary/disk-snapshot" },
-            " a best practice for any volume that holds valuable data, in case you need to roll back.",
+            " a best practice before you modify a volume that holds valuable data, in case you need to roll back.",
           ],
         },
         { kind: "h3", id: "3-request-the-new-size", title: "3. Request the new size" },
         {
           kind: "p",
-          text: "In the EC2 console, open Volumes, select the volume and choose Actions, Modify volume. Enter the new value under Size, choose Modify, and confirm. With the AWS Command Line Interface (CLI), one command does it, with the size in GiB:",
+          text: "In the EC2 console, open Volumes, select the volume and choose Actions, Modify volume. Enter the new value under Size, choose Modify, and confirm. With the AWS CLI, give the size in GiB:",
         },
         {
           kind: "code",
@@ -172,7 +167,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "4-wait-for-the-optimizing-state",
-          title: "4. Wait for the optimizing state",
+          title: "4. Wait for optimizing",
         },
         {
           kind: "p",
@@ -185,7 +180,7 @@ export const article: Article = {
             { code: "completed" },
             ". The size increase takes effect at ",
             { code: "optimizing" },
-            ", which usually takes a few seconds, and from then on, AWS says, you can extend the filesystem.",
+            ", usually within a few seconds. From then on, AWS says, you can extend the filesystem.",
           ],
         },
         {
@@ -193,11 +188,11 @@ export const article: Article = {
           text: [
             "Don’t wait for ",
             { code: "completed" },
-            ". The whole modification can take from a few minutes to a few hours, and AWS says up to six hours for a 1\u00a0TiB volume.",
+            ". AWS says a modification can take a few minutes to a few hours, and up to six hours for a 1 TiB volume.",
           ],
         },
         { kind: "svg", figure: figure2 },
-        { kind: "p", text: "Check where it stands with:" },
+        { kind: "p", text: "Check the state with:" },
         {
           kind: "code",
           lang: "bash",
@@ -205,49 +200,49 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "While the volume is optimizing, its performance doesn’t drop below the old configuration’s. If you’d rather not poll, Amazon EventBridge can notify you of modification events.",
+          text: "During optimizing, performance stays at least at the old configuration’s level. To avoid polling, Amazon EventBridge can notify you of modification events.",
         },
         {
           kind: "p",
           text: [
             "Rarely, a transient AWS fault ends a modification as ",
             { code: "failed" },
-            ". AWS says that isn’t a sign of trouble with the volume, so retry it.",
+            ". AWS says this isn’t a sign of trouble with the volume, so retry it.",
           ],
         },
       ],
     },
     {
       id: "how-to-extend-an-ebs-volume-in",
-      title: "How to extend an EBS volume in Linux",
+      title: "Grow the partition and filesystem",
       blocks: [
         {
           kind: "p",
           text: [
-            "With the larger device in place, run ",
+            "Run ",
             { code: "lsblk" },
-            " and compare the sizes. In AWS’s example on a Nitro instance, the root volume ",
+            " and compare the sizes. In AWS’s Nitro example, the root volume ",
             { code: "nvme0n1" },
             " holds two partitions, ",
             { code: "nvme0n1p1" },
             " and ",
             { code: "nvme0n1p128" },
-            ". Beside it, a 30\u00a0GiB data volume, ",
+            ". A 30 GiB data volume, ",
             { code: "nvme1n1" },
             ", is mounted at ",
             { code: "/data" },
-            " with no partition at all.",
+            " with no partition.",
           ],
         },
         {
           kind: "h3",
           id: "5-grow-the-partition-if-there-is",
-          title: "5. Grow the partition with growpart",
+          title: "5. Grow the partition",
         },
         {
           kind: "p",
           text: [
-            "A data volume formatted as a whole device skips this step. Where the partition is smaller than the volume, grow it with ",
+            "Skip this step for a volume with no partition. Where the partition is smaller than the volume, grow it with ",
             { code: "growpart" },
             ".",
           ],
@@ -275,13 +270,15 @@ export const article: Article = {
             " should show the partition at the volume’s size.",
           ],
         },
-        { kind: "h3", id: "6-grow-the-filesystem", title: "6. Grow the XFS or ext4 filesystem" },
+        { kind: "h3", id: "6-grow-the-filesystem", title: "6. Grow the filesystem" },
         {
           kind: "p",
           text: [
             "Use the command for the filesystem type ",
             { code: "df -hT" },
-            " reports. For XFS, ",
+            " reports. For ",
+            { a: "XFS", href: "/learn/glossary/xfs" },
+            ", ",
             { code: "xfs_growfs" },
             " takes the mount point.",
           ],
@@ -291,9 +288,9 @@ export const article: Article = {
           text: [
             "For ext4, ",
             { code: "resize2fs" },
-            " takes the device name that ",
+            " takes the device name ",
             { code: "df -hT" },
-            " shows for it. That’s ",
+            " shows. That’s ",
             { code: "/dev/nvme1n1" },
             " for a filesystem on the whole volume, or ",
             { code: "/dev/nvme0n1p1" },
@@ -317,10 +314,10 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "If the volume holds Logical Volume Manager (LVM) logical volumes, the last step differs, and AWS says you must extend the logical volume with LVM.",
+          text: "If the volume holds Logical Volume Manager (LVM) logical volumes, AWS says you must extend the logical volume with LVM instead.",
         },
-        { kind: "h3", id: "when-a-layer-doesnt-grow", title: "When df doesn’t show the new size" },
-        { kind: "p", text: "Three messages tell you which layer didn’t move:" },
+        { kind: "h3", id: "when-a-layer-doesnt-grow", title: "If df shows the old size" },
+        { kind: "p", text: "Each message points to the layer that didn’t grow:" },
         {
           kind: "table",
           columns: [
@@ -358,20 +355,20 @@ export const article: Article = {
     },
     {
       id: "can-you-auto-expand-ebs-volumes",
-      title: "Can you auto expand EBS volumes?",
+      title: "Auto expand EBS volumes",
       blocks: [
         {
           kind: "p",
-          text: "Not out of the box. EBS can’t see how full your filesystem is. An AWS Storage Blog post on automating the job notes that this figure comes only from the operating system.",
+          text: "EBS has no built-in auto expand. It can’t see how full your filesystem is: an AWS Storage Blog post on automating the job notes that only the operating system knows.",
         },
         {
           kind: "p",
-          text: "So any auto expand is a pipeline you build around Elastic Volumes. In that post’s design, a monitor on the instance alerts at 80% of capacity. AWS services then add 20% to the volume, and a local script grows the partition with growpart and extends the filesystem.",
+          text: "So auto expand is a pipeline you build around Elastic Volumes. In the post’s design, a monitor on the instance alerts at 80% of capacity. AWS services then add 20% to the volume, and a script on the instance grows the partition and filesystem.",
         },
         {
           kind: "p",
           text: [
-            "For the usage reading, the post names the Amazon CloudWatch agent. The guide to ",
+            "For the usage reading, the post suggests the Amazon CloudWatch agent. The guide to ",
             { a: "checking EBS volume usage", href: "/learn/check-ebs-volume-usage" },
             " shows how to collect it.",
           ],
@@ -379,30 +376,30 @@ export const article: Article = {
         {
           kind: "callout",
           label: "For engineers",
-          text: "Amazon API Gateway passes the alert to an AWS Lambda function. That function starts an AWS Step Functions state machine, which does four things:",
+          text: "Amazon API Gateway passes the alert to an AWS Lambda function. That function starts an AWS Step Functions state machine, which runs these steps:",
         },
         {
           kind: "ol",
           items: [
-            "It checks that the instance is eligible.",
-            "It maps the mount point to its volume ID, with a script run through AWS Systems Manager.",
-            "It takes a snapshot, if you chose one.",
-            "It has a Lambda function make the modification.",
+            "Checks that the instance is eligible.",
+            "Maps the mount point to its volume ID, with a script run through AWS Systems Manager.",
+            "Takes a snapshot, if you chose one.",
+            "Has a Lambda function make the modification.",
+            "Runs the grow script through Systems Manager.",
           ],
         },
-        { kind: "p", text: "Systems Manager then runs the grow script." },
         {
           kind: "p",
-          text: "The post dates from 2019, when a volume could be modified once every six hours. Today’s limit of four in a rolling 24\u00a0hours lets a volume that fills fast grow several times a day.",
+          text: "A volume that fills fast can grow up to four times in 24 hours.",
         },
         {
           kind: "callout",
           label: "Watch out",
-          text: "Every one of those grows is permanent, and they compound.",
+          text: "Every increase is permanent, and they compound.",
         },
         {
           kind: "p",
-          text: "Say each adds 20% of the size at the time. A 500\u00a0GiB volume that triggers four times in one day then ends that day at about 1,037\u00a0GiB (500 × 1.2⁴), more than double.",
+          text: "Say each adds 20% of the size at the time. A 500 GiB volume that triggers four times in one day ends at about 1,037 GiB (500 × 1.2⁴), more than double.",
         },
         {
           kind: "p",
@@ -412,28 +409,28 @@ export const article: Article = {
     },
     {
       id: "why-you-keep-paying-for-the-bigger",
-      title: "Why you keep paying for the bigger size",
+      title: "Cost of a bigger volume",
       blocks: [
         {
           kind: "p",
-          text: "EBS charges for capacity, not data. AWS’s pricing page says volume storage is charged by the GB you provision per month, until you release the storage.",
+          text: "EBS charges for capacity, not data. AWS’s pricing page says volume storage is charged by the GB you provision per month, until you release it.",
         },
         {
           kind: "p",
-          text: "Back to the volume from the opening. You grow it to 1,000\u00a0GiB to land the import. A week later, the staging files are deleted and 450\u00a0GiB of data remains.",
+          text: "Back to the opening example. You grow the volume to 1,000 GiB for the import. A week later, the staging files are deleted and 450 GiB of data remains.",
         },
         {
           kind: "callout",
           label: "Worked example",
           text: [
-            "The volume is now 450 ÷ 1,000 = 45% full, leaving 550\u00a0GiB empty, and the data would fit in the old 500\u00a0GiB. The Amazon EBS pricing page’s ",
+            "The volume is now 450 ÷ 1,000 = 45% full, with 550 GiB empty. The data would fit in the old 500 GiB. AWS’s ",
             { a: "gp3", href: "/learn/glossary/ebs-gp3" },
-            " example uses a Region that charges $0.08 per GB-month (October 2026).",
+            " pricing example uses a Region that charges $0.08 per GB-month (November 2026).",
           ],
         },
         {
           kind: "p",
-          text: "Say it’s a gp3\u00a0volume in that Region. Its storage went from 500 × $0.08 = $40 to 1,000 × $0.08 = $80 a month. Of that, 550 × $0.08 = $44 pays for empty space.",
+          text: "For a gp3 volume in that Region, storage went from 500 × $0.08 = $40 to 1,000 × $0.08 = $80 a month. Of that, 550 × $0.08 = $44 pays for empty space.",
         },
         {
           kind: "p",
@@ -449,7 +446,7 @@ export const article: Article = {
           text: [
             "Getting the space back means ",
             { a: "shrinking the volume by hand", href: "/learn/shrink-ebs-volume" },
-            ", in three steps:",
+            ":",
           ],
         },
         {
@@ -460,21 +457,21 @@ export const article: Article = {
             "Switch the mount, with its services stopped.",
           ],
         },
-        { kind: "p", text: "Two habits keep growth from setting your cost:" },
+        { kind: "p", text: "Two habits keep the size close to your data:" },
         {
           kind: "ul",
           items: [
             [
               { b: "Grow when the volume fills, not months ahead." },
-              " The new space is usable within seconds, and four modifications a day leave room for smaller steps.",
+              " The new space is usable within seconds, and four modifications a day allow small steps.",
             ],
             [
-              { b: "Change the performance when you need speed." },
-              " Elastic Volumes can change ",
+              { b: "Change performance, not size, when you need speed." },
+              " Elastic Volumes can raise ",
               { a: "IOPS", href: "/learn/glossary/iops" },
-              " on gp3, io1 and io2\u00a0volumes, and throughput on gp3, without adding a GiB. ",
+              " on gp3, io1 and io2 volumes, and throughput on gp3, within each type’s limits. ",
               { a: "EBS Elastic Volumes", href: "/learn/ebs-elastic-volumes" },
-              " covers type and performance changes in full.",
+              " covers type and performance changes.",
             ],
           ],
         },
@@ -482,19 +479,19 @@ export const article: Article = {
     },
     {
       id: "how-amoeba-expands-a-pool-as-it",
-      title: "How Amoeba rightsizes a btrfs pool as your EBS data changes",
+      title: "Where Amoeba fits",
       blocks: [
         {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " optimizes block storage on Azure and AWS. The steps above fix a volume at its largest size, while Amoeba’s pool follows your data both ways.",
+            " rightsizes block storage on Azure and AWS without any downtime. Growing a volume by hand fixes it at its largest size. Amoeba’s pool follows your data both ways.",
           ],
         },
         {
           kind: "h3",
           id: "what-amoeba-does-with-your-volumes",
-          title: "What Amoeba moves, and what it never touches",
+          title: "What Amoeba does",
         },
         {
           kind: "ul",
@@ -521,18 +518,18 @@ export const article: Article = {
             ],
             [
               { b: "The old volumes." },
-              " Once the switch is checked, Amoeba snapshots each old volume and deletes it. It keeps the snapshot for a few days, then deletes that too.",
+              " Once the switch is checked, Amoeba snapshots each old volume and deletes it. It keeps each snapshot for 7 days, then deletes that too.",
             ],
             [
               { b: "Cost during the move." },
-              " You pay for both sets of volumes only while the move runs, and then for the snapshots while they’re kept.",
+              " You pay for both sets of volumes only while the move runs, then for the snapshots while they’re kept.",
             ],
           ],
         },
         {
           kind: "h3",
           id: "what-an-instance-needs",
-          title: "What each instance needs before Amoeba starts",
+          title: "What an instance needs",
         },
         { kind: "p", text: "Amoeba works on Windows and Linux instances." },
         {
@@ -551,9 +548,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "The page on ",
+            "For onboarding and the full AWS setup, see ",
             { a: "EBS cost optimization", href: "/ebs-cost-optimization" },
-            " covers Amoeba on AWS in full, from onboarding to what each instance needs.",
+            ".",
           ],
         },
       ],
@@ -561,7 +558,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves an EC2 instance’s EBS data volumes onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one volume at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves an EC2 instance’s EBS data volumes onto one pool sized to your data, then rightsizes it autonomously, without any downtime, one volume at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
@@ -608,30 +605,30 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "How to shrink an EBS volume when AWS only lets it grow",
+      title: "How to shrink an EBS volume",
       where: "Learn",
       href: "/learn/shrink-ebs-volume",
     },
     {
-      title: "EBS Elastic Volumes: what you can change, and what you can’t",
+      title: "EBS Elastic Volumes",
       where: "Learn",
       href: "/learn/ebs-elastic-volumes",
     },
     {
-      title: "How to check EBS volume usage: used space vs paid space",
+      title: "How to check EBS volume usage",
       where: "Learn",
       href: "/learn/check-ebs-volume-usage",
     },
     {
-      title: "EBS volume types compared: how to choose one",
+      title: "Amazon EBS volume types",
       where: "Learn",
       href: "/learn/ebs-volume-types",
     },
     {
-      title: "How to expand an Azure disk without downtime",
+      title: "Expand an Azure disk without downtime",
       where: "Learn",
       href: "/learn/azure-disk-expand-without-downtime",
     },
   ],
-  relatedTitle: "More on growing and shrinking EBS volumes",
+  relatedTitle: "More on resizing volumes",
 };

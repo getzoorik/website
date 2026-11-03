@@ -4,26 +4,25 @@ import { assessContent, assessmentHref } from "@/content/assess";
 import type { InstallCloud } from "@/content/coral-install";
 import { coralFaqTile } from "@/content/coral-page";
 import { howItWorksSteps, type Step } from "@/content/how-it-works";
-import type { ProductPageContent } from "@/content/product-page";
+import type { ProductPageContent, ReadMoreTile } from "@/content/product-page";
 import type { Platform, ProductId } from "@/content/products";
 
 /**
  * The four per-cloud pages: `/aks-cost-optimization`, `/eks-cost-optimization`, `/azure-managed-disk-cost-optimization`
- * and `/ebs-cost-optimization` (D227; owner, 31 Oct 2026: "GO build all 10 at once !!!"). Every string they print, word
- * for word from the checked drafts (docs/website-seo/new-pages-2026-10-31/<its first address>/page.md, each claim
- * traced in its ledger.md; TEMPLATES.md's Cloud template, CONSISTENCY.md's cross-page pass) and their mocks
- * (ux-design/website/<its address>.html). Each moved to the address of its search on 1 Nov 2026 (D230).
+ * and `/ebs-cost-optimization`. Each says what its product does on that cloud, how it works there, what connect (or
+ * onboarding) sets up, and answers a buyer's questions. Rewritten at zero noise on 2 Nov 2026; every claim is checked
+ * against the products' guides and FAQs.
  *
  * 🔴 NO FIGURE, PRICE, VERSION, THRESHOLD, TIMING OR COUNT, but for the safety snapshots' 7 days, which /security and
- * the terms print (1 Nov 2026). A page with a gap says how the product works on that cloud and claims no test. The
- * step cards keep each product's own card names (`how-it-works.ts`, read, never copied), and each says one line about
- * the cloud in place of the figure, mark and key.
+ * the terms print. A page says how the product works on that cloud and claims no test. The step cards keep each
+ * product's own card names (`how-it-works.ts`, read, never copied), and each says one line about the cloud in place of
+ * the figure, mark and key.
  *
  * Coral is AKS and EKS, never Windows or Linux; Amoeba is Windows and Linux VMs on Azure and AWS.
  *
- * The text is the drafts' small markup, drawn by `richText`: `code`, [text](href), **bold**, straight quotes curled,
- * the names kept out of translation. A Read more tile's line is plain text with its apostrophe already curled, as on
- * /coral and /amoeba.
+ * The text is the small markup `richText` draws: `code`, [text](href), **bold**, straight quotes curled, the names kept
+ * out of translation. A Read more tile's line is plain text with its apostrophe already curled, as on /coral and
+ * /amoeba.
  */
 
 /** A step card's one line about the cloud, under the product's own card name. */
@@ -123,11 +122,8 @@ export interface AmoebaCloudPage extends CloudPageBase {
 
 export type CloudPageContent = CoralCloudPage | AmoebaCloudPage;
 
-/**
- * The four pages' date: built 31 Oct 2026, their search pass of 1 Nov 2026, then the plan sheet's pass of 2 Nov 2026:
- * one line under the h1, each repeat taken out (EKS, Azure and EBS), and the Helm card's early-access line (AKS, EKS).
- */
-const NOV_2 = "2 November 2026";
+/** The four pages' date: the zero-noise rewrite of 2 Nov 2026. */
+const NOV_3 = "3 November 2026";
 
 /** The hero's button: the closing row's own words, to this product's assessment. */
 const estimate = (product: ProductId) => ({
@@ -136,8 +132,8 @@ const estimate = (product: ProductId) => ({
 });
 
 /**
- * The three cards: this product's own names (and 02's note on Amoeba), read from `how-it-works.ts`, each with the
- * draft's line for this cloud. `title03` is the draft's name for a third card that differs from the product page's.
+ * The three cards: this product's own names (and 02's note on Amoeba), read from `how-it-works.ts`, each with its line
+ * for this cloud. `title03` names a third card that differs from the product page's.
  */
 function cards(
   product: ProductId,
@@ -169,74 +165,104 @@ const kedaTile: CloudTile = {
   href: routes.coralWorksWithKeda,
   line: "KEDA sets how many pods run, and Coral sets how big each one is.",
 };
+/* What the works-with page says, as Install your way below already says how to install with Helm. */
 const helmTile: CloudTile = {
   title: "Helm",
   href: routes.coralWorksWithHelm,
-  line: "Install the agent with our Helm chart, for teams on Helm, Argo CD or Flux.",
+  line: "Coral never edits your charts or templates, so Argo CD and Flux see no drift.",
 };
 
-/** `/aks-cost-optimization`: docs/website-seo/new-pages-2026-10-31/coral-for-aks/page.md. */
+/** A Coral page's Read more tile to the Kubernetes guide, the same on AKS and EKS. */
+const kubernetesGuideTile: ReadMoreTile = {
+  kind: "page",
+  title: "Kubernetes cost optimization",
+  line: "Rebalance requests, then remove spare nodes",
+  href: routes.kubernetesCostOptimization,
+};
+
+/** The Amoeba pages' paragraph after the move, the same on Azure and AWS. */
+const AMOEBA_AFTER_MOVE =
+  "The pool grows before it fills and shrinks when your data goes down, without any downtime. You pay for close to the data you hold.";
+
+/** The Amoeba pages' note on when the move starts, the same on Azure and AWS. */
+const AMOEBA_GO_AHEAD =
+  "Onboarding is your go-ahead: the move starts by itself after the agent's first report.";
+
+/** The Amoeba pages' questions that hold on both clouds. */
+const amoebaDowntime: CloudQuestion = {
+  question: "Is there any downtime?",
+  answer:
+    "Amoeba grows and shrinks the pool without any downtime: it stays mounted and your services keep running. Only the move onto the pool restarts the services that use the moved mounts, at the switch. The switch runs by itself once the copy has caught up. If it fails, Amoeba puts the original mounts back and tries again.",
+};
+const amoebaShrinks: CloudQuestion = {
+  question: "Do shrinks wait for me?",
+  answer:
+    'Only if you choose. Each VM has one setting, "When Zoorik shrinks": in "Auto" shrinks run on their own, and in "Manual" each one waits for you. Expands always run on their own.',
+};
+
+/** `/aks-cost-optimization`: Coral on Azure Kubernetes Service. */
 export const aksCostOptimizationPage: CoralCloudPage = {
   product: "coral",
   path: routes.aksCostOptimization,
-  lastUpdated: NOV_2,
+  lastUpdated: NOV_3,
   cloud: "aks",
   meta: {
     title: "AKS cost optimization",
     description:
-      "AKS cost optimization with Coral. Reduce AKS costs: Coral rebalances your Azure Kubernetes Service cluster, sizes pods to real use and removes spare nodes.",
+      "Coral reduces AKS costs without any downtime: it rebalances pod requests to real use and removes spare nodes, with the Cluster Autoscaler or NAP.",
   },
   hero: {
     eyebrow: "Coral for AKS",
     title: "AKS cost optimization",
-    line: "Stop paying for idle AKS capacity. Coral reduces AKS costs: it rebalances your workloads and removes the spare nodes in your node pools, with no code changes.",
+    line: "Coral rebalances your AKS workloads and removes the nodes you don't need, without any downtime or code changes.",
     cta: estimate("coral"),
     runsOn: { label: "Runs on", platforms: ["aks"] },
   },
   about: {
     title: "How Coral reduces AKS costs",
     paragraphs: [
-      "Coral rebalances Azure Kubernetes Service (AKS) clusters. It sizes CPU and memory requests to what your containers really use. It also removes the nodes you don’t need, one at a time, and works with the Cluster Autoscaler and AKS node auto provisioning (NAP).",
-      "Adding nodes for demand stays with the Cluster Autoscaler or NAP, and Coral never creates machines itself. With NAP, Coral can also move work onto cheaper machines that NAP launches. The Horizontal Pod Autoscaler and KEDA keep setting how many pods run.",
-      'You stay in control. Node optimization is on from install, and you can switch off any node pool it should leave alone. Pod sizing waits until you switch on "Automatically optimize".',
+      "Coral rebalances CPU and memory requests to what your containers really use, so the same work fits on fewer nodes. Then it removes the nodes your Azure Kubernetes Service (AKS) cluster doesn't need, one at a time.",
+      "The Cluster Autoscaler or node auto provisioning (NAP) still adds nodes when demand grows: Coral never creates machines itself. The Horizontal Pod Autoscaler and KEDA still set how many pods run.",
+      'Node optimization starts at connect, and you can switch it off for any node pool. Requests change only after you switch on "Automatically optimize".',
     ],
   },
   how: {
-    title: "How it works on AKS",
+    title: "How it works",
     steps: cards("coral", [
-      "One command in zoorikctl, our command-line tool, installs the agent and creates its managed identity in your Azure account. It uses your own `az` sign-in, and asks before every Azure change.",
-      "Coral prices every node and workload from Azure's published rates for your region. You see the capacity you hold against what really runs.",
-      "Coral sizes requests to real use and removes the nodes you don’t need from your node pools.",
+      "One command in zoorikctl, our command-line tool, installs the agent and creates its managed identity. It uses your `az` sign-in, lists every Azure change and asks once.",
+      "Coral prices every node and workload at Azure list price for your region, and shows the capacity you hold against real use.",
+      "Coral rebalances requests to real use, then removes spare nodes one at a time.",
     ]),
   },
   setup: {
-    title: "What connect sets up on AKS",
+    title: "What connect sets up",
     table: {
       head: SETUP_HEAD,
       widths: SETUP_WIDTHS,
       rows: [
         [
-          "The Coral agent, its webhook and a node daemon",
-          "They run inside your cluster. They read usage, size new pods as they start and make the changes your settings allow.",
+          "The Coral agent, its webhook and the live-migration daemon",
+          "They run in your cluster. They read usage, set new pods' requests as they start, and make the changes your settings allow.",
         ],
         [
           "A managed identity, with a role on this cluster only",
-          "It lets Coral remove the machines it has emptied. It can also reduce a pool's minimum when that minimum alone keeps an emptied machine.",
+          "Lets Coral remove the machines it has emptied. Where a pool's minimum alone keeps an emptied machine, it can reduce that minimum.",
         ],
         [
           "Workload identity and the OIDC issuer, if they are off",
-          "They let the agent use that identity through Microsoft Entra ID, with no secret or key.",
+          "Let the agent use that identity through Microsoft Entra ID, with no secret or key.",
         ],
         [
           "NAP, only if the cluster has no autoscaler",
-          "AKS runs it for you. It launches nodes when pods are waiting, and removes the spare ones.",
+          "Run by AKS. It launches nodes when pods are waiting, and removes spare ones.",
         ],
       ],
     },
     notes: [
-      "The OIDC issuer can't be turned off again once it is on.",
-      "NAP needs Azure CNI networking. On a kubenet cluster it can't be set up, so nothing adds nodes until an autoscaler exists.",
-      "Run connect with `--dry-run` first. It prints each Azure change and each object the agent setup installs, and changes nothing. If you decline a change, the agent still installs.",
+      "The OIDC issuer can't be turned off once it is on.",
+      "NAP needs Azure CNI. On a kubenet cluster it can't be set up, so nothing adds nodes until you add an autoscaler.",
+      "Run connect with `--dry-run` first. It prints every Azure change and every object it would install, and changes nothing.",
+      "If you decline the cloud changes, the agent still installs, and pools run by an autoscaler are optimized as usual.",
     ],
   },
   worksWith: {
@@ -245,7 +271,7 @@ export const aksCostOptimizationPage: CoralCloudPage = {
       {
         title: "AKS node auto provisioning",
         href: routes.coralWorksWithNodeAutoProvisioning,
-        line: "NAP launches and removes machines, and Coral sizes the pods they run.",
+        line: "NAP launches and removes machines, and Coral rebalances the pods they run.",
       },
       clusterAutoscalerTile,
       kedaTile,
@@ -253,37 +279,37 @@ export const aksCostOptimizationPage: CoralCloudPage = {
       {
         title: "Terraform",
         href: routes.coralWorksWithTerraform,
-        line: "Create Coral's Azure permissions as code with our Terraform module.",
+        line: "Tell Terraform to ignore the node pool fields Coral changes, so an apply doesn't undo them.",
       },
     ],
   },
   questions: {
-    title: "Questions about Coral on AKS",
+    title: "Questions",
     rows: [
       {
         question: "Does Coral replace the Cluster Autoscaler or NAP?",
         answer:
-          "No. The Cluster Autoscaler decides how many nodes each pool has, and NAP also picks the machines. Coral sizes the pod requests they read, so the same work can fit on fewer nodes, and NAP can choose smaller ones.",
+          "No. They still decide how many nodes run, and NAP also picks the machines. Coral rebalances the requests they read, so the same work fits on fewer nodes and NAP can choose smaller ones.",
       },
       {
         question: "What if my AKS cluster has no autoscaler?",
         answer:
-          "Connect offers to turn on NAP, if the cluster uses Azure CNI, and asks you first. In fixed-size pools that nothing else manages, Coral deletes the machines it empties, once you give it the permission to remove nodes. Until an autoscaler runs, nothing adds nodes when demand grows.",
+          "Connect offers to turn on NAP, if the cluster uses Azure CNI, and asks you first. In fixed-size pools, Coral deletes the machines it empties once you allow node removal. Until an autoscaler runs, nothing adds nodes when demand grows.",
       },
       {
-        question: "Can Coral move my workloads to cheaper machines on AKS?",
+        question: "Can Coral move work to cheaper machines?",
         answer:
-          "Yes, when NAP runs. You choose the nodes to replace, Coral's plan picks cheaper machines that still fit the work, and NAP launches them. With only the Cluster Autoscaler, Coral removes nodes but keeps each pool's VM size.",
+          "Yes, when NAP runs. You choose the nodes to replace. Coral picks cheaper machines that still fit the work, and NAP launches them. With only the Cluster Autoscaler, Coral removes nodes and keeps each pool's VM size.",
       },
       {
-        question: "What do I need on Azure to connect a cluster?",
+        question: "What do I need to connect a cluster?",
         answer:
-          "Cluster-admin on the cluster, and the Azure CLI (`az`), signed in. On the cluster's subscription, you need the Owner role, or Contributor with User Access Administrator.",
+          "Cluster-admin on the cluster, and the Azure CLI (`az`), signed in. On the cluster's subscription: Owner, or Contributor with User Access Administrator.",
       },
       {
         question: "How do I remove Coral's Azure access?",
         answer:
-          "Remove the role assignment, and node removal stops once Azure applies the change. `zoorikctl cluster disconnect` also offers to remove the identity it created. Workload identity and the OIDC issuer stay on.",
+          "Remove the role assignment, and node removal stops once Azure applies it. `zoorikctl cluster disconnect` also offers to remove the identity it created. Workload identity and the OIDC issuer stay on.",
       },
     ],
   },
@@ -294,26 +320,21 @@ export const aksCostOptimizationPage: CoralCloudPage = {
       {
         kind: "page",
         title: "Product guide",
-        line: "Connect a cluster, and what it changes in Azure",
+        line: "What connect changes in Azure",
         href: `${routes.coralGuide}#connect-a-cluster`,
       },
       /* /coral's own FAQ tile, read, never copied. */
       coralFaqTile,
-      {
-        kind: "page",
-        title: "Kubernetes cost optimization",
-        line: "Rebalance requests to real use, then let spare nodes go",
-        href: routes.kubernetesCostOptimization,
-      },
+      kubernetesGuideTile,
       {
         kind: "page",
         title: "Cluster Autoscaler not scaling down",
-        line: "Why a node stays on AKS or EKS, and the fix",
+        line: "What keeps a node running, and the fix",
         href: learnPath("cluster-autoscaler-not-scaling-down"),
       },
       {
         kind: "page",
-        title: "AKS cost",
+        title: "AKS pricing calculator",
         line: "What an AKS node costs a month, at list price",
         href: routes.eksAndAksPricingCalculator,
       },
@@ -321,116 +342,111 @@ export const aksCostOptimizationPage: CoralCloudPage = {
   },
 };
 
-/** `/eks-cost-optimization`: docs/website-seo/new-pages-2026-10-31/coral-for-eks/page.md. */
+/** `/eks-cost-optimization`: Coral on Amazon Elastic Kubernetes Service. */
 export const eksCostOptimizationPage: CoralCloudPage = {
   product: "coral",
   path: routes.eksCostOptimization,
-  lastUpdated: NOV_2,
+  lastUpdated: NOV_3,
   cloud: "eks",
   meta: {
     title: "EKS cost optimization",
     description:
-      "EKS cost optimization with Coral: it rebalances your cluster, sizes pods to real use and removes spare EC2 nodes. Autonomous EKS tuning, with no code changes.",
+      "Coral reduces EKS costs without any downtime: it rebalances pod requests to real use and removes spare EC2 nodes, with Karpenter or the Cluster Autoscaler.",
   },
   hero: {
     eyebrow: "Coral for EKS",
     title: "EKS cost optimization",
-    line: "Stop paying for idle EC2 instances: Coral rebalances your workloads so spare nodes can go, with no code changes.",
+    line: "Coral rebalances your EKS workloads and removes the EC2 nodes you don't need, without any downtime or code changes.",
     cta: estimate("coral"),
     runsOn: { label: "Runs on", platforms: ["eks"] },
   },
   about: {
-    title: "How Coral reduces the cloud cost of your EKS clusters",
+    title: "How Coral reduces EKS costs",
     paragraphs: [
-      "On Amazon Elastic Kubernetes Service (EKS), Coral sizes pod requests to real use. Fewer EC2 instances can then carry the same work.",
-      'Nothing changes pod sizes until you switch on "Automatically optimize". Node optimization starts at connect, and you pick the node pools it works on.',
+      "Coral rebalances CPU and memory requests to what your containers really use, so the same work fits on fewer EC2 instances. Then it removes the nodes your Amazon Elastic Kubernetes Service (EKS) cluster doesn't need, one at a time.",
+      "Karpenter or the Cluster Autoscaler still adds nodes when demand grows: Coral never creates machines itself. The Horizontal Pod Autoscaler and KEDA still set how many pods run.",
+      'Node optimization starts at connect, and you can switch it off for any node pool. Requests change only after you switch on "Automatically optimize".',
     ],
   },
   how: {
-    title: "How it works on EKS",
+    title: "How it works",
     steps: cards("coral", [
-      "Sign in with the AWS CLI and run zoorikctl, our command-line tool. It installs the agent, binds its IAM role with EKS Pod Identity, and asks before every AWS change.",
-      "Coral lists each EKS node and workload. You see how much capacity you hold beyond what your pods really use.",
-      "Coral drains spare EC2 nodes one at a time, within each pod's PodDisruptionBudget, and removes them.",
+      "Run zoorikctl, our command-line tool, with your `aws` sign-in. It lists every AWS change and asks once, then installs the agent with its EKS Pod Identity role.",
+      "Coral shows every EKS node and workload, and the capacity you hold beyond what your pods really use.",
+      "Coral rebalances requests, then drains spare EC2 nodes within your PodDisruptionBudgets and removes them.",
     ]),
   },
   setup: {
-    title: "What connect sets up on EKS",
+    title: "What connect sets up",
     table: {
       head: SETUP_HEAD,
       widths: SETUP_WIDTHS,
       rows: [
         [
-          "The Coral agent, its webhook and a node daemon",
-          "They run inside your cluster. They read usage, size new pods as they start and make the changes your settings allow.",
+          "The Coral agent, its webhook and the live-migration daemon",
+          "They run in your cluster. They read usage, set new pods' requests as they start, and make the changes your settings allow.",
         ],
         [
           "An IAM role, bound with EKS Pod Identity",
-          "It lets Coral terminate instances only in this cluster's Auto Scaling groups. If a group's minimum size is all that keeps an emptied instance, Coral may reduce that minimum.",
+          "Lets Coral terminate instances only in this cluster's Auto Scaling groups. Where a group's minimum alone keeps an emptied instance, it can reduce that minimum.",
         ],
         [
           "The EKS Pod Identity Agent add-on, if it is missing",
-          "It gives the agent temporary credentials for that role, with no stored key.",
+          "Gives the agent temporary credentials for that role, with no stored key.",
         ],
         [
           "Karpenter, only if the cluster has no autoscaler",
-          "It launches EC2 instances when pods are waiting, and terminates spare ones itself. Connect also creates what Karpenter needs in AWS, such as its IAM roles, an SQS queue and discovery tags.",
+          "Launches EC2 instances when pods are waiting, and terminates spare ones. Connect also creates what it needs in AWS, such as IAM roles, an SQS queue and discovery tags.",
         ],
       ],
     },
     notes: [
       "If connect installs Karpenter on a cluster that uses only aws-auth, it switches authentication to API_AND_CONFIG_MAP. That can't be undone.",
-      "With `--dry-run`, zoorikctl prints every AWS command and every object it would add to the cluster, and changes nothing.",
-      "If you decline the cloud changes, the agent still installs, and pools an autoscaler runs are optimized as usual.",
+      "Run connect with `--dry-run` first. It prints every AWS change and every object it would install, and changes nothing.",
+      "If you decline the cloud changes, the agent still installs, and pools run by an autoscaler are optimized as usual.",
     ],
   },
   worksWith: {
-    title: "What Coral works with on EKS",
+    title: "Works with",
     tiles: [
       {
         title: "Karpenter",
         href: routes.coralWorksWithKarpenter,
-        line: "Karpenter picks the EC2 instances, and Coral sizes the pods that run on them.",
+        line: "Karpenter picks the EC2 instances, and Coral rebalances the pods that run on them.",
       },
       clusterAutoscalerTile,
       kedaTile,
-      /* Helm and Terraform: what each works-with page says, as the install cards below already say how to install. */
-      {
-        title: "Helm",
-        href: routes.coralWorksWithHelm,
-        line: "Coral never edits your charts or templates and sizes pods as they start, so Argo CD and Flux see no drift.",
-      },
+      helmTile,
       {
         title: "Terraform",
         href: routes.coralWorksWithTerraform,
-        line: "Tell Terraform which node group fields Coral changes, so an apply doesn't undo them.",
+        line: "Tell Terraform to ignore the node group fields Coral changes, so an apply doesn't undo them.",
       },
     ],
   },
-  installTitle: "Install Coral on EKS your way",
-  calculator: `Or see what one node adds to your [EKS cost](${routes.eksAndAksPricingCalculator}), at list price, in our pricing calculator.`,
+  calculator: `Or see what an EKS node costs a month in our [pricing calculator](${routes.eksAndAksPricingCalculator}).`,
   questions: {
-    title: "Questions about Coral on EKS",
+    title: "Questions",
     rows: [
       {
         question: "Does Coral replace Karpenter or the Cluster Autoscaler?",
         answer:
-          "No. Coral never creates machines, so both still add them: Karpenter picks EC2 instances from pod requests, and the Cluster Autoscaler scales your Auto Scaling groups. Once Coral sizes those requests to real use, both can run fewer instances, and Karpenter can pick smaller ones.",
+          "No. Both still add machines: Karpenter picks EC2 instances from pod requests, and the Cluster Autoscaler scales your Auto Scaling groups. Once Coral rebalances those requests, both can run fewer instances, and Karpenter can pick smaller ones.",
       },
       {
         question: "What if my EKS cluster has no autoscaler?",
         answer:
-          "Connect offers to install Karpenter and, once you say yes, creates what it needs in AWS. If you allow node removal, Coral terminates the instances it empties in Auto Scaling groups that nothing else scales. Until an autoscaler runs, no instances are added when demand grows.",
+          "Connect offers to install Karpenter and, once you say yes, creates what it needs in AWS. In Auto Scaling groups that nothing else scales, Coral terminates the instances it empties, once you allow node removal. Until an autoscaler runs, nothing adds instances when demand grows.",
       },
       {
-        question: "Can Coral move my pods to cheaper EC2 instances?",
+        question: "Can Coral move pods to cheaper instances?",
         answer:
-          "Yes, with Karpenter. Coral creates fixed-size NodePools of cheaper instances that still fit your pods, and Karpenter launches them in place of the nodes you choose. With only the Cluster Autoscaler, Coral removes nodes and keeps each group's instance types.",
+          "Yes, with Karpenter. You choose the nodes to replace. Coral creates fixed-size NodePools of cheaper instances that still fit your pods, and Karpenter launches them. With only the Cluster Autoscaler, Coral removes nodes and keeps each group's instance types.",
       },
       {
-        question: "What do I need on AWS to connect a cluster?",
+        question: "What do I need to connect a cluster?",
         answer:
-          "The AWS CLI (`aws`), signed in, plus cluster-admin. Your AWS identity must be allowed to create IAM roles and EKS Pod Identity associations. If connect installs Karpenter, you also need Helm, and permission for SQS, EventBridge and cluster updates.",
+          "Cluster-admin, and the AWS CLI (`aws`), signed in. Your AWS identity must be able to create IAM roles and EKS Pod Identity associations. If connect installs Karpenter, you also need Helm, and permission for SQS, EventBridge and cluster updates.",
       },
       {
         question: "Can I use IRSA instead of EKS Pod Identity?",
@@ -439,17 +455,18 @@ export const eksCostOptimizationPage: CoralCloudPage = {
     ],
   },
   readMore: {
-    title: "Coral docs and EKS guides",
+    title: "Coral docs and guides",
     allDocs: { label: "All docs", href: `${routes.docs}#coral` },
     tiles: [
       {
         kind: "page",
         title: "Product guide",
-        line: "What connect changes in your AWS account",
+        line: "What connect changes in AWS",
         href: `${routes.coralGuide}#connect-a-cluster`,
       },
       /* /coral's own FAQ tile, read, never copied. */
       coralFaqTile,
+      kubernetesGuideTile,
       {
         kind: "page",
         title: "How to change an EKS node group instance type",
@@ -466,119 +483,114 @@ export const eksCostOptimizationPage: CoralCloudPage = {
   },
 };
 
-/** Both Amoeba pages' cards: /amoeba's 01 and 02 (with its note), and the drafts' name for 03 (ledger X1: /amoeba's
- *  "Resize online" is not this page's word). */
+/** Both Amoeba pages' third card: /amoeba's says "Resize without any downtime", which these pages' hero already says. */
 const AMOEBA_03 = "Rightsize the pool";
 
-/** `/azure-managed-disk-cost-optimization`: docs/website-seo/new-pages-2026-10-31/amoeba-for-azure/page.md. */
+/** `/azure-managed-disk-cost-optimization`: Amoeba on Azure managed disks. */
 export const azureManagedDiskCostOptimizationPage: AmoebaCloudPage = {
   product: "amoeba",
   path: routes.azureManagedDiskCostOptimization,
-  lastUpdated: NOV_2,
+  lastUpdated: NOV_3,
   meta: {
     title: "Azure managed disk cost optimization",
     description:
-      "Azure managed disk cost optimization, the disk side of Azure storage cost optimization: reduce Azure disk costs on Windows and Linux VMs, autonomously.",
+      "Amoeba reduces Azure managed disk costs on Windows and Linux VMs. It moves data disks onto one btrfs pool, then rightsizes it without any downtime.",
   },
   hero: {
     eyebrow: "Amoeba for Azure",
     title: "Azure managed disk cost optimization",
-    line: "Stop paying for empty disk space: Amoeba rightsizes the managed data disks on your VMs to fit your data.",
+    line: "Amoeba rightsizes the managed data disks on your Azure VMs to fit your data, without any downtime.",
     cta: estimate("amoeba"),
     runsOn: { label: "Runs on", platforms: ["azure", "windows", "linux"] },
   },
   about: {
-    title: "How Amoeba reduces Azure disk cost",
+    title: "How Amoeba reduces Azure disk costs",
     paragraphs: [
-      "An Azure managed disk can be made larger, but not smaller. So you pay for the size you provisioned, however much data it holds.",
-      "Amoeba moves a VM's data disks onto one btrfs pool. It sizes the pool from your peak use and recent growth, with room to grow, not from the size of the old disks.",
-      "After the one switch onto the pool, the pool grows and shrinks without any downtime. So you pay for close to the data you hold.",
+      "An Azure managed disk can grow but never shrink. You pay for its provisioned size, however much data it holds.",
+      "Amoeba moves a VM's data disks onto one btrfs pool. The pool is sized from your peak use and recent growth, with room to grow, not from the old disks' size.",
+      AMOEBA_AFTER_MOVE,
     ],
   },
   how: {
-    title: "How it works on Azure",
+    title: "How it works",
     steps: cards(
       "amoeba",
       [
-        "Connect your Azure directory once, with a script you run in Azure Cloud Shell. Then pick your VMs, and Amoeba installs its agent through Azure Run Command.",
-        "Amoeba copies your data onto one pool of managed disks while your services run. Then each mount switches to the pool, at the same path.",
-        "Before the pool fills, Amoeba grows its managed disks in place, or adds a disk while the VM has a free slot. When your data goes down and stays down, it takes one disk out at a time. The pool stays mounted while it changes.",
+        "Connect your Azure directory once, with a script in Azure Cloud Shell. Then pick your VMs, and Amoeba installs its agent through Azure Run Command.",
+        "Amoeba copies your data onto a pool of managed disks while your services run. Then each mount switches to the pool, at the same path.",
+        "Amoeba grows or adds disks before the pool fills. When your data goes down and stays down, it removes one disk at a time. The pool stays mounted.",
       ],
       AMOEBA_03,
     ),
   },
   setup: {
-    title: "What onboarding sets up on Azure",
+    title: "What onboarding sets up",
     table: {
       head: SETUP_HEAD,
       widths: SETUP_WIDTHS,
       rows: [
         [
           'The role "Zoorik Storage Operator"',
-          "A custom role, assigned to Zoorik's app on each subscription you connect. It can read every resource, update VMs, run commands on them, and create and delete disks and snapshots.",
+          "A custom role for Zoorik's app, on each subscription you connect. It can read every resource, update VMs, run commands on them, and create and delete disks and snapshots.",
         ],
         [
           "Zoorik's app in your directory",
-          "The identity that holds the role. The connect script adds it to your directory.",
+          "The identity that holds the role. The connect script adds it.",
         ],
         [
           "The agent on each VM",
-          "Installed through Azure Run Command when you onboard the VM. It reports the VM's disks and mounts to Zoorik, and carries out the move, the expands and the shrinks.",
+          "Installed through Azure Run Command. It reports the VM's disks and mounts, and runs the move, expands and shrinks.",
         ],
         [
           "Pool disks",
-          "The managed disks that hold your data after the move. Amoeba adds, grows and removes them as the pool expands and shrinks.",
+          "The managed disks that hold your data after the move. Amoeba adds, grows and removes them as the pool changes size.",
         ],
         [
           "Safety snapshots",
-          "One incremental snapshot of each source disk, in the disk's own resource group. Taken before Amoeba deletes the disk, and deleted after 7 days.",
+          "An incremental snapshot of each source disk, in the disk's resource group, taken before the disk is deleted. Deleted after 7 days.",
         ],
       ],
     },
     notes: [
-      "The role is the limit on what Zoorik can do in your Azure. A permission added to the role later reaches your subscription only when you run the script again.",
-      "Onboarding is your go-ahead. After the agent's first report, the move starts by itself.",
-      "A move only goes forward. Amoeba deletes a source disk only after its own snapshot has succeeded.",
-      "You pay for both sets of disks only while the move runs, and then for the snapshots while they’re kept.",
+      "The role is the limit of what Zoorik can do in your Azure. A permission added to it later reaches your subscription only when you run the script again.",
+      AMOEBA_GO_AHEAD,
+      "A move only goes forward. Amoeba deletes a source disk only after its snapshot succeeds.",
     ],
   },
   needs: {
     title: "What your VMs need",
     items: [
-      "A running VM with at least one data disk. The data must sit on mounted filesystems.",
-      "A few free data-disk slots. The pool's disks attach beside the old ones during the move. With too few, Amoeba declines the VM and says why.",
-      "Outbound access from the VM to Zoorik, and to the hosts the agent downloads from.",
-      "On Linux: a recent kernel that supports btrfs. Every service that keeps a data mount open must run under systemd. The agent also needs rsync, btrfs-progs and psmisc, which the installer doesn't add.",
-      "VMs that use Azure Disk Encryption are not moved as they are.",
+      "A running VM with at least one data disk, its data on mounted filesystems.",
+      "A few free data-disk slots, since the pool's disks attach beside the old ones during the move. With too few, Amoeba declines the VM and says why.",
+      "Outbound access to Zoorik, and to the hosts the agent downloads from.",
+      "On Linux: a recent kernel with btrfs, and every process that keeps a data mount open running as a systemd service. Install rsync, btrfs-progs and psmisc first: the installer doesn't add them.",
+      "No Azure Disk Encryption: VMs that use it are not moved as they are.",
     ],
     after: `To connect, you need the rights to add Zoorik's app to your directory, create a custom role and assign it on each subscription. The [product guide](${routes.amoebaGuide}#before-you-start) has the full list.`,
   },
   questions: {
-    title: "Questions about Amoeba on Azure",
+    title: "Questions",
     rows: [
       {
         question: "Which Azure disks does Amoeba work on?",
-        answer: `The managed data disks of running Windows and Linux VMs. Amoeba never touches the OS disk. On AWS, it works with Amazon EBS volumes: see [EBS cost optimization](${routes.ebsCostOptimization}).`,
+        answer: `The managed data disks of running Windows and Linux VMs. Amoeba never touches the OS disk. On AWS, it works with EBS volumes: see [EBS cost optimization](${routes.ebsCostOptimization}).`,
       },
       {
-        question: "Which Azure disk type does Amoeba's pool use?",
+        question: "Which disk type does the pool use?",
         answer:
-          "Premium SSD v2 where the VM's region and zone offer it, and Premium SSD where they don't. Data on Standard SSD, Standard HDD or Ultra Disk moves to the pool's type, which can cost more than Standard disks. Zone-redundant (ZRS) disks map to a locally redundant pool, so the data loses zone redundancy.",
+          "Premium SSD v2 where the VM's region and zone offer it, and Premium SSD where they don't. Data on Standard SSD, Standard HDD or Ultra Disk moves to the pool's type, which can cost more per GiB than Standard disks. Zone-redundant (ZRS) disks move to a locally redundant pool and lose zone redundancy.",
+      },
+      amoebaDowntime,
+      amoebaShrinks,
+      {
+        question: "Do I pay for both sets of disks during the move?",
+        answer:
+          "Yes, but only while the move runs. Each source disk is deleted once the switch is checked. Then you pay for its snapshot for the 7 days it's kept.",
       },
       {
-        question: "Is there downtime on Azure?",
+        question: "How is the saving worked out?",
         answer:
-          "Only at the switch. Once the copy onto the pool has caught up, the switch runs by itself, and the services that use those mounts stop and start again. After that, expands and shrinks run while your services keep working.",
-      },
-      {
-        question: "Do shrinks wait for me?",
-        answer:
-          'Only if you choose. Each VM has one setting, "When Zoorik shrinks": in "Auto" shrinks run on their own, and in "Manual" each one waits for you. Expands run on their own, whatever the setting.',
-      },
-      {
-        question: "How is the saving worked out on Azure?",
-        answer:
-          "At Azure's public list price for the disk type and region, measured against the source disks. If a pool grows past the disks it replaced, Amoeba shows that it costs more.",
+          "At Azure's public list price for the disk type and region, against the source disks. A saving can be negative, for example when a pool grows past the disks it replaced. Amoeba shows it as it is.",
       },
     ],
   },
@@ -591,7 +603,7 @@ export const azureManagedDiskCostOptimizationPage: AmoebaCloudPage = {
       {
         kind: "page",
         title: "Azure disk reservations: are they worth it?",
-        line: "What a managed disk is charged for, and how to pay for your data",
+        line: "When a reservation pays, and what to do first",
         href: learnPath("azure-disk-reservations"),
       },
       {
@@ -600,125 +612,125 @@ export const azureManagedDiskCostOptimizationPage: AmoebaCloudPage = {
         line: "Why it can’t, and what works",
         href: learnPath("shrink-azure-managed-disk"),
       },
+      {
+        kind: "page",
+        title: "Azure disk pricing",
+        line: "What a managed disk costs a month, at list price",
+        href: routes.ebsAndAzureDiskPricing,
+      },
     ],
   },
 };
 
-/** `/ebs-cost-optimization`: docs/website-seo/new-pages-2026-10-31/amoeba-for-aws/page.md. Amoeba on AWS is built,
- *  and the page says how it works and claims nothing more (ledger X4). */
+/** `/ebs-cost-optimization`: Amoeba on Amazon EBS. It says how Amoeba works on AWS and claims nothing more. */
 export const ebsCostOptimizationPage: AmoebaCloudPage = {
   product: "amoeba",
   path: routes.ebsCostOptimization,
-  lastUpdated: NOV_2,
+  lastUpdated: NOV_3,
   meta: {
     title: "EBS cost optimization",
     description:
-      "EBS cost optimization for Windows and Linux EC2: Amoeba rightsizes data volumes by moving them onto one gp3 pool that grows and shrinks with your data.",
+      "Amoeba reduces Amazon EBS costs on Windows and Linux EC2 instances. It moves data volumes onto one gp3 pool, then rightsizes it without any downtime.",
   },
   hero: {
     eyebrow: "Amoeba for AWS",
     title: "EBS cost optimization",
-    line: "Amoeba rightsizes the EBS data volumes on your EC2 instances, autonomously, so you stop paying for empty space.",
+    line: "Amoeba rightsizes the EBS data volumes on your EC2 instances to fit your data, without any downtime.",
     cta: estimate("amoeba"),
     runsOn: { label: "Runs on", platforms: ["aws", "windows", "linux"] },
   },
   about: {
-    title: "What Amoeba does on AWS",
+    title: "How Amoeba reduces EBS costs",
     paragraphs: [
-      "AWS charges per GB-month for an EBS volume's full size. It lets you grow a volume but never shrink it. So a volume costs the same, however little data it holds.",
-      "Amoeba moves an instance's data volumes onto one pool of gp3 volumes, in the same Availability Zone. The pool is sized to your data, with room to grow.",
+      "AWS charges for an EBS volume's full size, per GB-month. A volume can grow but never shrink, so it costs the same however little data it holds.",
+      "Amoeba moves an instance's data volumes onto one btrfs pool of gp3 volumes, in the same Availability Zone. The pool is sized from your peak use and recent growth, with room to grow, not from the old volumes' size.",
+      AMOEBA_AFTER_MOVE,
     ],
   },
   how: {
-    title: "How it works on AWS",
+    title: "How it works",
     steps: cards(
       "amoeba",
       [
         "Enter your AWS account ID, then run a script in AWS CloudShell. Pick your instances, and Amoeba installs its agent through AWS Systems Manager.",
-        "While your services keep running, Amoeba copies the data to a pool of gp3 volumes in the instance's Availability Zone. Each mount then moves to the pool and keeps its path.",
-        "Amoeba adds or grows gp3 volumes before the pool fills. If your data shrinks and stays smaller, it removes one volume at a time, and the pool stays mounted throughout.",
+        "Amoeba copies your data onto a pool of gp3 volumes while your services run. Then each mount switches to the pool, at the same path.",
+        "Amoeba grows or adds gp3 volumes before the pool fills. When your data goes down and stays down, it removes one volume at a time. The pool stays mounted.",
       ],
       AMOEBA_03,
     ),
   },
   setup: {
-    title: "What onboarding sets up on AWS",
+    title: "What onboarding sets up",
     table: {
       head: SETUP_HEAD,
       widths: SETUP_WIDTHS,
       rows: [
         [
           "The IAM role ZoorikStorageOperator",
-          "Created by the script you run in AWS CloudShell. It can read EC2 and Systems Manager, and run commands through Systems Manager. It can also create, modify, attach, detach and delete volumes, and create and delete snapshots.",
+          "Created by the CloudShell script. It can read EC2 and Systems Manager, and run commands through Systems Manager. It can create, modify, attach, detach and delete volumes, and create and delete snapshots.",
         ],
         [
           "The agent on each instance",
-          "Amoeba installs it through AWS Systems Manager when you onboard the instance. It tells Zoorik which disks and mounts the instance has, and runs the move and every expand and shrink.",
+          "Installed through AWS Systems Manager. It reports the instance's disks and mounts, and runs the move, expands and shrinks.",
         ],
         [
           "Pool volumes",
-          "The gp3 volumes in the instance's Availability Zone. After the move they hold your data, and Amoeba adds, grows or removes them as the pool changes size.",
+          "The gp3 volumes that hold your data after the move, in the instance's Availability Zone. Amoeba adds, grows and removes them as the pool changes size.",
         ],
         [
           "Safety snapshots",
-          "An EBS snapshot of each source volume. Taken before Amoeba deletes the volume, and kept for 7 days.",
+          "An EBS snapshot of each source volume, taken before the volume is deleted. Deleted after 7 days.",
         ],
       ],
     },
     notes: [
-      "The role trusts Zoorik's AWS account only with your organisation's external ID. Zoorik's own AWS identity may only assume roles named ZoorikStorageOperator, and read AWS prices.",
+      "The role trusts Zoorik's AWS account only with your organisation's external ID. Zoorik's own AWS identity can only assume roles named ZoorikStorageOperator and read AWS prices.",
       "New pool volumes take the KMS key of the first encrypted source volume, so encryption at rest carries over.",
       "Systems Manager keeps each command's history in your account.",
+      AMOEBA_GO_AHEAD,
+      "A move only goes forward. Amoeba deletes a source volume only after its snapshot succeeds.",
     ],
   },
   needs: {
-    title: "What your EC2 instances need",
+    title: "What your instances need",
     items: [
-      "A running EC2 instance with at least one EBS data volume. The data must sit on mounted filesystems.",
-      "The instance is managed by AWS Systems Manager, with the SSM agent connected.",
+      "A running EC2 instance with at least one EBS data volume, its data on mounted filesystems.",
+      "Management by AWS Systems Manager, with the SSM agent connected.",
       "A Nitro instance type that exposes EBS as NVMe.",
-      "Spare volume attachment slots, since the pool's volumes attach next to the old ones during the move. If there are too few, Amoeba declines the instance and says why.",
-      "Network access out to Zoorik, and to the hosts the agent downloads from.",
-      "On Linux, the instance needs a recent kernel with btrfs support, and every service that holds a data mount open running under systemd. It also needs rsync, btrfs-progs and psmisc installed first: the installer doesn't add them.",
+      "A few free volume attachment slots, since the pool's volumes attach beside the old ones during the move. With too few, Amoeba declines the instance and says why.",
+      "Outbound access to Zoorik, and to the hosts the agent downloads from.",
+      "On Linux: a recent kernel with btrfs, and every process that keeps a data mount open running as a systemd service. Install rsync, btrfs-progs and psmisc first: the installer doesn't add them.",
     ],
     after: `The [product guide](${routes.amoebaGuide}#before-you-start) has the full list.`,
   },
   questions: {
-    title: "Questions about Amoeba on AWS",
+    title: "Questions",
     rows: [
       {
         question: "Which EBS volumes does Amoeba work on?",
         answer: `The non-root EBS data volumes of running EC2 instances, on Windows and Linux. Amoeba never touches the root volume. On Azure, it works with managed disks: see [Azure managed disk cost optimization](${routes.azureManagedDiskCostOptimization}).`,
       },
       {
-        question: "Which EBS volume type does Amoeba's pool use?",
+        question: "Which volume type does the pool use?",
         answer:
-          "The pool uses gp3 volumes. Each pool volume gets at least the baseline performance gp3 includes, and more when the instance's own load needs it.",
+          "The pool uses gp3 volumes. Each gets at least the baseline performance gp3 includes, and more when the instance's load needs it.",
       },
-      {
-        question: "Do my services on EC2 go down during the move?",
-        answer:
-          "Only at the switch. Amoeba copies the data while your services run, then switches each mount to the gp3 pool by itself once the copy has caught up. The services using those mounts restart then, and again only if a failed switch is retried, never for an expand or shrink.",
-      },
+      amoebaDowntime,
+      amoebaShrinks,
       {
         question: "Do I pay for both sets of volumes during the move?",
         answer:
-          "Yes, but only while the move runs. The source volumes are deleted once the switch is checked. Then you pay for their snapshots for the 7 days they're kept.",
+          "Yes, but only while the move runs. Each source volume is deleted once the switch is checked. Then you pay for its snapshot for the 7 days it's kept.",
       },
       {
-        question: "How is the saving worked out on AWS?",
+        question: "How is the saving worked out?",
         answer:
-          "At list price from the AWS Price List API, measured against the source volumes. A saving can be negative, and Amoeba shows it as it is.",
-      },
-      {
-        question: "Can EBS volumes shrink automatically?",
-        answer:
-          "No. EBS Elastic Volumes can increase a volume's size, change its type or adjust its performance, but never decrease its size, automatically or by hand. Amoeba shrinks its pool by removing gp3 volumes instead.",
+          "At list price from the AWS Price List API, against the source volumes. A saving can be negative, for example when a pool grows past the volumes it replaced. Amoeba shows it as it is.",
       },
     ],
   },
   readMore: {
-    title: "Amoeba docs and EBS guides",
+    title: "Amoeba docs and guides",
     allDocs: { label: "All docs", href: `${routes.docs}#amoeba` },
     tiles: [
       /* /amoeba's guide and FAQ tiles, behind its flag: drawn only while both are published. */
@@ -732,8 +744,14 @@ export const ebsCostOptimizationPage: AmoebaCloudPage = {
       {
         kind: "page",
         title: "What is gp3 in AWS?",
-        line: "The volume type Amoeba’s pool uses on AWS",
+        line: "The volume type Amoeba’s pool uses",
         href: glossaryPath("ebs-gp3"),
+      },
+      {
+        kind: "page",
+        title: "Amazon EBS pricing",
+        line: "What an EBS volume costs a month, at list price",
+        href: routes.ebsAndAzureDiskPricing,
       },
     ],
   },

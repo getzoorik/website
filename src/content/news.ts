@@ -4,7 +4,7 @@ import { socialProfiles } from "@/content/footer";
 import { nvidiaInceptionLegal } from "@/content/memberships";
 
 /**
- * `/news`, Zoorik News: every string the page prints, verbatim from the approved mock. The Radar part is refreshed
+ * `/news`, Zoorik News: every string the page prints. The Radar part is refreshed
  * weekly by the radar run, so a refresh is a small PR to this file alone: the week's items and `newsLastUpdated`.
  *
  * The page's parts, in its order: the latest of our announcements beside the newsletter, on the band; the rest of
@@ -18,7 +18,7 @@ import { nvidiaInceptionLegal } from "@/content/memberships";
  * The day /news's content last changed (the week of the latest Radar, or a change to its own words: its title, h1 and
  * deck, 2 Nov 2026), for the sitemap's `lastmod` only. A refresh moves it in the same PR; never the build's date.
  */
-export const newsLastUpdated = "2 November 2026";
+export const newsLastUpdated = "3 November 2026";
 
 /* The month names the page's dates print: "17 October 2026" on the latest announcement, "16 Oct" on a tile. */
 const months = [
@@ -43,14 +43,14 @@ const profile = (platform: (typeof socialProfiles)[number]["platform"]): string 
 export const newsPage = {
   /** The `<title>`'s own words, before " | Zoorik", and the share title's. */
   meta: {
-    title: "Kubernetes news and cloud cost updates, weekly",
+    title: "Kubernetes and cloud cost news",
     description:
-      "What Zoorik ships, and Zoorik Radar: this week’s Kubernetes, cloud cost and FinOps news, each item with its source. Also by email as our newsletter.",
+      "What Zoorik ships, and Zoorik Radar: weekly Kubernetes, cloud and FinOps news, each item linked to its source. Also by email on Medium or Substack.",
   },
   /** The page's name (its h1) and the deck under it. */
   hero: {
-    title: "Zoorik News: what we ship, plus Kubernetes news and cloud cost updates each week",
-    deck: "We read AWS, Azure, the Kubernetes projects and the FinOps Foundation, and link each item to its source.",
+    title: "Zoorik News",
+    deck: "What we ship, and weekly Kubernetes, cloud and FinOps news, each item linked to its source.",
   },
   /**
    * The band under the hero: the newest announcement on the white card, flagged "Latest", and the newsletter on the
@@ -81,7 +81,7 @@ export const newsPage = {
     /** The stream chips: their name for a screen reader, and the first chip, which shows every stream. */
     chips: { label: "Stream", all: "All" },
     /** The line under the streams, around the window it read: "5 to 19 October 2026". */
-    note: (window: string) => `Cloud, Kubernetes and FinOps news from ${window}, in our own words.`,
+    note: (window: string) => `News from ${window}, in our own words.`,
   },
   months,
 } as const;
@@ -262,8 +262,8 @@ export const newsFromZoorik: readonly NewsAnnouncement[] = [
   {
     date: "2026-10-17",
     tag: "Assessment",
-    title: "Zoorik assessment 1.3: one free PDF report for Coral and Amoeba",
-    line: "One command, npx -y zoorik assess coral or amoeba, now writes a single PDF with your estimated saving at list price.",
+    title: "Zoorik assessment 1.3: one free PDF for Coral and Amoeba",
+    line: "One command, npx -y zoorik assess coral or amoeba, now writes one PDF with your estimated saving at list price.",
     href: routes.assessment,
     cta: "Run the free assessment",
   },
@@ -271,7 +271,7 @@ export const newsFromZoorik: readonly NewsAnnouncement[] = [
     date: "2026-10-16",
     tag: "Coral",
     title: "Install Coral with Helm or Terraform",
-    line: "Coral’s agent now installs from a public Helm chart, and AKS and EKS modules are on the Terraform Registry, beside zoorikctl.",
+    line: "Coral’s agent installs from a public Helm chart, and AKS and EKS modules on the Terraform Registry create its cloud identity.",
     href: routes.openSource,
     cta: "See the install options",
   },

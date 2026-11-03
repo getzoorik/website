@@ -4,26 +4,25 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/kubernetes-
 export const term: GlossaryTerm = {
   slug: "kubernetes-resource-limits",
   term: "Resource limits (pod limits)",
-  title: "Kubernetes resource limits: CPU and memory",
-  meta: "Resource limits cap a container’s CPU and memory. See how CPU limits throttle, how Kubernetes memory limits can lead to OOM kills, and when limits add nodes.",
-  h1: "Kubernetes resource limits: CPU and memory",
-  card: "A resource limit in Kubernetes is the most CPU or memory a container may use.",
+  title: "What are Kubernetes resource limits?",
+  meta: "Kubernetes resource limits cap a container’s CPU and memory. How CPU limits throttle, how memory limits can lead to OOM kills, and when limits add nodes.",
+  h1: "What are Kubernetes resource limits?",
+  card: "A Kubernetes resource limit is the most CPU or memory a container may use.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "A resource limit in Kubernetes is the most CPU or memory a container may use. A CPU limit in Kubernetes caps its CPU time, and a memory limit caps its memory.",
+      text: "A Kubernetes resource limit is the most CPU or memory a container may use. Kubernetes applies it, and the node’s kernel enforces it.",
     },
   ],
   sections: [
     {
       id: "kubernetes-resource-limits-cpu-and-memory",
-      title: "Kubernetes CPU limits and memory limits",
+      title: "CPU and memory limits",
       blocks: [
-        { kind: "p", text: "On Linux, the kernel enforces each one differently:" },
         {
           kind: "ul",
           items: [
@@ -32,12 +31,12 @@ export const term: GlossaryTerm = {
               { a: "CPU throttling", href: "/learn/glossary/kubernetes-cpu-throttling" },
               ".",
             ],
-            "Over its memory limit, a container may get an out of memory (OOM) kill.",
-            "With no limit or default, a container can use any free CPU or memory on its node.",
+            "A container over its memory limit may be stopped by an out of memory (OOM) kill. The kernel acts when it detects memory pressure, so the kill may come later.",
+            "With no limit and no namespace default, a container can use all the free CPU or memory on its node.",
             [
-              "Set a limit with no ",
+              "Set a limit but no ",
               { a: "request", href: "/learn/glossary/kubernetes-resource-requests" },
-              ", and Kubernetes copies the limit into the request, unless a default request applies.",
+              ", and Kubernetes uses the limit as the request, unless a default request applies.",
             ],
           ],
         },
@@ -45,45 +44,46 @@ export const term: GlossaryTerm = {
     },
     {
       id: "an-example-from-the-kubernetes-docs",
-      title: "An example from the Kubernetes docs",
+      title: "Example",
       blocks: [
         {
           kind: "p",
-          text: "The docs’ frontend pod has two containers. Each requests 250m of CPU and 64\u00a0MiB of memory, with limits of 500m and 128\u00a0MiB.",
+          text: "The Kubernetes docs’ frontend pod has two containers. Each sets these requests and limits:",
         },
         {
           kind: "code",
           lang: "yaml",
           code: 'resources:\n  requests:\n    memory: "64Mi"\n    cpu: "250m"\n  limits:\n    memory: "128Mi"\n    cpu: "500m"',
         },
-        { kind: "p", text: "250m means 250 millicpu, a quarter of one CPU." },
+        {
+          kind: "p",
+          text: "250m is 250 millicpu, a quarter of one CPU. The pod’s limit is the sum of its containers’ limits: 1\u00a0CPU and 256\u00a0MiB.",
+        },
         { kind: "svg", figure: figure1 },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why resource limits matter for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "p",
-          text: "The scheduler places pods by their requests, not their limits. But when a limit becomes the request, tight limits can add nodes:",
+          text: "The scheduler places pods by their requests, not their limits. Limits still affect cost:",
         },
         {
           kind: "ul",
           items: [
-            "A tight CPU limit throttles the app.",
-            "A tight memory limit can lead to OOM kills.",
-            "Raising the limit to fix this raises the request, so fewer pods fit per node.",
+            "A limit set without a request becomes the request, so the scheduler counts the full limit.",
+            "Tight limits throttle the app or cause OOM kills, so teams raise them. If the limit is also the request, fewer pods fit on each node.",
           ],
         },
         {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " rebalances CPU and memory requests on AKS and EKS to match real use. Its built-in policies never reduce a regular pod’s limits. They keep an existing memory limit at least 1.5 times a raised request.",
+            " rebalances CPU and memory requests on AKS and EKS to match real use, so the same pods fit on fewer nodes. Its built-in policies never reduce a regular pod’s limits.",
           ],
         },
-        { kind: "p", text: "With requests that match use, the same pods fit on fewer nodes." },
       ],
     },
   ],
@@ -95,8 +95,13 @@ export const term: GlossaryTerm = {
     },
     {
       title: "Resource requests",
-      line: "The scheduler’s input.",
+      line: "What the scheduler places pods by.",
       href: "/learn/glossary/kubernetes-resource-requests",
+    },
+    {
+      title: "QoS class",
+      line: "The class a pod’s requests and limits give it.",
+      href: "/learn/glossary/kubernetes-qos-class",
     },
     {
       title: "Cluster utilization",
@@ -104,8 +109,8 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-cluster-utilization",
     },
   ],
-  relatedTitle: "Terms related to resource limits",
-  next: { title: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
+  relatedTitle: "Related terms",
+  next: { title: "Kubernetes requests vs limits", href: "/learn/kubernetes-pod-right-sizing" },
   sources: [
     {
       publisher: "Kubernetes",
@@ -116,6 +121,11 @@ export const term: GlossaryTerm = {
       publisher: "Kubernetes",
       title: "“Assign CPU Resources to Containers and Pods”",
       url: "https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource/",
+    },
+    {
+      publisher: "Kubernetes",
+      title: "“Assign Memory Resources to Containers and Pods”",
+      url: "https://kubernetes.io/docs/tasks/configure-pod-container/assign-memory-resource/",
     },
   ],
 };

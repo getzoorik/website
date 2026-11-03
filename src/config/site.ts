@@ -27,7 +27,7 @@ export const site = {
   /** The home page's description, which its card and its structured data repeat.
       It opens with the name, for the same reason as the title. */
   homeDescription:
-    "Zoorik is a cloud cost optimization company. Coral rebalances Kubernetes on AKS and EKS. Amoeba rightsizes Azure managed disks and Amazon EBS, autonomously.",
+    "Zoorik: cloud optimization for businesses. Coral rebalances Kubernetes and Amoeba rightsizes block storage on Azure and AWS, without any downtime.",
   /** The company sentence (owner, 1 Nov 2026, O12): the layout's description
       and the organisation's in the structured data. The home page's meta
       description is its own. */
@@ -142,7 +142,7 @@ export const routes = {
      Their old /compare and /learn addresses redirect. */
   compareCoralAlternatives: "/cloud-cost-optimization-library/coral-alternatives",
   compareAmoebaAlternatives: "/cloud-cost-optimization-library/amoeba-alternatives",
-  /* Value Lab by Zoorik: the case studies' hub, with what the studies saved so far and the featured study. The old
+  /* Value Lab: the case studies' hub, with what the studies saved so far and each study. The old
      /case-studies address redirects here. Not in the footer, which links each study: /learn's More from Zoorik and the
      sitemap lead here. */
   valueLab: "/value-lab",
@@ -498,7 +498,7 @@ export const navMenus: readonly NavMenu[] = [
     learn: {
       label: "Zoorik Learn",
       href: routes.learn,
-      line: "Cloud cost optimization guides for Kubernetes and block storage",
+      line: "Kubernetes, block storage and cloud cost guides",
     },
     open: {
       label: "Open source",

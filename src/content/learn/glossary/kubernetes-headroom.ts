@@ -5,31 +5,31 @@ export const term: GlossaryTerm = {
   slug: "kubernetes-headroom",
   term: "Headroom (Kubernetes)",
   title: "What is headroom in Kubernetes?",
-  meta: "Kubernetes headroom is spare node capacity you keep free so new pods start without waiting. See how placeholder pods hold it and how to size it against cost.",
+  meta: "Kubernetes headroom is spare node capacity kept free so new pods start at once. How placeholder pods hold it, and how much to keep.",
   h1: "What is headroom in Kubernetes?",
   card: "Kubernetes headroom is spare node capacity you keep free on purpose.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "Kubernetes headroom is spare node capacity you keep free on purpose. New pods start in it at once, not waiting in Pending for a new node. The Kubernetes docs call this node overprovisioning.",
+      text: "Kubernetes headroom is spare node capacity you keep free on purpose. New pods start in it at once, instead of waiting in Pending for a new node. The Kubernetes docs call it node overprovisioning.",
     },
     { kind: "svg", figure: figure1 },
   ],
   sections: [
     {
       id: "how-a-cluster-keeps-headroom",
-      title: "How a cluster keeps headroom",
+      title: "Placeholder pods",
       blocks: [
         {
           kind: "p",
           text: [
             "You hold the space with ",
             { a: "placeholder pods", href: "/learn/cluster-autoscaler-overprovisioning" },
-            " that do no work.",
+            " that do no work:",
           ],
         },
         {
@@ -38,46 +38,48 @@ export const term: GlossaryTerm = {
             [
               "Their ",
               { a: "requests", href: "/learn/glossary/kubernetes-resource-requests" },
-              " set the size: five pods of 0.1\u00a0CPU and 200\u00a0MiB hold 0.5\u00a0CPU and 1,000\u00a0MiB.",
+              " set the size. Five pods of 0.1\u00a0CPU and 200\u00a0MiB hold 0.5\u00a0CPU and 1,000\u00a0MiB.",
             ],
-            "Their priority is negative. So when a real pod can’t fit, Kubernetes removes one first.",
-            "The placeholder goes Pending. Your autoscaler then adds a node.",
-            "By default, Cluster Autoscaler adds no nodes for pods below priority -10. Use -10 with it, not the Kubernetes docs’ -1000.",
+            "They run at a negative priority. When a real pod can’t fit, Kubernetes evicts a placeholder first and the real pod takes its space.",
+            "The placeholder goes Pending, and your autoscaler adds a node for it.",
+            "By default, Cluster Autoscaler adds no nodes for pods below priority -10. So use -10 with it, not the -1000 in the Kubernetes docs’ example.",
           ],
         },
       ],
     },
     {
       id: "an-example-on-aws",
-      title: "How much headroom to keep: an AWS example",
+      title: "How much to keep",
       blocks: [
         {
           kind: "p",
-          text: "The Amazon EKS guide calls headroom a trade between speed and cost. In its example, you need a node every 30\u00a0seconds. EC2 takes 30\u00a0seconds to start one.",
+          text: "Headroom trades cost for speed. The Amazon EKS guide sizes it from how often you need a new node and how long one takes to start.",
         },
         {
           kind: "p",
-          text: "So one spare node saves 30\u00a0seconds of wait, for the cost of one extra EC2 instance. Comparing those two times tells you whether a spare node is worth its cost.",
+          text: "In its example, you need a node every 30\u00a0seconds and EC2 takes 30\u00a0seconds to start one. One spare node saves that 30\u00a0seconds of wait, for the cost of one extra EC2 instance.",
+        },
+        {
+          kind: "p",
+          text: "To let the scheduler pick the best zone, the guide suggests one spare node per availability zone.",
         },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why headroom matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            "Headroom in a Kubernetes cluster is capacity you pay for and keep empty. So your Kubernetes headroom policy is a cost choice.",
-            "Requests far above real use add nodes you never planned, since the scheduler places pods by requests.",
+            "Headroom is capacity you pay for and keep empty. How much you keep is a cost choice.",
             [
-              { a: "Coral", href: "/coral" },
-              " rebalances CPU and memory requests on AKS and EKS to match real use. Then the same pods fit on fewer nodes, and Coral removes the spare ones.",
+              { a: "Requests far above real use", href: "/learn/kubernetes-overprovisioning" },
+              " leave space empty that new pods can’t use. Since the scheduler places pods by requests, they add nodes you never planned.",
             ],
             [
-              "The ",
-              { a: "free assessment", href: "/assessment?p=coral" },
-              " works out your own figure.",
+              { a: "Coral", href: "/coral" },
+              " rebalances CPU and memory requests on AKS and EKS to match real use, so the same pods fit on fewer nodes. It removes the nodes you no longer need.",
             ],
           ],
         },
@@ -92,17 +94,18 @@ export const term: GlossaryTerm = {
     },
     {
       title: "Cluster utilization",
-      line: "Headroom sits unused.",
+      line: "How much of your nodes’ capacity pods request or use.",
       href: "/learn/glossary/kubernetes-cluster-utilization",
     },
     {
       title: "Node pool",
-      line: "The nodes your autoscaler grows for a waiting placeholder.",
+      line: "The nodes your autoscaler adds to.",
       href: "/learn/glossary/node-pool",
     },
   ],
+  relatedTitle: "Related terms",
   next: {
-    title: "Cluster Autoscaler overprovisioning with placeholder pods",
+    title: "Cluster Autoscaler overprovisioning",
     href: "/learn/cluster-autoscaler-overprovisioning",
   },
   sources: [

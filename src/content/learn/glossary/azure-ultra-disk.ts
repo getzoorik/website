@@ -5,13 +5,13 @@ export const term: GlossaryTerm = {
   slug: "azure-ultra-disk",
   term: "Ultra Disk (Azure)",
   title: "What is Azure Ultra Disk?",
-  meta: "Azure Ultra Disk, or Ultra SSD, is the fastest Azure managed disk. See its size and speed limits, what it can’t do, and the three meters and vCPU fee you pay.",
+  meta: "Azure Ultra Disk is the fastest Azure managed disk. Its limits, what it can’t do, and how its three meters and the vCPU reservation fee add up.",
   h1: "What is Azure Ultra Disk?",
   card: "Azure Ultra Disk is the highest-performing type of Azure managed disk.",
   group: "block-storage",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
@@ -26,39 +26,40 @@ export const term: GlossaryTerm = {
       ],
     },
     { kind: "svg", figure: figure1 },
-    { kind: "p", text: "Microsoft’s limits:" },
+    { kind: "p", text: "Microsoft’s limits for one disk:" },
     {
       kind: "ul",
       items: [
-        "sizes from 4\u00a0GiB to 64\u00a0TiB, in 1\u00a0GiB steps",
-        "up to 1,000\u00a0IOPS per GiB, and 400,000 per disk",
-        "up to 0.25\u00a0MB/s for each IOPS you set, and 10,000\u00a0MB/s per disk",
+        "Size: 4\u00a0GiB to 64\u00a0TiB, in 1\u00a0GiB steps.",
+        "IOPS: up to 1,000 per GiB, and 400,000 per disk.",
+        "Throughput: up to 0.25\u00a0MB/s per IOPS you set, and 10,000\u00a0MB/s per disk.",
       ],
     },
   ],
   sections: [
     {
       id: "a-database-that-needs-speed-more-than",
-      title: "A database that needs speed more than space",
+      title: "Example: a small, busy database",
       blocks: [
         {
           kind: "p",
           text: [
-            "Say a database holds 200\u00a0GiB but needs 150,000\u00a0IOPS. A 200\u00a0GiB Ultra Disk can reach 200,000\u00a0IOPS, if the VM’s limit allows it. One ",
+            "Say a database holds 200\u00a0GiB but needs 150,000\u00a0IOPS. A 200\u00a0GiB Ultra Disk can reach 200,000\u00a0IOPS, if the VM’s own limit allows it. One ",
             { a: "Premium SSD v2", href: "/learn/premium-ssd-v2-vs-premium-ssd" },
-            " stops at 80,000, and a Premium SSD at 20,000 base IOPS.",
+            " tops out at 80,000, and the largest Premium SSD at 20,000 base IOPS.",
           ],
         },
       ],
     },
     {
       id: "azure-ultra-disk-limitations",
-      title: "Azure Ultra Disk limitations",
+      title: "Limitations",
       blocks: [
         {
           kind: "ul",
           items: [
             "It works only as a data disk, never as the OS disk.",
+            "It can only be created as an empty disk.",
             "It’s locally redundant storage (LRS) only, with no zone-redundant storage (ZRS).",
             "It doesn’t support availability sets or disk caching.",
             "Only some regions and VM series support it.",
@@ -68,26 +69,22 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why Ultra Disk matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "p",
-          text: "An Ultra Disk is charged by the hour for the size, IOPS and throughput you set, not for the data or I/O you use. Three things change what you pay:",
+          text: "An Ultra Disk is charged by the hour for the size, IOPS and throughput you set, not for the data or I/O you use.",
         },
         {
           kind: "ul",
           items: [
-            "You can change its performance up to four times in 24\u00a0hours, without detaching the disk. Each change can take up to an hour.",
-            "A VM with Ultra Disk compatibility on but no Ultra Disk attached pays a reservation fee per virtual CPU.",
-            "Azure’s one-year disk reservations don’t cover Ultra Disk.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "The ",
-            { a: "free assessment", href: "/assessment?p=amoeba" },
-            " works out what your disks could save.",
+            "You can change its IOPS and throughput up to four times in 24\u00a0hours, without detaching the disk. Each change can take up to an hour.",
+            "A VM with Ultra Disk compatibility on, but no Ultra Disk attached, pays a reservation fee per virtual CPU (vCPU).",
+            [
+              "Azure ",
+              { a: "disk reservations", href: "/learn/azure-disk-reservations" },
+              " cover Premium SSD P30 to P80, not Ultra Disk.",
+            ],
           ],
         },
       ],
@@ -111,9 +108,9 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/azure-premium-ssd",
     },
   ],
-  relatedTitle: "Terms related to Azure Ultra Disk",
+  relatedTitle: "Related terms",
   next: {
-    title: "Premium SSD v2 vs Premium SSD: which one costs less?",
+    title: "Premium SSD v2 vs Premium SSD",
     href: "/learn/premium-ssd-v2-vs-premium-ssd",
   },
   sources: [

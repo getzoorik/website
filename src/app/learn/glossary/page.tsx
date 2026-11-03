@@ -11,7 +11,7 @@ import "@/styles/learn.css";
 /**
  * `/learn/glossary`: the glossary's hub, every term by its group. Indexed, listed in the sitemap, prerendered at build,
  * with its own share card. Its title goes through the layout's template: "Cloud computing terms: a cloud cost glossary
- * | Zoorik"; the h1 is the same words.
+ * | Zoorik"; the h1 is its first words, "Cloud computing terms".
  */
 export const metadata: Metadata = documentMetadata(glossaryPage.path, glossaryPage.meta);
 

@@ -26,7 +26,7 @@ describe("/trust", () => {
   it("is titled, described and canonicalised as its draft, with its own card", () => {
     expect(metadata.title).toBe("Trust center");
     expect(metadata.description).toBe(
-      "Coral's security overview, our data processing agreement and our sub-processors: what runs in your cluster, what leaves it, and how we protect it.",
+      "Coral's security overview, data processing agreement (DPA) and sub-processors, for the security and legal teams that review a Coral pilot.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/trust" });
     expect(metadata.openGraph).toMatchObject({
@@ -50,17 +50,17 @@ describe("/trust", () => {
     ]);
     expect(parts).toEqual([
       ["#in-your-cluster", "What runs in your cluster"],
-      ["#data", "What leaves your cluster, and what never does"],
+      ["#data", "What leaves your cluster"],
       ["#access", "Access and permissions"],
       ["#sign-in", "Sign-in and data separation"],
-      ["#storage", "Data storage and deletion"],
+      ["#storage", "Storage and deletion"],
       ["#report", "Report a security issue"],
     ]);
     for (const [href] of parts) expect(root.querySelector(`h3${href}`), href!).not.toBeNull();
     expect(root.querySelectorAll("details.doc-toc ol.rl-sub a")).toHaveLength(6);
     const column = root.querySelector("article.doc-main")!;
-    expect(text(column.querySelector(":scope > p.doc-updated"))).toBe("Updated 1 November 2026");
-    expect(trustUpdated).toBe("Updated 1 November 2026");
+    expect(text(column.querySelector(":scope > p.doc-updated"))).toBe("Updated 3 November 2026");
+    expect(trustUpdated).toBe("Updated 3 November 2026");
     const sections = [...column.querySelectorAll(".pp-prose.tr-prose > section")];
     expect(
       sections.map((s) => [s.id, s.getAttribute("aria-labelledby"), text(s.querySelector("h2"))]),

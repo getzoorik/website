@@ -50,11 +50,11 @@ describe("social cards", () => {
     const coral = pages["/coral"].openGraph as Record<string, unknown>;
     expect(amoeba.title).toBe("Amoeba: Block storage optimization | Zoorik");
     expect(amoeba.description).toBe(
-      "Block storage optimization: Amoeba rightsizes Azure managed disks and Amazon EBS to your data, autonomously, without any downtime after the one switch.",
+      "Amoeba rightsizes Azure managed disks and Amazon EBS volumes on Windows and Linux VMs to your data, autonomously and without any downtime.",
     );
     expect(coral.title).toBe("Coral: Kubernetes optimization | Zoorik");
     expect(coral.description).toBe(
-      "Kubernetes optimization platform for AKS and EKS. Coral rebalances requests and nodes to reduce your cloud cost, autonomously, without any downtime.",
+      "Coral rebalances pod requests and removes spare nodes on AKS and EKS to reduce Kubernetes cost, autonomously and without any downtime.",
     );
     /* No page of its own: the X card is the layout's, filled from openGraph. */
     expect(pages["/amoeba"]).not.toHaveProperty("twitter");

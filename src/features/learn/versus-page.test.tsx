@@ -323,23 +323,20 @@ describe.each(versusPages.map((entry) => [entry.slug, entry] as const))("%s", (_
   });
 });
 
-/**
- * Each newer page's question rows' ids, as its mock writes them (`sectionSlug`: the question's first seven words). The
- * 2 Nov 2026 plan drops two questions from each, whose answers repeated a section above.
- */
+/** Each newer page's question rows' ids (`sectionSlug`: the question's first seven words). */
 const questionIds: Readonly<Record<string, readonly string[]>> = {
   "coral-vs-azure-advisor": [
     "what-is-azure-advisor",
     "is-azure-advisor-free",
     "are-advisors-saving-figures-exact",
-    "how-do-you-see-what-coral-would",
+    "how-much-would-coral-save-on-aks",
   ],
   "coral-vs-aws-compute-optimizer": [
     "what-is-aws-compute-optimizer",
     "is-aws-compute-optimizer-free",
     "does-coral-change-eks-managed-node-groups",
     "can-coral-move-eks-nodes-to-cheaper",
-    "how-do-you-see-what-coral-would",
+    "how-much-would-coral-save-on-eks",
   ],
 };
 
@@ -347,12 +344,12 @@ const questionIds: Readonly<Record<string, readonly string[]>> = {
 const blockTag = { p: "P", ul: "UL", ol: "OL", h3: "H3", table: "TABLE", links: "ASIDE" } as const;
 
 describe("the template's optional parts", () => {
-  it("are printed by the two pages of 1 Nov 2026 only, each checked and carded that day, changed on 2 Nov", () => {
+  it("are printed by the two pages of 1 Nov 2026 only, each checked and carded that day, changed on 3 Nov", () => {
     const newer = versusPages.filter((entry) => entry.sections);
     expect(newer.map((entry) => entry.slug)).toEqual(Object.keys(questionIds));
     for (const entry of newer) {
       expect(entry.checked, entry.slug).toBe("1 November 2026");
-      expect(entry.lastUpdated, entry.slug).toBe("2 November 2026");
+      expect(entry.lastUpdated, entry.slug).toBe("3 November 2026");
       expect(entry.card, entry.slug).toBe(true);
       expect([entry.short, entry.questions, entry.sources, entry.readMore]).not.toContain(
         undefined,
@@ -397,9 +394,9 @@ describe("the template's optional parts", () => {
     const frame = root.querySelector("main > div.sec.doc-body")!;
     expect(
       [...frame.querySelectorAll("nav.fq-chips a")].map((a) => [a.getAttribute("href"), text(a)]),
-    ).toEqual([["#questions", `Questions about ${name} and Coral`]]);
+    ).toEqual([["#questions", "Questions"]]);
     const section = frame.querySelector("section.fq-sec.pr-faq#questions")!;
-    expect(text(section.querySelector("h2#questions-h"))).toBe(`Questions about ${name} and Coral`);
+    expect(text(section.querySelector("h2#questions-h"))).toBe("Questions");
     const rows = [...section.querySelectorAll(".fq-list > details.fq")];
     const id = name.toLowerCase();
     expect(rows.map((row) => row.id)).toEqual([

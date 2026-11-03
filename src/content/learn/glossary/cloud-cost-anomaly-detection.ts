@@ -4,14 +4,14 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/cloud-cost-
 export const term: GlossaryTerm = {
   slug: "cloud-cost-anomaly-detection",
   term: "Cloud cost anomaly detection",
-  title: "AWS cost anomaly detection, and how Azure compares",
-  meta: "Cloud cost anomaly detection learns your normal cloud cost and flags sudden jumps. See how AWS anomaly detection and Azure find them, and what both miss.",
-  h1: "AWS cost anomaly detection, and how Azure compares",
+  title: "Cost anomaly detection on AWS and Azure",
+  meta: "Cost anomaly detection learns your normal cloud cost and flags sudden changes. How AWS Cost Anomaly Detection and Azure find them, and what they miss.",
+  h1: "Cost anomaly detection on AWS and Azure",
   card: "Cloud cost anomaly detection is an automated check that learns your normal cloud cost and flags sudden changes.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
@@ -19,57 +19,83 @@ export const term: GlossaryTerm = {
     },
     {
       kind: "p",
-      text: "AWS Cost Anomaly Detection is AWS’s own service for it, and Microsoft Cost Management runs the same kind of check for Azure.",
+      text: "On AWS, the service is AWS Cost Anomaly Detection. On Azure, Microsoft Cost Management runs the check for each subscription.",
     },
   ],
   sections: [
     {
       id: "what-is-a-cost-anomaly-in-aws",
-      title: "What is a cost anomaly in AWS and Azure?",
+      title: "AWS and Azure compared",
       blocks: [
         {
-          kind: "ul",
-          items: [
-            "AWS uses machine learning to mark cost as unusual, allowing for weekly or monthly patterns and natural growth.",
-            "AWS checks about three times a day; detection can take up to 24\u00a0hours.",
-            "AWS needs 10\u00a0days of history for a newly used service.",
-            "Azure checks each subscription 36\u00a0hours after the day ends (UTC). It compares the day’s total with a forecast from the last 60\u00a0days.",
+          kind: "table",
+          columns: [
+            { label: "", width: "22%" },
+            { label: "AWS", width: "39%" },
+            { label: "Azure", width: "39%" },
+          ],
+          rows: [
+            [
+              "How it judges",
+              "Machine learning that allows for weekly or monthly patterns and natural growth",
+              "Compares each day’s total with its forecast for that day",
+            ],
+            [
+              "When it runs",
+              "About three times a day. Detection can take up to 24\u00a0hours.",
+              "Once a day, 36\u00a0hours after the day ends (UTC)",
+            ],
+            [
+              "History",
+              "Needs 10\u00a0days for a newly used service",
+              "Learns from the last 60\u00a0days",
+            ],
+            [
+              "Scope",
+              "All services, or chosen accounts, cost allocation tags or cost categories",
+              "One subscription",
+            ],
+            ["Alerts", "Email or an Amazon SNS topic", "Email, sent once when it’s found"],
           ],
         },
       ],
     },
     {
       id: "an-example-a-costlier-gateway",
-      title: "An example: a costlier gateway",
+      title: "Example: a costlier gateway",
       blocks: [
         {
           kind: "p",
-          text: "In Microsoft’s 2021 example, a resource group cost about $4.56 a day.",
+          text: "In Microsoft’s 2021 example, a resource group cost about $4.56 a day. On 30 June, its VPN gateway’s VpnGw1 charge stopped and a costlier VpnGw3 charge started.",
         },
         {
           kind: "p",
-          text: "On 30 June, a VpnGw1 charge on its virtual private network gateway stopped. A costlier VpnGw3 charge started. Daily cost rose to $20.68 that day and $30.22 from 1 July.",
+          text: "Daily cost rose to $20.68 that day and $30.22 from 1 July. A change in the middle of a day shows in full only the next day.",
         },
         { kind: "svg", figure: figure1 },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why anomaly detection matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            "An email alert flags a sudden jump within days. If it wasn’t planned, you catch it early.",
-            "Detection misses steady overprovisioning, such as a virtual machine oversized from day one. That cost is part of the normal it learns.",
+            "An alert flags a sudden jump within days. If it wasn’t planned, you catch it early.",
+            "Detection misses steady extra cost, such as a virtual machine oversized from day one. That cost is part of the normal it learns.",
             [
               { a: "Cloud cost optimization", href: "/cloud-cost-optimization" },
-              " finds it by comparing what you run with its use.",
+              " finds it by comparing what you run with what it uses. ",
+              { a: "Coral", href: "/coral" },
+              " rebalances Kubernetes requests to match real use, and ",
+              { a: "Amoeba", href: "/amoeba" },
+              " rightsizes block storage.",
             ],
             [
-              "Our library lists FinOps tools and other ",
+              "Our library lists ",
               { a: "cloud cost optimization tools", href: "/cloud-cost-optimization-library" },
-              ", with what each one does.",
+              " and what each one does.",
             ],
           ],
         },
@@ -90,13 +116,13 @@ export const term: GlossaryTerm = {
     },
     {
       title: "Rightsizing",
-      line: "Fixes the steady extra size alerts miss.",
+      line: "Fixes the steady extra cost alerts miss.",
       href: "/learn/glossary/rightsizing",
     },
   ],
-  relatedTitle: "Terms related to anomaly detection",
+  relatedTitle: "Related terms",
   next: {
-    title: "Cloud cost optimization: how to reduce cloud costs",
+    title: "Cloud cost optimization",
     href: "/cloud-cost-optimization",
   },
   sources: [

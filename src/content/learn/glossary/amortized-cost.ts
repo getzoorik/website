@@ -4,85 +4,100 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/amortized-c
 export const term: GlossaryTerm = {
   slug: "amortized-cost",
   term: "Amortized cost (cloud cost view)",
-  title: "What is amortized cost in Azure and AWS?",
-  meta: "Amortized cost meaning: Azure amortized cost spreads each reservation or savings plan over its term. See amortized vs actual cost, and AWS net amortized cost.",
-  h1: "What is amortized cost in Azure and AWS?",
-  card: "Amortized cost spreads each commitment fee, such as a reservation’s upfront or monthly fee, over the period it covers.",
+  title: "What is amortized cost?",
+  meta: "Amortized cost spreads reservation and savings plan fees over the days they cover. How it differs from actual cost in Azure and unblended cost in AWS.",
+  h1: "What is amortized cost?",
+  card: "In cloud cost reports, amortized cost spreads a reservation or savings plan fee over the days it covers.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "Amortized cost spreads each commitment fee, such as a reservation’s upfront or monthly fee, over the period it covers. Each fee shows as a daily rate, not on the day you pay.",
+      text: [
+        "In cloud cost reports, amortized cost spreads a ",
+        { a: "reservation", href: "/learn/glossary/reserved-instance" },
+        " or ",
+        { a: "savings plan", href: "/learn/glossary/savings-plan" },
+        " fee over the days it covers. You see a daily rate instead of one charge on the day you pay.",
+      ],
     },
     {
       kind: "p",
       text: [
-        "In Azure, it’s a Microsoft Cost Management view that spreads only ",
-        { a: "reservation", href: "/learn/glossary/reserved-instance" },
-        " and ",
-        { a: "savings plan", href: "/learn/glossary/savings-plan" },
-        " purchases, not Azure Marketplace ones. Actual cost, the default view, shows each purchase when it’s charged.",
+        "By default, both clouds show each charge on the day it’s made. Azure calls this actual cost, and AWS calls it ",
+        { a: "unblended cost", href: "/learn/glossary/blended-vs-unblended-cost" },
+        ". AWS describes unblended cost as a cash basis and amortized cost as an accrual basis.",
       ],
     },
   ],
   sections: [
     {
       id: "amortized-cost-vs-actual-cost-an-example",
-      title: "Amortized cost vs actual cost: an example",
+      title: "Amortized vs actual cost",
       blocks: [
         {
           kind: "p",
-          text: "Microsoft’s example is a $365 one-year reservation bought on January 1.",
+          text: "Microsoft’s example is a $365 one-year reservation bought on January 1:",
         },
         {
           kind: "ul",
           items: [
             "Actual cost: one $365 charge on January 1.",
-            "Amortized cost: $1.00 a day until December 31.",
-            "Two virtual machines share it: two $0.50 charges each day.",
-            "Only one uses it: the other $0.50 shows as UnusedReservation.",
+            "Amortized cost: $1.00 a day from January 1 to December 31.",
+            "Two virtual machines (VMs) share it: two $0.50 charges each day.",
+            "Only one VM uses it: $0.50 for that VM and $0.50 as UnusedReservation.",
           ],
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
-          text: "So the amortized view charges each day’s share to the resources that used it. Only this view shows the unused part, as UnusedReservation or UnusedSavingsPlan.",
+          text: "An upfront payment is spread over the whole term. A monthly payment is spread over the days of its month.",
+        },
+        {
+          kind: "p",
+          text: "In Azure, amortization covers only reservation and savings plan purchases, not Azure Marketplace ones. Unused commitment shows only in amortized cost, as UnusedReservation or UnusedSavingsPlan.",
         },
       ],
     },
     {
       id: "what-is-amortized-cost-in-aws",
-      title: "What is amortized cost in AWS? Unblended vs net amortized cost",
+      title: "Amortized cost in AWS",
       blocks: [
         {
           kind: "p",
-          text: "Amortized cost vs unblended cost in AWS Cost Explorer comes down to when commitment fees show.",
+          text: "These three AWS Cost Explorer views differ in when commitment fees show:",
         },
         {
           kind: "ul",
           items: [
-            "Unblended cost: each cost when you’re charged, so reservation fees show as a spike.",
-            "Amortized cost: unblended cost, with upfront and monthly fees spread as a daily rate.",
+            "Unblended cost: each charge on the day it’s made, so reservation fees show as a spike.",
+            "Amortized cost: unblended cost, with upfront and monthly reservation fees spread as an effective daily rate.",
             "Net amortized cost: amortized cost after discounts, such as Reserved Instance volume discounts.",
           ],
         },
-        { kind: "p", text: "To see a reservation’s unused part, group by purchase option." },
+        {
+          kind: "p",
+          text: "To see how much of a reservation went unused, group by purchase option.",
+        },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why amortized cost matters",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
             "Neither view changes what you pay, only when and where each cost shows.",
-            "A purchase month usually looks smaller in amortized cost, and later months look bigger.",
-            "With purchase spikes flattened, other cost changes are easier to spot.",
-            "An unused line is commitment you paid for but didn’t use.",
+            "Use actual cost to check your invoice. Use amortized cost to spot changes, with purchase spikes flattened.",
+            "After an upfront purchase, that month looks smaller in amortized cost, and the months after it look bigger.",
+            [
+              "Amortized cost assigns each day’s share to the resources that used it, which suits ",
+              { a: "chargeback", href: "/learn/glossary/cloud-chargeback" },
+              ".",
+            ],
           ],
         },
       ],
@@ -91,13 +106,13 @@ export const term: GlossaryTerm = {
   related: [
     {
       title: "Reserved instance",
-      line: "The commitment being spread.",
+      line: "A commitment amortized cost spreads.",
       href: "/learn/glossary/reserved-instance",
     },
     { title: "Savings plan", line: "Spread the same way.", href: "/learn/glossary/savings-plan" },
     {
       title: "Blended vs unblended cost",
-      line: "The other AWS views.",
+      line: "The other AWS cost views.",
       href: "/learn/glossary/blended-vs-unblended-cost",
     },
     {
@@ -106,8 +121,9 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/savings-plan-coverage-vs-utilization",
     },
   ],
+  relatedTitle: "Related terms",
   next: {
-    title: "Cloud cost optimization: how to reduce cloud costs",
+    title: "Cloud cost optimization",
     href: "/cloud-cost-optimization",
   },
   sources: [

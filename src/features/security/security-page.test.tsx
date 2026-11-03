@@ -36,7 +36,7 @@ describe("/security", () => {
     expect(root.querySelectorAll("h1")).toHaveLength(1);
     expect(text(root.querySelector("h1"))).toBe("Security and data handling");
     expect(text(root.querySelector(".doc-deck"))).toBe(
-      "What each product may change, what it sends us, and where we keep it.",
+      "What Coral and Amoeba can change, what they send us, and where we keep it.",
     );
     expect(root.querySelector("a.skip")).toHaveAttribute("href", "#main");
     expect(root.querySelectorAll("main#main")).toHaveLength(1);
@@ -46,8 +46,8 @@ describe("/security", () => {
   it("keeps the Updated line and the summary open over the rows", () => {
     const root = page();
     const top = root.querySelector("article.gd-main > .fq-upd.gd-top > .pp-prose")!;
-    /* 30 Oct 2026: the Trust center's link in Report a security issue moved the day. */
-    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 2 November 2026");
+    /* 3 Nov 2026: the zero-noise rewrite moved the day. */
+    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 3 November 2026");
     const summary = top.querySelector("#summary")!;
     expect(text(summary.querySelector(".sc-sum-t"))).toBe("Summary");
     expect([...summary.querySelectorAll("dt")].map(text)).toEqual([
@@ -79,10 +79,10 @@ describe("/security", () => {
     expect(rows.map((row) => text(row.querySelector("summary h3")))).toEqual([
       "Coral in your cluster",
       "Coral permissions",
-      "What leaves a Coral cluster",
+      "What Coral sends us",
       "Amoeba on your VMs",
       "Amoeba permissions",
-      "What leaves a VM",
+      "What Amoeba sends us",
       "What Amoeba deletes",
       "Sign-in and access",
       "Where data is kept",
@@ -135,12 +135,13 @@ describe("/security", () => {
     );
   });
 
-  it("links out to the guide, the legal pages and the Trust center, and nowhere else", () => {
+  it("links out to the Helm install, the guide, the legal pages and the Trust center, and nowhere else", () => {
     const links = [...page().querySelectorAll("article.gd-main a")].filter(
       (a) => !a.closest(".fq-chips"),
     );
     expect(links.map((a) => [text(a), a.getAttribute("href")])).toEqual([
       ["founders@zoorik.com", "mailto:founders@zoorik.com"],
+      ["Helm chart", "/docs/install-coral-with-helm"],
       ["What connect asks to change", "/coral-guide#what-connect-asks-to-change"],
       ["Every retention period", "/privacy#retention"],
       ["privacy policy", "/privacy#sharing"],

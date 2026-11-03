@@ -4,104 +4,107 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/cloud-tco/1
 export const term: GlossaryTerm = {
   slug: "cloud-tco",
   term: "Cloud TCO (total cost of ownership)",
-  title: "What is cloud total cost of ownership (TCO)?",
-  meta: "Cloud TCO, or TCO in cloud computing, is a workload’s full cost over several years. See what total cost of ownership counts, and cloud vs on-premises TCO.",
-  h1: "What is cloud total cost of ownership (TCO)?",
-  card: "Cloud total cost of ownership (TCO) is the full cost of a workload in the cloud over several years.",
+  title: "What is TCO (total cost of ownership)?",
+  meta: "TCO means total cost of ownership: the full cost of an IT system over its life. What cloud TCO counts, and how cloud and on-premises TCO compare.",
+  h1: "What is TCO (total cost of ownership)?",
+  card: "TCO, short for total cost of ownership, is the full cost of an IT system over its whole life, not just its price.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "Cloud total cost of ownership (TCO) is the full cost of a workload in the cloud over several years. It counts more than your monthly cloud charges. You use it to compare the cloud with on premises.",
+      text: "TCO, short for total cost of ownership, is the full cost of an IT system over its whole life, not just its price. Cloud TCO is that cost for a workload in the cloud over several years, set against running it on premises.",
     },
   ],
   sections: [
     {
       id: "tco-meaning-in-cloud-computing",
-      title: "TCO meaning in cloud computing",
+      title: "What TCO counts",
       blocks: [
         {
           kind: "p",
-          text: "Microsoft defines TCO as a financial estimate of the economic impact of an IT project over its whole life cycle.",
-        },
-        {
-          kind: "p",
-          text: "For cloud computing TCO, Microsoft’s Azure Migrate tool totals a yearly cost in seven groups, on premises and in Azure:",
+          text: "Microsoft defines TCO as a financial estimate of the economic impact of an IT project over its whole life cycle. Its Azure Migrate tool works out a yearly cost in seven groups, on premises and in Azure:",
         },
         {
           kind: "ul",
           items: [
-            "compute (servers or VMs, and their licenses)",
-            "storage",
-            "network",
-            "security",
-            "facilities (datacenter lease and power, on premises only)",
-            "labor (IT admin time)",
-            "management (monitoring, patching and backup)",
+            "Compute: servers or VMs, and their licenses",
+            "Storage",
+            "Network",
+            "Security",
+            "Facilities: datacenter lease and power, on premises only",
+            "Labor: IT admin time",
+            "Management: monitoring, patching and backup",
           ],
         },
         { kind: "svg", figure: figure1 },
         {
-          kind: "h3",
-          id: "how-azure-migrate-works-out-azure-tco",
-          title: "How Azure Migrate works out Azure TCO",
-        },
-        {
           kind: "p",
-          text: "Azure Migrate spreads the cost of on-premises server and storage hardware over a 4-year life.",
+          text: "On premises, Azure Migrate spreads the cost of server and storage hardware over a 4-year life.",
         },
       ],
     },
     {
       id: "total-cost-of-ownership-cloud-vs-on",
-      title: "Total cost of ownership: cloud vs on premises",
+      title: "Cloud vs on-premises TCO",
       blocks: [
         {
           kind: "p",
-          text: "On premises, you buy servers up front. In the cloud, you pay monthly instead.",
+          text: "On premises, you buy servers up front. In the cloud, you pay as you use.",
         },
-        { kind: "h3", id: "the-economics-of-the-cloud", title: "The economics of the cloud" },
+        { kind: "h3", id: "the-economics-of-the-cloud", title: "Cloud economics" },
         {
           kind: "p",
-          text: "In cloud computing economics, AWS lists six advantages. The first is trading fixed expense for variable expense: you pay only for what you consume.",
-        },
-        {
-          kind: "p",
-          text: "Two more shape cloud economics: economies of scale from usage pooled across many customers, and no need to guess capacity. You scale up and down as needed.",
-        },
-        {
-          kind: "h3",
-          id: "cloud-cost-models",
-          title: "Cloud cost models: on-demand, reserved, savings plans and spot",
+          text: "AWS lists six advantages of cloud computing. Three of them shape TCO:",
         },
         {
           kind: "ul",
           items: [
-            "EC2 On-Demand Instances, paid by the second for the instances you launch.",
-            "Savings Plans, a set amount of usage in USD per hour, committed for 1 or 3 years.",
-            "Reserved Instances, one instance configuration, committed for 1 or 3 years.",
-            "Spot Instances, unused EC2 capacity that can be interrupted.",
+            "Trade fixed expense for variable expense: pay only for what you consume.",
+            "Economies of scale: usage pooled across many customers reduces pay-as-you-go prices.",
+            "Stop guessing capacity: scale up and down as needed.",
+          ],
+        },
+        { kind: "h3", id: "cloud-cost-models", title: "Pricing models" },
+        { kind: "p", text: "On AWS, EC2 offers several ways to pay, including:" },
+        {
+          kind: "ul",
+          items: [
+            [
+              { a: "On-Demand Instances", href: "/learn/glossary/on-demand-instance" },
+              ": paid by the second for the instances you launch.",
+            ],
+            [
+              { a: "Savings Plans", href: "/learn/glossary/savings-plan" },
+              ": a set amount of usage, in USD per hour, for 1 or 3 years.",
+            ],
+            [
+              { a: "Reserved Instances", href: "/learn/glossary/reserved-instance" },
+              ": one instance configuration, such as type and Region, for 1 or 3 years.",
+            ],
+            [
+              { a: "Spot Instances", href: "/learn/glossary/spot-instance" },
+              ": unused EC2 capacity that can be interrupted.",
+            ],
           ],
         },
         {
           kind: "h3",
           id: "cloud-migration-cost-and-other-costs",
-          title: "Cloud migration cost and other costs to count",
+          title: "Other costs to count",
         },
-        { kind: "p", text: "A fair comparison also counts:" },
         {
           kind: "ul",
           items: [
-            "Migration, which AWS lists beside on-premises and new AWS costs.",
-            "Paying for both while you move. Azure Migrate’s docs show 20% moved by year 1, 50% by year 2 and all by year 3. You set the pace.",
+            "The migration itself, which AWS counts beside on-premises and new AWS costs.",
+            "Paying for both while you move. Azure Migrate assumes 20% moved by year 1, 50% by year 2 and all by year 3, unless you set your own pace.",
             "Staff time for operations and management, which AWS says to factor into TCO.",
             [
               "Leaving later, which can mean ",
               { a: "egress", href: "/learn/glossary/egress-cost" },
-              " fees. AWS waives data transfer out to the internet for eligible customers moving all their data off AWS, once AWS Support approves.",
+              " fees. AWS offers free data transfer out to the internet to eligible customers moving all their data off AWS, on request to AWS Support.",
             ],
           ],
         },
@@ -109,14 +112,23 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why TCO matters for your cloud cost",
+      title: "Why it matters for cost",
       blocks: [
         {
           kind: "p",
           text: [
-            "Comparing only prices leaves out power, staff time and the move. After the move, ",
+            "Comparing only prices leaves out power, staff time and the move. Once you run in the cloud, ",
             { a: "cloud cost optimization", href: "/cloud-cost-optimization" },
             " reduces the cloud part of your TCO.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            { a: "Coral", href: "/coral" },
+            " rebalances AKS and EKS clusters onto fewer nodes, and ",
+            { a: "Amoeba", href: "/amoeba" },
+            " rightsizes block storage on Azure and AWS.",
           ],
         },
       ],
@@ -125,7 +137,7 @@ export const term: GlossaryTerm = {
   related: [
     {
       title: "Cloud unit economics",
-      line: "The cost of one sale or one user.",
+      line: "The cloud cost of one sale or one user.",
       href: "/learn/glossary/cloud-unit-economics",
     },
     {
@@ -140,9 +152,9 @@ export const term: GlossaryTerm = {
     },
     { title: "FinOps", line: "Shared ownership of cloud cost.", href: "/learn/glossary/finops" },
   ],
-  relatedTitle: "Cloud cost terms related to TCO",
+  relatedTitle: "Related terms",
   next: {
-    title: "Cloud cost optimization: how to reduce cloud costs",
+    title: "Cloud cost optimization",
     href: "/cloud-cost-optimization",
   },
   sources: [

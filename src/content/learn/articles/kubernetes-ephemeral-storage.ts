@@ -3,32 +3,35 @@ import { figure as figure1 } from "@/features/learn/figures/kubernetes-ephemeral
 
 export const article: Article = {
   slug: "kubernetes-ephemeral-storage",
-  title: "Kubernetes ephemeral storage: limits and eviction",
-  meta: "How Kubernetes ephemeral storage requests and limits work, and how to fix “The node was low on resource: ephemeral-storage” evictions on AKS and EKS.",
-  h1: "Kubernetes ephemeral storage: requests, limits and eviction",
-  deck: "Requests place pods, a limit caps each one, and a node low on disk evicts pods over their requests first.",
-  card: "What counts as ephemeral storage, how requests and limits work, and how to fix ephemeral-storage evictions.",
+  title: "The node was low on resource: ephemeral-storage",
+  meta: "Why Kubernetes evicts pods with “The node was low on resource: ephemeral-storage”, and how to fix it with requests, limits and node disk size.",
+  h1: "The node was low on resource: ephemeral-storage",
+  deck: "What Kubernetes ephemeral storage is, how requests and limits work, and how to fix this eviction.",
+  card: "What ephemeral storage is, how requests and limits work, and how to fix ephemeral-storage evictions.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes storage",
   published: "2026-11-02",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "zoorik",
   cover: "/learn-covers/zoorik-learn-kubernetes-ephemeral-storage-1200x630.webp",
   coverAlt:
     "Kubernetes ephemeral storage: images, logs and emptyDir fill a disk; below 10% free the kubelet frees space, then evicts pods",
-  short:
-    "In Kubernetes, ephemeral storage is node disk used by writable layers, logs and emptyDir volumes. Each container can set a request and a limit on it.",
+  short: [
+    "Ephemeral storage is the node disk pods use for container writable layers, logs and ",
+    { code: "emptyDir" },
+    " volumes. When that disk runs low, the kubelet evicts pods with “The node was low on resource: ephemeral-storage”, starting with pods using more than they request. Set ephemeral-storage requests and limits, move large files off the writable layer, or give nodes a bigger disk.",
+  ],
   sections: [
     {
       id: "what-counts-as-kubernetes-ephemeral-storage",
-      title: "What counts as Kubernetes ephemeral storage",
+      title: "What counts as ephemeral storage",
       blocks: [
         {
           kind: "p",
-          text: "Local ephemeral storage is the node’s own writable storage: its locally attached disks or, sometimes, RAM. “Ephemeral” means there’s no long-term promise that the data lasts. Pods use it for scratch space, caches and logs.",
+          text: "Local ephemeral storage is the node’s own writable storage: its local disks or, sometimes, RAM. “Ephemeral” means there’s no long-term promise that the data lasts. Pods use it for scratch space, caches and logs.",
         },
-        { kind: "p", text: "The kubelet measures three things for each pod:" },
+        { kind: "p", text: "The kubelet counts three things against each pod:" },
         {
           kind: "ul",
           items: [
@@ -52,35 +55,34 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "In the simplest layout, all of it shares one filesystem. That’s typically the root filesystem, which holds ",
+            "Usually all of it shares the root filesystem, which holds ",
             { code: "/var/lib/kubelet" },
             " and ",
             { code: "/var/log" },
-            ". A container runtime can keep images and writable layers on a second one.",
+            ". A container runtime can keep images and writable layers on a second filesystem.",
           ],
         },
         {
           kind: "callout",
           label: "For engineers",
           text: [
-            "The eviction docs call these filesystems ",
+            "The eviction docs name these filesystems ",
             { code: "nodefs" },
             ", ",
             { code: "imagefs" },
             " and ",
             { code: "containerfs" },
-            ". The names don’t always mean separate mounts. On a node with one filesystem, all three name the same one.",
+            ". They aren’t always separate mounts. On a node with one filesystem, all three name the same one.",
           ],
         },
         {
           kind: "h3",
           id: "which-ephemeral-volume-types-count",
-          title: "Which ephemeral volume types count",
+          title: "Which volume types count",
         },
         {
           kind: "p",
           text: [
-            "An ephemeral volume lives and dies with its pod. ",
             { code: "emptyDir" },
             ", ",
             { code: "configMap" },
@@ -88,7 +90,7 @@ export const article: Article = {
             { code: "downwardAPI" },
             " and ",
             { code: "secret" },
-            " volumes come from the node’s local ephemeral storage, and the kubelet manages them.",
+            " volumes come from the node’s local ephemeral storage, and the kubelet manages them. Each lives and dies with its pod.",
           ],
         },
         {
@@ -106,7 +108,7 @@ export const article: Article = {
     },
     {
       id: "setting-kubernetes-ephemeral-storage-limits-and-requests",
-      title: "Setting Kubernetes ephemeral storage limits and requests",
+      title: "Requests and limits",
       blocks: [
         {
           kind: "p",
@@ -115,7 +117,7 @@ export const article: Article = {
             { code: "resources.requests.ephemeral-storage" },
             " and ",
             { code: "resources.limits.ephemeral-storage" },
-            ". Both are byte quantities, with suffixes such as ",
+            ", in bytes with suffixes such as ",
             { code: "Mi" },
             " and ",
             { code: "Gi" },
@@ -126,7 +128,7 @@ export const article: Article = {
             ".",
           ],
         },
-        { kind: "p", text: "Here is the Kubernetes docs’ example, trimmed to one container:" },
+        { kind: "p", text: "The Kubernetes docs’ example, trimmed to one container:" },
         {
           kind: "code",
           lang: "yaml",
@@ -145,7 +147,7 @@ export const article: Article = {
               a: "Kubernetes allocatable vs capacity",
               href: "/learn/kubernetes-allocatable-vs-capacity",
             },
-            " shows how the reserves and the eviction threshold come off the disk before pods get any.",
+            " shows how reserves and the eviction threshold come off the disk first.",
           ],
         },
         {
@@ -163,7 +165,7 @@ export const article: Article = {
             { code: "emptyDir" },
             " ",
             { code: "sizeLimit" },
-            " caps that one volume, and the kubelet evicts the pod when the volume passes it. The volume can run out of room before its limit when logs or image layers fill the disk first.",
+            " caps that one volume: past it, the kubelet evicts the pod. The volume can still run out of room first, when logs or image layers fill the disk.",
           ],
         },
         {
@@ -183,20 +185,20 @@ export const article: Article = {
           kind: "callout",
           label: "For engineers",
           text: [
-            "In periodic scanning mode, a deleted file in an ",
+            "In periodic scanning mode, a deleted file still held open in an ",
             { code: "emptyDir" },
-            " that’s still held open keeps using disk. The kubelet doesn’t count it. Filesystem project quotas do, but they’re beta since Kubernetes 1.31 and off by default.",
+            " keeps using disk, but the kubelet doesn’t count it. Filesystem project quotas do. They’re beta since Kubernetes 1.31 and off by default.",
           ],
         },
       ],
     },
     {
       id: "the-node-was-low-on-resource-ephemeral",
-      title: "The node was low on resource: ephemeral-storage",
+      title: "What the eviction means",
       blocks: [
         {
           kind: "p",
-          text: "This is a node-pressure eviction. The node’s disk crossed an eviction threshold, so the kubelet set a pod to Failed, with reason Evicted, to free space.",
+          text: "“The node was low on resource: ephemeral-storage” marks a node-pressure eviction. The node’s disk crossed an eviction threshold, so the kubelet set a pod to Failed, with reason Evicted, to free space.",
         },
         {
           kind: "p",
@@ -224,16 +226,16 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "The message names each container that used more than its request. Its usage is the writable layer plus logs, not ",
+            "The message names each container that used more than its request. That usage is the writable layer plus logs, not ",
             { code: "emptyDir" },
-            " volumes. A request of 0 means the container set none, so all it wrote counted as over.",
+            " volumes. A request of 0 means the container set none, so everything it wrote counted as over.",
           ],
         },
         {
           kind: "p",
-          text: "The kubelet tries to free space on the node first, and evicts pods only if that frees too little. The node also reports a DiskPressure condition, which the control plane maps to a taint.",
+          text: "Before it evicts, the kubelet tries to free space itself, for example by removing unused images. The node also reports a DiskPressure condition, which the control plane maps to a taint.",
         },
-        { kind: "p", text: "To see it on the node, describe it:" },
+        { kind: "p", text: "To check the node, describe it:" },
         { kind: "code", lang: "bash", code: "kubectl describe node <node-name>" },
         {
           kind: "p",
@@ -242,7 +244,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "which-pods-the-kubelet-evicts-first",
-          title: "Which pods the kubelet evicts first",
+          title: "Which pods go first",
         },
         {
           kind: "p",
@@ -267,17 +269,17 @@ export const article: Article = {
               a: "PodDisruptionBudgets (PDBs)",
               href: "/learn/pod-disruption-budget-best-practices",
             },
-            ". Under a hard threshold, evicted pods get a grace period of 0\u00a0seconds, so the app has no time to stop cleanly.",
+            ". Under a hard threshold, the grace period is 0\u00a0seconds, so the app gets no time to stop cleanly.",
           ],
         },
         {
           kind: "h3",
           id: "when-a-pod-passes-its-own-limit",
-          title: "When a pod passes its own limit",
+          title: "When a pod passes its limit",
         },
         {
           kind: "p",
-          text: "These three messages mean the pod passed a limit of its own, not that the node ran low:",
+          text: "These messages mean the pod passed a limit of its own, not that the node ran low:",
         },
         {
           kind: "table",
@@ -316,7 +318,7 @@ export const article: Article = {
     },
     {
       id: "how-to-fix-ephemeral-storage-evictions",
-      title: "How to fix ephemeral-storage evictions",
+      title: "How to fix evictions",
       blocks: [
         {
           kind: "ol",
@@ -349,15 +351,15 @@ export const article: Article = {
     },
     {
       id: "ephemeral-storage-on-aks-and-eks-nodes",
-      title: "Ephemeral storage on AKS and EKS nodes",
+      title: "On AKS and EKS",
       blocks: [
         {
           kind: "p",
-          text: "On Azure Kubernetes Service (AKS), ephemeral storage typically sits on the node’s OS disk, which holds its root filesystem. Unless you ask for a managed OS disk, AKS uses an ephemeral OS disk where the virtual machine (VM) size allows it. That disk is stored only on the host, just like a temporary disk.",
+          text: "On Azure Kubernetes Service (AKS), ephemeral storage usually sits on the node’s OS disk. Unless you ask for a managed OS disk, AKS uses an ephemeral OS disk where the virtual machine (VM) size allows it. That disk is stored only on the host, like a temporary disk.",
         },
         {
           kind: "p",
-          text: "An ephemeral OS disk’s default size follows the VM size’s temporary storage, when that’s at least 128\u00a0GiB. A Standard_D8ds_v5, with 300\u00a0GiB of temporary storage, gets a 300\u00a0GiB OS disk by default. A managed OS disk’s default size follows the vCPU count: 128\u00a0GiB for 1 to 7\u00a0vCPUs.",
+          text: "On pools created since March 2025, an ephemeral OS disk’s default size follows the VM size’s temporary storage, when that’s at least 128\u00a0GiB. A Standard_D8ds_v5, with 300\u00a0GiB of temporary storage, gets a 300\u00a0GiB OS disk. A managed OS disk’s default size follows the vCPU count: 128\u00a0GiB for 1 to 7\u00a0vCPUs.",
         },
         {
           kind: "p",
@@ -377,12 +379,8 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Instance store volumes are temporary disks attached to the EC2 instance’s host. They come at no extra charge, as part of the instance’s cost.",
-        },
-        {
-          kind: "p",
           text: [
-            "Karpenter and Kubernetes ignore them by default. Set ",
+            "Instance store volumes are temporary disks on the EC2 instance’s host, included in the instance’s price. Karpenter and Kubernetes ignore them by default. Set ",
             { code: "instanceStorePolicy: RAID0" },
             " in the EC2NodeClass, and the node’s allocatable ephemeral storage becomes their total size.",
           ],
@@ -390,24 +388,24 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "For instance store vs EBS, and when its data is lost, see ",
+            "See ",
             { a: "what is instance store in AWS", href: "/learn/glossary/instance-store" },
-            ". For the AKS side, see ",
+            " for when its data is lost, and ",
             { a: "what is an ephemeral OS disk", href: "/learn/glossary/ephemeral-os-disk" },
-            ".",
+            " for the AKS side.",
           ],
         },
       ],
     },
     {
       id: "ephemeral-storage-when-coral-drains-a-node",
-      title: "Ephemeral storage when Coral drains a node",
+      title: "When Coral drains a node",
       blocks: [
         {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS, and it drains and removes the nodes you don’t need. Where it can, it first starts a replacement pod on another node and waits until it’s Ready. Then it evicts the old pod within its PDB.",
+            " rebalances pod requests on AKS and EKS and removes the nodes you don’t need. Where it can, it starts a replacement pod on another node and waits until it’s Ready. Then it evicts the old pod within its PDB.",
           ],
         },
         {
@@ -425,7 +423,7 @@ export const article: Article = {
             { code: "hostPath" },
             " isn’t counted as ephemeral storage, and Coral ",
             { a: "holds that node", href: "/coral-guide#nodes-held" },
-            " instead. The fix is a persistent volume, or marking the pod ",
+            " instead. Move the data to a persistent volume, or mark the pod ",
             { a: "safe to evict", href: "/learn/safe-to-evict-do-not-disrupt" },
             ".",
           ],
@@ -486,22 +484,22 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "Kubernetes allocatable vs capacity: what pods can use",
+      title: "Kubernetes allocatable vs capacity",
       where: "Learn",
       href: "/learn/kubernetes-allocatable-vs-capacity",
     },
     {
-      title: "AKS storage classes: which Azure disk each one creates",
+      title: "Kubernetes storage classes on AKS",
       where: "Learn",
       href: "/learn/aks-storage-classes",
     },
     {
-      title: "How to expand or resize a PVC in Kubernetes, and why it can’t shrink",
+      title: "Expand a PVC in Kubernetes",
       where: "Learn",
       href: "/learn/resize-pvc-kubernetes",
     },
     {
-      title: "Exit code 137 and OOMKilled: why Kubernetes kills a container",
+      title: "Exit code 137 (OOMKilled) in Kubernetes",
       where: "Learn",
       href: "/learn/oomkilled-exit-code-137",
     },

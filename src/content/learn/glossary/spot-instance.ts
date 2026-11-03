@@ -4,46 +4,91 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/spot-instan
 export const term: GlossaryTerm = {
   slug: "spot-instance",
   term: "Spot instance (AWS Spot Instances, Azure Spot VMs)",
-  title: "AWS spot instances, spot pricing and Azure spot VMs",
-  meta: "EC2 spot instances and Azure spot VMs run on spare capacity for less, and can be taken back. See AWS spot pricing, the eviction warning and AKS spot pools.",
-  h1: "AWS spot instances, spot pricing and Azure spot VMs",
-  card: "On AWS, a spot instance is an Amazon EC2 instance that runs on spare capacity for less than the on-demand price.",
+  title: "AWS spot instances and spot pricing",
+  meta: "AWS spot instances run on spare EC2 capacity for less than on-demand, with a two-minute warning. How spot pricing works, and Azure spot VMs.",
+  h1: "AWS spot instances and spot pricing",
+  card: "A spot instance is a virtual machine (VM) that runs on a cloud’s spare capacity for less than the on-demand price.",
   group: "finops-pricing",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
       text: [
-        "On AWS, a spot instance is an Amazon EC2 instance that runs on spare capacity for less than the ",
+        "A spot instance is a virtual machine (VM) that runs on a cloud’s spare capacity for less than the ",
         { a: "on-demand", href: "/learn/glossary/on-demand-instance" },
-        " price. EC2 can take it back when it needs that capacity, with a two-minute warning.",
+        " price. The cloud takes it back when it needs that capacity.",
       ],
     },
     {
       kind: "p",
-      text: "On Azure, a spot VM is a virtual machine (VM) on spare capacity that Azure can evict (take back). It gets up to 30\u00a0seconds’ warning, on a best-effort basis.",
+      text: "On AWS, Amazon EC2 gives a spot instance a two-minute warning. On Azure, a spot VM gets up to 30 seconds’ warning, on a best-effort basis.",
     },
     { kind: "svg", figure: figure1 },
   ],
   sections: [
     {
-      id: "spot-instances-vs-on-demand",
-      title: "Spot instances vs on-demand",
+      id: "spot-pricing",
+      title: "Spot pricing",
       blocks: [
         {
-          kind: "ul",
-          items: [
-            "An on-demand instance runs until you stop it. A spot instance runs until you terminate it, EC2 needs the capacity back, or your Auto Scaling group scales in.",
-            "AWS spot instance pricing is set by EC2: each instance type in each Availability Zone has a spot price. EC2 adjusts it gradually with long-term supply and demand, while on-demand prices stay fixed.",
-            "AWS says spot saves up to 90% off on-demand prices (October 2026). Spot instance prices change.",
+          kind: "p",
+          text: "On AWS, the spot price is a spot instance’s hourly price. EC2 sets one for each instance type in each Availability Zone, and adjusts it gradually with long-term supply and demand.",
+        },
+        {
+          kind: "p",
+          text: "AWS quotes savings of up to 90% against on-demand prices (November 2026). The EC2 console shows three months of spot price history.",
+        },
+        {
+          kind: "p",
+          text: [
+            "Azure spot prices vary by region and VM size. You can set a max price, and Azure evicts the VM when the spot price goes above it. A max price of ",
+            { code: "-1" },
+            " means no eviction for price.",
+          ],
+        },
+      ],
+    },
+    {
+      id: "spot-instances-vs-on-demand",
+      title: "Spot vs on-demand",
+      blocks: [
+        {
+          kind: "table",
+          columns: [
+            { label: "On AWS", width: "22%" },
+            { label: "Spot instance", width: "39%" },
+            { label: "On-demand instance", width: "39%" },
+          ],
+          rows: [
+            ["Hourly price", "Set by EC2, changes gradually", "Fixed"],
+            [
+              "Interruption",
+              "EC2 can take it back, with two minutes’ notice",
+              "You decide when it stops",
+            ],
+            [
+              "No capacity",
+              "The request waits until capacity is free",
+              "The launch fails with an insufficient capacity error",
+            ],
           ],
         },
         {
+          kind: "p",
+          text: "Spot suits work that can stop and restart, such as batch jobs, CI/CD, test environments and stateless web servers. AWS doesn’t recommend it for stateful or fault-intolerant work.",
+        },
+      ],
+    },
+    {
+      id: "spot-on-aws",
+      title: "Spot on AWS",
+      blocks: [
+        {
           kind: "h3",
           id: "interruption-notices-and-rebalance-recommendations",
-          title: "Interruption notices and EC2 rebalance recommendations",
+          title: "Interruption notices",
         },
         {
           kind: "p",
@@ -56,9 +101,9 @@ export const term: GlossaryTerm = {
         {
           kind: "h3",
           id: "when-no-spot-capacity-is-available",
-          title: "When no spot capacity is available",
+          title: "Getting spot capacity",
         },
-        { kind: "p", text: "AWS’s best practices for getting spot capacity:" },
+        { kind: "p", text: "AWS’s best practices:" },
         {
           kind: "ul",
           items: [
@@ -72,54 +117,50 @@ export const term: GlossaryTerm = {
     },
     {
       id: "spot-pools-on-aks",
-      title: "Azure spot instances and AKS spot node pools",
+      title: "Azure spot instances",
       blocks: [
         {
           kind: "p",
-          text: [
-            "A spot instance in Azure is an Azure Spot VM. An AKS spot node pool is a ",
-            { a: "node pool", href: "/learn/glossary/node-pool" },
-            " made of them.",
-          ],
+          text: "Azure calls them Azure Spot Virtual Machines. They have no service level agreement (SLA).",
         },
         {
           kind: "ul",
           items: [
-            "Azure gives spot VMs no service level agreement (SLA).",
-            "A spot pool can’t be the default pool.",
+            "An evicted spot VM is deallocated by default, or deleted if you choose. A deallocated VM’s disks still cost you.",
+            [
+              "An AKS spot node pool is a ",
+              { a: "node pool", href: "/learn/glossary/node-pool" },
+              " of spot VMs. It can’t be the default pool, and its eviction policy defaults to Delete.",
+            ],
             [
               "Its nodes carry the taint ",
               { code: "kubernetes.azure.com/scalesetpriority=spot:NoSchedule" },
-              ", so only pods with a matching toleration run there.",
+              ", so only pods with a matching ",
+              { a: "toleration", href: "/learn/kubernetes-taints-and-tolerations" },
+              " run there.",
             ],
-            "After an eviction, the Cluster Autoscaler adds nodes that pods need.",
+            "With the cluster autoscaler on, AKS adds nodes after an eviction if pods still need them.",
           ],
         },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why spot instances matter for your cloud cost",
+      title: "Spot and cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            "Spot reduces each node’s price. It suits work that can stop and restart, like batch jobs and test environments.",
             [
-              "Requests that match real use mean fewer nodes. See ",
+              "Spot reduces each node’s price. Requests that match real use reduce the number of nodes. See ",
               { a: "Kubernetes cost optimization", href: "/kubernetes-cost-optimization" },
               ".",
             ],
-            "An evicted Azure Spot VM’s disks still cost you under Deallocate, its default policy. AKS spot pools default to Delete.",
+            "Spot gets no commitment discount. AWS Savings Plans don’t cover it, and Azure offers no reservations for spot VMs.",
             [
               "Mark a cluster as non-production and turn on its spot switch. ",
               { a: "Coral", href: "/coral" },
-              " can then plan spot nodes in pools that fall back to on-demand when spot runs out.",
-            ],
-            [
-              "The ",
-              { a: "free assessment", href: "/assessment?p=coral" },
-              " works out your own figure.",
+              " then plans spot nodes in pools that fall back to on-demand when spot runs out.",
             ],
           ],
         },
@@ -148,9 +189,9 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/savings-plan",
     },
   ],
-  relatedTitle: "Terms related to spot instances",
+  relatedTitle: "Related terms",
   next: {
-    title: "Kubernetes cost optimization: requests, then nodes",
+    title: "Kubernetes cost optimization",
     href: "/kubernetes-cost-optimization",
   },
   sources: [
@@ -174,6 +215,11 @@ export const term: GlossaryTerm = {
       publisher: "Microsoft Learn",
       title: "“Add an Azure Spot node pool to an Azure Kubernetes Service (AKS) cluster”",
       url: "https://learn.microsoft.com/en-us/azure/aks/spot-node-pool",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“Understand Azure Reserved VM Instances discount”",
+      url: "https://learn.microsoft.com/en-us/azure/cost-management-billing/manage/understand-vm-reservation-charges",
     },
   ],
 };

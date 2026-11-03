@@ -14,7 +14,7 @@ import {
 import { marketplaces } from "@/config/marketplaces";
 import { calendarUrl, contactEmail, routes } from "@/config/site";
 import { about, aboutLastUpdated } from "@/content/about";
-import { caseStudy } from "@/content/case-studies";
+import { amoebaStudy, caseStudy } from "@/content/case-studies";
 import { footerSocialLinks } from "@/content/footer";
 import { nvidiaInceptionLegal } from "@/content/memberships";
 import { newsFromZoorik } from "@/content/news";
@@ -41,7 +41,7 @@ describe("/about's metadata", () => {
   it("has its title through the template, the mock's description and its canonical", () => {
     expect(metadata.title).toBe("About");
     expect(metadata.description).toBe(
-      "Zoorik Private Limited builds Coral, Kubernetes optimization on AKS and EKS, and Amoeba, block storage optimization on Azure and AWS.",
+      "Zoorik Private Limited is a cloud cost optimization company in Bangalore. It builds Coral for Kubernetes and Amoeba for block storage, on Azure and AWS.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/about" });
     expect(metadata).not.toHaveProperty("robots");
@@ -97,9 +97,10 @@ describe("/about", () => {
       "Programs",
       "Milestones",
       "Zoorik Private Limited is founded",
-      "Value Lab: −58% on our own cluster",
+      "Coral case study: −58% machine cost",
       "Coral installs with Helm and Terraform",
       "Free assessment 1.3",
+      "Amoeba case study: −25% pool size",
       "Zoorik joins the NVIDIA Inception Program",
       "Find us",
       "Available on",
@@ -118,7 +119,7 @@ describe("/about", () => {
   it("draws one tile per product, Coral first, to its page", () => {
     const what = main().querySelector("#what-we-build")!;
     expect(text(what.querySelector(".sec-head p"))).toBe(
-      "Zoorik reduces cloud cost, autonomously. Coral is Kubernetes optimization on AKS and EKS. Amoeba is block storage optimization on Azure and AWS.",
+      "Coral rebalances Kubernetes workloads and nodes. Amoeba rightsizes block storage on Windows and Linux VMs.",
     );
     const tiles = [...what.querySelectorAll(".dt-grid.ab-prods > article.dt > a.dt-a")];
     expect(tiles.map((tile) => tile.getAttribute("href"))).toEqual(["/coral", "/amoeba"]);
@@ -141,7 +142,7 @@ describe("/about", () => {
       expect(card.firstElementChild).toHaveAttribute("aria-hidden", "true");
     }
     expect(text(cards[2]!.querySelector("p"))).toBe(
-      "Coral and Amoeba show where each figure comes from. One they can’t know shows a dash and the reason.",
+      "Coral and Amoeba show the source of every figure. A figure they can’t know shows a dash and the reason.",
     );
   });
 
@@ -201,7 +202,7 @@ describe("/about", () => {
     expect(svg).not.toMatch(/<script|<foreignObject|href=/i);
   });
 
-  it("lists five milestones on a line, each dated, the case study's read from the study", () => {
+  it("lists six milestones on a line, each dated, the case studies' read from the studies", () => {
     const items = [...main().querySelectorAll("#milestones ol.ab-ms > li")];
     expect(
       items.map((item) => [
@@ -220,8 +221,8 @@ describe("/about", () => {
       [
         "2026-10-12",
         "12 Oct 2026",
-        "Value Lab: −58% on our own cluster",
-        "Coral reduced our own AKS development cluster’s machine cost from $368.65 to $154.76 a month in eight days. Read the Coral Value Lab study.",
+        "Coral case study: −58% machine cost",
+        "Coral reduced our own AKS development cluster’s machine cost from $368.65 to $154.76 a month in eight days. Read the case study.",
       ],
       [
         "2026-10-16",
@@ -236,10 +237,16 @@ describe("/about", () => {
         "One command on PyPI and npm writes one PDF report for Coral and Amoeba. Run it.",
       ],
       [
+        "2026-10-19",
+        "19 Oct 2026",
+        "Amoeba case study: −25% pool size",
+        "Amoeba rightsized the btrfs pool on our own Azure lab VM while it stayed mounted, with no test app errors. Read the case study.",
+      ],
+      [
         "2026-10-27",
         "27 Oct 2026",
         "Zoorik joins the NVIDIA Inception Program",
-        "Zoorik is now a member of NVIDIA’s program for startups.",
+        "Inception is NVIDIA’s program for startups.",
       ],
     ]);
     expect(
@@ -249,9 +256,10 @@ describe("/about", () => {
       }),
     ).toEqual([
       null,
-      ["Read the Coral Value Lab study", routes.caseStudyCoralDevCluster, null],
+      ["Read the case study", routes.caseStudyCoralDevCluster, null],
       ["See open source", routes.openSource, null],
       ["Run it", routes.assessment, null],
+      ["Read the case study", routes.caseStudyAmoebaLabVms, null],
       null,
     ]);
     /* The names stay out of translation, in the titles and the lines alike. */
@@ -261,12 +269,15 @@ describe("/about", () => {
     ).toEqual(["Coral", "zoorikctl"]);
   });
 
-  it("reads the case study's milestone from the study itself, never typed twice", () => {
-    const [, study] = about.milestones.items;
+  it("reads the case studies' milestones from the studies themselves, never typed twice", () => {
+    const [, study, , , amoeba] = about.milestones.items;
     expect(study!.date.text).toBe(caseStudy.band.date.replace("October", "Oct"));
     expect(study!.title).toBe(
-      `${caseStudy.hero.kicker.split(" · ")[0]}: ${caseStudy.band.stats[0].value} on our own cluster`,
+      `Coral case study: ${caseStudy.band.stats[0].value} ${caseStudy.band.stats[0].label}`,
     );
+    expect(amoeba!.date.text).toBe(amoebaStudy.band.date.replace("October", "Oct"));
+    expect(amoeba!.title).toBe(`Amoeba case study: ${amoebaStudy.band.stats[0].value} pool size`);
+    expect(amoeba!.link?.href).toBe(amoebaStudy.route);
     const steps = caseStudy.result.costs.steps;
     expect(study!.line).toContain(
       `from ${steps[0]!.label} to ${steps[steps.length - 1]!.label} a month`,
@@ -277,7 +288,7 @@ describe("/about", () => {
   });
 
   it("reads the installs and assessment milestones from their announcements on /news, never typed twice", () => {
-    const [, , installs, assessment, inception] = about.milestones.items;
+    const [, , installs, assessment, , inception] = about.milestones.items;
     const announced = (href: string) => newsFromZoorik.find((item) => item.href === href)!;
     expect(installs!.date.iso).toBe(announced(routes.openSource).date);
     expect(assessment!.date.iso).toBe(announced(routes.assessment).date);
@@ -294,11 +305,11 @@ describe("/about", () => {
     expect(words).not.toMatch(/\bcut\b|keep serving|continuously|\blower\b|\bwaste/i);
     expect(words).toContain("autonomously, without any downtime");
     expect(text(main().querySelector(".doc-deck"))).toBe(about.hero.deck);
-    expect(about.what.lede).toMatch(/^Zoorik reduces cloud cost, autonomously\. /);
+    expect(about.what.lede).toMatch(/^Coral rebalances .+\. Amoeba rightsizes .+\.$/);
   });
 
-  it("moves its sitemap date to the day its product names changed (2 Nov 2026)", () => {
-    expect(aboutLastUpdated).toBe("2 November 2026");
+  it("moves its sitemap date to the day its copy last changed (3 Nov 2026)", () => {
+    expect(aboutLastUpdated).toBe("3 November 2026");
   });
 
   it("puts the two stores as buttons under Available on, naming no product", () => {

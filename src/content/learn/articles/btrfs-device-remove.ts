@@ -6,55 +6,55 @@ import { figure as figure3 } from "@/features/learn/figures/btrfs-device-remove/
 export const article: Article = {
   slug: "btrfs-device-remove",
   title: "btrfs device remove: take a disk out of a pool",
-  meta: "btrfs device remove, step by step: check the other disks have room, get past raid1, follow progress, learn why it’s slow, then delete the cloud disk.",
-  h1: "btrfs device remove: take a disk out of a btrfs pool",
-  deck: "Check the room and the profile, run the removal, follow it, then delete the cloud disk so its charges stop.",
-  card: "Take a disk out of a mounted btrfs pool: the checks, the progress, why it’s slow, and the cloud step after.",
+  meta: "How to remove a disk from a mounted btrfs pool: check room and the raid1 limit, run btrfs device remove, watch progress, then delete the cloud disk.",
+  h1: "btrfs device remove",
+  deck: "Take a disk out of a mounted btrfs pool, then delete the cloud disk so its charges stop.",
+  card: "Take a disk out of a mounted btrfs pool: the checks, progress, why it’s slow, and deleting the cloud disk.",
   product: "amoeba",
   hub: "Block storage",
   topic: "Linux filesystems",
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "sourabh",
   cover: "/learn-covers/zoorik-learn-btrfs-device-remove-1200x630.webp",
   coverAlt: "btrfs device remove: data moves off the leaving disk onto the disks that stay",
   short: [
     { code: "btrfs device remove" },
-    " empties a disk in a mounted btrfs pool onto the other disks, then takes it out. They need room for its data, and the profile must hold with one disk fewer, so convert two-disk ",
+    " moves a disk’s data onto the other disks of a mounted btrfs pool, then takes the disk out. The other disks need room for that data, and the profile must still work with one disk fewer, so convert two-disk ",
     { code: "raid1" },
-    " first. Moving hundreds of GiB can take an hour or more, and the cloud disk is charged until it’s deleted.",
+    " first. Moving hundreds of GiB can take an hour or more. Then delete the cloud disk, or you keep paying for it.",
   ],
   sections: [
     {
       id: "btrfs-device-remove",
-      title: "btrfs device remove empties a disk, but the cloud disk stays",
+      title: "What the command does",
       blocks: [
-        {
-          kind: "p",
-          text: "Picture a VM whose data sits on a btrfs pool. The pool has three 256\u00a0GiB data disks, which btrfs numbers devid 1 to 3. Say you want devid 3 gone.",
-        },
         {
           kind: "p",
           text: [
             { code: "btrfs device remove" },
-            " can take it out while the filesystem stays mounted and in use. When the command returns, the filesystem is smaller by that disk. But the disk itself still exists, attached to the VM, and the cloud provider charges for it as before.",
+            " takes a disk out of a btrfs filesystem while it stays mounted and in use. When it returns, the filesystem is smaller by that disk. The disk itself is still attached to the VM, and the cloud provider still charges for it.",
           ],
         },
         {
           kind: "p",
+          text: "The examples here use one pool: three 256 GiB data disks, which btrfs numbers devid 1 to 3. devid 3 is the one to remove.",
+        },
+        {
+          kind: "p",
           text: [
-            "btrfs stores data and metadata in chunks, also called block groups. A pool spreads them across its disks, as ",
+            "btrfs stores data and metadata in chunks, also called block groups, spread across the pool’s disks (see ",
             { a: "btrfs on multiple disks", href: "/learn/btrfs-multiple-disks" },
-            " explains. Removing a disk means emptying it of chunks, and the kernel’s removal code does that in a fixed order:",
+            "). Removing a disk means emptying it of chunks. The kernel does that in a fixed order:",
           ],
         },
         {
           kind: "ol",
           items: [
-            "It takes the disk off the list the allocator picks from, so no new chunk lands there.",
+            "It takes the disk off the allocator’s list, so no new chunk lands there.",
             "It sets the disk’s size inside the filesystem to zero.",
-            "It walks the disk’s chunks from the end backwards and relocates each one onto the other disks.",
-            "Once the last chunk has gone, it deletes the disk’s entry from the filesystem. As btrfs-progs notes, the btrfs signature is removed from the device too.",
+            "It relocates the disk’s chunks onto the other disks, from the end of the disk backwards.",
+            "Once the last chunk has gone, it deletes the disk’s entry from the filesystem. The btrfs signature is removed from the device too.",
           ],
         },
         { kind: "svg", figure: figure1 },
@@ -62,7 +62,7 @@ export const article: Article = {
     },
     {
       id: "before-you-remove-a-disk-from-the",
-      title: "Before you remove a disk from the pool: room, profile and errors",
+      title: "Before you remove a disk",
       blocks: [
         { kind: "p", text: "Three readings tell you whether the removal can finish:" },
         {
@@ -74,61 +74,55 @@ export const article: Article = {
           kind: "p",
           text: [
             { code: "btrfs filesystem show" },
-            " lists each disk with its devid, size and used space. The ",
+            " lists each disk with its devid, size and used space. ",
             { code: "btrfs device usage" },
-            " command goes further: for each disk, it shows what each profile has allocated there, and what is still Unallocated. Run ",
-            { code: "device usage" },
-            " as root, because a normal user doesn’t get the per-disk detail.",
+            " adds, for each disk, what each profile has allocated there and what is still unallocated. Run it as root: a normal user doesn’t get the per-disk detail.",
           ],
         },
         {
           kind: "h3",
           id: "the-disks-that-stay-need-room-for",
-          title: "The disks that stay need room for all of it",
+          title: "Room on the other disks",
         },
         {
           kind: "p",
-          text: "Everything on the disk you remove needs a place on the disks that stay. That place is their unallocated space, plus any room left inside chunks they already hold. Count unallocated space alone and you keep a margin.",
+          text: "Everything on the leaving disk needs a place on the disks that stay: their unallocated space, plus free room inside chunks they already hold. Count unallocated space alone, and you keep a margin.",
         },
         {
           kind: "p",
-          text: "The kernel doesn’t check this before the removal starts. It relocates chunk after chunk, and a chunk that hits “No space left on device” gets one retry. Then it stops with that error.",
+          text: "The kernel doesn’t check for room before it starts. It relocates chunk after chunk, and chunks that hit “No space left on device” get one more pass. If one fails again, the removal stops with that error.",
         },
         {
           kind: "p",
-          text: "When it stops, the disk stays in the filesystem. The chunks that already moved stay where they went.",
+          text: "The disk then stays in the filesystem, and the chunks that already moved stay where they went.",
         },
         {
           kind: "callout",
           label: "Worked example",
           text: [
-            "devid 3, the one you want gone, has 180\u00a0GiB allocated. The three disks hold ",
+            "devid 3 has 180 GiB allocated. All three disks hold ",
             { code: "single" },
-            " data in nearly full chunks, and devid 1 and devid 2 have 40\u00a0GiB and 60\u00a0GiB unallocated. That’s about 40 + 60 = 100\u00a0GiB of room, so the removal stops partway, roughly 180 − 100 = 80\u00a0GiB short.",
+            " data in nearly full chunks, and devid 1 and devid 2 have 40 GiB and 60 GiB unallocated. That’s 40 + 60 = 100 GiB of room for 180 GiB of chunks. The removal stops about 180 − 100 = 80 GiB short.",
           ],
         },
         { kind: "svg", figure: figure2 },
         {
           kind: "p",
           text: [
-            "Leave margin too: btrfs needs unallocated space to create new chunks and to relocate old ones, as ",
-            { a: "btrfs unallocated space vs free space", href: "/learn/btrfs-unallocated-space" },
-            " explains.",
+            "Leave a margin too: btrfs needs ",
+            { a: "unallocated space", href: "/learn/btrfs-unallocated-space" },
+            " to create new chunks and to relocate old ones.",
           ],
         },
         {
           kind: "h3",
           id: "how-to-remove-a-device-from-btrfs",
-          title: "How to remove a device from btrfs raid 1",
-        },
-        {
-          kind: "p",
-          text: "The man page is plain: “Device removal must satisfy the profile constraints, otherwise the command fails and cannot be enforced.”",
+          title: "Profiles and raid1",
         },
         {
           kind: "p",
           text: [
-            "Each profile has a minimum disk count in the kernel’s table: two for ",
+            "The disks left must still satisfy the profile, or the command fails. Each profile has a minimum disk count in the kernel: two for ",
             { code: "raid1" },
             ", three for ",
             { code: "raid1c3" },
@@ -139,20 +133,20 @@ export const article: Article = {
           kind: "p",
           text: [
             { code: "raid1" },
-            " keeps two copies of each chunk on two different disks. Removing one of three or more disks works when the disks that stay have room for the copies that move. The two copies of each chunk must still sit on two different disks.",
+            " keeps two copies of each chunk, on two different disks. From three or more disks, removing one works if the disks that stay have room for the copies that move. Down to two disks, each one holds a copy of everything.",
           ],
         },
         {
           kind: "p",
           text: [
-            "When two disks will be left, each of them ends up holding one copy of everything. From two disks to one, ",
+            "From two disks to one, ",
             { code: "raid1" },
-            " can’t hold. btrfs refuses with “unable to go below two devices on raid1.”",
+            " can’t hold, and btrfs refuses: “unable to go below two devices on raid1”.",
           ],
         },
         {
           kind: "p",
-          text: "The documentation’s fix is to convert first, then remove. Converting gives up redundancy: afterwards your data has one copy, and losing that disk loses the data. Like any balance, it needs unallocated space to work in.",
+          text: "The documented fix is to convert first, then remove. Converting gives up redundancy: your data then has one copy, and losing that disk loses it. Like any balance, the conversion needs unallocated space.",
         },
         {
           kind: "code",
@@ -164,17 +158,17 @@ export const article: Article = {
           label: "For engineers",
           text: [
             { code: "dup" },
-            " stores both metadata copies on the one disk. The conversion to ",
-            { code: "dup" },
-            " runs without the force option. Converting metadata to ",
+            " keeps both metadata copies on the one disk, so this conversion runs without ",
+            { code: "--force" },
+            ". Converting metadata to ",
             { code: "single" },
-            " instead is refused, and the kernel log reads “balance: reduces metadata redundancy, use --force if you want this”.",
+            " is refused, and the kernel log reads “balance: reduces metadata redundancy, use --force if you want this”.",
           ],
         },
         {
           kind: "h3",
           id: "check-disk-errors-and-etc-fstab",
-          title: "Check disk errors and /etc/fstab",
+          title: "Disk errors and /etc/fstab",
         },
         {
           kind: "p",
@@ -186,20 +180,16 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "If the disk you’re removing is the one failing, the documentation says to use ",
+            "If the leaving disk is the failing one, the documentation says to use ",
             { code: "btrfs replace" },
-            " instead. It warns against converting to a less redundant profile to get the disk out. Rewritten chunks can land on the failing disk again.",
+            " instead. It warns against converting to a less redundant profile to get a failing disk out: rewritten chunks can land on that disk again.",
           ],
         },
         {
           kind: "callout",
           label: "Watch out",
-          text: "Per the man page, you can remove the device the filesystem was mounted from, and the mount table then shows another device name. Your /etc/fstab doesn’t follow, so an entry that names the removed disk’s device path can fail at the next boot.",
-        },
-        {
-          kind: "p",
           text: [
-            "A ",
+            "You can remove the disk the filesystem was mounted from, and the mount table then shows another device. /etc/fstab doesn’t follow, so an entry that names the removed disk’s path can fail at the next boot. A ",
             { code: "UUID=" },
             " entry names the filesystem, not one disk, and keeps working.",
           ],
@@ -208,20 +198,20 @@ export const article: Article = {
     },
     {
       id: "how-to-run-btrfs-device-remove-one",
-      title: "How to run btrfs device remove, one disk at a time",
+      title: "Run the removal",
       blocks: [
         {
           kind: "p",
-          text: "The command runs in the foreground until the last chunk has moved. If that process gets a fatal signal such as Ctrl-C, the kernel stops the work.",
+          text: "The command runs in the foreground until the last chunk has moved. A fatal signal to that process, such as Ctrl-C, stops the work.",
         },
         {
           kind: "ol",
           items: [
-            "On a remote VM, start a tmux or screen session first, so a dropped SSH session doesn’t end the removal partway.",
+            "On a remote VM, start tmux or screen first, so a dropped SSH session doesn’t stop the removal partway.",
             [
               "Name the disk by its path or by its devid from ",
               { code: "btrfs filesystem show" },
-              ", then the mount point. Either line works, and ",
+              ", then the mount point. Either line works. ",
               { code: "btrfs device delete" },
               " is an older name for the same command.",
             ],
@@ -237,7 +227,7 @@ export const article: Article = {
           start: 3,
           items: [
             [
-              "When the command returns, check the result: ",
+              "When the command returns, check that ",
               { code: "btrfs filesystem show /data" },
               " no longer lists the disk. Only then start the next removal.",
             ],
@@ -245,25 +235,25 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "You can name several disks at once. Then btrfs-progs removes them one by one, and the disks still waiting can take new writes meanwhile.",
+          text: "You can name several disks in one command. btrfs-progs removes them one by one, and the disks still waiting keep taking writes.",
         },
         {
           kind: "p",
           text: [
-            "With several disks named, btrfs-progs first prints a warning and counts down 10\u00a0seconds. Adding ",
+            "With several disks named, btrfs-progs first prints a warning and counts down 10 seconds. ",
             { code: "--force" },
-            " skips the countdown, though it doesn’t override the profile rule.",
+            " skips the countdown, but doesn’t override the profile rule.",
           ],
         },
       ],
     },
     {
       id: "how-to-follow-btrfs-device-remove-progress",
-      title: "How to follow btrfs device remove progress",
+      title: "Follow the progress",
       blocks: [
         {
           kind: "p",
-          text: "With one disk named, the command prints nothing until it finishes. It has no status subcommand. Progress shows in three places:",
+          text: "With one disk named, the command prints nothing until it finishes, and it has no status subcommand. Progress shows in three places:",
         },
         {
           kind: "code",
@@ -274,88 +264,84 @@ export const article: Article = {
           kind: "ul",
           items: [
             [
-              { b: "The leaving disk’s used figure." },
-              " The kernel set the disk’s size to zero at the start, so ",
+              { b: "The leaving disk’s used space." },
+              " The kernel set the disk’s size to zero, so ",
               { code: "btrfs filesystem show" },
-              " lists it with size 0.00B. Its used figure falls as each chunk leaves. That falling number is your progress bar.",
+              " lists it with size 0.00B. Its used figure falls as each chunk leaves: that is your progress bar.",
             ],
             [
               { b: "The kernel log." },
-              " It gets one “relocating block group” line for every chunk the kernel moves.",
+              " One “relocating block group” line for each chunk the kernel moves.",
             ],
             [
               { b: "The sysfs file." },
-              " While the removal runs, ",
+              " ",
               { code: "exclusive_operation" },
               " reads ",
               { code: "device remove" },
-              ". Its path takes the filesystem UUID that ",
+              " while the removal runs. Its path takes the filesystem UUID that ",
               { code: "btrfs filesystem show" },
               " prints.",
             ],
           ],
         },
         {
+          kind: "h3",
+          id: "cancel-a-removal",
+          title: "Cancel a removal",
+        },
+        {
           kind: "p",
           text: [
-            "To stop a removal, run ",
+            "Run ",
             { code: "sudo btrfs device remove cancel /data" },
-            ", which needs kernel 5.14 and btrfs-progs 5.13 or later. The disk gets its old size back and stays in the filesystem.",
+            ". It needs kernel 5.14 and btrfs-progs 5.13 or later. The disk gets its old size back and stays in the filesystem.",
           ],
         },
         {
           kind: "p",
-          text: "Chunks already moved aren’t moved back. So running the removal again later has less left to do.",
+          text: "Chunks already moved aren’t moved back, so a later run has less to do.",
         },
       ],
     },
     {
       id: "why-btrfs-device-remove-is-very-slow",
-      title: "Why btrfs device remove is very slow: every chunk moves",
+      title: "Why it’s slow",
       blocks: [
         {
           kind: "p",
-          text: "Removal is relocation, the same work a balance does. The btrfs-device man page warns that removal “can take long as it needs to move all data from the device.”",
+          text: "Removal is relocation, the same work a balance does, and it has to move all the data off the disk. Three things set the pace:",
         },
-        { kind: "p", text: "Three things set its pace:" },
         {
           kind: "ul",
           items: [
             [
-              { b: "Every chunk on the disk moves," },
-              " data and metadata, one block group at a time. For data, each move copies the extents, then updates every block pointer that refers to them. These are two separate stages in the kernel’s relocation code.",
+              { b: "Every chunk moves," },
+              " data and metadata, one block group at a time. For data, the kernel copies the extents, then updates every block pointer to them, in two separate stages.",
             ],
             [
-              { b: "Each cloud disk has its own throughput ceiling," },
+              { b: "Each cloud disk has a throughput ceiling," },
               " set by its type and size, or by what you provision.",
             ],
             [
-              { b: "Your application keeps using the same disks." },
-              " Every read and write it makes competes with the relocation for the same IOPS and throughput. So a removal during the busy hours runs slower, and slows the application too.",
+              { b: "Your application shares the disks." },
+              " Its reads and writes compete with the relocation for IOPS and throughput. A removal in busy hours runs slower, and slows the application too.",
             ],
           ],
         },
         {
           kind: "p",
-          text: "For scale, say the leaving disk reads at 125\u00a0MiB/s. Just reading 500\u00a0GiB off it takes 500 × 1,024\u00a0MiB ÷ 125\u00a0MiB/s = 4,096\u00a0seconds, about 68\u00a0minutes. That’s before any pointer updates, and the writes land on disks with ceilings of their own.",
-        },
-        {
-          kind: "p",
-          text: "The man page says a balance “can take a while, because all metadata have to be moved and all block pointers updated.” It names disk seeking as “the key factor affecting performance.”",
+          text: "For scale: just reading 500 GiB at 125 MiB/s takes 500 × 1,024 MiB ÷ 125 MiB/s = 4,096 seconds, about 68 minutes. Pointer updates come on top, and the writes land on disks with ceilings of their own. The documentation names disk seeking as “the key factor affecting performance.”",
         },
       ],
     },
     {
       id: "detach-and-delete-the-cloud-disk-to",
-      title: "Detach and delete the cloud disk to stop paying for it",
+      title: "Delete the cloud disk",
       blocks: [
         {
           kind: "p",
-          text: "Charges follow the Azure or AWS resource, not the filesystem. Microsoft’s warning reads: “If you detach a disk it is not automatically deleted.”",
-        },
-        {
-          kind: "p",
-          text: "AWS says you are “still charged for volume storage” after a detach. It adds that you “must delete a volume to avoid incurring further charges.”",
+          text: "Charges follow the Azure or AWS resource, not the filesystem. Microsoft warns: “If you detach a disk it is not automatically deleted.” AWS says you “must delete a volume to avoid incurring further charges.”",
         },
         { kind: "svg", figure: figure3 },
         {
@@ -368,22 +354,22 @@ export const article: Article = {
               " no longer lists the disk.",
             ],
             [
-              { b: "Match the Linux device to its managed disk or EBS volume." },
-              " On an Azure VM whose data disks attach over SCSI, the Azure Linux agent’s udev rules link each data disk’s LUN under /dev/disk/azure/scsi1/. The ",
+              { b: "Match the Linux device to its cloud disk." },
+              " On an Azure VM with SCSI data disks, the Azure Linux agent’s udev rules link each disk’s LUN under /dev/disk/azure/scsi1/. ",
               { code: "az vm show" },
-              " command lists every data disk with its ",
+              " lists each data disk’s ",
               { code: "lun" },
               " and ",
               { code: "name" },
               ". On a Nitro-based EC2 instance, ",
               { code: "lsblk -o +SERIAL" },
-              " shows the EBS volume ID as the serial number. It’s written without the hyphen after ",
+              " shows the EBS volume ID as the serial number, without the hyphen after ",
               { code: "vol" },
               ".",
             ],
             [
               { b: "Snapshot first if in doubt." },
-              " Deleting is permanent, so take a snapshot if you’re not sure the disk you’re about to delete is the one you emptied.",
+              " Deleting is permanent. Take a snapshot if you’re not sure this is the disk you emptied.",
             ],
             [{ b: "Detach the disk, then delete it." }, " On Azure:"],
           ],
@@ -396,9 +382,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "On AWS, wait for the volume’s state to read ",
+            "On AWS, wait until the volume’s state reads ",
             { code: "available" },
-            " before you delete it, because AWS won’t delete an attached volume:",
+            ", because AWS won’t delete an attached volume:",
           ],
         },
         {
@@ -408,7 +394,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "If the volume matches a Recycle Bin retention rule, AWS keeps it there instead of deleting it at once.",
+          text: "A volume that matches a Recycle Bin retention rule goes to the Recycle Bin instead of being deleted at once.",
         },
         {
           kind: "p",
@@ -424,14 +410,14 @@ export const article: Article = {
     },
     {
       id: "how-amoeba-removes-a-disk-from-its",
-      title: "How Amoeba removes a disk from its pool",
+      title: "How Amoeba does it",
       blocks: [
         {
           kind: "p",
           text: [
             "When your data goes down and stays down, ",
             { a: "Amoeba", href: "/amoeba" },
-            " shrinks a VM’s btrfs pool one disk at a time. Each shrink is this procedure, automated.",
+            " shrinks a VM’s btrfs pool one disk at a time, without any downtime. Each shrink is this procedure, automated.",
           ],
         },
         {
@@ -459,7 +445,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
@@ -513,22 +499,22 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "btrfs on multiple disks: how a btrfs pool works",
+      title: "btrfs on multiple disks: single or RAID 1",
       where: "Learn",
       href: "/learn/btrfs-multiple-disks",
     },
     {
-      title: "btrfs unallocated space vs free space, explained",
+      title: "btrfs unallocated vs free space",
       where: "Learn",
       href: "/learn/btrfs-unallocated-space",
     },
     {
-      title: "btrfs vs LVM: which one can shrink on a cloud VM?",
+      title: "btrfs vs ext4 vs XFS: which can shrink?",
       where: "Learn",
       href: "/learn/btrfs-vs-lvm",
     },
     {
-      title: "How to remove a disk from LVM without losing data",
+      title: "Remove a disk from LVM in Linux",
       where: "Learn",
       href: "/learn/remove-disk-from-lvm",
     },

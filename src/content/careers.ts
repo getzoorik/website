@@ -35,7 +35,7 @@ import type { ProductId } from "@/content/products";
  * the page does not print it. Whoever changes the page's content moves this to
  * that day in the same PR; never the build's date.
  */
-export const careersLastUpdated = "2 November 2026";
+export const careersLastUpdated = "3 November 2026";
 
 /**
  * A tool's mark (`careers-marks.tsx`): the site's own for Kubernetes, Azure,

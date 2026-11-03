@@ -5,22 +5,22 @@ import { figure as figure3 } from "@/features/learn/figures/kubernetes-explained
 
 export const article: Article = {
   slug: "kubernetes-explained-simply",
-  title: "What is Kubernetes? Kubernetes explained simply",
-  meta: "What is Kubernetes in simple words? A plain Kubernetes definition, then clusters, nodes, pods and containers, explained with one shop app and a restaurant.",
-  h1: "What is Kubernetes? Kubernetes explained simply, from clusters to containers",
-  deck: "Think of a restaurant kitchen: Kubernetes decides which cook works at which counter.",
+  title: "What is Kubernetes (K8s)? Explained simply",
+  meta: "What is Kubernetes in simple words? A plain Kubernetes definition, what it’s used for, and how clusters, nodes, pods and containers fit together.",
+  h1: "What is Kubernetes?",
+  deck: "Explained simply, from clusters to containers, with one shop app and a restaurant kitchen.",
   card: "Clusters, nodes, pods and containers, explained with one shop app and a restaurant kitchen.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes cost basics",
   published: "2026-11-02",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "zoorik",
   cover: "/learn-covers/zoorik-learn-kubernetes-explained-simply-1200x630.webp",
   coverAlt:
     "Kubernetes explained as a restaurant: manager and control plane, counters and nodes, stations and pods, cooks and containers",
   short:
-    "Kubernetes is open-source software that runs your app’s containers across a cluster of machines. You say what should run, such as 3\u00a0copies of a service, and it keeps it so. When a container fails, Kubernetes restarts or replaces it, and it sends traffic only to copies that are ready.",
+    "Kubernetes (K8s) is open-source software that runs your app’s containers across a cluster of machines. You say what should run, such as 3\u00a0copies of a service, and Kubernetes keeps it that way. It restarts or replaces containers that fail, and sends traffic only to copies that are ready.",
   sections: [
     {
       id: "what-is-kubernetes-used-for",
@@ -28,18 +28,21 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "K8s means Kubernetes: the 8 counts the eight letters between the “K” and the “s”. The name Kubernetes comes from Greek, meaning helmsman or pilot.",
+          text: "Kubernetes runs containerized apps and services on a group of machines. Day to day, it:",
         },
-        { kind: "p", text: "Day to day, Kubernetes does jobs like these:" },
         {
           kind: "ul",
           items: [
-            "Restarting or replacing containers that fail.",
-            "Spreading traffic over the copies of a service.",
-            "Rolling a new version out at a controlled rate, and back again if needed.",
-            "Packing containers onto machines by the CPU and memory each one needs.",
-            "Adding or removing copies as load changes, by hand or automatically on CPU use.",
+            "Restarts or replaces containers that fail.",
+            "Spreads traffic over the copies of a service.",
+            "Rolls out a new version at a controlled rate, and rolls it back if needed.",
+            "Packs containers onto machines by the CPU and memory each one needs.",
+            "Adds or removes copies as load changes, by hand or automatically on CPU use.",
           ],
+        },
+        {
+          kind: "p",
+          text: "K8s is short for Kubernetes: the 8 counts the eight letters between the “K” and the “s”. The name is Greek for helmsman or pilot.",
         },
       ],
     },
@@ -49,15 +52,19 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "Take a shop’s app of 5\u00a0services: website, catalog, cart, orders and payments. A Kubernetes cluster runs them on a control plane plus at least one worker machine, called a node. The control plane manages the nodes and what runs on them.",
+          text: "A Kubernetes cluster is a control plane plus at least one worker machine, called a node. The control plane manages the nodes and what runs on them.",
+        },
+        {
+          kind: "p",
+          text: "Kubernetes clustering means running many machines as one. You hand work to the cluster, and the scheduler, part of the control plane, picks a node for each piece.",
+        },
+        {
+          kind: "p",
+          text: "Take a shop’s app of 5\u00a0services: website, catalog, cart, orders and payments. One cluster can run all five.",
         },
         {
           kind: "p",
           text: "In the restaurant, the cluster is the whole restaurant. The control plane is its manager, and the nodes are its kitchen counters.",
-        },
-        {
-          kind: "p",
-          text: "Kubernetes clustering means running many machines as one. You hand work to the cluster, and the scheduler, a part of the control plane, picks a node for each piece.",
         },
         {
           kind: "p",
@@ -69,60 +76,8 @@ export const article: Article = {
       ],
     },
     {
-      id: "designing-your-clusters-in-7-steps",
-      title: "How many Kubernetes clusters do I need? Design yours in 7 steps",
-      blocks: [
-        {
-          kind: "steps",
-          items: [
-            [
-              { b: "List your services." },
-              " For the shop, that’s website, catalog, cart, orders and payments.",
-            ],
-            [
-              { b: "See who depends on whom." },
-              " Cart, orders and payments work as a chain. The website and catalog still show products while checkout is down.",
-            ],
-            [
-              { b: "Split by environment first." },
-              " Live, test and development make 3\u00a0clusters, with all 5\u00a0services in each. A small team can stop here.",
-            ],
-            [
-              { b: "Look for special rules." },
-              " Payments handles card data, so a growing business may give it its own cluster for stronger isolation.",
-            ],
-            [
-              { b: "Look at where your users are." },
-              " Users in one country can share one region. Users across continents may need a cluster in each region, near them.",
-            ],
-            [
-              { b: "Ask what breaks if this breaks." },
-              " That’s its blast radius. Keep together what fails together, like cart and orders, since one cluster per service adds no safety.",
-            ],
-            [
-              { b: "Weigh the cost." },
-              " Each extra cluster brings its own control plane, nodes and work to run it. Split only when the reason is worth that.",
-            ],
-          ],
-        },
-        {
-          kind: "p",
-          text: "A growing business may split live into 3\u00a0clusters: shopping (website, catalog), checkout (cart, orders) and payments. Payments is kept apart for its rules.",
-        },
-        { kind: "svg", figure: figure1 },
-        {
-          kind: "p",
-          text: "A large company runs these steps for many teams, regions and rules. So it ends with many clusters, each split for one of the reasons above.",
-        },
-        {
-          kind: "p",
-          text: "Inside one cluster, namespaces keep teams and services apart. Names don’t clash, and access rules can stop at a namespace. Services still reach each other across namespaces by name.",
-        },
-      ],
-    },
-    {
       id: "nodes-the-machines-that-do-the-work",
-      title: "Nodes: the machines that do the work",
+      title: "Nodes",
       blocks: [
         {
           kind: "p",
@@ -136,17 +91,17 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Like a kitchen counter shared by cooks making different dishes, one node runs parts of many services at once. The cart can sit beside the catalog.",
+          text: "Like a counter shared by cooks making different dishes, one node runs parts of many services at once. The cart can sit beside the catalog.",
         },
         {
           kind: "p",
-          text: "In production, a cluster usually runs several nodes, so one failure doesn’t stop the app. If a node fails, Kubernetes starts the lost copies again, and the scheduler places them on a healthy node.",
+          text: "A production cluster usually runs several nodes, so one failure doesn’t stop the app. If a node fails, Kubernetes starts the lost copies again on a healthy node.",
         },
       ],
     },
     {
       id: "image-container-pod-and-workload-how-they",
-      title: "Image, container, pod and workload: how they fit together",
+      title: "Images, containers and pods",
       blocks: [
         {
           kind: "p",
@@ -158,20 +113,20 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "A pod is the cook’s station: the smallest unit you can run in Kubernetes, which the scheduler places on a node. It usually holds one app container, sometimes with a sidecar helper.",
+          text: "A pod is the cook’s station: the smallest unit Kubernetes runs, placed on a node by the scheduler. It usually holds one app container, sometimes with a sidecar helper.",
         },
         {
           kind: "p",
-          text: "A pod isn’t a physical thing. It’s an environment on one machine, where its containers share one IP address and, where they need it, storage.",
+          text: "A pod isn’t a machine of its own. It’s a shared space on one node, where its containers share one IP address and, where they need it, storage.",
         },
         {
           kind: "p",
-          text: "A workload is the standing order “always keep 3\u00a0pizza cooks”. A Deployment running 3\u00a0copies of the cart image is one workload: 3\u00a0pods, kept at 3.",
+          text: "A workload is a standing order, such as “always keep 3\u00a0pizza cooks”. A Deployment running 3\u00a0copies of the cart image is one workload: 3\u00a0pods, kept at 3.",
         },
         {
           kind: "p",
           text: [
-            "Pods are generally created by a workload such as a Deployment, not by hand. If a service’s pods need to track state, the Kubernetes docs suggest a ",
+            "You rarely create pods by hand: a workload such as a Deployment creates them. For pods that need to keep state, the Kubernetes docs suggest a ",
             { a: "StatefulSet", href: "/learn/statefulset-vs-deployment" },
             " instead.",
           ],
@@ -181,7 +136,7 @@ export const article: Article = {
     },
     {
       id: "how-one-click-reaches-the-right-container",
-      title: "How one click reaches the right container",
+      title: "How a click reaches a container",
       blocks: [
         {
           kind: "steps",
@@ -191,18 +146,70 @@ export const article: Article = {
             [
               "The Ingress matches the path, such as ",
               { code: "/cart" },
-              ", and sends the click to the cart Service, the order counter.",
+              ", and sends the click to the cart Service: the order counter.",
             ],
-            "The Service hands the click to one of the ready cart pods, as the order counter passes each order to an open station.",
-            "The Service’s target port leads to the cart container inside that pod.",
+            "The Service hands the click to one of the ready cart pods, as the counter passes each order to an open station.",
+            "The Service’s target port leads to the cart container in that pod.",
             "The answer goes back to the browser the same way.",
           ],
         },
         {
           kind: "p",
-          text: "Kubernetes keeps a list of each Service’s ready pods, updated whenever the set of pods changes. So a copy that isn’t ready yet gets no clicks.",
+          text: "Kubernetes updates each Service’s list of pods whenever pods come or go, and sends traffic only to ready ones. So a copy that isn’t ready yet gets no clicks.",
         },
         { kind: "svg", figure: figure3 },
+      ],
+    },
+    {
+      id: "designing-your-clusters-in-7-steps",
+      title: "How many clusters you need",
+      blocks: [
+        {
+          kind: "steps",
+          items: [
+            [
+              { b: "List your services." },
+              " For the shop: website, catalog, cart, orders and payments.",
+            ],
+            [
+              { b: "See what depends on what." },
+              " Cart, orders and payments work as a chain. The website and catalog still show products while checkout is down.",
+            ],
+            [
+              { b: "Split by environment first." },
+              " Live, test and development make 3\u00a0clusters, each with all 5\u00a0services. A small team can stop here.",
+            ],
+            [
+              { b: "Look for special rules." },
+              " Payments handles card data, so a growing business may give it its own cluster for stronger isolation.",
+            ],
+            [
+              { b: "Look at where your users are." },
+              " Users in one country can share one region. Users across continents may need a cluster in each region, near them.",
+            ],
+            [
+              { b: "Ask what breaks if this breaks." },
+              " That’s its blast radius. Keep together what fails together, like cart and orders. One cluster per service adds no safety.",
+            ],
+            [
+              { b: "Weigh the cost." },
+              " Each extra cluster brings its own control plane, nodes and upkeep. Split only when the reason is worth it.",
+            ],
+          ],
+        },
+        {
+          kind: "p",
+          text: "A growing business may split live into 3\u00a0clusters: shopping (website, catalog), checkout (cart, orders) and payments, kept apart for its rules.",
+        },
+        { kind: "svg", figure: figure1 },
+        {
+          kind: "p",
+          text: "A large company runs these steps for many teams, regions and rules. It ends up with many clusters, each split for one of these reasons.",
+        },
+        {
+          kind: "p",
+          text: "Inside one cluster, namespaces keep teams and services apart. Names don’t clash across namespaces, and access rules can stop at one. Services still reach each other across namespaces by name.",
+        },
       ],
     },
     {
@@ -211,11 +218,11 @@ export const article: Article = {
       blocks: [
         {
           kind: "p",
-          text: "You pay for the nodes. On AKS, compute is priced by each virtual machine’s type and running time. On EKS, you pay for the EC2 instances behind the nodes, plus an hourly fee per cluster.",
+          text: "You pay for the nodes. On AKS, compute is charged by each virtual machine’s type and running time. The Free tier adds no cluster fee, while the Standard and Premium tiers do. On EKS, you pay for the EC2 instances behind the nodes, plus an hourly fee per cluster.",
         },
         {
           kind: "p",
-          text: "A node costs the same each hour, whether its pods are busy or idle. Pods on your nodes add no charge of their own. You pay for disks and public IP addresses separately.",
+          text: "A node is charged for the time it runs, whether its pods are busy or idle. Pods on your nodes add no charge of their own. Disks and public IP addresses are charged separately.",
         },
         {
           kind: "p",
@@ -228,8 +235,8 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "In the restaurant, that’s counter space held for a cook who never uses it, paid for all the same. ",
-            { a: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
+            "In the restaurant, that’s counter space held for a cook who never uses it, and paid for all the same. ",
+            { a: "Pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
             " sets requests from real use.",
           ],
         },
@@ -284,22 +291,22 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "Kubernetes architecture: control plane, nodes and pods",
+      title: "Kubernetes architecture",
       where: "Learn",
       href: "/learn/kubernetes-architecture",
     },
     {
-      title: "Kubernetes pricing and cost estimation: count the nodes, then price them",
+      title: "Kubernetes cost estimation",
       where: "Learn",
       href: "/learn/kubernetes-cost-estimation",
     },
     {
-      title: "Right-size Kubernetes pods: set requests from real use",
+      title: "Kubernetes requests vs limits",
       where: "Learn",
       href: "/learn/kubernetes-pod-right-sizing",
     },
     {
-      title: "Kubernetes cost optimization: rebalance requests, then remove spare nodes",
+      title: "Kubernetes cost optimization",
       where: "Learn",
       href: "/kubernetes-cost-optimization",
     },

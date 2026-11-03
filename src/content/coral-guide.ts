@@ -2,14 +2,15 @@ import { learnPath, routes } from "@/config/site";
 import type { GuideContent } from "@/content/guide";
 
 /**
- * `/coral-guide`: every string the Coral product guide prints, verbatim from the
- * approved mock. A paraphrase here is a different claim.
+ * `/coral-guide`: every string the Coral product guide prints. The PDF at
+ * `/docs/coral-product-guide.pdf` was drawn from an earlier version of this
+ * text; regenerate it when this copy changes.
  *
- * Laid out like the FAQ: eleven groups, 32 numbered rows, nothing removed. A
- * section's opening blocks are its first row, under the name the mock gives it
- * ("The four steps", "What you need", "Step by step", "The components", "The
- * pages", "The figures", "The command"); its callout stays open over the rows.
- * A section whose lede is "" prints none, and opens on its callout or rows.
+ * Laid out like the FAQ: eleven groups, 32 numbered rows. A section's opening
+ * blocks are its first row, under a name of its own ("The four steps", "What
+ * you need", "Step by step", "The components", "The pages", "The figures",
+ * "The command"); its callout stays open over the rows. A section whose lede
+ * is "" prints none, and opens on its callout or rows.
  *
  * ─── THE ANCHOR IDS ARE A CONTRACT ─────────────────────────────────────────
  * Other pages, the PDFs' readers and shared links point at these ids: the
@@ -77,17 +78,16 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
   meta: {
     title: "Coral product guide",
     description:
-      "Connect an AKS or EKS cluster to Coral: what it installs, how it rebalances requests and removes spare nodes, and the switches that keep you in control.",
+      "Connect AKS or EKS to Coral: what it installs, how it rebalances requests and nodes, what data it sends, and how you stay in control.",
   },
   hero: {
     title: "Coral product guide",
-    deck: "How to connect an AKS or EKS cluster, what Coral changes, and how you stay in control.",
+    deck: "Connect an AKS or EKS cluster, see what Coral changes, and stay in control.",
     downloads: [{ label: "PDF", document: "coral-guide" }],
   },
-  updated: "Updated 2 November 2026",
-  /* The product page first, then the PDF cover's three cards; the fine line is
-     the last term's second paragraph, without the PDF's "This guide describes
-     Coral as released in October 2026." */
+  updated: "Updated 3 November 2026",
+  /* The product page first, then what Coral does, what it never does, and how
+     you stay in control. */
   summary: [
     {
       term: "Product page",
@@ -102,7 +102,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
     {
       term: "What Coral never does",
       text: [
-        "Create machines itself, change your pod templates or Git sources, or read Secret objects or pod logs through the Kubernetes API.",
+        "Create machines itself, change your pod templates or Git sources, or read Secrets or pod logs through the Kubernetes API.",
       ],
     },
     {
@@ -121,7 +121,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
     {
       id: "how-coral-works",
       title: "How Coral works",
-      lede: "Coral rebalances your Kubernetes clusters so you pay for what you use. Cost monitoring is always on.",
+      lede: "Coral rebalances requests and nodes so you pay for what you use. Cost monitoring is always on.",
       rows: [
         {
           id: "how-coral-works-the-four-steps",
@@ -135,7 +135,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                   body: [
                     {
                       kind: "p",
-                      text: "One command installs the Coral agent in your cluster. The command asks before it changes anything in your cloud.",
+                      text: "One command installs the Coral agent. It asks before it changes anything in your cloud.",
                     },
                   ],
                 },
@@ -144,7 +144,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                   body: [
                     {
                       kind: "p",
-                      text: "The agent reads usage every 30 seconds and sends 5-minute summaries. Figures appear within minutes.",
+                      text: "The agent reads usage and sends summaries to Zoorik. Figures appear within minutes.",
                     },
                   ],
                 },
@@ -153,7 +153,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                   body: [
                     {
                       kind: "p",
-                      text: "Coral works out the request each workload needs, the nodes you don’t need, and what that saves.",
+                      text: "Coral works out the request each workload needs, the nodes you don’t need, and the saving.",
                     },
                   ],
                 },
@@ -162,7 +162,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                   body: [
                     {
                       kind: "p",
-                      text: "Coral removes the nodes you don’t need. When you switch on automation, it also applies the new sizes.",
+                      text: "Coral removes the nodes you don’t need. With automation on, it also applies the new requests.",
                     },
                   ],
                 },
@@ -189,8 +189,8 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                 ],
                 [
                   "Node optimization",
-                  "Removes the nodes you don’t need. Rebalances onto cheaper machines when you ask.",
-                  "On from install, together with the Evictor, which moves pods off lightly used nodes.",
+                  "Removes the nodes you don’t need, and moves work to cheaper machines when you ask.",
+                  "On from install, with the Evictor, which moves pods off lightly used nodes.",
                 ],
               ],
             },
@@ -216,32 +216,28 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               rows: [
                 [
                   "A supported cluster",
-                  "AKS on Azure or EKS on AWS, on Kubernetes 1.30 or later, with at least one Linux node (amd64 or arm64). Other clusters connect as “Local”, without cloud prices.",
-                ],
-                [
-                  "Linux nodes for optimization",
-                  "Coral’s parts run on Linux nodes. Windows nodes are listed and costed, but their workloads are not resized, rebalanced or live-migrated.",
+                  "AKS or EKS on Kubernetes 1.30 or later, with at least one Linux node (amd64 or arm64). Windows nodes are listed and costed, but their workloads are not resized, rebalanced or live-migrated. Other clusters connect as “Local”, without cloud prices.",
                 ],
                 [
                   "Nodes on 1.33 or later",
-                  "Only for resizing running pods in place. On older nodes, Coral applies a new size by restarting pods one at a time, within their PodDisruptionBudget.",
+                  "Only to resize running pods in place. On older nodes, Coral applies a new size by restarting pods one at a time, within their PodDisruptionBudget.",
                 ],
-                ["Cluster access", "cluster-admin on the cluster, through a kubeconfig context."],
+                ["Cluster access", "cluster-admin, through a kubeconfig context."],
                 [
                   "Command-line tools",
-                  "The Azure CLI (az) for AKS, or the AWS CLI (aws) for EKS, signed in. Helm 3.8 or later only if Karpenter has to be installed.",
+                  "The Azure CLI (az) for AKS, or the AWS CLI (aws) for EKS, signed in. Helm 3.8 or later, only if Karpenter has to be installed.",
                 ],
                 [
                   "Cloud rights",
-                  "AKS: Owner, or Contributor with User Access Administrator, on the cluster’s subscription. EKS: the rights to create IAM roles and EKS Pod Identity associations. If Karpenter is installed, also SQS, EventBridge and cluster updates.",
+                  "AKS: Owner, or Contributor with User Access Administrator, on the cluster’s subscription. EKS: rights to create IAM roles and EKS Pod Identity associations, plus SQS, EventBridge and cluster updates if Karpenter is installed.",
                 ],
                 [
                   "Network",
-                  "Outbound HTTPS to Zoorik; to ghcr.io and pkg-containers.githubusercontent.com for the images; and to your cloud’s APIs for node removal (Azure Resource Manager and Entra ID, or AWS STS and Auto Scaling).",
+                  "Outbound HTTPS to Zoorik, and to ghcr.io and pkg-containers.githubusercontent.com for images. For node removal, also to Azure Resource Manager and Entra ID, or AWS STS and Auto Scaling.",
                 ],
                 [
                   "A console account",
-                  "Sign-in with Microsoft or Google, and permission to connect clusters.",
+                  "Sign-in with Microsoft or Google, with permission to connect clusters.",
                 ],
               ],
             },
@@ -263,7 +259,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               text: [
                 "Add ",
                 { code: "--dry-run" },
-                " to print every cloud command and every object the agent setup installs, without changing anything.",
+                " to print every cloud command and every object the setup installs, without changing anything.",
               ],
             },
           ],
@@ -296,9 +292,9 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                     {
                       kind: "p",
                       text: [
-                        "On the Overview page, click “Connect cluster”. Node optimization and Workload optimization start switched on. Workload optimization only recommends until you switch on “Automatically optimize”. For a careful start, read ",
+                        "On Overview, click “Connect cluster”. Node optimization and Workload optimization start on. Workload optimization only recommends until you switch on “Automatically optimize”. For a careful start, read ",
                         { ref: "stay-in-control", text: "“Stay in control”" },
-                        " before you continue.",
+                        " first.",
                       ],
                     },
                   ],
@@ -342,9 +338,9 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                     {
                       kind: "p",
                       text: [
-                        "Copy it from the dialog. Add ",
+                        "Copy it from the dialog, and add ",
                         { code: "--kube-context <name>" },
-                        " to pick the cluster. Its connect token works once and expires after 60 minutes.",
+                        " to pick the cluster. The connect token works once and expires after one hour.",
                       ],
                     },
                     {
@@ -361,7 +357,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                   body: [
                     {
                       kind: "p",
-                      text: "zoorikctl lists every cloud change and asks once. It then installs the agent and waits for it to register. The cluster appears on Overview, and its figures follow within minutes.",
+                      text: "zoorikctl lists every cloud change and asks once. It then installs the agent and waits for it to register. The cluster appears on Overview, with its figures within minutes.",
                     },
                   ],
                 },
@@ -371,7 +367,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
         },
         {
           id: "what-connect-asks-to-change",
-          title: "What connect asks to change in your cloud",
+          title: "Cloud changes",
           body: [
             {
               kind: "table",
@@ -384,30 +380,30 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                 [
                   "Permission to remove nodes on AKS",
                   "Every AKS connect",
-                  "A managed identity, zoorik-agent-<cluster>, with the role “Zoorik Node Removal v2” on this cluster only. The role can read the cluster, its pools and machines, and delete machines. Connect also turns on workload identity and the OIDC issuer if they are off.",
+                  "A managed identity, zoorik-agent-<cluster>, with the role “Zoorik Node Removal v2” on this cluster only. The role can read the cluster, its pools and machines, and delete machines. It can also reduce a pool’s minimum when that minimum alone keeps an emptied machine. Workload identity and the OIDC issuer are turned on if they are off.",
                 ],
                 [
                   "Permission to remove nodes on EKS",
                   "Every EKS connect",
-                  "An IAM role, zoorik-agent-<cluster>, bound with EKS Pod Identity. It can only terminate instances in this cluster’s Auto Scaling groups. The Pod Identity Agent add-on is added if missing.",
+                  "An IAM role, zoorik-agent-<cluster>, bound with EKS Pod Identity. It can terminate instances only in this cluster’s Auto Scaling groups and reduce the minimum of this cluster’s groups. It can read Auto Scaling groups and instances across your account. The Pod Identity Agent add-on is added if missing.",
                 ],
                 [
-                  "A node autoscaler on AKS",
+                  "Node autoscaler on AKS",
                   "Only if the cluster has none",
-                  "Turns on AKS node auto provisioning (NAP), which needs Azure CNI (not kubenet), and adds the node class zoorik-base.",
+                  "Turns on node auto provisioning (NAP), which needs Azure CNI (not kubenet). Adds the node class zoorik-base.",
                 ],
                 [
-                  "A node autoscaler on EKS",
+                  "Node autoscaler on EKS",
                   "Only if the cluster has none",
-                  "Two IAM roles, an SQS queue with four EventBridge rules, discovery tags on the subnets and security group, an access entry, Pod Identity, Karpenter 1.8.1, the node classes zoorik-base and default, and a default NodePool.",
+                  "Karpenter 1.8.1, the node classes zoorik-base and default, and a default NodePool. Also two IAM roles, Pod Identity, an access entry, an SQS queue with EventBridge rules, and discovery tags on the subnets and security group.",
                 ],
               ],
             },
             {
               kind: "ul",
               items: [
-                "On AKS, the OIDC issuer can’t be turned off again once it is on.",
-                "On an EKS cluster that uses only aws-auth, installing Karpenter switches authentication to API_AND_CONFIG_MAP. That can’t be undone.",
+                "On AKS, the OIDC issuer can’t be turned off once it is on.",
+                "On an EKS cluster that uses only aws-auth, installing Karpenter switches authentication to API_AND_CONFIG_MAP. This can’t be undone.",
                 [
                   "If you decline the cloud changes, the agent still installs. Pools run by an autoscaler are optimized as usual. Fixed-size pools wait until you run ",
                   { code: "zoorikctl cluster grant-node-deletion" },
@@ -423,7 +419,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
     {
       id: "what-gets-installed",
       title: "What gets installed",
-      lede: "Everything the agent setup installs is labelled app.kubernetes.io/part-of=zoorik-agent.",
+      lede: "Everything the agent setup installs carries the label app.kubernetes.io/part-of=zoorik-agent.",
       rows: [
         {
           id: "what-gets-installed-the-components",
@@ -438,25 +434,25 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               rows: [
                 [
                   ["zoorik-agent", { sub: "Deployment, namespace zoorik-agent" }],
-                  "Reads the cluster, sends usage summaries and carries out Coral’s changes. Runs as non-root with a read-only filesystem.",
+                  "Reads the cluster, sends usage summaries and carries out Coral’s changes. Runs as non-root, with a read-only filesystem.",
                 ],
                 [
-                  ["zoorik-agent-webhook", { sub: "Deployment, 2 replicas" }],
-                  "Sizes new pods as they start, and fails open, so it never blocks a pod from starting. It also refuses hand edits and deletes of the HPAs Coral manages; change those through the policy or “Hand back”.",
+                  ["zoorik-agent-webhook", { sub: "Deployment" }],
+                  "Sizes new pods as they start. It fails open, so it never blocks a pod from starting. It refuses hand edits and deletes of the HPAs Coral manages: change those through the policy or “Hand back”.",
                 ],
                 [
                   ["zoorik-node", { sub: "DaemonSet, namespace zoorik-node" }],
-                  "The live-migration daemon, on every Linux node: it checkpoints a pod and restores it on another node. It runs privileged (root, host PID, SYS_ADMIN) and places CRIU, the open-source checkpoint and restore tool, at /usr/local/bin/criu.",
+                  "The live-migration daemon, on every Linux node. It checkpoints a pod and restores it on another node. It runs privileged (root, host PID, SYS_ADMIN) and installs CRIU, the open-source checkpoint and restore tool, at /usr/local/bin/criu.",
                 ],
                 [
                   "CRDs and admission policies",
-                  "recommendations.coral.zoorik.com and actionrequests.coral.zoorik.com store Coral’s recommendations and action requests. Admission policies limit what the agent may change.",
+                  "recommendations.coral.zoorik.com and actionrequests.coral.zoorik.com hold Coral’s recommendations and action requests. Admission policies limit what the agent may change.",
                 ],
               ],
             },
             {
               kind: "p",
-              text: "Rebalancing pools are created later, and are labelled coral.zoorik.com/owned-by=rebalancing.",
+              text: "Rebalancing pools come later, labelled coral.zoorik.com/owned-by=rebalancing.",
             },
           ],
         },
@@ -469,7 +465,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               items: [
                 "The agent updates itself to each Zoorik release, and rolls back a failed update.",
                 "It can’t widen its own permissions. A release that needs more shows “Re-run connect” on the Dashboard’s “Agent release” card.",
-                "If Argo CD, Flux or Helm manages the agent, the agent doesn’t update itself.",
+                "If Argo CD, Flux or Helm manages the agent, it doesn’t update itself.",
               ],
             },
           ],
@@ -494,7 +490,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               rows: [
                 [
                   [{ b: "Overview" }],
-                  "Every connected cluster, its running cost, what is recoverable, and its score. “Connect cluster” starts here.",
+                  "Every connected cluster, with its running cost, what is recoverable and its score. “Connect cluster” starts here.",
                 ],
                 [
                   [{ b: "Dashboard" }],
@@ -502,7 +498,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                 ],
                 [
                   [{ b: "Optimization constraints" }],
-                  "Workload setups that make optimization risky (health probes, PodDisruptionBudgets, topology spread), with the fix for each. Advisory only.",
+                  "Workload setups that make optimization risky, such as health probes, PodDisruptionBudgets and topology spread, with a fix for each. Advisory only.",
                 ],
               ],
             },
@@ -516,13 +512,13 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               rows: [
                 [
                   "Optimization",
-                  "Every workload’s request against its recommendation, confidence, savings and status. Switch on “Automatically optimize” for one workload.",
+                  "Each workload’s request against its recommendation, with confidence, saving and status. Switch on “Automatically optimize” for one workload.",
                 ],
                 [
                   "Scaling policies",
                   "Built-in and custom policies. Switch on “Automatically optimize” for a policy.",
                 ],
-                ["Impact", "What resizing has already reduced in requests, at list price."],
+                ["Impact", "The value of requests already reduced by resizing, at list price."],
                 ["Event log", "Everything Coral did or saw, newest first."],
               ],
               continuation: true,
@@ -546,7 +542,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                 ],
                 [
                   "Container live migration",
-                  "Pods moved by warm handover during node draining, and what each move saved. Checkpoint moves are not counted here.",
+                  "Pods moved by warm handover while nodes drain, and what each move saved. Checkpoint moves are not counted here.",
                 ],
               ],
               continuation: true,
@@ -568,7 +564,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
             },
             {
               kind: "p",
-              text: "While data arrives, pages show “Waiting for the agent’s first report…” and then “Calculating”. They update by themselves.",
+              text: "While data arrives, pages show “Waiting for the agent’s first report…”, then “Calculating”. They update by themselves.",
             },
           ],
         },
@@ -577,33 +573,34 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
     {
       id: "workload-optimization",
       title: "Workload optimization",
-      lede: "Coral rebalances each container’s CPU and memory requests under the scaling policy its workload gets.",
+      lede: "Coral rebalances each container’s CPU and memory requests under its workload’s scaling policy.",
       rows: [
         {
           id: "how-sizes-are-worked-out",
-          title: "How sizes are worked out",
+          title: "How sizing works",
           body: [
             {
               kind: "ul",
               items: [
                 [
-                  { b: "CPU (balanced policy):" },
-                  " the 80th percentile (P80) of the last 3 days, plus 10%.",
+                  { b: "CPU:" },
+                  " a percentile of recent use, plus extra room. The balanced policy uses the 80th percentile (P80) of the last 3 days, plus 10%.",
                 ],
                 [
-                  { b: "Memory (balanced policy):" },
-                  " the highest use in the last 8 days, plus 10%.",
+                  { b: "Memory:" },
+                  " the highest recent use, plus extra room. The balanced policy uses the highest use in the last 8 days, plus 10%.",
                 ],
-                "A usage surge or an OOM kill raises the size within minutes.",
-                "With a CPU-based HPA, Coral picks the request by replaying past load through your HPA’s own settings.",
-                "Your manifest is never changed. Coral sizes pods as they start. It applies a new size by resizing running pods in place on 1.33+ nodes, or else by restarting them one at a time.",
+                "A usage surge or an OOM kill raises the request within minutes.",
+                "With a CPU-based HPA, Coral picks the CPU request by replaying past load through your HPA’s own settings.",
+                "On the built-in policies, Coral never reduces a CPU or memory limit, except to keep Guaranteed pods Guaranteed.",
+                "Your manifest never changes. Coral sizes pods as they start. It applies a new size by resizing running pods in place on 1.33+ nodes, or else by restarting them one at a time.",
               ],
             },
           ],
         },
         {
           id: "turn-it-on",
-          title: "Turn it on",
+          title: "Turn on automation",
           body: [
             {
               kind: "table",
@@ -616,12 +613,12 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                 [
                   "On a policy (recommended)",
                   "Scaling policies → switch on “Automatically optimize” → “Start optimizing”.",
-                  "In the first 24 hours of data, reductions are capped at 10%, then 25%, then 35%. After that Coral needs at least 90% data coverage.",
+                  "Reductions start small while data builds up. After that, Coral applies a size only when it has enough data.",
                 ],
                 [
                   "On one workload",
                   "Optimization → the workload’s “Automatically optimize” → On.",
-                  "Applies straight away, with no confidence wait.",
+                  "Applies at once, with no wait for confidence.",
                 ],
               ],
             },
@@ -647,7 +644,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                 [
                   "resiliency",
                   "Databases and stateful apps. The default for StatefulSets.",
-                  "Like balanced; keeps Guaranteed pods Guaranteed",
+                  "Like balanced, and keeps Guaranteed pods Guaranteed",
                 ],
                 [
                   "stability",
@@ -662,7 +659,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                 ],
                 [
                   "readonly",
-                  "Recommendations only; never changes a workload. Always used for Zoorik’s own namespace.",
+                  "Recommendations only. Always used for Zoorik’s own namespace.",
                   "None",
                 ],
               ],
@@ -670,8 +667,8 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
             {
               kind: "ul",
               items: [
-                "Every built-in policy except readonly has the Optimization type “Both”: it sizes pods and manages HPAs. With automation on, Coral creates HPAs for eligible Deployments and Argo Rollouts, and takes over HPAs nothing else manages.",
-                "On a built-in policy you can change only “Automatically optimize” and the Optimization type (Vertical or Both). Set it to “Vertical” to size pods only. Use “Duplicate…” for anything else.",
+                "Every built-in policy except readonly has the Optimization type “Both”: it sizes pods and manages HPAs.",
+                "On a built-in policy, you can change only “Automatically optimize” and the Optimization type. Set the type to “Vertical” to size pods only. For anything else, use “Duplicate…”.",
               ],
             },
           ],
@@ -691,35 +688,35 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                   ". It starts as a copy of balanced.",
                 ],
                 {
-                  text: [{ b: "Settings." }, " Give it a name, then set:"],
+                  text: [{ b: "Settings." }, " Name the policy, then set:"],
                   body: [
                     {
                       kind: "ul",
                       items: [
                         [
                           { b: "Automatically optimize." },
-                          " On: Coral resizes the workloads that get this policy. Off: Coral only shows recommendations and changes nothing.",
+                          " On: Coral resizes the workloads that get this policy. Off: recommendations only.",
                         ],
                         [
                           { b: "Optimization type." },
-                          " Vertical changes pod sizes only. Both also manages HPAs.",
+                          " Vertical sizes pods only. Both also manages HPAs.",
                         ],
                         [
                           { b: "CPU." },
-                          " Pick how busy a moment to size for. P80 means the app used this much or less 80% of the time. Go higher, up to P99.9 or max, for more room. Go below P80 to save more. Also set the extra room on top, and how far back Coral looks (3 hours to 8 days).",
+                          " The percentile to size for: P80 means the app used this much or less 80% of the time. Go higher, up to P99.9 or max, for more room. Go below P80 to save more. Also set the extra room, and how far back Coral looks: 3 hours to 8 days.",
                         ],
                         [
                           { b: "Memory." },
-                          " By default, sized from the most the app has used, plus extra room.",
+                          " By default, the most the app has used, plus extra room.",
                         ],
                         [{ b: "Minimums and maximums, limits, startup CPU and rollout." }],
                         [
                           { b: "Guaranteed pods." },
-                          " Keeps them Guaranteed by changing requests and limits together.",
+                          " Kept Guaranteed by changing requests and limits together.",
                         ],
                         [
                           { b: "HPA converter." },
-                          " If your own HPA scales on a percentage of CPU, Coral changes its target to a fixed amount. Making pods smaller then doesn’t make the HPA add pods.",
+                          " If your HPA scales on a percentage of CPU, Coral changes its target to a fixed amount, so smaller pods don’t make it add pods.",
                         ],
                       ],
                     },
@@ -728,7 +725,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                 {
                   text: [
                     { b: "Assignment rules." },
-                    " Add one or more rules. A workload matches a rule only if it fits everything you filled in:",
+                    " Add one or more rules. A workload matches a rule only if it fits every field you filled in:",
                   ],
                   body: [
                     {
@@ -759,23 +756,23 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
             {
               kind: "ul",
               items: [
-                "Coral checks custom policies from top to bottom and uses the first one that matches. You can change the order later.",
-                "If you picked a policy for a workload, or named one in its annotation, it keeps that policy. Rules don’t change it.",
-                "To make Coral leave some workloads alone, create a policy with Automatically optimize off and a rule that matches them.",
-                "With a new workload, Coral makes it smaller step by step while it learns, and only as far as its data allows. If a workload needs more, Coral gives it more straight away.",
+                "Custom policies are checked from top to bottom, and the first match wins. You can change the order later.",
+                "A policy picked for a workload, or named in its annotation, stays. Rules don’t change it.",
+                "To make Coral leave workloads alone, create a policy with “Automatically optimize” off and a rule that matches them.",
+                "For a new workload, Coral reduces requests step by step while it learns, only as far as its data allows. If a workload needs more, it gets more at once.",
               ],
             },
           ],
         },
         {
           id: "how-a-workload-gets-its-policy",
-          title: "How a workload gets its policy",
+          title: "Which policy applies",
           body: [
             { kind: "p", text: "Coral uses the first of these that applies:" },
             {
               kind: "ol",
               items: [
-                "Zoorik’s own namespace, and add-ons labelled addonmanager.kubernetes.io/mode: Reconcile, always get readonly. Other kube-system workloads, EKS add-ons included, follow the steps below.",
+                "Zoorik’s own namespace, and add-ons labelled addonmanager.kubernetes.io/mode: Reconcile, always get readonly. Other kube-system workloads, EKS add-ons included, go on down this list.",
                 [
                   "A policy named in the workload’s coral.zoorik.com/configuration annotation (see ",
                   { ref: "per-workload-settings", text: "Per-workload settings" },
@@ -790,7 +787,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
         },
         {
           id: "status-words",
-          title: "Status words",
+          title: "Workload statuses",
           body: [
             {
               kind: "table",
@@ -800,20 +797,17 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               ],
               rows: [
                 ["Applied", "Pods run at the recommended size."],
-                ["Applying", "Coral is rolling the new size out."],
+                ["Applying", "Coral is rolling out the new size."],
                 ["At next restart", "The new size applies when the pod next restarts."],
-                [
-                  "Waiting for confidence",
-                  "Automation is on; Coral waits until it has enough data.",
-                ],
+                ["Waiting for confidence", "Automation is on. Coral is waiting for enough data."],
                 ["Recommendation only", "Coral works out sizes but doesn’t apply them."],
                 ["No data yet", "No usage has arrived for this workload yet."],
-                ["Blocked", "Coral can’t apply right now; it retries by itself."],
+                ["Blocked", "Coral can’t apply right now, and retries by itself."],
                 [
                   "Stopped",
-                  "Sizing is frozen by a safety hold, for example after repeated OOM kills.",
+                  "A safety hold has frozen sizing, for example after repeated OOM kills.",
                 ],
-                ["Not supported", "Coral can’t size this workload; the reason is shown."],
+                ["Not supported", "Coral can’t size this workload. The page shows why."],
               ],
             },
           ],
@@ -864,10 +858,10 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
             {
               kind: "ul",
               items: [
-                "Coral creates an HPA only for a Deployment or Argo Rollout that has none. The workload needs 24 hours of history, at least 100m CPU per pod, and 2 or more ready replicas. The new HPA’s minReplicas is 2 or more.",
+                "Coral creates an HPA only for a Deployment or Argo Rollout that has none. It needs enough history, enough CPU per pod and two or more ready replicas. The new HPA keeps at least two replicas.",
                 "It takes over only HPAs nothing else manages. It keeps minReplicas, only raises maxReplicas, and restores your values on “Hand back”.",
-                "Outside a rebalance’s warm handover, it never changes HPAs from Helm, KEDA or kubectl apply, and never HPAs whose bounds Argo CD or Flux own.",
-                "With automation on, Coral switches an active VPA to Off, and restores it when you switch off.",
+                "Outside a rebalance’s warm handover, it never changes HPAs from Helm, KEDA or kubectl apply, or HPAs whose bounds Argo CD or Flux own.",
+                "With automation on, Coral switches an active VPA to Off, and restores it when you switch automation off.",
                 "Switching automation off removes the HPAs Coral created and hands back the ones it took over.",
               ],
             },
@@ -876,11 +870,11 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
       ],
       related: [
         {
-          text: "VPA vs HPA: when to use which",
+          text: "HPA vs VPA in Kubernetes",
           href: learnPath("vpa-vs-hpa"),
         },
         {
-          text: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
+          text: "Kubernetes autoscaling",
           href: learnPath("kubernetes-autoscaling"),
         },
       ],
@@ -899,9 +893,9 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               items: [
                 "Coral uses pod requests to work out how many nodes each pool needs. Every pool keeps at least one node.",
                 "Before it moves anything, the agent checks on the live cluster that every pod on the node fits on another Ready node.",
-                "It cordons and drains one node at a time. If a drain can’t finish in 10 minutes, the node goes back into service.",
-                "After “Wait before removing empty nodes” (5 minutes by default), Coral hands the empty node to your autoscaler, whose own timers decide when it goes. Coral deletes the machine itself only in fixed-size pools that nothing else manages.",
-                "Pools that Karpenter or NAP already consolidates are left to them.",
+                "It cordons and drains one node at a time. If a drain can’t finish in time, the node goes back into service.",
+                "Once “Wait before removing empty nodes” has passed, Coral hands the empty node to your autoscaler, whose own timers decide when it goes. Coral deletes a machine itself only in fixed-size pools that nothing else manages.",
+                "Pools that Karpenter or NAP already consolidate are left to them.",
               ],
             },
           ],
@@ -913,17 +907,16 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
             {
               kind: "ul",
               items: [
-                "Moves pods off lightly used nodes, in pools where empty nodes get removed. It never deletes a machine and never overrides a PodDisruptionBudget.",
-                "Runs inside your cluster and checks every 60 seconds by default.",
-                "On from install, with its own switch in Settings → General. Switching off Node optimization does not stop it.",
-                "“Dry run” lists the nodes it would empty in the Event log, without moving any pod.",
+                "Moves pods off lightly used nodes, in pools where empty nodes get removed. It never deletes a machine, and never overrides a PodDisruptionBudget.",
+                "Runs inside your cluster from install, with its own switch in Settings → General. Switching off Node optimization doesn’t stop it.",
+                "In “Dry run”, it lists the nodes it would empty in the Event log, and moves no pod.",
               ],
             },
           ],
         },
         {
           id: "how-pods-are-moved",
-          title: "How pods are moved: warm handover, live migration or eviction",
+          title: "How pods are moved",
           body: [
             { kind: "p", text: "Coral moves a pod in the first of these ways that works:" },
             {
@@ -931,7 +924,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               items: [
                 [
                   { b: "Warm handover:" },
-                  " a replacement pod starts and becomes Ready on another node, then the old one is evicted.",
+                  " a replacement pod starts on another node and becomes Ready, then the old pod is evicted.",
                 ],
                 [
                   { b: "Live migration:" },
@@ -940,19 +933,24 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                 [{ b: "Eviction:" }, " within the pod’s PodDisruptionBudget."],
               ],
             },
-            { kind: "p", text: "Warm handover isn’t possible for:" },
+            {
+              kind: "p",
+              text: "Warm handover covers pods of Deployments and Argo Rollouts, even with one replica. It isn’t used for:",
+            },
             {
               kind: "ul",
               items: [
-                "StatefulSets.",
-                "Workloads with the Recreate strategy.",
-                "Workloads whose replicas Argo CD or Flux set.",
+                "The Recreate strategy.",
+                "Replica counts set by Argo CD or Flux.",
                 "Pods with ReadWriteOnce volumes.",
                 "GPU pods.",
-                "HPA-scaled pods outside a rebalance.",
+                "HPA-scaled apps, except in a rebalance.",
               ],
             },
-            { kind: "p", text: "Without live migration, these pods get a short restart." },
+            {
+              kind: "p",
+              text: "These pods, and pods of other kinds such as StatefulSets, move by live migration where both nodes support it, or else by eviction.",
+            },
           ],
         },
         {
@@ -961,7 +959,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
           body: [
             {
               kind: "p",
-              text: "A held node is one Coral won’t empty, because a pod on it can’t be moved safely. Node list → “What’s holding them” shows each reason and its fix. The common ones:",
+              text: "A held node is one Coral won’t empty, because a pod on it can’t move safely. Node list → “What’s holding them” gives each reason and its fix. The common ones:",
             },
             {
               kind: "table",
@@ -972,11 +970,11 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               rows: [
                 [
                   "The PodDisruptionBudget allows no disruption.",
-                  "Add replicas or relax the PodDisruptionBudget.",
+                  "Add replicas, or relax the PodDisruptionBudget.",
                 ],
                 [
                   "A kube-system pod has no PodDisruptionBudget.",
-                  "Add a PodDisruptionBudget that allows at least one disruption.",
+                  "Add one that allows at least one disruption.",
                 ],
                 [
                   "Data on the node’s own disk (hostPath).",
@@ -1004,19 +1002,19 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               items: [
                 [
                   { b: "Needs:" },
-                  " Karpenter or NAP, Node optimization on, and the permission to remove nodes.",
+                  " Karpenter or NAP, Node optimization on, and permission to remove nodes.",
                 ],
                 [
                   { b: "Steps:" },
-                  " “Prepare new plan” → choose nodes → “Generate plan” → compare current and rebalanced cost → “Rebalance”. A plan expires after 1 hour.",
+                  " “Prepare new plan” → choose nodes → “Generate plan” → compare current and rebalanced cost → “Rebalance”. A plan expires after one hour.",
                 ],
                 [
                   { b: "How it runs:" },
-                  " Coral creates fixed-size NodePools named zoorik-rb-…. Your Karpenter or NAP launches the new machines. Then the old nodes are drained and removed one by one. The new pools stay after the run.",
+                  " Coral creates fixed-size NodePools named zoorik-rb-…, and your Karpenter or NAP launches the new machines. The old nodes are then drained and removed one by one. The new pools stay after the run.",
                 ],
                 [
                   { b: "Schedules:" },
-                  " a schedule runs every day at 02:00 UTC and starts a rebalance by itself when its savings target is met.",
+                  " a schedule checks every day at 02:00 UTC, and starts a rebalance when its savings target is met.",
                 ],
               ],
             },
@@ -1052,13 +1050,13 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                   "Workload optimization",
                   "Settings",
                   "On",
-                  "Nothing is resized or scaled. Recommendations are still shown.",
+                  "Nothing is resized or scaled. Recommendations still show.",
                 ],
                 [
                   "Node optimization",
                   "Settings",
                   "On",
-                  "Coral plans no node removal, and steps already under way are cancelled. The Evictor keeps running.",
+                  "No node removal is planned, and steps under way are cancelled. The Evictor keeps running.",
                 ],
                 [
                   "Evictor",
@@ -1070,7 +1068,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                   "Node pool “Enabled”",
                   "Configuration → Node pools",
                   "On",
-                  "Coral leaves that pool’s nodes alone. A rebalance you start can still include them.",
+                  "Coral leaves the pool’s nodes alone, except in a rebalance you start.",
                 ],
                 [
                   "Wait before removing empty nodes",
@@ -1129,7 +1127,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                   [{ code: "coral.zoorik.com/live-migration" }],
                   [{ code: "disabled" }],
                   "Annotation: pod",
-                  "No live migration. The pod can still be moved by handover or eviction.",
+                  "No live migration. The pod can still move by handover or eviction.",
                 ],
                 [
                   [{ code: "coral.zoorik.com/ignore-optimization-constraints" }],
@@ -1143,7 +1141,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               kind: "ul",
               items: [
                 "A PodDisruptionBudget that allows no disruption keeps its pods, and their node, in place for consolidation, the Evictor and rebalances.",
-                "The ignore label stops workload changes only (sizes and HPAs). It does not stop node moves.",
+                "The ignore label stops workload changes only (sizes and HPAs), not node moves.",
               ],
             },
           ],
@@ -1156,10 +1154,10 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               kind: "ol",
               items: [
                 "For recommendations only at first, switch off Node optimization in the Connect dialog. The Evictor still starts with the agent and can move pods, so do step 2 as soon as the cluster appears.",
-                "Open the Evictor’s “Advanced settings” in Settings and tick “Dry run”.",
-                "In Configuration → Node pools, switch off the pools you don’t want touched.",
+                "In Settings, open the Evictor’s “Advanced settings” and tick “Dry run”.",
+                "In Configuration → Node pools, switch off the pools you want left alone.",
                 "Create a scaling policy for one namespace, set its Optimization type to “Vertical”, and switch on “Automatically optimize”.",
-                "Watch the Event log and the Impact page, then widen step by step: more namespaces, more node pools, and Node optimization back on.",
+                "Watch the Event log and the Impact page. Then widen step by step: more namespaces, more node pools, and Node optimization back on.",
               ],
             },
           ],
@@ -1196,24 +1194,24 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
                 [
                   "Estimated monthly savings",
                   "Optimization",
-                  "Compute saved if every recommendation is applied.",
+                  "The compute saved if every recommendation is applied.",
                 ],
                 [
                   "Already removed",
                   "Impact",
-                  "The list-price value of the requests resizing has already reduced. Your cloud cost goes down once the freed capacity lets nodes go.",
+                  "The list-price value of the requests resizing has already reduced. Your cloud cost falls once the freed capacity lets nodes go.",
                 ],
                 [
                   "Fleet cost, Unclaimed capacity, Nodes held",
                   "Node list",
-                  "Every node’s monthly price, the capacity no pod has claimed, and the nodes Coral can’t empty.",
+                  "Each node’s monthly price, the capacity no pod has claimed, and the nodes Coral can’t empty.",
                 ],
               ],
             },
             {
               kind: "ul",
               items: [
-                "Prices are the cloud’s published list price for the region, refreshed nightly. Spot nodes are priced at the spot rate.",
+                "Prices are the cloud’s published list price for the region, refreshed nightly. Spot nodes use the spot rate.",
                 "Discounts, reservations and savings plans are not included. A month is 730 hours.",
                 "Until data exists, figures read “Calculating” or “Fetching prices”.",
               ],
@@ -1226,7 +1224,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
     {
       id: "security-and-data",
       title: "Security and data",
-      lede: "The agent sends summaries out, and Zoorik’s replies carry its instructions, recommendations and updates.",
+      lede: "The agent sends summaries to Zoorik. Zoorik’s replies carry instructions, recommendations and updates.",
       rows: [
         {
           id: "what-leaves-your-cluster",
@@ -1235,10 +1233,10 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
             {
               kind: "ul",
               items: [
-                "Usage summaries per container: CPU, memory, OOM kills, probe failures and CPU pressure, in 5-minute windows.",
-                "An inventory every 5 minutes: nodes, namespaces, workloads with their requests and limits, autoscalers, PodDisruptionBudgets, quotas, and up to 64 labels per workload and namespace.",
+                "Usage summaries per container: CPU, memory, OOM kills, probe failures and CPU pressure.",
+                "An inventory: nodes, namespaces, workloads with their requests and limits, autoscalers, PodDisruptionBudgets, quotas, and workload and namespace labels.",
                 "Events, with pod and node names: OOM kills, probe failures, spot interruptions, and Coral’s own actions, including the pods the Evictor moved.",
-                "A heartbeat every 60 seconds.",
+                "A regular heartbeat.",
                 "At registration, the cloud account: the Azure subscription and resource group, or the AWS account and region.",
               ],
             },
@@ -1251,8 +1249,9 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
             {
               kind: "ul",
               items: [
-                "The agent can’t read your Secrets or ConfigMaps, and has no pods/log, pods/exec or pods/portforward permission. It holds get on nodes/proxy to read kubelet metrics. That permission can also reach the kubelet’s log and exec endpoints, which Coral never calls.",
-                "No env var values, commands, image names or request payloads are sent. The only event text sent is the message when a pod can’t be created because of a quota, a limit range or an admission policy.",
+                "The agent can’t read your Secrets or ConfigMaps, and has no pods/log, pods/exec or pods/portforward permission.",
+                "It holds get on nodes/proxy to read kubelet metrics. That permission can also reach the kubelet’s log and exec endpoints, which Coral never calls.",
+                "No env var values, commands, image names or request payloads are sent. The only event text sent is the message when a quota, a limit range or an admission policy stops a pod being created.",
               ],
             },
           ],
@@ -1264,16 +1263,16 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
             {
               kind: "ul",
               items: [
-                "The agent opens every connection to Zoorik itself, over HTTPS, and accepts none from outside the cluster. Inside it, the API server calls the webhook, and the node daemons talk to each other over mutual TLS.",
+                "The agent opens every connection to Zoorik, over HTTPS, and accepts none from outside the cluster. Inside it, the API server calls the webhook, and the node daemons talk to each other over mutual TLS.",
                 "The agent swaps the one-time connect token for a cluster credential that rotates by itself.",
-                "Admission policies limit the agent’s changes. For example, it may scale a Deployment by only one replica, and change only the HPAs and NodePools Coral manages.",
+                "Admission policies limit the agent’s changes. For example, it may change only the HPAs and NodePools Coral manages.",
               ],
             },
           ],
         },
         {
           id: "the-live-migration-daemon",
-          title: "The live-migration daemon",
+          title: "Live-migration checkpoints",
           body: [
             {
               kind: "p",
@@ -1311,9 +1310,9 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               kind: "ul",
               items: [
                 ["Add ", { code: "--dry-run" }, " to see everything it would remove first."],
-                "Disconnect works even if the agent is down, and is safe to run again.",
+                "It works even if the agent is down, and is safe to run again.",
                 "It removes the agent, the webhook, the live-migration daemon, Coral’s roles, policies and CRDs, and Coral’s taints and annotations on nodes.",
-                "It deletes the HPAs Coral created, hands back the HPAs it took over, and restores the VPAs it switched off.",
+                "It deletes the HPAs Coral created, hands back the ones it took over, and restores the VPAs it switched off.",
                 "It offers to remove the cloud identity and role assignment it created.",
                 "Running pods keep their current sizes until they restart.",
               ],
@@ -1329,7 +1328,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
               items: [
                 "The node autoscaler set up during connect.",
                 "Coral’s zoorik-base node class and zoorik-rb-… rebalancing pools.",
-                "The CRIU files on nodes, and the folder /var/lib/zoorik/checkpoints, which can hold a checkpoint from an interrupted move. Delete it.",
+                "CRIU on the nodes, and the folder /var/lib/zoorik/checkpoints, which can hold a checkpoint from an interrupted move. Delete that folder yourself.",
                 "The “Zoorik Node Removal v2” role definition, workload identity, the OIDC issuer and the Pod Identity Agent add-on.",
                 "The cluster’s entry in the console, shown as “Not reporting”, and the data Zoorik has already received.",
               ],

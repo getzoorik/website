@@ -5,42 +5,56 @@ import { figure as figure2 } from "@/features/learn/figures/keda-vs-karpenter/2"
 export const article: Article = {
   slug: "keda-vs-karpenter",
   title: "KEDA vs Karpenter: when to use each or both",
-  meta: "Karpenter vs KEDA in Kubernetes: KEDA sets the pod count from events, Karpenter picks nodes from pod requests. When to use each, and how they work together.",
-  h1: "KEDA vs Karpenter: pods, nodes and the requests in between",
-  deck: "Neither one sets a pod’s CPU and memory request, yet Karpenter sizes the nodes from it.",
-  card: "KEDA sets how many pods run, Karpenter picks the nodes, and neither changes what each pod requests.",
+  meta: "KEDA vs Karpenter: KEDA sets how many pods run from events, and Karpenter adds and removes nodes to fit them. When to use each, and how to run both.",
+  h1: "KEDA vs Karpenter",
+  deck: "KEDA scales pods, Karpenter scales nodes, and neither sets the CPU and memory each pod requests.",
+  card: "KEDA sets the pod count, Karpenter sets the nodes, and neither changes what each pod requests.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes autoscaling",
   versus: ["KEDA", "Karpenter"],
   published: "2026-10-24",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "aditya",
   cover: "/learn-covers/zoorik-learn-keda-vs-karpenter-1200x630.webp",
   coverAlt:
     "KEDA vs Karpenter: KEDA sets how many pods, Karpenter sets which nodes, and requests are changed by neither",
   short:
-    "KEDA vs Karpenter is pod count against node count. KEDA (Kubernetes Event-driven Autoscaling) sets how many pods run from events, down to zero, and Karpenter adds and removes nodes to fit them. Use KEDA when work waits for pods, Karpenter when pods wait for nodes, and both for zero pods and zero nodes.",
+    "KEDA (Kubernetes Event-driven Autoscaling) sets how many pods run, from events such as a queue’s length, and can scale them to zero. Karpenter adds and removes nodes to fit those pods. Use KEDA when work waits for pods, and Karpenter when pods wait for nodes. Run both to take an idle workload, and its nodes, to zero.",
   sections: [
     {
       id: "when-to-use-keda-vs-karpenter",
-      title: "When to use KEDA vs Karpenter, and when to run both",
+      title: "When to use each",
       blocks: [
         {
           kind: "p",
-          text: "Picture a queue worker on EKS or AKS. Overnight its queue is empty, so KEDA has scaled the worker to zero and Karpenter has removed its node. When the morning backlog arrives, KEDA raises the replica count. The new pods don’t fit anywhere, so they wait as pending pods until Karpenter adds nodes for them.",
+          text: "Take a queue worker on EKS or AKS. Overnight its queue is empty, so KEDA has scaled it to zero and Karpenter has removed its node. When the morning backlog arrives, KEDA adds replicas. They fit on no node, so they wait as pending pods until Karpenter adds nodes.",
+        },
+        {
+          kind: "ul",
+          items: [
+            [
+              { b: "KEDA alone" },
+              " suits a workload that should follow events or idle at zero, on nodes with room to spare.",
+            ],
+            [
+              { b: "Karpenter alone" },
+              " suits pods whose count you or an HPA set, when they wait for nodes.",
+            ],
+            [{ b: "Both" }, " suit a workload that scales on events, with nodes that follow it."],
+          ],
         },
         {
           kind: "p",
           text: [
-            "Karpenter’s part can also be played by another node autoscaler: node auto provisioning (NAP) on AKS, ",
+            "Other node autoscalers can play Karpenter’s part: node auto provisioning (NAP) on AKS, ",
             { a: "EKS Auto Mode", href: "/learn/glossary/eks-auto-mode" },
             " or the Cluster Autoscaler.",
           ],
         },
         {
           kind: "p",
-          text: "A third layer sits between pod count and node count: each pod’s CPU and memory request. A request is what a container asks the scheduler to reserve.",
+          text: "A third layer sits between pod count and node count: each pod’s CPU and memory request, what a container asks the scheduler to reserve. Neither tool sets it.",
         },
         {
           kind: "table",
@@ -53,19 +67,19 @@ export const article: Article = {
             [
               "What it changes",
               [
-                "The replica count of a Deployment, StatefulSet or any custom resource with a ",
+                "The replica count of a Deployment, StatefulSet or custom resource with a ",
                 { code: "/scale" },
                 " subresource, or how many Jobs run",
               ],
-              "The nodes in the cluster, and the instance type or VM size of each",
+              "The nodes, and the instance type or VM size of each",
             ],
             [
-              "What it decides from",
-              "Event sources, such as messages in a Kafka topic or events in an Azure event hub, and CPU or memory",
-              "The resource requests, node selectors, affinities and tolerations of pods the scheduler can’t place",
+              "What it reads",
+              "Event sources, such as a Kafka topic or an Azure event hub, plus CPU or memory",
+              "The requests, node selectors, affinities and tolerations of pods the scheduler can’t place",
             ],
             [
-              "The objects you write",
+              "Objects you write",
               [{ code: "ScaledObject" }, ", or ", { code: "ScaledJob" }, " for Jobs"],
               [
                 { code: "NodePool" },
@@ -79,28 +93,28 @@ export const article: Article = {
             [
               "Scale to zero",
               "Yes, with at least one trigger other than CPU or memory",
-              "Deletes nodes that are empty",
+              "Deletes empty nodes",
             ],
             [
-              "How it gives capacity back",
+              "Giving capacity back",
               [
                 "Its ",
                 { a: "HPA", href: "/learn/glossary/horizontal-pod-autoscaler" },
-                " scales pods in, and KEDA goes from 1 to 0 after ",
+                " scales pods in. KEDA goes from 1 to 0 after ",
                 { code: "cooldownPeriod" },
                 " (300\u00a0seconds by default)",
               ],
               "Consolidation deletes or replaces nodes whose pods fit elsewhere",
             ],
             [
-              "The cap you set",
+              "Cap",
               [{ code: "maxReplicaCount" }, ", 100 by default"],
               [{ code: "spec.limits" }, " on each NodePool"],
             ],
             [
-              "Managed by the cloud",
+              "Managed option",
               "The KEDA add-on on AKS, preconfigured on AKS Automatic",
-              "Node auto provisioning (NAP) on AKS, and EKS Auto Mode on EKS",
+              "NAP on AKS, and EKS Auto Mode on EKS",
             ],
             [
               "Changes pod requests",
@@ -111,33 +125,25 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The versions here are KEDA 2.21 and Karpenter 1.15, the newest documented in October 2026. KEDA is a graduated Cloud Native Computing Foundation project, and Karpenter and the Cluster Autoscaler are the two node autoscalers that Kubernetes SIG Autoscaling sponsors.",
+          text: "The defaults on this page are those of KEDA 2.21 and Karpenter 1.15.",
         },
       ],
     },
     {
       id: "what-are-keda-and-karpenter",
-      title: "What are KEDA and Karpenter?",
+      title: "How each works",
       blocks: [
         {
           kind: "h3",
           id: "how-keda-scales-pods",
-          title: "KEDA sets the pod count from events, through an HPA",
+          title: "KEDA",
         },
         {
           kind: "p",
           text: [
-            "You link a workload to its event source with a ScaledObject. KEDA then creates a Horizontal Pod Autoscaler (HPA), the Kubernetes controller that sets a workload’s replica count from a metric, and names it ",
+            "You link a workload to its event source with a ScaledObject. KEDA then creates a Horizontal Pod Autoscaler (HPA) for it, named ",
             { code: "keda-hpa-<scaled-object-name>" },
-            " by default.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "Microsoft’s AKS docs advise against pointing your own HPA and a ScaledObject at the same workload: the two compete. ",
-            { a: "KEDA vs HPA", href: "/learn/keda-vs-hpa-vs-vpa" },
-            " compares KEDA with the HPA on its own.",
+            " by default. The HPA is the Kubernetes controller that sets a replica count from a metric.",
           ],
         },
         {
@@ -145,41 +151,50 @@ export const article: Article = {
           text: [
             "To wake a workload from zero, KEDA checks each trigger every 30\u00a0seconds (",
             { code: "pollingInterval" },
-            "), and from 1\u00a0replica up, the HPA it created does the scaling. Unless you set them, the workload runs between 0 and 100\u00a0replicas (",
+            "). From 1\u00a0replica up, its HPA does the scaling. By default the workload runs between 0 and 100\u00a0replicas (",
             { code: "minReplicaCount" },
             " and ",
             { code: "maxReplicaCount" },
-            "). ",
+            ").",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
             { code: "cooldownPeriod" },
-            " applies only on the way to zero: KEDA waits 300\u00a0seconds after the last trigger reported active before scaling the workload back to 0.",
+            " applies only on the way to zero. KEDA waits 300\u00a0seconds after the last trigger reported active, then scales the workload to 0.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "Microsoft’s AKS docs advise against pointing your own HPA and a ScaledObject at the same workload, because the two compete. ",
+            { a: "KEDA vs HPA", href: "/learn/keda-vs-hpa-vs-vpa" },
+            " compares them.",
           ],
         },
         {
           kind: "callout",
           label: "For engineers",
           text: [
-            "KEDA has two main parts. Its operator scales a workload in or out, from 0 to N replicas, and its metrics server exposes event data as external metrics for the HPA. Because of an upstream limit, KEDA must be the only external metrics adapter in the cluster. A ",
-            { code: "cpu" },
-            " trigger can take a workload to zero only when the ScaledObject also has a trigger that isn’t CPU or memory, and ",
-            { code: "minReplicaCount" },
-            " is 0. ",
-            { a: "How KEDA works in Kubernetes", href: "/learn/what-is-keda" },
+            "KEDA has two main parts. Its operator scales a workload between 0 and N replicas. Its metrics server exposes event data to the HPA as external metrics. Because of an upstream limit, KEDA must be the only external metrics adapter in the cluster. ",
+            { a: "KEDA in Kubernetes", href: "/learn/what-is-keda" },
             " covers each part and the scalers.",
           ],
         },
         {
           kind: "h3",
           id: "how-karpenter-scales-nodes",
-          title: "Karpenter sizes nodes from pod requests, then consolidates them",
+          title: "Karpenter",
         },
         {
           kind: "p",
-          text: "Karpenter watches for pods the scheduler can’t place because of resource constraints. It reads their scheduling requirements, launches nodes that meet them, and later removes nodes that are no longer needed. AWS’s EKS best practices guide names the sizing input: Karpenter “considers a pod’s requests to determine which type of instance it provisions.”",
+          text: "Karpenter watches for pods the scheduler can’t place for lack of resources. It reads their scheduling requirements, launches nodes that meet them, and later removes nodes no longer needed. AWS’s EKS best practices guide says Karpenter “considers a pod’s requests to determine which type of instance it provisions.”",
         },
         {
           kind: "p",
           text: [
-            "Without limits or instance-type constraints, Karpenter keeps adding capacity as long as pods need it. You set its boundaries in a NodePool: the instance types and zones it may use, taints and labels, and ",
+            "Without limits or instance-type constraints, Karpenter keeps adding capacity while pods need it. You set its bounds in a NodePool: instance types, zones, taints, labels and ",
             { code: "spec.limits" },
             ", the most CPU and memory the pool may launch. ",
             { a: "How Karpenter works", href: "/learn/what-is-karpenter" },
@@ -188,28 +203,31 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: [
-            "Karpenter gives capacity back by consolidating. Under the default policy, ",
-            { code: "WhenEmptyOrUnderutilized" },
-            ", it considers any node that can be removed or replaced to reduce cost. ",
-            { code: "WhenEmpty" },
-            " takes only empty nodes. ",
-            { code: "Balanced" },
-            " acts only where the saving outweighs the disruption to running pods.",
+          text: "Karpenter gives capacity back by consolidating, under one of three policies:",
+        },
+        {
+          kind: "ul",
+          items: [
+            [
+              { code: "WhenEmptyOrUnderutilized" },
+              ", the default, removes or replaces any node where that reduces cost.",
+            ],
+            [{ code: "Balanced" }, " skips actions where the disruption isn’t worth the saving."],
+            [{ code: "WhenEmpty" }, " removes only empty nodes."],
           ],
         },
         {
           kind: "p",
           text: [
-            "Karpenter deletes a node when its pods fit on free capacity elsewhere, and replaces it when they fit there plus one cheaper node. ",
+            "Karpenter deletes a node when its pods fit on free capacity elsewhere. It replaces a node when they fit there plus one cheaper node. ",
             { code: "consolidateAfter" },
-            " is how long Karpenter waits after pods are added to or removed from a node before the node becomes a candidate. It’s 0\u00a0seconds by default.",
+            ", 0\u00a0seconds by default, is how long Karpenter waits for new pods to land on a node before it considers the node.",
           ],
         },
         {
           kind: "p",
           text: [
-            "Unless you set budgets, one default budget of 10% of nodes caps how many of a NodePool’s nodes consolidation can disrupt at once. Pods leave through the Eviction API, so ",
+            "With no budgets set, a default budget of 10% of nodes caps how many of a NodePool’s nodes consolidation disrupts at once. Pods leave through the Eviction API, so ",
             { a: "PodDisruptionBudgets (PDBs)", href: "/learn/glossary/pod-disruption-budget" },
             " hold. A pod annotated ",
             { code: 'karpenter.sh/do-not-disrupt: "true"' },
@@ -221,27 +239,36 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "What differs between EKS and AKS is who runs Karpenter. On AKS, ",
+            "On AKS, ",
             { a: "NAP", href: "/learn/aks-node-auto-provisioning" },
-            " manages Karpenter for you, and AKS Automatic comes with both KEDA and NAP preconfigured. On EKS, you install self-managed Karpenter with Helm, and the EKS user guide makes configuring and managing it your job. EKS Auto Mode, which builds upon Karpenter, scales cluster compute for you.",
+            " runs Karpenter for you, and AKS Automatic comes with both KEDA and NAP preconfigured. On EKS, you install Karpenter with Helm and manage it yourself, or use EKS Auto Mode, which builds on Karpenter.",
           ],
         },
       ],
     },
     {
       id: "keda-and-karpenter-together",
-      title: "KEDA and Karpenter work together only through the pods",
+      title: "How they work together",
       blocks: [
         {
           kind: "p",
-          text: "Nothing connects the two directly: they meet through the pods KEDA adds and removes. When the backlog clears, KEDA’s HPA scales the pods in, and KEDA takes the workload to zero after its cooldown period. Karpenter then consolidates nodes left empty, or whose pods now fit elsewhere.",
+          text: "Nothing connects the two directly. They meet only through the pods KEDA adds and removes:",
+        },
+        {
+          kind: "ol",
+          items: [
+            "Events arrive. KEDA raises the replica count, and new pods that fit nowhere wait Pending.",
+            "Karpenter launches nodes that fit the pending pods’ requests.",
+            "The backlog clears. KEDA’s HPA scales the pods in, and KEDA takes the workload to zero after its cooldown period.",
+            "Karpenter consolidates nodes left empty, or whose pods now fit elsewhere.",
+          ],
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "callout",
           label: "Watch out",
           text: [
-            "Scaling to zero gives the first message a cold start. In the opening’s case, it waits for KEDA’s next check (up to 30\u00a0seconds), a node to launch and the pod to start. If it can’t wait, set ",
+            "Scaling to zero gives the first message a cold start. It waits for KEDA’s next check (up to 30\u00a0seconds), a new node and the pod’s start. If it can’t wait, set ",
             { code: "minReplicaCount" },
             " to 1. That keeps one replica, and the node under it, running all night.",
           ],
@@ -250,64 +277,54 @@ export const article: Article = {
     },
     {
       id: "pod-requests",
-      title: "Pod requests size the nodes, and neither tool sets them",
+      title: "Requests size the nodes",
       blocks: [
         {
           kind: "p",
-          text: "Both tools depend on the request. The Kubernetes docs on node autoscaling say autoscalers make sure new nodes “have enough resources to satisfy the requests” but don’t take real usage into account. Consolidation, too, “only considers Pod resource requests and not real resource usage when making decisions.” The replica count KEDA chooses then multiplies each request.",
+          text: "Both tools depend on each pod’s request. The Kubernetes docs say node autoscalers make sure new nodes “have enough resources to satisfy the requests”, but don’t take real usage into account. Consolidation, too, “only considers Pod resource requests and not real resource usage when making decisions.” KEDA’s replica count then multiplies each request.",
         },
         {
           kind: "callout",
           label: "Worked example",
-          text: "Run the opening’s queue worker, which requests 1\u00a0CPU and uses 0.25, at 40\u00a0replicas. Karpenter provisions nodes for 40 × 1 = 40\u00a0CPU of requests to run 40 × 0.25 = 10\u00a0CPU of work, so 40 − 10 = 30\u00a0CPU sits idle. That’s three-quarters of what those pods reserve, yet a node packed with them looks full to the scheduler.",
+          text: "The queue worker requests 1\u00a0CPU and uses 0.25\u00a0CPU. At 40\u00a0replicas, Karpenter provisions nodes for 40 × 1 = 40\u00a0CPU of requests to run 40 × 0.25 = 10\u00a0CPU of work. The other 30\u00a0CPU, three-quarters of the reservation, sits idle. Yet a node packed with these pods looks full to the scheduler.",
         },
         { kind: "svg", figure: figure2 },
         {
           kind: "p",
-          text: "The node autoscaling docs warn that a request set too high “might incorrectly prevent consolidating its Node.” The EKS best practices guide asks for accurate requests on all workloads, and calls that “particularly important if using Karpenter’s consolidation feature.”",
+          text: "The Kubernetes docs warn that a request set too high “might incorrectly prevent consolidating its Node.” AWS asks for accurate requests on all workloads, and calls that “particularly important if using Karpenter’s consolidation feature.”",
         },
         { kind: "p", text: "What a smaller request does depends on the trigger:" },
         {
           kind: "ul",
           items: [
             [
-              { b: "With an event trigger, a smaller request fits more pods on each node." },
-              " A trigger such as a message count takes a target value (",
+              { b: "Event trigger: more pods fit on each node." },
+              " A trigger such as a message count targets a value (",
               { code: "AverageValue" },
               " or ",
               { code: "Value" },
               "), so the replica count follows the events.",
             ],
             [
-              {
-                b: "With a CPU or memory trigger on utilization, a smaller request means more replicas.",
-              },
+              { b: "CPU or memory trigger on utilization: more replicas." },
               " Under ",
               { code: "metricType: Utilization" },
-              ", the target is a percentage of the pods’ requests, so the same load reads as higher utilization. That scaler requires a request or a limit on the pods.",
+              ", the target is a percentage of the pods’ requests, so the same load reads as higher utilization. This scaler needs a request or a limit on the pods.",
             ],
           ],
-        },
-        {
-          kind: "p",
-          text: "The Kubernetes docs rank this layer with the other two: “Correctly setting the resource requests of your Pods is as important to the overall cost-effectiveness of a cluster as optimizing Node utilization.”",
         },
       ],
     },
     {
       id: "keda-and-karpenter-setup",
-      title: "Set requests from real use first, then set the caps",
+      title: "How to run both",
       blocks: [
-        {
-          kind: "p",
-          text: "Karpenter sizes nodes from the request, and a CPU trigger on utilization measures load against it, so set it first.",
-        },
         {
           kind: "ol",
           items: [
             [
-              { b: "Set requests from measured use." },
-              " With that trigger, change them in small steps and watch the replica count. ",
+              { b: "Set requests from measured use first." },
+              " Karpenter sizes nodes from them, and a utilization trigger measures load against them. With such a trigger, change them in small steps and watch the replica count. ",
               { a: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
               " walks through the method.",
             ],
@@ -315,13 +332,13 @@ export const article: Article = {
               { b: "Set both caps." },
               " ",
               { code: "maxReplicaCount" },
-              " bounds the pods KEDA can ask for, and a NodePool’s ",
+              " bounds the pods KEDA asks for. A NodePool’s ",
               { code: "spec.limits" },
-              " bounds what Karpenter can launch for them.",
+              " bounds what Karpenter launches for them.",
             ],
             [
-              { b: "Give a spiky workload a non-zero consolidation wait." },
-              " At 0\u00a0seconds, Karpenter can consolidate a node in the gap between two bursts that KEDA is about to fill again. The Karpenter docs say a longer ",
+              { b: "Give spiky workloads a consolidation wait." },
+              " At 0\u00a0seconds, Karpenter can consolidate a node between two bursts that KEDA is about to fill again. The Karpenter docs say a longer ",
               { code: "consolidateAfter" },
               " gives churning workloads time to settle.",
             ],
@@ -333,7 +350,7 @@ export const article: Article = {
               { code: 'karpenter.sh/do-not-disrupt: "true"' },
               ", or with a duration such as ",
               { code: '"30m"' },
-              " to protect it only for that long after it starts.",
+              " to protect it for that long after it starts.",
             ],
           ],
         },
@@ -344,7 +361,7 @@ export const article: Article = {
         { kind: "code", lang: "yaml", code: "spec:\n  minReplicaCount: 0\n  maxReplicaCount: 40" },
         {
           kind: "p",
-          text: "And the NodePool caps what Karpenter launches at 100\u00a0CPU and sets when to consolidate:",
+          text: "The NodePool caps what Karpenter launches at 100\u00a0CPU, and sets a 5-minute consolidation wait:",
         },
         {
           kind: "code",
@@ -355,47 +372,45 @@ export const article: Article = {
     },
     {
       id: "where-coral-fits",
-      title: "Where Coral fits with KEDA and Karpenter",
+      title: "Where Coral fits",
       blocks: [
         {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS by working on the third layer: it rebalances each container’s CPU and memory requests to real use, so the same Karpenter or NAP can run fewer or smaller nodes.",
+            " is Kubernetes cost optimization for AKS and EKS, and it works on the third layer. It rebalances each container’s CPU and memory requests to real use, so the same Karpenter or NAP runs fewer or smaller nodes.",
           ],
         },
         {
           kind: "ul",
           items: [
             [
-              { b: "Rebalancing." },
-              " Coral sets each request from measured use, plus headroom. Pod sizing starts only when you switch on “Automatically optimize”. Running pods are resized in place on 1.33+ nodes, or restarted one at a time within their PDBs.",
+              { b: "Requests." },
+              " Each request is set from measured use, plus headroom. Pod sizing starts only when you switch on “Automatically optimize”. Running pods are resized in place on nodes at Kubernetes 1.33 or later, or else restarted one at a time within their PDBs.",
             ],
             [
-              { b: "KEDA sizing." },
+              { b: "KEDA." },
               " For a ScaledObject with a ",
               { code: "cpu" },
-              " trigger, Coral picks the CPU request by replaying past load through the trigger’s utilization target, the ScaledObject’s minimum and maximum replicas, and the scaling behavior of KEDA’s HPA. A smaller request wins only if its saving beats the cost of unserved load and extra scaling. Event triggers such as a queue length aren’t replayed, nor is a paused ScaledObject.",
+              " trigger, Coral picks the CPU request by replaying past load. The replay uses the trigger’s target, the ScaledObject’s replica bounds and the scaling behavior of KEDA’s HPA. A smaller request wins only if its saving beats the cost of unserved load and extra scaling. Event triggers and paused ScaledObjects aren’t replayed.",
             ],
             [
               { b: "KEDA’s HPA." },
-              " Coral never takes over or converts an HPA that KEDA manages, and creates an HPA only for a Deployment or Argo Rollout that has none. It changes the ScaledObject’s minimum or maximum only in a rebalance’s warm handover: to move a pod, Coral raises the minimum, so a new pod is Ready on another node before the old one is evicted, then scales back.",
+              " Coral never takes over or converts it, and creates an HPA only for a Deployment or Argo Rollout that has none. It changes the ScaledObject’s minimum only to move a pod in a rebalance. It raises the minimum so a new pod is Ready on another node before the old one is evicted, then puts it back.",
             ],
             [
               { b: "Karpenter and NAP." },
-              " Coral never changes your existing Karpenter or NAP settings and never adds nodes for demand. Pools where either one consolidates underused nodes are left to it. Coral also honours ",
+              " Coral never changes your existing Karpenter or NAP settings, and never adds nodes for demand. Pools they already consolidate are left to them. Coral also honors ",
               { code: "karpenter.sh/do-not-disrupt" },
               " on pods and nodes.",
             ],
             [
               { b: "Cheaper machines." },
-              " With Karpenter or NAP in place, a rebalance can also move work to smaller or cheaper machines. It creates new fixed-size NodePools named ",
-              { code: "zoorik-rb-…" },
-              ", and your Karpenter or NAP launches the machines.",
+              " With Karpenter or NAP in place, a rebalance can move work to smaller or cheaper machines. Coral creates fixed-size NodePools, and your Karpenter or NAP launches the machines.",
             ],
             [
               { b: "No node autoscaler." },
-              " Connecting the cluster to Coral sets up Karpenter on EKS, or NAP on AKS where the cluster uses Azure CNI (not kubenet), with your approval.",
+              " If the cluster has none, Coral sets up Karpenter on EKS, or NAP on AKS with Azure CNI (not kubenet), with your approval.",
             ],
           ],
         },
@@ -421,7 +436,7 @@ export const article: Article = {
   ],
   help: {
     product: "coral",
-    text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and removes the nodes you don’t need. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Coral rebalances CPU and memory requests on AKS and EKS, works with KEDA and your HPA, and removes the nodes you don’t need, without any downtime. We estimate 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Estimate your saving", href: "/assessment?p=coral" },
@@ -467,17 +482,17 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "KEDA vs HPA: where event-driven scaling fits",
+      title: "KEDA vs HPA vs VPA",
       where: "Learn",
       href: "/learn/keda-vs-hpa-vs-vpa",
     },
     {
-      title: "Karpenter consolidation: policies, budgets and limits",
+      title: "Karpenter consolidation",
       where: "Learn",
       href: "/learn/karpenter-consolidation",
     },
     {
-      title: "Kubernetes pod right sizing: set requests from real use",
+      title: "Kubernetes requests vs limits",
       where: "Learn",
       href: "/learn/kubernetes-pod-right-sizing",
     },
@@ -492,5 +507,4 @@ export const article: Article = {
       href: "/coral-guide#hpas-and-vpas",
     },
   ],
-  relatedTitle: "More on KEDA, Karpenter and pod requests",
 };

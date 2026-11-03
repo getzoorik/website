@@ -6,55 +6,42 @@ import { figure as figure3 } from "@/features/learn/figures/topology-spread-cons
 export const article: Article = {
   slug: "topology-spread-constraints",
   title: "Kubernetes topologySpreadConstraints and maxSkew",
-  meta: "Pod topology spread constraints set pod distribution across zones and nodes: how maxSkew, topologyKey and whenUnsatisfiable work, and when a rule holds a node.",
-  h1: "Kubernetes topologySpreadConstraints: maxSkew, zones and scale-down",
+  meta: "How Kubernetes topologySpreadConstraints work: maxSkew, topologyKey and whenUnsatisfiable, a YAML example, and when a spread rule blocks scale-down.",
+  h1: "Kubernetes topologySpreadConstraints",
   deck: "Evicted pods are scheduled again under the same spread rule, so the rule helps decide which nodes can go.",
   card: "How maxSkew and whenUnsatisfiable spread pods across zones and nodes, and when a spread rule keeps a node.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Node lifecycle and scheduling",
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "harsh",
   cover: "/learn-covers/zoorik-learn-topology-spread-constraints-1200x630.webp",
   coverAlt:
     "Pods spread over zones A, B and C, and the next pod goes to zone C, which has the fewest",
   short: [
-    "Topology spread constraints tell the kube-scheduler how unevenly pods may sit across zones or nodes, with ",
+    { code: "topologySpreadConstraints" },
+    " is a pod spec field that tells kube-scheduler how evenly to spread matching pods across zones, nodes or other domains. ",
     { code: "maxSkew" },
-    " as the largest allowed gap between domains. If no node fits within it, ",
+    " is the largest gap allowed between a domain’s pod count and the lowest count. If no node keeps the gap within it, ",
     { code: "DoNotSchedule" },
-    " leaves the pod Pending and can block scale-down, while ",
+    " leaves the pod Pending and can block scale-down. ",
     { code: "ScheduleAnyway" },
-    " places it and only prefers the better spread.",
+    " places the pod and only prefers the better spread.",
   ],
   sections: [
     {
       id: "topology-spread-constraints",
-      title: "How topology spread constraints decide where a pod goes",
+      title: "How spread constraints work",
       blocks: [
         {
           kind: "p",
           text: [
-            "In the Kubernetes docs’ example, zone A holds 2 matching pods and zone B holds 1, under a ",
-            { code: "maxSkew" },
-            " of 1 and ",
-            { code: "DoNotSchedule" },
-            ". A new pod in zone A would make the counts 3 and 1, a skew of 2. So the pod can only go to zone B.",
-          ],
-        },
-        {
-          kind: "p",
-          text: "If zone B has no room, the pod stays Pending, however much room zone A has.",
-        },
-        {
-          kind: "p",
-          text: [
-            "Pod topology spread constraints live in the pod’s ",
+            "The constraints live in the pod’s ",
             { code: "spec.topologySpreadConstraints" },
-            ", which for a Deployment means its pod template. Each entry names a node label as its ",
+            ": for a Deployment, in its pod template. Each entry names a node label as its ",
             { code: "topologyKey" },
-            ". Nodes that share a value of that label form one domain: each zone for ",
+            ". Nodes with the same value of that label form one domain: each zone for ",
             { code: "topology.kubernetes.io/zone" },
             ", each node for ",
             { code: "kubernetes.io/hostname" },
@@ -67,50 +54,8 @@ export const article: Article = {
         },
         {
           kind: "h3",
-          id: "maxskew-and-the-global-minimum",
-          title: "maxSkew and the global minimum",
-        },
-        {
-          kind: "p",
-          text: [
-            "With ",
-            { code: "DoNotSchedule" },
-            ", the scheduler checks each candidate node. It adds the new pod to that node’s domain count, then subtracts the global minimum: the lowest count in any eligible domain. A node whose result is above ",
-            { code: "maxSkew" },
-            " is filtered out.",
-          ],
-        },
-        {
-          kind: "p",
-          text: "In the docs’ example that minimum is 1, in zone B. Zone A gives 2 (2 + 1 − 1), above the limit. Zone B gives 1 (1 + 1 − 1), which is allowed.",
-        },
-        { kind: "svg", figure: figure1 },
-        { kind: "p", text: ["With a ", { code: "maxSkew" }, " of 2, either zone works."] },
-        {
-          kind: "h3",
-          id: "whenunsatisfiable-donotschedule-or-scheduleanyway",
-          title: "whenUnsatisfiable: DoNotSchedule or ScheduleAnyway",
-        },
-        {
-          kind: "p",
-          text: [
-            { code: "DoNotSchedule" },
-            " is a hard rule. If no node keeps the skew within ",
-            { code: "maxSkew" },
-            ", the pod stays Pending. Its FailedScheduling event gives the reason “node(s) didn’t match pod topology spread constraints”.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            { code: "ScheduleAnyway" },
-            " is a preference. Kube-scheduler still places the pod, and gives priority to nodes that reduce the skew. The EKS best practices guide advises the hard setting only if it’s better for pods not to run than to break the spread.",
-          ],
-        },
-        {
-          kind: "h3",
           id: "the-fields-and-a-deployment-that-uses",
-          title: "topologySpreadConstraints fields, and an example Deployment",
+          title: "Fields and example YAML",
         },
         {
           kind: "table",
@@ -169,7 +114,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Entries combine with a logical AND, so a node must satisfy every one. Below, a Deployment keeps the zone counts of its 6\u00a0replicas within 1 of each other as pods are placed. Its second entry prefers to spread them across nodes.",
+          text: "Entries combine with a logical AND, so a node must satisfy every one. The Deployment below keeps the zone counts of its 6\u00a0replicas within 1 of each other as pods are placed. Its second entry prefers to spread them across nodes.",
         },
         {
           kind: "code",
@@ -178,20 +123,76 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Both selectors match the pod’s own labels on purpose. A pod outside its own selector doesn’t count itself. Such “ghost pods” can pile up in one domain, the docs warn.",
+          text: "Both selectors match the pod’s own labels on purpose. A pod outside its own selector doesn’t count itself, and the docs warn that such “ghost pods” can pile up in one domain.",
         },
         {
           kind: "p",
           text: [
+            "The Deployment controller adds ",
             { code: "pod-template-hash" },
-            " is the label the Deployment controller adds per revision, so each revision spreads on its own during a rollout.",
+            " per revision. With it in ",
+            { code: "matchLabelKeys" },
+            ", each revision spreads on its own during a rollout.",
+          ],
+        },
+        {
+          kind: "h3",
+          id: "maxskew-and-the-global-minimum",
+          title: "maxSkew and the global minimum",
+        },
+        {
+          kind: "p",
+          text: [
+            "Under ",
+            { code: "DoNotSchedule" },
+            ", the scheduler checks each candidate node. It adds the new pod to that node’s domain count, then subtracts the global minimum: the lowest count in any eligible domain. A node whose result is above ",
+            { code: "maxSkew" },
+            " is filtered out.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "In the Kubernetes docs’ example, zone A holds 2 matching pods and zone B holds 1, with a ",
+            { code: "maxSkew" },
+            " of 1. The minimum is 1, in zone B. Zone A gives 2 (2 + 1 − 1), above the limit. Zone B gives 1 (1 + 1 − 1), so only zone B is allowed.",
+          ],
+        },
+        { kind: "svg", figure: figure1 },
+        {
+          kind: "p",
+          text: [
+            "If zone B has no room, the pod stays Pending, however much room zone A has. With a ",
+            { code: "maxSkew" },
+            " of 2, either zone works.",
+          ],
+        },
+        {
+          kind: "h3",
+          id: "whenunsatisfiable-donotschedule-or-scheduleanyway",
+          title: "DoNotSchedule vs ScheduleAnyway",
+        },
+        {
+          kind: "p",
+          text: [
+            { code: "whenUnsatisfiable" },
+            " sets what happens when no node fits. ",
+            { code: "DoNotSchedule" },
+            " is a hard rule: the pod stays Pending. Its FailedScheduling event gives the reason “node(s) didn’t match pod topology spread constraints”.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            { code: "ScheduleAnyway" },
+            " is a preference. Kube-scheduler still places the pod, and gives priority to nodes that reduce the skew. The EKS best practices guide advises the hard setting only if it’s better for pods not to run than to break the spread.",
           ],
         },
       ],
     },
     {
       id: "pods-get-a-soft-spread-even-without",
-      title: "Pods get a soft spread even without a rule",
+      title: "Default constraints",
       blocks: [
         {
           kind: "p",
@@ -212,25 +213,21 @@ export const article: Article = {
         {
           kind: "h3",
           id: "topology-spread-constraints-on-aks",
-          title: "Topology spread constraints on AKS, and balance-similar-node-groups",
+          title: "On AKS",
         },
         {
           kind: "p",
           text: [
-            "AKS tightens the zone default. Microsoft’s zone resiliency guidance says that from Kubernetes 1.33, the AKS default scheduler uses maxSkew 1 for ",
+            "AKS tightens the zone default. From Kubernetes 1.33, the AKS default scheduler uses maxSkew 1 for ",
             { code: "topology.kubernetes.io/zone" },
-            ". The rule is still ",
+            ", still with ",
             { code: "ScheduleAnyway" },
-            ".",
+            ". Set your own constraints in the pod spec where a workload needs more.",
           ],
         },
         {
           kind: "p",
-          text: "Set your own constraints in the pod spec where a workload needs more.",
-        },
-        {
-          kind: "p",
-          text: "A strict zone rule can leave pods Pending even after a scale-up, the same page explains. The Cluster Autoscaler “isn’t zone-aware”. Virtual Machine Scale Sets pick the zone for a new node in a pool that spans zones.",
+          text: "A strict zone rule can leave pods Pending even after a scale-up. The Cluster Autoscaler “isn’t zone-aware”, Microsoft notes. In a pool that spans zones, Virtual Machine Scale Sets pick the new node’s zone.",
         },
         {
           kind: "p",
@@ -239,55 +236,48 @@ export const article: Article = {
             { code: "DoNotSchedule" },
             " rule. Microsoft’s answer is one node pool per zone, with ",
             { code: "--balance-similar-node-groups" },
-            " set to true.",
+            " set to true. That flag balances the pools only at scale-up, the Cluster Autoscaler FAQ notes. Scale-down ignores their relative sizes.",
           ],
-        },
-        {
-          kind: "p",
-          text: "That flag balances the pools only at scale-up, the Cluster Autoscaler FAQ notes. Scale-down ignores their relative sizes.",
         },
       ],
     },
     {
       id: "topology-spread-constraints-vs-anti-affinity-spread",
-      title: "Topology spread constraints vs anti-affinity: spread allows a bounded gap",
+      title: "Spread vs anti-affinity",
       blocks: [
         {
           kind: "p",
-          text: "Pod anti-affinity also keeps replicas apart, but it only asks whether a domain already holds a matching pod. The Kubernetes docs state the limit: a required rule allows only a single pod in each topology domain. A preferred rule gives up the ability to enforce it.",
+          text: "Pod anti-affinity also keeps replicas apart, but it only asks whether a domain already holds a matching pod. A required rule allows only one pod per topology domain, the Kubernetes docs note. A preferred rule can’t enforce it.",
         },
         {
           kind: "p",
           text: [
-            "A spread constraint sets a bounded gap instead. A zone or node can hold several replicas, as long as none runs more than ",
+            "A spread constraint allows a bounded gap instead. A zone or node can hold several replicas, as long as none runs more than ",
             { code: "maxSkew" },
             " ahead of the lowest.",
           ],
         },
         {
           kind: "p",
-          text: "The difference shows when nodes go. Take 3\u00a0replicas on a 3-node pool.",
+          text: "The difference shows when nodes go. Take 3\u00a0replicas on a 3-node pool:",
         },
         {
-          kind: "p",
-          text: [
-            "With required anti-affinity on ",
-            { code: "kubernetes.io/hostname" },
-            ", each replica needs a node to itself. So the pool can’t go below 3\u00a0nodes, however little the replicas request.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "Use a hostname spread instead, with a ",
-            { code: "maxSkew" },
-            " of 1, ",
-            { code: "DoNotSchedule" },
-            " and ",
-            { code: "nodeTaintsPolicy" },
-            " set to ",
-            { code: "Honor" },
-            ". When the third node is drained, its replica can join one of the other two. Counts of 2 and 1 are within the limit.",
+          kind: "ul",
+          items: [
+            [
+              "Required anti-affinity on ",
+              { code: "kubernetes.io/hostname" },
+              ": each replica needs a node to itself. The pool can’t go below 3\u00a0nodes, however little the replicas request.",
+            ],
+            [
+              "A hostname spread (",
+              { code: "maxSkew: 1" },
+              ", ",
+              { code: "DoNotSchedule" },
+              ", ",
+              { code: "nodeTaintsPolicy: Honor" },
+              "): when node 3 is drained, its replica can join one of the other two. Counts of 2 and 1 are within the limit.",
+            ],
           ],
         },
         {
@@ -295,7 +285,7 @@ export const article: Article = {
           text: [
             "Without ",
             { code: "Honor" },
-            ", the draining node still counts with 0\u00a0pods, as the scale-down section below explains. Both rules spread replicas when there’s room. Only the spread constraint lets this pool go from 3\u00a0nodes to 2.",
+            ", the draining node still counts, with 0\u00a0pods, as the scale-down section explains. Both rules spread replicas when there’s room. Only the spread constraint lets this pool go from 3\u00a0nodes to 2.",
           ],
         },
         { kind: "svg", figure: figure2 },
@@ -315,24 +305,24 @@ export const article: Article = {
     },
     {
       id: "a-hard-spread-rule-can-keep-a",
-      title: "A hard spread rule can keep a node from scaling down",
+      title: "Spread and scale-down",
       blocks: [
         {
           kind: "p",
-          text: "The Cluster Autoscaler simulates kube-scheduler behavior, its FAQ says. In the FAQ’s words, “if there’s no other node where a given pod can schedule, the pod’s node won’t be scaled down.”",
+          text: "The Cluster Autoscaler simulates kube-scheduler. Its FAQ says that “if there’s no other node where a given pod can schedule, the pod’s node won’t be scaled down.”",
         },
         {
           kind: "p",
           text: [
-            "Spread is part of that decision. A ",
+            "Spread is part of that check. A ",
             { code: "DoNotSchedule" },
-            " rule narrows where each evicted pod may go. The node stays when that narrow set is full.",
+            " rule narrows where each evicted pod may go, and the node stays when that narrow set is full.",
           ],
         },
         {
           kind: "h3",
           id: "when-the-only-allowed-zone-is-full",
-          title: "When the only allowed zone is full",
+          title: "When the allowed zone is full",
         },
         {
           kind: "callout",
@@ -357,9 +347,9 @@ export const article: Article = {
           text: [
             "With an even spread and a ",
             { code: "maxSkew" },
-            " of 1, every evicted pod must go back to its own zone. So draining a node needs spare room in that zone. With a ",
+            " of 1, every evicted pod must go back to its own zone. So draining a node needs spare room in that zone. A ",
             { code: "maxSkew" },
-            " of 2, the other zones pass too, at the price of a less even spread.",
+            " of 2 lets the other zones pass too, at the price of a less even spread.",
           ],
         },
         { kind: "h3", id: "taints-on-a-draining-node", title: "Taints on a draining node" },
@@ -369,20 +359,31 @@ export const article: Article = {
           text: [
             "Under the default ",
             { code: "nodeTaintsPolicy" },
-            ", a hostname rule can leave an evicted pod Pending until its old node is deleted. A node being drained carries a taint:",
+            ", a hostname rule can leave an evicted pod Pending until its old node is deleted.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "A node being drained carries a ",
+            { a: "taint", href: "/learn/kubernetes-taints-and-tolerations" },
+            ":",
           ],
         },
         {
           kind: "ul",
           items: [
-            "Cordoning puts an unschedulable taint on the node.",
+            [
+              { a: "Cordoning", href: "/learn/cordon-vs-drain" },
+              " puts an unschedulable taint on the node.",
+            ],
             "The Cluster Autoscaler taints the nodes it removes.",
             ["Karpenter adds ", { code: "karpenter.sh/disrupted:NoSchedule" }, "."],
           ],
         },
         {
           kind: "p",
-          text: "The default ignores taints in the count. The draining node then stays in the skew with zero matching pods, and can pull the global minimum to 0. Kubernetes issue 106127 reports this during node upgrades.",
+          text: "The default ignores taints in the count. So the draining node stays in the skew with zero matching pods, and can pull the global minimum to 0. Kubernetes issue 106127 reports this during node upgrades.",
         },
         {
           kind: "p",
@@ -440,12 +441,12 @@ export const article: Article = {
     },
     {
       id: "topology-spread-constraints-with-karpenter-a-soft",
-      title: "Topology spread constraints with Karpenter: a soft rule can still hold a node",
+      title: "Spread with Karpenter",
       blocks: [
         {
           kind: "p",
           text: [
-            "Karpenter reads spread constraints when it launches nodes. Its docs list three supported ",
+            "Karpenter reads spread constraints when it launches nodes. It supports three ",
             { code: "topologyKey" },
             " values:",
           ],
@@ -460,7 +461,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "NodePools don’t balance zones by themselves, so zone balance comes from zonal constraints on your pods. The EKS data plane guide says EKS Auto Mode and Karpenter both launch nodes in the right Availability Zones to meet them.",
+          text: "NodePools don’t balance zones by themselves, so zone balance comes from zonal constraints on your pods. EKS Auto Mode and Karpenter both launch nodes in the right Availability Zones to meet them, the EKS guide says.",
         },
         {
           kind: "p",
@@ -480,7 +481,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Its docs warn that a preferred spread can create more nodes than you expect. They also say consolidation “may not disrupt nodes in order to avoid violating preferences, even if kube-scheduler can fit the host pods elsewhere.”",
+          text: "So a preferred spread can create more nodes than you expect, its docs note. They also say consolidation “may not disrupt nodes in order to avoid violating preferences, even if kube-scheduler can fit the host pods elsewhere.”",
         },
         {
           kind: "p",
@@ -493,7 +494,7 @@ export const article: Article = {
     },
     {
       id: "spread-settings-that-still-let-nodes-go",
-      title: "Spread settings that still let nodes go",
+      title: "Settings that let nodes go",
       blocks: [
         {
           kind: "ul",
@@ -535,13 +536,13 @@ export const article: Article = {
     },
     {
       id: "how-coral-checks-spread-before-it-drains",
-      title: "How Coral checks spread before it drains a node",
+      title: "How Coral handles spread",
       blocks: [
         {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS. It rebalances CPU and memory requests, and it drains and removes the nodes you don’t need. Spread rules sit inside that drain decision.",
+            " optimizes Kubernetes on AKS and EKS. It rebalances CPU and memory requests, and it drains and removes the nodes you don’t need. Spread rules are part of each drain decision.",
           ],
         },
         {
@@ -557,7 +558,7 @@ export const article: Article = {
             ],
             [
               { b: "The pool minimum." },
-              " By default, Coral may reduce a pool’s minimum when that minimum alone keeps a node it has emptied, and disconnect puts the old minimum back. Every pool keeps at least one node.",
+              " By default, Coral may reduce a pool’s minimum when that minimum alone keeps a node it has emptied. Disconnect puts the old minimum back. Every pool keeps at least one node.",
             ],
             [
               { b: "The warning." },
@@ -586,7 +587,7 @@ export const article: Article = {
   ],
   help: {
     product: "coral",
-    text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and removes the nodes you don’t need. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and removes the nodes you don’t need. We estimate 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Estimate your saving", href: "/assessment?p=coral" },
@@ -638,27 +639,27 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "Pod affinity vs node affinity: what each rule decides",
+      title: "Kubernetes node affinity vs pod affinity",
       where: "Learn",
       href: "/learn/pod-affinity-vs-node-affinity",
     },
     {
-      title: "Cluster Autoscaler not scaling down: what keeps nodes running",
+      title: "Cluster Autoscaler not scaling down",
       where: "Learn",
       href: "/learn/cluster-autoscaler-not-scaling-down",
     },
     {
-      title: "Karpenter consolidation: policies, budgets and limits",
+      title: "Karpenter consolidation",
       where: "Learn",
       href: "/learn/karpenter-consolidation",
     },
     {
-      title: "Kubernetes bin packing: fewer nodes for the same pods",
+      title: "Kubernetes bin packing",
       where: "Learn",
       href: "/learn/kubernetes-bin-packing",
     },
     {
-      title: "Kubernetes descheduler: what it moves and when to use it",
+      title: "Kubernetes descheduler",
       where: "Learn",
       href: "/learn/kubernetes-descheduler",
     },

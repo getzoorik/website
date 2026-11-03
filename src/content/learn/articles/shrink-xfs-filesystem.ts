@@ -5,7 +5,7 @@ import { figure as figure2 } from "@/features/learn/figures/shrink-xfs-filesyste
 export const article: Article = {
   slug: "shrink-xfs-filesystem",
   title: "Shrink an XFS filesystem: what works instead",
-  meta: "Since Linux 5.13, XFS can give back only free space at its very end. To resize an XFS partition smaller, copy the data to a new filesystem, with or without LVM.",
+  meta: "XFS can’t shrink in any useful way. To make an XFS filesystem smaller, copy the data to a new, smaller one, with or without LVM.",
   h1: "Can you shrink an XFS filesystem?",
   deck: "An in-place shrink frees little, and never shrinks the cloud disk you pay for.",
   card: "XFS grows while mounted but barely shrinks. What xfs_growfs -D can do, and the copy that works instead.",
@@ -13,51 +13,41 @@ export const article: Article = {
   hub: "Block storage",
   topic: "Linux filesystems",
   published: "2026-10-27",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "ravi",
   cover: "/learn-covers/zoorik-learn-shrink-xfs-filesystem-1200x630.webp",
   coverAlt: "XFS allocation groups, where only the free tail of the last group can go",
   short: [
-    "You can’t shrink an XFS filesystem in any useful way: Red Hat says “XFS has no utility to reduce the size of a file system.” Since Linux 5.13, ",
+    "Not in any useful way. Red Hat says “XFS has no utility to reduce the size of a file system.” Since Linux 5.13, ",
     { code: "xfs_growfs" },
-    " can only give back free space at the end of the last allocation group. To make XFS smaller, copy the data to a new, smaller filesystem and move the mount.",
+    " can give back only free space at the end of the last allocation group. To make an ",
+    { a: "XFS", href: "/learn/glossary/xfs" },
+    " filesystem smaller, copy the data to a new, smaller one and move the mount.",
   ],
   sections: [
     {
       id: "why-xfs-cannot-be-reduced",
-      title: "Why XFS cannot be reduced",
+      title: "Why XFS can’t shrink",
       blocks: [
         {
           kind: "p",
-          text: [
-            "Picture an XFS data mount on a cloud VM, with the layout from the ",
-            { code: "xfs_info" },
-            " man page. It holds 182.3\u00a0GiB in eight allocation groups (AGs), and a cleanup has emptied most of it.",
-          ],
-        },
-        {
-          kind: "p",
-          text: "In place, you can take back at most the end of the last AG, under 22.8\u00a0GiB, and only if nothing is stored there.",
-        },
-        {
-          kind: "p",
-          text: "Each AG is a slice of the device with its own free-space and inode records, a design that suits growing.",
+          text: "XFS splits its device into allocation groups (AGs). Each AG is a slice of the device with its own free-space and inode records.",
         },
         {
           kind: "p",
           text: [
             { code: "xfs_growfs" },
-            " adds space at the end and leaves existing data in place. The man page says “the filesystem must be mounted to be grown.”",
+            " grows a filesystem by adding space at the end, and leaves existing data in place. Its man page says “the filesystem must be mounted to be grown.”",
           ],
         },
         {
           kind: "p",
-          text: "Giving back more than the last AG’s free end means removing whole AGs, and first moving their files and inodes. The kernel’s shrink code doesn’t do that.",
+          text: "Shrinking is the hard direction. Giving back more than the free end of the last AG means removing whole AGs, and first moving their files and inodes out. The kernel’s shrink code doesn’t do that.",
         },
         {
           kind: "p",
           text: [
-            "For Red Hat, whose RHEL uses XFS as its default filesystem, XFS filesystem shrinking is unsupported. Its filesystem comparison sets XFS against ext4, which “supports both extending and reducing the size of a file system.” Even ext4 ",
+            "Red Hat, whose RHEL uses XFS as its default filesystem, doesn’t support shrinking it. Its comparison sets XFS against ext4, which “supports both extending and reducing the size of a file system.” Even ext4 ",
             {
               a: "shrinks only while unmounted, with resize2fs",
               href: "/learn/resize2fs-shrink-ext4",
@@ -69,16 +59,16 @@ export const article: Article = {
     },
     {
       id: "a-smaller-filesystem-doesnt-make-a-smaller",
-      title: "A smaller filesystem doesn’t make a smaller disk",
+      title: "The cloud disk won’t shrink",
       blocks: [
         {
           kind: "p",
-          text: "On a cloud VM, the disk under your XFS filesystem keeps its provisioned size whatever the filesystem does. That size is what you pay for.",
+          text: "On a cloud VM, you pay for the disk’s provisioned size, whatever the filesystem on it does. To pay less, you’d have to shrink the partition and then the disk.",
         },
         {
           kind: "p",
           text: [
-            "You’d still have to shrink the partition, then the disk, and neither cloud shrinks a disk. AWS says “You can’t decrease the volume size.” On Azure, ",
+            "Neither cloud shrinks a disk. AWS says “You can’t decrease the volume size.” On Azure, ",
             {
               a: "a managed disk can grow but not shrink",
               href: "/learn/shrink-azure-managed-disk",
@@ -94,7 +84,7 @@ export const article: Article = {
     },
     {
       id: "how-to-shrink-an-xfs-filesystem-copy",
-      title: "How to shrink an XFS filesystem: copy it to a smaller one",
+      title: "Copy to a smaller filesystem",
       blocks: [
         {
           kind: "p",
@@ -119,9 +109,9 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Pick rsync when a short stop matters more, and the pipe when the data is small enough for a full stop.",
+          text: "Pick rsync to keep the stop short. Pick the pipe when the data is small enough to keep the services stopped for the whole copy.",
         },
-        { kind: "h3", id: "the-copy-step-by-step", title: "The copy, step by step" },
+        { kind: "h3", id: "the-copy-step-by-step", title: "Step by step" },
         {
           kind: "ol",
           items: [
@@ -131,20 +121,21 @@ export const article: Article = {
               ", and choose a size with room for growth.",
             ],
             [
-              "Create and attach a smaller disk, with the exact steps in ",
+              "Create and attach a smaller disk. The guides to ",
               {
-                a: "how to shrink an Azure managed disk",
+                a: "shrink an Azure managed disk",
                 href: "/learn/shrink-azure-managed-disk",
               },
-              ".",
+              " and ",
+              { a: "shrink an EBS volume", href: "/learn/shrink-ebs-volume" },
+              " give the cloud steps.",
             ],
             [
-              { code: "mkfs.xfs" },
-              " erases the device you name, so check the new disk’s name with ",
+              "Check the new disk’s name with ",
               { code: "lsblk" },
-              " first. Then make an XFS filesystem on it with ",
+              ", so ",
               { code: "mkfs.xfs" },
-              " and mount it at a temporary path such as ",
+              " writes to the right device. Then make an XFS filesystem on it and mount it at a temporary path, such as ",
               { code: "/mnt/new" },
               ".",
             ],
@@ -157,23 +148,23 @@ export const article: Article = {
           text: [
             "Archive mode (",
             { code: "-a" },
-            ") leaves out hard links, ACLs and extended attributes. The ",
+            ") leaves out hard links, ACLs and extended attributes, so ",
             { code: "-H" },
             ", ",
             { code: "-A" },
             " and ",
             { code: "-X" },
-            " flags add them back, as in the Azure guide’s first pass. The trailing slash on ",
+            " add them. The trailing slash on ",
             { code: "/data/" },
-            " copies its contents.",
+            " copies the folder’s contents, not the folder.",
           ],
         },
         {
           kind: "ol",
           start: 5,
           items: [
-            "Stop every service that writes to the mount: the downtime starts here.",
-            "Run the final copy. With rsync, that’s the second pass. With xfsdump, it’s the whole pipe.",
+            "Stop every service that writes to the mount. The downtime starts here.",
+            "Run the final copy: the second rsync pass, or the whole xfsdump pipe.",
           ],
         },
         { kind: "code", lang: "bash", code: "sudo rsync -aHAX --delete /data/ /mnt/new/" },
@@ -185,7 +176,7 @@ export const article: Article = {
             { code: "/mnt/new" },
             " that are gone from ",
             { code: "/data" },
-            ", as in that guide’s final pass. With xfsdump, run this pipe instead:",
+            ". With xfsdump, run this pipe instead:",
           ],
         },
         {
@@ -216,9 +207,9 @@ export const article: Article = {
               { code: "/etc/fstab" },
               " line for the mount at the new filesystem’s UUID, and mount it at the old path.",
             ],
-            "Start the services and check them: the downtime ends here.",
+            "Start the services and check them. The downtime ends here.",
             "Snapshot the old disk, because deleting it can’t be undone.",
-            "Detach and delete the old disk: its charge stops here.",
+            "Detach and delete the old disk. Its charge stops here.",
           ],
         },
         {
@@ -230,11 +221,11 @@ export const article: Article = {
     },
     {
       id: "xfs-shrink-on-lvm-copy-to-a",
-      title: "XFS shrink on LVM: copy to a new logical volume",
+      title: "XFS on LVM",
       blocks: [
         {
           kind: "p",
-          text: "LVM changes nothing. Red Hat’s LVM guide says “XFS does not support reducing the size of a volume formatted with an XFS file system.”",
+          text: "LVM doesn’t change the answer. Red Hat’s LVM guide says “XFS does not support reducing the size of a volume formatted with an XFS file system.” So copy to a new logical volume (LV) instead.",
         },
         {
           kind: "callout",
@@ -242,16 +233,16 @@ export const article: Article = {
           text: [
             "Never run ",
             { code: "lvreduce" },
-            " to take a logical volume (LV) below the size of the XFS filesystem on it. Red Hat warns: “Data stored in the reduced area is lost.”",
+            " to take an LV below the size of the XFS filesystem on it. Red Hat warns: “Data stored in the reduced area is lost.”",
           ],
         },
         {
           kind: "ol",
           items: [
-            "Create a new, smaller LV, either from free extents in the volume group or on a disk you add.",
+            "Create a new, smaller LV from free extents in the volume group or on a disk you add.",
             "Copy the data into it and move the mount, as in steps 3 to 9 above.",
             [
-              "Removing the old LV takes its filesystem with it, so check the copy first. Then unmount the old LV and run ",
+              "Check the copy, because removing the old LV takes its filesystem with it. Then unmount the old LV and run ",
               { code: "lvremove" },
               ".",
             ],
@@ -269,7 +260,7 @@ export const article: Article = {
     },
     {
       id: "what-an-xfs-growfs-shrink-can-give",
-      title: "What an xfs_growfs shrink can give back since Linux 5.13",
+      title: "What xfs_growfs -D gives back",
       blocks: [
         {
           kind: "p",
@@ -281,7 +272,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The man page states the limit: “Only shrinking the last AG without removing it is implemented.” So a filesystem with only one AG can’t shrink at all.",
+          text: "The man page states the limit: “Only shrinking the last AG without removing it is implemented.” It adds that a filesystem with only one AG can’t be shrunk.",
         },
         {
           kind: "p",
@@ -304,7 +295,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "So a shrink can give back under 22.8\u00a0GiB of 182.3\u00a0GiB, and only when the tail is empty.",
+          text: "So a shrink can give back under 22.8\u00a0GiB of 182.3\u00a0GiB, and only when that tail is empty.",
         },
         { kind: "svg", figure: figure2 },
         { kind: "h3", id: "run-the-shrink", title: "Run the shrink" },
@@ -329,7 +320,7 @@ export const article: Article = {
           kind: "ol",
           start: 2,
           items: [
-            "Take a backup or a snapshot of the disk first. The shrink runs on the mounted filesystem. The kernel flags it as experimental.",
+            "Take a backup or a snapshot of the disk first. The shrink runs on the mounted filesystem, and the kernel flags it as experimental.",
             [
               "Run the shrink with the new size in filesystem blocks, the ",
               { code: "bsize" },
@@ -346,20 +337,20 @@ export const article: Article = {
           text: [
             "The 5.13 patch rejected any shrink that would remove an AG, with the comment “shrinking the entire AGs hasn’t yet completed.” In the mainline kernel source (",
             { code: "fs/xfs/xfs_fsops.c" },
-            ") in October 2026, that comment and that check are still there. A shrink still logs a warning that marks the feature as experimental.",
+            ") in November 2026, that comment and that check are still there. A shrink still logs a warning that marks the feature as experimental.",
           ],
         },
       ],
     },
     {
       id: "how-amoeba-handles-an-xfs-data-mount",
-      title: "How Amoeba handles an XFS data mount",
+      title: "How Amoeba handles XFS",
       blocks: [
         {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " optimizes block storage on Azure managed disks and Amazon EBS. It makes this copy for you, once, on the data disks of running Windows and Linux VMs. It never touches the OS disk or root volume.",
+            " rightsizes block storage on Azure managed disks and Amazon EBS without any downtime. It makes this copy for you, once, on the data disks of running Windows and Linux VMs. It never touches the OS disk or root volume.",
           ],
         },
         {
@@ -381,11 +372,11 @@ export const article: Article = {
             ],
             [
               { b: "The old disks." },
-              " Once the switch is checked, Amoeba snapshots each old disk, deletes the disk, and keeps the snapshot for a few days before deleting it too.",
+              " Once the switch is checked, Amoeba snapshots each old disk, deletes the disk, and keeps the snapshot for 7\u00a0days before deleting it too.",
             ],
             [
               { b: "Cost during the move." },
-              " You pay for both sets of disks only while the move runs. Then you pay for the snapshots while they’re kept.",
+              " You pay for both sets of disks only while the move runs, then for the snapshots while they’re kept.",
             ],
             [
               { b: "Rightsizing." },
@@ -407,14 +398,14 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Where the kernel has no btrfs, the XFS mount stays where it is, and the manual copy above is the route.",
+          text: "If the kernel has no btrfs, the move pauses and the XFS mount stays where it is. The manual copy above is then the route.",
         },
       ],
     },
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
@@ -435,6 +426,11 @@ export const article: Article = {
       publisher: "man7.org",
       title: "“xfsdump(8) - Linux manual page”",
       url: "https://man7.org/linux/man-pages/man8/xfsdump.8.html",
+    },
+    {
+      publisher: "man7.org",
+      title: "“rsync(1) - Linux manual page”",
+      url: "https://man7.org/linux/man-pages/man1/rsync.1.html",
     },
     {
       publisher: "kernel.org",
@@ -473,25 +469,25 @@ export const article: Article = {
       href: "/learn/shrink-azure-managed-disk",
     },
     {
-      title: "Shrink ext4 with resize2fs: why it must be unmounted",
+      title: "Shrink ext4 with resize2fs",
       where: "Learn",
       href: "/learn/resize2fs-shrink-ext4",
     },
     {
-      title: "How to remove a disk from LVM without losing data",
+      title: "Remove a disk from LVM in Linux",
       where: "Learn",
       href: "/learn/remove-disk-from-lvm",
     },
     {
-      title: "btrfs device remove: take a disk out of a btrfs pool",
+      title: "btrfs device remove",
       where: "Learn",
       href: "/learn/btrfs-device-remove",
     },
     {
-      title: "btrfs on multiple disks: how a btrfs pool works",
+      title: "btrfs on multiple disks: single or RAID 1",
       where: "Learn",
       href: "/learn/btrfs-multiple-disks",
     },
   ],
-  relatedTitle: "More on shrinking Linux filesystems and disks",
+  relatedTitle: "More on shrinking filesystems and disks",
 };

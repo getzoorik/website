@@ -13,8 +13,8 @@ import CaseStudyRoute, { metadata as studyMeta } from "@/app/coral-value-lab/pag
 import AmoebaStudyRoute, { metadata as amoebaMeta } from "@/app/amoeba-value-lab/page";
 
 /**
- * Value Lab and its case study: the metadata, the hub (what the studies saved
- * so far, the featured study beside "Want to be next?", the closing row), the
+ * Value Lab and its case studies: the metadata, the hub (what the studies saved
+ * so far, the two studies' cards, "Want to be next?" under them, the closing row), the
  * study's hero and download, the result band, the six numbered sections in
  * /security's frame, the drawings, the closing row for Coral, no placeholder,
  * and where the site links them: each study in the footer's Resources column,
@@ -43,11 +43,10 @@ const PDF = "/docs/coral-case-study-dev-cluster.pdf";
 const SPOKEN = /^Download the case study, PDF, \d+ pages?, \d\.\d MB, A4$/;
 
 describe("the case studies' metadata", () => {
-  it("titles, describes and canonicalises the hub in the mock's words", () => {
-    /* "Value Lab by Zoorik: …" already names the company, so no " · Zoorik" after it. */
+  it("titles, describes and canonicalises the hub", () => {
     expect(hubMeta.title).toBe("Value Lab");
     expect(hubMeta.description).toBe(
-      "Zoorik Value Lab: cloud cost case studies from our own AKS cluster and Azure lab VM. What Coral and Amoeba reduced, with the figures.",
+      "Coral and Amoeba case studies from our own AKS cluster and Azure lab VMs: what each reduced, with every figure at list prices.",
     );
     expect(hubMeta.alternates).toEqual({ canonical: "/value-lab" });
     expect(hubMeta).not.toHaveProperty("robots");
@@ -57,15 +56,15 @@ describe("the case studies' metadata", () => {
     });
   });
 
-  it("titles, describes and canonicalises the study in the mock's words", () => {
-    expect(studyMeta.title).toBe("How We Reduced AKS Cluster Costs by 58%");
+  it("titles, describes and canonicalises the study", () => {
+    expect(studyMeta.title).toBe("How we reduced our AKS machine cost by 58%");
     expect(studyMeta.description).toBe(
-      "Our own AKS cost reduction case study: eight days after we connected Coral, our development cluster’s machines cost $154.76 a month instead of $368.65.",
+      "AKS cost reduction case study: eight days after we connected Coral, our development cluster’s machines cost $154.76 a month instead of $368.65.",
     );
     expect(studyMeta.alternates).toEqual({ canonical: "/coral-value-lab" });
     expect(studyMeta.openGraph).toMatchObject({
       url: "/coral-value-lab",
-      title: "How We Reduced AKS Cluster Costs by 58% | Zoorik",
+      title: "How we reduced our AKS machine cost by 58% | Zoorik",
       images: [
         {
           url: "/og/pages/value-lab-coral-dev-cluster.png",
@@ -77,15 +76,15 @@ describe("the case studies' metadata", () => {
     });
   });
 
-  it("titles, describes and canonicalises the Amoeba study in the draft's words, with its own card", () => {
-    expect(amoebaMeta.title).toBe("How Amoeba Rightsized a Lab VM’s btrfs Pool by 25%");
+  it("titles, describes and canonicalises the Amoeba study, with its own card", () => {
+    expect(amoebaMeta.title).toBe("How Amoeba rightsized our btrfs pool by 25%");
     expect(amoebaMeta.description).toBe(
-      "Before we ask anyone to trust Amoeba with their VMs, we run it on ours. On an Azure lab VM, its btrfs pool went from 96 GiB to 72 GiB, with 0 lost mounts.",
+      "Amoeba case study: on our own Azure lab VM, a btrfs pool went from 96 GiB to 72 GiB while it stayed mounted, with 0 app errors.",
     );
     expect(amoebaMeta.alternates).toEqual({ canonical: "/amoeba-value-lab" });
     expect(amoebaMeta.openGraph).toMatchObject({
       url: "/amoeba-value-lab",
-      title: "How Amoeba Rightsized a Lab VM’s btrfs Pool by 25% | Zoorik",
+      title: "How Amoeba rightsized our btrfs pool by 25% | Zoorik",
       images: [
         {
           url: "/og/pages/value-lab-amoeba-lab-vms.png",
@@ -113,10 +112,9 @@ describe("/value-lab", () => {
     const hero = hub().querySelector("main > header.hero.doc-hero#top")!;
     reduce.mockRestore();
     const [words, total] = [...hero.querySelectorAll(".doc-hero-grid > *")];
-    expect(text(words!.querySelector("h1"))).toBe("Value Lab by Zoorik");
-    expect(words!.querySelector("h1 [translate='no']")).toHaveTextContent("Zoorik");
+    expect(text(words!.querySelector("h1"))).toBe("Value Lab");
     expect(text(words!.querySelector(".doc-deck"))).toBe(
-      "What Coral and Amoeba reduced on our own AKS cluster and Azure lab VMs, every figure at list prices.",
+      "Coral and Amoeba case studies from our own AKS cluster and Azure lab VMs, every figure at list prices.",
     );
     expect(total).toHaveClass("dl", "vl-total");
     expect(total!.querySelector(".vl-tk .vl-sig")).toHaveAttribute("aria-hidden", "true");
@@ -126,7 +124,7 @@ describe("/value-lab", () => {
     expect(total!.querySelector(".vl-tk time")).toHaveAttribute("datetime", "2026-10-12");
     expect(text(total!.querySelector(".vl-tn"))).toBe("$213.89 a month");
     expect(text(total!.querySelector(".vl-tl"))).toBe(
-      "About $2,567 a year from the Coral Value Lab study, at list prices.",
+      "About $2,567 a year, from the Coral study at Azure list prices.",
     );
   });
 
@@ -138,7 +136,7 @@ describe("/value-lab", () => {
     expect(caseStudy.band.stats[1].value).toBe("$213.89");
   });
 
-  it("puts the two studies side by side on the band and Want to be next? on a row under them, rising as they arrive", () => {
+  it("puts the two studies side by side on the band and Want to be next? (the design partner program) on a row under them, rising as they arrive", () => {
     const section = hub().querySelector("main > section#studies.sec.sec-band")!;
     expect(section).toHaveAttribute("aria-label", "Value Lab studies");
     const [pair, row] = [...section.querySelectorAll(".wrap > .as-grid")];
@@ -149,12 +147,12 @@ describe("/value-lab", () => {
     expect(row!.children).toHaveLength(1);
     expect(featured).toHaveClass("as-card", "as-mini", "vl-fc", "rise");
     expect(next).toHaveClass("as-cal", "rise");
-    expect(text(featured!.querySelector(".vl-flag"))).toBe("Featured");
+    expect(text(featured!.querySelector(".vl-flag"))).toBe("Kubernetes");
     expect(featured!.querySelector("svg.vl-own")).toHaveAttribute("viewBox", "0 0 512 512");
     expect(featured!.querySelectorAll("svg.vl-own rect")).toHaveLength(15);
     expect(text(featured!.querySelector("h2.as-h"))).toBe("Our own AKS cluster");
     expect(text(featured!.querySelector("p"))).toBe(
-      "We reduced its monthly machine cost by 58% with Coral.",
+      "Coral reduced its machine cost by 58% in eight days.",
     );
     const bars = featured!.querySelector(".vl-bars")!;
     expect(bars).toHaveAttribute("aria-hidden", "true");
@@ -174,18 +172,18 @@ describe("/value-lab", () => {
     expect(text(read)).toBe("Read the Coral Value Lab study");
     expect(text(next!.querySelector("h2.as-h"))).toBe("Want to be next?");
     expect(text(next!.querySelector("p"))).toBe(
-      "Run the free assessment on your clusters or disks: one command, one PDF with your estimated saving at list price.",
+      "Design partners run Coral and Amoeba free on non-production clusters and disks. If you agree, your results become a case study.",
     );
     const go = next!.querySelector("a.cta-go")!;
-    expect(go).toHaveAttribute("href", "/assessment");
-    expect(text(go)).toBe("Run the free assessment");
+    expect(go).toHaveAttribute("href", "/design-partners");
+    expect(text(go)).toBe("Become a design partner");
     /* The Amoeba study beside it: its pool before and with Amoeba, on one scale. */
     expect(newest).toHaveClass("as-card", "as-mini", "vl-fc", "rise");
-    expect(text(newest!.querySelector(".vl-flag"))).toBe("New");
+    expect(text(newest!.querySelector(".vl-flag"))).toBe("Block storage");
     expect(newest!.querySelector("svg.vl-own")).toHaveAttribute("viewBox", "0 0 512 512");
     expect(text(newest!.querySelector("h2.as-h"))).toBe("Our own Azure lab VM");
     expect(text(newest!.querySelector("p"))).toBe(
-      "Amoeba rightsized its btrfs pool by 25%, with 0 lost mounts.",
+      "Amoeba rightsized its btrfs pool by 25% while it stayed mounted.",
     );
     expect(
       [...newest!.querySelectorAll(".vl-bars .vl-col")].map((col) => [
@@ -250,12 +248,12 @@ describe("/coral-value-lab", () => {
       ]),
     ).toEqual([
       ["−58%", "machine cost", true],
-      ["$213.89", "saved every month, about $2,567 a year", true],
+      ["$213.89", "saved a month, about $2,567 a year", true],
       ["10 → 6", "CPU, on 2 machines instead of 3", false],
-      ["8 days", "from connecting Coral to the result", false],
+      ["8 days", "after connecting Coral", false],
     ]);
     expect(text(band.querySelector(".doc-call p"))).toMatch(
-      /^Coral is Zoorik’s Kubernetes optimization/,
+      /^Coral is Zoorik’s Kubernetes cost optimization for AKS and EKS\./,
     );
   });
 
@@ -277,12 +275,12 @@ describe("/coral-value-lab", () => {
         text(section.querySelector("h2 > span:last-child")),
       ]),
     ).toEqual([
-      ["1", "The starting point"],
+      ["1", "Starting point"],
       ["2", "Connecting Coral"],
       ["3", "What Coral did"],
-      ["4", "How the apps came through"],
-      ["5", "How the apps stayed safe"],
-      ["6", "The result"],
+      ["4", "Effect on the apps"],
+      ["5", "Safeguards"],
+      ["6", "Result"],
     ]);
     for (const section of sections) {
       expect(section.querySelector("h2 .cs-no")).toHaveAttribute("aria-hidden", "true");
@@ -312,9 +310,9 @@ describe("/coral-value-lab", () => {
   it("tells what Coral did in three dated steps, each with what it saved", () => {
     const did = study().querySelector("#what-coral-did")!;
     expect([...did.querySelectorAll(".cs-chap > h3")].map((h3) => [h3.id, text(h3)])).toEqual([
-      ["node-optimization", "Node optimization: a spare worker removed"],
-      ["workload-optimization", "Workload optimization: apps sized to what they use"],
-      ["rebalancing", "Rebalancing: one click, a cheaper machine"],
+      ["node-optimization", "Node optimization: one worker removed"],
+      ["workload-optimization", "Workload optimization: apps resized"],
+      ["rebalancing", "Rebalancing: a cheaper worker"],
     ]);
     expect([...did.querySelectorAll(".cs-date")].map(text)).toEqual([
       "6 Oct",
@@ -323,7 +321,7 @@ describe("/coral-value-lab", () => {
     ]);
     expect([...did.querySelectorAll(".cs-pill")].map(text)).toEqual([
       "−$147.46 a month",
-      "Less reserved, more room on every machine",
+      "Less reserved, more room per machine",
       "−$66.43 a month",
     ]);
     const reserve = did.querySelector(".cs-reserve")!;
@@ -392,7 +390,7 @@ describe("/coral-value-lab", () => {
     expect(documents["coral-case-study"].pdf).toBe(PDF);
     const foot = container.querySelector("article.ar-frame > .fq-upd.ar-foot:last-child")!;
     expect(text(foot)).toBe(
-      "Zoorik’s own development cluster on Azure Kubernetes Service, 4 to 12 October 2026. Costs are Azure pay-as-you-go list prices for the cluster’s machines at 730 hours a month. App figures cover the cluster’s own apps. Results depend on each cluster’s apps and machines.",
+      "Zoorik’s own development cluster on Azure Kubernetes Service, 4 to 12 October 2026. Costs are Azure pay-as-you-go list prices for its machines, at 730 hours a month. App figures cover the cluster’s own apps. Results depend on each cluster’s apps and machines.",
     );
     const row = container.querySelector("section#assess")!;
     expect(row.querySelector("a.btn-ink")).toHaveAttribute("href", "/assessment?p=coral");
@@ -427,9 +425,9 @@ describe("/amoeba-value-lab", () => {
         stat.querySelector(".cs-v")!.classList.contains("is-good"),
       ]),
     ).toEqual([
-      ["−25%", "the size of Lab VM A’s btrfs pool", true],
-      ["96 → 72 GiB", "the same 60.07 GiB of data, on a smaller pool", false],
-      ["0", "lost mounts, and 0 errors from our test app", true],
+      ["−25%", "pool size on Lab VM A", true],
+      ["96 → 72 GiB", "holding the same 60.07 GiB of data", false],
+      ["0", "lost mounts or test app errors", true],
       ["8 min 14 s", "from our click to the smaller pool", false],
     ]);
     expect(text(band.querySelector(".doc-call p"))).toMatch(
@@ -441,12 +439,12 @@ describe("/amoeba-value-lab", () => {
     const container = amoeba();
     const sections = [...container.querySelectorAll("article.ar-frame > section.fq-sec")];
     expect(sections.map((section) => [section.id, text(section.querySelector("h2"))])).toEqual([
-      ["the-starting-point", "1The starting point"],
+      ["the-starting-point", "1Starting point"],
       ["connecting-amoeba", "2Connecting Amoeba"],
       ["what-amoeba-did", "3What Amoeba did"],
-      ["how-the-apps-and-data-came-through", "4How the apps and data came through"],
-      ["how-they-stayed-safe", "5How they stayed safe"],
-      ["the-result", "6The result"],
+      ["how-the-apps-and-data-came-through", "4Effect on the apps and data"],
+      ["how-they-stayed-safe", "5Safeguards"],
+      ["the-result", "6Result"],
     ]);
     expect(container.querySelector("#connecting-amoeba h2 [translate='no']")).toHaveTextContent(
       "Amoeba",
@@ -485,8 +483,8 @@ describe("/amoeba-value-lab", () => {
   it("tells what Amoeba did in two dated steps: the move onto a pool, then a shrink on our click", () => {
     const did = amoeba().querySelector("#what-amoeba-did")!;
     expect([...did.querySelectorAll(".cs-chap > h3")].map((h3) => [h3.id, text(h3)])).toEqual([
-      ["move-onto-a-pool", "The move onto a pool: two folders, while the app kept writing"],
-      ["shrink-on-a-click", "A shrink on our click: 96 GiB down to 72 GiB"],
+      ["move-onto-a-pool", "Move onto a pool"],
+      ["shrink-on-a-click", "Shrink on our click"],
     ]);
     expect([...did.querySelectorAll(".cs-pill")].map(text)).toEqual([
       "2 folders moved · 0 failed writes at the switch",
@@ -539,14 +537,14 @@ describe("/amoeba-value-lab", () => {
         ["No write failed", "cs-g"],
       ],
       [
-        ["Folders found mounted", ""],
+        ["Folders mounted", ""],
         ["5,677 of 5,677 checks before the shrink, and 118 of 118 during it", "cs-g"],
         ["Every check", "cs-g"],
       ],
       [
-        ["Test files whose checksum matched", ""],
+        ["Checksums matched", ""],
         ["not checked", "is-muted"],
-        ["Every one, before and after the switch", "cs-g"],
+        ["Every test file, before and after the switch", "cs-g"],
       ],
     ]);
   });
@@ -581,7 +579,7 @@ describe("/amoeba-value-lab", () => {
       ),
     ).toEqual([["Lab VM A, Manual", "96 GiB", "72 GiB", "24 GiB less", "$3.60 less"]]);
     expect(text(result.querySelector(".cs-two .cs-cap"))).toBe(
-      "Each month: Amoeba’s own figure, at the Azure list prices it reads.",
+      "Each month: Amoeba’s own figure, at Azure list prices.",
     );
     const donut = result.querySelector("svg.cs-donut")!;
     expect(donut).toHaveAttribute("aria-label", "25% less");

@@ -6,86 +6,82 @@ import { figure as figure3 } from "@/features/learn/figures/premium-ssd-v2-vs-pr
 export const article: Article = {
   slug: "premium-ssd-v2-vs-premium-ssd",
   title: "Premium SSD v2 vs Premium SSD: which costs less",
-  meta: "Azure Premium SSD v2 vs Premium SSD: size tiers against per-GiB pricing, East US list prices, when v2 costs less, when Premium SSD fits, and Ultra Disk.",
-  h1: "Premium SSD v2 vs Premium SSD: which one costs less?",
-  deck: "Four worked cases, and the limits that still make Premium SSD the right disk.",
-  card: "How Premium SSD and Premium SSD v2 charge, when v2 costs less for the same data, and where Ultra Disk fits.",
+  meta: "Azure Premium SSD v2 vs Premium SSD: how each one charges, four cases at East US list prices, and when Premium SSD or Ultra Disk fits better.",
+  h1: "Premium SSD v2 vs Premium SSD",
+  deck: "How each one charges, four priced cases, and when Premium SSD or Ultra Disk is the better disk.",
+  card: "How Premium SSD and Premium SSD v2 charge, when v2 costs less, and where Ultra Disk fits.",
   product: "amoeba",
   hub: "Block storage",
   topic: "Azure block storage",
   versus: ["Premium SSD v2", "Premium SSD"],
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "sheldon",
   cover: "/learn-covers/zoorik-learn-premium-ssd-v2-vs-premium-ssd-1200x630.webp",
   coverAlt:
     "Premium SSD v2 vs Premium SSD: Premium SSD’s size tier leaves space paid for, unused, while v2 ends at the data",
   short:
-    "Premium SSD v2 usually costs less for the same data: it charges per GiB, not per size tier. At East US list prices in October 2026, 512\u00a0GiB costs $41.11 a month on v2 and $73.22 on Premium SSD.",
+    "Premium SSD v2 usually costs less for the same data, because it charges per GiB instead of per size tier. At East US list prices in October 2026, 512 GiB costs $41.11 a month on v2 and $73.22 on Premium SSD. Premium SSD still fits OS disks, host caching and zone-redundant storage.",
   sections: [
     {
       id: "premium-ssd-charges-a-size-tier-and",
-      title: "Premium SSD charges a size tier, and v2 charges each GiB",
+      title: "How each one charges",
       blocks: [
         {
           kind: "p",
-          text: "Picture a data disk that needs 600\u00a0GiB. Premium SSD charges it as a P30, the 1,024\u00a0GiB tier, at $135.17 a month in East US. On v2 you pay for the 600\u00a0GiB alone: $48.18 a month.",
+          text: "Picture a data disk that needs 600 GiB. Premium SSD charges it as a P30, the 1,024 GiB tier, at $135.17 a month in East US. Premium SSD v2 charges for the 600 GiB alone: $48.18 a month.",
         },
         { kind: "svg", figure: figure1 },
-        {
-          kind: "p",
-          text: "Microsoft’s docs list five managed disk types, and “Premium SSD v1” isn’t one. The older type is simply Premium SSD, so Azure Premium SSD v2 vs v1 is this same comparison.",
-        },
         {
           kind: "p",
           text: [
             "Each ",
             { a: "Premium SSD", href: "/learn/glossary/azure-premium-ssd" },
-            " tier, P1 to P80, is a fixed size from 4\u00a0GiB to 32,767\u00a0GiB, with fixed performance to match. Azure rounds your provisioned size up to the nearest ",
+            " tier, P1 to P80, is a fixed size from 4 GiB to 32,767 GiB. Azure rounds the provisioned size up to the next ",
             { a: "size tier", href: "/learn/glossary/azure-disk-sizes" },
-            " and charges for that tier. That’s how 600\u00a0GiB becomes a P30.",
+            " and charges that tier’s price.",
           ],
         },
         {
           kind: "p",
           text: [
-            "A P20 (512\u00a0GiB) gets 2,300 ",
+            "Each tier also fixes the performance. A P20 (512 GiB) gets 2,300 ",
             { a: "IOPS", href: "/learn/glossary/iops" },
-            " (input/output operations per second) and 150\u00a0MB/s, whether your workload uses them or not. A ",
+            " (input/output operations per second) and 150 MB/s, whether your workload uses them or not. For more, you move to a larger tier or set a ",
             { a: "higher performance tier", href: "/learn/azure-disk-performance-tiers" },
-            " raises a disk’s baseline performance, at that tier’s fixed price.",
+            ", each at a fixed price.",
           ],
         },
         {
           kind: "p",
           text: [
-            "Premium SSD v2 has no tiers. You choose capacity from 1\u00a0GiB to 64\u00a0TiB, in 1\u00a0GiB steps. Then you set IOPS and ",
+            "Premium SSD v2 has no tiers. You set capacity from 1 GiB to 64 TiB in 1 GiB steps, then set IOPS and ",
             { a: "throughput", href: "/learn/glossary/disk-throughput" },
             " on their own.",
           ],
         },
         {
           kind: "p",
-          text: "Every v2\u00a0disk includes 3,000\u00a0IOPS and 125\u00a0MB/s free of charge, and going above either raises the price.",
-        },
-        {
-          kind: "p",
-          text: "You can change a v2\u00a0disk’s performance four times in 24\u00a0hours, and creating the disk counts as one.",
+          text: "Every v2 disk includes 3,000 IOPS and 125 MB/s at no charge. Going above either adds to the price. You can change a v2 disk’s performance four times in 24 hours, and creating the disk counts as one.",
         },
         {
           kind: "callout",
           label: "For engineers",
-          text: "Past 6\u00a0GiB, v2’s IOPS ceiling grows by 500 per GiB, to a maximum of 80,000. Throughput can reach 0.25\u00a0MB/s per provisioned IOPS, up to 2,000\u00a0MB/s.",
+          text: "Past 6 GiB, v2’s IOPS ceiling grows by 500 per GiB, to a maximum of 80,000. Throughput can reach 0.25 MB/s per provisioned IOPS, up to 2,000 MB/s.",
+        },
+        {
+          kind: "p",
+          text: "There is no “Premium SSD v1”. Microsoft lists five managed disk types, and the older one is simply Premium SSD. So Premium SSD v2 vs v1 is this same comparison.",
         },
       ],
     },
     {
       id: "premium-ssd-v2-vs-premium-ssd",
-      title: "Premium SSD v2 vs Premium SSD pricing: v2 usually costs less for the same data",
+      title: "Pricing compared",
       blocks: [
         {
           kind: "p",
-          text: "Every price here is a pay-as-you-go list price. Each is for East US with locally redundant storage (LRS), from Microsoft’s Azure Retail Prices API in October 2026.",
+          text: "All prices here are pay-as-you-go list prices for East US with locally redundant storage (LRS), from Microsoft’s Azure Retail Prices API in October 2026.",
         },
         {
           kind: "p",
@@ -98,7 +94,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "what-v2-charges-for-each-meter",
-          title: "What v2 charges for each meter",
+          title: "What v2 charges",
         },
         { kind: "p", text: "Premium SSD v2 charges three meters by the hour:" },
         {
@@ -106,7 +102,7 @@ export const article: Article = {
           items: [
             [{ b: "Capacity:" }, " $0.00011 per GiB."],
             [{ b: "IOPS:" }, " $0.000007 per IOPS above 3,000."],
-            [{ b: "Throughput:" }, " $0.000055 per MB/s above 125\u00a0MB/s."],
+            [{ b: "Throughput:" }, " $0.000055 per MB/s above 125 MB/s."],
           ],
         },
         {
@@ -116,7 +112,7 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Worked example",
-          text: "The 600\u00a0GiB v2\u00a0disk with the P30’s 5,000\u00a0IOPS and 200\u00a0MB/s costs $61.41 a month. That’s 55% less than the P30’s $135.17.",
+          text: "The 600 GiB v2 disk, set to the P30’s 5,000 IOPS and 200 MB/s, costs $61.41 a month. That’s 55% less than the P30’s $135.17.",
         },
         { kind: "p", text: "The three meters add up like this:" },
         {
@@ -132,51 +128,54 @@ export const article: Article = {
           kind: "ul",
           items: [
             [
-              { b: "One 512\u00a0GiB disk:" },
-              " a P20 costs $73.22 a month for 2,300\u00a0IOPS and 150\u00a0MB/s. A 512\u00a0GiB v2\u00a0disk costs $41.11 at its included 3,000\u00a0IOPS and 125\u00a0MB/s. With throughput raised to 150\u00a0MB/s, it costs $42.12, 42% less for more IOPS.",
+              { b: "One 512 GiB disk:" },
+              " a P20 costs $73.22 a month for 2,300 IOPS and 150 MB/s. A 512 GiB v2 disk costs $41.11 at its included 3,000 IOPS and 125 MB/s. Raised to 150 MB/s, it costs $42.12: 42% less, with more IOPS.",
             ],
             [
-              { b: "Four 512\u00a0GiB data disks:" },
-              " four P20s cost $292.88 a month. The same 2,048\u00a0GiB on v2 costs $164.45 at the included performance, 44% less.",
+              { b: "Four 512 GiB data disks:" },
+              " four P20s cost $292.88 a month. The same 2,048 GiB on v2 costs $164.45 at the included performance, 44% less.",
             ],
             [
               { b: "The largest tier:" },
-              " a full P80 costs $3,604.11 a month for 32,767\u00a0GiB, 20,000\u00a0IOPS and 900\u00a0MB/s. Matching that size and performance, v2 costs $2,749.18, 24% less.",
+              " a full P80 costs $3,604.11 a month for 32,767 GiB, 20,000 IOPS and 900 MB/s. A v2 disk with the same size and performance costs $2,749.18, 24% less.",
             ],
           ],
         },
         {
           kind: "p",
-          text: "The gap is widest where Premium SSD rounds up, and narrowest on big disks that use their whole tier.",
+          text: "The gap is widest where Premium SSD rounds up, and narrowest on large disks that use their whole tier.",
         },
         { kind: "svg", figure: figure2 },
-        { kind: "h3", id: "why-v2-costs-less-per-gib", title: "Why v2 costs less per GiB" },
+        { kind: "h3", id: "why-v2-costs-less-per-gib", title: "Why v2 costs less" },
         {
           kind: "p",
-          text: "The v2 rate of $0.0803 per GiB sits below every full Premium SSD tier. Those cost between $0.110 (P70 and P80) and $0.165 (P4) per GiB a month. And v2 never rounds up.",
+          text: "The v2 rate of $0.0803 per GiB a month is below every full Premium SSD tier. Those cost from $0.110 (P70 and P80) to $0.165 (P4) per GiB. And v2 never rounds up.",
         },
         {
           kind: "p",
-          text: "A v2\u00a0disk’s free 3,000\u00a0IOPS already exceed the baseline of every tier up to P20. You pay for extra IOPS and throughput only while you’ve raised them. Microsoft’s own summary is that Premium SSD v2 offers higher performance than Premium SSD “while also generally being less costly.”",
+          text: "A v2 disk’s free 3,000 IOPS already exceed the baseline of every tier up to P20. You pay for extra IOPS and throughput only while you’ve raised them. Microsoft’s own summary is that Premium SSD v2 offers higher performance than Premium SSD “while also generally being less costly.”",
         },
         {
           kind: "p",
-          text: "Growth shows the difference most. A Premium SSD that outgrows 512\u00a0GiB jumps from a P20 at $73.22 to a P30 at $135.17. A v2\u00a0disk grows by the GiB.",
+          text: "Growth shows the difference most. A Premium SSD that outgrows 512 GiB jumps from a P20 at $73.22 to a P30 at $135.17. A v2 disk grows by the GiB.",
         },
       ],
     },
     {
       id: "bursting-and-reservations-narrow-the-gap-only",
-      title: "Bursting and reservations narrow the gap only a little",
+      title: "Bursting and reservations",
       blocks: [
-        { kind: "p", text: "Both features exist on the Premium SSD side only." },
         {
           kind: "p",
-          text: "With bursting, P20 and smaller disks can reach 3,500\u00a0IOPS and 170\u00a0MB/s for up to 30\u00a0minutes. Holding that level all month on a 512\u00a0GiB v2\u00a0disk costs $45.48, still 38% under the P20.",
+          text: "Both are Premium SSD features that v2 lacks. Neither closes the gap.",
         },
         {
           kind: "p",
-          text: "Only on-demand bursting, which you enable yourself on disks larger than 512\u00a0GiB, adds a flat enablement fee plus burst transaction charges.",
+          text: "Credit-based bursting is free and best effort. It lets P20 and smaller disks reach 3,500 IOPS and 170 MB/s for up to 30 minutes. A 512 GiB v2 disk held at that level all month costs $45.48, still 38% under the P20.",
+        },
+        {
+          kind: "p",
+          text: "On-demand bursting, which you enable on disks larger than 512 GiB, adds a flat enablement fee plus charges for burst transactions.",
         },
         {
           kind: "p",
@@ -187,17 +186,17 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The Retail Prices API lists a one-year P30 reservation at $1,541 for the term. That’s about 5% under twelve months at the pay-as-you-go rate. On v2, 1,024\u00a0GiB with the P30’s 5,000\u00a0IOPS and 200\u00a0MB/s comes to $1,145.50 a year with no commitment.",
+          text: "The Retail Prices API lists a one-year P30 reservation at $1,541 for the term. That’s about 5% under twelve months at the pay-as-you-go rate. On v2, 1,024 GiB with the P30’s 5,000 IOPS and 200 MB/s costs $1,145.50 a year, with no commitment.",
         },
       ],
     },
     {
       id: "premium-ssd-is-still-the-right-disk",
-      title: "Premium SSD is still the right disk for OS disks, host caching and ZRS",
+      title: "When Premium SSD fits",
       blocks: [
         {
           kind: "p",
-          text: "Between the two, the list price rarely points to Premium SSD. The limits of v2 decide it.",
+          text: "Premium SSD rarely wins on list price. What v2 can’t do decides it.",
         },
         {
           kind: "table",
@@ -209,18 +208,18 @@ export const article: Article = {
           rows: [
             [
               "What you pay for",
-              "The size tier the disk rounds up to, P1 to P80 (4\u00a0GiB to 32,767\u00a0GiB)",
-              "Each GiB (1\u00a0GiB to 64\u00a0TiB), plus IOPS above 3,000 and throughput above 125\u00a0MB/s",
+              "The size tier the disk rounds up to, P1 to P80 (4 GiB to 32,767 GiB)",
+              "Each GiB (1 GiB to 64 TiB), plus IOPS above 3,000 and throughput above 125 MB/s",
             ],
             [
               "Performance",
-              "Set by the tier, up to 20,000\u00a0IOPS and 900\u00a0MB/s",
-              "Set by you, up to 80,000\u00a0IOPS and 2,000\u00a0MB/s",
+              "Set by the tier, up to 20,000 IOPS and 900 MB/s",
+              "Set by you, up to 80,000 IOPS and 2,000 MB/s",
             ],
             [
-              "512\u00a0GiB in East US, Oct 2026",
+              "512 GiB in East US, Oct 2026",
               "$73.22 a month (P20)",
-              "$41.11 a month at 3,000\u00a0IOPS and 125\u00a0MB/s",
+              "$41.11 a month at 3,000 IOPS and 125 MB/s",
             ],
             ["OS disk", "Yes", "No, data disks only"],
             ["Host caching", "Yes", "Not supported"],
@@ -232,7 +231,7 @@ export const article: Article = {
             ],
             [
               "Bursting",
-              "P20 and smaller burst for up to 30\u00a0minutes, larger disks with on-demand bursting",
+              "P20 and smaller: free, up to 30 minutes. Larger disks: on-demand, charged",
               "None",
             ],
             ["Reservations", "One year, P30 to P80", "Not available"],
@@ -253,11 +252,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "East US is a region where v2 attaches only to zonal virtual machines (VMs). So a VM deployed there without a zone can’t take it.",
+          text: "In East US, v2 attaches only to zonal virtual machines (VMs). So a VM deployed there without a zone can’t use it.",
         },
         {
           kind: "p",
-          text: "Region coverage changes, so check yours before you plan. This Azure CLI command from Microsoft’s deploy guide lists the regions and zones that offer Premium SSD v2 in your subscription:",
+          text: "Region support changes, so check yours before you plan. This Azure CLI command, from Microsoft’s deploy guide, lists the regions and zones that offer Premium SSD v2 in your subscription:",
         },
         {
           kind: "code",
@@ -268,18 +267,14 @@ export const article: Article = {
     },
     {
       id: "azure-ultra-disk-vs-premium-ssd-v2",
-      title: "Azure Ultra Disk vs Premium SSD v2: choose Ultra only past v2’s ceiling",
+      title: "Ultra Disk vs Premium SSD v2",
       blocks: [
         {
           kind: "p",
           text: [
             { a: "Ultra Disk", href: "/learn/glossary/azure-ultra-disk" },
-            " charges the way v2 does: capacity per GiB, plus the IOPS and throughput you set. Its ceiling is far higher: up to 400,000\u00a0IOPS and 10,000\u00a0MB/s per disk, against v2’s 80,000\u00a0IOPS and 2,000\u00a0MB/s. Sizes run from 4\u00a0GiB to 64\u00a0TiB.",
+            " charges the way v2 does: capacity per GiB, plus the IOPS and throughput you set. Its ceiling is far higher: 400,000 IOPS and 10,000 MB/s per disk, against v2’s 80,000 IOPS and 2,000 MB/s. Sizes run from 4 GiB to 64 TiB. Microsoft aims it at I/O-intensive workloads such as SAP HANA, top-tier databases and transaction-heavy workloads.",
           ],
-        },
-        {
-          kind: "p",
-          text: "Microsoft aims it at I/O-intensive workloads such as SAP HANA, top-tier databases and transaction-heavy workloads.",
         },
         {
           kind: "p",
@@ -299,34 +294,34 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Ultra Disk shares v2’s main limits: data disks only, LRS only and no disk caching. It doesn’t support availability sets either.",
+          text: "Ultra Disk shares v2’s main limits: data disks only, no Azure Compute Gallery, LRS only and no disk caching. It doesn’t support availability sets either.",
         },
         {
           kind: "p",
-          text: "As on v2, performance changes are capped at four in 24\u00a0hours, and a change can take up to an hour to apply. There’s no direct switch from Ultra Disk to v2, so that move also takes a snapshot migration.",
+          text: "As on v2, performance changes are capped at four in 24 hours, and a change can take up to an hour to apply. There’s no direct switch from Ultra Disk to v2, so that move also takes a snapshot migration.",
         },
         {
           kind: "callout",
           label: "Rule of thumb",
-          text: "Default to v2 for data disks. Choose Ultra Disk only when one disk needs more than v2’s 80,000\u00a0IOPS or 2,000\u00a0MB/s.",
+          text: "Default to v2 for data disks. Choose Ultra Disk only when one disk needs more than v2’s 80,000 IOPS or 2,000 MB/s.",
         },
         { kind: "svg", figure: figure3 },
       ],
     },
     {
       id: "moving-a-data-disk-to-v2-takes",
-      title: "Moving a data disk to v2 takes a restart, and there’s no direct way back",
+      title: "Converting to v2",
       blocks: [
         {
           kind: "p",
-          text: "Microsoft’s conversion guide says to schedule the disk type change in a maintenance window, “because conversion requires a restart of the virtual machine (VM)”. Disk performance is degraded until the conversion completes. Check these first:",
+          text: "Microsoft’s conversion guide says the change needs a restart of the VM, so plan it for a maintenance window. Disk performance is degraded until the conversion completes. Check these first:",
         },
         {
           kind: "ul",
           items: [
             [
               { b: "Settings:" },
-              " the disk can switch directly only to a v2\u00a0disk with a 512 sector size. Host caching, bursting and double encryption must be off first.",
+              " the disk can switch directly only to a v2 disk with a 512-byte sector size. Turn off host caching, bursting and double encryption first.",
             ],
             [{ b: "Shared disks:" }, " detach the disk from every VM."],
             [{ b: "Site Recovery:" }, " disable Azure Site Recovery on the disk."],
@@ -336,7 +331,7 @@ export const article: Article = {
             ],
             [
               { b: "Reservations:" },
-              " unused reserved capacity doesn’t carry over, so count the reservations you hold before you convert.",
+              " they don’t cover v2, and unused reserved capacity doesn’t carry over. Count the reservations you hold before you convert.",
             ],
             [
               { b: "The way back:" },
@@ -348,7 +343,7 @@ export const article: Article = {
     },
     {
       id: "which-disk-type-amoeba-uses-for-a",
-      title: "Which disk type Amoeba uses for a pool",
+      title: "Where Amoeba fits",
       blocks: [
         {
           kind: "p",
@@ -363,15 +358,15 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Amoeba, Zoorik’s block storage optimization for Azure managed disks and Amazon EBS, works on the size. It moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow.",
+          text: "Amoeba, Zoorik’s block storage optimization, works on the size. It moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow.",
         },
         {
           kind: "p",
-          text: "It grows the pool before it fills, and sooner when data arrives fast. When your data goes down and stays down, it shrinks the pool one disk at a time. So you pay for close to what you use.",
+          text: "Then it rightsizes the pool without any downtime. It grows the pool before it fills, and sooner when data arrives fast. When your data goes down and stays down, it shrinks the pool one disk at a time. So you pay for close to what you use.",
         },
         {
           kind: "p",
-          text: "On Azure the pool uses Premium SSD v2 where your VM’s region and zone offer it, and Premium SSD otherwise. So data on Standard SSD, Standard HDD or Ultra Disk also moves to one of those two types.",
+          text: "On Azure, the pool uses Premium SSD v2 where your VM’s region and zone offer it, and Premium SSD otherwise. Data on Standard SSD, Standard HDD or Ultra Disk moves to one of those two types.",
         },
         {
           kind: "p",
@@ -382,12 +377,8 @@ export const article: Article = {
           text: [
             "The worked example on the ",
             { a: "Amoeba page", href: "/amoeba" },
-            " shows the size side. A VM has four 512\u00a0GiB Premium SSD data disks, 2,048\u00a0GiB in all, holding 1,000\u00a0GiB of data. More than half the space paid for is empty.",
+            " has four 512 GiB Premium SSD data disks, 2,048 GiB in all. They hold 1,000 GiB of data. More than half the space paid for is empty.",
           ],
-        },
-        {
-          kind: "p",
-          text: "On Azure, Amoeba prices disks from the same Azure Retail Prices API as this article.",
         },
         {
           kind: "p",
@@ -404,7 +395,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
@@ -454,7 +445,7 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "Azure managed disk types: pricing and how to choose",
+      title: "Azure disk types",
       where: "Learn",
       href: "/learn/azure-managed-disk-types",
     },
@@ -464,20 +455,19 @@ export const article: Article = {
       href: "/learn/azure-disk-reservations",
     },
     {
-      title: "Premium SSD vs Standard SSD on Azure: what you pay for",
+      title: "Azure Premium SSD vs Standard SSD",
       where: "Learn",
       href: "/learn/premium-ssd-vs-standard-ssd-azure",
     },
     {
-      title: "Azure disk IOPS vs throughput: what limits your disks",
+      title: "Azure disk IOPS vs throughput",
       where: "Learn",
       href: "/learn/azure-disk-iops-vs-throughput",
     },
     {
-      title: "Azure disk LRS vs ZRS: what zone redundancy costs",
+      title: "Azure LRS vs ZRS for managed disks",
       where: "Learn",
       href: "/learn/azure-disk-lrs-vs-zrs",
     },
   ],
-  relatedTitle: "More on Azure disk types and pricing",
 };

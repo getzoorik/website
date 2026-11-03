@@ -87,9 +87,8 @@ export const marketGroups: readonly MarketGroup[] = [
       product: "coral",
       name: "Coral by Zoorik",
       company: "Zoorik",
-      /* The mocks' data has Coral "right-size" workloads and "rebalance onto" cheaper machines: Coral rebalances, and
-         rightsizing is Amoeba's verb, so the verb leads and the move is said plainly. */
-      line: "Rebalances workloads, removes machines the cluster no longer needs and moves work onto cheaper ones, on AKS and EKS.",
+      /* Coral rebalances; rightsizing is Amoeba's verb. */
+      line: "Rebalances workloads, removes spare nodes and moves work onto cheaper ones on AKS and EKS, without any downtime.",
       acts: "changes infrastructure",
       clouds: ["Azure", "AWS"],
       href: routes.coral,
@@ -403,7 +402,7 @@ export const marketGroups: readonly MarketGroup[] = [
       product: "amoeba",
       name: "Amoeba by Zoorik",
       company: "Zoorik",
-      line: "Rightsizes block storage on Azure managed disks and Amazon EBS, autonomously, without any downtime after the one switch onto its pool.",
+      line: "Rightsizes block storage on Azure managed disks and Amazon EBS, autonomously and without any downtime.",
       acts: "changes infrastructure",
       clouds: ["Azure", "AWS"],
       href: routes.amoeba,
@@ -1041,7 +1040,7 @@ export interface ShownGroup {
   readonly kind: ToolKind;
   /** On its chip, and over its tiles where it has no `heading`. */
   readonly label: string;
-  /** Over its tiles, where the chip's short name is not the search it answers (1 Nov 2026). */
+  /** Over its tiles, where the chip's short name is not clear enough on its own. */
   readonly heading?: string;
   /** The group of `marketGroups` its tools are read from. */
   readonly group: string;
@@ -1108,8 +1107,7 @@ export const shownGroups: readonly ShownGroup[] = [
     group: "storage",
     ours: {
       product: "amoeba",
-      short:
-        "Rightsizes Azure managed disks and Amazon EBS, without any downtime after the one switch.",
+      short: "Rightsizes Azure managed disks and Amazon EBS without any downtime.",
     },
     tools: [
       {
@@ -1133,7 +1131,6 @@ export const shownGroups: readonly ShownGroup[] = [
   {
     kind: "finops",
     label: "FinOps",
-    heading: "FinOps tools",
     group: "finops",
     tools: [
       {
@@ -1165,7 +1162,7 @@ export const shownGroups: readonly ShownGroup[] = [
   {
     kind: "cloud",
     label: "Cloud providers",
-    heading: "AWS and Azure’s own cost optimization tools",
+    heading: "AWS and Azure’s own tools",
     group: "native",
     tools: [
       {
@@ -1260,7 +1257,7 @@ export const versusFacts: readonly VersusFacts[] = [
         },
         theirs: {
           mark: "yes",
-          note: "'continuously optimizes the CPU and memory requests and limits for each container'",
+          note: "“continuously optimizes the CPU and memory requests and limits for each container”",
           sources: ["https://www.cloudbolt.io/stormforge/"],
         },
       },
@@ -1273,7 +1270,7 @@ export const versusFacts: readonly VersusFacts[] = [
         },
         theirs: {
           mark: "partly",
-          note: "Adjusts HPA target utilization (and KEDA CPU/memory triggers); no setting for min/max replicas",
+          note: "adjusts HPA target utilization and KEDA CPU and memory triggers; no setting for min or max replicas",
           sources: ["https://docs.stormforge.io/docs/optimize-live/configure/settings/hpa/"],
         },
       },
@@ -1286,7 +1283,7 @@ export const versusFacts: readonly VersusFacts[] = [
         },
         theirs: {
           mark: "no",
-          note: "FAQ: it adjusts pod requests and limits, while 'tools like Karpenter optimize the nodes themselves'",
+          note: "its FAQ says it adjusts pod requests and limits, while “tools like Karpenter optimize the nodes themselves”",
           sources: ["https://www.cloudbolt.io/stormforge/"],
         },
       },
@@ -1299,7 +1296,7 @@ export const versusFacts: readonly VersusFacts[] = [
         },
         theirs: {
           mark: "yes",
-          note: "Pairs with Karpenter; nodes left to the existing autoscaler",
+          note: "pairs with Karpenter and leaves nodes to your autoscaler",
           sources: ["https://www.cloudbolt.io/stormforge/"],
         },
       },
@@ -1317,7 +1314,7 @@ export const versusFacts: readonly VersusFacts[] = [
         ours: { mark: "yes", note: "Kubernetes 1.30 or later", sources: [] },
         theirs: {
           mark: "yes",
-          note: "Any distribution; also an EKS add-on",
+          note: "runs on any distribution, and as an EKS add-on",
           sources: [
             "https://docs.stormforge.io/docs/get-started/",
             "https://aws.amazon.com/marketplace/pp/prodview-ywoktkhczruhk",
@@ -1333,7 +1330,7 @@ export const versusFacts: readonly VersusFacts[] = [
         },
         theirs: {
           mark: "yes",
-          note: "Immediate Rollout resizes in place, with 'a controlled restart only if the kernel can't accommodate the change'",
+          note: "Immediate Rollout resizes in place, with “a controlled restart only if the kernel can’t accommodate the change”",
           sources: ["https://www.cloudbolt.io/stormforge/"],
         },
       },
@@ -1346,7 +1343,7 @@ export const versusFacts: readonly VersusFacts[] = [
         },
         theirs: {
           mark: "no",
-          note: "Agent runs in the cluster; a SaaS control plane runs the machine learning analysis",
+          note: "an agent runs in the cluster; a SaaS control plane runs the machine-learning analysis",
           sources: ["https://www.cloudbolt.io/stormforge/"],
         },
       },
@@ -1359,7 +1356,7 @@ export const versusFacts: readonly VersusFacts[] = [
         },
         theirs: {
           mark: "yes",
-          note: "Helm is a prerequisite; EKS add-on with Helm installation options",
+          note: "installs with Helm, or as an EKS add-on",
           sources: [
             "https://docs.stormforge.io/docs/get-started/",
             "https://aws.amazon.com/marketplace/pp/prodview-ywoktkhczruhk",
@@ -1371,7 +1368,7 @@ export const versusFacts: readonly VersusFacts[] = [
         ours: { mark: "yes", note: "Coral by Zoorik for Amazon EKS", sources: [] },
         theirs: {
           mark: "yes",
-          note: "'Optimize Live - Autonomous K8s Workload Rightsizing - Agent Only' (free agent)",
+          note: "“Optimize Live - Autonomous K8s Workload Rightsizing - Agent Only”, a free agent",
           sources: ["https://aws.amazon.com/marketplace/pp/prodview-ywoktkhczruhk"],
         },
       },
@@ -1380,7 +1377,7 @@ export const versusFacts: readonly VersusFacts[] = [
         ours: { mark: "yes", note: "Coral on Microsoft Marketplace", sources: [] },
         theirs: {
           mark: "yes",
-          note: "'StormForge Optimize' SaaS listing by StormForge",
+          note: "“StormForge Optimize”, a SaaS listing",
           sources: [
             "https://marketplace.microsoft.com/en-us/product/stormforgetechnologiesinc1624482470851.optimize_pro",
           ],
@@ -1391,7 +1388,7 @@ export const versusFacts: readonly VersusFacts[] = [
         ours: { mark: "partly", note: "a free assessment; the product by demo", sources: [] },
         theirs: {
           mark: "yes",
-          note: "Full optimization on 1 cluster for 30 days (the AWS agent listing says 45 days)",
+          note: "full optimization on one cluster for 30 days; the AWS agent listing says 45 days",
           sources: [
             "https://www.cloudbolt.io/stormforge/",
             "https://aws.amazon.com/marketplace/pp/prodview-ywoktkhczruhk",
@@ -1403,7 +1400,7 @@ export const versusFacts: readonly VersusFacts[] = [
       label: "Published pricing",
       ours: "Priced per vCPU it manages, bought on AWS or Microsoft Marketplace",
       theirs:
-        "Not on the product page. CloudBolt's AWS Marketplace post (3 Apr 2025): pay as you go 'Starting at $0.0041 per CPU per hour'; the EKS add-on agent listing is free",
+        "Not on the product page. CloudBolt’s AWS Marketplace post (3 Apr 2025) gives a pay-as-you-go price: “Starting at $0.0041 per CPU per hour”. The EKS add-on agent listing is free",
       sources: [
         "https://www.cloudbolt.io/blog/how-to-subscribe-to-stormforge-optimize-live-pay-as-you-go-pricing-on-aws-marketplace/",
       ],
@@ -1431,7 +1428,7 @@ export const versusFacts: readonly VersusFacts[] = [
         },
         theirs: {
           mark: "yes",
-          note: "Zesty Disk grows and shrinks EBS filesystems on EC2: Linux (Btrfs or OpenZFS) and Windows Server 2016-2025 (Windows removes only the last-added volume); AWS only",
+          note: "grows and shrinks EBS filesystems on EC2, on AWS only. It runs on Linux (Btrfs or OpenZFS) and Windows Server 2016 to 2025, where it removes only the last-added volume",
           sources: [
             "https://docs.zesty.co/docs/system-requirements.md",
             "https://docs.zesty.co/docs/how-zesty-disk-works",
@@ -1455,13 +1452,13 @@ export const versusFacts: readonly VersusFacts[] = [
       {
         label: "Resizes without downtime",
         ours: {
-          mark: "partly",
-          note: "the services on the data mounts restart once, at the switch onto the pool; after that the pool grows and shrinks without unmounting",
+          mark: "yes",
+          note: "grows and shrinks the pool while it stays mounted; the services on each data mount restart once, at the move onto the pool",
           sources: [],
         },
         theirs: {
           mark: "yes",
-          note: "Zesty Disk moves data at runtime without restart (some agent installs on RHEL/Rocky need one instance restart)",
+          note: "moves data at runtime without a restart; some agent installs on RHEL or Rocky need one instance restart",
           sources: [
             "https://docs.zesty.co/docs/how-zesty-disk-works",
             "https://docs.zesty.co/docs/install-the-zesty-disk-agent.md",
@@ -1477,7 +1474,7 @@ export const versusFacts: readonly VersusFacts[] = [
         },
         theirs: {
           mark: "unknown",
-          note: "AWS listings are SaaS; security page says hosted on Amazon data centers; no self-hosted option mentioned",
+          note: "its AWS listings are SaaS, its security page says it is hosted in Amazon data centers, and no self-hosted option is mentioned",
           sources: ["https://zesty.co/security-overview/"],
         },
       },
@@ -1485,7 +1482,7 @@ export const versusFacts: readonly VersusFacts[] = [
         label: "Installs with Helm or Terraform",
         ours: {
           mark: "no",
-          note: "an agent on each VM; on AWS it installs through Systems Manager",
+          note: "an agent on each VM, installed through Azure Run Command or AWS Systems Manager",
           sources: [],
         },
         theirs: {
@@ -1513,7 +1510,7 @@ export const versusFacts: readonly VersusFacts[] = [
         ours: { mark: "yes", note: "Amoeba on Microsoft Marketplace", sources: [] },
         theirs: {
           mark: "no",
-          note: "No publisher starting 'Zesty' in Microsoft's public Marketplace catalog (19 Oct)",
+          note: "no publisher whose name starts with Zesty in Microsoft’s public Marketplace catalog, 19 Oct",
           sources: ["https://marketplace.microsoft.com"],
         },
       },
@@ -1526,7 +1523,7 @@ export const versusFacts: readonly VersusFacts[] = [
         },
         theirs: {
           mark: "unknown",
-          note: "Pricing page lists no trial or free tier; offers a free cost efficiency calculator and an ROI projection; AWS listings show no trial",
+          note: "its pricing page and AWS listings show no trial or free tier; it offers a free cost efficiency calculator and an ROI projection",
           sources: ["https://zesty.co/pricing"],
         },
       },
@@ -1535,7 +1532,7 @@ export const versusFacts: readonly VersusFacts[] = [
       label: "Published pricing",
       ours: "Priced per GB it manages; the price and terms come with your order",
       theirs:
-        "Pricing page: 'Usage-based pricing', 'Pricing based on actual usage and realized savings', no figures. PV autoscaling page: 'a base fee plus a fee per storage managed by Zesty', charged on capacity after optimization. AWS Marketplace: Zesty Platform 1-month contract $5,000.00 per month, overage $1.00 per unit. Zesty Disk is a $0.00 12-month contract plus usage: $0.025 per GB up to 300,000 GB, $0.015 up to 1,000,000 GB and $0.01 above.",
+        "Pricing page: “Usage-based pricing” and “Pricing based on actual usage and realized savings”, with no figures. PV autoscaling page: “a base fee plus a fee per storage managed by Zesty”, charged on capacity after optimization. AWS Marketplace: Zesty Platform at $5,000.00 a month on a 1-month contract, overage $1.00 per unit. Zesty Disk: a $0.00 12-month contract plus usage at $0.025 per GB up to 300,000 GB, $0.015 up to 1,000,000 GB and $0.01 above.",
       sources: [
         "https://zesty.co/pricing",
         "https://zesty.co/platform/pv-autoscaling/",
@@ -1554,7 +1551,7 @@ export const versusFacts: readonly VersusFacts[] = [
         label: "Pod CPU and memory requests",
         ours: {
           mark: "yes",
-          note: "sizes them to real use once you turn on “Automatically optimize”, and only recommends until then",
+          note: "sets them to real use once you turn on “Automatically optimize”; until then it only recommends",
           sources: [],
         },
         theirs: {
@@ -1756,7 +1753,7 @@ export const versusFacts: readonly VersusFacts[] = [
         },
         theirs: {
           mark: "partly",
-          note: "a group is idle only if each instance stayed within 5% peak CPU and 5 MB of network a day, over 14 days. It then suggests scaling down to one instance, or deleting the group",
+          note: "only an idle recommendation: for a group with almost no CPU or network use over 14 days, scale down to one instance or delete it",
           sources: [
             "https://docs.aws.amazon.com/compute-optimizer/latest/ug/view-idle-recommendations.html",
             "https://docs.aws.amazon.com/compute-optimizer/latest/ug/supported-resources.html",
@@ -1899,19 +1896,19 @@ export const alternativesFacts: readonly AlternativesFacts[] = [
     questions: [
       {
         q: "Does it act, or only recommend?",
-        a: "Goldilocks only suggests requests. IBM Kubecost advises, and can automate request sizing. Cast AI and ScaleOps change requests and nodes themselves.",
+        a: "Goldilocks only suggests requests. The Vertical Pod Autoscaler suggests them and can apply them. Coral, Cast AI and ScaleOps change requests and nodes on their own.",
       },
       {
         q: "Does it work with your autoscaler?",
-        a: "Check that it runs beside Cluster Autoscaler, Karpenter or AKS node auto provisioning, or which one it replaces.",
+        a: "Check whether it runs beside the Cluster Autoscaler, Karpenter or AKS node auto provisioning, or replaces it. Coral works with all three.",
       },
       {
         q: "Does it run on AKS and EKS?",
-        a: "Every tool below runs on both AKS and EKS, except Harness Cluster Orchestrator, which is for Amazon EKS only.",
+        a: "Every tool below runs on both, except Harness Cluster Orchestrator, which is for Amazon EKS only.",
       },
       {
-        q: "How does it install, and what leaves your cluster?",
-        a: "Helm, Terraform or an agent, and which data goes to the vendor.",
+        q: "What leaves your cluster?",
+        a: "Ask which cluster data it sends to the vendor, or whether it runs self-hosted, as ScaleOps does. Then check how it installs: with Helm, Terraform or an agent.",
       },
     ],
   },
@@ -1934,19 +1931,19 @@ export const alternativesFacts: readonly AlternativesFacts[] = [
     questions: [
       {
         q: "Does it shrink, or only grow?",
-        a: "Amazon EBS Elastic Volumes and Azure managed disks only grow. Lucidity, Datafy, Zesty Disk and Amoeba also shrink. Zesty Disk and Amoeba do it by removing disks from a filesystem or a pool.",
+        a: "A native Amazon EBS volume or Azure managed disk can only grow. Lucidity, Datafy, Zesty Disk and Amoeba also shrink. Zesty Disk and Amoeba shrink by removing disks from a filesystem or a pool.",
       },
       {
-        q: "Is there downtime, or a reboot?",
-        a: "Amoeba restarts each data mount’s services once, at the switch onto its pool. After that, the pool grows and shrinks without unmounting. Some Zesty Disk agent installs on RHEL or Rocky need one instance restart.",
+        q: "Is there downtime?",
+        a: "Amoeba grows and shrinks its pool without any downtime. The services on each data mount restart once, at the move onto the pool. Some Zesty Disk agent installs on RHEL or Rocky need one instance restart.",
       },
       {
         q: "Which disks and clouds?",
-        a: "Datafy, Zesty Disk and Zesty PV autoscaling work on AWS only. Lucidity, Sedai, NetApp Cloud Volumes ONTAP and Amoeba run on Azure and AWS. On Kubernetes, pvc-autoresizer and VolumeAttributesClass handle the volumes.",
+        a: "Datafy, Zesty Disk and Zesty PV autoscaling work on AWS only. Lucidity, Sedai, NetApp Cloud Volumes ONTAP and Amoeba run on Azure and AWS. For Kubernetes volumes, pvc-autoresizer grows them and VolumeAttributesClass changes their performance.",
       },
       {
-        q: "What runs on your machines?",
-        a: "Lucidity, Zesty Disk and Amoeba run an agent on each VM. Zesty Disk and Amoeba also change the filesystem under your data. NetApp Cloud Volumes ONTAP is a storage appliance.",
+        q: "What runs on your VMs?",
+        a: "Lucidity, Zesty Disk and Amoeba run an agent on each VM. Zesty Disk and Amoeba also change the filesystem under your data. NetApp Cloud Volumes ONTAP is a software storage appliance.",
       },
     ],
   },

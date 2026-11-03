@@ -4,35 +4,35 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/pod-disrupt
 export const term: GlossaryTerm = {
   slug: "pod-disruption-budget",
   term: "Pod Disruption Budget (PDB)",
-  title: "Pod disruption budget (PDB) in Kubernetes",
-  meta: "A Kubernetes PodDisruptionBudget (PDB) limits how many of an app’s pods a drain can take down. See minAvailable, maxUnavailable, and what a strict one costs.",
-  h1: "Pod disruption budget (PDB) in Kubernetes",
-  card: "A pod disruption budget in Kubernetes (a PodDisruptionBudget, or PDB) limits how many of an app’s pods can be down at once during voluntary disruptions.",
+  title: "What is a pod disruption budget (PDB)?",
+  meta: "A pod disruption budget (PDB) limits how many of an app’s pods a drain can take down at once. How it works, and what a strict one costs.",
+  h1: "What is a pod disruption budget (PDB)?",
+  card: "A pod disruption budget (PDB) limits how many of an app’s pods can be down at once during voluntary disruptions.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-26",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "A pod disruption budget in Kubernetes (a PodDisruptionBudget, or PDB) limits how many of an app’s pods can be down at once during voluntary disruptions. PDBs have been stable since Kubernetes v1.21.",
+      text: "A pod disruption budget (PDB) limits how many of an app’s pods can be down at once during voluntary disruptions. In Kubernetes it’s the PodDisruptionBudget object, stable since v1.21.",
     },
     {
       kind: "p",
       text: [
         { a: "Draining a node", href: "/learn/cordon-vs-drain" },
-        " to evict its pods is a voluntary disruption. A hardware failure is involuntary, so a PDB can’t stop it. A PDB also doesn’t limit deleting a pod directly or a rolling update.",
+        " is a voluntary disruption. A hardware failure is involuntary, so a PDB can’t stop it. A PDB also doesn’t limit deleting a pod or Deployment directly, or a rolling update.",
       ],
     },
   ],
   sections: [
     {
       id: "the-purpose-of-pod-disruption-budgets-in",
-      title: "The purpose of pod disruption budgets in Kubernetes",
+      title: "How a PDB works",
       blocks: [
         {
           kind: "p",
-          text: "A PDB in Kubernetes helps keep enough of your app running during a drain. You set one of two fields, as a number or percentage:",
+          text: "A PDB selects an app’s pods by label. It sets one of two fields, as a number or a percentage:",
         },
         {
           kind: "ul",
@@ -41,11 +41,27 @@ export const term: GlossaryTerm = {
             [{ code: "maxUnavailable" }, ": pods that may be down."],
           ],
         },
+        {
+          kind: "p",
+          text: [
+            "The Kubernetes docs recommend ",
+            { code: "maxUnavailable" },
+            ", because it follows changes in the replica count.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "Tools that respect PDBs, such as ",
+            { code: "kubectl drain" },
+            ", evict pods through the Eviction API. If an eviction would break the budget, the API refuses it and the drain retries.",
+          ],
+        },
       ],
     },
     {
       id: "a-budget-that-blocks-a-drain",
-      title: "A PodDisruptionBudget that blocks a drain",
+      title: "A PodDisruptionBudget example",
       blocks: [
         {
           kind: "code",
@@ -55,9 +71,9 @@ export const term: GlossaryTerm = {
         {
           kind: "p",
           text: [
-            "The docs’ example sets ",
+            "This example from the Kubernetes docs sets ",
             { code: "minAvailable: 2" },
-            " for 3\u00a0pods, which allows 1 disruption. After one eviction, the next waits until a replacement pod is Ready.",
+            ". With 3 pods, it allows 1 disruption. After one eviction, the next waits until a replacement pod is Ready.",
           ],
         },
         {
@@ -65,7 +81,7 @@ export const term: GlossaryTerm = {
           text: [
             "Set ",
             { code: "maxUnavailable: 0" },
-            " instead, and zero voluntary evictions are allowed. Draining a node that runs any of the 3 never completes.",
+            " instead, and no voluntary eviction is allowed. Draining a node that runs any of the 3 never completes.",
           ],
         },
         { kind: "svg", figure: figure1 },
@@ -73,12 +89,12 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why PDBs matter for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            "The Cluster Autoscaler, which adds and removes nodes, checks PDBs before removing one. If any eviction fails, it keeps the node.",
+            "The Cluster Autoscaler checks PDBs before it removes a node. If any eviction fails, it keeps the node. Karpenter respects PDBs too.",
             [
               "A PDB that allows no disruption, such as ",
               { code: "maxUnavailable: 0" },
@@ -102,13 +118,6 @@ export const term: GlossaryTerm = {
             [{ a: "Coral", href: "/coral" }, " never evicts a pod past its PDB."],
           ],
         },
-        {
-          kind: "p",
-          text: [
-            { a: "Set a budget", href: "/learn/pod-disruption-budget-best-practices" },
-            " that lets a drain finish.",
-          ],
-        },
       ],
     },
   ],
@@ -125,13 +134,13 @@ export const term: GlossaryTerm = {
     },
     {
       title: "Kubernetes cluster utilization",
-      line: "A kept spare node adds unused capacity.",
+      line: "A node kept for a PDB adds unused capacity.",
       href: "/learn/glossary/kubernetes-cluster-utilization",
     },
   ],
-  relatedTitle: "Terms related to pod disruption budgets",
+  relatedTitle: "Related terms",
   next: {
-    title: "Pod disruption budget best practices for AKS and EKS",
+    title: "Pod disruption budget best practices",
     href: "/learn/pod-disruption-budget-best-practices",
   },
   sources: [

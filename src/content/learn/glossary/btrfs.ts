@@ -4,73 +4,77 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/btrfs/1";
 export const term: GlossaryTerm = {
   slug: "btrfs",
   term: "btrfs",
-  title: "What is btrfs? The btrfs filesystem in Linux",
-  meta: "The btrfs file system in Linux writes changes as new copies, checksums data, compresses files and spans disks you can add or remove while it stays mounted.",
-  h1: "What is btrfs? The btrfs filesystem in Linux",
-  card: "btrfs is a copy-on-write (COW) filesystem for Linux, part of the Linux kernel.",
+  title: "What is btrfs?",
+  meta: "btrfs is a copy-on-write Linux filesystem. Its main features, how its compression works, and how it adds or removes disks while mounted.",
+  h1: "What is btrfs?",
+  card: "btrfs is a copy-on-write (COW) filesystem in the Linux kernel.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-11-02",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "btrfs is a copy-on-write (COW) filesystem for Linux, part of the Linux kernel. Instead of overwriting data in place, it writes each change to an unused place on the disk.",
-    },
-    {
-      kind: "p",
-      text: "Not every Linux distribution ships it. Red Hat removed btrfs in Red Hat Enterprise Linux (RHEL) 8.",
+      text: "btrfs is a copy-on-write (COW) filesystem in the Linux kernel. Instead of overwriting data in place, it writes each change to free space on the disk.",
     },
   ],
   sections: [
     {
       id: "the-main-btrfs-features",
-      title: "The main btrfs features",
+      title: "Main features",
       blocks: [
         {
           kind: "ul",
           items: [
-            "Subvolumes are separate trees of files inside one btrfs filesystem. You can mount each one as if it were its own filesystem, and all of them share its free space.",
             [
-              "A snapshot is a copy-on-write copy of a subvolume. The two share all their unchanged data, so keeping a filesystem’s history is cheap. ",
-              { a: "btrfs vs LVM", href: "/learn/btrfs-vs-lvm" },
-              " compares them with LVM snapshots.",
+              { b: "Subvolumes" },
+              " are separate file trees inside one filesystem. You can mount each one on its own, and they all share its free space.",
             ],
             [
-              "btrfs keeps checksums on data and metadata. A scrub reads it all back and verifies the checksums while the filesystem stays mounted. ",
-              { a: "Is btrfs stable in 2026?", href: "/learn/is-btrfs-stable" },
+              { b: "Snapshots" },
+              " are copy-on-write copies of a subvolume. A snapshot shares all unchanged data with its source. ",
+              { a: "btrfs vs ext4 vs XFS", href: "/learn/btrfs-vs-lvm" },
+              " also compares btrfs snapshots with LVM snapshots.",
+            ],
+            [
+              { b: "Checksums" },
+              " cover data and metadata. A scrub reads everything back and checks it while the filesystem stays mounted. ",
+              { a: "Is btrfs stable?", href: "/learn/is-btrfs-stable" },
               " covers scrub and RAID.",
             ],
-            "A reflink copy shares the same data as its source until one of them changes. btrfs also supports deduplication, and send and receive for incremental backups.",
+            [
+              { b: "Reflinks" },
+              " are copies that share their source’s data until one of them changes. btrfs also supports deduplication, and send and receive for incremental backups.",
+            ],
           ],
+        },
+        {
+          kind: "p",
+          text: "Not every Linux distribution ships btrfs. Red Hat removed it in Red Hat Enterprise Linux (RHEL) 8.",
         },
       ],
     },
     {
       id: "how-btrfs-compression-works",
-      title: "How btrfs compression works",
+      title: "Compression",
       blocks: [
         {
           kind: "p",
-          text: "btrfs supports transparent file compression, so apps read and write files as usual. It offers three algorithms: ZLIB, LZO and ZSTD.",
-        },
-        {
-          kind: "p",
-          text: "The docs’ example turns it on for the whole filesystem, subvolume mounts included:",
+          text: "btrfs compresses files transparently, so apps read and write them as usual. It offers three algorithms: ZLIB, LZO and ZSTD. This mount turns it on for the whole filesystem:",
         },
         { kind: "code", lang: "bash", code: "mount -o compress=zstd /dev/sdx /mnt" },
         {
           kind: "p",
           text: [
-            "With no level given, ZLIB and ZSTD both use level 3. A plain ",
+            "ZLIB and ZSTD default to level 3. A plain ",
             { code: "compress" },
-            " with no algorithm means ZLIB. LZO has only one level.",
+            " means ZLIB. LZO has one level.",
           ],
         },
         {
           kind: "p",
           text: [
-            "Compression applies only to data written after you turn it on. To compress an existing file, rewrite it with ",
+            "Only data written after you turn it on is compressed. To compress an existing file, run ",
             { code: "btrfs filesystem defrag -czstd <file>" },
             ". To compress one file’s future writes, run ",
             { code: "btrfs property set <file> compression zstd" },
@@ -80,41 +84,41 @@ export const term: GlossaryTerm = {
         {
           kind: "p",
           text: [
-            "Quick checks skip data that won’t compress well. If the first part of a file doesn’t get smaller, btrfs marks the whole file NOCOMPRESS and stops compressing it. The docs advise against ",
+            "If the first part of a file doesn’t get smaller, btrfs marks the whole file NOCOMPRESS and stops compressing it. The docs advise against ",
             { code: "compress-force" },
-            ", which tries every block anyway.",
+            ", which always tries.",
           ],
         },
         {
           kind: "p",
           text: [
-            "Compression needs copy-on-write and data checksums, so the ",
+            "Compression needs copy-on-write and data checksums, so ",
             { code: "nodatacow" },
             " and ",
             { code: "nodatasum" },
-            " options turn it off.",
+            " turn it off.",
           ],
         },
       ],
     },
     {
       id: "how-btrfs-grows-and-shrinks-while-mounted",
-      title: "How btrfs grows and shrinks while mounted",
+      title: "Adding and removing disks",
       blocks: [
         {
           kind: "p",
-          text: "One btrfs filesystem can span several disks, with a choice of RAID profiles. It can also grow or shrink in place while it stays mounted.",
+          text: "One btrfs filesystem can span several disks, with a choice of RAID profiles. It grows and shrinks while it stays mounted.",
         },
         {
           kind: "ul",
           items: [
             [
               { code: "btrfs device add" },
-              " adds a disk to the mounted filesystem. It’s instant, and doesn’t affect the data already there.",
+              " adds a disk. It’s instant and leaves the existing data where it is.",
             ],
             [
               { a: { code: "btrfs device remove" }, href: "/learn/btrfs-device-remove" },
-              " moves all the data off the disk first, so it can take a long time. It fails where the profile can’t allow it, such as RAID1 going from two disks to one.",
+              " moves all data off the disk first, so it can take a long time. It fails if the profile can’t allow it, such as RAID1 going from two disks to one.",
             ],
           ],
         },
@@ -123,15 +127,15 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why btrfs matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "p",
-          text: "Azure charges a managed disk for its provisioned size, however full it is, and doesn’t support shrinking one. AWS says of Amazon Elastic Block Store (EBS) volumes: “You can’t decrease the volume size.”",
+          text: "Azure charges a managed disk for its provisioned size, not the data on it, and doesn’t support shrinking one. AWS says of Amazon Elastic Block Store (EBS) volumes: “You can’t decrease the volume size.”",
         },
         {
           kind: "p",
-          text: "So a smaller filesystem alone doesn’t make a smaller disk. With btrfs across several disks, you can empty one while it stays mounted. Then you detach and delete it, and its charge stops.",
+          text: "So a smaller filesystem alone doesn’t give you a smaller disk. With btrfs across several disks, you can empty one while it stays mounted, then detach and delete it. Its charge stops.",
         },
         {
           kind: "p",
@@ -142,7 +146,7 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "It works on Azure managed disks and Amazon EBS volumes, on Windows and Linux VMs. It never touches the OS disk or root volume. On Linux, the kernel must support btrfs.",
+          text: "It works on Azure managed disks and Amazon EBS volumes, on Windows and Linux VMs. It never touches the OS disk or root volume. On Linux, the VM needs a recent kernel with btrfs.",
         },
       ],
     },
@@ -169,9 +173,9 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/rightsizing",
     },
   ],
-  relatedTitle: "Terms related to btrfs",
+  relatedTitle: "Related terms",
   next: {
-    title: "btrfs on multiple disks: how a btrfs pool works",
+    title: "btrfs on multiple disks: single or RAID 1",
     href: "/learn/btrfs-multiple-disks",
   },
   sources: [

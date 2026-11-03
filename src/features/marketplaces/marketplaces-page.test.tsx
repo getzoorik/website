@@ -68,7 +68,7 @@ describe("/marketplaces's metadata", () => {
       title: "Marketplaces | Zoorik",
     });
     expect(routes.marketplaces).toBe("/marketplaces");
-    expect(marketplacesLastUpdated).toBe("1 November 2026");
+    expect(marketplacesLastUpdated).toBe("3 November 2026");
   });
 });
 
@@ -78,7 +78,7 @@ describe("/marketplaces", () => {
     expect(root.querySelectorAll("h1")).toHaveLength(1);
     expect(text(root.querySelector("header.hero.doc-hero h1"))).toBe("Where to find Zoorik");
     expect(text(root.querySelector("header.hero .doc-deck"))).toBe(
-      "Buy Coral and Amoeba through your cloud’s marketplace, read and write reviews, install from the registries you already use, and find us across the web.",
+      "Buy Coral and Amoeba on your cloud’s marketplace, read reviews, install our tools and find us on the web.",
     );
     expect(root.querySelector("header.hero .hero-cta")).toBeNull();
     expect(
@@ -115,9 +115,9 @@ describe("/marketplaces", () => {
 
   it("offers a private offer on the navy card, by a ready email to the founders", () => {
     const card = page().querySelector(".cp-pair .as-cal")!;
-    expect(text(card.querySelector("h2"))).toBe("Want to buy through your marketplace?");
+    expect(text(card.querySelector("h2"))).toBe("Need a private offer?");
     expect(text(card.querySelector(":scope > p"))).toBe(
-      "We can set up a private offer on AWS or Microsoft Marketplace.",
+      "We can set one up on AWS or Microsoft Marketplace.",
     );
     const write = card.querySelector("a.cta-go")!;
     expect(write).toHaveAttribute("href", "mailto:founders@zoorik.com?subject=Marketplace");
@@ -130,8 +130,8 @@ describe("/marketplaces", () => {
     expect(
       links.map((a) => [text(a.querySelector(".dt-t")), text(a.querySelector(".dt-l"))]),
     ).toEqual([
-      ["Reviews of Coral", "Read what teams say about Coral, or leave a review of your own."],
-      ["Zoorik on G2", "Our seller page on G2."],
+      ["Reviews of Coral", "Read what teams say, or leave your own review."],
+      ["Zoorik on G2", "Our seller page."],
     ]);
     expectOffSite(links[0]!, g2Coral);
     expectOffSite(links[1]!, g2Seller);

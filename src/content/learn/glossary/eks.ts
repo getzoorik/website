@@ -4,18 +4,18 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/eks/1";
 export const term: GlossaryTerm = {
   slug: "eks",
   term: "EKS (Amazon Elastic Kubernetes Service)",
-  title: "What is AWS EKS? Amazon Elastic Kubernetes Service",
-  meta: "EKS in AWS is Amazon’s managed Kubernetes service. See what an EKS cluster is made of, the ways to run its nodes, and what drives its cost.",
-  h1: "What is AWS EKS? Amazon Elastic Kubernetes Service",
+  title: "What is AWS EKS?",
+  meta: "What is EKS in AWS? Amazon EKS is AWS’s managed Kubernetes service. What AWS runs for you, your node options, and what drives its cost.",
+  h1: "What is AWS EKS?",
   card: "Amazon Elastic Kubernetes Service (Amazon EKS) is AWS’s managed Kubernetes service.",
   group: "kubernetes",
   product: "coral",
   published: "2026-11-02",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "Amazon Elastic Kubernetes Service (Amazon EKS) is AWS’s managed Kubernetes service. AWS runs each cluster’s control plane, and your apps run on Amazon EC2 instances or on AWS Fargate.",
+      text: "Amazon Elastic Kubernetes Service (Amazon EKS) is AWS’s managed Kubernetes service. AWS runs each cluster’s control plane, and your apps run on worker nodes, such as Amazon EC2 instances.",
     },
   ],
   sections: [
@@ -25,81 +25,83 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "Kubernetes is the system that runs containerized apps across a cluster of machines. EKS runs Kubernetes on AWS, certified as conformant. So Kubernetes apps deploy without refactoring, and community tools and plugins work.",
+          text: "Kubernetes runs containerized apps on a cluster of machines, called nodes, under a control plane. EKS runs Kubernetes on AWS and is certified Kubernetes-conformant, so Kubernetes apps deploy without refactoring and community tools work.",
         },
         { kind: "p", text: "What EKS adds on AWS:" },
         {
           kind: "ul",
           items: [
-            "Access through both AWS Identity and Access Management (IAM) and Kubernetes.",
+            "Access control through both AWS Identity and Access Management (IAM) and Kubernetes.",
             "The full range of EC2 instance types, including AWS Graviton.",
-            "Amazon EBS volumes, Amazon EFS and Amazon FSx for your apps’ data, through Container Storage Interface (CSI) drivers.",
-            "Monitoring with Amazon CloudWatch.",
+            "Storage on Amazon EBS, Amazon EFS, Amazon FSx and Amazon S3, through Container Storage Interface (CSI) drivers.",
+            "Monitoring with Amazon CloudWatch and Prometheus.",
           ],
         },
       ],
     },
     {
       id: "what-an-eks-cluster-is-made-of",
-      title: "What an EKS cluster is made of",
+      title: "Inside an EKS cluster",
       blocks: [
         {
           kind: "p",
-          text: "Each EKS cluster has its own control plane, shared with no other cluster or AWS account. It runs at least two API server instances and three etcd instances across three Availability Zones. The API server exposes the Kubernetes API, and etcd stores all the cluster’s data.",
+          text: "Each cluster gets its own control plane, shared with no other cluster or AWS account. It runs at least two API server instances and three etcd instances across three Availability Zones.",
         },
         {
           kind: "p",
-          text: "If a control plane instance falters, EKS replaces it, in another Availability Zone if needed. Your worker machines, called nodes, sit outside the control plane, which manages them. EC2 nodes run in your own AWS account.",
+          text: "The API server serves the Kubernetes API, and etcd stores the cluster’s data. If a control plane instance falters, EKS replaces it, in another Availability Zone if needed.",
+        },
+        {
+          kind: "p",
+          text: "The nodes sit outside the control plane, which manages them. EC2 nodes run in your own AWS account.",
         },
         { kind: "svg", figure: figure1 },
       ],
     },
     {
       id: "ways-to-run-eks-nodes",
-      title: "Ways to run EKS nodes",
+      title: "Node options",
       blocks: [
-        { kind: "p", text: "AWS names six main node types:" },
+        { kind: "p", text: "AWS lists six node types:" },
         {
           kind: "ul",
           items: [
             [
-              "In ",
               { a: "EKS Auto Mode", href: "/learn/glossary/eks-auto-mode" },
-              ", AWS runs your nodes too, for a fee on top of the EC2 price.",
+              ": AWS manages the nodes too, for a fee on top of the EC2 price.",
             ],
             [
-              "A ",
-              { a: "managed node group", href: "/learn/glossary/node-pool" },
-              " automates your EC2 nodes’ setup and updates, at no extra charge.",
+              { a: "Managed node groups", href: "/learn/glossary/node-pool" },
+              ": AWS patches, updates and scales your EC2 nodes, at no extra charge.",
             ],
-            "With self-managed nodes, you run, scale and maintain your own EC2 instances.",
+            "Self-managed nodes: you run, scale and maintain your own EC2 instances.",
             [
               { a: "Karpenter", href: "/learn/what-is-karpenter" },
-              ", a cluster autoscaler, launches compute that fits your workloads as load changes.",
+              ": a cluster autoscaler that launches compute to fit your workloads as load changes.",
             ],
-            "AWS Fargate runs your pods with no instances for you to manage.",
-            "EKS Hybrid Nodes use your own on-premises and edge machines as nodes.",
+            "AWS Fargate: serverless compute for pods, with no instances to manage.",
+            "EKS Hybrid Nodes: your own on-premises and edge machines as nodes.",
           ],
         },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why EKS matters for your cloud cost",
+      title: "Why it matters for cost",
       blocks: [
         {
           kind: "p",
-          text: "EKS charges an hourly fee per cluster, set by its Kubernetes version. The fee is higher while that version is in extended support.",
+          text: "EKS charges an hourly fee per cluster, set by its Kubernetes version. The fee is higher once that version leaves standard support for extended support.",
         },
         {
           kind: "p",
-          text: "Your nodes are charged separately, for EC2 instance capacity, EBS volumes and public IPv4 addresses. So a node costs the same however little its pods use. You can use Savings Plans for compute in EKS clusters.",
+          text: "Nodes are charged separately: EC2 for instance capacity, EBS for volumes and Amazon VPC for public IPv4 addresses. A node costs the same however little its pods use. Savings Plans cover compute in EKS clusters.",
         },
         {
           kind: "p",
           text: [
             { a: "AKS vs EKS cost", href: "/learn/aks-vs-eks-cost" },
-            " gives each fee at list price, and the ",
+            " compares the fees, and the ",
             { a: "EKS and AKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
             " gives a node’s monthly list price.",
           ],
@@ -109,7 +111,7 @@ export const term: GlossaryTerm = {
           text: [
             "The scheduler places pods by their ",
             { a: "resource requests", href: "/learn/glossary/kubernetes-resource-requests" },
-            ", not their real use. Requests set above real use keep more nodes running, and you pay for each one.",
+            ", not their real use. Requests above real use keep extra nodes running, and you pay for each one.",
           ],
         },
         {
@@ -126,17 +128,21 @@ export const term: GlossaryTerm = {
     { title: "AKS", line: "The Azure counterpart.", href: "/learn/glossary/aks" },
     {
       title: "EKS Auto Mode",
-      line: "AWS runs the nodes, for a fee.",
+      line: "AWS manages the nodes, for a fee.",
       href: "/learn/glossary/eks-auto-mode",
     },
-    { title: "Node pool", line: "Covers managed node groups.", href: "/learn/glossary/node-pool" },
+    {
+      title: "Node pool",
+      line: "Includes EKS managed node groups.",
+      href: "/learn/glossary/node-pool",
+    },
     {
       title: "Resource requests",
       line: "What the scheduler counts.",
       href: "/learn/glossary/kubernetes-resource-requests",
     },
   ],
-  relatedTitle: "Terms related to EKS",
+  relatedTitle: "Related terms",
   next: {
     title: "How to choose EKS instance types",
     href: "/learn/how-to-choose-eks-instance-types",

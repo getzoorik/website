@@ -4,101 +4,91 @@ import { figure as figure2 } from "@/features/learn/figures/remove-disk-from-lvm
 
 export const article: Article = {
   slug: "remove-disk-from-lvm",
-  title: "Remove a disk from LVM without losing data",
-  meta: "Remove a disk from LVM on Linux without losing data: pvmove, vgreduce and pvremove while mounted, lvreduce when the LV fills the VG, then the cloud delete.",
-  h1: "How to remove a disk from LVM without losing data",
-  deck: "Azure and AWS can’t shrink a disk in place, so you reduce cost one whole disk at a time.",
-  card: "pvmove, vgreduce and pvremove while mounted, the case where the other disks are full, and the cloud delete.",
+  title: "Remove a disk from LVM in Linux",
+  meta: "Remove a disk from LVM in Linux without losing data: pvmove, vgreduce and pvremove while mounted, then delete the cloud disk on Azure or AWS.",
+  h1: "Remove a disk from LVM in Linux",
+  deck: "Azure and AWS can’t shrink a disk in place, so you reduce block storage cost one whole disk at a time.",
+  card: "Move a disk’s data off with pvmove while mounted, then vgreduce, pvremove and the cloud delete.",
   product: "amoeba",
   hub: "Block storage",
   topic: "Linux filesystems",
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "sujal",
   cover: "/learn-covers/zoorik-learn-remove-disk-from-lvm-1200x630.webp",
   coverAlt:
     "Remove a disk from LVM: pvmove moves the leaving disk’s data within the volume group, then the emptied disk leaves",
   short: [
-    "Empty the disk with ",
+    "Run ",
     { code: "pvmove" },
-    ", then run ",
+    " to move the disk’s data onto the other disks in its LVM volume group, then ",
     { code: "vgreduce" },
     " and ",
     { code: "pvremove" },
-    ", all while the filesystem stays mounted. The other disks need room for its extents, and you pay for the cloud disk until you delete it.",
+    ". The filesystem stays mounted throughout. The other disks need enough free space, and you pay for the cloud disk until you delete it.",
   ],
   sections: [
     {
       id: "lvm-empties-the-disk-before-the-cloud",
-      title: "LVM empties the disk before the cloud deletes it",
+      title: "What is LVM?",
       blocks: [
         {
           kind: "p",
-          text: "Picture a VM whose data mount sits on LVM across three 512\u00a0GiB data disks, A, B and C, with 120\u00a0GiB on disk C. You want disk C gone while the application runs.",
+          text: "LVM stands for Logical Volume Manager: a layer between a Linux server’s disks and its filesystems. Red Hat says it lets you resize and move storage “without stopping applications or unmounting file systems.”",
         },
-        {
-          kind: "h3",
-          id: "how-lvm-works-physical-volumes-volume-groups",
-          title: "What is LVM in Linux? Physical volumes, volume groups and extents",
-        },
-        {
-          kind: "p",
-          text: "LVM means Logical Volume Manager. To use LVM, you build storage in three layers:",
-        },
+        { kind: "p", text: "It works in three layers:" },
         {
           kind: "ul",
           items: [
-            "Each disk becomes a physical volume (PV).",
-            "PVs join a volume group (VG).",
-            "You carve logical volumes (LVs) out of the VG, and each logical volume in Linux gets a filesystem such as ext4 or XFS.",
+            "A physical volume (PV) is a disk, or a partition, set aside for LVM.",
+            "A volume group (VG) pools PVs into one store of space.",
+            "A logical volume (LV) is carved out of a VG. It is the device you format with a filesystem, such as ext4 or XFS, and mount.",
           ],
         },
         {
           kind: "p",
-          text: "LVM hands out space in extents. Red Hat calls them “the smallest units of space that you can allocate in LVM.”",
+          text: "LVM hands out space in extents, which Red Hat calls “the smallest units of space that you can allocate in LVM.” All extents are one size, 4\u00a0MiB by default.",
         },
         {
           kind: "p",
-          text: "Extents are all one size, 4\u00a0MiB by default. An LV is a list of extents that can sit on any PV in the group.",
+          text: "An LV’s extents can sit on any PV in its VG, and they can move while the LV is in use. Red Hat’s own example is to “empty a hot-swappable disk before removing it.”",
         },
-        {
-          kind: "p",
-          text: "Removing disk C means moving its 120\u00a0GiB of extents into free extents on disks A and B, while the mount stays in use. Then LVM lets go of the disk.",
-        },
-        {
-          kind: "p",
-          text: "Red Hat treats the move as routine: “Data can be rearranged on disks while the disks are in use.” Its example is to “empty a hot-swappable disk before removing it.”",
-        },
-        { kind: "svg", figure: figure1 },
         {
           kind: "p",
           text: [
-            "Azure won’t ",
-            { a: "shrink a disk in place", href: "/learn/shrink-azure-managed-disk" },
-            ": Microsoft says shrinking an existing disk “isn’t supported and might result in data loss.” ",
-            { a: "Shrinking an EBS volume", href: "/learn/shrink-ebs-volume" },
-            " covers AWS.",
+            "On a cloud VM, removing a whole disk is how you pay for less block storage. Microsoft says shrinking an existing disk “isn’t supported and might result in data loss.” AWS says of EBS: “You can’t decrease the volume size.” See ",
+            { a: "shrinking an Azure managed disk", href: "/learn/shrink-azure-managed-disk" },
+            " and ",
+            { a: "shrinking an EBS volume", href: "/learn/shrink-ebs-volume" },
+            ".",
           ],
         },
       ],
     },
     {
       id: "check-that-the-other-disks-have-room",
-      title: "Check with pvs that the other disks have room first",
+      title: "Check free space first",
       blocks: [
-        { kind: "p", text: "Two commands show whether the move fits:" },
+        {
+          kind: "p",
+          text: "Take a VM whose data mount sits on LVM across three 512\u00a0GiB data disks: A, B and C. Disk C holds 120\u00a0GiB, and you want it gone while the application runs.",
+        },
+        { kind: "p", text: "Two commands show whether its data fits on the other disks:" },
         { kind: "code", lang: "bash", code: "sudo pvs\nsudo lvs -a -o +devices" },
         {
           kind: "p",
           text: [
             "In the ",
             { code: "pvs" },
-            " output, PSize is each PV’s size. PFree is, in Red Hat’s words, “Free space remaining on the physical volume.”",
+            " output, PSize is each PV’s size and PFree is the free space left on it. A disk’s PSize minus its PFree is what has to move. It fits if the other PVs’ PFree adds up to at least that.",
           ],
         },
         {
           kind: "p",
-          text: "Disk C’s PSize minus its PFree is what has to move. The move fits if the PFree of the PVs that stay adds up to at least that.",
+          text: [
+            { code: "lvs -a -o +devices" },
+            " lists the devices each LV sits on, so you see which LVs will move.",
+          ],
         },
         {
           kind: "callout",
@@ -106,29 +96,19 @@ export const article: Article = {
           text: [
             "Say ",
             { code: "pvs" },
-            " lists disk C with a PSize of about 512\u00a0GiB and a PFree of 392\u00a0GiB. So 512 − 392 = 120\u00a0GiB of extents has to move.",
+            " lists disk C with a PSize of about 512\u00a0GiB and a PFree of 392\u00a0GiB. Then 512 − 392 = 120\u00a0GiB has to move, so disks A and B need at least 120\u00a0GiB of PFree between them.",
           ],
         },
+        { kind: "svg", figure: figure1 },
         {
           kind: "p",
-          text: "Disks A and B need at least 120\u00a0GiB of PFree between them. If they have less, a new 128\u00a0GiB disk can take those extents. That leaves about 128 − 120 = 8\u00a0GiB to spare.",
-        },
-        {
-          kind: "p",
-          text: "A striped LV is stricter. Free space on a PV that already holds another of its stripes may not count. The normal allocation policy avoids “placing parallel stripes on the same PV.”",
-        },
-        {
-          kind: "p",
-          text: [
-            { code: "lvs -a -o +devices" },
-            " lists the devices each LV sits on, so you know which LVs are about to move.",
-          ],
+          text: "A striped LV is stricter. Red Hat says LVM’s normal allocation policy avoids “placing parallel stripes on the same physical volume.” So free space on a PV that already holds one of its stripes may not count.",
         },
         {
           kind: "p",
           text: [
             "Free space inside a filesystem doesn’t count, since LVM sees extents, not files. If ",
-            { code: "lvextend" },
+            { a: { code: "lvextend" }, href: "/learn/combine-ebs-volumes" },
             " once gave one LV the whole VG, PFree reads zero on every disk, and the LV must shrink first.",
           ],
         },
@@ -136,19 +116,15 @@ export const article: Article = {
     },
     {
       id: "remove-disk-from-lvm",
-      title: "How to remove a disk from LVM: pvmove, vgreduce, pvremove",
+      title: "Remove the disk",
       blocks: [
         {
           kind: "p",
           text: [
-            "Run these on the disk you mean to delete. Check its device name against ",
+            "Check the old disk’s device name with ",
             { code: "lsblk" },
-            " first: a wrong name moves the wrong data.",
+            " first: a wrong name moves the wrong data. On an Azure VM with SCSI data disks, this command maps each LUN in the portal to its Linux device:",
           ],
-        },
-        {
-          kind: "p",
-          text: "On an Azure VM with SCSI data disks, this command maps each LUN in the portal to its Linux device:",
         },
         { kind: "code", lang: "bash", code: "sudo ls -alF /dev/disk/azure/scsi1/" },
         {
@@ -167,11 +143,11 @@ export const article: Article = {
           items: [
             [
               { b: "Check that the disk is empty." },
-              " The ",
-              { code: "vgreduce" },
-              " command is for empty PVs only. Confirm in ",
+              " In ",
               { code: "pvs" },
-              " that the old disk’s PFree now equals its PSize, which means nothing on it is allocated.",
+              ", its PFree must now equal its PSize. ",
+              { code: "vgreduce" },
+              " takes empty PVs only.",
             ],
           ],
         },
@@ -181,10 +157,10 @@ export const article: Article = {
           start: 3,
           items: [
             [
-              { b: "Remove the physical volume from the volume group" },
-              " with ",
+              { b: "Remove it from the volume group." },
+              " Red Hat says ",
               { code: "vgreduce" },
-              ". Red Hat says it “shrinks a volume group’s capacity by removing one or more empty physical volumes.”",
+              " “shrinks a volume group’s capacity by removing one or more empty physical volumes.”",
             ],
           ],
         },
@@ -192,24 +168,16 @@ export const article: Article = {
         {
           kind: "ol",
           start: 4,
-          items: [[{ b: "Release the device from LVM use" }, " with ", { code: "pvremove" }, "."]],
+          items: [[{ b: "Release it from LVM" }, " with ", { code: "pvremove" }, "."]],
         },
         { kind: "code", lang: "bash", code: "sudo pvremove /dev/<old-disk>" },
         {
           kind: "p",
           text: [
-            "The move takes longer the more data is allocated on the old disk, and ",
             { code: "pvmove --abort" },
-            " stops it.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
+            " stops the move. If the VM restarts mid-move, run ",
             { code: "pvmove" },
-            " survives interruption. After a VM restart, running ",
-            { code: "pvmove" },
-            " again with no PV arguments restarts the move from its last checkpoint.",
+            " again with no PV arguments to resume from the last checkpoint.",
           ],
         },
         {
@@ -225,43 +193,33 @@ export const article: Article = {
         {
           kind: "h3",
           id: "when-the-disk-is-already-unused",
-          title: "When the disk is already unused",
+          title: "If the disk is empty",
         },
         {
           kind: "p",
           text: [
-            "A PV that joined the VG but never got any extents skips the move. Run ",
+            "A PV that never got any extents needs no move: run ",
             { code: "vgreduce" },
             ", then ",
             { code: "pvremove" },
-            ", on each one.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "Check ",
+            ". Check ",
             { code: "pvs" },
-            " first: an empty PV can be one you added on purpose for an expand that hasn’t happened yet.",
+            " first, though. An empty PV may be one someone added for a planned expand.",
           ],
         },
       ],
     },
     {
       id: "no-room-on-the-other-disks-pvmove",
-      title: "No room on the other disks: pvmove to a smaller disk",
+      title: "Move to a smaller disk",
       blocks: [
         {
           kind: "p",
-          text: "When the other PVs lack free extents, Red Hat’s procedure creates a new PV. It adds the PV to the VG, then moves the data onto it by name.",
+          text: "When the other PVs lack free extents, Red Hat’s procedure adds a new PV to the VG and moves the data onto it by name. Only the allocated extents have to fit, so the new disk can be smaller.",
         },
         {
           kind: "p",
-          text: "That also swaps a large disk for a smaller one, since only allocated extents have to fit. In the worked example, a new 128\u00a0GiB disk takes disk C’s 120\u00a0GiB.",
-        },
-        {
-          kind: "p",
-          text: "While both disks are attached, you pay for both: the price of doing it without stopping the application.",
+          text: "In the example, a new 128\u00a0GiB disk can take disk C’s 120\u00a0GiB, with about 8\u00a0GiB to spare. You pay for both disks until the old one is deleted.",
         },
         {
           kind: "ol",
@@ -296,28 +254,30 @@ export const article: Article = {
     },
     {
       id: "how-to-reduce-lvm-size-in-linux",
-      title: "How to reduce LVM size with lvreduce when the LV fills the VG",
+      title: "When the LV fills the VG",
       blocks: [
         {
           kind: "p",
           text: [
-            { code: "lvreduce" },
-            " on its own never reduces what you pay. The extents it frees go back to the VG and stay on the same disks you’re paying for.",
+            "With one LV across the whole VG, ",
+            { code: "pvmove" },
+            " can only go to a new disk as large as the old one. That saves nothing.",
           ],
         },
+        {
+          kind: "p",
+          text: "So the LV must give extents back first. Say one LV holds all 3 × 512 = 1,536\u00a0GiB, with 300\u00a0GiB of files. To let disk C go, it must shrink under 2 × 512 = 1,024\u00a0GiB.",
+        },
+        { kind: "svg", figure: figure2 },
         {
           kind: "p",
           text: [
-            "Here, though, every extent on the old disk is in use, and no smaller disk can take them. So the LV has to give extents back before ",
+            { code: "lvreduce" },
+            " alone doesn’t reduce what you pay. Red Hat says the extents it frees “are returned to the volume group,” so they stay on the same disks. It only makes room for ",
             { code: "pvmove" },
-            " can run.",
+            ".",
           ],
         },
-        {
-          kind: "p",
-          text: "Take the same three disks, with one LV given all 3 × 512 = 1,536\u00a0GiB. Its filesystem holds 300\u00a0GiB. To let disk C go, the LV must shrink under 2 × 512 = 1,024\u00a0GiB to fit on disks A and B.",
-        },
-        { kind: "svg", figure: figure2 },
         {
           kind: "callout",
           label: "Watch out",
@@ -325,16 +285,12 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The filesystem on the LV must not be using the space you take away. So it shrinks first, and what that takes depends on the filesystem.",
+          text: "The filesystem has to shrink with the LV, and not every filesystem can.",
         },
         { kind: "h3", id: "ext4-shrink-it-unmounted", title: "ext4: shrink it unmounted" },
         {
           kind: "p",
-          text: "The resize2fs man page says it can “enlarge or shrink an unmounted file system,” but a mounted one can only grow.",
-        },
-        {
-          kind: "p",
-          text: "So in Red Hat’s procedure, every service using the mount stops for the check and the resize. Plan a window:",
+          text: "The resize2fs man page says it can “enlarge or shrink an unmounted file system,” but a mounted one can only grow. Pick a new size that fits on the disks you keep. Then stop every service that uses the mount, and run:",
         },
         {
           kind: "code",
@@ -345,29 +301,16 @@ export const article: Article = {
           kind: "p",
           text: [
             { code: "--resizefs" },
-            " resizes the filesystem with the LV, so you don’t run resize2fs by hand. The last line mounts it again.",
-          ],
-        },
-        {
-          kind: "p",
-          text: "Pick a new size that fits on the disks you keep. Then run the pvmove steps above with the mount back in use.",
-        },
-        {
-          kind: "p",
-          text: [
+            " shrinks the filesystem with the LV, so you don’t run resize2fs yourself. With the mount back in use, run the pvmove steps above. ",
             { a: "Shrinking ext4 with resize2fs", href: "/learn/resize2fs-shrink-ext4" },
-            " covers the minimum size and the check in detail.",
+            " covers the minimum size and the check.",
           ],
         },
         { kind: "h3", id: "xfs-no-supported-shrink", title: "XFS: no supported shrink" },
         {
           kind: "p",
-          text: "Red Hat states that “XFS does not support reducing the size of a volume formatted with an XFS file system.”",
-        },
-        {
-          kind: "p",
           text: [
-            "The dependable route is a new, smaller filesystem and a copy, with a stop while you switch over. ",
+            "Red Hat says “XFS does not support reducing the size of a volume formatted with an XFS file system.” The way out is a new, smaller filesystem and a copy, with a stop to switch over. ",
             { a: "Shrinking an XFS filesystem", href: "/learn/shrink-xfs-filesystem" },
             " walks through it.",
           ],
@@ -376,42 +319,34 @@ export const article: Article = {
     },
     {
       id: "detach-and-delete-the-cloud-disk-to",
-      title: "After pvremove, detach and delete the cloud disk",
+      title: "Delete the cloud disk",
       blocks: [
         {
           kind: "p",
-          text: "A detached Azure disk “is not automatically deleted,” Microsoft warns. On Premium storage, “you will continue to incur storage charges for the disk.”",
-        },
-        {
-          kind: "p",
-          text: "AWS says the same of a detached EBS volume: “You must delete a volume to avoid incurring further charges.” The charges end with the delete, not the detach.",
+          text: "Microsoft warns that a detached Azure disk “is not automatically deleted.” On Premium storage, “you will continue to incur storage charges for the disk.”",
         },
         {
           kind: "p",
           text: [
-            "The ",
+            "AWS says the same of a detached EBS volume: “You must delete a volume to avoid incurring further charges.” The ",
             { a: "EBS and Azure disk pricing", href: "/ebs-and-azure-disk-pricing" },
-            " calculator shows what that disk costs a month at list price.",
+            " calculator shows what the disk costs a month at list price.",
           ],
         },
         { kind: "h3", id: "before-you-detach", title: "Before you detach" },
         {
           kind: "p",
           text: [
-            "After ",
-            { code: "pvremove" },
-            ", the old disk holds no data LVM uses. Both clouds ask you to unmount a disk before you detach it. Microsoft also asks you to remove its ",
+            "Both clouds ask you to unmount a disk before you detach it, and Microsoft asks you to remove its ",
             { code: "/etc/fstab" },
-            " references.",
+            " references. After ",
+            { code: "pvremove" },
+            ", the disk has neither. Nothing mounts the disk itself, and the data mount’s fstab line names the LV or its filesystem UUID.",
           ],
         },
         {
           kind: "p",
-          text: "An emptied PV has neither. Nothing mounts the disk itself. The fstab line for the data mount names the LV or the filesystem’s UUID, and those stay where they were.",
-        },
-        {
-          kind: "p",
-          text: "Detaching is safe, since the disk still exists and can be reattached. Deleting is permanent, so match the disk name or volume ID to the device you emptied first.",
+          text: "Detaching can be undone, since the disk still exists. Deleting can’t, so first match the disk name or volume ID to the device you emptied.",
         },
         { kind: "h3", id: "on-azure", title: "On Azure" },
         {
@@ -422,12 +357,8 @@ export const article: Article = {
         { kind: "h3", id: "on-aws", title: "On AWS" },
         {
           kind: "p",
-          text: "A volume must be detached before you can delete it, and AWS says that “after deletion, its data is gone.”",
-        },
-        {
-          kind: "p",
           text: [
-            "Store a snapshot first if you want a way back. Run the delete once ",
+            "A volume must be detached before you delete it. AWS warns that “after deletion, its data is gone,” so take a snapshot first if you want a way back. Delete once ",
             { code: "describe-volumes" },
             " reads ",
             { code: "available" },
@@ -444,30 +375,30 @@ export const article: Article = {
           text: [
             "If the volume stays in ",
             { code: "detaching" },
-            ", AWS offers Force Detach as a last resort. With it, the instance “doesn’t get an opportunity to flush file system caches or file system metadata,” so try a plain detach first.",
+            ", AWS allows Force Detach for a volume you mean to delete. Try a plain detach first: with Force Detach, the instance “doesn’t get an opportunity to flush file system caches or file system metadata.”",
           ],
         },
         {
           kind: "p",
-          text: "Check your Recycle Bin retention rules: a volume that matches one is kept there “instead of being immediately deleted.”",
+          text: "If a Recycle Bin retention rule matches the volume, AWS keeps it there “instead of being immediately deleted.”",
         },
       ],
     },
     {
       id: "how-amoeba-does-the-same-job-with",
-      title: "How Amoeba does the same job with a btrfs pool",
+      title: "How Amoeba removes a disk",
       blocks: [
         {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " optimizes block storage on the data disks of running VMs: Azure managed disks and Amazon EBS volumes, on Windows and Linux VMs. It never touches the OS disk or root volume.",
+            " rightsizes block storage on the data disks of running VMs: Azure managed disks and Amazon EBS volumes, on Windows and Linux VMs. It never touches the OS disk or root volume.",
           ],
         },
         {
           kind: "p",
           text: [
-            "Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. The pool is ",
+            "It moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. The pool is ",
             {
               a: "one btrfs filesystem across several data disks",
               href: "/learn/btrfs-multiple-disks",
@@ -477,7 +408,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Each data mount becomes a subvolume mounted at its old path. A data mount on LVM can move onto the pool too, as long as every disk under it is a cloud data disk.",
+          text: "Each data mount becomes a subvolume at its old path. A mount on LVM can move too, as long as every disk under it is a cloud data disk.",
         },
         {
           kind: "p",
@@ -492,7 +423,7 @@ export const article: Article = {
           items: [
             [
               { b: "Drain." },
-              " Amoeba moves the leaving disk’s data onto the other disks with ",
+              " It moves the leaving disk’s data onto the other disks with ",
               { a: { code: "btrfs device remove" }, href: "/learn/btrfs-device-remove" },
               ".",
             ],
@@ -505,7 +436,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "It never takes a disk out while the pool is nearly full or growing, and the pool stays mounted while it shrinks. The FAQ answers ",
+            "It never removes a disk while the pool is nearly full or growing. The pool stays mounted, so a shrink runs without any downtime. The FAQ answers ",
             { a: "whether a shrink can lose data", href: "/amoeba-faq#can-a-shrink-lose-data" },
             ".",
           ],
@@ -515,7 +446,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
@@ -540,6 +471,11 @@ export const article: Article = {
     },
     {
       publisher: "Microsoft Learn",
+      title: "“Add a data disk to Linux VM using the Azure CLI”",
+      url: "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/add-disk",
+    },
+    {
+      publisher: "Microsoft Learn",
       title: "“Detach a data disk from a Linux VM”",
       url: "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/detach-disk",
     },
@@ -556,6 +492,11 @@ export const article: Article = {
     },
     {
       publisher: "AWS",
+      title: "“Modify an Amazon EBS volume using Elastic Volumes operations”",
+      url: "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-modify-volume.html",
+    },
+    {
+      publisher: "AWS",
       title: "“Detach an Amazon EBS volume from an Amazon EC2 instance”",
       url: "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-detaching-volume.html",
     },
@@ -567,22 +508,22 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "btrfs vs LVM: which one can shrink on a cloud VM?",
+      title: "btrfs vs ext4 vs XFS: which can shrink?",
       where: "Learn",
       href: "/learn/btrfs-vs-lvm",
     },
     {
-      title: "btrfs device remove: take a disk out of a btrfs pool",
+      title: "btrfs device remove",
       where: "Learn",
       href: "/learn/btrfs-device-remove",
     },
     {
-      title: "Shrink ext4 with resize2fs: why it must be unmounted",
+      title: "Shrink ext4 with resize2fs",
       where: "Learn",
       href: "/learn/resize2fs-shrink-ext4",
     },
     {
-      title: "How to shrink an EBS volume when AWS only lets it grow",
+      title: "How to shrink an EBS volume",
       where: "Learn",
       href: "/learn/shrink-ebs-volume",
     },
@@ -592,5 +533,5 @@ export const article: Article = {
       href: "/learn/shrink-azure-managed-disk",
     },
   ],
-  relatedTitle: "More on LVM and shrinking Linux disks",
+  relatedTitle: "More on shrinking disks",
 };

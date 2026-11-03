@@ -6,7 +6,7 @@ import { productFilms } from "@/content/product-films";
 import type { ProductPageContent, ReadMoreTile } from "@/content/product-page";
 
 /**
- * `/coral`: every string the page prints, verbatim from the mock.
+ * `/coral`: every string the page prints, in the mock's layout.
  *
  * The product tour adds each row's line and the film (`product-films.ts`).
  * What Coral does is a heading, so it has no "?" (owner, 1 Nov 2026).
@@ -14,21 +14,18 @@ import type { ProductPageContent, ReadMoreTile } from "@/content/product-page";
  * The Runs on chips and the line under the How it works cards are read from
  * `kubernetes.ts`, and the cards from `how-it-works.ts`, rather than copied: a
  * second copy would be a second claim free to drift. The hero's line is this
- * page's own (2 Nov 2026: the H1 and one small line under it). Nothing here is a
- * new figure.
+ * page's own: the H1 and one short line under it. Nothing here is a new figure.
  *
- * Coral's h1 is "Kubernetes optimization", and its `<title>` "Coral: Kubernetes optimization"
- * (2 Nov 2026):
- * the search "Kubernetes cost optimization" belongs to
- * /kubernetes-cost-optimization (D229), so neither carries it. It is never shown as running on Windows
- * or Linux.
+ * Coral's h1 is "Kubernetes optimization", and its `<title>` "Coral: Kubernetes optimization".
+ * The lead links the guide at /kubernetes-cost-optimization. Coral is never shown as running on
+ * Windows or Linux.
  */
 /**
  * The day /coral's content last changed (the sheet pass), for the sitemap's
  * `lastmod` only: the page does not print it. Whoever changes /coral's content
  * moves this to that day in the same PR; never the build's date.
  */
-export const coralPageLastUpdated = "2 November 2026";
+export const coralPageLastUpdated = "3 November 2026";
 
 /**
  * Read more's FAQ tile. The per-cloud pages (`/aks-cost-optimization`,
@@ -46,31 +43,30 @@ export const coralPageContent: ProductPageContent = {
   meta: {
     title: "Coral: Kubernetes optimization",
     description:
-      "Kubernetes optimization platform for AKS and EKS. Coral rebalances requests and nodes to reduce your cloud cost, autonomously, without any downtime.",
+      "Coral rebalances pod requests and removes spare nodes on AKS and EKS to reduce Kubernetes cost, autonomously and without any downtime.",
     appDescription:
-      "Kubernetes optimization on AKS and EKS. Coral sizes pod requests to real use and removes the nodes you don’t need.",
+      "Kubernetes cost optimization for AKS and EKS. Coral rebalances pod requests to real use and removes the nodes you don’t need.",
   },
   hero: {
     title: "Kubernetes optimization",
-    line: "Coral rebalances your workloads and nodes to reduce your cloud cost, autonomously, without any downtime.",
+    line: "Coral rebalances AKS and EKS workloads and nodes to reduce cost, autonomously and without any downtime.",
     cta: { label: assessContent.assessment.cta.label, href: assessmentHref("coral") },
   },
   about: {
     title: "What is Coral?",
-    /* The links (owner, 1 Nov 2026): the subject's pillar, which owns the search "Kubernetes cost optimization"
-       (D229), and the autoscalers Coral works with, each to its works-with page. */
+    /* The links: the subject's guide, and the autoscalers Coral works with, each to its works-with page. */
     paragraphs: [
       [
         "Coral is a ",
         { a: "Kubernetes cost optimization", href: routes.kubernetesCostOptimization },
-        " platform for Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS). It finds the CPU, memory and nodes your clusters pay for but don’t use.",
+        " platform for Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS). It rebalances CPU and memory requests to real use and removes the nodes you don’t need, with no application code changes.",
       ],
-      "Coral helps platform and engineering teams reduce AKS and EKS cost with no application code changes. With Coral, you see where your Kubernetes cost goes, and what each change saves at your cloud’s list price.",
-      "Pod sizing starts when you switch on “Automatically optimize” for a policy or a workload. Pods then resize in place or restart one at a time, within their PodDisruptionBudgets.",
-      /* The warm handover as CORAL-CODE-FACTS.md states it, in the FAQ's words for the rest ("a short restart"). */
-      "Node optimization is on from install, and you choose the node pools it works on. When Coral drains a node, a pod of a Deployment can get a Ready copy on another node first. A pod whose replacement can’t start first gets a short restart.",
+      "For platform and engineering teams, Coral shows where your Kubernetes cost goes and what each change saves at your cloud’s list price.",
+      "Workload optimization starts when you switch on “Automatically optimize” for a policy or a workload. Pods then resize in place, or are replaced one at a time within their PodDisruptionBudgets.",
+      /* How a pod moves off a node, as the guide states it: a Ready copy first (warm handover), or live migration. */
+      "Node optimization is on from install, for the node pools you choose. When Coral empties a node, a pod can get a Ready copy on another node first, or move there by container live migration.",
       [
-        "Coral works alongside native Kubernetes autoscaling: the Horizontal Pod Autoscaler, ",
+        "Coral works alongside your autoscalers: the Horizontal Pod Autoscaler, ",
         { a: "KEDA", href: routes.coralWorksWithKeda },
         ", ",
         { a: "Karpenter", href: routes.coralWorksWithKarpenter },
@@ -85,11 +81,11 @@ export const coralPageContent: ProductPageContent = {
   },
   offerings: [
     {
+      /* The id stays, as it is an address. */
       id: "monitoring",
-      /* Named for the search "kubernetes cost monitoring" (owner, 2 Nov 2026); the id stays, as it is an address. */
-      label: "Kubernetes cost monitoring",
+      label: "Cost monitoring",
       drawing: "cost",
-      line: "Cost tracked always, every action logged.",
+      line: "Cost always tracked, every action logged.",
     },
     {
       id: "recommendations",
@@ -101,7 +97,7 @@ export const coralPageContent: ProductPageContent = {
       id: "workload-optimization",
       label: "Workload optimization",
       drawing: "fit",
-      line: "CPU and memory requests sized to real use.",
+      line: "CPU and memory requests set to real use.",
     },
     {
       id: "node-optimization",
@@ -121,7 +117,7 @@ export const coralPageContent: ProductPageContent = {
     example: kubernetesContent.caption,
   },
   readMore: {
-    title: "More on Coral: product guide, FAQ and Kubernetes guides",
+    title: "Coral docs and guides",
     allDocs: { label: "All docs", href: `${routes.docs}#coral` },
     tiles: [
       {

@@ -30,7 +30,8 @@ export const caseBand = {
   /** The study's own headline, its second half on a line of its own in the good green. */
   title: caseStudy.hero.title,
   titleGreen: caseStudy.hero.titleGreen,
-  line: "On Zoorik’s own development cluster, eight days from connecting Coral to the result.",
+  /** What the headline leaves out: which cluster, and how long it took. */
+  line: "On our development cluster, eight days after connecting Coral.",
   /** Same tab, to the study, ending on the plain arrow. */
   cta: { label: "Read the Coral Value Lab study", href: routes.caseStudyCoralDevCluster },
   chart: {

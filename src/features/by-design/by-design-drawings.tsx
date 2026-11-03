@@ -92,7 +92,7 @@ function Node({ x, pods }: { readonly x: number; readonly pods: number }): React
   );
 }
 
-/** Drains nodes safely, one at a time: four nodes of square pods. One is cordoned; its two pods move to
+/** Drains safely, one at a time: four nodes of square pods. One is cordoned; its two pods move to
  *  the neighbour one at a time, then the empty node is removed. */
 function DrainDrawing(): React.JSX.Element {
   return (

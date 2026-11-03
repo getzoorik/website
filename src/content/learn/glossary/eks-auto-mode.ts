@@ -5,57 +5,50 @@ export const term: GlossaryTerm = {
   slug: "eks-auto-mode",
   term: "EKS Auto Mode",
   title: "What is Amazon EKS Auto Mode?",
-  meta: "AWS EKS Auto Mode runs your EKS nodes for a fee on top of the EC2 price. See what it manages, its pricing, and how it compares to managed node groups.",
+  meta: "EKS Auto Mode lets AWS run your EKS nodes for a fee on top of the EC2 price. What it manages, how it’s priced, and how it compares to managed node groups.",
   h1: "What is Amazon EKS Auto Mode?",
-  card: "EKS Auto Mode is a mode of Amazon Elastic Kubernetes Service (EKS), where AWS runs your nodes, not just the control plane.",
+  card: "EKS Auto Mode is a mode of Amazon Elastic Kubernetes Service (EKS) in which AWS runs your worker nodes, not just the control plane.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "EKS Auto Mode is a mode of Amazon Elastic Kubernetes Service (EKS), where AWS runs your nodes, not just the control plane. It picks, patches and removes your EC2 instances, and replaces each within 21\u00a0days.",
+      text: "EKS Auto Mode is a mode of Amazon Elastic Kubernetes Service (EKS) in which AWS runs your worker nodes, not just the control plane. AWS picks the EC2 instances, patches them and replaces each one within 21 days.",
     },
     {
       kind: "ul",
       items: [
-        "It also manages load balancing and block storage.",
         [
           "It adds nodes for pods that can’t be scheduled, using ",
           { a: "Karpenter", href: "/learn/what-is-karpenter" },
-          ".",
+          ", and removes nodes it no longer needs.",
         ],
-        "It consolidates, packing pods onto fewer nodes.",
+        "It consolidates pods onto fewer or cheaper nodes.",
+        "It also runs load balancing, pod networking, cluster DNS and block storage.",
       ],
     },
   ],
   sections: [
     {
-      id: "a-node-auto-mode-wont-consolidate",
-      title: "A node Auto Mode won’t consolidate",
+      id: "eks-auto-mode-vs-managed-node-groups",
+      title: "Auto Mode vs managed node groups",
       blocks: [
         {
-          kind: "p",
-          text: [
-            "Say a pod has the annotation ",
-            {
-              a: { code: "karpenter.sh/do-not-disrupt" },
-              href: "/learn/safe-to-evict-do-not-disrupt",
-            },
-            " set to true. Auto Mode won’t consolidate its node while that pod runs, so you keep paying for it, idle or not.",
+          kind: "ul",
+          items: [
+            [
+              { b: "Managed node groups" },
+              " have no extra charge. You choose the instance types and roll out patched node images yourself.",
+            ],
+            [{ b: "Auto Mode" }, " adds a fee for each instance, and AWS does that work."],
           ],
         },
-      ],
-    },
-    {
-      id: "eks-auto-mode-vs-managed-node-groups",
-      title: "EKS Auto Mode vs managed node groups",
-      blocks: [
         {
           kind: "p",
           text: [
-            "In a managed node group, EKS runs your EC2 instances at no extra charge. But you pick the instance types and roll out patched node images. To switch them later, see ",
+            "Auto Mode pays off when its fee costs less than your team’s time on nodes. To switch a node group’s instances, see ",
             {
               a: "how to change an EKS node group instance type",
               href: "/learn/change-eks-node-group-instance-type",
@@ -63,22 +56,66 @@ export const term: GlossaryTerm = {
             ".",
           ],
         },
+      ],
+    },
+    {
+      id: "eks-auto-mode-pricing",
+      title: "Pricing",
+      blocks: [
         {
           kind: "p",
-          text: "Auto Mode does that work for a fee, so EKS Auto Mode is worth it when that work costs more.",
+          text: "Auto Mode charges a management fee for each EC2 instance it launches, on top of the EC2 price.",
         },
+        {
+          kind: "ul",
+          items: [
+            "The fee depends on the instance type.",
+            "It’s charged per second, with a one-minute minimum.",
+            "Savings Plans, Reserved Instances and Spot reduce the EC2 price, not the fee.",
+            "The built-in node pools use on-demand instances only. A custom NodePool can use Spot.",
+          ],
+        },
+        { kind: "svg", figure: figure1 },
+      ],
+    },
+    {
+      id: "a-node-auto-mode-wont-consolidate",
+      title: "What blocks consolidation",
+      blocks: [
+        { kind: "p", text: "Auto Mode keeps a node, however idle, while either of these holds:" },
+        {
+          kind: "ul",
+          items: [
+            [
+              "A pod on it has the annotation ",
+              {
+                a: { code: "karpenter.sh/do-not-disrupt" },
+                href: "/learn/safe-to-evict-do-not-disrupt",
+              },
+              " set to true.",
+            ],
+            [
+              "A ",
+              { a: "pod disruption budget", href: "/learn/glossary/pod-disruption-budget" },
+              " lets none of its pods be evicted, such as ",
+              { code: "maxUnavailable: 0" },
+              ".",
+            ],
+          ],
+        },
+        { kind: "p", text: "You keep paying for that node and its fee." },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why EKS Auto Mode matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "p",
           text: [
-            "Auto Mode sizes nodes to your pods’ requests, so EKS Auto Mode cost follows your ",
+            "Auto Mode picks instance types to fit your pods’ ",
             { a: "requests", href: "/learn/glossary/kubernetes-resource-requests" },
-            ", not real use.",
+            ", not their real use. Requests set above real use mean more or bigger nodes, each with its fee.",
           ],
         },
         {
@@ -88,23 +125,6 @@ export const term: GlossaryTerm = {
             " rebalances CPU and memory requests on AKS and EKS to match real use, so the same pods fit on fewer nodes.",
           ],
         },
-        {
-          kind: "h3",
-          id: "eks-auto-mode-pricing",
-          title: "EKS Auto Mode pricing: a fee on top of EC2",
-        },
-        {
-          kind: "p",
-          text: "Auto Mode adds a management fee for each EC2 instance it launches, on top of the EC2 price. The fee is charged per second, with a one-minute minimum.",
-        },
-        {
-          kind: "ul",
-          items: [
-            "The fee varies by instance type.",
-            "A Savings Plan or spot price doesn’t change the fee.",
-          ],
-        },
-        { kind: "svg", figure: figure1 },
       ],
     },
   ],
@@ -126,9 +146,9 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/on-demand-instance",
     },
   ],
-  relatedTitle: "Terms related to EKS Auto Mode",
+  relatedTitle: "Related terms",
   next: {
-    title: "What is Karpenter? How it picks and removes nodes",
+    title: "What is Karpenter in Kubernetes?",
     href: "/learn/what-is-karpenter",
   },
   sources: [

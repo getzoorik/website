@@ -1,7 +1,8 @@
 import { routes } from "@/config/site";
 
 /**
- * `/referrals`: every string the page prints, verbatim from the approved mock.
+ * `/referrals`: every string the page prints, from the approved mock; the description was reworded in the
+ * zero-noise content pass (3 Nov 2026).
  *
  * The program is coming soon: the offer and the ask, side by side on the band, with the free assessment's two
  * commands to share; how it will work, as three cards joined by arrows (who hands what to whom); and who to
@@ -20,7 +21,7 @@ import { routes } from "@/config/site";
  * The day /referrals's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /referrals's content moves this to that day in the same PR; never the build's date.
  */
-export const referralsLastUpdated = "21 October 2026";
+export const referralsLastUpdated = "3 November 2026";
 
 /** A team's glyph in Who you could introduce: a product's mark, or a line glyph for the roles both serve. */
 export type ReferralTeamIcon = "coral" | "amoeba" | "eye" | "shield";
@@ -30,7 +31,7 @@ export const referralsPage = {
   meta: {
     title: "Referral program",
     description:
-      "Introduce a team that runs Kubernetes or block storage on Azure or AWS to Zoorik. The referral program is coming soon.",
+      "Zoorik's referral program is coming soon. Introduce a team that runs Kubernetes or block storage on Azure or AWS, and be rewarded.",
   },
   hero: {
     title: "Referral program",

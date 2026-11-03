@@ -48,22 +48,22 @@ function iconOf(tile: Element): string {
 
 describe("/news's metadata", () => {
   it("titles the page through the template, and describes and canonicalises it", () => {
-    expect(metadata.title).toBe("Kubernetes news and cloud cost updates, weekly");
+    expect(metadata.title).toBe("Kubernetes and cloud cost news");
     expect(metadata.description).toBe(
-      "What Zoorik ships, and Zoorik Radar: this week’s Kubernetes, cloud cost and FinOps news, each item with its source. Also by email as our newsletter.",
+      "What Zoorik ships, and Zoorik Radar: weekly Kubernetes, cloud and FinOps news, each item linked to its source. Also by email on Medium or Substack.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/news" });
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/news",
-      title: "Kubernetes news and cloud cost updates, weekly | Zoorik",
+      title: "Kubernetes and cloud cost news | Zoorik",
     });
     expect(routes.news).toBe("/news");
   });
 
   it("dates the content by the day its words last changed, after the week of its Radar", () => {
     expect(newsDay(newsRadar.week)).toBe("19 October 2026");
-    expect(newsLastUpdated).toBe("2 November 2026");
+    expect(newsLastUpdated).toBe("3 November 2026");
   });
 });
 
@@ -71,12 +71,10 @@ describe("/news", () => {
   it("names the page Zoorik News with its deck, then the latest, From Zoorik and Zoorik Radar", () => {
     const root = page();
     expect(root.querySelectorAll("h1")).toHaveLength(1);
-    expect(text(root.querySelector("header.hero.doc-hero h1"))).toBe(
-      "Zoorik News: what we ship, plus Kubernetes news and cloud cost updates each week",
-    );
+    expect(text(root.querySelector("header.hero.doc-hero h1"))).toBe("Zoorik News");
     expect(root.querySelector("header.hero h1 [translate='no']")).toHaveTextContent("Zoorik");
     expect(text(root.querySelector("header.hero .doc-deck"))).toBe(
-      "We read AWS, Azure, the Kubernetes projects and the FinOps Foundation, and link each item to its source.",
+      "What we ship, and weekly Kubernetes, cloud and FinOps news, each item linked to its source.",
     );
     expect(root.querySelector("header.hero nav, header.hero a")).toBeNull();
     expect(root.querySelector("a.skip")).toHaveAttribute("href", "#main");
@@ -168,8 +166,8 @@ describe("/news", () => {
       [
         routes.assessment,
         "zoorik",
-        "Zoorik assessment 1.3: one free PDF report for Coral and Amoeba",
-        "One command, npx -y zoorik assess coral or amoeba, now writes a single PDF with your estimated saving at list price.",
+        "Zoorik assessment 1.3: one free PDF for Coral and Amoeba",
+        "One command, npx -y zoorik assess coral or amoeba, now writes one PDF with your estimated saving at list price.",
         "17 Oct · Assessment",
         "2026-10-17",
       ],
@@ -177,7 +175,7 @@ describe("/news", () => {
         routes.openSource,
         "mark kubernetes",
         "Install Coral with Helm or Terraform",
-        "Coral’s agent now installs from a public Helm chart, and AKS and EKS modules are on the Terraform Registry, beside zoorikctl.",
+        "Coral’s agent installs from a public Helm chart, and AKS and EKS modules on the Terraform Registry create its cloud identity.",
         "16 Oct · Coral",
         "2026-10-16",
       ],
@@ -285,7 +283,7 @@ describe("/news", () => {
 
   it("closes Zoorik Radar on what it reads and the window it covers", () => {
     expect(text(page().querySelector("#radar .wrap > p.nw-note"))).toBe(
-      "Cloud, Kubernetes and FinOps news from 5 to 19 October 2026, in our own words.",
+      "News from 5 to 19 October 2026, in our own words.",
     );
   });
 
@@ -335,8 +333,6 @@ describe("/news", () => {
       expect(code, file).not.toMatch(/localStorage|sessionStorage|indexedDB|document\.cookie/);
     }
     expect(islands).toEqual(["radar-streams.tsx"]);
-    expect(newsPage.hero.title).toBe(
-      "Zoorik News: what we ship, plus Kubernetes news and cloud cost updates each week",
-    );
+    expect(newsPage.hero.title).toBe("Zoorik News");
   });
 });

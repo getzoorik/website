@@ -4,43 +4,43 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/blended-vs-
 export const term: GlossaryTerm = {
   slug: "blended-vs-unblended-cost",
   term: "Blended vs unblended cost (AWS)",
-  title: "Blended costs vs unblended costs in AWS",
-  meta: "AWS blended vs unblended cost: unblended cost shows each account its own charges; blended pricing gives every account one average rate. See AWS’s example.",
-  h1: "Blended costs vs unblended costs in AWS",
-  card: "Blended vs unblended cost compares two ways AWS shows the same usage cost across an organization’s accounts.",
+  title: "Blended vs unblended cost in AWS",
+  meta: "Blended vs unblended cost in AWS: unblended shows each account its own rates, blended gives all accounts one average rate. With AWS’s worked example.",
+  h1: "Blended vs unblended cost in AWS",
+  card: "Blended and unblended cost are two ways AWS shows the same usage cost across the accounts in an organization.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "Blended vs unblended cost compares two ways AWS shows the same usage cost across an organization’s accounts. Unblended cost shows each account its own charges. Blended cost gives every account one average rate per usage type.",
+      text: "Blended and unblended cost are two ways AWS shows the same usage cost across the accounts in an organization. Unblended cost shows each account the rates its own usage got. Blended cost gives every account one average rate for each usage type.",
     },
   ],
   sections: [
     {
       id: "what-is-unblended-cost",
-      title: "What is unblended cost?",
+      title: "Unblended cost",
       blocks: [
         {
           kind: "p",
           text: [
-            "Unblended cost keeps each line item’s own rate. EC2 and RDS hours that a ",
+            "Unblended cost is each line item’s usage times its own rate. EC2 and RDS hours that a ",
             { a: "Reserved Instance (RI)", href: "/learn/glossary/reserved-instance" },
-            " covers show $0. It’s the default in AWS Cost Explorer and AWS Budgets.",
+            " covers have a rate of $0. It’s the default view in AWS Cost Explorer and AWS Budgets.",
           ],
         },
         {
           kind: "h3",
           id: "blended-net-unblended-and-amortized-cost",
-          title: "Blended, net unblended and amortized cost",
+          title: "Blended and other cost views",
         },
         {
           kind: "ul",
           items: [
-            "Blended cost: its average rate mixes on-demand, RI and Savings Plans usage.",
-            "Net unblended cost: the actual cost after discounts. Its column appears only in months with a discount.",
+            "Blended cost: usage times the average rate, which mixes on-demand, RI and Savings Plans usage.",
+            "Net unblended cost: the actual cost after discounts. Its column appears only in months when your account has a discount.",
             [
               { a: "Amortized cost", href: "/learn/glossary/amortized-cost" },
               ": Savings Plans and reservation fees spread evenly across the month.",
@@ -51,36 +51,36 @@ export const term: GlossaryTerm = {
     },
     {
       id: "an-example-from-aws",
-      title: "An example from AWS",
+      title: "Example",
       blocks: [
         {
           kind: "p",
-          text: "The AWS Billing User Guide has two accounts on t2.small in a 720-hour month. Three RIs cover all 2,160\u00a0hours of account 1. Account 2 runs 720 on-demand hours at $0.023 an hour.",
+          text: "In AWS’s example, two accounts run t2.small instances in a 720-hour month. Three RIs cover all 2,160\u00a0hours of account 1. Account 2 runs 720 on-demand hours at $0.023 an hour.",
         },
         {
           kind: "ul",
           items: [
-            "Unblended: account 1 shows $0.00, account 2 $16.56.",
-            "Blended: $16.56 over 2,880\u00a0hours gives $0.00575 an hour. Account 1 shows $12.42, account 2 $4.14.",
+            "Unblended: account 1 shows $0.00 and account 2 shows $16.56.",
+            "Blended: $16.56 over 2,880\u00a0hours is $0.00575 an hour. Account 1 shows $12.42 and account 2 shows $4.14.",
           ],
         },
         {
           kind: "p",
-          text: "Both views total $16.56. The RI fees are separate line items, outside both.",
+          text: "Both views total $16.56. The RIs’ own fees are separate line items, outside both totals.",
         },
         { kind: "svg", figure: figure1 },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why blended and unblended cost matter",
+      title: "Which view to use",
       blocks: [
         {
           kind: "ul",
           items: [
-            "Blended vs unblended cost in AWS doesn’t change what you pay, only which account each cost shows on.",
-            "Blended cost hides which account got the RI discount. On-demand account 2 shows only $4.14.",
-            "AWS’s Cloud Financial Management blog says most customers need only unblended cost.",
+            "The views don’t change what you pay, only which account each cost shows on.",
+            "Blended cost hides which account got the RI discount. In the example, on-demand account 2 shows only $4.14.",
+            "AWS’s Cloud Financial Management blog says unblended cost is all most customers need. For Savings Plans or reservations it points to amortized cost, and it generally steers away from blended cost.",
           ],
         },
       ],
@@ -99,7 +99,7 @@ export const term: GlossaryTerm = {
     },
     {
       title: "Savings plan",
-      line: "In the blended average too.",
+      line: "Also part of the blended average.",
       href: "/learn/glossary/savings-plan",
     },
     {
@@ -108,11 +108,8 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/showback",
     },
   ],
-  relatedTitle: "Terms related to blended and unblended cost",
-  next: {
-    title: "Cloud cost optimization: how to reduce cloud costs",
-    href: "/cloud-cost-optimization",
-  },
+  relatedTitle: "Related terms",
+  next: { title: "Cloud cost optimization", href: "/cloud-cost-optimization" },
   sources: [
     {
       publisher: "AWS",

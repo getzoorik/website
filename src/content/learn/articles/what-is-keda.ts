@@ -5,34 +5,33 @@ import { figure as figure2 } from "@/features/learn/figures/what-is-keda/2";
 export const article: Article = {
   slug: "what-is-keda",
   title: "What is KEDA? Kubernetes event-driven autoscaling",
-  meta: "KEDA means Kubernetes Event-driven Autoscaling: it scales a workload from events such as queue length, down to zero. Scalers, ScaledObjects and the Helm chart.",
-  h1: "What is KEDA in Kubernetes? Event-driven autoscaling explained",
+  meta: "KEDA (Kubernetes Event-driven Autoscaling) scales pods on queue length and other events, down to zero. How it works, its scalers, and setup on AKS and EKS.",
+  h1: "What is KEDA in Kubernetes?",
   deck: "KEDA decides how many pods run, never how much CPU or memory each one gets.",
   card: "KEDA scales pods from queue length and other events, down to zero. How it works on AKS and EKS.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes autoscaling",
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "sushant",
   cover: "/learn-covers/zoorik-learn-what-is-keda-1200x630.webp",
   coverAlt: "With work waiting, KEDA runs pods, and with the queue empty it scales to zero pods",
   short:
-    "KEDA (Kubernetes Event-driven Autoscaling) is a Kubernetes autoscaler that scales a workload from events, such as messages in a queue, not CPU alone. It drives a Horizontal Pod Autoscaler (HPA) for the workload and can scale it to zero.",
+    "KEDA (Kubernetes Event-driven Autoscaling) is a Kubernetes autoscaler that scales a workload on events, such as messages waiting in a queue, not just CPU. It creates and drives a Horizontal Pod Autoscaler (HPA) for the workload, and can scale it to zero while nothing waits. AKS offers it as a managed add-on, and on Amazon EKS you install its Helm chart.",
   sections: [
     {
       id: "what-is-keda-in-kubernetes",
-      title: "What is KEDA in Kubernetes used for?",
+      title: "What KEDA is for",
       blocks: [
         {
           kind: "p",
-          text: "Picture an orders worker on Azure Kubernetes Service (AKS), reading each order from an Azure Service Bus queue. Overnight the queue is empty, yet its pods keep running. In the morning the worker can show little CPU use while its backlog grows, so a CPU target sees no reason to add pods.",
+          text: "A CPU target misses load that waits outside the pod. Picture an orders worker on Azure Kubernetes Service (AKS) that reads an Azure Service Bus queue. Its backlog can grow while its CPU stays low, so a CPU-based HPA adds no pods. Overnight, with the queue empty, its pods keep running.",
         },
         {
           kind: "p",
-          text: "KEDA is for workloads whose load shows up as work waiting outside the pod. It reads the backlog itself and scales on that, down to zero pods while no orders wait. It works alongside the HPA instead of replacing it.",
+          text: "KEDA reads the backlog itself and scales on it, down to zero pods while no orders wait. It suits:",
         },
-        { kind: "p", text: "Four kinds of work suit it:" },
         {
           kind: "ul",
           items: [
@@ -42,8 +41,8 @@ export const article: Article = {
             ],
             [{ b: "Batch work" }, " that runs to completion, as Kubernetes Jobs."],
             [
-              { b: "Expensive workloads that sit idle" },
-              " for long stretches, such as GPU inference. The Amazon Elastic Kubernetes Service (EKS) user guide names scale to zero as a way to reduce GPU cost.",
+              { b: "Costly workloads that sit idle" },
+              " for long stretches, such as GPU inference. The Amazon Elastic Kubernetes Service (EKS) user guide gives scale to zero as a way to reduce GPU cost.",
             ],
             [
               { b: "Anything a Prometheus query can measure," },
@@ -55,7 +54,7 @@ export const article: Article = {
     },
     {
       id: "keda-wakes-a-workload-from-zero-and",
-      title: "How KEDA scaling works: activation from zero, then scaling from one to N",
+      title: "How KEDA works",
       blocks: [
         {
           kind: "p",
@@ -76,70 +75,68 @@ export const article: Article = {
               " for each one.",
             ],
             [
-              { b: "The admission webhooks," },
-              " ",
-              { code: "keda-admission-webhooks" },
-              ", check each KEDA resource when you apply it. They refuse a ScaledObject for a workload that another HPA already scales.",
-            ],
-            [
               { b: "The metrics server," },
               " ",
               { code: "keda-operator-metrics-apiserver" },
-              ", serves the event-source values to the HPA as external metrics. Microsoft’s AKS docs say a cluster allows only one external metrics server, so KEDA must be the only one installed.",
+              ", serves event-source values to the HPA as external metrics. A cluster allows only one external metrics server, so KEDA must be the only one.",
+            ],
+            [
+              { b: "The admission webhooks," },
+              " ",
+              { code: "keda-admission-webhooks" },
+              ", check KEDA resources as you apply them. They refuse a ScaledObject for a workload that another HPA already scales.",
             ],
           ],
         },
         {
           kind: "p",
-          text: "The job splits into two tracks, which KEDA’s docs call activation and scaling. Activation, from zero to one replica, is the operator’s alone: it checks each trigger every 30\u00a0seconds by default. It wakes the workload when one turns active.",
+          text: "Scaling runs in two phases, which KEDA’s docs call activation and scaling:",
         },
         {
-          kind: "p",
-          text: "Scaling, from one to N replicas, is the HPA’s. It decides on its controller’s 15-second default cycle, from the value KEDA’s metrics server returns.",
+          kind: "ul",
+          items: [
+            [
+              { b: "Activation, from 0 to 1 replica," },
+              " belongs to the operator. It checks each trigger every 30\u00a0seconds by default and wakes the workload when one turns active.",
+            ],
+            [
+              { b: "Scaling, from 1 to N replicas," },
+              " belongs to the HPA. Its controller decides every 15\u00a0seconds by default, from the value KEDA’s metrics server returns.",
+            ],
+          ],
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "callout",
           label: "Watch out",
           text: [
-            "The HPA belongs to KEDA, which names it ",
+            "KEDA owns the HPA it creates and names it ",
             { code: "keda-hpa-<scaled-object-name>" },
-            " unless you set another name. The EKS user guide says not to create or edit it yourself.",
+            " unless you set another name. Don’t create or edit it yourself. Don’t point a second HPA at the same workload either: Microsoft says the two compete and scale oddly.",
           ],
         },
         {
           kind: "p",
-          text: "Don’t point a second HPA of your own at the same workload either. Microsoft says the two compete and produce odd scaling behavior.",
-        },
-        {
-          kind: "p",
           text: [
-            "To hand an existing HPA over to KEDA, annotate the ScaledObject with ",
+            "To hand an existing HPA to KEDA, annotate the ScaledObject with ",
             { code: 'scaledobject.keda.sh/transfer-hpa-ownership: "true"' },
             ". Then set ",
             { code: "advanced.horizontalPodAutoscalerConfig.name" },
             " to that HPA’s name.",
           ],
         },
-        {
-          kind: "p",
-          text: [
-            { a: "KEDA vs HPA", href: "/learn/keda-vs-hpa-vs-vpa" },
-            " compares KEDA with a plain HPA and the Vertical Pod Autoscaler.",
-          ],
-        },
       ],
     },
     {
       id: "a-keda-scaledobject-names-the-workload-its",
-      title: "A KEDA ScaledObject names the workload, its triggers and its limits",
+      title: "The ScaledObject",
       blocks: [
         {
           kind: "p",
           text: [
-            "A KEDA ScaledObject links one workload to the event sources that should scale it. Its target can be a Deployment, a StatefulSet, or any custom resource that defines the ",
+            "A ScaledObject links one workload to the event sources that scale it. The target can be a Deployment, a StatefulSet, or any custom resource with a ",
             { code: "/scale" },
-            " subresource. For the orders worker, which authenticates with Microsoft Entra Workload ID, it looks like this:",
+            " subresource. For the orders worker, KEDA signs in to Service Bus with Microsoft Entra Workload ID through a TriggerAuthentication:",
           ],
         },
         {
@@ -147,7 +144,6 @@ export const article: Article = {
           lang: "yaml",
           code: 'apiVersion: keda.sh/v1alpha1\nkind: TriggerAuthentication\nmetadata:\n  name: servicebus-auth\n  namespace: <namespace>\nspec:\n  podIdentity:\n    provider: azure-workload\n---\napiVersion: keda.sh/v1alpha1\nkind: ScaledObject\nmetadata:\n  name: orders-worker\n  namespace: <namespace>\nspec:\n  scaleTargetRef:\n    name: orders-worker          # a Deployment in the same namespace\n  pollingInterval: 30            # the default, in seconds\n  cooldownPeriod: 300            # seconds, the default\n  minReplicaCount: 0             # the default\n  maxReplicaCount: 20            # the default is 100\n  triggers:\n  - type: azure-servicebus\n    metadata:\n      queueName: orders\n      namespace: <service-bus-namespace>\n      messageCount: "5"          # the default\n    authenticationRef:\n      name: servicebus-auth',
         },
-        { kind: "p", text: "What each field does:" },
         {
           kind: "ul",
           items: [
@@ -159,7 +155,7 @@ export const article: Article = {
               { code: "minReplicaCount" },
               " and ",
               { code: "maxReplicaCount" },
-              " bound the count, and KEDA passes the maximum to its HPA.",
+              " bound the replica count. KEDA passes the maximum to its HPA.",
             ],
             [{ code: "messageCount" }, " is the scaler’s target, in active messages."],
           ],
@@ -168,9 +164,9 @@ export const article: Article = {
           kind: "callout",
           label: "Worked example",
           text: [
-            "Overnight the orders queue is empty, so the trigger isn’t active and the worker sits at its ",
+            "Overnight the queue is empty, so the worker sits at its ",
             { code: "minReplicaCount" },
-            " of 0. When 20 messages arrive, KEDA’s next check, at most 30\u00a0seconds later, finds the trigger active and wakes the worker.",
+            " of 0. When 20 messages arrive, KEDA’s next check, within 30\u00a0seconds, finds the trigger active and wakes the worker.",
           ],
         },
         {
@@ -178,37 +174,35 @@ export const article: Article = {
           text: [
             "A trigger’s default metric type is ",
             { code: "AverageValue" },
-            ", so the HPA divides the backlog by the target, whatever the current count. That gives 20 ÷ 5 = 4\u00a0replicas, the KEDA spec’s example. From 20 × 5 = 100 waiting messages up, the worker stays at its cap of 20\u00a0replicas.",
+            ", so the HPA divides the backlog by the target, whatever the current count. That gives 20 ÷ 5 = 4\u00a0replicas. From 20 × 5 = 100 waiting messages up, the worker stays at its cap of 20\u00a0replicas.",
           ],
         },
         {
           kind: "p",
-          text: "Once the queue is empty, the HPA removes replicas. KEDA takes the worker to 0 after 300\u00a0seconds with no active trigger.",
+          text: "Once the queue is empty, the HPA removes replicas. After 300\u00a0seconds with no active trigger, KEDA takes the worker to 0.",
         },
         {
           kind: "p",
           text: [
-            "Give one ScaledObject several triggers and KEDA scales to whichever demands the most replicas, unless a ",
+            "With several triggers, KEDA scales to whichever demands the most replicas, unless a ",
             { code: "scalingModifiers" },
-            " formula combines them.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "Deleting the ScaledObject keeps the workload’s replica count, unless you set ",
+            " formula combines them. Deleting the ScaledObject keeps the current replica count, unless you set ",
             { code: "advanced.restoreToOriginalReplicaCount: true" },
             ".",
           ],
         },
         {
           kind: "p",
-          text: "When the HPA scales a Deployment in, it can’t choose which replica stops, and may end one partway through a message. So the KEDA docs give Jobs as one way to run long tasks. With a ScaledJob instead, KEDA scales Kubernetes Jobs from the events.",
+          text: [
+            "When the HPA scales in, you can’t control which replica stops, so a long task can end partway through. KEDA’s docs give two fixes. Delay shutdown with a lifecycle hook, up to ",
+            { code: "terminationGracePeriodSeconds" },
+            ", or run the work as Kubernetes Jobs, which a ScaledJob scales from events.",
+          ],
         },
         { kind: "h3", id: "keda-scalers", title: "KEDA scalers" },
         {
           kind: "p",
-          text: "A scaler is KEDA’s connector to one event source: it fetches the metric that decides when and how far to scale. The scaler list in the KEDA 2.21 docs has 80 entries, two of them marked experimental. They include:",
+          text: "A scaler is KEDA’s connector to one event source: it fetches the metric that decides when and how far to scale. The KEDA 2.21 docs list 80 scalers, two of them experimental. They include:",
         },
         {
           kind: "ul",
@@ -225,16 +219,12 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "If none fits, you can write a custom scaler. CPU and Memory differ from the rest: they take usage from the Kubernetes Metrics Server, not an outside event source.",
-        },
-        {
-          kind: "p",
-          text: "To scale on HTTP requests, KEDA has a separate HTTP add-on, which Microsoft lists as a preview.",
+          text: "If none fits, you can bring your own external scaler. CPU and Memory read pod use from the Kubernetes Metrics Server, not an outside event source. To scale on HTTP requests, KEDA has a separate HTTP add-on, which Microsoft lists as a preview.",
         },
         {
           kind: "h3",
           id: "authentication-with-triggerauthentication",
-          title: "Authentication with TriggerAuthentication",
+          title: "TriggerAuthentication",
         },
         {
           kind: "p",
@@ -247,24 +237,22 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "On AKS, enable Workload ID before you enable the KEDA add-on. If KEDA came first, restart the operator with ",
+            "With ",
+            { code: "provider: azure-workload" },
+            ", the keda-operator pods sign in to Azure, not your app. On AKS, enable Workload ID before the KEDA add-on. If KEDA came first, run ",
             { code: "kubectl rollout restart deployment keda-operator -n kube-system" },
             " so its pods pick up the identity settings.",
           ],
         },
         {
           kind: "p",
-          text: [
-            "With ",
-            { code: "provider: azure-workload" },
-            ", the keda-operator pods sign in to Azure, not your app. If you use a Service Bus connection string instead, its shared access policy must be of type Manage. KEDA needs that type to read Service Bus metrics.",
-          ],
+          text: "A Service Bus connection string works too, but its shared access policy must be of type Manage. KEDA needs that type to read Service Bus metrics.",
         },
       ],
     },
     {
       id: "keda-scale-to-zero-activation-wakes-a",
-      title: "KEDA scale to zero: activation wakes a workload, cooldown takes it back",
+      title: "Scale to zero",
       blocks: [
         {
           kind: "p",
@@ -280,12 +268,12 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "When the two settings disagree, activation wins. KEDA’s docs give the case of a threshold of 10, an activation value of 50 and 40 waiting messages. Here the workload stays at zero, even though the HPA would want 40 ÷ 10 = 4\u00a0replicas.",
+          text: "When the two settings disagree, activation wins. KEDA’s docs give a target of 10, an activation value of 50 and 40 waiting messages. The workload stays at zero, though the HPA would want 40 ÷ 10 = 4\u00a0replicas.",
         },
         { kind: "svg", figure: figure2 },
         {
           kind: "p",
-          text: "The EKS user guide gives activation thresholds as a way to keep a few requests from waking a GPU.",
+          text: "The EKS user guide uses an activation threshold to keep a few requests from waking a GPU.",
         },
         {
           kind: "callout",
@@ -293,17 +281,9 @@ export const article: Article = {
           text: [
             "If ",
             { code: "minReplicaCount" },
-            " is 1 or more, the scaler always counts as active and the activation value is ignored. The exception is ",
+            " is 1 or more, the scaler always counts as active and the activation value is ignored. Set ",
             { code: "idleReplicaCount" },
-            ", whose only supported value is 0.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "With ",
-            { code: "idleReplicaCount" },
-            " set, KEDA scales an idle workload to 0 and an active one straight to ",
+            " to 0, its only supported value, and KEDA scales an idle workload to 0 and an active one straight to ",
             { code: "minReplicaCount" },
             ".",
           ],
@@ -311,7 +291,6 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "On the way back down, ",
             { code: "cooldownPeriod" },
             " sets how long KEDA waits after the last active trigger before it scales to zero. It applies only to that last step.",
           ],
@@ -319,55 +298,51 @@ export const article: Article = {
         {
           kind: "h3",
           id: "two-limits-of-keda-scale-to-zero",
-          title: "Two limits of KEDA scale to zero",
+          title: "Scale-to-zero limits",
         },
         {
           kind: "ul",
           items: [
             [
-              { b: "CPU or memory triggers alone can’t take a workload to zero," },
-              " because those metrics can only be measured on running pods. Add an event trigger if you need zero.",
+              { b: "CPU or memory triggers alone can’t reach zero," },
+              " because those metrics exist only on running pods. Add an event trigger if you need zero.",
             ],
             [
               { b: "The first event after zero waits for a pod to start," },
               " and for a node too if your node autoscaler removed it. In the EKS walkthrough, ",
               { a: "Karpenter", href: "/learn/what-is-karpenter" },
-              " provisions a GPU node when none is available. The replica is Ready only once the model has loaded.",
+              " adds a GPU node when none is available, and the replica is Ready only once the model loads.",
             ],
           ],
         },
         {
           kind: "p",
           text: [
-            "In Kubernetes 1.37, a plain HPA can do part of this job. The ",
+            "In Kubernetes 1.37, a plain HPA can also scale to and from zero, on object or external metrics. Its ",
             { code: "HPAScaleToZero" },
-            " feature gate is beta and on by default.",
+            " feature gate is beta and on by default. Something still has to serve those external metrics, which is the role of KEDA’s metrics server.",
           ],
-        },
-        {
-          kind: "p",
-          text: "With it, an HPA can scale to and from zero on object or external metrics. Something still has to serve those external metrics, which is the role KEDA’s metrics server plays.",
         },
       ],
     },
     {
       id: "keda-on-aks-and-eks-a-managed",
-      title: "KEDA on AKS and EKS: a managed add-on or a Helm chart",
+      title: "KEDA on AKS and EKS",
       blocks: [
-        { kind: "h3", id: "what-is-keda-in-azure", title: "What is KEDA in Azure?" },
+        { kind: "h3", id: "what-is-keda-in-azure", title: "The AKS add-on" },
         {
           kind: "p",
           text: [
-            "AKS Automatic clusters have KEDA preconfigured. On AKS Standard, you turn on the managed KEDA add-on, which installs into ",
+            "AKS Automatic clusters come with KEDA preconfigured. On AKS Standard, turn on the managed KEDA add-on, which installs into ",
             { code: "kube-system" },
-            ". Your cluster’s Kubernetes version decides which KEDA version the add-on runs.",
+            ". Your cluster’s Kubernetes version decides which KEDA version it runs.",
           ],
         },
         {
           kind: "ol",
           items: [
             [
-              "Enable the KEDA AKS add-on on an existing cluster. For a new cluster, add ",
+              "Enable the add-on on an existing cluster. For a new cluster, add ",
               { code: "--enable-keda" },
               " to ",
               { code: "az aks create" },
@@ -380,7 +355,7 @@ export const article: Article = {
           lang: "bash",
           code: "az aks update --resource-group <resource-group> --name <cluster-name> --enable-keda",
         },
-        { kind: "ol", start: 2, items: ["Check that the KEDA add-on is enabled:"] },
+        { kind: "ol", start: 2, items: ["Check that the add-on is enabled:"] },
         {
           kind: "code",
           lang: "bash",
@@ -408,12 +383,12 @@ export const article: Article = {
             "Multiple KEDA installations aren’t supported.",
           ],
         },
-        { kind: "h3", id: "keda-on-eks", title: "Install the KEDA Helm chart on EKS" },
+        { kind: "h3", id: "keda-on-eks", title: "Helm on EKS" },
         { kind: "p", text: "The EKS user guide installs KEDA from its Helm chart:" },
         {
           kind: "ol",
           items: [
-            ["Add the ", { code: "kedacore" }, " chart repository, then update your repositories:"],
+            ["Add the ", { code: "kedacore" }, " chart repository and update your repositories:"],
           ],
         },
         {
@@ -434,52 +409,38 @@ export const article: Article = {
         {
           kind: "ol",
           start: 3,
-          items: [
-            [
-              "Check that its three components are running: ",
-              { code: "keda-operator" },
-              ", ",
-              { code: "keda-admission-webhooks" },
-              " and ",
-              { code: "keda-operator-metrics-apiserver" },
-              ".",
-            ],
-          ],
+          items: ["Check that the three KEDA pods are running:"],
         },
         { kind: "code", lang: "bash", code: "kubectl get pods -n keda" },
         {
           kind: "p",
-          text: "For cpu or memory triggers, install the Kubernetes Metrics Server too, which the Kubernetes docs describe as an add-on you launch separately.",
+          text: "For CPU or memory triggers, also install the Kubernetes Metrics Server, an add-on the Kubernetes docs say you launch separately.",
         },
       ],
     },
     {
       id: "keda-changes-only-the-pod-count-and",
-      title: "KEDA changes only the pod count, and pod requests still shape it",
+      title: "KEDA and pod requests",
       blocks: [
         {
           kind: "p",
-          text: "A ScaledObject has no field for the CPU and memory requests in the pod template. So each pod keeps the request you gave it. KEDA doesn’t add nodes either.",
+          text: "A ScaledObject has no field for the pod template’s CPU and memory requests, so each pod keeps the request you gave it. KEDA doesn’t add nodes either.",
         },
         {
           kind: "p",
           text: [
-            "A request set far above real use makes a busy pod look idle to a ",
+            "Requests still shape its scaling. A ",
             { code: "cpu" },
             " or ",
             { code: "memory" },
             " trigger with ",
             { code: "metricType: Utilization" },
-            ". That trigger measures use as a percentage of the pods’ requests.",
+            " measures use as a percentage of the pods’ requests. A request set far above real use makes a busy pod look idle. With no request at all, utilization isn’t defined, and the HPA takes no action on that metric.",
           ],
         },
         {
           kind: "p",
-          text: "With no request at all, the HPA docs say utilization isn’t defined, and the autoscaler takes no action on that metric.",
-        },
-        {
-          kind: "p",
-          text: "Every replica KEDA adds also asks for its full request. When the new pods don’t fit, a node autoscaler adds nodes for them, as Karpenter does in the EKS walkthrough.",
+          text: "Every replica KEDA adds asks for its full request. When the new pods don’t fit, a node autoscaler adds nodes for them, as Karpenter does in the EKS walkthrough.",
         },
         {
           kind: "p",
@@ -487,7 +448,7 @@ export const article: Article = {
             { a: "KEDA vs Karpenter", href: "/learn/keda-vs-karpenter" },
             " follows that path from backlog to nodes. ",
             { a: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
-            " covers setting requests from measured use. The ",
+            " covers setting requests from measured use, and the ",
             { a: "Kubernetes cost optimization guide", href: "/kubernetes-cost-optimization" },
             " covers requests first, then nodes.",
           ],
@@ -496,66 +457,49 @@ export const article: Article = {
     },
     {
       id: "where-coral-fits",
-      title: "Where Coral fits alongside KEDA",
+      title: "Where Coral fits",
       blocks: [
         {
           kind: "p",
           text: [
-            { a: "Coral optimizes Kubernetes", href: "/coral" },
-            " on AKS and EKS. It works on the layer KEDA leaves alone: each pod’s CPU and memory requests, and the nodes they leave spare.",
+            { a: "Coral", href: "/coral" },
+            " works on the layer KEDA leaves alone, on AKS and EKS. It rebalances each pod’s CPU and memory requests and removes the nodes you don’t need, without any downtime.",
           ],
         },
         {
           kind: "p",
           text: [
-            "Outside the warm handover below, Coral never changes the minimum or maximum of KEDA’s HPA. Nor does it convert that HPA into its own. ",
-            { a: "Coral works with KEDA", href: "/coral-works-with-keda" },
-            " sets out who does what.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "For a ScaledObject with a ",
+            "With a ",
             { code: "cpu" },
-            " trigger, Coral picks the CPU request by replaying past load through three settings:",
-          ],
-        },
-        {
-          kind: "ul",
-          items: [
-            "the trigger’s utilization target;",
-            "the ScaledObject’s minimum and maximum replicas;",
-            "the scaling behavior of the HPA that KEDA created.",
+            " trigger, Coral picks the CPU request by replaying past load. The replay uses the trigger’s utilization target, the ScaledObject’s replica bounds and the HPA’s scaling behavior. A smaller request wins only if its saving beats the cost of unserved load and extra scaling. Event triggers and paused ScaledObjects aren’t replayed.",
           ],
         },
         {
           kind: "p",
-          text: "A smaller request wins only if its saving beats the cost of unserved load and extra scaling. Event triggers aren’t replayed, and neither is a paused ScaledObject.",
-        },
-        {
-          kind: "p",
-          text: "When a rebalance drains a node, a KEDA-scaled Deployment or Argo Rollout that qualifies gets a warm handover:",
+          text: "Coral never takes over or converts the HPA that KEDA creates. It changes the ScaledObject only in a rebalance, to move a KEDA-scaled Deployment or Argo Rollout:",
         },
         {
           kind: "ol",
           items: [
-            "Coral raises the autoscaler’s minimum.",
+            "Coral raises the ScaledObject’s minimum.",
             "It waits until the new pod is Ready and serving on another node.",
             "It evicts the old pod within its PodDisruptionBudget.",
-            "It scales back.",
+            "It puts the minimum back.",
           ],
         },
         {
           kind: "p",
-          text: "Pods that don’t qualify are evicted, so a single-replica app gets a short restart.",
+          text: [
+            { a: "Coral works with KEDA", href: "/coral-works-with-keda" },
+            " sets out who does what.",
+          ],
         },
       ],
     },
   ],
   help: {
     product: "coral",
-    text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and removes the nodes you don’t need. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and removes the nodes you don’t need, without any downtime. We estimate 40–50% off AKS and EKS cost, a range rather than a promise. The free assessment works out your own figure.",
     links: [
       { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Estimate your saving", href: "/assessment?p=coral" },
@@ -578,6 +522,7 @@ export const article: Article = {
       title: "“Azure Service Bus”",
       url: "https://keda.sh/docs/2.21/scalers/azure-service-bus/",
     },
+    { publisher: "KEDA", title: "“CPU”", url: "https://keda.sh/docs/2.21/scalers/cpu/" },
     {
       publisher: "Kubernetes",
       title: "“Horizontal Pod Autoscaling”",
@@ -601,25 +546,25 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "KEDA vs HPA: where event-driven scaling fits",
+      title: "KEDA vs HPA vs VPA",
       where: "Learn",
       href: "/learn/keda-vs-hpa-vs-vpa",
     },
     {
-      title: "KEDA vs Karpenter: pods, nodes and the requests in between",
+      title: "KEDA vs Karpenter",
       where: "Learn",
       href: "/learn/keda-vs-karpenter",
     },
     {
-      title: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
+      title: "Kubernetes autoscaling",
       where: "Learn",
       href: "/learn/kubernetes-autoscaling",
     },
     {
-      title: "Does optimization ever modify HPA minReplicas or maxReplicas?",
+      title: "Does Coral change HPA minReplicas or maxReplicas?",
       where: "Coral FAQ",
       href: "/coral-faq#does-optimization-ever-modify-hpa-minreplicas",
     },
   ],
-  relatedTitle: "More on KEDA and event-driven scaling",
+  relatedTitle: "More on KEDA",
 };

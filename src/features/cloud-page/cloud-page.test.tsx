@@ -36,8 +36,8 @@ import { findArticle, learnSlugOf } from "@/content/learn/published";
 
 /**
  * The four per-cloud pages, `/aks-cost-optimization`, `/eks-cost-optimization`, `/azure-managed-disk-cost-optimization`
- * and `/ebs-cost-optimization`: one template, four contents. What is checked is what the drafts and the mocks ask of
- * each page as a whole: the title and description, the hero, every section in the template's order under its anchor,
+ * and `/ebs-cost-optimization`: one template, four contents. What is checked is what each page holds as a whole: the
+ * title and description, the hero, every section in the template's order under its anchor,
  * the cards, the setup table, the works-with tiles (Coral), the questions, Read more and the closing row; that every
  * link lands; and that nothing on the page is a figure or a price.
  */
@@ -59,7 +59,7 @@ interface Case {
   readonly Page: () => React.JSX.Element;
   readonly metadata: Metadata;
   readonly content: CloudPageContent;
-  /** The draft's Page facts, word for word. */
+  /** The page's facts, word for word. */
   readonly title: string;
   readonly description: string;
   readonly eyebrow: string;
@@ -103,17 +103,17 @@ const cases: readonly (readonly [string, Case])[] = [
       content: aksCostOptimizationPage,
       title: "AKS cost optimization",
       description:
-        "AKS cost optimization with Coral. Reduce AKS costs: Coral rebalances your Azure Kubernetes Service cluster, sizes pods to real use and removes spare nodes.",
+        "Coral reduces AKS costs without any downtime: it rebalances pod requests to real use and removes spare nodes, with the Cluster Autoscaler or NAP.",
       eyebrow: "Coral for AKS",
       chips: ["AKS"],
       order: coralOrder,
       h2s: [
         ["about", "How Coral reduces AKS costs"],
-        ["how", "How it works on AKS"],
-        ["setup", "What connect sets up on AKS"],
+        ["how", "How it works"],
+        ["setup", "What connect sets up"],
         ["works-with", "Works with"],
         ["install", "Install your way"],
-        ["questions", "Questions about Coral on AKS"],
+        ["questions", "Questions"],
         ...closing("coral"),
       ],
       cards: ["Connect a cluster", "See the idle capacity", "Optimize"],
@@ -131,11 +131,8 @@ const cases: readonly (readonly [string, Case])[] = [
           "Does Coral replace the Cluster Autoscaler or NAP?",
         ],
         ["what-if-my-aks-cluster-has-no", "What if my AKS cluster has no autoscaler?"],
-        [
-          "can-coral-move-my-workloads-to-cheaper",
-          "Can Coral move my workloads to cheaper machines on AKS?",
-        ],
-        ["what-do-i-need-on-azure-to", "What do I need on Azure to connect a cluster?"],
+        ["can-coral-move-work-to-cheaper-machines", "Can Coral move work to cheaper machines?"],
+        ["what-do-i-need-to-connect-a", "What do I need to connect a cluster?"],
         ["how-do-i-remove-corals-azure-access", "How do I remove Coral’s Azure access?"],
       ],
       readMore: [
@@ -155,18 +152,18 @@ const cases: readonly (readonly [string, Case])[] = [
       content: eksCostOptimizationPage,
       title: "EKS cost optimization",
       description:
-        "EKS cost optimization with Coral: it rebalances your cluster, sizes pods to real use and removes spare EC2 nodes. Autonomous EKS tuning, with no code changes.",
+        "Coral reduces EKS costs without any downtime: it rebalances pod requests to real use and removes spare EC2 nodes, with Karpenter or the Cluster Autoscaler.",
       eyebrow: "Coral for EKS",
       chips: ["EKS"],
       order: coralOrder,
       h2s: [
-        ["about", "How Coral reduces the cloud cost of your EKS clusters"],
-        ["how", "How it works on EKS"],
-        ["setup", "What connect sets up on EKS"],
-        ["works-with", "What Coral works with on EKS"],
-        ["install", "Install Coral on EKS your way"],
-        ["questions", "Questions about Coral on EKS"],
-        ...closing("coral", "Coral docs and EKS guides"),
+        ["about", "How Coral reduces EKS costs"],
+        ["how", "How it works"],
+        ["setup", "What connect sets up"],
+        ["works-with", "Works with"],
+        ["install", "Install your way"],
+        ["questions", "Questions"],
+        ...closing("coral"),
       ],
       cards: ["Connect a cluster", "See the idle capacity", "Optimize"],
       setupRows: 4,
@@ -183,13 +180,14 @@ const cases: readonly (readonly [string, Case])[] = [
           "Does Coral replace Karpenter or the Cluster Autoscaler?",
         ],
         ["what-if-my-eks-cluster-has-no", "What if my EKS cluster has no autoscaler?"],
-        ["can-coral-move-my-pods-to-cheaper", "Can Coral move my pods to cheaper EC2 instances?"],
-        ["what-do-i-need-on-aws-to", "What do I need on AWS to connect a cluster?"],
+        ["can-coral-move-pods-to-cheaper-instances", "Can Coral move pods to cheaper instances?"],
+        ["what-do-i-need-to-connect-a", "What do I need to connect a cluster?"],
         ["can-i-use-irsa-instead-of-eks", "Can I use IRSA instead of EKS Pod Identity?"],
       ],
       readMore: [
         "/coral-guide#connect-a-cluster",
         "/coral-faq",
+        "/kubernetes-cost-optimization",
         "/learn/change-eks-node-group-instance-type",
         "/learn/keda-vs-karpenter",
       ],
@@ -203,35 +201,34 @@ const cases: readonly (readonly [string, Case])[] = [
       content: azureManagedDiskCostOptimizationPage,
       title: "Azure managed disk cost optimization",
       description:
-        "Azure managed disk cost optimization, the disk side of Azure storage cost optimization: reduce Azure disk costs on Windows and Linux VMs, autonomously.",
+        "Amoeba reduces Azure managed disk costs on Windows and Linux VMs. It moves data disks onto one btrfs pool, then rightsizes it without any downtime.",
       eyebrow: "Amoeba for Azure",
       chips: ["Azure", "Windows", "Linux"],
       order: amoebaOrder,
       h2s: [
-        ["about", "How Amoeba reduces Azure disk cost"],
-        ["how", "How it works on Azure"],
-        ["setup", "What onboarding sets up on Azure"],
+        ["about", "How Amoeba reduces Azure disk costs"],
+        ["how", "How it works"],
+        ["setup", "What onboarding sets up"],
         ["needs", "What your VMs need"],
-        ["questions", "Questions about Amoeba on Azure"],
+        ["questions", "Questions"],
         ...closing("amoeba"),
       ],
       cards: ["Onboard a Windows or Linux VM", "Move onto one pool", "Rightsize the pool"],
       setupRows: 5,
       questions: [
         ["which-azure-disks-does-amoeba-work-on", "Which Azure disks does Amoeba work on?"],
-        [
-          "which-azure-disk-type-does-amoebas-pool",
-          "Which Azure disk type does Amoeba’s pool use?",
-        ],
-        ["is-there-downtime-on-azure", "Is there downtime on Azure?"],
+        ["which-disk-type-does-the-pool-use", "Which disk type does the pool use?"],
+        ["is-there-any-downtime", "Is there any downtime?"],
         ["do-shrinks-wait-for-me", "Do shrinks wait for me?"],
-        ["how-is-the-saving-worked-out-on", "How is the saving worked out on Azure?"],
+        ["do-i-pay-for-both-sets-of", "Do I pay for both sets of disks during the move?"],
+        ["how-is-the-saving-worked-out", "How is the saving worked out?"],
       ],
       readMore: [
         "/amoeba-guide",
         "/amoeba-faq",
         "/learn/azure-disk-reservations",
         "/learn/shrink-azure-managed-disk",
+        "/ebs-and-azure-disk-pricing",
       ],
     },
   ],
@@ -243,36 +240,34 @@ const cases: readonly (readonly [string, Case])[] = [
       content: ebsCostOptimizationPage,
       title: "EBS cost optimization",
       description:
-        "EBS cost optimization for Windows and Linux EC2: Amoeba rightsizes data volumes by moving them onto one gp3 pool that grows and shrinks with your data.",
+        "Amoeba reduces Amazon EBS costs on Windows and Linux EC2 instances. It moves data volumes onto one gp3 pool, then rightsizes it without any downtime.",
       eyebrow: "Amoeba for AWS",
       chips: ["AWS", "Windows", "Linux"],
       order: amoebaOrder,
       h2s: [
-        ["about", "What Amoeba does on AWS"],
-        ["how", "How it works on AWS"],
-        ["setup", "What onboarding sets up on AWS"],
-        ["needs", "What your EC2 instances need"],
-        ["questions", "Questions about Amoeba on AWS"],
-        ...closing("amoeba", "Amoeba docs and EBS guides"),
+        ["about", "How Amoeba reduces EBS costs"],
+        ["how", "How it works"],
+        ["setup", "What onboarding sets up"],
+        ["needs", "What your instances need"],
+        ["questions", "Questions"],
+        ...closing("amoeba"),
       ],
       cards: ["Onboard a Windows or Linux VM", "Move onto one pool", "Rightsize the pool"],
       setupRows: 4,
       questions: [
         ["which-ebs-volumes-does-amoeba-work-on", "Which EBS volumes does Amoeba work on?"],
-        [
-          "which-ebs-volume-type-does-amoebas-pool",
-          "Which EBS volume type does Amoeba’s pool use?",
-        ],
-        ["do-my-services-on-ec2-go-down", "Do my services on EC2 go down during the move?"],
+        ["which-volume-type-does-the-pool-use", "Which volume type does the pool use?"],
+        ["is-there-any-downtime", "Is there any downtime?"],
+        ["do-shrinks-wait-for-me", "Do shrinks wait for me?"],
         ["do-i-pay-for-both-sets-of", "Do I pay for both sets of volumes during the move?"],
-        ["how-is-the-saving-worked-out-on", "How is the saving worked out on AWS?"],
-        ["can-ebs-volumes-shrink-automatically", "Can EBS volumes shrink automatically?"],
+        ["how-is-the-saving-worked-out", "How is the saving worked out?"],
       ],
       readMore: [
         "/amoeba-guide",
         "/amoeba-faq",
         "/learn/check-ebs-volume-usage",
         "/learn/glossary/ebs-gp3",
+        "/ebs-and-azure-disk-pricing",
       ],
     },
   ],
@@ -291,7 +286,7 @@ describe("the four per-cloud pages", () => {
       routes.azureManagedDiskCostOptimization,
       routes.ebsCostOptimization,
     ]);
-    expect(cloudPages.map((page) => page.lastUpdated)).toEqual(Array(4).fill("2 November 2026"));
+    expect(cloudPages.map((page) => page.lastUpdated)).toEqual(Array(4).fill("3 November 2026"));
     /* Product pages, not documents: the header marks nothing, and an in-page link leaves the address clean, as on
        /coral and /amoeba (their mocks carry no data-keep-hash). */
     for (const page of cloudPages) {
@@ -327,7 +322,7 @@ describe.each(cases)("%s", (path, c) => {
   const product = content.product;
   const name = product === "coral" ? "Coral" : "Amoeba";
 
-  it("is titled, described and canonicalised as its draft", () => {
+  it("is titled, described and canonicalised as written", () => {
     expect(content.path).toBe(path);
     expect(c.metadata.title).toBe(c.title);
     expect(`${c.title} | Zoorik`.length).toBeLessThanOrEqual(60);
@@ -405,8 +400,8 @@ describe.each(cases)("%s", (path, c) => {
       content.how.steps.map((step) => plain(step.line)),
     );
     expect(how.querySelector(".hw-lead, .hw-key, .hw-leg, .hw-num, .sr-only")).toBeNull();
-    /* Read from the product page's cards: 01 and 02 by name (Amoeba's 03 is the drafts' own, ledger X1), and
-       Amoeba's 02 with /amoeba's note. */
+    /* Read from the product page's cards: 01 and 02 by name (Amoeba's 03 is these pages' own), and Amoeba's 02 with
+       /amoeba's note. */
     expect(c.cards.slice(0, 2)).toEqual(
       howItWorksSteps[product].slice(0, 2).map((step) => step.title),
     );
@@ -516,7 +511,7 @@ describe.each(cases)("%s", (path, c) => {
     const calculator = assess.querySelector(".as-mini p a");
     if (path === "/eks-cost-optimization") {
       expect(calculator).toHaveAttribute("href", "/eks-and-aks-pricing-calculator");
-      expect(calculator).toHaveTextContent("EKS cost");
+      expect(calculator).toHaveTextContent("pricing calculator");
     } else expect(calculator).toBeNull();
   });
 

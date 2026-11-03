@@ -5,39 +5,31 @@ import { figure as figure3 } from "@/features/learn/figures/how-to-choose-aks-no
 
 export const article: Article = {
   slug: "how-to-choose-aks-node-sizes",
-  title: "AKS VM sizes: how to choose series and size",
-  meta: "How to choose AKS VM sizes: system pool rules, the VM series that fits your pods, what the a, p and d letters cost, and checking a size with az vm list-skus.",
+  title: "How to choose AKS VM sizes",
+  meta: "How to choose AKS VM sizes: system pool rules, the VM series that fits your pods, what the a, p and d letters cost, and why the size comes last.",
   h1: "How to choose AKS VM sizes",
-  deck: "A VM series that doesn’t fit your pods leaves capacity you pay for but no pod requests.",
-  card: "Pick AKS node sizes in order: system pool, VM series, letters, then size, with East US list prices.",
+  deck: "Match the series to your pods. Within a series, price usually follows vCPUs, so size is about fit.",
+  card: "Choose AKS VM sizes in order: system pool, VM series, letters, then size, with East US list prices.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes cost basics",
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "vineet",
   cover: "/learn-covers/zoorik-learn-how-to-choose-aks-node-sizes-1200x630.webp",
   coverAlt:
     "Choose AKS node sizes: more CPU or more memory leaves room paid for, idle, and the size shaped to the pod requests fits",
   short:
-    "To choose AKS VM sizes for your node pools, size the system pool first. Then match each user pool’s VM series to its pods’ memory per vCPU. Pick the processor and disk letters next, and the size last: a series usually lists every size at one price per vCPU.",
+    "Size the system pool first: at least 4\u00a0vCPUs and 4\u00a0GB, and no B-series. Then match each user pool’s VM series to its pods’ memory per vCPU. Pick the processor and disk letters next. Choose the size last, since a series usually charges one price per vCPU.",
   sections: [
     {
       id: "how-to-choose-aks-node-sizes",
-      title: "How to choose AKS node sizes, one decision at a time",
+      title: "Five decisions, in order",
       blocks: [
         {
           kind: "p",
-          text: "Picture a cluster created from the Azure portal’s Production Standard preset. Both its pools run Standard_D8ds_v5\u00a0nodes, and your apps are memory-heavy services. The preset is a sound start, but it knows nothing about your pods.",
-        },
-        {
-          kind: "p",
-          text: "A pool may even carry a size nobody chose. Before May 2025, AKS used Standard_DS2_v2 when no size was given. Since then, it picks a default from available capacity and quota.",
-        },
-        {
-          kind: "p",
           text: [
-            "Azure AKS node sizes are Azure virtual machine (VM) sizes. So choosing a node size means choosing a VM size for each ",
+            "AKS node sizes are Azure virtual machine (VM) sizes. Choosing one means choosing a VM size for each ",
             { a: "node pool", href: "/learn/glossary/node-pool" },
             ", in this order:",
           ],
@@ -46,10 +38,10 @@ export const article: Article = {
           kind: "ol",
           items: [
             "Size the system pool, which runs AKS’s own pods.",
-            "Pick each user pool’s VM series to match what its pods request.",
+            "Pick each user pool’s VM series to match its pods’ requests.",
             "Pick the letters and version: processor, local disk and generation.",
             "Pick the size within the series, by fit rather than price.",
-            "Check that the region, your quota and the retirement dates allow it.",
+            "Check that the region, your quota and retirement dates allow it.",
           ],
         },
         { kind: "svg", figure: figure1 },
@@ -57,11 +49,11 @@ export const article: Article = {
     },
     {
       id: "what-aks-recommends-for-each-node-pool",
-      title: "AKS recommended VM size for each node pool",
+      title: "AKS presets and defaults",
       blocks: [
         {
           kind: "p",
-          text: "The portal’s cluster presets are the closest thing to an AKS recommended node size. Each one sets a VM size for the system pool and the user pool:",
+          text: "The Azure portal’s cluster presets are the closest thing to an AKS recommended node size. Each sets a VM size for the system pool and the user pool:",
         },
         {
           kind: "table",
@@ -82,46 +74,50 @@ export const article: Article = {
           text: "Every preset uses the D family, which Microsoft calls general purpose, with a balanced CPU-to-memory ratio. Most of the sizes carry the d letter, for a local temporary disk. Production Economy’s user pool runs an AMD size, the a in Standard_D8as_v4.",
         },
         {
+          kind: "p",
+          text: "A pool can also carry a size nobody chose. If you give none, AKS picks a default from available capacity and quota. Before May 2025, that default was Standard_DS2_v2. Neither a preset nor a default knows your pods, so treat both as a starting point.",
+        },
+        {
           kind: "h3",
           id: "the-aks-system-node-pools-recommended-size",
-          title: "The AKS system node pool’s recommended size",
+          title: "System pool size",
         },
         {
           kind: "p",
-          text: "The system pool hosts critical system pods such as CoreDNS and metrics-server. Microsoft says it shouldn’t run your applications, and sets these rules for it:",
+          text: "The system pool hosts critical system pods such as CoreDNS and metrics-server. Microsoft says it shouldn’t run your applications, and sets these rules:",
         },
         {
           kind: "ul",
           items: [
-            "A VM size of at least 4\u00a0vCPUs and 4\u00a0GB of memory.",
+            "At least 4\u00a0vCPUs and 4\u00a0GB of memory.",
             "No B-series VMs.",
-            "At least two nodes, and three recommended for a production cluster with a single system pool.",
+            "At least two nodes, and three recommended for a production cluster with one system pool.",
           ],
         },
         {
           kind: "p",
           text: [
-            "Microsoft recommends at least three nodes of 8\u00a0vCPUs, or two of at least 16. It says this applies especially to large clusters, with several CoreDNS replicas and add-ons. Give the pool the ",
+            "Microsoft recommends at least three nodes of 8\u00a0vCPUs, or two of at least 16, especially for large clusters with several CoreDNS replicas and add-ons. Give the pool the ",
             { code: "CriticalAddonsOnly=true:NoSchedule" },
-            " taint, so application pods stay off it.",
+            " taint to keep application pods off it.",
           ],
         },
         {
           kind: "p",
-          text: "User pools can go smaller. Their AKS minimum node size is 2\u00a0vCPUs and 2\u00a0GB of memory, and smaller sizes might not be usable by default.",
+          text: "User pools can go smaller. Sizes under 2\u00a0vCPUs and 2\u00a0GB of memory might not be available by default.",
         },
       ],
     },
     {
       id: "match-the-vm-series-to-your-pods",
-      title: "Which Azure VM series is best for AKS: match your pods’ memory per vCPU",
+      title: "Match the series to your pods",
       blocks: [
         {
           kind: "p",
           text: [
             "The scheduler places pods by their ",
             { a: "requests", href: "/learn/glossary/kubernetes-resource-requests" },
-            ", not by what they use. So start from a pool’s requests, not the VM catalogue. Divide its pods’ total memory requests by their total CPU requests, to get GiB per vCPU.",
+            ", not by what they use. So start from a pool’s requests, not the VM catalogue. Divide its pods’ total memory requests by their total CPU requests to get GiB per vCPU.",
           ],
         },
         {
@@ -129,22 +125,18 @@ export const article: Article = {
           text: [
             "Then compare that with each ",
             { a: "VM series", href: "/learn/glossary/azure-vm-series" },
-            ". On Azure’s pricing page, the preset’s D8ds_v5 has 8\u00a0vCPUs and 32\u00a0GiB, or 4\u00a0GiB per vCPU. An E8ds_v5 has 8\u00a0vCPUs and 64\u00a0GiB, or 8\u00a0GiB per vCPU.",
+            ". A D8ds_v5 has 8\u00a0vCPUs and 32\u00a0GiB, or 4\u00a0GiB per vCPU. An E8ds_v5 has 8\u00a0vCPUs and 64\u00a0GiB, or 8\u00a0GiB per vCPU. Microsoft calls the E family memory optimized, and the F family compute optimized, with a high CPU-to-memory ratio.",
           ],
         },
         {
           kind: "p",
-          text: "Microsoft calls the E family memory optimized. It calls the F family compute optimized, with a high CPU-to-memory ratio.",
-        },
-        {
-          kind: "p",
-          text: "When a series and your pods differ, one resource fills first. The rest of the other sits unrequested.",
+          text: "When a series doesn’t match your pods, one resource fills first. The other is left partly unrequested, and you still pay for it.",
         },
         { kind: "h3", id: "what-the-wrong-series-costs", title: "What the wrong series costs" },
         {
           kind: "callout",
           label: "Worked example",
-          text: "Say the opening’s user pool runs pods that request 24\u00a0vCPU and 192\u00a0GiB in all, 8\u00a0GiB per vCPU. The prices are East US Linux pay-as-you-go list prices from Azure’s pricing page, on 1 November 2026, over a 730-hour month.",
+          text: "A user pool’s pods request 24\u00a0vCPU and 192\u00a0GiB in all, or 8\u00a0GiB per vCPU. Prices are East US Linux pay-as-you-go list prices on 1 November 2026, over a 730-hour month.",
         },
         {
           kind: "ul",
@@ -161,13 +153,13 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The E pool costs $718.32 a month less, about 36%. On the D series, that sum paid for 24\u00a0vCPU that no pod requests.",
+          text: "The E pool costs $718.32 a month less, about 36%. On the D series, that money paid for 24\u00a0vCPU that no pod requests.",
         },
         { kind: "svg", figure: figure2 },
         {
           kind: "p",
           text: [
-            "Both totals leave out what AKS keeps back on each node, and your headroom. A real pool needs some room above its requests, as ",
+            "Both totals leave out what AKS reserves on each node. A real pool also needs some room above its requests, as ",
             {
               a: "Kubernetes allocatable vs capacity",
               href: "/learn/kubernetes-allocatable-vs-capacity",
@@ -177,20 +169,20 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "For pods that request more CPU than memory, the same check points the other way, toward the F family. Prices change by region and over time, so rerun the sums for yours.",
+          text: "For pods that request more CPU than memory, the same check points to the F family. Prices vary by region and over time, so rerun the sums for yours.",
         },
       ],
     },
     {
       id: "read-the-letters-in-the-size-name",
-      title: "Read the letters in the size name",
+      title: "Read the size name",
       blocks: [
         {
           kind: "p",
           text: [
             "Size names follow the ",
             { a: "Azure VM size naming convention", href: "/learn/glossary/azure-vm-series" },
-            ": family, vCPU count, feature letters, then version. In Standard_D4as_v5, D is the family and 4 the vCPU count. The a and s are letters, and v5 is the version.",
+            ": family, vCPU count, feature letters, then version. In Standard_D4as_v5, D is the family, 4 the vCPU count, a and s the letters, and v5 the version.",
           ],
         },
         { kind: "p", text: "Three letters change the price at the same vCPUs and memory:" },
@@ -198,7 +190,12 @@ export const article: Article = {
           kind: "ul",
           items: [
             [{ b: "a" }, " means an AMD processor."],
-            [{ b: "p" }, " means an Arm-based processor, Microsoft Cobalt or Ampere Altra."],
+            [
+              { b: "p" },
+              " means an Arm-based processor, ",
+              { a: "Microsoft Cobalt", href: "/learn/glossary/azure-cobalt" },
+              " or Ampere Altra.",
+            ],
             [{ b: "d" }, " means the size includes a local temporary disk."],
           ],
         },
@@ -218,14 +215,14 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Arm takes more care. Microsoft says Arm64 VMs can deliver up to 50% better price-performance than comparable x86-based VMs for scale-out workloads.",
+          text: "Microsoft says Arm64 VMs can deliver up to 50% better price-performance than comparable x86-based VMs for scale-out workloads. Arm takes more care, though:",
         },
         {
-          kind: "p",
-          text: [
-            "But every image the pool runs, DaemonSets included, needs an Arm64 build. Arm64 sizes also always use Generation 2 on AKS. ",
-            { a: "Azure Cobalt", href: "/learn/glossary/azure-cobalt" },
-            " covers Microsoft’s own Arm chip.",
+          kind: "ul",
+          items: [
+            "Every image the pool runs, DaemonSets included, needs an Arm64 build.",
+            "Arm64 sizes always use Generation 2 on AKS.",
+            "Windows node pools can’t use Arm64, and an existing pool can’t switch to it.",
           ],
         },
         { kind: "h3", id: "the-d-letter-and-the-os-disk", title: "The d letter and the OS disk" },
@@ -234,12 +231,12 @@ export const article: Article = {
           text: [
             "Current VM generations have no dedicated cache, only temporary storage. So on them, only a d size can hold an ",
             { a: "ephemeral OS disk", href: "/learn/glossary/ephemeral-os-disk" },
-            ", stored on the host. AKS uses one by default where it fits.",
+            ", which lives on the host. AKS uses one by default where it fits.",
           ],
         },
         {
           kind: "p",
-          text: "Microsoft strongly recommends ephemeral OS disks whenever possible, for faster reads, writes, node scaling and upgrades. Without one, each node gets a managed OS disk. By default, a size with 1 to 7\u00a0vCPUs gets a 128\u00a0GiB P10\u00a0disk.",
+          text: "Microsoft strongly recommends ephemeral OS disks whenever possible, for faster reads and writes, node scaling and upgrades. Without one, each node gets a managed OS disk: by default, a 128\u00a0GiB P10\u00a0disk for sizes with 1 to 7\u00a0vCPUs.",
         },
         {
           kind: "p",
@@ -258,15 +255,15 @@ export const article: Article = {
     },
     {
       id: "choose-the-size-within-the-series-last",
-      title: "Choose the size within the series last",
+      title: "Choose the size last",
       blocks: [
         {
           kind: "p",
-          text: "AKS VM size pricing follows the vCPU count inside a series. In East US, every Dsv5 size from D2s_v5 to D96s_v5 lists at $0.048 per vCPU an hour. Four D4s_v5\u00a0nodes and one D16s_v5 both cost $0.768 an hour.",
+          text: "Within a series, AKS VM size pricing follows the vCPU count. In East US, every Dsv5 size from D2s_v5 to D96s_v5 lists at $0.048 per vCPU an hour. Four D4s_v5\u00a0nodes and one D16s_v5 both cost $0.768 an hour.",
         },
         {
           kind: "p",
-          text: "So within a series, the size sets how much the pool loses to overhead and how well pods fit, not the price of capacity:",
+          text: "So the size doesn’t change the price of capacity. It changes how much the pool loses to overhead, and how well pods fit:",
         },
         {
           kind: "ul",
@@ -292,7 +289,7 @@ export const article: Article = {
               a: "Kubernetes node size best practices",
               href: "/learn/kubernetes-node-size-best-practices",
             },
-            " works through each of these with AKS’s own reserve figures. It also gives the arithmetic for pods per node.",
+            " works through each of these with AKS’s own reserve figures, and the arithmetic for pods per node.",
           ],
         },
         {
@@ -306,23 +303,23 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "You can also hand the size to Azure. ",
+            "Or hand the choice to Azure. ",
             { a: "Node auto provisioning (NAP)", href: "/learn/aks-node-auto-provisioning" },
-            " picks VM sizes for you. Microsoft says it decides the VM configuration “based on pending pod resource requirements”.",
+            " picks VM sizes for you: Microsoft says it uses “pending pod resource requirements to decide the optimal VM configuration”.",
           ],
         },
       ],
     },
     {
       id: "check-the-size-then-measure-and-revisit",
-      title: "Check the size, then measure and revisit",
+      title: "Check and revisit",
       blocks: [
         {
           kind: "p",
-          text: "Before you create the pool, check that the size can run there. For the AKS node size list in your region, use:",
+          text: "Before you create the pool, list the sizes available in your region:",
         },
         { kind: "code", lang: "bash", code: "az vm list-skus --location <region> --output table" },
-        { kind: "p", text: "A size can still be out of reach:" },
+        { kind: "p", text: "A listed size can still be out of reach:" },
         {
           kind: "ul",
           items: [
@@ -352,7 +349,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "If the series or size no longer fits, a new size usually means a new pool. You create it and move the workloads across. ",
+            "If the series or size no longer fits, a new size usually means a new pool: you create it and move the workloads across. ",
             {
               a: "How to change an AKS node pool VM size",
               href: "/learn/change-aks-node-pool-vm-size",
@@ -364,13 +361,13 @@ export const article: Article = {
     },
     {
       id: "how-coral-works-with-your-aks-node",
-      title: "How Coral works with your AKS node sizes",
+      title: "Where Coral fits",
       blocks: [
         {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS. It works on what decides whether a node size fits: each container’s requests, and the nodes they leave spare.",
+            " rebalances requests and nodes on AKS and EKS without any downtime. It works on what decides whether a size fits: the requests, and the nodes they leave spare.",
           ],
         },
         {
@@ -378,21 +375,21 @@ export const article: Article = {
           items: [
             [
               { b: "Requests." },
-              " Coral rebalances each container’s CPU and memory requests to what it really uses. That changes the memory per vCPU this guide starts from.",
+              " Coral rebalances each container’s CPU and memory requests to real use. That changes the memory per vCPU this guide starts from.",
             ],
             [
-              { b: "Machine size, with NAP." },
+              { b: "With NAP." },
               " A rebalance replaces the nodes you choose with cheaper machines that still fit the work. NAP launches them: Coral never creates machines itself.",
             ],
             [
               { b: "Cluster Autoscaler only." },
-              " Coral drains spare nodes but never changes their size, so a new size still takes a new pool.",
+              " Coral removes spare nodes but never changes their size, so a new size still takes a new pool.",
             ],
           ],
         },
         {
           kind: "p",
-          text: "A rebalance never goes past a PodDisruptionBudget. When a node is emptied, a single-copy app that can’t get a new copy first restarts briefly.",
+          text: "Coral moves each pod by warm handover or live migration where it can, and otherwise by eviction within its PodDisruptionBudget.",
         },
         {
           kind: "p",
@@ -434,6 +431,12 @@ export const article: Article = {
     },
     {
       publisher: "Microsoft Learn",
+      title:
+        "“Use Arm64 Virtual Machines in Azure Kubernetes Service (AKS) for cost effectiveness”",
+      url: "https://learn.microsoft.com/en-us/azure/aks/use-arm64-vms",
+    },
+    {
+      publisher: "Microsoft Learn",
       title: "“Virtual machine sizes overview”",
       url: "https://learn.microsoft.com/en-us/azure/virtual-machines/sizes/overview",
     },
@@ -460,7 +463,7 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "Kubernetes node size best practices: large or small nodes",
+      title: "Kubernetes node size best practices",
       where: "Learn",
       href: "/learn/kubernetes-node-size-best-practices",
     },
@@ -470,12 +473,12 @@ export const article: Article = {
       href: "/learn/change-aks-node-pool-vm-size",
     },
     {
-      title: "AKS cost analysis: what the add-on shows and what it doesn’t",
+      title: "AKS cost analysis",
       where: "Learn",
       href: "/learn/aks-cost-analysis",
     },
     {
-      title: "AKS node auto provisioning (NAP): what it is, how to enable",
+      title: "AKS node auto provisioning (NAP)",
       where: "Learn",
       href: "/learn/aks-node-auto-provisioning",
     },

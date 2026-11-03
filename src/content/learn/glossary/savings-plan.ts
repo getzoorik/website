@@ -5,27 +5,66 @@ export const term: GlossaryTerm = {
   slug: "savings-plan",
   term: "Savings plan (AWS Savings Plans, Azure savings plan for compute)",
   title: "What is a savings plan in AWS and Azure?",
-  meta: "AWS savings plans and the Azure savings plan trade a 1- or 3-year hourly commitment for cheaper compute. See an example and compare them to reserved instances.",
+  meta: "A savings plan trades a 1- or 3-year hourly commitment for discounted compute. AWS and Azure plans, an example, and savings plans vs reserved instances.",
   h1: "What is a savings plan in AWS and Azure?",
-  card: "An Amazon Web Services (AWS) Savings Plan commits you to a set dollar amount an hour of compute usage, for one or three years.",
+  card: "A savings plan commits you to a fixed hourly spend on compute for one or three years, in exchange for discounted rates.",
   group: "finops-pricing",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: [
-        "An Amazon Web Services (AWS) Savings Plan commits you to a set dollar amount an hour of compute usage, for one or three years. Usage it covers costs less than the ",
-        { a: "on-demand rate", href: "/learn/glossary/on-demand-instance" },
-        ". The Azure savings plan for compute works the same way.",
+      text: "A savings plan commits you to a fixed hourly spend on compute for one or three years, in exchange for discounted rates. AWS sells Savings Plans, and Azure sells the savings plan for compute.",
+    },
+    {
+      kind: "ul",
+      items: [
+        [
+          "Usage up to the commitment gets the discounted rate. Usage above it is charged at the ",
+          { a: "on-demand rate", href: "/learn/glossary/on-demand-instance" },
+          ".",
+        ],
+        "You pay the full commitment every hour, used or not. Unused commitment doesn’t carry over to the next hour.",
+        "You can’t change or cancel a plan after you buy it.",
       ],
     },
   ],
   sections: [
     {
+      id: "aws-savings-plans",
+      title: "AWS Savings Plans",
+      blocks: [
+        {
+          kind: "p",
+          text: "AWS sells four types. Database and SageMaker AI Savings Plans cover only those services. The two for EC2 are:",
+        },
+        {
+          kind: "ul",
+          items: [
+            [
+              { b: "Compute Savings Plans" },
+              " take up to 66% off on-demand rates. They apply to any EC2 instance family, size, Region, OS or tenancy, and to Fargate and Lambda.",
+            ],
+            [
+              { b: "EC2 Instance Savings Plans" },
+              " take up to 72% off, for one instance family in one Region, at any size, OS or tenancy.",
+            ],
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "On EKS, both EC2 plans cover your nodes, but not EKS’s own charges, such as the ",
+            { a: "EKS Auto Mode", href: "/learn/glossary/eks-auto-mode" },
+            " fee. No Savings Plan covers Spot usage.",
+          ],
+        },
+      ],
+    },
+    {
       id: "an-example-from-aws",
-      title: "An AWS compute savings plan example",
+      title: "An AWS example",
       blocks: [
         {
           kind: "p",
@@ -33,58 +72,60 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "A $2.00-an-hour plan covers about 2.9 of those instance-hours, and the other 1.1 are charged on-demand, for $1.14.",
+          text: "A $2.00-an-hour plan covers about 2.9 of those instance-hours. The other 1.1 are charged on-demand, $1.14 in all.",
         },
         { kind: "svg", figure: figure1 },
       ],
     },
     {
+      id: "azure-savings-plan",
+      title: "Azure savings plan",
+      blocks: [
+        {
+          kind: "p",
+          text: "The Azure savings plan for compute works the same way, for up to 65% off pay-as-you-go prices. It covers Azure Virtual Machines, App Service, Container Instances and other compute services. On AKS, it covers the VMs behind your nodes, if their series is eligible.",
+        },
+      ],
+    },
+    {
       id: "savings-plan-vs-reserved-instance",
-      title: "AWS savings plans vs reserved instances",
+      title: "Savings plans vs reserved instances",
       blocks: [
         {
           kind: "ul",
           items: [
-            "An AWS Compute Savings Plan takes up to 66% off on-demand, for any instance family, size or region.",
-            "An EC2 Instance Savings Plan takes up to 72% off, for one family in one region.",
+            [
+              { b: "A savings plan" },
+              " commits you to a dollar amount an hour. A Compute Savings Plan follows your usage across instance families and Regions.",
+            ],
+            [
+              "A ",
+              { a: "reserved instance", href: "/learn/glossary/reserved-instance" },
+              " commits you to an instance setup. On AWS, Standard RIs also reach up to 72% off, and Convertible RIs up to 66%.",
+            ],
           ],
         },
         {
           kind: "p",
-          text: "These are AWS’s October 2026 figures, and prices change. Reserved Instances reach the same top discounts, but tie you to instance setups, not a dollar amount. Azure Reservations also need a set family, size and region.",
+          text: "On Azure, a reservation is tied to one VM family, size and region. Microsoft says it gives deeper discounts than a savings plan, but suits steady use.",
         },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why savings plans matter for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
-          kind: "ul",
-          items: [
-            "You pay the full commitment every hour, used or not, and can’t change it later.",
-            [
-              "Spare nodes raise the commitment you’d need, so ",
-              { a: "reduce cloud costs", href: "/cloud-cost-optimization" },
-              " first.",
-            ],
-          ],
+          kind: "p",
+          text: "A savings plan reduces the price of what you run, not how much you run. Remove spare capacity first, or you commit to paying for idle nodes for the whole term.",
         },
-        { kind: "h3", id: "savings-plans-on-eks-and-aks", title: "Savings plans on EKS and AKS" },
         {
-          kind: "ul",
-          items: [
-            "On EKS, either type of EC2 savings plan, Compute or EC2 Instance, covers your EC2\u00a0nodes, but not EKS’s own charges.",
-            "On AKS, it covers the virtual machines behind your nodes, if Microsoft lists their series as eligible.",
-            [
-              { a: "Coral", href: "/coral" },
-              " rebalances CPU and memory requests on AKS and EKS to match real use, and removes the nodes you don’t need.",
-            ],
-            [
-              "The ",
-              { a: "free assessment", href: "/assessment?p=coral" },
-              " works out your own figure.",
-            ],
+          kind: "p",
+          text: [
+            { a: "Coral", href: "/coral" },
+            " rebalances CPU and memory requests on AKS and EKS to match real use, and removes the nodes you don’t need. The ",
+            { a: "free assessment", href: "/assessment?p=coral" },
+            " estimates your own saving.",
           ],
         },
       ],
@@ -92,29 +133,29 @@ export const term: GlossaryTerm = {
   ],
   related: [
     {
-      title: "On-demand instance",
-      line: "The full rate.",
-      href: "/learn/glossary/on-demand-instance",
+      title: "Reserved instance",
+      line: "A commitment to one instance setup.",
+      href: "/learn/glossary/reserved-instance",
+    },
+    {
+      title: "Coverage vs utilization",
+      line: "How much of a commitment you use.",
+      href: "/learn/glossary/savings-plan-coverage-vs-utilization",
+    },
+    {
+      title: "Spot instance",
+      line: "Spare capacity no Savings Plan covers.",
+      href: "/learn/glossary/spot-instance",
     },
     {
       title: "Rightsizing",
       line: "Matching resources to real use.",
       href: "/learn/glossary/rightsizing",
     },
-    {
-      title: "Spot instance",
-      line: "Spare capacity at its own price, which AWS Savings Plans don’t cover.",
-      href: "/learn/glossary/spot-instance",
-    },
-    {
-      title: "Reserved instance",
-      line: "A commitment to one instance setup.",
-      href: "/learn/glossary/reserved-instance",
-    },
   ],
-  relatedTitle: "Terms related to savings plans",
+  relatedTitle: "Related terms",
   next: {
-    title: "Cloud cost optimization: how to reduce cloud costs",
+    title: "Cloud cost optimization",
     href: "/cloud-cost-optimization",
   },
   sources: [
@@ -133,10 +174,16 @@ export const term: GlossaryTerm = {
       title: "“Understanding how Savings Plans apply to your usage”",
       url: "https://docs.aws.amazon.com/savingsplans/latest/userguide/sp-applying.html",
     },
+    { publisher: "AWS", title: "“Amazon EKS pricing”", url: "https://aws.amazon.com/eks/pricing/" },
     {
       publisher: "Microsoft Azure",
       title: "“Azure Savings Plans”",
       url: "https://azure.microsoft.com/en-us/pricing/offers/savings-plans/",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“What are savings plans?”",
+      url: "https://learn.microsoft.com/en-us/azure/cost-management-billing/savings-plan/savings-plan-overview",
     },
   ],
 };

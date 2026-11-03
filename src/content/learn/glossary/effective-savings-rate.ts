@@ -5,45 +5,42 @@ export const term: GlossaryTerm = {
   slug: "effective-savings-rate",
   term: "Effective savings rate (ESR)",
   title: "What is effective savings rate (ESR)?",
-  meta: "Effective savings rate (ESR) is the share of list cost your discounts saved. See the formula, effective vs list cost, and why unused commitments reduce it.",
+  meta: "Effective savings rate (ESR) is the share of your list cost that discounts saved. The formula, a worked example, and what pulls ESR down.",
   h1: "What is effective savings rate (ESR)?",
   card: "Effective savings rate (ESR) is the percentage of your list cost that discounts saved.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "Effective savings rate (ESR) is the percentage of your list cost that discounts saved. It counts negotiated discounts from your contract. It also counts commitment discounts, such as reservations and savings plans.",
+      text: "Effective savings rate (ESR) is the percentage of your list cost that discounts saved. It counts negotiated discounts from your contract and commitment discounts, such as reservations and savings plans.",
     },
   ],
   sections: [
     {
       id: "how-esr-is-worked-out",
-      title: "How to calculate effective savings rate",
+      title: "How to calculate ESR",
       blocks: [
-        {
-          kind: "p",
-          text: "Microsoft’s FinOps toolkit compares three costs:",
-        },
+        { kind: "p", text: "Microsoft’s FinOps toolkit compares three costs:" },
         {
           kind: "ul",
           items: [
-            "List cost: what you’d pay with no discounts.",
+            "List cost: what you’d pay at list prices, with no discounts.",
             "Contracted cost: list cost minus negotiated discounts.",
             "Effective cost: what you pay after all discounts, with commitment purchases spread over their term.",
           ],
         },
         {
           kind: "p",
-          text: "ESR is total savings, the gap between list and effective cost, divided by list cost. Leave out commitment purchases, or they skew the result.",
+          text: "ESR = (list cost − effective cost) ÷ list cost. Leave out the commitment purchases themselves: they have a list cost but no effective cost, which skews the result.",
         },
       ],
     },
     {
       id: "an-example",
-      title: "An effective savings rate example",
+      title: "Example",
       blocks: [
         {
           kind: "p",
@@ -55,16 +52,16 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why effective savings rate matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            "Unused commitments still cost you, so they reduce ESR.",
-            "Effective cost above list cost gives negative savings, and a negative ESR.",
+            "Unused commitments still cost money and save nothing, so they reduce ESR.",
+            "If effective cost is above list cost, savings and ESR are negative. Microsoft’s toolkit shows them as negative, not zero.",
             [
-              "A high ESR doesn’t mean a low cloud cost. Discounts reduce unit prices. Using fewer resources is the other half of ",
-              { a: "how to reduce cloud costs", href: "/cloud-cost-optimization" },
+              "A high ESR doesn’t mean a low cloud cost. Discounts reduce prices, and using fewer resources is the other half of ",
+              { a: "reducing cloud costs", href: "/cloud-cost-optimization" },
               ".",
             ],
           ],
@@ -94,11 +91,8 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/amortized-cost",
     },
   ],
-  relatedTitle: "Terms related to effective savings rate",
-  next: {
-    title: "Cloud cost optimization: how to reduce cloud costs",
-    href: "/cloud-cost-optimization",
-  },
+  relatedTitle: "Related terms",
+  next: { title: "Cloud cost optimization", href: "/cloud-cost-optimization" },
   sources: [
     {
       publisher: "Microsoft Learn",

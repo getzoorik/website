@@ -5,64 +5,64 @@ import { figure as figure2 } from "@/features/learn/figures/cluster-autoscaler-n
 export const article: Article = {
   slug: "cluster-autoscaler-not-scaling-down",
   title: "Cluster Autoscaler not scaling down on AKS and EKS",
-  meta: "Cluster Autoscaler not scaling down on AKS or EKS? The scale-down utilization threshold, PDBs, pods, pool minimums and timers that keep nodes, and each fix.",
-  h1: "Cluster Autoscaler not scaling down: what keeps nodes running",
-  deck: "The autoscaler counts pod requests, not use, so an idle node can still look too full to remove.",
-  card: "Why the Cluster Autoscaler keeps a node on AKS or EKS, how to find the reason, and the fix for each one.",
+  meta: "Cluster Autoscaler not scaling down on AKS or EKS? It counts requests, not use. What holds a node, from PDBs to timers, how to find it, and each fix.",
+  h1: "Cluster Autoscaler not scaling down",
+  deck: "Why an underused node stays on AKS or EKS, how to find the reason, and the fix for each.",
+  card: "Why the Cluster Autoscaler keeps an underused node on AKS or EKS, and the fix for each reason.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes autoscaling",
   published: "2026-10-21",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "saurav",
   cover: "/learn-covers/zoorik-learn-cluster-autoscaler-not-scaling-down-1200x630.webp",
   coverAlt:
     "Cluster Autoscaler not scaling down: requests reach above the scale-down line while real use stays low, so the node stays",
   short: [
-    "When the Cluster Autoscaler is not scaling down, a node’s CPU or memory requests reach the default 50% of allocatable, or something holds it. That can be a ",
+    "The Cluster Autoscaler counts requests, not use: a node whose CPU or memory requests reach the default 50% of allocatable stays even when idle. Below that line, one pod that can’t move still holds the node. Causes include a ",
     { a: "PodDisruptionBudget", href: "/learn/glossary/pod-disruption-budget" },
-    " allowing no disruption, a kube-system pod without one, or an unmanaged or safe-to-evict “false” pod. ",
+    " that allows no disruption, a kube-system pod without one, a pod with no controller and a pod marked safe-to-evict “false”. ",
     { a: "Node pool", href: "/learn/glossary/node-pool" },
     " minimums and 10-minute timers hold nodes too.",
   ],
   sections: [
     {
       id: "why-an-underused-node-still-isnt-removed",
-      title: "Why an underused node still isn’t removed",
+      title: "Why underused nodes stay",
       blocks: [
         {
           kind: "p",
           text: [
-            "Picture a node with 4\u00a0CPU and 16\u00a0GiB allocatable, the part of its capacity it offers to pods (",
+            "Take a node with 4\u00a0CPU and 16\u00a0GiB allocatable, the part of its capacity it offers to pods (see ",
             { a: "allocatable vs capacity", href: "/learn/kubernetes-allocatable-vs-capacity" },
-            " has the detail). Its pods request 2.2\u00a0CPU and 6\u00a0GiB but use 0.3\u00a0CPU between them. You pay for the whole node, and the ",
+            "). Its pods request 2.2\u00a0CPU and 6\u00a0GiB but use only 0.3\u00a0CPU. The ",
             { a: "Cluster Autoscaler", href: "/learn/kubernetes-autoscaling" },
-            " keeps it.",
+            " keeps it, and you pay for the whole node.",
           ],
         },
         {
           kind: "callout",
           label: "Worked example",
-          text: "CPU requests sit at 55% of allocatable (2.2 ÷ 4) and memory at 37.5% (6 ÷ 16). The higher figure decides, and 55% is over the 50% line, which sits at 2\u00a0CPU (4 × 0.5). To get under it, requests must fall by more than 0.2\u00a0CPU (2.2 − 2), while 1.9\u00a0CPU of them goes unused (2.2 − 0.3).",
+          text: "CPU requests are 55% of allocatable (2.2 ÷ 4) and memory requests 37.5% (6 ÷ 16). The higher figure counts, and 55% is over the 50% line at 2\u00a0CPU (4 × 0.5). Requests must fall by more than 0.2\u00a0CPU to get under it, while 1.9\u00a0CPU of them goes unused (2.2 − 0.3).",
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "h3",
           id: "how-cluster-autoscaler-scale-down-decides-a",
-          title: "How Cluster Autoscaler scale-down decides a node is unneeded",
+          title: "How scale-down decides",
         },
         {
           kind: "p",
-          text: "The Cluster Autoscaler adds nodes for pods that can’t be scheduled and removes nodes it calls unneeded. Every 10\u00a0seconds, when no scale-up is needed, it checks each node against three conditions in its FAQ. All must hold:",
+          text: "Every 10\u00a0seconds, when no scale-up is needed, the autoscaler checks each node. A node is unneeded when all three hold:",
         },
         {
           kind: "ul",
           items: [
             [
               { b: "Requests under half:" },
-              " its pods’ CPU and memory requests each add up to less than 50% of its allocatable, counting ",
+              " its pods’ CPU and memory requests each total less than 50% of allocatable. ",
               { a: "DaemonSet", href: "/learn/glossary/daemonset" },
-              " pods and mirror pods (static pods run from a manifest). That 50% is the Cluster Autoscaler’s ",
+              " and mirror pods (static pods run from a manifest) are included. That 50% is the ",
               {
                 a: "scale-down utilization threshold",
                 href: "/learn/glossary/kubernetes-cluster-utilization",
@@ -70,32 +70,32 @@ export const article: Article = {
               ", 0.5 by default.",
             ],
             [
-              { b: "Pods that can move:" },
-              " every pod on it, apart from mirror and DaemonSet pods, can move to another node.",
+              { b: "Pods can move:" },
+              " every pod on it, apart from DaemonSet and mirror pods, can move to another node.",
             ],
             [
               { b: "No opt-out:" },
-              " no ",
+              " the node has no ",
               { code: 'cluster-autoscaler.kubernetes.io/scale-down-disabled: "true"' },
-              " annotation sits on it.",
+              " annotation.",
             ],
           ],
         },
         {
           kind: "p",
-          text: "A node that stays unneeded for 10\u00a0minutes is removed. The autoscaler taints it so no new pods land there, then evicts its pods through the eviction API, which honours PodDisruptionBudgets. Non-empty nodes go one at a time, empty ones in batches of up to 10.",
+          text: "A node unneeded for 10\u00a0minutes is removed. The autoscaler taints it so no new pods land there, then evicts its pods through the eviction API, which honours PodDisruptionBudgets.",
         },
       ],
     },
     {
       id: "how-to-see-why-the-cluster-autoscaler",
-      title: "How to see why the Cluster Autoscaler is not scaling down",
+      title: "Find the reason",
       blocks: [
         { kind: "svg", figure: figure2 },
         {
           kind: "ol",
           items: [
-            "Check that the autoscaler is up. The last-update annotation on its status ConfigMap should be no more than 3\u00a0minutes old, the FAQ says, and is usually 10\u00a0seconds old.",
+            "Check that the autoscaler is up. The last-update annotation on its status ConfigMap should be no more than 3\u00a0minutes old, and is usually 10\u00a0seconds old.",
           ],
         },
         {
@@ -106,7 +106,7 @@ export const article: Article = {
         {
           kind: "ol",
           start: 2,
-          items: ["List the autoscaler’s warning events in every namespace."],
+          items: ["List its warning events in every namespace."],
         },
         {
           kind: "code",
@@ -117,7 +117,7 @@ export const article: Article = {
           kind: "ol",
           start: 3,
           items: [
-            "Describe a node you expected to go. ScaleDown appears once the autoscaler starts to remove it, and ScaleDownFailed, with the error, when removal fails. A node it never tried to remove shows neither event.",
+            "Describe a node you expected to go. A ScaleDown event means removal has started, and ScaleDownFailed carries the error when it fails. A node it never tried to remove shows neither.",
           ],
         },
         { kind: "code", lang: "bash", code: "kubectl describe node <node-name>" },
@@ -126,32 +126,30 @@ export const article: Article = {
           start: 4,
           items: [
             {
-              text: "Read the autoscaler’s logs, which include why it considers a pod unremovable, the FAQ says.",
+              text: "Read the autoscaler’s logs, which say why it considers a pod unremovable.",
               blocks: [
                 {
                   kind: "ul",
                   items: [
                     [
-                      { b: "On Azure Kubernetes Service (AKS):" },
-                      " the autoscaler runs in the managed control plane, so its logs come through Azure Monitor. Create a diagnostic setting with the ",
+                      { b: "On AKS:" },
+                      " the autoscaler runs in the managed control plane. Create an Azure Monitor diagnostic setting with the ",
                       { code: "cluster-autoscaler" },
-                      " log category, then query ",
+                      " log category. Then query ",
                       { code: 'AKSControlPlane | where Category == "cluster-autoscaler"' },
                       " in Log Analytics (",
                       { code: "AzureDiagnostics" },
-                      " in place of ",
-                      { code: "AKSControlPlane" },
-                      " in Azure diagnostics mode). The portal’s Node pools page has tiles for autoscale events and warnings.",
+                      " in Azure diagnostics mode). In the portal, the Node pools page has tiles for autoscale events and warnings.",
                     ],
                     [
-                      { b: "On Amazon Elastic Kubernetes Service (EKS):" },
+                      { b: "On EKS:" },
                       " you run the autoscaler yourself. The project’s AWS example manifest installs it as the ",
                       { code: "cluster-autoscaler" },
                       " Deployment in kube-system with ",
                       { code: "--v=4" },
-                      ", the level the FAQ recommends for detail on scaling decisions, so ",
+                      ", the log level the FAQ recommends for scaling decisions. Read it with ",
                       { code: "kubectl -n kube-system logs deployment/cluster-autoscaler" },
-                      " shows its reasoning.",
+                      ".",
                     ],
                   ],
                 },
@@ -159,55 +157,49 @@ export const article: Article = {
             },
           ],
         },
-        { kind: "p", text: "Match the output to the checklist:" },
+        { kind: "p", text: "Then match what you find:" },
         {
           kind: "ul",
           items: [
             [
               { b: "A pod:" },
-              " a log line on why a pod is unremovable, or a ScaleDownFailed error from evicting one (next section).",
+              " a log line saying a pod is unremovable, or a ScaleDownFailed eviction error. The next section has each case.",
             ],
             [
               { b: "An opt-out or minimum:" },
               " scale-down disabled, or the pool already at its minimum count.",
             ],
-            [{ b: "Neither:" }, " a timer below, or requests at 50% of allocatable or more."],
+            [{ b: "Neither:" }, " a timer, or requests at 50% of allocatable or more."],
           ],
         },
       ],
     },
     {
       id: "six-kinds-of-pod-can-keep-their",
-      title: "Six kinds of pod can keep their node from being removed",
+      title: "Pods that hold a node",
       blocks: [
         {
           kind: "h3",
           id: "a-poddisruptionbudget-that-allows-no-disruption",
-          title: "A PodDisruptionBudget that allows no disruption",
+          title: "A strict PodDisruptionBudget",
         },
         {
           kind: "p",
           text: [
-            "A PodDisruptionBudget (PDB), stable since Kubernetes 1.21 in the ",
-            { code: "policy/v1" },
-            " API, limits how many of a workload’s pods voluntary evictions can take down at once.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "With ",
+            "A PodDisruptionBudget (PDB) limits how many of a workload’s pods voluntary evictions can take down at once. With ",
             { code: "maxUnavailable" },
             " at 0, or ",
             { code: "minAvailable" },
-            " at 100% or the replica count, Kubernetes says you are “requiring zero voluntary evictions”, and a node running one of those pods can’t be drained. A single-replica Deployment with ",
-            { code: "minAvailable: 1" },
-            " is one example.",
+            " at 100% or the replica count, it allows zero voluntary evictions. A node running one of those pods can’t be drained.",
           ],
         },
         {
           kind: "p",
-          text: "Before removing a node, the autoscaler checks that each PDB on it allows at least one eviction, and keeps the node if an eviction still fails. Look for 0 under ALLOWED DISRUPTIONS:",
+          text: [
+            "A single-replica Deployment with ",
+            { code: "minAvailable: 1" },
+            " is one example. Before removing a node, the autoscaler checks that each PDB on it allows at least one eviction. Look for 0 under ALLOWED DISRUPTIONS:",
+          ],
         },
         { kind: "code", lang: "bash", code: "kubectl get poddisruptionbudgets --all-namespaces" },
         {
@@ -221,24 +213,24 @@ export const article: Article = {
             " covers which field to use.",
           ],
         },
-        { kind: "h3", id: "a-kube-system-pod-with-no-pdb", title: "A kube-system pod with no PDB" },
+        { kind: "h3", id: "a-kube-system-pod-with-no-pdb", title: "kube-system pods with no PDB" },
         {
           kind: "p",
           text: [
-            "A node running a kube-system pod that has no PDB, or one that’s too strict, isn’t removed while ",
+            "A kube-system pod with no PDB holds its node while ",
             { code: "--skip-nodes-with-system-pods" },
-            " is on, the default upstream and on AKS. DaemonSet and mirror pods are exempt. The FAQ’s examples are kube-dns and Metrics Server.",
+            " is on, the default upstream and on AKS. DaemonSet and mirror pods are exempt.",
           ],
         },
         {
           kind: "p",
           text: [
-            "Fix: add a PDB for each kube-system workload that can safely move, as the FAQ advises. It warns that restarting Metrics Server loses metrics for more than a minute, and the ",
+            "Fix: add a PDB for each kube-system workload that can safely move. The FAQ says kube-dns can move when it runs at least 2 replicas. It advises leaving Metrics Server alone: a restart loses metrics for more than a minute, and the ",
             {
               a: "Horizontal Pod Autoscaler (HPA)",
               href: "/learn/glossary/horizontal-pod-autoscaler",
             },
-            " relies on them, so add a PDB there only if you accept that.",
+            " relies on them.",
           ],
         },
         {
@@ -250,24 +242,24 @@ export const article: Article = {
           kind: "callout",
           label: "For engineers",
           text: [
-            "From Cluster Autoscaler 1.33 the rule is softer: a kube-system pod with no PDB stops holding its node once it’s older than ",
+            "From Cluster Autoscaler 1.33, a kube-system pod with no PDB stops holding its node once its age passes a timeout. The flag is ",
             { code: "--blocking-system-pod-distruption-timeout" },
-            " (1\u00a0hour by default, spelled as shown). AKS’s profile doesn’t list that timeout, and its docs still describe nodes with kube-system pods as kept.",
+            ", 1\u00a0hour by default and spelled as shown. AKS’s profile doesn’t list this timeout, and its docs still say nodes with kube-system pods are kept.",
           ],
         },
         { kind: "h3", id: "data-in-emptydir-or-hostpath", title: "Data in emptyDir or hostPath" },
         {
           kind: "p",
           text: [
-            "On AKS’s default profile and with the project’s AWS example manifest for EKS, local storage doesn’t hold a node: both set ",
+            "Upstream, ",
             { code: "--skip-nodes-with-local-storage" },
-            " to false. Upstream it defaults to true, so a pod with a ",
+            " defaults to true. Then a pod with a ",
             { code: "hostPath" },
             " volume, or an ",
             { code: "emptyDir" },
             " that doesn’t use ",
             { code: "medium: Memory" },
-            ", holds its node. Check what yours runs with.",
+            ", holds its node. AKS’s default profile and the project’s AWS example manifest for EKS both set it to false, so local storage doesn’t hold nodes there. Check what yours runs with.",
           ],
         },
         {
@@ -275,13 +267,13 @@ export const article: Article = {
           text: [
             "Fix: move data that must survive to a persistent volume, or list the pod’s local volumes in ",
             { code: "cluster-autoscaler.kubernetes.io/safe-to-evict-local-volumes" },
-            ". The pod is released only when every local volume is listed. Name only volumes whose contents the pod can lose.",
+            ". The pod is released only when every local volume is listed, so name only volumes whose data the pod can lose.",
           ],
         },
-        { kind: "h3", id: "a-pod-nothing-would-recreate", title: "A pod nothing would recreate" },
+        { kind: "h3", id: "a-pod-nothing-would-recreate", title: "Pods with no controller" },
         {
           kind: "p",
-          text: "A pod created directly, rather than by a Deployment, ReplicaSet, Job or StatefulSet, isn’t evicted, because nothing would start it again.",
+          text: "A pod created directly, not by a Deployment, ReplicaSet, Job or StatefulSet, isn’t evicted, because nothing would start it again.",
         },
         {
           kind: "p",
@@ -294,32 +286,32 @@ export const article: Article = {
         {
           kind: "h3",
           id: "a-pod-marked-safe-to-evict-false",
-          title: "A pod marked safe-to-evict “false”",
+          title: "Pods marked safe-to-evict “false”",
         },
         {
           kind: "p",
           text: [
-            "A pod annotated ",
+            "The Cluster Autoscaler never evicts a pod annotated ",
             { code: 'cluster-autoscaler.kubernetes.io/safe-to-evict: "false"' },
-            " is never evicted by the Cluster Autoscaler, so its node stays. AWS’s EKS guide suggests it for pods that are expensive to evict, such as test runners and machine learning tasks, and Microsoft asks you to use it with caution.",
+            ", so its node stays. AWS suggests the annotation for pods that are expensive to evict, such as test runners and machine learning tasks. Microsoft asks you to use it with caution.",
           ],
         },
         {
           kind: "p",
           text: [
-            "Fix: take the annotation off pods that can move, and see ",
+            "Fix: remove the annotation from pods that can move. ",
             {
-              a: "the safe-to-evict and do-not-disrupt annotations",
+              a: "Safe-to-evict and do-not-disrupt",
               href: "/learn/safe-to-evict-do-not-disrupt",
             },
-            " for both markers.",
+            " compares both markers.",
           ],
         },
-        { kind: "h3", id: "no-other-node-the-pod-fits-on", title: "No other node the pod fits on" },
+        { kind: "h3", id: "no-other-node-the-pod-fits-on", title: "No room on other nodes" },
         {
           kind: "p",
           text: [
-            "The autoscaler simulates the scheduler first. If no other node has room for a pod’s requests, a free ",
+            "The autoscaler first simulates the scheduler. If no other node has room for a pod’s requests, a free ",
             { code: "hostPort" },
             " or the labels its node selector needs, the node stays.",
           ],
@@ -327,28 +319,29 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            { a: "Anti-affinity", href: "/learn/pod-affinity-vs-node-affinity" },
-            " that allows one pod per node on a set of nodes holds every node running one, the FAQ says. The set’s other nodes are all taken or empty, and the autoscaler prefers to remove the empty ones.",
+            "Pods limited to one per node on a set of nodes, for example by ",
+            { a: "anti-affinity", href: "/learn/pod-affinity-vs-node-affinity" },
+            ", always hold their nodes. Every other node in the set is taken or empty, and the autoscaler prefers to remove the empty ones.",
           ],
         },
         {
           kind: "p",
-          text: "Fix: relax the constraint. Sizing requests to real use also frees room on the other nodes.",
+          text: "Fix: relax the constraint. Requests sized to real use also free room on the other nodes.",
         },
       ],
     },
     {
       id: "node-pool-minimums-and-timers-can-still",
-      title: "Node pool minimums and timers can still hold the node",
+      title: "Minimums and timers",
       blocks: [
-        { kind: "p", text: "The FAQ’s other reasons:" },
+        { kind: "p", text: "A node with no blocking pod can still stay:" },
         {
           kind: "ul",
           items: [
             [{ b: "Minimum size:" }, " the node group is at its minimum."],
             [
               { b: "Unneeded time:" },
-              " it became unneeded less than 10\u00a0minutes ago, the Cluster Autoscaler’s scale-down unneeded time (",
+              " it became unneeded less than 10\u00a0minutes ago (",
               { code: "--scale-down-unneeded-time" },
               ").",
             ],
@@ -360,9 +353,9 @@ export const article: Article = {
             ],
             [
               { b: "Recent failure:" },
-              " a scale-down failed less than 3\u00a0minutes ago (",
+              " a scale-down failed in the last 3\u00a0minutes (",
               { code: "--scale-down-delay-after-failure" },
-              "), or removing this node failed, which adds 5\u00a0minutes before it’s tried again.",
+              "). A failed removal of this node adds 5\u00a0minutes before it’s tried again.",
             ],
             [
               { b: "Scale-down off:" },
@@ -375,23 +368,23 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "In the open-source autoscaler the delay flags apply across all node groups by default (",
+            "Upstream, the delay flags apply across all node groups by default (",
             { code: "--scale-down-delay-type-local" },
-            " is false), so a scale-up in one pool pauses scale-down in the others for 10\u00a0minutes.",
+            " is false). A scale-up in one pool pauses scale-down in the others for 10\u00a0minutes.",
           ],
         },
         {
           kind: "h3",
           id: "aks-node-pool-not-scaling-down-the",
-          title: "AKS node pool not scaling down: the cluster autoscaler profile",
+          title: "AKS: the autoscaler profile",
         },
         {
           kind: "p",
-          text: "On AKS you don’t pass flags. Each node pool has its own minimum and maximum count, and everything else lives in the AKS cluster autoscaler profile. Microsoft says you can’t set one per pool.",
+          text: "On AKS you don’t pass flags. Each node pool has its own minimum and maximum count. Everything else lives in the cluster autoscaler profile, which covers every autoscaled pool; you can’t set one per pool.",
         },
         {
           kind: "p",
-          text: "Both commands change live behaviour: a smaller minimum lets the autoscaler remove nodes down to it, and the profile change, with example values here, reaches all autoscaled pools at once.",
+          text: "Both commands change live behaviour. A smaller minimum lets the autoscaler remove nodes down to it. The profile change, with example values here, reaches all autoscaled pools at once.",
         },
         {
           kind: "code",
@@ -400,20 +393,20 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "For cost, Microsoft advises a shorter unneeded time and delay after add, and a higher threshold. It warns against aggressive scale-down in clusters that scale out and in within short intervals, because node provisioning can then take longer.",
+          text: "For cost, Microsoft advises a shorter unneeded time and delay after add, and a higher threshold. It warns against aggressive scale-down in clusters that scale out and in at short intervals, because node provisioning can then take longer.",
         },
         {
           kind: "p",
           text: [
             "Setting ",
             { code: '--cluster-autoscaler-profile ""' },
-            " puts the defaults back. Don’t change an autoscaled pool’s node count by hand, and don’t turn on Virtual Machine Scale Set autoscaling beside the cluster autoscaler.",
+            " restores the defaults. Don’t change an autoscaled pool’s node count by hand, and don’t turn on Virtual Machine Scale Set autoscaling beside the cluster autoscaler.",
           ],
         },
         {
           kind: "h3",
           id: "eks-nodes-not-scaling-down-flags-and",
-          title: "EKS nodes not scaling down: flags and group sizes",
+          title: "EKS: flags and group sizes",
         },
         {
           kind: "p",
@@ -422,7 +415,7 @@ export const article: Article = {
             { code: "--scale-down-utilization-threshold=0.6" },
             " or ",
             { code: "--scale-down-unneeded-time=5m" },
-            ". The autoscaler respects each Auto Scaling group’s minimum and maximum and only changes its desired size, so a smaller minimum (",
+            ". The autoscaler respects each Auto Scaling group’s minimum and maximum and only changes its desired size. A smaller minimum (",
             { code: "minSize" },
             " on a managed node group) lets it remove nodes down to the new figure:",
           ],
@@ -444,35 +437,35 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Unlike AKS, one EKS group can differ from the rest: tags on its Auto Scaling group such as ",
+            "Unlike AKS, one EKS group can differ from the rest. Tags on its Auto Scaling group, such as ",
             {
               code: "k8s.io/cluster-autoscaler/node-template/autoscaling-options/scaledownutilizationthreshold",
             },
             " and ",
             { code: ".../scaledownunneededtime" },
-            " override the global flags.",
+            ", override the global flags.",
           ],
         },
         {
           kind: "p",
           text: [
-            "The autoscaler’s Identity and Access Management (IAM) role needs ",
+            "The autoscaler’s IAM role needs ",
             { code: "autoscaling:SetDesiredCapacity" },
             " and ",
             { code: "autoscaling:TerminateInstanceInAutoScalingGroup" },
-            " on the cluster’s groups. Without them, removal fails with the error in a ScaleDownFailed event.",
+            " on the cluster’s groups. Without them, removal fails, and the error shows in a ScaleDownFailed event.",
           ],
         },
       ],
     },
     {
       id: "raising-the-threshold-helps-less-than-resizing",
-      title: "Raising the scale-down utilization threshold helps less than resizing requests",
+      title: "Threshold vs requests",
       blocks: [
         {
           kind: "p",
           text: [
-            "A higher threshold makes more nodes candidates, but each of their pods still has to fit on the remaining nodes at its full request. ",
+            "A higher threshold makes more nodes candidates, but each of their pods must still fit on the remaining nodes at its full request. ",
             { code: "--ignore-daemonsets-utilization" },
             ", also in the AKS profile, leaves DaemonSet pods out of the sum.",
           ],
@@ -491,13 +484,13 @@ export const article: Article = {
     },
     {
       id: "how-coral-helps-the-cluster-autoscaler-remove",
-      title: "How Coral helps the Cluster Autoscaler remove nodes",
+      title: "How Coral helps",
       blocks: [
         {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS. Its node optimization, on from install, empties spare nodes for your Cluster Autoscaler to remove:",
+            " rebalances CPU and memory requests to real use on AKS and EKS, without any downtime. Its node optimization, on from install, empties spare nodes for your Cluster Autoscaler to remove:",
           ],
         },
         {
@@ -505,39 +498,34 @@ export const article: Article = {
           items: [
             [
               { b: "Checks first." },
-              " Before draining, Coral simulates the scheduler on the live cluster, and every pod must fit elsewhere with its affinity, taints, spread, ports and zones. Coral also respects PDBs, do-not-disrupt and safe-to-evict “false”. By default, Coral may reduce a pool’s minimum when that minimum alone keeps a node it has emptied, and disconnect puts the old minimum back.",
+              " Before draining, Coral simulates the scheduler on the live cluster. Every pod must fit elsewhere with its affinity, taints, spread, ports and zones. Coral respects PDBs, do-not-disrupt and safe-to-evict “false”.",
             ],
             [
-              { b: "One by one." },
-              " Coral cordons and drains one node at a time, and if a drain can’t finish in time, the node goes back into service.",
+              { b: "One node at a time." },
+              " Coral moves each pod by warm handover, by live migration where both nodes support it, or by eviction. If a drain can’t finish in time, the node goes back into service.",
             ],
             [
               { b: "Your autoscaler deletes." },
-              " After “Wait before removing empty nodes”, Coral hands the empty node to your autoscaler, whose own timers decide when it goes. Coral never adds nodes for demand.",
+              " After “Wait before removing empty nodes”, Coral hands the empty node to your autoscaler, whose own timers decide when it goes.",
             ],
           ],
         },
         {
           kind: "p",
-          text: [
-            {
-              a: "Coral works with the Cluster Autoscaler",
-              href: "/coral-works-with-cluster-autoscaler",
-            },
-            " covers the setup.",
-          ],
+          text: "Coral never adds nodes for demand and never raises a pool’s minimum. By default it may reduce a minimum that alone keeps an emptied node, and disconnecting puts the old minimum back. With only the Cluster Autoscaler, Coral empties nodes but doesn’t change their size.",
         },
         {
           kind: "p",
           text: [
             "In Coral, Node list → “What’s holding them” names each ",
             { a: "held node", href: "/coral-guide#nodes-held" },
-            " with its reason and fix.",
+            " with its reason and fix. ",
+            {
+              a: "Coral works with the Cluster Autoscaler",
+              href: "/coral-works-with-cluster-autoscaler",
+            },
+            " covers the setup.",
           ],
-        },
-        {
-          kind: "p",
-          text: "Two limits apply. When a node is removed, a pod whose replacement can’t start first gets a short restart. With only the Cluster Autoscaler, Coral empties nodes but doesn’t move workloads to smaller machines.",
         },
         {
           kind: "p",
@@ -552,7 +540,7 @@ export const article: Article = {
   ],
   help: {
     product: "coral",
-    text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and removes the nodes you don’t need. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and removes the nodes you don’t need, without any downtime. We estimate 40–50% off AKS and EKS cost, a range rather than a promise. The free assessment works out your own figure.",
     links: [
       { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Estimate your saving", href: "/assessment?p=coral" },
@@ -568,6 +556,11 @@ export const article: Article = {
       publisher: "Kubernetes autoscaler",
       title: "“Cluster Autoscaler on AWS”",
       url: "https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md",
+    },
+    {
+      publisher: "Kubernetes autoscaler",
+      title: "“cluster-autoscaler-autodiscover.yaml” (AWS example manifest)",
+      url: "https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/examples/cluster-autoscaler-autodiscover.yaml",
     },
     {
       publisher: "Microsoft Learn",
@@ -596,36 +589,41 @@ export const article: Article = {
     },
     {
       publisher: "Kubernetes autoscaler",
+      title: "“Command-line flags (cluster-autoscaler-1.33.0)”",
+      url: "https://github.com/kubernetes/autoscaler/blob/cluster-autoscaler-1.33.0/cluster-autoscaler/config/flags/flags.go",
+    },
+    {
+      publisher: "Kubernetes autoscaler",
       title: "“Drainability rule for kube-system pods (cluster-autoscaler-1.33.0)”",
       url: "https://github.com/kubernetes/autoscaler/blob/cluster-autoscaler-1.33.0/cluster-autoscaler/simulator/drainability/rules/system/rule.go",
     },
   ],
   related: [
     {
-      title: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
+      title: "Kubernetes autoscaling",
       where: "Learn",
       href: "/learn/kubernetes-autoscaling",
     },
     {
-      title: "Karpenter vs Cluster Autoscaler: how each removes nodes",
+      title: "Karpenter vs Cluster Autoscaler",
       where: "Learn",
       href: "/learn/karpenter-vs-cluster-autoscaler",
     },
     {
-      title: "Pod disruption budget best practices for AKS and EKS",
+      title: "Pod disruption budget best practices",
       where: "Learn",
       href: "/learn/pod-disruption-budget-best-practices",
     },
     {
-      title: "Why Coral holds a node, and each fix",
+      title: "Why Coral holds a node",
       where: "Coral product guide",
       href: "/coral-guide#nodes-held",
     },
     {
-      title: "How does Coral interact with Cluster Autoscaler or Karpenter decisions?",
+      title: "How does Coral work with Karpenter or the Cluster Autoscaler?",
       where: "Coral FAQ",
       href: "/coral-faq#how-does-coral-interact-with-cluster",
     },
   ],
-  relatedTitle: "More on node scale-down and disruption budgets",
+  relatedTitle: "More on node scale-down",
 };

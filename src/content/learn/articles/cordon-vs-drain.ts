@@ -4,63 +4,70 @@ import { figure as figure2 } from "@/features/learn/figures/cordon-vs-drain/2";
 
 export const article: Article = {
   slug: "cordon-vs-drain",
-  title: "kubectl cordon vs drain: what each does to a node",
-  meta: "kubectl cordon vs drain: a Kubernetes cordon stops new pods landing on a node, drain evicts the running ones within their PDBs. Plus uncordon and taints.",
-  h1: "kubectl cordon vs drain in Kubernetes: what each does to a node",
-  deck: "Neither command removes the node: it keeps running, and you keep paying for it, until it is removed.",
-  card: "What kubectl cordon, drain and uncordon each change on a node, and when a taint is the better tool.",
+  title: "kubectl cordon vs drain in Kubernetes",
+  meta: "kubectl cordon vs drain: cordon keeps new pods off a node, drain also evicts running pods within their PDBs. When to use each, plus uncordon and taints.",
+  h1: "kubectl cordon vs drain",
+  deck: "Neither command removes the node. You pay for it until it is deleted.",
+  card: "What cordon, drain and uncordon change on a node, and when a taint fits better.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Node lifecycle and scheduling",
   versus: ["Cordon", "Drain"],
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "prashant",
   cover: "/learn-covers/zoorik-learn-cordon-vs-drain-1200x630.webp",
   coverAlt:
     "Cordon vs drain in Kubernetes: a cordon turns new pods away, and a drain moves the pods off to be recreated elsewhere",
   short: [
-    "kubectl cordon vs drain comes down to the pods already on the node: a cordon leaves them running, and a drain evicts them. Both mark the node unschedulable, and a drain evicts each pod within its ",
-    { a: "PodDisruptionBudget (PDB)", href: "/learn/glossary/pod-disruption-budget" },
-    ", so its controller recreates it on another node.",
+    "A cordon keeps new pods off a node and leaves the running ones in place. A drain cordons the node, then evicts its pods within their ",
+    { a: "PodDisruptionBudgets (PDBs)", href: "/learn/glossary/pod-disruption-budget" },
+    ", so their controllers recreate them on other nodes.",
   ],
   sections: [
     {
       id: "what-is-cordon-in-kubernetes-running-pods",
-      title: "What kubectl cordon does: running pods stay, new ones are kept off the node",
+      title: "What kubectl cordon does",
       blocks: [
         {
           kind: "p",
-          text: "Picture a node due for a kernel patch. A half-finished nightly batch job runs on it, beside a DaemonSet log agent. So do two replicas of a web app, under a PDB that lets one go at a time.",
+          text: "Take a node due for a kernel patch. It runs a DaemonSet log agent, a half-finished batch job and two web replicas under a PDB that lets one go at a time.",
         },
         {
           kind: "p",
-          text: "Cordon it, and the batch job finishes with nothing new landing beside it. The web replicas stay too, so the patch waits.",
+          text: "Cordon it, and every pod keeps running. The batch job can finish with nothing new landing beside it, but the patch still waits.",
         },
         { kind: "h3", id: "what-a-cordon-changes", title: "What a cordon changes" },
         {
           kind: "p",
           text: [
-            "To cordon a node is to mark it unschedulable. The ",
             { code: "kubectl cordon" },
-            " command sets the Node object’s ",
+            " sets the node’s ",
             { code: "spec.unschedulable" },
             " field to ",
             { code: "true" },
-            ". From then on, the scheduler leaves that node out whenever it places a new pod.",
+            ". The scheduler then leaves the node out when it places new pods.",
           ],
         },
         {
           kind: "p",
-          text: "Marking a node unschedulable “does not affect existing Pods on the Node,” the Kubernetes docs say. They call it “a preparatory step before a node reboot or other maintenance.”",
+          text: "Running pods aren’t affected. The Kubernetes docs call a cordon “a preparatory step before a node reboot or other maintenance.”",
         },
         { kind: "code", lang: "bash", code: "kubectl cordon <node-name>\nkubectl get nodes" },
         {
           kind: "p",
           text: [
-            "After the cordon, the second command lists the node’s status as ",
+            "The node then shows as ",
             { code: "Ready,SchedulingDisabled" },
-            ". It’s still Ready, since nothing is wrong with the machine.",
+            ". It is still Ready, since nothing is wrong with the machine.",
+          ],
+        },
+        {
+          kind: "callout",
+          label: "For engineers",
+          text: [
+            { code: "SchedulingDisabled" },
+            " isn’t a node condition in the Kubernetes API. kubectl prints it because the cordon is recorded in the node’s spec.",
           ],
         },
         {
@@ -74,51 +81,41 @@ export const article: Article = {
         {
           kind: "h3",
           id: "which-pods-still-land-on-a-cordoned",
-          title: "Which pods still land on a cordoned node",
+          title: "Pods a cordon doesn’t stop",
         },
+        { kind: "p", text: "Three kinds of pod can still land on a cordoned node:" },
         {
-          kind: "p",
-          text: [
-            { a: "DaemonSet", href: "/learn/glossary/daemonset" },
-            " pods still land on a cordoned node. The DaemonSet controller gives every one a toleration for the built-in ",
-            { code: "node.kubernetes.io/unschedulable" },
-            " taint, since Kubernetes 1.10. Node-local agents for networking, storage or logs have to run for as long as the node does.",
-          ],
-        },
-        {
-          kind: "callout",
-          label: "For engineers",
-          text: [
-            { code: "SchedulingDisabled" },
-            " isn’t a real node condition in the Kubernetes API: kubectl prints it because the cordon is recorded in the node’s spec. Two more kinds of pod get past a cordon.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "Pods that tolerate the unschedulable taint themselves get past it, including through a blanket toleration (",
-            { code: "operator: Exists" },
-            " with no key and no effect). The Safely Drain a Node page says to avoid tolerating it in anything but a DaemonSet.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "Pods that set ",
-            { code: "nodeName" },
-            " directly bypass the scheduler altogether. They’re bound to that node even though it’s cordoned.",
+          kind: "ul",
+          items: [
+            [
+              { b: [{ a: "DaemonSet", href: "/learn/glossary/daemonset" }, " pods."] },
+              " Since Kubernetes 1.10, the DaemonSet controller gives each one a toleration for the built-in ",
+              { code: "node.kubernetes.io/unschedulable" },
+              " taint. Node agents for networking, storage or logs must run as long as the node does.",
+            ],
+            [
+              { b: "Pods that tolerate that taint." },
+              " A blanket toleration counts too: ",
+              { code: "operator: Exists" },
+              " with no key and no effect. The docs advise tolerating it only in DaemonSets.",
+            ],
+            [
+              { b: ["Pods that set ", { code: "nodeName" }, "."] },
+              " They bypass the scheduler, and with it the cordon.",
+            ],
           ],
         },
       ],
     },
     {
       id: "kubectl-drain-cordons-the-node-then-evicts",
-      title: "kubectl drain cordons the node, then evicts its pods within their PDBs",
+      title: "What kubectl drain does",
       blocks: [
         {
           kind: "p",
           text: "Drain the same node instead. The web replicas move to other nodes one at a time, and the batch job is evicted mid-run. Only the log agent stays.",
         },
+        { kind: "code", lang: "bash", code: "kubectl drain --ignore-daemonsets <node-name>" },
         {
           kind: "p",
           text: [
@@ -126,36 +123,31 @@ export const article: Article = {
             { code: "kubectl drain" },
             " returns without an error, every pod it handles has been evicted within its grace period and its ",
             { a: "PDB", href: "/learn/pod-disruption-budget-best-practices" },
-            ". The Kubernetes docs then call it safe to power down the node, or delete the virtual machine behind it.",
+            ". The docs then call it safe to power the node down, or delete its virtual machine.",
           ],
         },
         { kind: "h3", id: "how-drain-evicts-pods", title: "How drain evicts pods" },
         {
           kind: "p",
-          text: "Drain begins with a cordon: “The given node will be marked unschedulable to prevent new pods from arriving.”",
-        },
-        {
-          kind: "p",
-          text: "Then drain evicts each pod through the Eviction API. That API lets the pod’s containers terminate gracefully. It refuses any eviction that would break the pod’s PDB.",
-        },
-        {
-          kind: "p",
-          text: "A refusal doesn’t end the drain. The Disruptions page says kubectl “periodically retries all failed requests” until the node’s pods are gone or a configurable timeout is reached. Microsoft’s example shows kubectl printing “will retry after 5s”.",
+          text: "Drain first cordons the node, so no new pods arrive. Then it evicts each pod through the Eviction API. That API lets the containers shut down gracefully, and refuses any eviction that would break a PDB.",
         },
         {
           kind: "p",
           text: [
-            "You set that timeout with ",
+            "A refusal doesn’t end the drain. kubectl retries until the node’s pods are gone or ",
             { code: "--timeout" },
-            ", where zero “means infinite”.",
+            " runs out, where zero means no limit.",
           ],
         },
         {
           kind: "h3",
           id: "pods-that-drains-defaults-wont-touch",
-          title: "Pods that drain’s defaults won’t touch",
+          title: "Pods drain won’t touch",
         },
-        { kind: "p", text: "Before it evicts anything, drain checks for four kinds of pod:" },
+        {
+          kind: "p",
+          text: "By default, drain checks for four kinds of pod before it evicts anything:",
+        },
         {
           kind: "ul",
           items: [
@@ -163,19 +155,19 @@ export const article: Article = {
               { b: "DaemonSet pods." },
               " Drain won’t proceed without ",
               { code: "--ignore-daemonsets" },
-              ". Even with it, drain leaves them running: the DaemonSet controller ignores the cordon and would recreate them on the same node.",
+              ". Even then it leaves them running, since their controller ignores the cordon and would recreate them on the same node.",
             ],
             [
               { b: "Pods with no controller." },
-              " No ReplicaSet, StatefulSet, Job, DaemonSet or ReplicationController stands behind them, so nothing would recreate one that was deleted. Drain deletes no pods at all unless you pass ",
+              " With no ReplicaSet, StatefulSet, Job, DaemonSet or ReplicationController behind them, nothing would recreate them. Drain deletes no pods at all unless you pass ",
               { code: "--force" },
-              ", which deletes these ones anyway.",
+              ".",
             ],
             [
               { b: "Pods with emptyDir volumes." },
-              " Their local data is deleted when the node is drained. The ",
+              " Their local data is deleted with the drain, so drain continues only with ",
               { code: "--delete-emptydir-data" },
-              " flag lets drain continue anyway.",
+              ".",
             ],
             [
               { b: "Mirror pods." },
@@ -186,32 +178,24 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Drain doesn’t uncordon the node afterwards. Putting it back into service is a separate ",
-            { code: "kubectl uncordon" },
-            ".",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "For the full procedure, see ",
+            "Drain doesn’t uncordon the node afterwards. For the full procedure, with the replicas and budgets that keep apps serving, see ",
             {
-              a: "how to drain a Kubernetes node without downtime",
+              a: "how to drain a node without downtime",
               href: "/learn/kubernetes-drain-node-without-downtime",
             },
-            ". It adds the replicas and budgets that keep apps serving. Every kubectl command and flag here follows the docs for Kubernetes 1.37, the current release in October 2026.",
+            ".",
           ],
         },
       ],
     },
     {
       id: "cordon-vs-drain",
-      title: "Cordon vs drain: the running pods decide",
+      title: "Cordon vs drain",
       blocks: [
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
-          text: "Taints get two columns because they’re the other way to keep pods off a node.",
+          text: "Taints are the other way to keep pods off a node, so the table compares them too.",
         },
         {
           kind: "table",
@@ -224,10 +208,10 @@ export const article: Article = {
           ],
           rows: [
             [
-              "What it changes",
+              "What it does",
               ["Sets ", { code: "spec.unschedulable" }],
               "Cordons, then evicts",
-              "Adds a taint with a key you choose",
+              "Adds a taint with your key",
               "Same, with the evicting effect",
             ],
             [
@@ -263,11 +247,11 @@ export const article: Article = {
               [{ code: "kubectl uncordon" }],
               [{ code: "kubectl uncordon" }, " (evicted pods don’t come back)"],
               "Remove the taint",
-              "Same, and evicted pods don’t come back",
+              "Remove the taint (evicted pods don’t come back)",
             ],
             [
               "Use it to",
-              "Stop new work landing before you decide",
+              "Stop new work landing while you decide",
               "Empty a node to reboot, replace or remove it",
               "Reserve nodes for chosen workloads",
               "Clear a node of pods that must not run there",
@@ -278,11 +262,11 @@ export const article: Article = {
     },
     {
       id: "kubernetes-cordon-vs-taint-a-taint-can",
-      title: "Kubernetes cordon vs taint: a taint can reserve a node",
+      title: "Cordon vs taint",
       blocks: [
         {
           kind: "p",
-          text: "A taint is a mark on a node that repels pods. A toleration on a pod lets that pod past it. You choose the key, the value and one of three effects:",
+          text: "A taint is a mark on a node that repels pods, and a toleration lets a pod past it. You set the key, the value and one of three effects:",
         },
         {
           kind: "ul",
@@ -293,15 +277,13 @@ export const article: Article = {
             ],
             [
               { code: "PreferNoSchedule" },
-              ": the control plane tries to keep untolerating pods off the node, but the docs say “it is not guaranteed.”",
+              ": the control plane tries to keep pods that don’t tolerate it off the node, but the docs say “it is not guaranteed.”",
             ],
             [
               { code: "NoExecute" },
-              ": running pods without a matching toleration are evicted immediately. A pod that tolerates it without ",
+              ": running pods that don’t tolerate it are evicted at once. A pod that tolerates it stays, unless its toleration sets ",
               { code: "tolerationSeconds" },
-              " stays for good. One with ",
-              { code: "tolerationSeconds" },
-              " stays that long, then the node lifecycle controller evicts it.",
+              ". Then the node lifecycle controller evicts it when that time runs out.",
             ],
           ],
         },
@@ -312,33 +294,42 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: ["The second command, with the trailing ", { code: "-" }, ", removes the taint."],
+          text: [
+            "The trailing ",
+            { code: "-" },
+            " in the second command removes the taint. ",
+            {
+              a: "Kubernetes taints and tolerations",
+              href: "/learn/kubernetes-taints-and-tolerations",
+            },
+            " covers how they match.",
+          ],
         },
         {
           kind: "h3",
           id: "a-cordon-closes-a-node-a-taint",
-          title: "A cordon closes a node, a taint can reserve it",
+          title: "Close or reserve a node",
         },
         {
           kind: "p",
           text: [
-            "Cordon works like one fixed ",
+            "A cordon works like one fixed ",
             { code: "NoSchedule" },
-            " taint. Kubernetes’ node controller marks an unschedulable node with ",
+            " taint: Kubernetes marks the node with ",
             { code: "node.kubernetes.io/unschedulable" },
-            ". By default only DaemonSet pods tolerate it, so a cordon closes the node to almost everything.",
+            ". Only DaemonSet pods tolerate it by default, so the node closes to almost everything.",
           ],
         },
         {
           kind: "p",
-          text: "A taint is the finer control. It keeps out only the pods without a matching toleration, so it can reserve a node rather than close it.",
+          text: "A taint keeps out only the pods without a matching toleration. So it can reserve a node for some workloads rather than close it.",
         },
         {
           kind: "p",
           text: [
-            "The docs’ dedicated-nodes example gives the nodes ",
+            "The docs’ dedicated-nodes example taints the nodes ",
             { code: "dedicated=groupName:NoSchedule" },
-            " and one group’s pods the toleration. It then adds a matching node label and node affinity to keep that group on those nodes.",
+            " and gives one group’s pods the toleration. A matching node label and node affinity then keep that group on those nodes.",
           ],
         },
         { kind: "h3", id: "noexecute-taints-and-pdbs", title: "NoExecute taints and PDBs" },
@@ -348,23 +339,15 @@ export const article: Article = {
           text: [
             "A ",
             { code: "NoExecute" },
-            " taint isn’t a faster drain. Kubernetes records its removals as deletions by the taint manager, a different path from the Eviction API that drain uses.",
+            " taint isn’t a faster drain. Its removals are deletions by the taint manager, not evictions through the Eviction API, so PDBs don’t apply.",
           ],
         },
         {
           kind: "p",
           text: [
-            "The Disruptions page notes that deleting pods bypasses PodDisruptionBudgets. A ",
+            "On the node you’re patching, drain evicts one web replica. The PDB refuses the second eviction until the first one’s replacement is Ready on another node. A ",
             { code: "NoExecute" },
-            " taint can therefore remove every replica on the node in one go. That’s the outage a PDB exists to stop.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "On the node you’re patching, drain evicts one web replica. The budget refuses the second eviction until the first one’s replacement is Ready on another node. A ",
-            { code: "NoExecute" },
-            " taint removes both at once.",
+            " taint removes both at once: the outage a PDB exists to stop.",
           ],
         },
         { kind: "svg", figure: figure2 },
@@ -372,94 +355,83 @@ export const article: Article = {
     },
     {
       id: "kubectl-uncordon-reopens-the-node-to-new",
-      title: "kubectl uncordon reopens the node to new pods only",
+      title: "kubectl uncordon",
       blocks: [
         {
           kind: "p",
           text: [
-            "Running ",
             { code: "kubectl uncordon <node-name>" },
             " sets ",
             { code: "spec.unschedulable" },
-            " back to false. The Safely Drain a Node page says it tells Kubernetes “that it can resume scheduling new pods onto the node.”",
+            " back to false, so the scheduler can place new pods on the node again.",
           ],
         },
         {
           kind: "p",
-          text: "The pods a drain evicted were recreated on other nodes, and they stay there. So an uncordoned node fills up only as new pods are created, from rollouts, scale-ups and replaced pods.",
-        },
-        {
-          kind: "p",
           text: [
-            "Spreading running pods back out is a job for ",
+            "Pods a drain evicted stay on their new nodes. The node fills only as new pods are created, by rollouts, scale-ups and replacements. To spread running pods back out, use ",
             { a: "the Kubernetes descheduler", href: "/learn/kubernetes-descheduler" },
             ".",
           ],
         },
-        { kind: "p", text: "Uncordon a node in three cases:" },
+        { kind: "p", text: "Uncordon a node:" },
         {
           kind: "ul",
           items: [
-            "After maintenance on a node you kept in the cluster.",
-            "After a drain that failed or timed out, when you won’t retry it.",
-            "After you cordoned a node only to look at it.",
+            "After maintenance, if the node stays in the cluster.",
+            "After a drain that failed or timed out, if you won’t retry it.",
+            "After you cordoned it only to inspect it.",
           ],
         },
         {
           kind: "p",
           text: [
-            "A cordon you didn’t make may be deliberate. On AKS, you can set a node pool’s undrainable-node behavior to ",
+            "A cordon you didn’t make may be deliberate. An AKS node pool whose undrainable-node behavior is ",
             { code: "Cordon" },
-            ". Then an upgrade that can’t drain a node cordons it and labels it ",
+            " cordons any node an upgrade can’t drain, and labels it ",
             { code: "kubernetes.azure.com/upgrade-status=Quarantined" },
-            ".",
+            ". Microsoft’s fix starts by removing the PDB that blocked the drain, then the label.",
           ],
-        },
-        {
-          kind: "p",
-          text: "Microsoft’s steps for it begin with removing the PDB that blocked the drain, and then that label.",
         },
       ],
     },
     {
       id: "when-to-cordon-and-drain-a-node",
-      title: "When to cordon and drain a node in Kubernetes",
+      title: "When to use each",
       blocks: [
         { kind: "p", text: "Pick by what should happen to the pods already on the node:" },
         {
           kind: "ol",
           items: [
             [
-              { b: "To let them finish where they are, cordon." },
-              " Once a long batch job ends, you drain the node or remove it.",
+              { b: "To let them finish, cordon." },
+              " Once a long batch job ends, drain the node or remove it.",
             ],
             [
-              { b: "To move them so you can reboot, patch, replace or remove the node, drain." },
-              " The Kubernetes guide says to issue ",
+              { b: "To move them, drain." },
+              " Do this to reboot, patch, replace or remove the node. The Kubernetes docs say to issue ",
               { code: "kubectl drain" },
-              " for one node at a time. Drains for different nodes can still run in parallel, in separate terminals, and respect your PDBs.",
+              " for one node at a time. Drains for different nodes can still run in parallel, and each respects your PDBs.",
             ],
             [
-              {
-                b: "To retire a whole pool, cordon every node in it, then drain them one at a time.",
-              },
-              " Cordoning first means a pod evicted from the first node can’t land on the second. On AKS, do this before you delete the node pool. Microsoft notes that “When you delete a node pool, AKS doesn’t perform cordon and drain.”",
+              { b: "To retire a pool, cordon every node, then drain them one at a time." },
+              " Cordoning first stops a pod evicted from one node landing on the next. On AKS, do this before you delete the pool, since AKS doesn’t cordon and drain it for you.",
             ],
             [
-              { b: "To keep nodes for some workloads only, taint them." },
+              { b: "To keep nodes for some workloads, taint them." },
               " Use ",
               { code: "NoSchedule" },
-              " and give those workloads the toleration. Add node affinity if they must stay on those nodes too.",
+              " and give those workloads the toleration. Add node affinity if they must stay on those nodes.",
             ],
             [
               {
                 b: [
-                  "To make pods without a toleration leave now, whatever their budgets say, use a ",
+                  "To clear pods off now, whatever their PDBs say, use a ",
                   { code: "NoExecute" },
                   " taint.",
                 ],
               },
-              " They all go at once, and no PDB paces them.",
+              " Every pod without a toleration goes at once.",
             ],
           ],
         },
@@ -467,13 +439,13 @@ export const article: Article = {
     },
     {
       id: "how-coral-cordons-and-drains-nodes",
-      title: "How Coral cordons and drains nodes",
+      title: "How Coral drains nodes",
       blocks: [
         {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and Amazon Elastic Kubernetes Service (EKS). It rebalances CPU and memory requests to what each container uses. Its ",
+            " rebalances CPU and memory requests to what each container uses, on AKS and Amazon Elastic Kubernetes Service (EKS). Its ",
             { a: "node optimization", href: "/coral-guide#consolidation" },
             " then removes the nodes those smaller requests leave spare.",
           ],
@@ -481,9 +453,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "That’s where ",
+            "That is where ",
             { a: "Kubernetes cost optimization", href: "/kubernetes-cost-optimization" },
-            " reduces your cloud cost: fewer machines run. Coral cordons and drains those nodes itself, under six rules:",
+            " reduces your cloud cost: fewer machines run. Coral cordons and drains these nodes itself, without any downtime:",
           ],
         },
         {
@@ -491,61 +463,52 @@ export const article: Article = {
           items: [
             [
               { b: "A fit check first." },
-              " Before it moves anything, Coral checks the live cluster. Every pod on the node must fit on another Ready node, with its affinity, taints, spread, ports and zones. The move must also respect PDBs and do-not-disrupt markers.",
+              " Every pod on the node must fit on another Ready node, with its affinity, taints, spread, ports and zones. The move must also respect PDBs and do-not-disrupt markers.",
             ],
             [
               { b: "One node at a time." },
-              " Coral never cordons or drains nodes in bulk. Where it can, it starts a replacement pod on another node and evicts the old one once the replacement is Ready. Otherwise it evicts within the pod’s PDB.",
+              " Coral never drains nodes in bulk. A drain that can’t finish in time puts the node back into service.",
             ],
             [
-              { b: "A time limit." },
-              " If a drain can’t finish in time, the node goes back into service.",
+              { b: "Pods move the first way that works." },
+              " Warm handover starts a replacement on another node and evicts the old pod once the new one is Ready. Live migration checkpoints the pod and restores it on the other node, where both nodes support it. Otherwise Coral evicts the pod within its PDB.",
             ],
             [
               { b: "Your cordons stay yours." },
-              " Coral skips cordoned, NotReady and deleting nodes. It never drains a node someone else cordoned.",
+              " Coral skips cordoned, NotReady and deleting nodes, and never drains a node someone else cordoned.",
             ],
             [
               { b: "The empty node." },
-              " After the delay in the “Wait before removing empty nodes” setting, Coral hands the node to your autoscaler. The autoscaler’s own timers decide when it goes. Coral deletes the machine itself only in fixed-size pools that nothing else manages.",
+              " After the “Wait before removing empty nodes” delay, Coral hands the node to your autoscaler, whose own timers decide when it goes. Coral deletes the machine itself only in fixed-size pools that nothing else manages.",
             ],
             [
               { b: "The pool minimum." },
-              " By default, Coral may reduce a pool’s minimum when that minimum alone keeps a node it has emptied, and disconnect puts the old minimum back.",
+              " By default, Coral may reduce a pool’s minimum when that minimum alone keeps an emptied node. Disconnecting Coral puts the old minimum back.",
             ],
           ],
         },
-        { kind: "h3", id: "when-a-pod-still-restarts", title: "When a pod still restarts" },
         {
           kind: "p",
           text: [
-            "When a node is removed, a pod whose replacement can’t start first gets a short restart. Marking it ",
+            "A pod marked ",
             { a: "do-not-disrupt", href: "/learn/safe-to-evict-do-not-disrupt" },
-            " prevents that, at the cost of keeping its node.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "On our own AKS development cluster on 6 October, Coral removed a spare 4-CPU worker on its own in under 10\u00a0minutes. Apps that run a single copy restarted once on another machine. Every app was running again afterwards, as ",
-            { a: "the Coral Value Lab study", href: "/coral-value-lab" },
-            " shows.",
+            " is never moved, and Coral keeps its node.",
           ],
         },
         { kind: "h3", id: "rebalancing-and-upgrades", title: "Rebalancing and upgrades" },
         {
           kind: "p",
-          text: "Rebalancing replaces the nodes you choose with cheaper machines, and it never goes past a PDB. Each replacement copy must stay Ready and serving, with no restarts, before the old one goes. A node that can’t be emptied in time is kept.",
+          text: "Rebalancing replaces the nodes you choose with cheaper machines, and it never goes past a PDB. Each new copy must be Ready and serving before the old one goes. A node that can’t be emptied in time is kept.",
         },
         {
           kind: "p",
           text: [
-            "Upgrades cordon and drain nodes of their own. During the upgrade window, we recommend pausing node optimization and the Evictor, the part of Coral that moves pods off lightly used nodes. ",
+            "Upgrades cordon and drain nodes of their own. During the upgrade window, we recommend pausing node optimization and the Evictor, which moves pods off lightly used nodes. ",
             {
               a: "The Coral FAQ",
               href: "/coral-faq#during-cluster-upgrades-is-optimization-paused",
             },
-            " explains how optimization steps around an upgrade.",
+            " explains how Coral steps around an upgrade.",
           ],
         },
       ],
@@ -553,7 +516,7 @@ export const article: Article = {
   ],
   help: {
     product: "coral",
-    text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and removes the nodes you don’t need. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and removes the nodes you don’t need, without any downtime. We estimate it reduces AKS and EKS cost by 40–50%, a range rather than a promise. The free assessment works out your own figure.",
     links: [
       { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Estimate your saving", href: "/assessment?p=coral" },
@@ -582,6 +545,11 @@ export const article: Article = {
     },
     {
       publisher: "Kubernetes",
+      title: "“Assigning Pods to Nodes”",
+      url: "https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/",
+    },
+    {
+      publisher: "Kubernetes",
       title: "“Disruptions”",
       url: "https://kubernetes.io/docs/concepts/workloads/pods/disruptions/",
     },
@@ -603,27 +571,27 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "How to drain a Kubernetes node without downtime",
+      title: "kubectl drain without any downtime",
       where: "Learn",
       href: "/learn/kubernetes-drain-node-without-downtime",
     },
     {
-      title: "Pod disruption budget best practices for AKS and EKS",
+      title: "Kubernetes taints and tolerations",
+      where: "Learn",
+      href: "/learn/kubernetes-taints-and-tolerations",
+    },
+    {
+      title: "Pod disruption budget best practices",
       where: "Learn",
       href: "/learn/pod-disruption-budget-best-practices",
     },
     {
-      title: "The safe-to-evict and do-not-disrupt annotations explained",
+      title: "Karpenter do-not-disrupt vs safe-to-evict",
       where: "Learn",
       href: "/learn/safe-to-evict-do-not-disrupt",
     },
     {
-      title: "Kubernetes descheduler: what it moves and when to use it",
-      where: "Learn",
-      href: "/learn/kubernetes-descheduler",
-    },
-    {
-      title: "Cluster Autoscaler not scaling down: what keeps nodes running",
+      title: "Cluster Autoscaler not scaling down",
       where: "Learn",
       href: "/learn/cluster-autoscaler-not-scaling-down",
     },

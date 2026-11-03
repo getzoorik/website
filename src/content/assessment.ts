@@ -6,10 +6,7 @@ import type { ProductId } from "@/content/products";
 /**
  * `/assessment`: the hero with its one line under the h1, the product switch and the chosen product's one line to run,
  * What you get (both products' runs and their example reports), What it does, Before you run it (three questions), and
- * After the run. Every string is the mock's, verbatim; W32's (1 Nov 2026) are
- * docs/website-seo/new-pages-2026-11-01/assessment-copy.md's, as written; 2 Nov 2026: the SEO plan sheet's pass (the
- * title and description, the h1, the one line under it, the badge, AWS block storage access and the block storage
- * estimate).
+ * After the run. The layout is the mock's; the words were rewritten on 2 Nov 2026 to the site's plain style.
  *
  * The output is one PDF report. No curl line and no "one Python file" anywhere on the page.
  *
@@ -23,7 +20,7 @@ import type { ProductId } from "@/content/products";
  * The day /assessment's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /assessment's content moves this to that day in the same PR; never the build's date.
  */
-export const assessmentLastUpdated = "2 November 2026";
+export const assessmentLastUpdated = "3 November 2026";
 
 /** One run in What you get: the terminal's lines and the example report under it. */
 export interface AssessmentDemo {
@@ -113,16 +110,16 @@ export type AssessmentQuestion = { readonly title: string } & (
 export const assessmentCopy = {
   /** The page's `<title>` (through the site's template) and description. */
   meta: {
-    title: "Free cloud cost analysis for Azure and AWS",
+    title: "Free cloud cost assessment",
     description:
-      "A free cloud computing cost analysis for AKS, EKS and block storage on Azure and AWS: read-only, in your terminal, one PDF with your estimated saving.",
+      "A free, read-only assessment for AKS, EKS and block storage on Azure and AWS. One command in your terminal, one PDF with your estimated saving.",
   },
   /** The h1; the page's `<title>` is `meta.title`. */
-  title: "Free cloud cost analysis for Kubernetes and block storage",
+  title: "Free cloud cost assessment",
   /** The one line under the h1, before the line to choose. The same on both products. */
-  lead: "One command estimates what you could save, at list price.",
+  lead: "One read-only command estimates your saving at list price.",
   /** Over the switch, set like the lines under the command. */
-  sub: "Choose the assessment you want.",
+  sub: "Choose what to assess.",
   run: {
     bar: "Cloud Shell or your terminal",
     copy: "Copy",
@@ -135,7 +132,7 @@ export const assessmentCopy = {
       { cloud: "azure", runs: [{ text: "az login", code: true }] },
       { text: " or " },
       { cloud: "aws", runs: [{ text: "aws sso login", code: true }] },
-      { text: " in your terminal, or run it directly in Cloud Shell." },
+      { text: " in your terminal, or run it in Cloud Shell." },
     ] as readonly HintPart[],
     /** Then where Cloud Shell keeps the PDF, the menu words bold, each cloud's under its mark. */
     under: [
@@ -202,17 +199,17 @@ export const assessmentCopy = {
       {
         title: "What access does it need?",
         items: [
-          "For AKS, it needs read access to your clusters and the Azure Kubernetes Service Cluster User Role on each.",
-          "For EKS, it needs read-only EKS, EC2 and pricing actions, and an EKS access entry.",
-          "For block storage on Azure, it needs Reader on the subscriptions, plus Run Command for the used-space read.",
-          "For block storage on AWS, it needs read-only EC2, Systems Manager, CloudWatch and pricing actions, plus Systems Manager Run Command for the used-space read.",
+          "AKS: read access to your clusters, and the Azure Kubernetes Service Cluster User Role on each.",
+          "EKS: read-only EKS, EC2 and pricing actions, and an EKS access entry.",
+          "Block storage on Azure: Reader on the subscriptions, plus Run Command for the used-space read.",
+          "Block storage on AWS: read-only EC2, Systems Manager, CloudWatch and pricing actions, plus Systems Manager Run Command for the used-space read.",
         ],
       },
       {
         title: "How is the saving worked out?",
         items: [
-          "For Kubernetes, it sets each container’s request from its peak use and counts the nodes needed. The saving is (nodes today − nodes needed) × hourly list price × 730.",
-          "For block storage, it sizes a pool to the used space on each VM it could read. The saving is the list price of the disks the pool replaces, less the pool’s.",
+          "Kubernetes: it sets each container’s request from its peak use and counts the nodes needed. The saving is (nodes today − nodes needed) × hourly list price × 730 hours.",
+          "Block storage: it sizes a pool to the used space on each VM it can read. The saving is the list price of the disks the pool replaces, less the pool’s.",
         ],
       },
     ] as readonly AssessmentQuestion[],

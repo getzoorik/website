@@ -11,11 +11,10 @@ import "@/styles/topic-page.css";
 
 /**
  * `/aws-cost-optimization`: how to reduce AWS costs, one cost line at a time, and where Coral and Amoeba fit. The
- * Topic template (`TopicPage`), word for word from its checked draft
- * (docs/website-seo/new-pages-2026-11-01/aws-cost-optimization/page.md). Indexed, and prerendered at build like
+ * Topic template (`TopicPage`) with this page's content from `topic-pages.ts`. Indexed, and prerendered at build like
  * every page here: it reads no request data.
  */
-/* Its title goes through the layout's template: "AWS cost optimization: how to reduce AWS costs | Zoorik". */
+/* Its title goes through the layout's template: "AWS cost optimization | Zoorik". */
 export const metadata: Metadata = documentMetadata(
   awsCostOptimizationPage.path,
   awsCostOptimizationPage.meta,

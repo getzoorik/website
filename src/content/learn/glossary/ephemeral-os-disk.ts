@@ -4,30 +4,29 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/ephemeral-o
 export const term: GlossaryTerm = {
   slug: "ephemeral-os-disk",
   term: "Ephemeral OS disk",
-  title: "What is an ephemeral disk? Azure ephemeral OS disks",
-  meta: "An Azure ephemeral OS disk keeps a VM’s OS on its local storage. See what an ephemeral VM gives up, what it costs on AKS, and how to enable it.",
-  h1: "What is an ephemeral disk? Azure ephemeral OS disks",
-  card: "An Azure ephemeral OS disk is an operating system disk on the local storage of its virtual machine (VM).",
+  title: "What is an ephemeral OS disk?",
+  meta: "An Azure ephemeral OS disk keeps a VM’s operating system on local storage. When AKS uses one, what you give up, and what it costs.",
+  h1: "What is an ephemeral OS disk?",
+  card: "An Azure ephemeral OS disk is an operating system disk kept on the virtual machine’s (VM’s) local storage, not in Azure Storage.",
   group: "block-storage",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "An Azure ephemeral OS disk is an operating system disk on the local storage of its virtual machine (VM). It isn’t saved to Azure Storage.",
+      text: "An Azure ephemeral OS disk is an operating system disk kept on the virtual machine’s (VM’s) local storage, not in Azure Storage. It suits stateless apps, with faster reimages and lower read and write latency, but its data can be lost.",
     },
-    {
-      kind: "p",
-      text: "Microsoft calls a VM with one an ephemeral VM. It suits stateless apps that need fast deploys and reimages, and its OS disk has less read and write latency.",
-    },
-    { kind: "p", text: "Azure Kubernetes Service (AKS) uses one by default when it fits." },
   ],
   sections: [
     {
       id: "an-aks-ephemeral-os-disk-that-doesnt",
-      title: "An AKS ephemeral OS disk that doesn’t fit",
+      title: "When AKS uses one",
       blocks: [
+        {
+          kind: "p",
+          text: "Azure Kubernetes Service (AKS) picks an ephemeral OS disk by default when the VM size supports one and the disk fits. Otherwise it uses a managed OS disk.",
+        },
         {
           kind: "p",
           text: "In Microsoft’s example, Standard_E2bds_v5 has 75\u00a0GiB of temporary storage. With the OS disk type unset:",
@@ -44,7 +43,7 @@ export const term: GlossaryTerm = {
         {
           kind: "p",
           text: [
-            "Check the fit before you ",
+            "Ask for Ephemeral when the disk doesn’t fit, and AKS returns a validation error. So check the fit before you ",
             { a: "change an AKS node pool VM size", href: "/learn/change-aks-node-pool-vm-size" },
             ".",
           ],
@@ -83,9 +82,12 @@ export const term: GlossaryTerm = {
         {
           kind: "h3",
           id: "how-to-enable-an-ephemeral-os-disk",
-          title: "How to enable an ephemeral OS disk on AKS",
+          title: "Enable it on AKS",
         },
-        { kind: "p", text: "On AKS, set it when you create a node pool:" },
+        {
+          kind: "p",
+          text: "Set the OS disk type when you create a node pool. You can’t change it later.",
+        },
         {
           kind: "code",
           lang: "bash",
@@ -95,21 +97,18 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why ephemeral OS disks matter for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            "An SSD base disk, which serves some reads, costs extra.",
+            "A managed OS disk is charged on top of each node’s VM price. An ephemeral one is included in it.",
+            "AKS gives larger nodes a larger default managed OS disk. It starts at a 128\u00a0GiB P10 up to 7 virtual CPUs (vCPUs) and reaches a 1,024\u00a0GiB P30 at 64 vCPUs or more.",
+            "An ephemeral OS disk also keeps a base disk in managed disks. Choose Standard SSD or Premium SSD for it, and you pay for that disk.",
             [
-              "AKS gives ",
-              {
-                a: "nodes with more virtual CPUs",
-                href: "/learn/kubernetes-node-size-best-practices",
-              },
-              " a bigger default managed OS disk.",
+              { a: "Coral", href: "/coral" },
+              " rebalances workloads onto fewer nodes, so you pay for fewer VMs and fewer OS disks.",
             ],
-            [{ a: "Coral", href: "/coral" }, " removes the nodes you don’t need."],
           ],
         },
       ],
@@ -118,7 +117,7 @@ export const term: GlossaryTerm = {
   related: [
     {
       title: "Azure temporary disk",
-      line: "Where it often sits.",
+      line: "The local disk it often lives on.",
       href: "/learn/glossary/azure-temporary-disk",
     },
     {
@@ -132,9 +131,9 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/node-pool",
     },
   ],
-  relatedTitle: "Terms related to ephemeral OS disks",
+  relatedTitle: "Related terms",
   next: {
-    title: "Kubernetes node size best practices: large or small nodes",
+    title: "Kubernetes node size best practices",
     href: "/learn/kubernetes-node-size-best-practices",
   },
   sources: [

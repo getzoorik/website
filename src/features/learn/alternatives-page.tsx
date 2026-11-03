@@ -16,7 +16,7 @@ import { LearnProseFrame, versusFactsOf } from "@/features/learn/versus-page";
 
 /**
  * An alternatives page (`/cloud-cost-optimization-library/coral-alternatives` and `…/amoeba-alternatives`): the hero, then How to
- * choose (four questions), then The options: our product first on navy, then each tool in the page's order with its
+ * choose (four questions), then The tools: our product first on navy, then each tool in the page's order with its
  * owner, line, how it acts and clouds, a tool with a live versus page linking to it, and the note with the day it was
  * checked; then, where the page has them (2 Nov 2026), its sections and its questions in the versus pages' Learn
  * frame; then the closing row. Every fact in the list is `learn-market.ts`'s. A server component; only the frame's

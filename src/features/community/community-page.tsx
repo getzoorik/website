@@ -18,7 +18,7 @@ import { offSiteProps } from "@/lib/links";
  *
  *   hero          the page's name and its deck
  *   ours          r/zoorik on the white card and Zoorik News on Medium on the navy one, the closing row's pair (band)
- *   communities   FinOps and cloud cost communities: four groups of three tiles, each with its own logo and its own page
+ *   communities   Cloud cost communities: four groups of three tiles, each with its own logo and its own page
  *                 in a new tab, then the day they were checked and an address to suggest one
  *   more          More from Zoorik: /events and /design-partners
  *   closing row   the site's assessment row, as every Learn page ends
