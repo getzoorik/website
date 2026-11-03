@@ -4,83 +4,85 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/disk-snapsh
 export const term: GlossaryTerm = {
   slug: "disk-snapshot",
   term: "Disk snapshot (Azure managed disk and EBS)",
-  title: "AWS snapshots and Azure disk snapshots explained",
-  meta: "An Amazon EBS snapshot or an Azure disk snapshot is a point-in-time copy of one disk. See how each is stored and charged, and what an Azure VM snapshot covers.",
-  h1: "AWS snapshots and Azure disk snapshots explained",
-  card: "For disks, a snapshot in AWS is an EBS snapshot, a point-in-time copy of one volume.",
+  title: "What is a snapshot in AWS and Azure?",
+  meta: "A disk snapshot in AWS is an EBS snapshot: a point-in-time copy of one volume. How EBS and Azure disk snapshots work, and what they cost.",
+  h1: "What is a snapshot in AWS and Azure?",
+  card: "A disk snapshot in AWS is an Amazon EBS snapshot: a point-in-time copy of one volume.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-26",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "For disks, a snapshot in AWS is an EBS snapshot, a point-in-time copy of one volume. You can keep it as a backup, or create a new volume from it. An Azure disk snapshot does the same for one managed disk.",
+      text: "A disk snapshot in AWS is an Amazon EBS snapshot: a point-in-time copy of one volume. An Azure disk snapshot does the same for one managed disk. You keep a snapshot as a backup, or create a new disk from it.",
     },
   ],
   sections: [
     {
       id: "azure-snapshots-and-ebs-snapshots",
-      title: "Azure snapshots and EBS snapshots",
+      title: "How snapshots work",
       blocks: [
+        { kind: "h3", id: "ebs-snapshots", title: "EBS snapshots" },
         {
           kind: "ul",
           items: [
-            "A snapshot in Azure is a read-only copy of a single managed disk, OS or data.",
-            "The first EBS snapshot in AWS saves every block written to the volume. Later ones save only new or changed blocks.",
-            "AWS stores them in Amazon S3. Each can become a new volume in any Availability Zone of its Region.",
+            "The first snapshot of a volume is full: it copies every block written to the volume.",
+            "Later ones are incremental: they copy only new and changed blocks.",
+            "AWS stores them in Amazon S3. You can restore one to a new volume in any Availability Zone of its Region.",
+          ],
+        },
+        { kind: "h3", id: "azure-disk-snapshots", title: "Azure disk snapshots" },
+        {
+          kind: "ul",
+          items: [
+            "A snapshot is a read-only copy of one managed disk, OS or data. It’s crash-consistent: it holds what a sudden crash would leave on the disk.",
+            "A full snapshot copies the whole disk. An incremental one copies only the changes since the last snapshot, after a first full copy.",
+            "Incremental snapshots always use Standard HDD storage. Full ones can use Premium SSD, which costs more.",
           ],
         },
       ],
     },
     {
       id: "snapshots-of-an-azure-vm",
-      title: "Azure VM snapshots: one snapshot per disk",
+      title: "Azure VM snapshots",
       blocks: [
         {
           kind: "p",
-          text: "A snapshot copies one disk, not a whole virtual machine (VM). Say a VM has an OS disk and two data disks. That takes three snapshots.",
+          text: "A snapshot copies one disk, not a whole virtual machine (VM). A VM with an OS disk and two data disks takes three snapshots.",
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
-          text: "Azure doesn’t coordinate them, so they don’t suit striped disks. Each is crash-consistent: it holds what a crash would leave on the disk.",
+          text: "Azure doesn’t coordinate snapshots across disks, so they don’t suit striped disks.",
         },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why disk snapshots matter for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
             "Azure charges for a snapshot’s used size. A snapshot of a 64\u00a0GiB disk holding 10\u00a0GiB is charged for 10\u00a0GiB.",
-            [
-              "AWS charges for the data an ",
-              { a: "EBS snapshot", href: "/learn/ebs-snapshot-cost" },
-              " stores.",
-            ],
-            "A forgotten snapshot is charged until it’s deleted.",
+            "AWS charges for the data a snapshot stores. A first snapshot of a 200\u00a0GiB volume holding 50\u00a0GiB is charged for 50\u00a0GiB.",
+            "Deleting an EBS snapshot may not reduce the cost, because other snapshots can still use its data.",
+            "A forgotten snapshot is charged until you delete it.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            { a: "Azure snapshot pricing", href: "/learn/azure-disk-snapshot-cost" },
+            " compares incremental and full snapshots.",
           ],
         },
         {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " moves a VM’s data disks onto one btrfs pool sized to your data, then rightsizes it autonomously.",
-          ],
-        },
-        {
-          kind: "p",
-          text: "Once the switch to the pool is checked, Amoeba snapshots each old disk and deletes the disk. Amoeba keeps each snapshot for a few days, then deletes it too.",
-        },
-        {
-          kind: "p",
-          text: [
-            "The ",
-            { a: "free assessment", href: "/assessment?p=amoeba" },
-            " estimates your own saving.",
+            " moves a VM’s data disks onto one btrfs pool sized to your data, then rightsizes it autonomously. Once the switch to the pool is checked, it snapshots each old disk, then deletes the disk. It keeps each snapshot for 7\u00a0days, and you pay for it until then.",
           ],
         },
       ],
@@ -99,15 +101,12 @@ export const term: GlossaryTerm = {
     },
     {
       title: "Azure Standard HDD",
-      line: "The storage type Azure suggests for most snapshots.",
+      line: "Where Azure suggests keeping most snapshots.",
       href: "/learn/glossary/azure-standard-hdd",
     },
   ],
-  relatedTitle: "Disk terms related to snapshots",
-  next: {
-    title: "Azure disk snapshot cost: incremental vs full snapshots",
-    href: "/learn/azure-disk-snapshot-cost",
-  },
+  relatedTitle: "Related terms",
+  next: { title: "AWS snapshot pricing", href: "/learn/ebs-snapshot-cost" },
   sources: [
     {
       publisher: "Microsoft Learn",
@@ -118,6 +117,11 @@ export const term: GlossaryTerm = {
       publisher: "Microsoft Learn",
       title: "“Create a snapshot of an Azure managed disk”",
       url: "https://learn.microsoft.com/en-us/azure/virtual-machines/snapshot-copy-managed-disk",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“Create an incremental snapshot”",
+      url: "https://learn.microsoft.com/en-us/azure/virtual-machines/disks-incremental-snapshots",
     },
     {
       publisher: "AWS",

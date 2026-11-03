@@ -5,79 +5,75 @@ import { figure as figure3 } from "@/features/learn/figures/azure-disk-lrs-vs-zr
 
 export const article: Article = {
   slug: "azure-disk-lrs-vs-zrs",
-  title: "Azure LRS vs ZRS disks: what zone redundancy costs",
-  meta: "Azure LRS keeps three disk copies in one datacenter, ZRS in three zones: what a zone outage does, why ZRS costs 1.5 times LRS in most regions, which to pick.",
-  h1: "Azure LRS vs ZRS for managed disks: what zone redundancy costs",
-  deck: "ZRS keeps data available through a zone outage, at 1.5 times LRS list prices in most regions (October 2026).",
-  card: "LRS and ZRS managed disks side by side: copies, zone outages, list prices, converting, and when LRS is enough.",
+  title: "Azure LRS vs ZRS disks: cost and zone outages",
+  meta: "Azure LRS keeps a managed disk’s three copies in one datacenter; ZRS spreads them over three zones. What each costs, what an outage does, which to pick.",
+  h1: "Azure LRS vs ZRS for managed disks",
+  deck: "ZRS keeps a disk’s data available through a zone outage, at 1.5 times the LRS list price in most regions.",
+  card: "Where each keeps its copies, what a zone outage does, the price gap, and how to convert.",
   product: "amoeba",
   hub: "Block storage",
   topic: "Azure block storage",
   versus: ["LRS", "ZRS"],
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "harsh",
   cover: "/learn-covers/zoorik-learn-azure-disk-lrs-vs-zrs-1200x630.webp",
   coverAlt:
     "Azure disk LRS vs ZRS: LRS keeps the copies in one datacenter, ZRS spreads them across zones at a higher price",
   short: [
-    "Locally redundant storage (LRS) keeps a ",
+    "Locally redundant storage (LRS) is the default for an Azure ",
     { a: "managed disk", href: "/learn/glossary/azure-managed-disk" },
-    "’s three copies in one datacenter, and zone-redundant storage (ZRS) keeps them in three availability zones. ZRS adds write latency, so buy it only where nothing else carries your data through a zone outage.",
+    ": three copies in one datacenter. Zone-redundant storage (ZRS) writes the copies across three availability zones, so the data stays available through a zone outage, with slower writes. Pay for ZRS only where nothing else, such as the application’s own replication, keeps that data available.",
   ],
   sections: [
     {
       id: "where-lrs-and-zrs-keep-your-three",
-      title: "Where LRS and ZRS keep your three copies",
+      title: "Where the copies live",
       blocks: [
         {
           kind: "p",
-          text: "Picture a VM in zone 1 of East US with four 512\u00a0GiB Premium SSD data disks. At October 2026 list prices, ZRS adds $146.36 a month to them.",
-        },
-        {
-          kind: "p",
-          text: "In return, if zone 1 goes down, ZRS data stays available from the other two zones. Zonal LRS disks in zone 1 are unavailable until it recovers.",
-        },
-        {
-          kind: "p",
-          text: "A zone is a physically separate group of datacenters inside a region.",
+          text: "A zone is a physically separate group of datacenters in a region, with its own power, cooling and networking. Both options keep three copies of a disk. They differ in where the copies sit.",
         },
         {
           kind: "h3",
           id: "lrs-three-copies-in-one-datacenter",
-          title: "What LRS is in Azure: three copies in one datacenter",
+          title: "LRS in Azure",
         },
         {
           kind: "p",
-          text: "LRS is the default. It writes all three copies synchronously inside a single datacenter. Microsoft states at least 99.999999999% (11 nines) of durability over a year for it.",
+          text: "LRS is the default and costs the least. It writes all three copies synchronously inside one datacenter. Microsoft states at least 99.999999999% (11 nines) of durability a year.",
         },
         {
           kind: "p",
-          text: "LRS protects against drive and server rack failures. In Microsoft’s words, it “doesn’t account for disasters such as fire or flooding within a datacenter.”",
+          text: "LRS protects against drive and server rack failures. It doesn’t cover a disaster such as a fire or flood inside that datacenter.",
         },
         {
           kind: "p",
-          text: "An LRS disk comes in two forms, charged at the same rate. A zonal LRS disk is pinned to one zone and attaches only to VMs in that zone. A regional (nonzonal) disk is created without a zone, and Azure may place it in any zone.",
+          text: "An LRS disk is zonal or regional, at the same price. A zonal disk is pinned to one zone and attaches only to VMs in that zone. A regional (nonzonal) disk has no zone set, and Azure may place it in any zone.",
+        },
+        {
+          kind: "p",
+          text: "Managed disks offer only LRS and ZRS. The geo-redundant options of storage accounts, GRS and GZRS, don’t apply to them.",
         },
         {
           kind: "h3",
           id: "zrs-copies-in-three-zones",
-          title: "What ZRS is in Azure: copies in three zones",
+          title: "ZRS in Azure",
         },
         {
           kind: "p",
-          text: "ZRS replicates the disk synchronously across three zones. Each zone has its own power, cooling and networking. Microsoft states at least 12 nines for it.",
+          text: "ZRS replicates the disk synchronously across three zones. Microsoft states at least 12 nines of durability a year.",
         },
         {
           kind: "p",
-          text: "A write completes only after the data is stored in multiple zones, which adds write latency. Microsoft gives no latency figure and advises benchmarking your workload on both.",
+          text: "A write completes only once the data is stored in more than one zone, which adds write latency. Microsoft gives no latency figure and advises benchmarking your workload on both.",
         },
         {
           kind: "p",
           text: [
-            "Otherwise, Microsoft says ZRS disks “are identical to disks using LRS”. They have the same scale targets, so a ",
+            "Apart from write latency, Microsoft says ZRS disks “are identical to disks using LRS”, with the same scale targets. A ",
             { a: "Premium SSD", href: "/learn/glossary/azure-premium-ssd" },
-            " P20 gets the same IOPS and throughput either way.",
+            " P20 gets the same IOPS and throughput on either.",
           ],
         },
         { kind: "svg", figure: figure1 },
@@ -85,31 +81,31 @@ export const article: Article = {
     },
     {
       id: "in-a-zone-outage-lrs-waits-and",
-      title: "In a zone outage, LRS waits and ZRS keeps the data",
+      title: "In a zone outage",
       blocks: [
         {
           kind: "p",
-          text: "When the outage hits a zonal LRS disk’s zone, all three copies are inside it. Microsoft says a single zonal LRS disk is unavailable until the zone recovers. The data isn’t lost, and it can be recovered once the zone is back.",
+          text: "A zonal LRS disk keeps all three copies in its own zone. If that zone goes down, the disk is unavailable until the zone recovers. The data isn’t lost, and the disk comes back with the zone.",
         },
         {
           kind: "p",
-          text: "With a single VM, spotting the outage is your job. So is moving traffic to another VM, if any. Microsoft doesn’t notify you when a zone goes down, though Azure Resource Health and Service Health alerts can.",
+          text: "With a single VM, detecting the outage and moving traffic to another VM are your job. Microsoft doesn’t notify you when a zone goes down, but Resource Health and Service Health alerts can.",
         },
-        { kind: "p", text: "With ZRS, the outcome depends on what the outage reaches:" },
+        { kind: "p", text: "With ZRS, the result depends on what the outage reaches:" },
         {
           kind: "ul",
           items: [
             [
               { b: "The VM stays healthy." },
-              " Only the disk’s storage in one zone is affected. Azure redirects disk operations to the healthy zones, and the VM keeps running.",
+              " Azure redirects disk operations to the healthy zones, and the VM keeps running.",
             ],
             [
               { b: "The VM fails." },
-              " ZRS keeps the data available but doesn’t move the VM. You force detach the disk, which works on data disks only, and attach it to a VM in a healthy zone.",
+              " The data stays available, but the VM doesn’t move. Force detach the disk, which works on data disks only, and attach it to a VM in a healthy zone.",
             ],
             [
               { b: "The disk is shared." },
-              " Take a shared ZRS disk attached to a primary VM and a secondary VM in different zones. When the primary’s zone fails, the disk is already available to the secondary. For that disk, Microsoft expects the failover to run without any data loss or downtime.",
+              " When the primary VM’s zone fails, a shared ZRS disk is already available to a secondary VM in another zone. Microsoft expects no data loss and no downtime.",
             ],
           ],
         },
@@ -125,42 +121,38 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "You still need a second VM, or a plan to create one, to keep serving the data.",
+          text: "You still need a second VM, or a plan to create one, to serve the data.",
         },
         { kind: "svg", figure: figure2 },
       ],
     },
     {
       id: "azure-lrs-vs-zrs-pricing-1-5",
-      title: "Azure LRS vs ZRS pricing: 1.5 times in most regions",
+      title: "LRS vs ZRS pricing",
       blocks: [
         {
           kind: "p",
-          text: "Microsoft’s reliability guide says ZRS “incurs a higher cost than LRS”, by an amount that varies by region and disk type. The Azure Retail Prices API, Microsoft’s unauthenticated source of list prices, shows how much.",
+          text: "Microsoft says ZRS costs more than LRS, by an amount that varies by region and disk type. The Azure Retail Prices API, Microsoft’s public list of prices, shows the gap.",
         },
         {
           kind: "p",
-          text: "In October 2026, 42 regions list a P20 ZRS disk. Of those, 40 price it at 1.5 times the P20 LRS disk. Only Japan West and New Zealand North differ.",
-        },
-        {
-          kind: "p",
-          text: "Standard SSD’s E20 shows the same 1.5 in 39 of 41 regions. Every other tier from P1 to P80 and E1 to E80 does the same, with one to four exceptions each.",
+          text: "In October 2026, 40 of the 42 regions that list a Premium SSD P20 on ZRS price it at 1.5 times the LRS disk. Only Japan West and New Zealand North differ. Standard SSD E20 matches in 39 of 41. Every other tier, P1 to P80 and E1 to E80, shows 1.5 in all but one to four regions.",
         },
         {
           kind: "h3",
           id: "most-regions-list-zrs-at-1-5",
-          title: "What ZRS adds to four P20 disks in East US",
+          title: "Example: four P20 disks",
         },
         {
           kind: "callout",
           label: "Worked example",
-          text: "Here is Premium SSD LRS vs ZRS for the opening’s VM, at East US pay-as-you-go list prices. A 512\u00a0GiB P20 costs $73.22 a month on LRS and $109.81 on ZRS: $109.81 ÷ $73.22 = 1.50.",
+          text: "A VM in East US has four 512 GiB Premium SSD (P20) data disks. At pay-as-you-go list prices, a P20 costs $73.22 a month on LRS and $109.81 on ZRS: $109.81 ÷ $73.22 = 1.50.",
         },
         {
           kind: "p",
-          text: "Four disks cost 4 × $73.22 = $292.88 a month on LRS. On ZRS they cost 4 × $109.81 = $439.24. Converting all four adds $439.24 − $292.88 = $146.36 a month, or 12 × $146.36 = $1,756.32 a year.",
+          text: "Four disks cost 4 × $73.22 = $292.88 a month on LRS, and 4 × $109.81 = $439.24 on ZRS. ZRS adds $439.24 − $292.88 = $146.36 a month, or 12 × $146.36 = $1,756.32 a year.",
         },
-        { kind: "p", text: "A single 1,024\u00a0GiB P30 goes from $135.17 to $202.73 a month." },
+        { kind: "p", text: "A single 1,024 GiB P30 goes from $135.17 to $202.73 a month." },
         {
           kind: "p",
           text: [
@@ -173,36 +165,36 @@ export const article: Article = {
         {
           kind: "h3",
           id: "reservations-shared-disks-and-snapshots",
-          title: "Reservations, shared disks and snapshots",
+          title: "Reservations, shared disks, snapshots",
         },
         {
           kind: "ul",
           items: [
             [
               { b: "Reservations." },
-              " The Retail Prices API lists one-year disk reservations for Premium SSD P30 to P80 on LRS. It lists none for any ZRS SKU.",
+              " The Retail Prices API lists one-year reservations for Premium SSD P30 to P80 on LRS, and none for ZRS.",
             ],
             [
               { b: "Shared disks." },
-              " Each extra mount of a shared Premium SSD has a monthly charge. The pricing page says shared disk pricing is the same for LRS and ZRS.",
+              " Each extra mount of a shared Premium SSD has a monthly charge, the same on LRS and ZRS.",
             ],
             [
               { b: "Snapshots." },
               " ",
               { a: "Incremental snapshots", href: "/learn/azure-disk-snapshot-cost" },
-              " always sit on Standard HDD storage. There, LRS and ZRS snapshots cost the same: $0.05 per GB a month in East US, charged on the data they hold.",
+              " sit on Standard HDD storage. LRS and ZRS snapshots cost the same there: $0.05 per GB a month in East US, on the data they hold.",
             ],
           ],
         },
         {
           kind: "p",
           text: [
-            "Disk type is a separate choice, covered in ",
+            "Disk type and performance are separate choices: see ",
             {
               a: "Premium SSD vs Standard SSD on Azure",
               href: "/learn/premium-ssd-vs-standard-ssd-azure",
             },
-            ". So is raising IOPS with ",
+            " and ",
             { a: "performance tiers", href: "/learn/azure-disk-performance-tiers" },
             ".",
           ],
@@ -211,47 +203,41 @@ export const article: Article = {
     },
     {
       id: "which-azure-managed-disks-can-use-zrs",
-      title: "Which Azure managed disks can use ZRS",
+      title: "Which disks support ZRS",
       blocks: [
         {
           kind: "p",
           text: [
-            "Only two of the five disk types offer ZRS. A Premium SSD ZRS disk uses the SKU ",
+            "Only Premium SSD (SKU ",
             { code: "Premium_ZRS" },
-            ", and a Standard SSD one uses ",
+            ") and Standard SSD (",
             { code: "StandardSSD_ZRS" },
-            ". Premium SSD v2, Ultra Disk and Standard HDD are LRS only.",
+            ") offer ZRS. Premium SSD v2, Ultra Disk and Standard HDD are LRS only.",
           ],
         },
         {
           kind: "p",
           text: [
-            "So if you’re weighing ",
+            "So moving from ",
             {
-              a: "Premium SSD v2 against Premium SSD",
+              a: "Premium SSD to Premium SSD v2",
               href: "/learn/premium-ssd-v2-vs-premium-ssd",
             },
-            ", the move gives up ZRS. For the LRS-only types, Microsoft’s route to zone resilience is several VMs in different zones, each with its own zonal LRS disks.",
+            " gives up ZRS. For LRS-only disks, Microsoft’s route to zone resilience is several VMs in different zones, each with its own zonal disks.",
           ],
         },
         {
           kind: "p",
-          text: "A ZRS managed disk needs a region with availability zones, and Microsoft says every such region offers one. In October 2026, the Retail Prices API lists a P20\u00a0disk on LRS in 66 regions and on ZRS in 42.",
+          text: "ZRS needs a region with availability zones, and Microsoft says every such region offers it. In October 2026, the Retail Prices API lists a P20 disk on LRS in 66 regions and on ZRS in 42.",
         },
         {
           kind: "p",
           text: [
-            "To see which of your disks are ZRS, list them with their SKU. A ",
+            "To check your disks, list them with their SKU: a ",
             { code: "_ZRS" },
-            " suffix means zone-redundant.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "For an LRS disk, ",
+            " suffix means zone-redundant. For an LRS disk, ",
             { code: "az disk show" },
-            " tells you which form it is. No value in ",
+            " shows whether it is zonal or regional. No value in ",
             { code: "zones" },
             " means a regional disk, and a zone number means a zonal one.",
           ],
@@ -265,19 +251,19 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "The AKS storage class guide", href: "/learn/aks-storage-classes" },
-            " explains when a built-in Kubernetes class creates a ZRS disk instead of LRS.",
+            " explains when a built-in Kubernetes class creates a ZRS disk.",
           ],
         },
       ],
     },
     {
       id: "how-to-convert-a-disk-from-lrs",
-      title: "How to convert a disk from LRS to ZRS",
+      title: "Convert LRS to ZRS",
       blocks: [
         {
           kind: "p",
           text: [
-            "The route depends on the disk’s form, regional or zonal, as ",
+            "The route depends on whether the disk is regional or zonal, as ",
             { code: "az disk show" },
             " reports.",
           ],
@@ -285,15 +271,15 @@ export const article: Article = {
         {
           kind: "h3",
           id: "a-regional-disk-changes-type-in-place",
-          title: "A regional disk changes type in place",
+          title: "Regional disk: change in place",
         },
         {
           kind: "p",
-          text: "Changing the type needs the VM deallocated. Microsoft calls the change itself instantaneous. A disk’s type can change twice a day.",
+          text: "The VM must be deallocated, which stops its services until you start it again. Microsoft calls the change itself instantaneous. A disk’s type can change twice a day.",
         },
         {
           kind: "ol",
-          items: ["Deallocate the VM. That stops its services until you start it again."],
+          items: ["Deallocate the VM."],
         },
         {
           kind: "code",
@@ -321,21 +307,21 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Microsoft’s disk type conversion guide says the same steps work in reverse, with ",
+            "The same steps work in reverse, with ",
             { code: "Premium_LRS" },
             " or ",
             { code: "StandardSSD_LRS" },
-            ". A ZRS disk’s zone configuration can’t change, though. Moving its data onto a zonal disk means a new disk created from a snapshot.",
+            ". A ZRS disk’s zone setting can’t change, though. Moving its data to a zonal disk takes a new disk created from a snapshot.",
           ],
         },
         {
           kind: "h3",
           id: "a-zonal-disk-is-copied-through-a",
-          title: "A zonal disk is copied through a snapshot",
+          title: "Zonal disk: copy via snapshot",
         },
         {
           kind: "p",
-          text: "A zonal LRS disk can’t be converted to ZRS directly. Microsoft’s LRS to ZRS guide has you copy it:",
+          text: "A zonal LRS disk can’t change to ZRS in place. Microsoft’s LRS to ZRS guide has you copy it instead:",
         },
         {
           kind: "ol",
@@ -352,73 +338,57 @@ export const article: Article = {
         { kind: "ol", start: 3, items: ["Create a new VM with the new disks."] },
         {
           kind: "p",
-          text: "You pay for the old disks, next to the new ones, until you delete them.",
+          text: "You keep paying for the old disks until you delete them.",
         },
       ],
     },
     {
       id: "azure-disk-lrs-vs-zrs",
-      title: "Azure disk LRS vs ZRS: when ZRS is worth paying for",
+      title: "Which to choose",
       blocks: [
         {
           kind: "table",
           columns: [
-            { label: "What you decide on", width: "30%" },
+            { label: "What differs", width: "30%" },
             { label: "LRS", width: "30%" },
             { label: "ZRS", width: "40%" },
           ],
           rows: [
-            [
-              "Where the three copies live",
-              "One datacenter",
-              "Three availability zones, written synchronously",
-            ],
+            ["Where the three copies live", "One datacenter", "Three availability zones"],
             ["Durability Microsoft states", "At least 11 nines a year", "At least 12 nines a year"],
             [
               "In a zone outage",
-              "A zonal LRS disk is unavailable until the zone recovers",
-              "The data stays available; a data disk can be force detached and attached to a VM in a healthy zone",
+              "A zonal disk is unavailable until the zone recovers",
+              "The data stays available; a data disk can move to a VM in a healthy zone",
             ],
             ["Writes", "Less latency", "More latency"],
             ["IOPS and throughput", "Set by the disk’s tier", "The same as LRS for that tier"],
             ["Disk types", "All five", "Premium SSD and Standard SSD"],
-            [
-              "Regions",
-              "Wherever managed disks run (LRS is the default)",
-              "Regions with availability zones",
-            ],
-            [
-              "512\u00a0GiB Premium SSD (P20), East US, Oct 2026",
-              "$73.22 a month",
-              "$109.81 a month",
-            ],
-            [
-              "512\u00a0GiB Standard SSD (E20), East US, Oct 2026",
-              "$38.40 a month",
-              "$57.60 a month",
-            ],
+            ["Regions", "Every managed disk region", "Regions with availability zones"],
+            ["512 GiB Premium SSD (P20), East US, Oct 2026", "$73.22 a month", "$109.81 a month"],
+            ["512 GiB Standard SSD (E20), East US, Oct 2026", "$38.40 a month", "$57.60 a month"],
             ["One-year disk reservations", "P30 to P80", "None listed"],
           ],
         },
         {
           kind: "p",
-          text: "Microsoft recommends ZRS for the best reliability, and calls it appropriate in two cases. One is a workload that can’t write synchronously to two zones at the application level. The other is an application that must meet a zero recovery point objective (RPO), the amount of recent data you can afford to lose.",
+          text: "Microsoft recommends ZRS for the best reliability. It calls ZRS appropriate when the application can’t replicate synchronously across zones, or must meet a zero recovery point objective (RPO): no lost writes.",
         },
-        { kind: "h3", id: "which-disks-go-on-which", title: "Which disks go on which" },
+        { kind: "h3", id: "which-disks-go-on-which", title: "Which disks go where" },
         {
           kind: "ul",
           items: [
             [
               { b: "ZRS for a single VM" },
-              " whose data must stay available through a zone outage, with no lost writes. Choose it when nothing in the application copies the data to another zone.",
+              " whose data must stay available through a zone outage, when nothing in the application copies it to another zone.",
             ],
             [
               { b: "ZRS for a shared disk" },
               " behind a cluster spread over zones, such as a SQL Server failover cluster instance or SAP ASCS/SCS.",
             ],
             [
-              { b: "LRS when the application already replicates across zones." },
-              " SQL Server Always On is Microsoft’s example. Microsoft calls VMs with zonal LRS disks in each zone the most common high-availability setup for web servers, application tiers and database clusters.",
+              { b: "LRS when the application replicates across zones," },
+              " as SQL Server Always On does. Microsoft calls VMs with zonal LRS disks in each zone the most common high-availability setup for web servers, application tiers and database clusters.",
             ],
             [
               { b: "LRS when the data can be rebuilt or restored," },
@@ -426,23 +396,23 @@ export const article: Article = {
             ],
             [
               { b: "LRS with snapshots" },
-              " when losing the writes since your last snapshot is acceptable. Microsoft lists frequent ZRS snapshots as one way to protect an LRS disk. Incremental snapshots use ZRS automatically where the region offers it. Each one after the first holds only the changes since the last.",
+              " when losing the writes since the last snapshot is acceptable. Microsoft lists frequent ZRS snapshots as one way to protect an LRS disk. Incremental snapshots use ZRS automatically where the region offers it, and after the first, each holds only the changes since the last.",
             ],
             [
               { b: "LRS with Azure Site Recovery" },
-              " for cross-zone disaster recovery. Microsoft notes it doesn’t give a zero RPO.",
+              " for cross-zone disaster recovery, which doesn’t give a zero RPO.",
             ],
           ],
         },
         {
           kind: "callout",
           label: "Rule of thumb",
-          text: "In most regions an LRS disk costs two-thirds of the same disk on ZRS. So keep ZRS for the two ZRS cases, and put the rest on LRS.",
+          text: "In most regions an LRS disk costs two-thirds of the same disk on ZRS. Keep ZRS for the two ZRS cases above, and put the rest on LRS.",
         },
         {
           kind: "p",
           text: [
-            "The provisioned size is the other lever on a disk’s price, covered in ",
+            "Provisioned size is the other lever on a disk’s price: see ",
             {
               a: "Azure managed disk cost optimization",
               href: "/azure-managed-disk-cost-optimization",
@@ -460,27 +430,27 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " optimizes block storage on Azure and AWS, and every pool it builds is locally redundant. Data on ZRS disks moves to an LRS pool. It loses zone redundancy and keeps the drive and rack protection of LRS.",
+            " rightsizes block storage on Azure and AWS, and every pool it builds is locally redundant. Data on ZRS disks moves to an LRS pool. It keeps the drive and rack protection of LRS and loses zone redundancy.",
           ],
         },
         {
           kind: "p",
-          text: "On Azure, the pool uses Premium SSD v2 where your VM’s region and zone offer it, and Premium SSD otherwise.",
+          text: "On Azure, the pool uses Premium SSD v2 where the VM’s region and zone offer it, and Premium SSD otherwise.",
         },
         {
           kind: "p",
-          text: "A move only goes forward. Once the switch is checked, Amoeba snapshots each old disk, deletes the disk, and keeps the snapshot for a few days before deleting it too.",
+          text: "A move only goes forward. Once the switch is checked, Amoeba snapshots each old disk, deletes the disk, and keeps the snapshot for 7 days before deleting it too.",
         },
         {
           kind: "p",
-          text: "Amoeba acts only on the VMs you onboard. Onboard those whose data can live in one zone, such as data the application already replicates across zones, or data you can rebuild. Leave a VM off if its ZRS disks are what carries it through a zone outage.",
+          text: "Amoeba acts only on the VMs you onboard. Onboard those whose data can live in one zone, such as data the application replicates across zones, or data you can rebuild. Leave a VM off if its ZRS disks are what carries it through a zone outage.",
         },
       ],
     },
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
@@ -496,6 +466,11 @@ export const article: Article = {
       publisher: "Microsoft Learn",
       title: "“Reliability in Azure Disk Storage”",
       url: "https://learn.microsoft.com/en-us/azure/reliability/reliability-storage-disk",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“Data redundancy - Azure Storage”",
+      url: "https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy",
     },
     {
       publisher: "Microsoft Learn",
@@ -530,17 +505,17 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "Azure managed disk types: pricing and how to choose",
+      title: "Azure disk types",
       where: "Learn",
       href: "/learn/azure-managed-disk-types",
     },
     {
-      title: "Premium SSD v2 vs Premium SSD: which one costs less?",
+      title: "Premium SSD v2 vs Premium SSD",
       where: "Learn",
       href: "/learn/premium-ssd-v2-vs-premium-ssd",
     },
     {
-      title: "AKS storage classes: which Azure disk each one creates",
+      title: "Kubernetes storage classes on AKS",
       where: "Learn",
       href: "/learn/aks-storage-classes",
     },
@@ -550,10 +525,10 @@ export const article: Article = {
       href: "/learn/azure-disk-reservations",
     },
     {
-      title: "Premium SSD vs Standard SSD on Azure: what you pay for",
+      title: "Azure Premium SSD vs Standard SSD",
       where: "Learn",
       href: "/learn/premium-ssd-vs-standard-ssd-azure",
     },
   ],
-  relatedTitle: "More on choosing Azure managed disks",
+  relatedTitle: "More on Azure managed disks",
 };

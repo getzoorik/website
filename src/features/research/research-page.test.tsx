@@ -46,11 +46,11 @@ describe("/cloud-cost-optimization-research-papers", () => {
     expect(papers).toHaveAttribute("aria-label", "Research papers");
     const groups = [...papers.querySelectorAll(":scope > .wrap > section.res-group")];
     expect(groups.map((group) => [group.id, text(group.querySelector(".res-head h2"))])).toEqual([
-      ["cluster-scheduling-bin-packing", "Cluster scheduling, bin packing and autoscaling"],
+      ["cluster-scheduling-bin-packing", "Cluster scheduling and autoscaling"],
       ["resource-prediction-and-sizing", "Resource prediction and sizing"],
-      ["cloud-pricing-spot-and", "Cloud pricing, spot and reserved capacity"],
-      ["block-storage-file-systems", "Block storage, file systems and space allocation"],
-      ["live-migration-of-vms", "Live migration of VMs and containers"],
+      ["cloud-pricing-spot-and", "Cloud pricing and spot capacity"],
+      ["block-storage-file-systems", "Block storage and file systems"],
+      ["live-migration-of-vms", "Live migration"],
     ]);
     for (const group of groups) {
       expect(group).toHaveAttribute("aria-labelledby", `${group.id}-h`);

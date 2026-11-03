@@ -148,7 +148,7 @@ describe("/design-partners", () => {
       ["See your number", "The free assessment shows your estimated saving at list price."],
       [
         "Connect a non-production cluster or VM",
-        `Coral with zoorikctl, Helm or Terraform; Amoeba with a script in Azure Cloud Shell or AWS CloudShell. Free for the first ${designPartnerPlaces} partners.`,
+        "Coral with zoorikctl, Helm or Terraform; Amoeba with a script in Azure Cloud Shell or AWS CloudShell.",
       ],
       ["Review together", "We go through the results with you and plan what comes next."],
     ]);
@@ -173,8 +173,8 @@ describe("/design-partners states one offer and one term", () => {
   it("prints no figure but the places", () => {
     const figures = words().match(/[−-]?\$?\d[\d.,]*%?/g) ?? [];
     const places = String(designPartnerPlaces);
-    /* The pill, the offer's line and step 3 name the places. */
-    expect(figures).toEqual([places, places, places]);
+    /* The pill and the offer's line name the places. */
+    expect(figures).toEqual([places, places]);
   });
 
   it("names one term, production's, and no price, discount or length of term", () => {

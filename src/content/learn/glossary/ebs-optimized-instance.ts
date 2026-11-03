@@ -5,28 +5,28 @@ export const term: GlossaryTerm = {
   slug: "ebs-optimized-instance",
   term: "EBS-optimized instance",
   title: "What are Amazon EBS-optimized instances?",
-  meta: "An AWS EBS-optimized instance has its own EBS bandwidth. See which EC2 types get EBS optimization at no extra cost, and how its limits cap your volumes.",
+  meta: "An EBS-optimized instance has dedicated bandwidth for Amazon EBS. Which EC2 types include it at no extra cost, and how its limits cap your volumes.",
   h1: "What are Amazon EBS-optimized instances?",
-  card: "An EBS-optimized instance is an Amazon EC2 instance, usually a virtual machine (VM), with its own bandwidth for Amazon Elastic Block Store (EBS).",
+  card: "An EBS-optimized instance is an Amazon EC2 instance with dedicated bandwidth for Amazon Elastic Block Store (EBS).",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-26",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "An EBS-optimized instance is an Amazon EC2 instance, usually a virtual machine (VM), with its own bandwidth for Amazon Elastic Block Store (EBS). That’s the EBS-optimized meaning: EBS traffic gets bandwidth no other traffic can use.",
+      text: "An EBS-optimized instance is an Amazon EC2 instance with dedicated bandwidth for Amazon Elastic Block Store (EBS). Other traffic can’t use that bandwidth.",
     },
   ],
   sections: [
     {
       id: "ebs-optimized-instance-types",
-      title: "EBS-optimized instance types",
+      title: "Instance types",
       blocks: [
         {
           kind: "p",
           text: [
-            { a: "Instance types", href: "/learn/glossary/aws-instance-families" },
+            { a: "EC2 instance types", href: "/learn/glossary/aws-instance-families" },
             " fall into three groups:",
           ],
         },
@@ -42,63 +42,51 @@ export const term: GlossaryTerm = {
     },
     {
       id: "an-example",
-      title: "An example",
+      title: "Instance EBS limits",
       blocks: [
         {
           kind: "p",
           text: [
-            "Each instance type has its own EBS limits, for bandwidth and for ",
+            "Each instance type has its own EBS limits for bandwidth and for ",
             { a: "input/output operations per second (IOPS)", href: "/learn/glossary/iops" },
-            ". An m6i.large has these IOPS limits, for 16\u00a0KiB operations:",
+            ". With 16\u00a0KiB operations, an m6i.large gets:",
           ],
         },
         {
           kind: "ul",
           items: [
-            "3,600\u00a0IOPS at baseline, always.",
-            "40,000\u00a0IOPS at most, for 30\u00a0minutes at least once every 24\u00a0hours.",
+            "3,600\u00a0IOPS at baseline, at all times.",
+            "Up to 40,000\u00a0IOPS for 30\u00a0minutes, at least once every 24\u00a0hours.",
           ],
         },
         {
           kind: "p",
-          text: [
-            "You get the smaller of the instance’s limit and your volumes’ combined limit, whatever the ",
-            { a: "volume type", href: "/learn/io2-vs-gp3" },
-            ". Say you set its gp3\u00a0volume to 10,000\u00a0IOPS. After those 30\u00a0minutes, you get 3,600 at most.",
-          ],
+          text: "You get the smaller of the instance’s limit and your volumes’ combined limit, whatever the volume type. Say its gp3\u00a0volume is set to 10,000\u00a0IOPS. After those 30\u00a0minutes, it gets 3,600 at most.",
         },
         { kind: "svg", figure: figure1 },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why EBS-optimized instances matter for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            "On some previous generation types, EBS optimization adds an hourly fee.",
+            "On previous generation types that offer it, EBS optimization adds an hourly fee.",
             [
               "gp3 includes 3,000\u00a0IOPS and 125\u00a0MiB/s of ",
               { a: "throughput", href: "/learn/glossary/disk-throughput" },
               ". More costs extra.",
             ],
-            "Buy IOPS above the instance’s baseline, and you pay for speed it can’t hold.",
+            "Buy IOPS above the instance’s baseline, and you pay for speed it can’t sustain.",
           ],
         },
         {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously. Each pool volume gets at least gp3’s included performance, and more when the instance’s load needs it.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "The ",
-            { a: "free assessment", href: "/assessment?p=amoeba" },
-            " works out your own figure.",
+            " moves a VM’s data disks onto one btrfs pool sized to your data, then rightsizes it autonomously. Each pool volume gets at least gp3’s included performance, and more when the instance’s load needs it, within the instance’s own limits.",
           ],
         },
       ],
@@ -118,9 +106,9 @@ export const term: GlossaryTerm = {
     { title: "gp3 in AWS", line: "The volume in the example.", href: "/learn/glossary/ebs-gp3" },
     { title: "EBS volume", line: "The AWS disk.", href: "/learn/glossary/ebs-volume" },
   ],
-  relatedTitle: "Terms related to EBS-optimized instances",
+  relatedTitle: "Related terms",
   next: {
-    title: "io2 vs gp3: when Provisioned IOPS is worth the price",
+    title: "io2 vs gp3: when io2 is worth it",
     href: "/learn/io2-vs-gp3",
   },
   sources: [

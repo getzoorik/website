@@ -11,11 +11,12 @@ import type { ProductId } from "@/content/products";
  * console yet. The moment this page grows a password field it stops being
  * marketing and belongs in the product.
  *
- * Every string is the mock's, verbatim: a paraphrase is a different claim.
+ * The strings follow the mock; the heading and the product lines were reworded
+ * in the zero-noise content pass (3 Nov 2026).
  */
 
 export const loginCopy = {
-  heading: "Choose a product to continue",
+  heading: "Sign in",
   /** The switch's name for a screen reader (`nav.lg-switch`). */
   switchLabel: "Product",
   continueLabel: "Continue",
@@ -60,12 +61,12 @@ export const loginDemo: readonly LoginDemoRun[] = [
 
 /**
  * The panel beside the chooser: the tagline "Reduce cloud cost, autonomously.",
- * as the home hero says it, and the two products in the site's one verb
- * ("optimizes" everywhere but the legal pages).
+ * as the home hero says it, and the two products in their own verbs, as
+ * /brand-assets words them: Coral rebalances, Amoeba rightsizes.
  */
 export const loginPanel = {
   heading: "Reduce cloud cost, autonomously.",
-  body: "Coral optimizes Kubernetes. Amoeba optimizes block storage.",
+  body: "Coral rebalances Kubernetes. Amoeba rightsizes block storage.",
 } as const;
 
 /** Where a product runs, as a tag with its platform's mark. */

@@ -31,7 +31,7 @@ describe("page metadata", () => {
       template: "%s | Zoorik",
     });
     expect(home).not.toHaveProperty("title");
-    expect(assessment.title).toBe("Free cloud cost analysis for Azure and AWS");
+    expect(assessment.title).toBe("Free cloud cost assessment");
     expect(login.title).toBe("Sign in");
     expect(amoeba.title).toBe("Amoeba: Block storage optimization");
     expect(coral.title).toBe("Coral: Kubernetes optimization");
@@ -50,13 +50,13 @@ describe("page metadata", () => {
 
   it("describes the home page and each product page in its own words, and the right product's", () => {
     expect(home.description).toBe(
-      "Zoorik is a cloud cost optimization company. Coral rebalances Kubernetes on AKS and EKS. Amoeba rightsizes Azure managed disks and Amazon EBS, autonomously.",
+      "Zoorik: cloud optimization for businesses. Coral rebalances Kubernetes and Amoeba rightsizes block storage on Azure and AWS, without any downtime.",
     );
     expect(amoeba.description).toBe(
-      "Block storage optimization: Amoeba rightsizes Azure managed disks and Amazon EBS to your data, autonomously, without any downtime after the one switch.",
+      "Amoeba rightsizes Azure managed disks and Amazon EBS volumes on Windows and Linux VMs to your data, autonomously and without any downtime.",
     );
     expect(coral.description).toBe(
-      "Kubernetes optimization platform for AKS and EKS. Coral rebalances requests and nodes to reduce your cloud cost, autonomously, without any downtime.",
+      "Coral rebalances pod requests and removes spare nodes on AKS and EKS to reduce Kubernetes cost, autonomously and without any downtime.",
     );
     /* Coral is never shown on Windows or Linux. */
     expect(String(coral.description)).not.toMatch(/Windows|Linux/);
@@ -94,7 +94,7 @@ describe("the documents section's metadata", () => {
   it("titles, describes and canonicalises /docs in the mock's words", () => {
     expect(docs.title).toBe("Product docs");
     expect(docs.description).toBe(
-      "Product guides, FAQs and one-pagers for Coral (Kubernetes optimization on AKS and EKS) and Amoeba (Azure managed disks and Amazon EBS), online or as PDFs.",
+      "Guides, FAQs, one-pagers, install steps and troubleshooting for Coral (Kubernetes cost optimization) and Amoeba (block storage optimization).",
     );
     expect(docs.alternates).toEqual({ canonical: "/docs" });
     expect(docs).not.toHaveProperty("robots");
@@ -108,7 +108,7 @@ describe("the documents section's metadata", () => {
   it("titles, describes and canonicalises the Coral guide as its mock does", () => {
     expect(coralGuide.title).toBe("Coral product guide");
     expect(coralGuide.description).toBe(
-      "Connect an AKS or EKS cluster to Coral: what it installs, how it rebalances requests and removes spare nodes, and the switches that keep you in control.",
+      "Connect AKS or EKS to Coral: what it installs, how it rebalances requests and nodes, what data it sends, and how you stay in control.",
     );
     expect(coralGuide.alternates).toEqual({ canonical: "/coral-guide" });
     expect(coralGuide).not.toHaveProperty("robots");
@@ -121,7 +121,7 @@ describe("the documents section's metadata", () => {
   it("titles, describes and canonicalises the Coral FAQ as its mock does", () => {
     expect(coralFaq.title).toBe("Coral FAQ");
     expect(coralFaq.description).toBe(
-      "Answers on how Coral sizes CPU and memory requests, keeps workloads safe, works with HPA, KEDA, Karpenter, NAP and Cluster Autoscaler on AKS and EKS.",
+      "How Coral rebalances requests and nodes on AKS and EKS, keeps workloads safe, and works with HPA, KEDA, Karpenter, NAP and the Cluster Autoscaler.",
     );
     expect(coralFaq.alternates).toEqual({ canonical: "/coral-faq" });
     expect(coralFaq).not.toHaveProperty("robots");
@@ -133,7 +133,7 @@ describe("the documents section's metadata", () => {
 
   it("titles, describes and canonicalises the Amoeba FAQ as its mock does", () => {
     const description =
-      "Amoeba FAQ: how it keeps data safe, what restarts and when, what happens to your original disks, how pools grow and shrink, and how it runs on Azure and AWS.";
+      "How Amoeba keeps your data safe, grows and shrinks block storage without any downtime, and what it needs and costs on Azure and AWS.";
     expect(amoebaFaq.title).toBe("Amoeba FAQ");
     expect(amoebaFaq.description).toBe(description);
     expect(amoebaFaq.alternates).toEqual({ canonical: "/amoeba-faq" });
@@ -159,7 +159,7 @@ describe("the numbered-row pages' metadata", () => {
   it("titles, describes and canonicalises /security as its mock does, and indexes it", () => {
     expect(security.title).toBe("Security");
     expect(security.description).toBe(
-      "What Coral and Amoeba may change in your cloud, what leaves your cluster or VM, where data is kept, our sub-processors, and how to report an issue.",
+      "What Coral and Amoeba can change in your cloud, what they send to Zoorik, where we keep it, and how to report a security issue.",
     );
     expect(security.alternates).toEqual({ canonical: "/security" });
     expect(security).not.toHaveProperty("robots");
@@ -170,17 +170,16 @@ describe("the numbered-row pages' metadata", () => {
   });
 
   it("titles, describes and canonicalises /learn as its mock does, and indexes it", () => {
-    /* The hub's h1 is "Zoorik Learn: Kubernetes and block storage cost guides"; its title goes through the template
-       like every page's. */
-    expect(learn.title).toBe("Kubernetes and block storage cost guides");
+    /* The hub's h1 is "Zoorik Learn"; its title goes through the template like every page's. */
+    expect(learn.title).toBe("Kubernetes, block storage and cloud cost guides");
     expect(learn.description).toBe(
-      "Kubernetes blog articles and block storage guides on cloud cost for Azure and AWS: AKS and EKS nodes, pods and requests, Azure managed disks and Amazon EBS.",
+      "How-tos and comparisons for AKS and EKS clusters, Azure managed disks, Amazon EBS and cloud cost, each sourced from the official docs.",
     );
     expect(learn.alternates).toEqual({ canonical: "/learn" });
     expect(learn).not.toHaveProperty("robots");
     expect(learn.openGraph).toMatchObject({
       url: "/learn",
-      title: "Kubernetes and block storage cost guides | Zoorik",
+      title: "Kubernetes, block storage and cloud cost guides | Zoorik",
     });
   });
 });

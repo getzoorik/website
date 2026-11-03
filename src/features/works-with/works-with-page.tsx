@@ -14,7 +14,7 @@ import { Block, sectionSlug } from "@/features/open-source/os-guide-page";
  *   #who-does-what  the docs' table: Job / <tool> / Coral, stacked on a phone
  *   #together       the guides' numbered steps (01, 02 in the accent)
  *   #leaves         what Coral leaves to the tool (What stays yours on Helm and Terraform), bullets with bold lead-ins;
- *                   absent on /coral-works-with-cluster-autoscaler (2 Nov 2026)
+ *                   only on Helm and Terraform; absent on the Cluster Autoscaler, Karpenter, NAP and KEDA pages
  *   #setup          bullets with bold lead-ins
  *   #questions      /pricing's rows: the FAQ's, closed, with no number column (`.pr-faq`), the column not prose
  *   #read-more      each link inline, then what it holds

@@ -6,81 +6,80 @@ import { figure as figure3 } from "@/features/learn/figures/safe-to-evict-do-not
 export const article: Article = {
   slug: "safe-to-evict-do-not-disrupt",
   title: "Karpenter do-not-disrupt vs safe-to-evict",
-  meta: "What cluster-autoscaler.kubernetes.io/safe-to-evict and karpenter.sh/do-not-disrupt do, which autoscaler reads each, and when local volumes hold a node.",
-  h1: "Karpenter do-not-disrupt and the Kubernetes safe-to-evict annotation, explained",
-  deck: "A marked pod can keep a spare node running; an unmarked batch job can be evicted halfway and start over.",
-  card: "What safe-to-evict and do-not-disrupt do, which autoscaler reads each, and why you keep paying for a held node.",
+  meta: "What the safe-to-evict and do-not-disrupt annotations do, which node autoscaler reads each, and when a marked pod is worth the node it holds.",
+  h1: "Karpenter do-not-disrupt vs safe-to-evict",
+  deck: "Both keep a pod, and its node, in place. Each autoscaler reads its own.",
+  card: "What safe-to-evict and do-not-disrupt do, which autoscaler reads each, and what a held node costs.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Node lifecycle and scheduling",
   published: "2026-10-25",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "sonia",
   cover: "/learn-covers/zoorik-learn-safe-to-evict-do-not-disrupt-1200x630.webp",
   coverAlt:
     "safe-to-evict and do-not-disrupt: an annotation stops the pod’s eviction, so the node stays",
   short: [
-    "The ",
+    "Both annotations tell a node autoscaler whether it may evict a pod, and so remove its node. The Cluster Autoscaler reads ",
     { code: "cluster-autoscaler.kubernetes.io/safe-to-evict" },
-    " and ",
-    { code: "karpenter.sh/do-not-disrupt" },
-    " annotations tell a node autoscaler whether it may evict a pod, and so remove its node. The Cluster Autoscaler reads safe-to-evict: ",
+    ": ",
     { code: '"false"' },
-    " holds the node, and ",
+    " keeps the node, and ",
     { code: '"true"' },
-    " releases pods it would otherwise keep, such as emptyDir or hostPath pods. Karpenter, AKS node auto provisioning and ",
+    " releases pods it would otherwise keep, such as pods with local storage. Karpenter, AKS node auto provisioning and ",
     { a: "EKS Auto Mode", href: "/learn/glossary/eks-auto-mode" },
-    " read do-not-disrupt, which keeps the node out of consolidation.",
+    " read ",
+    { code: "karpenter.sh/do-not-disrupt" },
+    ", which keeps the node out of consolidation. Neither side documents the other’s annotation.",
   ],
   sections: [
     {
       id: "safe-to-evict-and-do-not-disrupt",
-      title: "One annotation can keep a whole node running",
+      title: "What the annotations do",
       blocks: [
         {
           kind: "p",
-          text: "Picture a node that runs a long batch job, with no checkpoints, beside a few web pods. Overnight all of them, the job included, would fit elsewhere. The Cluster Autoscaler could remove the node.",
-        },
-        {
-          kind: "p",
           text: [
-            "But the batch pod carries ",
-            { code: 'safe-to-evict: "false"' },
-            ", so the node keeps running, and you pay for it, while that pod is there. Without the annotation, the job could be evicted halfway and start over.",
+            "To remove a node, an autoscaler evicts its pods, so it first checks whether each pod may move. Most of that check reads what you already have: ",
+            { a: "PodDisruptionBudgets (PDBs)", href: "/learn/glossary/pod-disruption-budget" },
+            ", the pod’s controller and its scheduling rules. The two annotations, or markers, are the part you set by hand.",
           ],
         },
         {
           kind: "p",
+          text: "Take a node that runs a long batch job with no checkpoints. Overnight, the job and the node’s other pods would all fit elsewhere, so the Cluster Autoscaler could remove the node.",
+        },
+        {
+          kind: "p",
           text: [
-            "That is the trade both annotations decide. To remove a node, an autoscaler evicts its pods, so it first checks whether each pod may move. Most of that check reads what you already have: ",
-            { a: "PodDisruptionBudgets (PDBs)", href: "/learn/glossary/pod-disruption-budget" },
-            ", the pod’s controller and its scheduling rules. You write the two annotations, or markers, by hand for each workload.",
+            "If the batch pod carries ",
+            { code: 'safe-to-evict: "false"' },
+            ", the node keeps running, and you pay for it, while the pod is there. Without the marker, the job can be evicted halfway and start over. That is the trade both annotations decide.",
           ],
         },
       ],
     },
     {
       id: "which-autoscaler-reads-which",
-      title: "Each autoscaler reads its own annotation",
+      title: "Which autoscaler reads which",
       blocks: [
         {
           kind: "p",
           text: [
-            "The Cluster Autoscaler’s FAQ documents safe-to-evict and never mentions Karpenter’s annotation, while Karpenter’s disruption docs never mention safe-to-evict, so don’t count on it there. On Azure Kubernetes Service (AKS), ",
+            "The Cluster Autoscaler’s FAQ documents safe-to-evict and never mentions Karpenter’s annotation. Karpenter’s disruption docs never mention safe-to-evict, so don’t count on it there. On Azure Kubernetes Service (AKS), ",
             { a: "node auto provisioning (NAP)", href: "/learn/aks-node-auto-provisioning" },
             " documents ",
             { code: "karpenter.sh/do-not-disrupt" },
-            " too, and so does EKS Auto Mode on Amazon Elastic Kubernetes Service (EKS). ",
-            {
-              a: "How the native autoscalers fit together",
-              href: "/learn/kubernetes-autoscaling",
-            },
-            " covers which one runs where.",
+            ", and so does EKS Auto Mode on Amazon Elastic Kubernetes Service (EKS).",
           ],
         },
         {
           kind: "p",
-          text: "So set the annotation your autoscaler reads. If you’re moving from one autoscaler to the other, or different pools use different ones, set both in the pod template:",
+          text: [
+            "Set the annotation your autoscaler reads. ",
+            { a: "Kubernetes autoscaling", href: "/learn/kubernetes-autoscaling" },
+            " shows which one runs where. If you’re moving between them, or pools use different ones, set both in the pod template:",
+          ],
         },
         {
           kind: "code",
@@ -104,7 +103,7 @@ export const article: Article = {
             ["Set on", ["Pod (a node uses ", { code: "scale-down-disabled" }, ")"], "Pod or node"],
             [
               "Values",
-              [{ code: '"false"' }, " holds the node, ", { code: '"true"' }, " releases the pod"],
+              [{ code: '"false"' }, " keeps the node, ", { code: '"true"' }, " releases the pod"],
               [
                 { code: '"true"' },
                 ", or a duration such as ",
@@ -113,14 +112,14 @@ export const article: Article = {
               ],
             ],
             [
-              "What it holds back",
+              "Holds back",
               "Scale-down of the pod’s node",
               ["Consolidation, and drift unless ", { code: "terminationGracePeriod" }, " is set"],
             ],
             [
-              "What it doesn’t change",
-              "A PDB or a scheduling constraint still applies",
-              "Expiration, interruption, manual node deletion and node auto repair still start (the drain waits for the pod)",
+              "Doesn’t override",
+              "A PDB, or a pod that fits on no other node",
+              "Expiration, interruption, manual deletion and node auto repair (the drain still waits for the pod)",
             ],
           ],
         },
@@ -128,12 +127,12 @@ export const article: Article = {
     },
     {
       id: "cluster-autoscaler-safe-to-evict",
-      title: "The Cluster Autoscaler reads safe-to-evict in both directions",
+      title: "Cluster Autoscaler: safe-to-evict",
       blocks: [
         {
           kind: "p",
           text: [
-            "The Cluster Autoscaler removes a node only when every pod that matters on it can move elsewhere, and its FAQ lists the pods that stop it from ",
+            "The Cluster Autoscaler removes a node only when its pods can move elsewhere. Its FAQ lists the pods that stop it ",
             { a: "scaling a node down", href: "/learn/cluster-autoscaler-not-scaling-down" },
             ":",
           ],
@@ -156,19 +155,19 @@ export const article: Article = {
           kind: "callout",
           label: "For engineers",
           text: [
-            "From Cluster Autoscaler 1.33 the kube-system rule is softer. A kube-system pod with no PDB blocks scale-down only while the pod is younger than ",
+            "From Cluster Autoscaler 1.33, a kube-system pod with no PDB blocks scale-down only while it’s younger than ",
             { code: "--blocking-system-pod-distruption-timeout" },
-            " (the flag is spelled that way), 1\u00a0hour by default. Once it’s older, the autoscaler may evict it.",
+            ". The flag is spelled that way, and defaults to 1 hour. After that, the autoscaler may evict the pod.",
           ],
         },
         {
           kind: "p",
           text: [
-            "The Cluster Autoscaler safe-to-evict annotation changes the FAQ’s list in both directions. ",
+            "The annotation changes that list both ways. ",
             { code: '"false"' },
             " adds a pod to it. ",
             { code: '"true"' },
-            ", supported from Cluster Autoscaler 1.0.3, takes three kinds of pod off it: kube-system pods, pods without a controller and pods with local storage.",
+            ", from Cluster Autoscaler 1.0.3, takes off three kinds of pod: kube-system pods, pods without a controller and pods with local storage.",
           ],
         },
         {
@@ -176,28 +175,30 @@ export const article: Article = {
           text: [
             "Two checks still apply to a pod marked ",
             { code: '"true"' },
-            ". It doesn’t override a PDB: the autoscaler removes pods through the eviction API, which respects PDBs, and a failed eviction keeps the node. It doesn’t help a pod that fits nowhere else either. Mark a pod without a controller ",
+            ". A PDB still holds: the autoscaler evicts through the eviction API, which respects PDBs, and a failed eviction keeps the node. A pod that fits on no other node still holds it too.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "Mark a pod without a controller ",
             { code: '"true"' },
             " only if you can lose it: nothing will start it again.",
           ],
         },
         { kind: "svg", figure: figure1 },
-        { kind: "h3", id: "safe-to-evict-false", title: "When to set safe-to-evict “false”" },
+        { kind: "h3", id: "safe-to-evict-false", title: "When to set “false”" },
         {
           kind: "p",
           text: [
-            "Set it on a pod that would lose real work if it restarted, such as the batch job in the opening. Put it in the pod template, as above, so every pod the controller creates carries it: ",
+            "Set it on a pod that would lose real work if it restarted, such as the batch job above. Put it in the pod template, so every pod the controller creates carries it. ",
             { code: "kubectl annotate" },
             " on a running pod marks that pod only, and its replacement comes up without it.",
           ],
         },
         {
           kind: "p",
-          text: [
-            "To keep a whole node, the Cluster Autoscaler reads a node marker instead, ",
-            { code: 'cluster-autoscaler.kubernetes.io/scale-down-disabled: "true"' },
-            ", available from version 1.0:",
-          ],
+          text: "To keep a whole node, the Cluster Autoscaler reads a node marker instead, from version 1.0:",
         },
         {
           kind: "code",
@@ -207,32 +208,32 @@ export const article: Article = {
         {
           kind: "h3",
           id: "safe-to-evict-local-volumes",
-          title: "Safe to evict local volumes: emptyDir and hostPath",
+          title: "Local volumes: emptyDir and hostPath",
         },
         {
           kind: "p",
-          text: "Local storage is on the FAQ’s list because the data can’t follow the pod. When a pod is removed from its node, Kubernetes deletes its emptyDir data permanently. A hostPath volume is a directory on the node’s own filesystem, so a pod rescheduled to another node leaves it behind.",
+          text: "Local storage is on the list because its data can’t follow the pod. When a pod is removed from its node, Kubernetes deletes its emptyDir data permanently. A hostPath volume is a directory on the node itself, so a pod moved to another node leaves it behind.",
         },
         {
           kind: "p",
           text: [
-            "The FAQ’s examples of local storage are a ",
+            "The FAQ counts a ",
             { code: "hostPath" },
-            " volume and an ",
+            " volume, and an ",
             { code: "emptyDir" },
-            " volume that doesn’t set ",
+            " volume without ",
             { code: "medium: Memory" },
-            ". ConfigMaps, Secrets, projected volumes and memory-backed emptyDir volumes don’t count.",
+            ", as local storage. ConfigMaps, Secrets, projected volumes and memory-backed emptyDir volumes don’t count.",
           ],
         },
         {
           kind: "p",
           text: [
-            "Whether local storage holds a node depends on one flag, ",
+            "One flag decides whether local storage holds a node: ",
             { code: "--skip-nodes-with-local-storage" },
             ". Upstream it defaults to ",
             { code: "true" },
-            ", so a Cluster Autoscaler you install yourself, as on EKS, keeps any node running such a pod unless its arguments set the flag to ",
+            ". So a Cluster Autoscaler you install yourself, as on EKS, keeps any node running such a pod, unless you set the flag to ",
             { code: "false" },
             ".",
           ],
@@ -240,9 +241,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "The AKS cluster autoscaler profile sets the same option to ",
+            "The AKS cluster autoscaler profile sets it to ",
             { code: "false" },
-            " by default, so on AKS local data alone doesn’t keep a node, and an evicted pod’s emptyDir data is deleted. If that data matters, mark the pod ",
+            " by default. On AKS, local data alone doesn’t keep a node, and an evicted pod’s emptyDir data is deleted. If that data matters, mark the pod ",
             { code: 'safe-to-evict: "false"' },
             " or move the data to a persistent volume.",
           ],
@@ -253,7 +254,7 @@ export const article: Article = {
           text: [
             "For scratch data the pod can rebuild, list the volume names, comma-separated, in ",
             { code: "cluster-autoscaler.kubernetes.io/safe-to-evict-local-volumes" },
-            ", which lifts the local-storage rule only when all the pod’s local volumes are in the list.",
+            ". It lifts the local-storage rule only when every local volume of the pod is listed.",
           ],
         },
         {
@@ -266,34 +267,40 @@ export const article: Article = {
           text: [
             "That’s narrower than ",
             { code: '"true"' },
-            ", which would also lift the kube-system and controller rules for the pod, and it names exactly the data you agree to lose.",
+            ": the kube-system and controller rules still apply, and it names exactly the data you agree to lose.",
           ],
         },
       ],
     },
     {
       id: "karpenter-do-not-disrupt",
-      title:
-        "Karpenter’s do-not-disrupt holds back consolidation, and drift unless a grace period is set",
+      title: "Karpenter: do-not-disrupt",
       blocks: [
         {
           kind: "p",
           text: [
-            "The Karpenter do-not-disrupt annotation keeps a pod’s node out of two of Karpenter’s graceful methods. ",
-            { a: "Consolidation", href: "/learn/karpenter-consolidation" },
-            " deletes a node whose pods fit elsewhere, or replaces it with a cheaper one. Drift replaces a node that no longer matches the spec set by its ",
-            { a: "NodePool", href: "/learn/glossary/node-pool" },
-            " (the Karpenter resource that defines a group of nodes) or its node class.",
+            "Karpenter’s docs suggest treating ",
+            { code: "karpenter.sh/do-not-disrupt" },
+            " as a blocking PDB for one pod. It keeps the pod’s node out of two graceful methods:",
           ],
         },
         {
-          kind: "p",
-          text: [
-            "Karpenter’s docs suggest treating the annotation as a blocking PDB for a single pod. Consolidation skips a node with an active do-not-disrupt pod. Drift skips it too, unless the node’s NodeClaim, the object Karpenter keeps for each node, sets ",
-            { code: "terminationGracePeriod" },
-            ". On a pod, the annotation takes two forms:",
+          kind: "ul",
+          items: [
+            [
+              { a: "Consolidation", href: "/learn/karpenter-consolidation" },
+              " deletes a node whose pods fit elsewhere, or replaces it with a cheaper one. It skips a node with a marked pod.",
+            ],
+            [
+              "Drift replaces a node that no longer matches its ",
+              { a: "NodePool", href: "/learn/glossary/node-pool" },
+              " (the Karpenter resource that defines a group of nodes) or node class. It skips a node with a marked pod, unless the node’s NodeClaim, Karpenter’s object for each node, sets ",
+              { code: "terminationGracePeriod" },
+              ".",
+            ],
           ],
         },
+        { kind: "p", text: "On a pod, the annotation takes two forms:" },
         {
           kind: "ul",
           items: [
@@ -304,7 +311,7 @@ export const article: Article = {
             [
               "A Go duration such as ",
               { code: '"30m"' },
-              ", a form added in Karpenter 1.12.0 (April 2026), protects it for that long after it starts running. An invalid duration voids the annotation, and Karpenter records an event on the pod.",
+              " protects it for that long after it starts running. This form came in Karpenter 1.12.0. An invalid duration voids the annotation, and Karpenter records an event on the pod.",
             ],
           ],
         },
@@ -313,7 +320,7 @@ export const article: Article = {
           text: [
             "The NAP and EKS Auto Mode docs show only the ",
             { code: '"true"' },
-            " form, so use that there unless they add the duration.",
+            " form, so use that there.",
           ],
         },
         {
@@ -321,40 +328,46 @@ export const article: Article = {
           text: [
             "On a node, ",
             { code: 'karpenter.sh/do-not-disrupt: "true"' },
-            " blocks voluntary disruption of that node. Node auto repair, an alpha feature that stays off until you enable its ",
-            { code: "NodeRepair" },
-            " feature gate, still overrides it. The NAP docs also put the annotation in a NodePool’s ",
+            " blocks voluntary disruption of that node. The NAP docs also put it in a NodePool’s ",
             { code: "spec.template.metadata.annotations" },
-            ", which marks every node the pool creates.",
+            ", which marks every node the pool creates. Node auto repair, an alpha feature behind the ",
+            { code: "NodeRepair" },
+            " feature gate, still overrides it.",
           ],
         },
         {
           kind: "p",
-          text: "Karpenter’s disruption docs give no rule for emptyDir or hostPath volumes. Their pod-level controls for blocking disruption are blocking PDBs and this annotation. So don’t count on local data to hold a node that Karpenter manages: mark the pod or move its data to a persistent volume.",
+          text: "Karpenter’s disruption docs give no rule for emptyDir or hostPath volumes. So don’t count on local data to hold a node that Karpenter manages: mark the pod, or move its data to a persistent volume.",
         },
         {
           kind: "h3",
           id: "expiry-interruption-and-deletion",
-          title: "Expiry, interruption and deletion still go ahead",
+          title: "What it doesn’t stop",
         },
+        { kind: "p", text: "The annotation doesn’t stop Karpenter’s forceful methods:" },
         {
-          kind: "p",
-          text: [
-            "The annotation doesn’t exclude a node from Karpenter’s forceful methods: expiration (the node reaching its ",
-            { code: "expireAfter" },
-            " lifetime, 720\u00a0hours or 30\u00a0days by default), interruption (such as a ",
-            { a: "Spot", href: "/learn/glossary/spot-instance" },
-            " interruption warning), and manual deletion with ",
-            { code: "kubectl delete node" },
-            ". Node auto repair isn’t held back by it either.",
+          kind: "ul",
+          items: [
+            [
+              "Expiration: the node reaches its ",
+              { code: "expireAfter" },
+              " lifetime, 720 hours (30 days) by default.",
+            ],
+            [
+              "Interruption, such as a ",
+              { a: "Spot", href: "/learn/glossary/spot-instance" },
+              " interruption warning.",
+            ],
+            ["Manual deletion with ", { code: "kubectl delete node" }, "."],
+            "Node auto repair.",
           ],
         },
         {
           kind: "p",
           text: [
-            "Even then, the drain waits for the marked pod. Karpenter’s termination controller doesn’t evict it, so the node can’t finish terminating until the pod is gone, its duration ends, it reaches Succeeded or Failed, or the NodeClaim’s ",
+            "Even then, the drain waits for the marked pod: Karpenter doesn’t evict it. The node can’t finish terminating until the pod is gone, its duration ends, it reaches Succeeded or Failed, or the NodeClaim’s ",
             { code: "terminationGracePeriod" },
-            " runs out. Interruption and node repair put an upper bound on that wait. Expiration and manual deletion don’t.",
+            " runs out. Interruption and node repair cap that wait. Expiration and manual deletion don’t.",
           ],
         },
         {
@@ -365,11 +378,11 @@ export const article: Article = {
             { code: "terminationGracePeriod" },
             " can stay half-drained once it expires, and ",
             { code: "expireAfter" },
-            " is set by default. The docs warn that this drives up cluster cost. If you mark pods, set ",
+            " is set by default. Karpenter’s docs warn that this drives up cluster cost. If you mark pods, set ",
             { code: "terminationGracePeriod" },
             " in the NodePool’s ",
             { code: "spec.template.spec" },
-            " longer than your longest run: drift then no longer skips the node, and when it runs out, Karpenter deletes the marked pod anyway.",
+            ", longer than your longest run. Drift then no longer skips the node, and when the period runs out, Karpenter deletes the marked pod.",
           ],
         },
         { kind: "svg", figure: figure3 },
@@ -377,11 +390,11 @@ export const article: Article = {
     },
     {
       id: "when-to-use-a-marker",
-      title: "When a marker is worth the node it holds",
+      title: "When a marker is worth it",
       blocks: [
         {
           kind: "p",
-          text: "A marker holds a whole node for one pod. AWS’s EKS Auto Mode cost guide names the trade: the annotation “is an availability mechanism. It does not account for cost.” The node keeps its instance size whatever its load, and when marked pods sit on many nodes, consolidation across the cluster drops.",
+          text: "A marker holds a whole node for one pod. AWS’s EKS Auto Mode cost guide puts it plainly: the annotation “is an availability mechanism. It does not account for cost.” The node keeps its size whatever its load. When marked pods sit on many nodes, consolidation across the cluster drops.",
         },
         { kind: "p", text: "Match the tool to what the pod needs:" },
         {
@@ -389,40 +402,40 @@ export const article: Article = {
           items: [
             [
               { b: "The pod has replicas and can restart one at a time." },
-              " Use a PDB, not a marker: it limits how many pods go at once and still lets the node go. The settings are in ",
+              " Use a PDB, not a marker: it limits how many pods go at once and still lets the node go. ",
               { a: "PDB best practices", href: "/learn/pod-disruption-budget-best-practices" },
-              ".",
+              " has the settings.",
             ],
             [
               { b: "The pod runs for a known stretch and would start over if stopped." },
-              " On Karpenter 1.12.0 or later, use a duration. Elsewhere, add the marker for the run and remove it when the run ends, as the AWS guide suggests.",
+              " On Karpenter 1.12.0 or later, use a duration. Elsewhere, add the marker for the run and remove it after, as the AWS guide suggests.",
             ],
             [
               { b: "The pod must not be interrupted while it runs." },
-              " Use the annotation your autoscaler reads, or both, though a Karpenter grace period still ends the hold.",
+              " Use the annotation your autoscaler reads, or both. A Karpenter grace period still ends the hold.",
             ],
             [
-              { b: "The pod’s rebuildable scratch volume holds its node." },
+              { b: "A rebuildable scratch volume holds the node." },
               " List it in ",
               { code: "safe-to-evict-local-volumes" },
               ".",
             ],
             [
-              { b: "The pod’s local data has to survive losing its node." },
-              " Move it to a persistent volume. A marker only stops the autoscaler, and a node can still go through expiration, interruption or manual deletion.",
+              { b: "Local data must survive losing the node." },
+              " Move it to a persistent volume. A marker stops only the autoscaler, and expiration, interruption or manual deletion can still take the node.",
             ],
           ],
         },
-        { kind: "h3", id: "find-and-remove-markers", title: "How to find and remove old markers" },
+        { kind: "h3", id: "find-and-remove-markers", title: "Find and remove old markers" },
         { kind: "p", text: "Apart from a duration, a marker never expires." },
         {
           kind: "ol",
           items: [
             [
               { b: "List the pods and nodes that carry a marker." },
-              " The first command catches every do-not-disrupt value on a pod, durations included, plus safe-to-evict ",
+              " The first command finds every do-not-disrupt value on a pod, durations included, and safe-to-evict ",
               { code: '"false"' },
-              ", and the second lists the marked nodes:",
+              ". The second lists the marked nodes:",
             ],
           ],
         },
@@ -436,8 +449,8 @@ export const article: Article = {
           start: 2,
           items: [
             [
-              { b: "Take each marker out of the template it came from," },
-              " the pod template or a NodePool’s.",
+              { b: "Take each marker out of the template it came from:" },
+              " the pod template or the NodePool’s.",
             ],
             [{ b: "Check what runs on the node" }, " first:"],
           ],
@@ -466,13 +479,13 @@ export const article: Article = {
     },
     {
       id: "where-coral-fits",
-      title: "Where Coral fits with safe-to-evict and do-not-disrupt",
+      title: "Where Coral fits",
       blocks: [
         {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS: it rebalances CPU and memory requests, and it drains and removes the nodes you don’t need, one at a time. Coral honours the markers and holds below.",
+            " rebalances CPU and memory requests on AKS and EKS, and removes the nodes you don’t need. It honours the markers and holds below.",
           ],
         },
         {
@@ -490,13 +503,11 @@ export const article: Article = {
             ],
             [
               { b: "Local data." },
-              " When Coral drains spare nodes, a pod with hostPath data holds its node unless it is marked safe to evict. An emptyDir volume holds no node, so if its data matters, mark the pod ",
-              { code: 'karpenter.sh/do-not-disrupt: "true"' },
-              ".",
+              " A pod with hostPath data holds its node, unless it’s marked safe to evict.",
             ],
             [
               { b: "Bare pods." },
-              " A bare pod with no controller keeps its node, unless it is marked safe to evict.",
+              " A pod with no controller holds its node, unless it’s marked safe to evict.",
             ],
             [
               { b: "Coral’s own marker." },
@@ -505,12 +516,12 @@ export const article: Article = {
               ", as a label or annotation on a node or pod, keeps it out of every Coral move.",
             ],
             [
-              { b: "Nodes held." },
+              { b: "Held nodes." },
               " Coral shows each held node with its reason and fix, so a marker that outlived its reason turns up as a node you can release.",
             ],
             [
-              { b: "Short restarts." },
-              " When Coral removes a node, a pod whose replacement can’t start first gets a short restart, and marking it do-not-disrupt prevents that, at the price of keeping its node. For databases, the ",
+              { b: "Live migration." },
+              " When Coral removes a node, a pod whose replacement can’t start first moves by live migration where both nodes support it. Otherwise it’s evicted and gets a short restart. Marking it do-not-disrupt keeps it, and its node, in place. For databases, the ",
               { a: "Coral FAQ", href: "/coral-faq#how-are-databases-kafka-elasticsearch-redis" },
               " suggests the Read-only policy and do-not-disrupt for a careful start.",
             ],
@@ -520,13 +531,13 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Coral works with Karpenter", href: "/coral-works-with-karpenter" },
-            " covers how the two run together.",
+            " covers running the two together.",
           ],
         },
         {
           kind: "p",
           text: [
-            "On our AKS development cluster, Coral removed a spare 4-CPU worker, then swapped the remaining worker for a cheaper machine of the same size. Each time, single-copy apps restarted once. The two moves reduced ",
+            "On our AKS development cluster, Coral removed a spare 4-CPU worker, then swapped the other worker for a cheaper machine of the same size. Single-copy apps restarted once at each move. The two moves reduced ",
             { a: "the cluster’s machine cost", href: "/coral-value-lab" },
             " from $368.65 to $154.76 a month.",
           ],
@@ -587,12 +598,12 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "Cluster Autoscaler not scaling down: what keeps nodes running",
+      title: "Cluster Autoscaler not scaling down",
       where: "Learn",
       href: "/learn/cluster-autoscaler-not-scaling-down",
     },
     {
-      title: "Karpenter consolidation: policies, budgets and limits",
+      title: "Karpenter consolidation",
       where: "Learn",
       href: "/learn/karpenter-consolidation",
     },
@@ -607,5 +618,4 @@ export const article: Article = {
       href: "/coral-guide#nodes-held",
     },
   ],
-  relatedTitle: "More on pod markers and node lifecycle",
 };

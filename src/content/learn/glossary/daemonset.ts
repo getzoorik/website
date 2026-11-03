@@ -5,47 +5,55 @@ export const term: GlossaryTerm = {
   slug: "daemonset",
   term: "DaemonSet",
   title: "What is a Kubernetes DaemonSet?",
-  meta: "A DaemonSet in Kubernetes runs one copy of a pod on each node it targets. See an example, DaemonSet vs Deployment, and why its requests repeat on every node.",
+  meta: "A DaemonSet in Kubernetes runs one copy of a pod on each node it targets. An example, DaemonSet vs Deployment, and why its requests repeat on every node.",
   h1: "What is a Kubernetes DaemonSet?",
   card: "A DaemonSet in Kubernetes runs one copy of a pod on each node it targets.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "A DaemonSet in Kubernetes runs one copy of a pod on each node it targets. A joining node gets a copy, and a leaving node’s copy is removed.",
+      text: "A DaemonSet in Kubernetes runs one copy of a pod on each node it targets. A node that joins gets a copy, and a node that leaves has its copy removed.",
     },
     { kind: "svg", figure: figure1 },
+    { kind: "p", text: "It suits node-level helpers, such as:" },
     {
-      kind: "p",
-      text: "The use of a DaemonSet is to run a helper on each node. The docs name three:",
+      kind: "ul",
+      items: ["cluster storage", "log collection", "node monitoring", "cluster networking"],
     },
-    { kind: "ul", items: ["cluster storage", "log collection", "node monitoring"] },
   ],
   sections: [
     {
       id: "daemonset-node-selector-and-tolerations",
-      title: "DaemonSet node selector and tolerations",
+      title: "Which nodes get a copy",
       blocks: [
-        { kind: "p", text: "Some nodes get no copy:" },
+        { kind: "p", text: "Every node gets a copy, except:" },
         {
           kind: "ul",
           items: [
-            "A node that doesn’t match its node selector or node affinity.",
-            "A node with a NoSchedule or NoExecute taint the pod doesn’t tolerate. A taint keeps pods away.",
+            "A node that doesn’t match the DaemonSet’s node selector or node affinity.",
+            [
+              "A node with a NoSchedule or NoExecute ",
+              { a: "taint", href: "/learn/kubernetes-taints-and-tolerations" },
+              " the pod doesn’t tolerate.",
+            ],
           ],
+        },
+        {
+          kind: "p",
+          text: "The DaemonSet controller tolerates some built-in taints itself. So a cordoned node, or one under memory or disk pressure, still runs its copy.",
         },
       ],
     },
     {
       id: "a-kubernetes-daemonset-example",
-      title: "A Kubernetes DaemonSet example",
+      title: "DaemonSet example",
       blocks: [
         {
           kind: "p",
-          text: "The docs’ example runs the fluentd-elasticsearch image. Each copy requests 100m of CPU, or 0.1\u00a0CPU, and 200Mi of memory, or 200 mebibytes.",
+          text: "This DaemonSet, shortened from the Kubernetes docs, runs the fluentd-elasticsearch log collector. Each copy requests 100m of CPU (0.1 CPU) and 200Mi of memory (200 mebibytes).",
         },
         {
           kind: "code",
@@ -61,22 +69,38 @@ export const term: GlossaryTerm = {
         {
           kind: "ul",
           items: [
-            "A Deployment runs as many copies as you set, on whatever nodes fit.",
-            "A DaemonSet suits a helper that must run on all nodes, or on some.",
+            [
+              { b: "A Deployment" },
+              " runs as many copies as you set, on whichever nodes have room. Use it for stateless apps you scale up and down.",
+            ],
+            [
+              { b: "A DaemonSet" },
+              " runs one copy on each node it targets. Use it for a node-level helper, such as a log collector or network plugin.",
+            ],
           ],
         },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why DaemonSets matter for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "p",
           text: [
             "The scheduler counts each pod’s ",
             { a: "request", href: "/learn/glossary/kubernetes-resource-requests" },
-            " against its node, so a DaemonSet’s request takes room on every node you pay for. By default, the Cluster Autoscaler counts DaemonSet requests when it decides to remove a node; see ",
+            " against its node. So a DaemonSet’s requests take room on every node you pay for.",
+          ],
+        },
+        {
+          kind: "p",
+          text: "Say the docs’ example runs on 10 nodes. Its copies request 1 CPU and 2,000Mi in all. On 6 nodes, that falls to 0.6 CPU and 1,200Mi.",
+        },
+        {
+          kind: "p",
+          text: [
+            "By default, the Cluster Autoscaler counts DaemonSet requests when it checks whether a node is underused. See ",
             {
               a: "Cluster Autoscaler not scaling down",
               href: "/learn/cluster-autoscaler-not-scaling-down",
@@ -86,18 +110,9 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "Say the docs’ example runs on 10\u00a0nodes. Its requests total 1\u00a0CPU and 2,000Mi, or 0.6\u00a0CPU and 1,200Mi on 6\u00a0nodes.",
-        },
-        {
-          kind: "ul",
-          items: [
-            [
-              { a: "Coral", href: "/coral" },
-              " rebalances CPU and memory requests on AKS and EKS to match real use, so the same pods fit on ",
-              { a: "fewer nodes", href: "/learn/kubernetes-node-size-best-practices" },
-              ".",
-            ],
-            "It removes the nodes you don’t need, and it never moves DaemonSet pods.",
+          text: [
+            { a: "Coral", href: "/coral" },
+            " rebalances CPU and memory requests on AKS and EKS to match real use, so the same pods fit on fewer nodes. It removes the spare nodes and never moves DaemonSet pods.",
           ],
         },
       ],
@@ -106,7 +121,7 @@ export const term: GlossaryTerm = {
   related: [
     {
       title: "Resource requests",
-      line: "What each copy holds.",
+      line: "What each copy reserves.",
       href: "/learn/glossary/kubernetes-resource-requests",
     },
     {
@@ -120,9 +135,9 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/node-pool",
     },
   ],
-  relatedTitle: "Kubernetes terms related to DaemonSets",
+  relatedTitle: "Related terms",
   next: {
-    title: "Kubernetes node size best practices: large or small nodes",
+    title: "Kubernetes node size best practices",
     href: "/learn/kubernetes-node-size-best-practices",
   },
   sources: [

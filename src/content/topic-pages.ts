@@ -12,23 +12,19 @@ import {
 } from "@/content/prose-blocks";
 
 /**
- * The two Topic pages: `/azure-cost-optimization` and `/aws-cost-optimization` (D229; owner, 1 Nov 2026: "Work as a
- * best technical content writer and complete this for our website and raise a Final PR"). Every string they print, word
- * for word from the checked drafts (docs/website-seo/new-pages-2026-11-01/<its address>/page.md, each claim traced in
- * its ledger.md) and their mocks (ux-design/website/<its address>.html, four_pages_mock.py).
+ * The two Topic pages: `/azure-cost-optimization` and `/aws-cost-optimization`. Every string they print.
  *
- * 🔴 NO PRICE IN A CURRENCY, NO ZOORIK SAVING FIGURE, NO PRODUCT INTERNALS. Every number is the clouds' own, from the
- * draft's ledger. Coral and Amoeba are said at product level only.
+ * Rewritten 2 Nov 2026 to the zero-noise standard: a short h1 with one short line under it, short section
+ * names, the answer first, and every useful fact kept. Each page targets its own searches from rows 1 to 500 of the
+ * SEO sheet: "azure cost" and "aws cost optimization" lead.
  *
- * The cross-links the mocks add on the drafts' own words (the drafts' open items X3 and A8): the Azure page's "Azure
- * Advisor" and the AWS page's "AWS Compute Optimizer" link their versus pages in the library, and the Azure page's
- * free-assessment line opens with its link, as the AWS page's does (A11).
+ * 🔴 NO PRICE IN A CURRENCY, NO ZOORIK SAVING FIGURE, NO PRODUCT INTERNALS. Every number is the clouds' own, from
+ * their docs. Coral and Amoeba are said at product level only.
  *
- * Rebuilt 2 Nov 2026 from the SEO plan sheet (owner: "ok lets rebuild these 169 pages which can cover 92.0% of the
- * demand"): its chosen searches where the sheet places them, one short line under each h1, and no repeats.
- * The new lines (AWS Budgets, stop vs terminate) come from the AWS docs the sheet cites.
+ * Each cloud's own tool links its versus page in the library, once: "Azure Advisor" on the Azure page and "AWS Compute
+ * Optimizer" on the AWS page. The free-assessment line under the product cards opens with its link on both.
  *
- * The text is the drafts' small markup (`prose-blocks.ts`), drawn by `richText`, a Read more tile's title and line too.
+ * The text is the small markup of `prose-blocks.ts`, drawn by `richText`, a Read more tile's title and line too.
  */
 
 /** A product's card in "Where Coral and Amoeba fit": its mark and name, its paragraphs, then its link on this cloud. */
@@ -76,8 +72,8 @@ export interface TopicPage {
   readonly readMore: { readonly title: string; readonly tiles: readonly ProseTile[] };
 }
 
-/** Built and checked 1 Nov 2026; rebuilt from the SEO plan sheet 2 Nov 2026. */
-const UPDATED = "2 November 2026";
+/** Built 1 Nov 2026; rewritten 2 Nov 2026. */
+const UPDATED = "3 November 2026";
 
 /** The hero's button: the closing row's own words, to the assessment with no product preset. */
 const estimate = {
@@ -96,30 +92,30 @@ export const azureCostOptimizationPage: TopicPage = {
   path: routes.azureCostOptimization,
   lastUpdated: UPDATED,
   meta: {
-    title: "Azure cost optimization: how to reduce Azure costs",
+    title: "Azure cost optimization",
     description:
-      "Microsoft Azure cost optimization, line by line: what drives the cost of Azure VMs, managed disks, AKS and data transfer, and how to reduce each one.",
+      "What drives Microsoft Azure cost, line by line: VMs, managed disks, AKS, data transfer and commitments, and how to reduce each one.",
   },
   hero: {
     eyebrow: "Azure",
-    title: "Azure cost optimization: how to reduce Azure costs",
-    line: "Reduce what you use first, from idle VMs to AKS requests, then buy commitments for what's left.",
+    title: "Azure cost optimization",
+    line: "Fit VMs, disks and AKS to real use first, then commit to what's left.",
     cta: estimate,
   },
   sections: [
     {
       id: "azure-cost-management",
-      title: "Azure cost management: start in Microsoft Cost Management",
+      title: "Azure cost management",
       blocks: [
         p(
-          `Microsoft Cost Management is Microsoft's suite of [FinOps](${term("finops")}) tools to analyze, monitor and optimize Microsoft Cloud costs. In the Azure portal, it's on every subscription, resource group and management group.`,
+          `Microsoft Cost Management is Microsoft's built-in suite of [FinOps](${term("finops")}) tools to analyze, monitor and optimize Microsoft Cloud costs. It's on every subscription, resource group and management group in the Azure portal.`,
         ),
         {
           kind: "links",
           title: "Microsoft Cost Management",
           links: [
             {
-              label: "Open Cost Management in the Azure portal",
+              label: "Open in the Azure portal",
               href: "https://portal.azure.com/#view/Microsoft_Azure_CostManagement/Menu",
             },
             {
@@ -128,26 +124,24 @@ export const azureCostOptimizationPage: TopicPage = {
             },
           ],
         },
-        p("What you can do there:"),
+        p("Use it to:"),
         ul(
-          "explore your costs in Cost analysis;",
+          "explore costs in Cost analysis;",
           "set budgets that alert you when cost passes an amount or a forecast;",
           `get anomaly alerts when a subscription's daily usage [spikes or dips](${term("cloud-cost-anomaly-detection")});`,
           "export cost details to your storage account on a schedule;",
           "read Azure Advisor's cost recommendations.",
         ),
         p(
-          `Tag your resources first. Resource tags are the only way to add your own context, such as an app, environment or owner, to cost details. [Cost allocation tags](${term("cost-allocation-tags")}) explains how to set them.`,
+          `Tag resources first. Tags are the only way to add your own context, such as app, environment or owner, to cost details. [Cost allocation tags](${term("cost-allocation-tags")}) explains how to set them.`,
         ),
       ],
     },
     {
       id: "azure-cost-optimization-by-line",
-      title: "What drives the cost of Azure, and the first fix for each",
+      title: "What drives the cost of Azure",
       blocks: [
-        p(
-          "Azure cost optimization works one cost line at a time. Each line has its own driver and its own first fix.",
-        ),
+        p("Each cost line has its own driver and its own first fix."),
         {
           kind: "table",
           head: ["Cost line", "What you pay for", "First fix", "Who helps"],
@@ -155,19 +149,19 @@ export const azureCostOptimizationPage: TopicPage = {
           rows: [
             [
               "[Virtual machines](#azure-vm-cost)",
-              "The time a VM stays allocated, busy or idle.",
+              "Time allocated, busy or idle.",
               "Deallocate idle VMs and resize oversized ones.",
               "Azure Advisor flags them.",
             ],
             [
               "[Managed disks](#azure-disk-cost)",
               "The size you provision, whatever data it holds.",
-              "Delete disks no VM uses, then size the rest to their data.",
+              "Delete unattached disks, then fit the rest to their data.",
               "Advisor flags unattached disks. Amoeba rightsizes data disks.",
             ],
             [
               "[AKS](#aks-cost)",
-              "The node VMs, which grow with what your pods request.",
+              "Node VMs, which grow with what pods request.",
               "Fit requests to real use, then let spare nodes go.",
               "AKS cost analysis shows it. Coral rebalances the cluster.",
             ],
@@ -189,109 +183,104 @@ export const azureCostOptimizationPage: TopicPage = {
     },
     {
       id: "azure-vm-cost",
-      title: "Virtual machines: deallocate idle ones, resize the rest",
+      title: "Virtual machines",
       blocks: [
         p(
-          `For VMs that run all day with little load, start with [Azure Advisor](${versus("coral-vs-azure-advisor")}). Microsoft calls its cost recommendations the first stop for existing resources. On its Cost tab, Advisor flags VMs and scale sets with low usage, and recommends [rightsizing](${term("rightsizing")}) or shutting them down.`,
+          `For VMs that run all day with little load, start with [Azure Advisor](${versus("coral-vs-azure-advisor")}). Its Cost tab flags low-usage VMs and scale sets, and recommends [rightsizing](${term("rightsizing")}) or shutting them down.`,
         ),
         p("Then check how you pay for the VMs you keep:"),
         ul(
           `[Spot VMs](${term("spot-instance")}) use spare Azure capacity at up to 90% off pay-as-you-go prices. Azure evicts them when it needs the capacity back, so keep them for dev, test and batch work.`,
           `[Azure Hybrid Benefit](${term("azure-hybrid-benefit")}) lets you use Windows Server and SQL Server licenses you already own, or Red Hat and SUSE Linux subscriptions, on Azure.`,
         ),
-        h3("Azure VM stopped vs deallocated"),
+        h3("Stopped vs deallocated"),
         p(
-          "A VM's compute charge follows its power state, not how busy it is. Azure charges a running VM for instance usage. It also charges a VM that's Stopped (allocated), the state a shutdown from inside the guest OS leaves.",
+          "A VM's compute charge follows its power state, not its load. Azure charges a running VM, and also a Stopped (allocated) one: the state a shutdown from inside the guest OS leaves.",
         ),
         p(
-          "Only a deallocated VM has released its hardware and stopped the instance charge. Its disks and networking still cost. In the Azure CLI, `az vm stop` keeps the compute resources, and `az vm deallocate` releases them.",
+          "Only a deallocated VM has released its hardware and stopped the compute charge. Its disks and networking still cost. In the Azure CLI, `az vm stop` keeps the compute resources, and `az vm deallocate` releases them.",
         ),
       ],
     },
     {
       id: "azure-disk-cost",
-      title: "Managed disks: you pay for the size, not the data",
+      title: "Managed disks",
       blocks: [
         p(
-          `An [Azure managed disk](${term("azure-managed-disk")}) is charged for what you provision, not for the data on it. How depends on the disk type:`,
+          `An [Azure managed disk](${term("azure-managed-disk")}) is charged for what you provision, not for the data on it. How depends on its type:`,
         ),
         ul(
-          "Premium SSD, Standard SSD and Standard HDD are charged by a performance tier, which the size you pick sets by default. Grow a Standard SSD or Standard HDD into the next tier, and you pay for that tier.",
-          "Premium SSD v2 and Ultra Disk are charged per GiB, plus the performance you provision.",
-          "Every Premium SSD v2 includes 3,000 IOPS and 125 MB/s free of charge.",
+          "Premium SSD, Standard SSD and Standard HDD are charged by performance tier, which the size sets by default. Grow a Standard SSD or Standard HDD into the next tier, and you pay for that tier.",
+          "Premium SSD v2 and Ultra Disk are charged per GiB, plus the performance you provision. Every Premium SSD v2 includes 3,000 IOPS and 125 MB/s free.",
         ),
         p(
-          `A managed disk can grow, but it can't shrink. Shrinking an existing disk "isn't supported and might result in data loss," Microsoft Learn says. So space bought for a peak stays paid for after the data has gone.`,
+          `A managed disk can grow, but it can't shrink. Microsoft Learn says shrinking an existing disk "isn't supported and might result in data loss." So space bought for a peak stays paid for after the data is gone.`,
         ),
         p("Start with these checks:"),
         ol(
-          `Find disks no VM uses. Advisor lists disks that aren't attached to a VM, and Microsoft advises a snapshot first, because deleting a disk is irreversible. [How to find unattached disks in Azure](${article("find-unattached-disks-azure")}) shows the queries.`,
+          `Find disks no VM uses. Advisor lists unattached disks. Take a snapshot before you delete one, because deletion is irreversible. [How to find unattached disks in Azure](${article("find-unattached-disks-azure")}) shows the queries.`,
           `Compare used with provisioned space on each data disk. [Azure VM disk usage](${article("azure-vm-disk-usage")}) shows how.`,
-          `Check the type. [Premium SSD v2 vs Premium SSD](${article("premium-ssd-v2-vs-premium-ssd")}) compares the two Premium SSD types.`,
+          `Check the type. [Premium SSD v2 vs Premium SSD](${article("premium-ssd-v2-vs-premium-ssd")}) compares the two.`,
         ),
         p(
-          `[Azure disk reservations](${article("azure-disk-reservations")}) walks through every step, and the [Azure disk pricing calculator](${routes.ebsAndAzureDiskPricing}) prices one disk at list price. [How to reduce Azure disk size](${article("shrink-azure-managed-disk")}) covers the copy to a smaller disk.`,
+          `[How to reduce Azure disk size](${article("shrink-azure-managed-disk")}) covers the copy to a smaller disk. The [Azure disk pricing calculator](${routes.ebsAndAzureDiskPricing}) prices a disk at list price.`,
         ),
       ],
     },
     {
       id: "aks-cost",
-      title: "AKS: requests decide how many nodes you pay for",
+      title: "AKS clusters",
       blocks: [
         p(
-          `An AKS cluster's nodes are Azure VMs, grouped in [node pools](${term("node-pool")}). You pay for them as compute, so the number and size of the nodes drive the cost.`,
+          `An AKS cluster's nodes are Azure VMs, grouped in [node pools](${term("node-pool")}). You pay for them as compute, so their number and size drive the cost.`,
         ),
         p(
           "That number follows what your pods request. The Cluster Autoscaler adds nodes when pods can't be scheduled for lack of resources, and removes nodes with no running pods. AKS node auto provisioning (NAP) picks VM sizes from what pending pods request.",
         ),
         p(
-          `So a [request](${term("kubernetes-resource-requests")}) set well above real use holds capacity that nothing uses. Microsoft's AKS guidance says requests higher than actual usage can lead to overprovisioned workloads.`,
+          `So a [request](${term("kubernetes-resource-requests")}) set well above real use holds capacity that nothing uses. Microsoft's AKS guidance says such requests can lead to overprovisioned workloads.`,
         ),
         p("The fix, in order:"),
         ol(
           `Bring each container's requests close to what it uses. The Vertical Pod Autoscaler can recommend values from past usage. [Kubernetes pod right sizing](${article("kubernetes-pod-right-sizing")}) shows how.`,
-          `Let the spare nodes go. Once pods fit on fewer nodes, the autoscaler can remove the empty ones. [Cluster Autoscaler not scaling down](${article("cluster-autoscaler-not-scaling-down")}) covers what keeps a node in place.`,
-          "Stop dev and test clusters when they don't need to run. Cluster stop shuts down every node pool, and the cluster keeps its state for when you start it again.",
+          `Let spare nodes go. Once pods fit on fewer nodes, the autoscaler can remove the empty ones. [Cluster Autoscaler not scaling down](${article("cluster-autoscaler-not-scaling-down")}) covers what keeps a node in place.`,
+          "Stop dev and test clusters when they don't need to run. Cluster stop shuts down every node pool, and the cluster keeps its state for the next start.",
           "Run work that can take an interruption on Spot node pools.",
         ),
         p(
-          `To see where the money goes inside a cluster, turn on the AKS cost analysis add-on. It splits cluster cost by Kubernetes constructs, beside Azure's compute, network and storage categories. [AKS cost analysis](${article("aks-cost-analysis")}) explains what it shows.`,
+          `To see cost inside a cluster, turn on the AKS cost analysis add-on. It splits cluster cost by Kubernetes constructs, beside Azure's compute, network and storage categories. [AKS cost analysis](${article("aks-cost-analysis")}) explains what it shows.`,
         ),
         p(
-          `[Kubernetes cost optimization on AKS and EKS](${routes.kubernetesCostOptimization}) is the full guide. The [EKS and AKS pricing calculator](${routes.eksAndAksPricingCalculator}) prices a node pool.`,
+          `[Kubernetes cost optimization](${routes.kubernetesCostOptimization}) is the full guide. The [EKS and AKS pricing calculator](${routes.eksAndAksPricingCalculator}) prices a node pool.`,
         ),
       ],
     },
     {
       id: "azure-data-transfer-cost",
-      title: "Data transfer: keep traffic inside one region",
+      title: "Data transfer",
       blocks: [
-        p(
-          "Azure prices data transfer as bandwidth: data moving in and out of its data centers, and between them. Its bandwidth pricing page sets these rules:",
-        ),
+        p("Azure prices data transfer as bandwidth. Its bandwidth pricing sets these rules:"),
         ul(
           "Data coming in is free.",
           "Data between Azure services in the same region isn't charged.",
           "Data out to the internet is free for the first 100 GB a month, then charged per GB, in tiers.",
           "Data between two regions is charged on the way out, and free on the way in.",
         ),
+        p("Content Delivery Network, ExpressRoute and peering traffic have their own prices."),
         p(
-          "Bandwidth pricing leaves out the Content Delivery Network, ExpressRoute and peering, which have their own prices.",
+          "Internet egress has two prices, chosen through routing preference: over Microsoft's premium global network, or over a transit ISP network. The ISP route is priced less on every paid tier.",
         ),
         p(
-          "Internet egress has two prices. One routes it over Microsoft's premium global network, and the other over a transit ISP network, through routing preference. The transit ISP route is priced less on every paid tier.",
-        ),
-        p(
-          `So keep services that talk to each other in one region, and watch what leaves it. Microsoft's AKS guidance gives the same warning: a cheaper region for compute can bring latency and data transfer costs. [Egress cost](${term("egress-cost")}) explains the terms.`,
+          `So keep services that talk to each other in one region, and watch what leaves it. Microsoft's AKS guidance warns that a cheaper region for compute can bring latency and data transfer costs. [Egress cost](${term("egress-cost")}) explains the terms.`,
         ),
       ],
     },
     {
       id: "reservations-and-savings-plans",
-      title: "Reservations and savings plans: commit last",
+      title: "Reservations and savings plans",
       blocks: [
         p("Azure offers two ways to commit, each for one or three years."),
-        h3("Reservation or savings plan: which should you buy?"),
+        h3("Reservation or savings plan?"),
         {
           kind: "table",
           head: ["", "Azure reservation", "Azure savings plan for compute"],
@@ -304,8 +293,8 @@ export const azureCostOptimizationPage: TopicPage = {
             ],
             [
               "Discount",
-              "Up to 72% against pay-as-you-go prices",
-              "Up to 65% against pay-as-you-go prices",
+              "Up to 72% off pay-as-you-go prices",
+              "Up to 65% off pay-as-you-go prices",
             ],
             [
               "Best for",
@@ -315,13 +304,13 @@ export const azureCostOptimizationPage: TopicPage = {
           ],
         },
         p(
-          "Each hour, a savings plan's discount covers eligible usage up to the commitment, and anything beyond is charged at pay-as-you-go rates. Commitment an hour doesn't use expires. It doesn't roll over.",
+          "Each hour, a savings plan's discount covers eligible usage up to the commitment. Usage beyond it is charged at pay-as-you-go rates. Commitment an hour doesn't use expires, and doesn't roll over.",
         ),
         p(
-          "Savings plans can't be canceled or refunded, and the one for compute doesn't cover software, networking or storage. When a reservation expires, its resources keep running, but at on-demand rates.",
+          "Savings plans can't be canceled or refunded, and the compute plan doesn't cover software, networking or storage. When a reservation expires, its resources keep running at pay-as-you-go rates.",
         ),
         p(
-          "So commit after the fixes above, not before. Azure Advisor bases its savings plan recommendation on your eligible on-demand usage. Bought first, a plan is sized to usage you're about to remove.",
+          "So commit after the fixes above. Azure Advisor bases its savings plan recommendation on your eligible on-demand usage. Bought first, a plan is sized to usage you're about to remove.",
         ),
         p(
           `The glossary covers [reserved instances](${term("reserved-instance")}) and [savings plans](${term("savings-plan")}) in more depth.`,
@@ -330,65 +319,62 @@ export const azureCostOptimizationPage: TopicPage = {
     },
   ],
   products: {
-    title: "Where Coral and Amoeba fit on Azure",
-    lead: "Deallocating, deleting and committing are changes you make now and then. Requests and disks drift as usage moves, so Zoorik builds a product for each.",
+    title: "Where Coral and Amoeba fit",
+    lead: "Most fixes above are changes you make now and then. AKS requests and VM data disks drift as usage moves, so Coral and Amoeba keep fitting them to real use.",
     cards: [
       {
         product: "coral",
         title: "Coral, for AKS",
         paragraphs: [
-          `[Coral](${routes.coral}) rebalances AKS clusters. It sizes each container's CPU and memory requests to what it really uses. Coral also removes the nodes you don’t need, one at a time.`,
-          `Coral works with the Horizontal Pod Autoscaler, KEDA, NAP and the Cluster Autoscaler, and needs no application code changes. Node optimization is on from install. Pod sizing waits until you switch on "Automatically optimize".`,
+          `[Coral](${routes.coral}) rebalances AKS clusters. It sizes each container's CPU and memory requests to real use, and removes the nodes you don't need, one at a time.`,
+          `It works with the Horizontal Pod Autoscaler, KEDA, NAP and the Cluster Autoscaler, and needs no application code changes. Node optimization starts when you connect a cluster. Pod sizing waits until you switch on "Automatically optimize".`,
         ],
-        link: { label: "AKS cost optimization with Coral", href: routes.aksCostOptimization },
+        link: { label: "Coral on AKS", href: routes.aksCostOptimization },
       },
       {
         product: "amoeba",
         title: "Amoeba, for managed disks",
         paragraphs: [
           `[Amoeba](${routes.amoeba}) rightsizes the data disks of Windows and Linux VMs, and never touches the OS disk. It moves a VM's data disks onto one btrfs pool sized to your data, with room to grow. On Azure, the pool uses Premium SSD v2 where your VM's region and zone offer it, and Premium SSD otherwise.`,
-          "The services that use the data mounts restart at the switch onto the pool. After that, Amoeba rightsizes the pool without any downtime.",
+          "Amoeba rightsizes the pool without any downtime. The services that use the data mounts restart briefly at the switch onto the pool.",
           "It grows the pool before it fills, and shrinks it one disk at a time when your data goes down and stays down. So you pay for close to what you use.",
         ],
-        link: {
-          label: "Azure managed disk cost optimization with Amoeba",
-          href: routes.azureManagedDiskCostOptimization,
-        },
+        link: { label: "Amoeba on Azure", href: routes.azureManagedDiskCostOptimization },
       },
     ],
     notes: [
-      "Both products are in early access. Neither product resizes VMs outside AKS, buys commitments or changes your network.",
-      "Both price their savings at list price, without your discounts. So check their figures against your own rates before you size a commitment.",
-      `[The free assessment](${routes.assessment}) covers Kubernetes (AKS and EKS) and block storage on Azure and AWS. It's read-only and sends nothing to Zoorik.`,
+      "Both products are in early access. Neither resizes VMs outside AKS, buys commitments or changes your network.",
+      "Both price savings at list price, without your discounts. Check their figures against your own rates before you size a commitment.",
+      `[The free assessment](${routes.assessment}) estimates your saving on Kubernetes (AKS and EKS) and block storage on Azure and AWS. It's read-only and sends nothing to Zoorik.`,
     ],
   },
   questions: {
-    title: "Questions about Azure cost optimization",
+    title: "Questions",
     rows: [
       {
         question: "What is Azure cost management?",
         answer:
-          "It's tracking and controlling what Azure charges you over time, by subscription, team and app. Microsoft Cost Management is Microsoft's built-in tool for it.",
+          "Tracking and controlling what Azure charges you over time, by subscription, team and app. Microsoft Cost Management is Microsoft's built-in tool for it.",
       },
       {
         question: "Does Zoorik replace Microsoft Cost Management or Azure Advisor?",
         answer:
-          "No. Cost Management and Advisor show your costs and recommend changes across Azure. Coral and Amoeba make the changes on two lines of it: AKS requests and nodes, and the data disks of your VMs.",
+          "No. Cost Management and Advisor show your costs and recommend changes across Azure. Coral and Amoeba make the changes themselves on two lines: AKS requests and nodes, and VM data disks.",
       },
     ],
   },
   readMore: {
-    title: "More on Azure cost optimization",
+    title: "Read more",
     tiles: [
       {
         title: "Cloud cost optimization",
         href: routes.cloudCostOptimization,
-        line: "The order that reduces Azure and AWS cost",
+        line: "The order of fixes on Azure and AWS",
       },
       {
         title: "AWS cost optimization",
         href: routes.awsCostOptimization,
-        line: "The same walk-through for AWS",
+        line: "The same guide for AWS",
       },
       {
         title: "AKS cost optimization",
@@ -401,9 +387,9 @@ export const azureCostOptimizationPage: TopicPage = {
         line: "What Amoeba does on Azure",
       },
       {
-        title: "Azure disk reservations: are they worth it?",
+        title: "Azure disk reservations",
         href: article("azure-disk-reservations"),
-        line: "What a managed disk is charged for, and how to pay for your data",
+        line: "When reserving a disk is worth it",
       },
       {
         title: "Cloud cost management tools",
@@ -418,45 +404,38 @@ export const awsCostOptimizationPage: TopicPage = {
   path: routes.awsCostOptimization,
   lastUpdated: UPDATED,
   meta: {
-    title: "AWS cost optimization: how to reduce AWS costs",
+    title: "AWS cost optimization",
     description:
-      "Cost optimization on AWS, line by line: stop idle EC2 instances, rightsize with AWS Compute Optimizer, fit EKS, EBS and S3 to real use, then buy Savings Plans.",
+      "AWS cost optimization, line by line: how to reduce EC2, EBS, EKS, S3 and data transfer costs, then size Savings Plans to what's left.",
   },
   hero: {
     eyebrow: "AWS",
-    title: "AWS cost optimization: how to reduce AWS costs",
-    line: "Pay only for the capacity your work uses: fix each cost line first, and buy Savings Plans last.",
+    title: "AWS cost optimization",
+    line: "Fit each cost line to real use, then buy Savings Plans for what's left.",
     cta: estimate,
   },
   sections: [
     {
       id: "see-where-aws-cost-goes",
-      title: "AWS cost management: see where your cost goes",
+      title: "AWS cost management",
       blocks: [
         p(
-          "To manage AWS costs, start with tags. A tag is a key and a value on a resource, such as `team` and `payments`. Tag resources by cost center, application or owner, and you can track each one's cost across services.",
+          `To manage AWS costs, start with [cost allocation tags](${term("cost-allocation-tags")}). A tag is a key and a value on a resource, such as \`team\` and \`payments\`. Tag by cost center, application or owner to track each one's cost across services.`,
         ),
         p(
-          "A tag counts in cost reports only once you activate it as a cost allocation tag. That goes for the tags AWS generates and for your own. Activated tags can take up to 24 hours to appear.",
+          "A tag counts in cost reports only once you activate it, whether AWS or you created it. It can take up to 24 hours to appear. Only an organization's management account, or a standalone account, can activate tags.",
         ),
         p(
-          "**Watch out.** Only an organization's management account, or a standalone account, can open the cost allocation tags manager where tags are activated.",
+          "Then filter AWS Cost Explorer by tag and sort by cost. The cost allocation report also lists untagged resources. Between reviews, AWS Budgets alerts you when cost or usage passes an amount you set, or is forecast to pass it.",
         ),
-        p(
-          "Then filter AWS Cost Explorer, one of the AWS Cost Management features, by tag and sort by size. The cost allocation report lists untagged resources too.",
-        ),
-        p(
-          "To keep managing AWS costs between reviews, set up AWS Budgets. It can alert you when cost or usage passes an amount you set, or is forecast to pass it.",
-        ),
-        p(`[Cost allocation tags](${term("cost-allocation-tags")}) explains how they work.`),
       ],
     },
     {
       id: "aws-cost-optimization-by-line",
-      title: "AWS cost optimization best practices, one cost line at a time",
+      title: "Cost lines, in order",
       blocks: [
         p(
-          "Cost optimization in AWS works one cost line at a time, in this order. Each fix shrinks what the next one has to cover, so commitments come last.",
+          "Cost optimization on AWS works one cost line at a time, in this order. Each fix shrinks what the next one has to cover, so commitments come last.",
         ),
         {
           kind: "table",
@@ -465,21 +444,21 @@ export const awsCostOptimizationPage: TopicPage = {
           rows: [
             [
               "[EC2 instances](#ec2-cost)",
-              "Running time: at least one minute per start, then by the second.",
+              "Running time, busy or idle.",
               "Stop idle instances, then rightsize the rest.",
               "AWS Compute Optimizer flags them.",
             ],
             [
               "[EBS volumes](#ebs-cost)",
-              "Each volume's size, type and performance, even while its instance is stopped.",
-              "Move gp2 to gp3, then bring volumes back to their data.",
+              "Size, type and performance, even while the instance is stopped.",
+              "Move gp2 to gp3, then fit volumes to their data.",
               "Compute Optimizer covers volumes. Amoeba rightsizes data volumes.",
             ],
             [
               "[EKS](#eks-cost)",
-              "In most clusters, mainly the EC2 instances the nodes run on.",
+              "Mostly the EC2 instances your nodes run on.",
               "Fit pod requests to real use, then let spare nodes go.",
-              "Coral rebalances the cluster and removes the nodes you don’t need.",
+              "Coral rebalances the cluster and removes the nodes you don't need.",
             ],
             [
               "[Amazon S3](#s3-cost)",
@@ -505,34 +484,31 @@ export const awsCostOptimizationPage: TopicPage = {
     },
     {
       id: "ec2-cost",
-      title: "EC2 cost optimization: stop idle instances, rightsize the rest",
+      title: "EC2 instances",
       blocks: [
-        h3("Stop or delete what nothing uses"),
+        h3("Stop or terminate"),
         p(
-          "A stopped EC2 instance can start again. Terminating is permanent: it deletes every EBS volume set to delete on termination, which by default includes a root volume attached at launch.",
+          "A stopped EC2 instance can start again. Terminating is permanent, and deletes every EBS volume set to delete on termination. By default, that includes the root volume attached at launch.",
         ),
         p(
-          "Stopping an instance erases any data on its instance store volumes, so copy what you need first. Its EBS volumes and their data stay.",
+          `Stopping erases any data on [instance store](${term("instance-store")}) volumes, so copy what you need first. EBS volumes and their data stay.`,
         ),
-        h3("Use an EC2 instance scheduler for dev and test"),
+        h3("Schedule dev and test"),
         p(
-          "**Worked example.** A development instance that's needed 10 hours a day, Monday to Friday, runs 10 × 5 = 50 of the week's 168 hours. Stopped on a schedule for the other 118 (168 − 50), it carries no usage charge for about 70% of the week (118 ÷ 168). Its EBS volumes are still charged.",
+          "A development instance needed 10 hours a day, Monday to Friday, runs 50 of the week's 168 hours. Stopped on a schedule for the other 118, it has no usage charge for about 70% of the week. Its EBS volumes are still charged.",
         ),
-        h3("Rightsize with AWS Compute Optimizer"),
+        h3("Rightsize with Compute Optimizer"),
         p(
-          `[Rightsizing](${term("rightsizing")}) matches each instance's type and size to what it really uses. [AWS Compute Optimizer](${versus("coral-vs-aws-compute-optimizer")}), AWS's own cloud cost optimizer, does the analysis once you opt in. For an EC2 instance, it reads the specifications and 14 days of Amazon CloudWatch metrics:`,
-        ),
-        ul(
-          "vCPUs, memory and storage;",
-          "CPU use;",
-          "network in and out;",
-          "disk reads and writes.",
+          `[Rightsizing](${term("rightsizing")}) matches each instance's type and size to what it really uses. [AWS Compute Optimizer](${versus("coral-vs-aws-compute-optimizer")}), AWS's own cost optimizer, does the analysis once you opt in.`,
         ),
         p(
-          "It then reports whether each resource is optimal, with its top 3 recommendations and graphs of projected use. It also identifies idle resources, so you can stop or delete them.",
+          "For an EC2 instance, it reads the vCPUs, memory and storage, plus 14 days of Amazon CloudWatch metrics for CPU, network and disk use.",
         ),
         p(
-          "**Rule of thumb.** 14 days can miss a monthly peak, such as month-end batch jobs. Enhanced infrastructure metrics, a paid feature, extends the look-back to 93 days.",
+          "It reports whether each instance is optimal, with up to three recommendations and graphs of projected use. It also flags idle resources, so you can stop or delete them.",
+        ),
+        p(
+          "A 14-day look-back can miss a monthly peak, such as month-end batch jobs. Enhanced infrastructure metrics, a paid feature, extends it to 93 days.",
         ),
         p(
           `Compute Optimizer covers Auto Scaling groups and EBS volumes too. [AWS instance families](${term("aws-instance-families")}) explains how to read a type name such as c7gn.xlarge.`,
@@ -541,15 +517,14 @@ export const awsCostOptimizationPage: TopicPage = {
     },
     {
       id: "ebs-cost",
-      title: "EBS: you pay for the size, not the data",
+      title: "EBS volumes",
       blocks: [
         p(
-          "You pay for an EBS volume's configuration: its size, type and performance. The data inside doesn't change that, so a half-empty volume costs as much as a full one.",
+          `You pay for each [EBS volume](${term("ebs-volume")}) by its size, type and performance, not its data. A half-empty volume costs as much as a full one.`,
         ),
         p(
-          "Amazon EBS Elastic Volumes changes a volume in three ways. On an instance that supports it, the volume stays attached and the instance keeps running:",
+          "Amazon EBS Elastic Volumes can increase a volume's size, change its type or adjust its performance. On an instance that supports it, the volume stays attached and the instance keeps running.",
         ),
-        ul("increase its size;", "change its type;", "adjust its performance."),
         p(
           "The change itself is free. You're charged for the new configuration from the moment it starts.",
         ),
@@ -557,26 +532,26 @@ export const awsCostOptimizationPage: TopicPage = {
           "A gp2 volume can move to gp3 this way. If you don't set IOPS or throughput, EBS keeps the gp2 volume's performance or the gp3 baseline, whichever is higher.",
         ),
         p(
-          "Elastic Volumes can't make a volume smaller. To shrink one, you create a smaller volume and copy the data across, with rsync on Linux or robocopy on Windows.",
+          "Elastic Volumes can't make a volume smaller. To shrink one, create a smaller volume and copy the data across, with rsync on Linux or robocopy on Windows.",
         ),
         p("Next steps:"),
         ul(
-          `[How to check EBS volume usage](${article("check-ebs-volume-usage")}) lines up used space with the size you pay for.`,
-          `[gp2 vs gp3](${article("gp2-vs-gp3")}) compares their price and performance, and the switch.`,
-          `[How to shrink an EBS volume](${article("shrink-ebs-volume")}) walks through the copy.`,
-          `The [EBS pricing calculator](${routes.ebsAndAzureDiskPricing}) shows what a volume and its empty space cost.`,
+          `[How to check EBS volume usage](${article("check-ebs-volume-usage")}): used space against the size you pay for.`,
+          `[gp2 vs gp3](${article("gp2-vs-gp3")}): price, performance and the switch.`,
+          `[How to shrink an EBS volume](${article("shrink-ebs-volume")}): the copy, step by step.`,
+          `[EBS pricing calculator](${routes.ebsAndAzureDiskPricing}): what a volume and its empty space cost.`,
         ),
       ],
     },
     {
       id: "eks-cost",
-      title: "EKS: requests decide how many nodes you pay for",
+      title: "EKS clusters",
       blocks: [
         p(
-          "On Amazon EKS, nodes are usually most of the cost. AWS's EKS best practices guide says that in most clusters, the bulk of cost comes from the EC2 instances that run your containers.",
+          "AWS's EKS best practices guide says that in most clusters, the bulk of the cost is the EC2 instances your nodes run on.",
         ),
         p(
-          "Pod requests set the CPU and memory each container asks for. The guide says requests should match real use. When they're too high, the capacity sits unused, and that's a large factor in total cluster cost.",
+          `Pod [requests](${term("kubernetes-resource-requests")}) set the CPU and memory each container asks for. The guide says they should match real use. Set too high, they leave capacity unused, a large factor in cluster cost.`,
         ),
         p("The guide ranks the fixes for cluster compute in this order:"),
         ol(
@@ -585,33 +560,35 @@ export const awsCostOptimizationPage: TopicPage = {
           "Optimize capacity types, such as Spot, and accelerators, such as GPUs.",
         ),
         p(
-          `Smaller requests leave room on some nodes. With autoscaling set up, Karpenter or the Cluster Autoscaler can then remove them. Restrictive [Pod Disruption Budgets](${term("pod-disruption-budget")}) can stop both from scaling down, so check yours first.`,
+          `Smaller requests free room on some nodes, and Karpenter or the Cluster Autoscaler can then remove them. Restrictive [Pod Disruption Budgets](${term("pod-disruption-budget")}) can stop both from scaling down, so check yours first.`,
         ),
         p(
-          `[Kubernetes cost optimization on AKS and EKS](${routes.kubernetesCostOptimization}) walks through both steps. The [EKS pricing calculator](${routes.eksAndAksPricingCalculator}) shows what a node costs a month, and [how to choose EKS instance types](${article("how-to-choose-eks-instance-types")}) helps you pick the next ones.`,
+          `[Kubernetes cost optimization](${routes.kubernetesCostOptimization}) covers both steps. The [EKS pricing calculator](${routes.eksAndAksPricingCalculator}) shows what a node costs a month, and [how to choose EKS instance types](${article("how-to-choose-eks-instance-types")}) helps you pick the next ones.`,
         ),
       ],
     },
     {
       id: "s3-cost",
-      title: "S3 tiering: match the storage class to how data is read",
+      title: "S3 tiering",
       blocks: [
         p(
-          "New objects go to S3 Standard unless you choose another storage class. Choosing the class that fits each use case reduces what you pay to store the data.",
+          "New objects go to S3 Standard unless you choose another storage class. A class that fits how the data is read reduces what you pay to store it.",
         ),
-        h3("S3 Intelligent-Tiering: when you don't know the access pattern"),
-        p("Amazon S3 Intelligent-Tiering moves objects between tiers by how they're read:"),
+        h3("S3 Intelligent-Tiering"),
+        p(
+          "For data with unknown or changing access patterns, Amazon S3 Intelligent-Tiering moves each object between tiers for you:",
+        ),
         ul(
-          "after 30 days without access, to the Infrequent Access tier;",
-          "after 90 days without access, to the Archive Instant Access tier;",
-          "between tiers again when the access pattern changes.",
+          "to Infrequent Access after 30 days without access;",
+          "to Archive Instant Access after 90 days without access;",
+          "back to Frequent Access when it's accessed again.",
         ),
         p(
-          "Intelligent-Tiering has no retrieval fees, only a small monthly fee per object for monitoring. Objects under 128 KB aren't monitored, and always stay in the Frequent Access tier.",
+          "It has no retrieval fees, only a small monthly monitoring fee per object. Objects under 128 KB aren't monitored, and always stay in Frequent Access.",
         ),
-        h3("When you know the data is cold"),
+        h3("Known cold data"),
         p(
-          "A lifecycle configuration can move objects from S3 Standard to S3 Standard-IA. Standard-IA suits objects over 128 KB that you keep for at least 30 days:",
+          "A lifecycle rule can move objects from S3 Standard to S3 Standard-IA. Standard-IA suits objects over 128 KB that you keep for at least 30 days:",
         ),
         ul(
           "an object under 128 KB is charged as 128 KB;",
@@ -625,19 +602,17 @@ export const awsCostOptimizationPage: TopicPage = {
     },
     {
       id: "aws-data-transfer-cost",
-      title: "Data transfer: keep traffic close and off NAT gateways",
+      title: "Data transfer",
       blocks: [
-        p(
-          "AWS charges for data transfer by direction and distance. Its data transfer overview sets out the rules:",
-        ),
+        p("AWS charges for data transfer by direction and distance:"),
         ul(
           "Data coming into AWS from the internet isn't charged.",
           "Data going out to the internet is charged per service, at rates set by the Region it leaves.",
           "Data transfer within the same Availability Zone is free.",
-          "Traffic that crosses an Availability Zone or Region boundary typically pays a charge.",
+          "Traffic that crosses an Availability Zone or Region boundary is usually charged.",
         ),
         p(
-          "Two parts of a network change what you pay. A NAT gateway adds a data processing charge for every GB that passes through it. A gateway VPC endpoint reaches S3 and DynamoDB in the same Region without data transfer charges.",
+          `A [NAT gateway](${article("aws-nat-gateway-pricing")}) adds a data processing charge for every GB through it. A gateway VPC endpoint reaches S3 and DynamoDB in the same Region with no data transfer charge.`,
         ),
         p(
           "So send S3 and DynamoDB traffic through gateway endpoints, not a NAT gateway. Keep chatty services in one Availability Zone where your availability design allows. Copy data across Regions only when you need to.",
@@ -649,22 +624,22 @@ export const awsCostOptimizationPage: TopicPage = {
     },
     {
       id: "savings-plans-and-spot",
-      title: "Savings Plans and Spot: commit last",
+      title: "Savings Plans and Spot",
       blocks: [
         p(
-          `A [Savings Plan](${term("savings-plan")}) commits you to a set amount of compute use per hour, for one or three years. In return, AWS says you can save up to 72% on compute. Two kinds cover EC2:`,
+          `A [Savings Plan](${term("savings-plan")}) commits you to a set amount of compute use per hour, for one or three years. Two kinds cover EC2:`,
         ),
         ul(
-          "Compute Savings Plans apply regardless of instance family, size, OS, tenancy or Region, and to Fargate and Lambda too. AWS's EKS guide puts them at up to 66% off EC2.",
-          "EC2 Instance Savings Plans go up to 72%, but commit you to one instance family in one Region.",
+          "Compute Savings Plans: up to 66% off, whatever the instance family, size, OS, tenancy or Region, and on Fargate and Lambda too.",
+          "EC2 Instance Savings Plans: up to 72% off, for one instance family in one Region.",
         ),
         p(
-          "Commit after the other fixes. AWS Cost Explorer shows a recommended commitment and your past usage, so wait until that usage comes from after your last change.",
+          "Buy after the other fixes. Cost Explorer recommends a commitment from your past usage, so wait until that usage comes from after your last change.",
         ),
         p(
-          `[Spot Instances](${term("spot-instance")}) run on spare EC2 capacity at discounts of up to 90%. AWS can reclaim them with a 2-minute notice, so keep them for work that can stop.`,
+          `[Spot Instances](${term("spot-instance")}) run on spare EC2 capacity at up to 90% off. AWS can reclaim them with a 2-minute notice, so keep them for work that can stop.`,
         ),
-        p("**Rule of thumb.** AWS's EKS guide splits capacity three ways:"),
+        p("AWS's EKS guide splits capacity three ways:"),
         ul(
           "a Savings Plan for everything under your minimum capacity;",
           "Spot for capacity that won't affect your app's availability;",
@@ -675,37 +650,37 @@ export const awsCostOptimizationPage: TopicPage = {
   ],
   products: {
     title: "Where Coral and Amoeba fit",
-    lead: "Stopping, deleting and committing are changes you make now and then. EKS requests and EBS volumes drift as usage moves, so Zoorik builds a product for each.",
+    lead: "Most fixes above are changes you make now and then. EKS requests and EBS data volumes drift as usage moves, so Coral and Amoeba keep fitting them to real use.",
     cards: [
       {
         product: "coral",
         title: "Coral, for EKS",
         paragraphs: [
           `[Coral](${routes.coral}) rebalances Amazon EKS clusters. It sizes pod requests to real use, so fewer EC2 instances can carry the same work. It also empties spare instances one at a time.`,
-          "Karpenter or the Cluster Autoscaler still adds instances when demand grows, and removes the ones Coral empties. In a node group the Cluster Autoscaler doesn't manage, Coral removes them itself, and it never creates machines. With Karpenter, a rebalance can also move work onto cheaper EC2 instances.",
-          `Node optimization starts when you connect a cluster. Pod sizing waits until you switch on "Automatically optimize".`,
+          "Karpenter or the Cluster Autoscaler still adds instances as demand grows, and removes the ones Coral empties. In a node group the Cluster Autoscaler doesn't manage, Coral removes them itself, and it never creates machines.",
+          `With Karpenter, a rebalance can also move work onto cheaper EC2 instances. Node optimization starts when you connect a cluster. Pod sizing waits until you switch on "Automatically optimize".`,
         ],
-        link: { label: "EKS cost optimization with Coral", href: routes.eksCostOptimization },
+        link: { label: "Coral on EKS", href: routes.eksCostOptimization },
       },
       {
         product: "amoeba",
         title: "Amoeba, for EBS",
         paragraphs: [
           `[Amoeba](${routes.amoeba}) rightsizes the EBS data volumes of Windows and Linux EC2 instances, and never touches the root volume. It moves an instance's data volumes onto one btrfs pool sized to your data, with room to grow. On AWS, the pool uses gp3.`,
-          "The services that use the data mounts restart at the switch onto the pool. After that, Amoeba rightsizes the pool without any downtime.",
+          "Amoeba rightsizes the pool without any downtime. The services that use the data mounts restart briefly at the switch onto the pool.",
           "It grows the pool before it fills, and shrinks it one volume at a time when your data goes down and stays down. So you pay for close to what you use.",
         ],
-        link: { label: "EBS cost optimization with Amoeba", href: routes.ebsCostOptimization },
+        link: { label: "Amoeba on AWS", href: routes.ebsCostOptimization },
       },
     ],
     notes: [
       "Both products are in early access. Neither changes instance types outside EKS, S3 storage classes, your network or your commitments.",
-      "Their savings figures leave out your discounts and Savings Plans. So check them against your own rates before you size a commitment.",
-      `[The free assessment](${routes.assessment}) estimates what you could save on Kubernetes (AKS and EKS) or block storage on Azure and AWS. It's read-only and sends nothing to Zoorik.`,
+      "Both price savings at list price, without your discounts or Savings Plans. Check their figures against your own rates before you size a commitment.",
+      `[The free assessment](${routes.assessment}) estimates your saving on Kubernetes (AKS and EKS) and block storage on Azure and AWS. It's read-only and sends nothing to Zoorik.`,
     ],
   },
   questions: {
-    title: "Questions about AWS cost optimization",
+    title: "Questions",
     rows: [
       {
         question: "Where do you start to reduce AWS costs?",
@@ -720,10 +695,10 @@ export const awsCostOptimizationPage: TopicPage = {
       {
         question: "Can an EBS volume shrink?",
         answer:
-          "Not in place. You copy the data to a smaller volume, or, for a data volume, let Amoeba move it onto a pool sized to your data.",
+          "Not in place. You copy the data to a smaller volume, or let Amoeba move a data volume onto a pool sized to your data.",
       },
       {
-        question: "Savings Plan or Spot: which should you use?",
+        question: "Savings Plan or Spot?",
         answer:
           "A Savings Plan suits steady usage you'll keep for one or three years. Spot suits work that can stop.",
       },
@@ -735,17 +710,17 @@ export const awsCostOptimizationPage: TopicPage = {
     ],
   },
   readMore: {
-    title: "More on AWS cost optimization",
+    title: "Read more",
     tiles: [
       {
         title: "Cloud cost optimization",
         href: routes.cloudCostOptimization,
-        line: "The order that reduces Azure and AWS cost",
+        line: "The order of fixes on Azure and AWS",
       },
       {
         title: "Azure cost optimization",
         href: routes.azureCostOptimization,
-        line: "The same walk-through for Azure",
+        line: "The same guide for Azure",
       },
       {
         title: "EKS cost optimization",
@@ -758,7 +733,7 @@ export const awsCostOptimizationPage: TopicPage = {
         line: "What Amoeba does on AWS",
       },
       {
-        title: "What AWS Compute Optimizer recommends for EBS volumes",
+        title: "AWS Compute Optimizer for EBS",
         href: article("compute-optimizer-ebs"),
         line: "Type, size, IOPS and throughput, and what you apply yourself",
       },

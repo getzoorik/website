@@ -5,34 +5,34 @@ export const term: GlossaryTerm = {
   slug: "disk-latency",
   term: "Disk latency",
   title: "What is disk latency?",
-  meta: "Disk latency is how long one read or write takes. See Azure HDD latency and SSD latency targets, how AWS reports EBS latency, and what a high one can mean.",
+  meta: "Disk latency is how long one read or write takes. Azure’s latency targets by disk type, how AWS reports EBS latency, and what high latency means.",
   h1: "What is disk latency?",
   card: "Disk latency is how long one read or write takes to finish.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-26",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "Disk latency is how long one read or write takes to finish. The clock runs from sending the request until the disk confirms it’s done. You’ll usually see it in milliseconds (ms).",
+      text: "Disk latency is how long one read or write takes to finish. It runs from sending the request until the disk confirms it’s done, and is usually given in milliseconds (ms).",
     },
     { kind: "svg", figure: figure1 },
     {
       kind: "p",
       text: [
-        "It’s also called storage latency or input/output (I/O) latency. ",
-        { a: "I/O operations per second (IOPS)", href: "/learn/glossary/iops" },
-        " counts the operations, and latency is the time each one takes.",
+        "It’s also called storage latency or I/O latency. ",
+        { a: "IOPS", href: "/learn/glossary/iops" },
+        " counts the operations each second, and latency is the time each one takes.",
       ],
     },
   ],
   sections: [
     {
       id: "azure-disk-latency-and-ebs-latency",
-      title: "Azure disk latency and EBS latency",
+      title: "Latency on Azure and AWS",
       blocks: [
-        { kind: "p", text: "Each Azure disk type has a design target:" },
+        { kind: "p", text: "Azure designs each disk type for a latency target:" },
         {
           kind: "ul",
           items: [
@@ -55,36 +55,43 @@ export const term: GlossaryTerm = {
         {
           kind: "p",
           text: [
-            "On AWS, CloudWatch reports average EBS latency per minute for volumes on Nitro-based instances, as ",
+            "On AWS, CloudWatch reports each EBS volume’s average latency per minute as ",
             { code: "VolumeAvgReadLatency" },
             " and ",
             { code: "VolumeAvgWriteLatency" },
-            ".",
+            ". It does so for volumes on Nitro-based instances.",
           ],
         },
         {
           kind: "p",
-          text: "There’s no single acceptable disk latency. Transaction-heavy apps, such as databases, are sensitive to it. Apps that stream large files care less.",
+          text: "There’s no single acceptable disk latency. Transaction-heavy apps, such as databases, are sensitive to it. Apps that read and write large files in sequence care less.",
         },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why disk latency matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "p",
           text: [
             "Disk types differ in latency and price. But high latency can also mean a disk or VM is at its limit. Check ",
             { a: "both limits", href: "/learn/azure-disk-iops-vs-throughput" },
-            " before you change type:",
+            " before you pay for a faster type:",
           ],
         },
         {
           kind: "ul",
           items: [
-            "Ask a disk for more IOPS or throughput than it allows, and latency can rise.",
-            "The VM has its own limits too.",
+            "Push a disk past its IOPS or throughput limit, and it’s throttled. Latency can rise.",
+            "The VM has its own IOPS and throughput limits, separate from the disk’s.",
+            [
+              "On AWS, ",
+              { code: "VolumeIOPSExceededCheck" },
+              " and ",
+              { code: "VolumeThroughputExceededCheck" },
+              " show when your app tries to drive a volume past its limit.",
+            ],
           ],
         },
         {
@@ -105,7 +112,7 @@ export const term: GlossaryTerm = {
     { title: "IOPS", line: "Operations a disk handles each second.", href: "/learn/glossary/iops" },
     {
       title: "Disk throughput",
-      line: "Bytes a disk moves each second.",
+      line: "Data a disk moves each second.",
       href: "/learn/glossary/disk-throughput",
     },
     {
@@ -114,9 +121,9 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/provisioned-iops",
     },
   ],
-  relatedTitle: "Disk performance terms related to latency",
+  relatedTitle: "Related terms",
   next: {
-    title: "Azure disk IOPS vs throughput: what limits your disks",
+    title: "Azure disk IOPS vs throughput",
     href: "/learn/azure-disk-iops-vs-throughput",
   },
   sources: [

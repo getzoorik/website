@@ -4,28 +4,38 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/aws-gravito
 export const term: GlossaryTerm = {
   slug: "aws-graviton",
   term: "AWS Graviton",
-  title: "What is AWS Graviton? Graviton instances explained",
-  meta: "AWS Graviton is the Arm processor family AWS builds for EC2, now in its fifth generation. How to tell AWS Graviton instances by name, and what EKS needs.",
-  h1: "What is AWS Graviton? Graviton instances explained",
-  card: "AWS Graviton is a family of Arm-based processors that Amazon builds for Amazon Web Services (AWS).",
+  title: "What is AWS Graviton?",
+  meta: "AWS Graviton is the Arm processor family AWS builds for EC2. Its five generations, how to spot Graviton instances by name, and what EKS needs.",
+  h1: "What is AWS Graviton?",
+  card: "AWS Graviton is a family of Arm-based processors that Amazon Web Services (AWS) builds for its cloud.",
   group: "finops-pricing",
   product: "coral",
   published: "2026-11-02",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "AWS Graviton is a family of Arm-based processors that Amazon builds for Amazon Web Services (AWS). Graviton instances are the Amazon Elastic Compute Cloud (EC2) instance types that run on them.",
+      text: "AWS Graviton is a family of Arm-based processors that Amazon Web Services (AWS) builds for its cloud. Graviton instances are the Amazon Elastic Compute Cloud (EC2) instance types that run on them.",
     },
   ],
   sections: [
     {
       id: "aws-graviton-processors",
-      title: "AWS Graviton processors, from Graviton to Graviton5",
+      title: "Graviton processor generations",
       blocks: [
         {
           kind: "p",
-          text: "Every Graviton processor is a 64-bit Arm (arm64) chip. Graviton5, the fifth generation, has been generally available on EC2 since June 2026.",
+          text: "Every Graviton processor uses 64-bit Arm (arm64) cores. There have been five generations, each with its own instance families:",
+        },
+        {
+          kind: "ul",
+          items: [
+            "Graviton: A1, the first Graviton instances.",
+            "Graviton2: such as M6g and T4g.",
+            "Graviton3: such as M7g.",
+            "Graviton4: such as M8g.",
+            "Graviton5: such as M9g, generally available since June 2026.",
+          ],
         },
       ],
     },
@@ -35,29 +45,29 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "In an EC2 instance type name, a g after the generation number means AWS Graviton, as in m7g.large or c7gn.xlarge. On the general purpose Graviton types, Linux is the only operating system AWS lists.",
+          text: "In an EC2 instance type name, a g after the generation number means Graviton, as in m7g.large or c7gn.xlarge. For its general purpose Graviton types, AWS lists Linux as the only operating system.",
         },
         {
           kind: "p",
           text: [
-            "Amazon Elastic Kubernetes Service (EKS) offers Arm versions of its EKS-optimized Amazon Machine Images (AMIs), built on Amazon Linux. Apps on Arm nodes must be compiled for Arm. Each ",
+            "Amazon Elastic Kubernetes Service (EKS) offers Arm versions of its EKS-optimized Amazon Linux AMIs (Amazon Machine Images). Apps on Arm nodes must be compiled for Arm. Each ",
             { a: "DaemonSet", href: "/learn/glossary/daemonset" },
-            " must also be able to run on every architecture in your cluster.",
+            " must be able to run on every architecture in your cluster.",
           ],
         },
         {
           kind: "p",
           text: [
-            "One cluster can run Arm and x86 node groups side by side. In that case, AWS suggests multi-architecture images, plus node selectors so each pod lands where its image runs. A selector can use ",
+            "One cluster can run Arm and x86 node groups side by side. AWS then suggests multi-architecture images, plus node selectors so each pod lands where its image runs. A selector can use ",
             { code: "kubernetes.io/arch" },
-            ", the label that names each node’s architecture, such as arm64 or amd64.",
+            ", the label that names a node’s architecture, such as arm64 or amd64.",
           ],
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
           text: [
-            "A managed node group can’t change its instance type in place, so moving to Graviton usually means a new node group. See ",
+            "A managed node group can’t change its instance types in place, so moving to Graviton usually means a new node group. See ",
             {
               a: "how to change an EKS node group instance type",
               href: "/learn/change-eks-node-group-instance-type",
@@ -69,16 +79,17 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why AWS Graviton matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            "AWS says Graviton instances deliver up to 40% better price-performance than equivalent x86 instances (November 2026). That figure is price-performance, not price.",
-            "Compare On-Demand prices for sizes with the same virtual CPUs (vCPUs) and memory, such as m7g.large and Intel-based m7i.large, in your Region. Prices change.",
+            "AWS says Graviton instances deliver up to 40% better price-performance than equivalent x86 instances. That’s price-performance, not price.",
+            "To compare On-Demand prices, pick sizes with the same virtual CPUs (vCPUs) and memory in your Region, such as m7g.large and Intel-based m7i.large.",
+            "On Graviton, each vCPU is a whole physical core. On m7i.large, two vCPUs share one core.",
             [
               { a: "Coral", href: "/coral" },
-              " rebalances CPU and memory requests on AKS and EKS to match real use. It removes the nodes you don’t need.",
+              " rebalances CPU and memory requests on AKS and EKS to match real use, and removes the nodes you don’t need.",
             ],
           ],
         },
@@ -88,7 +99,7 @@ export const term: GlossaryTerm = {
   related: [
     {
       title: "vCPU",
-      line: "On Graviton, one vCPU is one core.",
+      line: "One thread of a core, or a whole core.",
       href: "/learn/glossary/vcpu",
     },
     {
@@ -107,7 +118,7 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/daemonset",
     },
   ],
-  relatedTitle: "Terms related to AWS Graviton",
+  relatedTitle: "Related terms",
   next: {
     title: "How to choose EKS instance types",
     href: "/learn/how-to-choose-eks-instance-types",
@@ -146,6 +157,12 @@ export const term: GlossaryTerm = {
       publisher: "Kubernetes",
       title: "“Well-Known Labels, Annotations and Taints”",
       url: "https://kubernetes.io/docs/reference/labels-annotations-taints/",
+    },
+    {
+      publisher: "Amazon Web Services",
+      title: "“UpdateNodegroupConfig”",
+      url: "https://docs.aws.amazon.com/eks/latest/APIReference/API_UpdateNodegroupConfig.html",
+      note: " (Amazon EKS API Reference)",
     },
     {
       publisher: "Amazon Web Services",

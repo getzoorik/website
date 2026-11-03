@@ -4,29 +4,29 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/azure-disk-
 export const term: GlossaryTerm = {
   slug: "azure-disk-sizes",
   term: "Azure disk sizes (P10, P30, E10, S10 size names)",
-  title: "What are Azure disk sizes (P10, P30, E10)?",
-  meta: "An Azure P10 disk is 128 GiB and an Azure P30 disk is 1 TiB. Every Azure managed disk size from P1 to P80, and why you pay for the whole size.",
-  h1: "What are Azure disk sizes (P10, P30, E10)?",
-  card: "Azure disk sizes are the fixed sizes Azure offers for three types of managed disk, the disks that Azure virtual machines (VMs) use.",
+  title: "Azure disk sizes",
+  meta: "Every Azure managed disk size from P1 to P80, with its GiB, IOPS and MB/s. A P10 is 128 GiB, a P30 is 1 TiB, and you pay for the whole size.",
+  h1: "Azure disk sizes",
+  card: "Azure disk sizes are the fixed sizes of three types of Azure managed disk: Premium SSD, Standard SSD and Standard HDD.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-26",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
       text: [
-        "Azure disk sizes are the fixed sizes Azure offers for three types of ",
+        "Azure disk sizes are the fixed sizes of three types of Azure ",
         { a: "managed disk", href: "/learn/glossary/azure-managed-disk" },
-        ", the disks that Azure virtual machines (VMs) use. Each size has a short name, such as P10, E10 or S10.",
+        ": Premium SSD, Standard SSD and Standard HDD. Each size has a short name, such as P10.",
       ],
     },
     {
       kind: "p",
       text: [
-        "The letter in each name gives the ",
+        "The letter gives the ",
         { a: "disk type", href: "/learn/azure-managed-disk-types" },
-        ", and the number gives the size:",
+        " and the number gives the size:",
       ],
     },
     {
@@ -37,14 +37,17 @@ export const term: GlossaryTerm = {
         "S is Standard HDD (hard disk drive), from S4 to S80.",
       ],
     },
-    { kind: "p", text: "They run from 4\u00a0GiB (P1, E1) to 32,767\u00a0GiB (P80, E80, S80)." },
+    {
+      kind: "p",
+      text: "Sizes run from 4\u00a0GiB (P1, E1) to 32,767\u00a0GiB (P80, E80, S80). A P10 is 128\u00a0GiB, and a P30 is 1,024\u00a0GiB (1\u00a0TiB).",
+    },
   ],
   sections: [
     {
       id: "common-azure-managed-disk-sizes",
-      title: "Azure managed disk sizes, P1 to P80",
+      title: "Sizes, P1 to P80",
       blocks: [
-        { kind: "p", text: "The same number means the same size in each type:" },
+        { kind: "p", text: "The same number means the same size in every type:" },
         {
           kind: "table",
           columns: [
@@ -76,51 +79,54 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "A charge named “P10 LRS Disk” means a P10 with locally redundant storage (LRS).",
+          text: "A charge named “P10 LRS Disk” is a P10 with locally redundant storage (LRS).",
         },
       ],
     },
     {
       id: "an-example-a-200-gib-disk",
-      title: "An example: a 200\u00a0GiB disk",
+      title: "How sizes are charged",
       blocks: [
         {
           kind: "p",
-          text: "Microsoft’s own example is a 200\u00a0GiB Standard SSD. Azure charges it as the next size up, E15 at 256\u00a0GiB. You pay for 256\u00a0GiB, not 200.",
+          text: "Azure charges a P, E or S disk for its whole size, however much data it holds. A disk between two sizes is charged as the next size up.",
+        },
+        {
+          kind: "p",
+          text: "Microsoft’s example is a 200\u00a0GiB Standard SSD. Azure charges it as E15, 256\u00a0GiB.",
         },
         { kind: "svg", figure: figure1 },
+        {
+          kind: "p",
+          text: [
+            "Premium SSD v2 and ",
+            { a: "Ultra Disk", href: "/learn/glossary/azure-ultra-disk" },
+            " have no fixed sizes. They’re charged per GiB, in 1\u00a0GiB steps.",
+          ],
+        },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why Azure disk sizes matter for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            "Azure charges P, E and S disks for the whole size, however much data they hold.",
+            [
+              "You can move a disk to a larger size, but ",
+              { a: "not a smaller one", href: "/learn/shrink-azure-managed-disk" },
+              ". So you keep paying for the largest size it ever needed.",
+            ],
             [
               "Price a Premium SSD or Standard SSD size with our ",
               { a: "Azure disk pricing calculator", href: "/ebs-and-azure-disk-pricing" },
               ".",
             ],
             [
-              "Premium SSD v2 and ",
-              { a: "Ultra Disk", href: "/learn/glossary/azure-ultra-disk" },
-              " charge per GiB, in 1\u00a0GiB steps.",
+              { a: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
+              " discount Premium SSD sizes P30 to P80 for a one-year term.",
             ],
-            [
-              "You can move a disk to a larger size, but ",
-              { a: "not a smaller one", href: "/learn/shrink-azure-managed-disk" },
-              ".",
-            ],
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            { a: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
-            " shows ways to reduce this cost.",
           ],
         },
         {
@@ -155,8 +161,11 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/azure-ultra-disk",
     },
   ],
-  relatedTitle: "Terms related to Azure disk sizes",
-  next: { title: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
+  relatedTitle: "Related terms",
+  next: {
+    title: "Azure disk reservations: are they worth it?",
+    href: "/learn/azure-disk-reservations",
+  },
   sources: [
     {
       publisher: "Microsoft Learn",

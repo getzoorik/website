@@ -49,9 +49,7 @@ describe("the case study band", () => {
   it("says where and how long in one line, then sends the reader to the study", () => {
     const section = band();
     const line = section.querySelector("p.mo-case-l")!;
-    expect(line.textContent).toBe(
-      "On Zoorik’s own development cluster, eight days from connecting Coral to the result.",
-    );
+    expect(line.textContent).toBe("On our development cluster, eight days after connecting Coral.");
     expect([...line.querySelectorAll("[translate='no']")].map((el) => el.textContent)).toEqual([
       "Coral",
     ]);

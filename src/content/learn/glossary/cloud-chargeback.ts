@@ -4,64 +4,84 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/cloud-charg
 export const term: GlossaryTerm = {
   slug: "cloud-chargeback",
   term: "Chargeback (cloud / IT chargeback)",
-  title: "What is cloud chargeback? Chargeback models",
-  meta: "Cloud chargeback charges each team’s budget for its share of the cloud cost. See three AWS starting models and how to plan an IT chargeback model with finance.",
-  h1: "What is cloud chargeback? Chargeback models",
-  card: "Cloud chargeback, or chargeback in cloud computing, means charging each team its share of the cloud cost.",
+  title: "What is cloud chargeback?",
+  meta: "Cloud chargeback charges each team’s budget for its share of the cloud cost. How it differs from showback, and the models to start from.",
+  h1: "What is cloud chargeback?",
+  card: "Cloud chargeback means charging each team its share of the cloud cost.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-25",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "Cloud chargeback, or chargeback in cloud computing, means charging each team its share of the cloud cost. Your company pays the provider’s invoice, then charges each team through internal accounting.",
+      text: "Cloud chargeback means charging each team its share of the cloud cost. Your company pays the provider’s invoice, then charges each team’s budget through internal accounting.",
     },
     { kind: "svg", figure: figure1 },
   ],
   sections: [
     {
       id: "an-example-from-aws",
-      title: "An AWS chargeback example",
+      title: "Chargeback vs showback",
       blocks: [
         {
           kind: "p",
           text: [
-            "A ",
-            { a: "showback", href: "/learn/glossary/showback" },
-            " report tells the infrastructure engineering team what its AWS usage cost last month. Cloud chargeback takes that amount out of the team’s AWS budget.",
+            { a: "Showback", href: "/learn/glossary/showback" },
+            " reports what each team’s cloud use cost. Chargeback goes one step further: the team pays it.",
           ],
+        },
+        {
+          kind: "p",
+          text: "In AWS’s example, showback tells the infrastructure engineering team what its AWS usage cost last month. Chargeback deducts that amount from the team’s AWS budget.",
+        },
+        {
+          kind: "p",
+          text: "Microsoft suggests starting with showback, then cost allocation, then chargeback.",
         },
       ],
     },
     {
       id: "chargeback-models-in-cloud-computing",
-      title: "Chargeback models in cloud computing",
+      title: "Chargeback models",
       blocks: [
         {
           kind: "p",
-          text: "Each cloud chargeback model rests on cost allocation: assigning each cost to the team or app that used it. AWS describes three starting models.",
+          text: "Every chargeback model rests on cost allocation: assigning each cost to the team or app that used it. AWS describes three starting models:",
         },
         {
           kind: "ul",
           items: [
-            "An account-based model follows each AWS account, takes the least effort and needs no tags.",
-            "A team-based model groups each team’s accounts with AWS Cost Categories.",
-            "A tag-based model takes the most effort. Tags count only once activated for cost allocation.",
+            [
+              { b: "Account-based." },
+              " Each AWS account’s cost goes to the team that owns it. It takes the least effort and needs no tags.",
+            ],
+            [
+              { b: "Team-based." },
+              " AWS Cost Categories group each team’s accounts. It takes moderate effort.",
+            ],
+            [
+              { b: "Tag-based." },
+              " Costs follow resource tags. It takes the most effort, and a tag counts only from when you activate it for cost allocation.",
+            ],
           ],
         },
         {
           kind: "h3",
           id: "a-chargeback-model-for-shared-services",
-          title: "A chargeback model for shared services",
+          title: "Shared costs",
+        },
+        {
+          kind: "p",
+          text: "A service that several teams share, such as a Kubernetes cluster, needs an agreed split. Microsoft describes these splits:",
         },
         {
           kind: "ul",
           items: [
-            "Split a shared service’s cost evenly across the teams that use it.",
-            "Split it in proportion to each team’s total, compute, storage or network cost.",
-            "Split it by custom percentages.",
-            "Split it by measured use, from utilization data or app telemetry.",
+            "Evenly across the teams that use it.",
+            "In proportion to each team’s total, compute, storage or network cost.",
+            "By custom percentages.",
+            "By measured use, from utilization data or app telemetry.",
           ],
         },
         {
@@ -76,19 +96,19 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "Microsoft says to plan your IT chargeback model with IT and finance, based on an agreed split of shared costs and commitment discounts.",
+          text: "Microsoft says to plan the chargeback model with IT and finance, using an agreed split of shared costs and commitment discounts.",
         },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why chargeback matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
             [
-              "Cloud cost chargeback doesn’t change the provider’s invoice. But a team paying its share has a reason to ",
+              "Chargeback doesn’t change the provider’s invoice. But a team that pays its share has a reason to ",
               { a: "reduce cloud costs", href: "/cloud-cost-optimization" },
               ".",
             ],
@@ -101,9 +121,9 @@ export const term: GlossaryTerm = {
               " moves a virtual machine’s data disks onto one btrfs pool sized to your data, then rightsizes it autonomously.",
             ],
             [
-              "Our library lists FinOps tools and other ",
+              "Our library lists ",
               { a: "cloud cost management tools", href: "/cloud-cost-optimization-library" },
-              ", with what each one does.",
+              " and what each one does.",
             ],
           ],
         },
@@ -117,20 +137,20 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/showback",
     },
     {
+      title: "Cost allocation tags",
+      line: "Labels that split cost by team or app.",
+      href: "/learn/glossary/cost-allocation-tags",
+    },
+    {
       title: "Kubernetes cost allocation",
       line: "Splits a shared cluster’s cost by team.",
       href: "/learn/glossary/kubernetes-cost-allocation",
     },
     { title: "FinOps", line: "The wider practice.", href: "/learn/glossary/finops" },
-    {
-      title: "Cloud unit economics",
-      line: "Cloud cost per unit of business value.",
-      href: "/learn/glossary/cloud-unit-economics",
-    },
   ],
-  relatedTitle: "Terms related to cloud chargeback",
+  relatedTitle: "Related terms",
   next: {
-    title: "Cloud cost optimization: how to reduce cloud costs",
+    title: "Cloud cost optimization",
     href: "/cloud-cost-optimization",
   },
   sources: [

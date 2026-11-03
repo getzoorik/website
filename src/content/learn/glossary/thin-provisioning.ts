@@ -4,61 +4,82 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/thin-provis
 export const term: GlossaryTerm = {
   slug: "thin-provisioning",
   term: "Thin provisioning",
-  title: "Thick vs thin provisioning in storage",
-  meta: "Thin provision a volume and it takes space only as you write data. Thick provision it and the full size is set aside. See why cloud disks cost their full size.",
-  h1: "Thick vs thin provisioning in storage",
-  card: "Thin provisioning in storage creates a volume that takes up space only as you write data.",
+  title: "Thick vs thin provisioning",
+  meta: "Thick vs thin provisioning: thin takes space as you write data, thick sets the full size aside. How they differ, and how cloud disks are charged.",
+  h1: "Thick vs thin provisioning",
+  card: "Thin provisioning creates a volume that takes up space only as you write data.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "Thin provisioning in storage creates a volume that takes up space only as you write data. You still set its full size when you create it. Its share of the storage pool starts small and grows with your data.",
+      text: "Thin provisioning creates a volume that takes up space only as you write data. Thick provisioning sets the volume’s full size aside when you create it.",
+    },
+    {
+      kind: "p",
+      text: "You set a thin volume’s full size too. Its share of the storage pool starts small and grows with your data.",
     },
   ],
   sections: [
     {
       id: "thin-provisioning-vs-thick-provisioning",
-      title: "Thin provisioning vs thick provisioning: up front or as you write",
+      title: "How they differ",
       blocks: [
         {
-          kind: "ul",
-          items: [
-            "Thick provisioning reserves the full size up front. A thick disk still works when the pool is full.",
-            "Thin provisioning takes space only as needed, and thin volumes can add up to more than the pool holds.",
+          kind: "table",
+          columns: [
+            { label: "", width: "30%" },
+            { label: "Thick", width: "35%" },
+            { label: "Thin", width: "35%" },
+          ],
+          rows: [
+            ["Space set aside", "The full size, at once", "Only what the data needs"],
+            ["Unused space", "Held for this volume", "Free for other volumes"],
+            ["Total size can exceed the pool", "No", "Yes"],
+            [
+              "Microsoft recommends it",
+              "To limit what a volume takes from the pool",
+              "If you don’t know how much space a volume needs",
+            ],
           ],
         },
         {
           kind: "p",
-          text: "When choosing thick or thin provisioning, Microsoft recommends thin if you don’t know how much space a volume needs. To limit what a volume takes from the pool, it recommends thick, which Azure Local calls “fixed”.",
+          text: "A thick disk keeps working when the pool is full, because its space is reserved. Azure Local calls thick provisioning “fixed”, and can convert fixed volumes to thin.",
         },
       ],
     },
     {
       id: "a-10-gb-virtual-disk",
-      title: "A 10\u00a0GB virtual disk, thick or thin provisioned",
+      title: "A 10 GB example",
       blocks: [
         {
           kind: "p",
-          text: "In Microsoft’s example, you create a 10\u00a0GB virtual disk. With thick provisioning, all 10\u00a0GB is set aside at once, and other virtual machines (VMs) can’t share it.",
+          text: "Microsoft’s example is a 10 GB virtual disk. Thick provisioned, all 10 GB is set aside at once, and other virtual machines (VMs) can’t share it. A thin provisioned disk takes only what its data needs, then grows.",
         },
-        { kind: "p", text: "A thin provisioned disk takes only what it needs, then grows." },
         { kind: "svg", figure: figure1 },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why thin provisioning matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "p",
-          text: "Provisioning storage sets your cloud cost. Azure charges a managed disk’s full size from first use, and Amazon EBS charges each provisioned GB every month. So an empty GiB costs as much as a full one.",
+          text: "You pay for a cloud disk as if it were thick: by its full size, not your data.",
+        },
+        {
+          kind: "ul",
+          items: [
+            "Azure charges a managed disk for its full size once it’s first used.",
+            "Amazon EBS charges each GB you provision, every month.",
+          ],
         },
         {
           kind: "p",
-          text: "In Microsoft’s pricing example, a 1\u00a0TiB Standard SSD holds 120\u00a0GiB. You still pay for 1\u00a0TiB.",
+          text: "In Microsoft’s pricing example, a 1 TiB Standard SSD holds 120 GiB of data. You still pay for 1 TiB.",
         },
         {
           kind: "p",
@@ -83,15 +104,19 @@ export const term: GlossaryTerm = {
       line: "The Azure cloud disk, charged by its size.",
       href: "/learn/glossary/azure-managed-disk",
     },
-    { title: "EBS volume", line: "The AWS version.", href: "/learn/glossary/ebs-volume" },
+    {
+      title: "EBS volume",
+      line: "The AWS cloud disk, charged by its size.",
+      href: "/learn/glossary/ebs-volume",
+    },
     {
       title: "df vs du",
       line: "Two ways to check how full a disk is.",
       href: "/learn/glossary/df-vs-du",
     },
   ],
-  relatedTitle: "Terms related to thin provisioning",
-  next: { title: "Azure disk reservations", href: "/learn/azure-disk-reservations" },
+  relatedTitle: "Related terms",
+  next: { title: "How to check EBS volume usage", href: "/learn/check-ebs-volume-usage" },
   sources: [
     {
       publisher: "Microsoft Learn",

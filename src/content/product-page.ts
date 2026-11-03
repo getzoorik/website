@@ -10,14 +10,14 @@ import type { Platform, ProductId } from "@/content/products";
  * One template, two contents. The page reads the same way for both products, so
  * its words are data and each product's live in its own file (`coral-page.ts`,
  * `amoeba-page.ts`), verbatim from the mocks. What another page already says
- * about a product (what it runs on, the home page's line for it, its How it
+ * about a product (what it runs on, its own line, its How it
  * works cards and the line under them, its one-pager's file) is not copied
  * here: each page file points at that content, so the two surfaces cannot drift
  * apart.
  *
  * ─── THE ORDER ─────────────────────────────────────────────────────────────
  * Hero (one screen over the data grid film: the product's mark and name, its
- * name for search, the home page's line for it, one button and the stores that
+ * name for search, its own line, one button and the stores that
  * list it) → What is <product>?, beside What <product> does → the film band,
  * once the film is on YouTube → How it works (the page's one band) → Read more
  * → the closing row (the noise cut, the details left to each product's guide

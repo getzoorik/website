@@ -314,7 +314,7 @@ describe("the menus' rows", () => {
         ? [["Amoeba", "Guide, FAQ and one-pager", "/docs#amoeba"]]
         : []),
       ["All docs", "", "/docs"],
-      ["Zoorik Learn", "Cloud cost optimization guides for Kubernetes and block storage", "/learn"],
+      ["Zoorik Learn", "Kubernetes, block storage and cloud cost guides", "/learn"],
       ["Open source", "What you can read, run and contribute to", "/open-source"],
     ]);
   });

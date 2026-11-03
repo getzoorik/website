@@ -240,7 +240,7 @@ describe("the login screen", () => {
       /^Reduce cloud cost, autonomously\.$/,
     );
     const line = panel.querySelector(":scope > p")!;
-    expect(line.textContent).toBe("Coral optimizes Kubernetes. Amoeba optimizes block storage.");
+    expect(line.textContent).toBe("Coral rebalances Kubernetes. Amoeba rightsizes block storage.");
     expect([...line.querySelectorAll("span[translate='no']")].map((s) => s.textContent)).toEqual([
       "Coral",
       "Amoeba",
@@ -267,7 +267,7 @@ describe("the login screen", () => {
     expect(container.querySelector("a")).toBe(skip);
     expect(container.querySelector("main#main")).toHaveAttribute("tabindex", "-1");
     expect(container.querySelectorAll("h1")).toHaveLength(1);
-    expect(container.querySelector("h1")).toHaveTextContent(/^Choose a product to continue$/);
+    expect(container.querySelector("h1")).toHaveTextContent(/^Sign in$/);
     /* No deck under the heading. */
     expect(container.querySelector("main .deck")).toBeNull();
     expect(container.textContent).not.toContain("Each product has its own console.");

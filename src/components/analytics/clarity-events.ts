@@ -1,6 +1,6 @@
 /**
  * The three actions zoorik.com names to Microsoft Clarity, as privacy policy
- * §4.6 (version 1.1) discloses them: the action's name and nothing else, so
+ * §4.6 discloses them: the action's name and nothing else, so
  * that each can be counted, and on which pages.
  *
  * A demo is booked on Cal.com, which the page cannot see: what it names is

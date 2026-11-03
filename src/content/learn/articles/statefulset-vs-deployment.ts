@@ -4,43 +4,43 @@ import { figure as figure1 } from "@/features/learn/figures/statefulset-vs-deplo
 export const article: Article = {
   slug: "statefulset-vs-deployment",
   title: "StatefulSet vs Deployment in Kubernetes",
-  meta: "Kubernetes Deployment vs StatefulSet compared: pod names, volumes and update order, where a ReplicaSet fits, volumes on AKS and EKS, and which to pick.",
-  h1: "StatefulSet vs Deployment in Kubernetes: which one your app needs",
-  deck: "By default a StatefulSet updates one pod at a time, deleting each before its replacement starts.",
-  card: "Pod names, volumes and update order side by side, where a ReplicaSet fits, and what changes on AKS and EKS.",
+  meta: "StatefulSet vs Deployment compared: pod names, volumes and update order, where a ReplicaSet fits, disks on AKS and EKS, and how to choose.",
+  h1: "StatefulSet vs Deployment",
+  deck: "One question decides it: does each pod need its own name, its own volume or a fixed order?",
+  card: "Pod names, volumes and update order side by side, where a ReplicaSet fits, and disks on AKS and EKS.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes storage",
   versus: ["StatefulSet", "Deployment"],
   published: "2026-11-02",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "zoorik",
   cover: "/learn-covers/zoorik-learn-statefulset-vs-deployment-1200x630.webp",
   coverAlt:
     "Deployment pods with hash suffixes beside StatefulSet pods web-0, web-1 and web-2, each with its own volume",
   short:
-    "Deployment vs StatefulSet comes down to identity. A Deployment runs interchangeable pods. A StatefulSet gives each pod a stable name, its own volume and an order.",
+    "A Deployment runs interchangeable pods, usually for apps that keep no state. A StatefulSet gives each pod a stable name, its own volume and a fixed order to start, stop and update. Use a StatefulSet when pods need any of those, and a Deployment otherwise.",
   sections: [
     {
       id: "what-a-deployment-runs-interchangeable-pods-through",
-      title: "What a Deployment runs: interchangeable pods through a ReplicaSet",
+      title: "Deployment: interchangeable pods",
       blocks: [
         {
           kind: "p",
-          text: "A Deployment manages a set of pods for an app that usually doesn’t keep state. It creates a ReplicaSet, and the ReplicaSet creates the pods from one pod template.",
+          text: "A Deployment runs pods for an app that usually keeps no state. It creates a ReplicaSet, and the ReplicaSet creates the pods from one pod template.",
         },
         {
           kind: "p",
           text: [
             "Pod names carry the template’s hash and a suffix of their own, such as ",
             { code: "nginx-deployment-75675f5897-7ci7o" },
-            " in the docs’ example. The pods are interchangeable: any one can stand in for another.",
+            " in the docs’ example. Any pod can stand in for another.",
           ],
         },
         {
           kind: "p",
           text: [
-            "The default rolling update scales a new ReplicaSet up as it scales the old one down. By default, ",
+            "A rolling update, the default, scales a new ReplicaSet up as it scales the old one down. By default, ",
             { code: "maxUnavailable" },
             " lets at most 25% of the desired pods be unavailable, and ",
             { code: "maxSurge" },
@@ -51,11 +51,11 @@ export const article: Article = {
     },
     {
       id: "what-a-statefulset-adds-stable-names-a",
-      title: "What a StatefulSet adds: stable names, a volume per pod and order",
+      title: "StatefulSet: stable identity",
       blocks: [
         {
           kind: "p",
-          text: "The Kubernetes docs list four guarantees a StatefulSet gives its pods:",
+          text: "Kubernetes lists four guarantees a StatefulSet gives its pods:",
         },
         {
           kind: "ul",
@@ -75,13 +75,13 @@ export const article: Article = {
           text: [
             "Pods are named ",
             { code: "<statefulset name>-<ordinal>" },
-            ", so a StatefulSet called web with 3\u00a0replicas runs ",
+            ". A StatefulSet called web with 3 replicas runs ",
             { code: "web-0" },
             ", ",
             { code: "web-1" },
             " and ",
             { code: "web-2" },
-            ". A headless Service, which you create yourself, gives each pod a DNS name such as ",
+            ". A headless Service, which you create, gives each pod a DNS name such as ",
             { code: "web-0.nginx.default.svc.cluster.local" },
             ".",
           ],
@@ -93,7 +93,7 @@ export const article: Article = {
             { code: "volumeClaimTemplates" },
             " give each pod its own ",
             { a: "PersistentVolumeClaim (PVC)", href: "/learn/kubernetes-persistent-volume" },
-            ". When a pod is rescheduled onto a node, it mounts the volumes of those same claims again.",
+            ". A pod rescheduled onto another node mounts the volumes of the same claims again.",
           ],
         },
         {
@@ -109,7 +109,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Rolling updates, the default update strategy, run from the highest ordinal down, one pod at a time. The controller deletes and recreates each pod, and waits until it is Running and Ready before the next. A ",
+            "Rolling updates, the default, run from the highest ordinal down, one pod at a time. Each pod is deleted and recreated, and must be Running and Ready before the next one changes. A ",
             { code: "partition" },
             " stages an update: only pods at or above that ordinal change, for a canary or a phased rollout.",
           ],
@@ -120,18 +120,18 @@ export const article: Article = {
           text: [
             "Two fields relax the order. With ",
             { code: "podManagementPolicy: Parallel" },
-            ", scaling creates or terminates all pods at once. Add a ",
+            ", scaling starts or stops all pods at once. A ",
             { code: "maxUnavailable" },
-            " above 1, beta since Kubernetes 1.37, and an update replaces up to that many pods at once.",
+            " above 1, beta since Kubernetes 1.37, lets an update replace up to that many pods at once.",
           ],
         },
       ],
     },
     {
       id: "how-to-choose-between-a-statefulset-and",
-      title: "How to choose between a StatefulSet and a Deployment",
+      title: "How to choose",
       blocks: [
-        { kind: "p", text: "Side by side, with their defaults, the two differ on five points." },
+        { kind: "p", text: "Side by side, with their defaults:" },
         {
           kind: "table",
           columns: [
@@ -174,39 +174,39 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Without those needs, the docs point to a workload with stateless replicas, such as a Deployment.",
+          text: "Otherwise, Kubernetes points to a workload with stateless replicas, such as a Deployment.",
         },
         {
           kind: "p",
           text: [
-            "When a Deployment’s template names a claim, every replica mounts that same claim. A ",
+            "A Deployment can still mount a volume, but every replica mounts the same claim. A ",
             { code: "ReadWriteOnce" },
-            " volume can be mounted read-write by a single node, so the replicas must all run on that node.",
+            " volume can be mounted read-write by one node only, so the replicas must all run on that node.",
           ],
         },
       ],
     },
     {
       id: "replicaset-vs-statefulset-you-rarely-create-a",
-      title: "ReplicaSet vs StatefulSet: you rarely create a ReplicaSet yourself",
+      title: "ReplicaSet vs StatefulSet",
       blocks: [
         {
           kind: "p",
-          text: "A ReplicaSet keeps a set number of identical pods running. It doesn’t support rolling updates directly. So the docs recommend a Deployment instead, unless you need custom update orchestration or no updates at all.",
+          text: "A ReplicaSet keeps a set number of identical pods running. It doesn’t support rolling updates directly, so Kubernetes recommends a Deployment instead, unless you need custom update orchestration or no updates at all.",
         },
         {
           kind: "p",
-          text: "If a Deployment owns a ReplicaSet, don’t manage that ReplicaSet yourself. A StatefulSet manages its pods itself, and records each change to its pod template in a ControllerRevision, which rollbacks use.",
+          text: "Don’t manage a ReplicaSet that a Deployment owns. A StatefulSet uses no ReplicaSet: it manages its pods itself, and records each change to its pod template in a ControllerRevision, which rollbacks use.",
         },
       ],
     },
     {
       id: "what-a-statefulsets-volumes-mean-on-aks",
-      title: "What a StatefulSet’s volumes mean on AKS and EKS",
+      title: "Volumes on AKS and EKS",
       blocks: [
         {
           kind: "p",
-          text: "Deleting a StatefulSet, or scaling it down, doesn’t delete its volumes. The docs give data safety as the reason. The claims and the disks behind them stay until you delete them.",
+          text: "Deleting a StatefulSet, or scaling it down, doesn’t delete its volumes. Kubernetes keeps them for data safety. The claims and the disks behind them stay until you delete them.",
         },
         {
           kind: "p",
@@ -231,17 +231,18 @@ export const article: Article = {
             { a: "Azure Kubernetes Service (AKS)", href: "/learn/glossary/aks" },
             ", Azure Disks are mounted ",
             { code: "ReadWriteOnce" },
-            " and are available to only one node. For a volume that several nodes use at once, Microsoft points to Azure Files.",
+            " and are available to one node only. For a volume that several nodes use at once, Microsoft points to Azure Files.",
           ],
         },
         {
           kind: "p",
           text: [
-            "Zone-redundant storage (ZRS) disks, the ",
+            { a: "Zone-redundant storage (ZRS)", href: "/learn/azure-disk-lrs-vs-zrs" },
+            " disks, the ",
             { code: "Premium_ZRS" },
             " and ",
             { code: "StandardSSD_ZRS" },
-            " types, don’t have to be in the same zone as their node. Other Azure Disks do.",
+            " types, don’t have to be in their node’s zone. Other Azure Disks do.",
           ],
         },
         {
@@ -256,7 +257,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Pods that use a PersistentVolume are scheduled only to nodes its node affinity allows. So a StatefulSet pod that moves needs a node in its disk’s zone, unless that disk is ZRS.",
+          text: "A pod that uses a PersistentVolume is scheduled only to nodes the volume’s node affinity allows. So a StatefulSet pod that moves needs a node in its disk’s zone, unless the disk is ZRS.",
         },
         {
           kind: "p",
@@ -273,15 +274,15 @@ export const article: Article = {
     },
     {
       id: "how-coral-rebalances-statefulsets-and-deployments-differently",
-      title: "How Coral rebalances StatefulSets and Deployments differently",
+      title: "How Coral handles each",
       blocks: [
         {
           kind: "p",
           text: [
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS, and rebalances CPU and memory requests under a policy. By default it gives StatefulSets the ",
+            " rebalances CPU and memory requests on AKS and EKS, under a policy. By default, StatefulSets get the ",
             { a: "Resiliency policy", href: "/coral-faq#what-does-each-coral-policy-do" },
-            ", which sizes like Balanced and keeps limits equal to requests on Guaranteed pods. Your own Deployments get Balanced.",
+            ", which sizes like Balanced and keeps Guaranteed pods Guaranteed. Your own Deployments get Balanced.",
           ],
         },
         {
@@ -289,16 +290,12 @@ export const article: Article = {
           text: [
             "Running pods are resized in place where the node allows it, on Kubernetes 1.33 and later. Otherwise a Deployment’s pods are replaced one at a time, each after the last is Ready, within your ",
             { a: "PodDisruptionBudgets (PDBs)", href: "/learn/glossary/pod-disruption-budget" },
-            ".",
+            ". A StatefulSet’s pods change one at a time too, highest ordinal first, and never with an extra pod.",
           ],
         },
         {
           kind: "p",
-          text: "A StatefulSet’s pods change one at a time too, highest ordinal first, and never with an extra pod.",
-        },
-        {
-          kind: "p",
-          text: "When Coral drains a node, an eligible Deployment gets a warm handover: a new copy turns Ready elsewhere before the old pod goes. A StatefulSet pod gets a short restart instead, within its PDB.",
+          text: "When Coral removes a node, an eligible Deployment pod gets a warm handover: a new copy turns Ready elsewhere before the old pod goes. A StatefulSet pod moves by live migration where both nodes support it, or else by eviction within its PDB.",
         },
         {
           kind: "p",
@@ -307,10 +304,10 @@ export const article: Article = {
             { a: "do-not-disrupt", href: "/learn/safe-to-evict-do-not-disrupt" },
             " pods. For a careful start, ",
             {
-              a: "the Coral FAQ’s answer on databases and StatefulSets",
+              a: "the Coral FAQ",
               href: "/coral-faq#how-are-databases-kafka-elasticsearch-redis",
             },
-            " suggests putting databases on the Read-only policy.",
+            " suggests putting databases on the Read-only policy and marking them do-not-disrupt.",
           ],
         },
       ],
@@ -363,22 +360,22 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "How to resize a PVC in Kubernetes, and why it can’t shrink",
+      title: "Expand a PVC in Kubernetes",
       where: "Learn",
       href: "/learn/resize-pvc-kubernetes",
     },
     {
-      title: "Kubernetes persistent volumes and PVCs: how a pod gets a disk",
+      title: "Kubernetes persistent volumes and PVCs",
       where: "Learn",
       href: "/learn/kubernetes-persistent-volume",
     },
     {
-      title: "How to drain a Kubernetes node without downtime",
+      title: "kubectl drain without any downtime",
       where: "Learn",
       href: "/learn/kubernetes-drain-node-without-downtime",
     },
     {
-      title: "Pod disruption budget best practices for AKS and EKS",
+      title: "Pod disruption budget best practices",
       where: "Learn",
       href: "/learn/pod-disruption-budget-best-practices",
     },

@@ -672,36 +672,28 @@ describe("/learn/poor-architecture-cloud-bill, against its draft", () => {
   it("keeps its sections and parts, in order, under the ids its old page gave them", async () => {
     const frame = (await main(slug)).querySelector(".ar-frame")!;
     expect([...frame.querySelectorAll("section.fq-sec > h2")].map(text)).toEqual([
-      "The hidden cost of architectural decisions",
-      "Container vs VM: the architectural trade-off",
-      "Five places poor architecture adds cost",
-      "How we review an architecture for cost",
-      "What we found in that engagement",
-      "Cloud cost is an engineering discipline",
-      "Where Coral fits once workloads share a cluster",
+      "How VMs and containers differ",
+      "Why one VM per app costs more",
+      "Where architecture adds cost",
+      "How to review an architecture",
+      "From 16 VMs to 4 nodes",
+      "Four questions per workload",
+      "Where Coral fits",
     ]);
     expect([...frame.querySelectorAll("section.fq-sec")].map((s) => s.id).slice(0, 6)).toEqual([
-      "the-hidden-cost-of-architectural-decisions",
       "vms-versus-containers-understanding-the-architectural-trade-off",
+      "the-hidden-cost-of-architectural-decisions",
       "where-poor-architecture-translates-into-higher-costs",
       "how-we-approach-cloud-cost-optimization-as",
       "what-we-found-in-that-engagement",
       "the-bigger-lesson-cloud-waste-is-often",
     ]);
     expect([...frame.querySelectorAll("h3[id]")].map(text)).toEqual([
-      "The difference between a VM and a container",
-      "Why a shared pool of nodes uses capacity better",
-      "1. Overprovisioning compute and storage",
-      "2. Running workloads in isolation when they could share capacity",
-      "3. Scaling infrastructure instead of fixing the application",
-      "4. Ignoring non-production environments",
-      "5. Designing for peak traffic without a scaling strategy",
-      "1. Establish a baseline",
-      "2. Understand the workload",
-      "3. Compare realistic architecture options",
-      "4. Model the expected savings",
-      "5. Validate through measurement",
-      "6. Prevent the same costs from returning",
+      "When to use each",
+      "What a shared pool adds",
+      "Sized for peak, all day",
+      "Scaling instead of fixing",
+      "Idle non-production",
     ]);
   });
 
@@ -715,7 +707,7 @@ describe("/learn/poor-architecture-cloud-bill, against its draft", () => {
     const figures = [...(await main(slug)).querySelectorAll(".ar-frame figure svg[role='img']")];
     expect(figures.map((svg) => text(svg.querySelector("title")))).toEqual([
       "Apps that share nodes need fewer machines for the same use",
-      "Sharing nodes reduced the client’s compute cost by 44%",
+      "Sharing nodes and resizing reduced the client’s compute cost by 44%",
     ]);
   });
 
@@ -726,12 +718,13 @@ describe("/learn/poor-architecture-cloud-bill, against its draft", () => {
       .filter((a) => !a.closest("p.ar-help-a"))
       .map((a) => [text(a), a.getAttribute("href")]);
     expect(links).toEqual([
+      ["inflated requests", "/learn/kubernetes-overprovisioning"],
       [
-        "Azure managed disks and Amazon EBS volumes can grow but can’t shrink in place",
+        "Azure managed disks and Amazon EBS volumes grow but can’t shrink in place",
         "/learn/shrink-azure-managed-disk",
       ],
       ["cost per request", "/learn/glossary/cloud-unit-economics"],
-      ["tagging", "/learn/glossary/cloud-tagging-strategy"],
+      ["Tagging", "/learn/glossary/cloud-tagging-strategy"],
       ["on-demand", "/learn/glossary/on-demand-instance"],
       ["FinOps", "/learn/glossary/finops"],
       ["Coral", "/coral"],

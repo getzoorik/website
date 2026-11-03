@@ -6,15 +6,15 @@ import { productFilms } from "@/content/product-films";
 import type { ProductPageContent, ReadMoreTile } from "@/content/product-page";
 
 /**
- * `/amoeba`: every string the page prints, verbatim from the mock.
+ * `/amoeba`: every string the page prints, in the mock's layout.
  *
  * The product tour adds each row's line and the film (`product-films.ts`).
  * What Amoeba does is a heading, so it has no "?" (owner, 1 Nov 2026).
  *
- * The hero's line (the home page's own line for Amoeba), the Runs on chips and
- * the line under the How it works cards are read from `elastic.ts`, and the
- * cards from `how-it-works.ts`, rather than copied: a second copy would be a
- * second claim free to drift. Nothing here is a new figure.
+ * The Runs on chips and the line under the How it works cards are read from
+ * `elastic.ts`, and the cards from `how-it-works.ts`, rather than copied: a
+ * second copy would be a second claim free to drift. The hero's line is this
+ * page's own. Nothing here is a new figure.
  *
  * Amoeba is "Block storage optimization" for Windows and Linux VMs on Azure
  * and AWS: the site's one name for what it does.
@@ -38,7 +38,7 @@ export const amoebaGuideAndFaq: readonly ReadMoreTile[] = [
   {
     kind: "page",
     title: "FAQ",
-    line: "Safety, downtime, expanding, agent and costs",
+    line: "Data safety, downtime, requirements and costs",
     href: routes.amoebaFaq,
   },
 ];
@@ -48,26 +48,25 @@ export const amoebaGuideAndFaq: readonly ReadMoreTile[] = [
  * `lastmod` only: the page does not print it. Whoever changes /amoeba's content
  * moves this to that day in the same PR; never the build's date.
  */
-export const amoebaPageLastUpdated = "2 November 2026";
+export const amoebaPageLastUpdated = "3 November 2026";
 
 export const amoebaPageContent: ProductPageContent = {
   product: "amoeba",
   meta: {
     title: "Amoeba: Block storage optimization",
     description:
-      "Block storage optimization: Amoeba rightsizes Azure managed disks and Amazon EBS to your data, autonomously, without any downtime after the one switch.",
+      "Amoeba rightsizes Azure managed disks and Amazon EBS volumes on Windows and Linux VMs to your data, autonomously and without any downtime.",
     /* What "What is Amoeba?" says: structured data must say what the page
        says. */
     appDescription:
-      "Block storage optimization for VMs on Azure and AWS. Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. Then it rightsizes that pool, one disk at a time.",
+      "Block storage optimization for VMs on Azure and AWS. Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. Then it grows and shrinks that pool as your data changes.",
   },
   hero: {
     /* "Block storage" is tied with a no-break space, as the mock writes the h1:
        the longer line never leaves "Block" alone at a line end. */
     title: "Block\u00a0storage optimization",
-    /* Its own line (2 Nov 2026): the home page's line for Amoeba changed with the home page's plan, and this
-       page's did not. */
-    line: "Stop paying for empty disk space. Amoeba rightsizes Azure managed disks and Amazon EBS on Windows and Linux VMs, autonomously, without any downtime after the one switch.",
+    /* The page's own line: what Amoeba does, on which disks and VMs, and how. */
+    line: "Amoeba rightsizes Azure managed disks and Amazon EBS volumes on Windows and Linux VMs, autonomously and without any downtime.",
     cta: { label: assessContent.assessment.cta.label, href: assessmentHref("amoeba") },
   },
   about: {
@@ -77,10 +76,10 @@ export const amoebaPageContent: ProductPageContent = {
       [
         "Amoeba is a block storage optimization platform for VMs on Azure and AWS. Cloud disks only grow: an Azure managed disk or an Amazon Elastic Block Store (EBS) volume can be made larger, but not smaller. Amoeba moves a VM’s data disks onto one ",
         { a: "btrfs pool", href: learnPath("btrfs-multiple-disks") },
-        " sized to your data, with room to grow. Then it rightsizes that pool while it stays mounted. You pay for the space your data uses, not the space you once provisioned.",
+        " sized to your data, with room to grow. Then it grows and shrinks that pool while it stays mounted, so you pay for the space your data uses.",
       ],
-      "Amoeba installs an agent on each VM you onboard, through Azure Run Command or AWS Systems Manager, with no application code changes. The systemd services that use the data mounts restart at the switch onto the pool. After that, the pool grows and shrinks while it stays mounted.",
-      "With Amoeba, you see used and provisioned space on every disk, what each VM’s disks cost at list price, and what the pool saves. You choose, per VM, whether shrinks run on their own or wait for you.",
+      "Amoeba installs its agent on each VM you onboard, through Azure Run Command or AWS Systems Manager, with no application code changes. It copies your data while your services run, then switches each mount to the pool with a short restart of the services that use it.",
+      "You see used and provisioned space on every disk, what each VM’s disks cost at list price, and what the pool saves. Per VM, you choose whether shrinks run on their own or wait for you.",
     ],
     more: "More about Amoeba",
   },
@@ -98,8 +97,9 @@ export const amoebaPageContent: ProductPageContent = {
       line: "What each VM costs, and what you save.",
     },
     {
+      /* The id stays, as it is an address; the label no longer repeats the h1. */
       id: "block-storage-optimization",
-      label: "Block storage optimization",
+      label: "Rightsizing",
       drawing: "pool",
       line: "Grows before it fills, and shrinks one disk at a time.",
     },
@@ -110,8 +110,8 @@ export const amoebaPageContent: ProductPageContent = {
   },
   film: productFilms.amoeba,
   how: {
-    /* Named for the search "how to rightsize disks" (owner, 1 Nov 2026); the section keeps its id. */
-    title: "How Amoeba rightsizes disks",
+    /* The same heading as /coral's; the section keeps its id. */
+    title: "How it works",
     steps: howItWorksSteps.amoeba,
     example: elasticContent.caption,
   },

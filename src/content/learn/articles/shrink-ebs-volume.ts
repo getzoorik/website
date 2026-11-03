@@ -5,87 +5,86 @@ import { figure as figure3 } from "@/features/learn/figures/shrink-ebs-volume/3"
 
 export const article: Article = {
   slug: "shrink-ebs-volume",
-  title: "How to shrink an AWS EBS volume when it only grows",
-  meta: "AWS won’t shrink an EBS volume in place. Copy the data to a smaller gp3 volume, with rsync on Linux or robocopy on Windows, and see what the copy costs you.",
-  h1: "How to shrink an EBS volume when AWS only lets it grow",
-  deck: "AWS’s way out is a copy, with downtime at the switch and both volumes charged until it ends.",
-  card: "EBS volumes only grow. The copy route to a smaller volume, its downtime, and where Amoeba fits.",
+  title: "Shrink an EBS volume",
+  meta: "AWS can’t shrink an EBS volume in place. How to copy the data to a smaller gp3 volume with rsync, the downtime it takes and what it costs.",
+  h1: "How to shrink an EBS volume",
+  deck: "Deleting files doesn’t reduce the cost: AWS charges a volume for its provisioned size, not its data.",
+  card: "Not in place. Copy the data to a smaller gp3 volume, with downtime at the switch.",
   product: "amoeba",
   hub: "Block storage",
   topic: "AWS block storage",
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "vineet",
   cover: "/learn-covers/zoorik-learn-shrink-ebs-volume-1200x630.webp",
   coverAlt:
     "Shrink an EBS volume: rsync the data to a smaller volume and delete the old one, since until then you pay for both",
-  short:
-    "You can’t shrink an Amazon Elastic Block Store (EBS) volume in place, so you keep paying for its old size. To reduce EBS volume size, copy the data to a smaller volume with rsync, move the mount and delete the old one.",
+  short: [
+    "You can’t shrink an ",
+    { a: "Amazon Elastic Block Store (EBS) volume", href: "/learn/glossary/ebs-volume" },
+    " in place. Create a smaller gp3 volume, copy the data with rsync, move the mount and delete the old volume. Services that write to the mount stop for the final copy and the switch.",
+  ],
   sections: [
     {
       id: "why-you-keep-paying-for-the-size",
-      title: "Why you keep paying for the size you provisioned",
+      title: "How AWS charges a volume",
       blocks: [
         {
           kind: "p",
-          text: "Picture a 1,000\u00a0GiB data volume of gp2, the older General Purpose SSD type, that now holds 90\u00a0GiB. You pay for all 1,000\u00a0GiB, 910 of them empty, while a 100\u00a0GiB volume would hold the data with 10\u00a0GiB to spare.",
+          text: "Volume storage “is charged by the amount of GB you provision per month until you release the storage,” says the AWS pricing page.",
+        },
+        {
+          kind: "p",
+          text: "Say a 1,000\u00a0GiB gp2 volume, the older General Purpose SSD type, now holds 90\u00a0GiB. You pay for all 1,000\u00a0GiB. A 100\u00a0GiB volume would hold the data with 10\u00a0GiB to spare.",
+        },
+        {
+          kind: "p",
+          text: "Volumes grow for ordinary reasons, such as a bulk import. Elastic Volumes, AWS’s name for changing a volume in place, can grow it, change its type or adjust its performance. When the data shrinks again, the provisioned size stays.",
+        },
+        {
+          kind: "p",
+          text: "Detaching the volume doesn’t stop the charge either. AWS charges a detached volume’s storage, beyond the Free Tier, until you delete it.",
         },
         {
           kind: "p",
           text: [
-            "An ",
-            { a: "EBS volume", href: "/learn/glossary/ebs-volume" },
-            " is charged for capacity, not data. Volume storage “is charged by the amount of GB you provision per month until you release the storage,” says the pricing page. The ",
+            "The ",
             { a: "EBS pricing calculator", href: "/ebs-and-azure-disk-pricing" },
-            " shows what a volume’s empty space costs a month at list price.",
-          ],
-        },
-        {
-          kind: "p",
-          text: "Volumes grow for ordinary reasons, such as a bulk import. Elastic Volumes, AWS’s name for changing a volume in place, can increase its size, change its type or adjust its performance. You then extend the filesystem to use the new space.",
-        },
-        {
-          kind: "p",
-          text: "When the data shrinks again, the provisioned size stays. Detaching the volume doesn’t stop the charge either. AWS keeps charging for a detached volume’s storage, beyond the Free Tier, until you delete it.",
-        },
-        {
-          kind: "p",
-          text: [
-            "Before you plan a shrink, ",
+            " shows what a volume’s empty space costs a month at list price. Before you plan a shrink, ",
             { a: "measure how full each volume really is", href: "/learn/check-ebs-volume-usage" },
-            " from inside the instance.",
+            ".",
           ],
         },
       ],
     },
     {
       id: "can-you-reduce-ebs-volume-size-in",
-      title: "Can you reduce EBS volume size in place?",
+      title: "Why it can’t shrink in place",
       blocks: [
         {
           kind: "p",
-          text: "No. An attached EBS volume reaches the instance as a block device. The filesystem on it can place data in any block, including the last ones.",
+          text: "An attached EBS volume reaches the instance as a block device. The filesystem on it can place data in any block, including the last ones.",
         },
         {
           kind: "p",
-          text: "Removing the end of the device, such as everything past 100\u00a0GiB on the example volume, removes part of the filesystem. Only the operating system on the instance can move data away from the end first.",
+          text: "Removing the end of the device, such as everything past 100\u00a0GiB in the example, removes part of the filesystem. Only the operating system can move data away from the end first.",
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
-          text: "“You must increase the volume size. You can’t decrease the volume size,” says the Elastic Volumes limitations list. The same page names the way out: create a smaller volume, then migrate the data with rsync on Linux instances or robocopy on Windows instances.",
+          text: "“You must increase the volume size. You can’t decrease the volume size,” says the Elastic Volumes limitations list. The same page names the way out: create a smaller volume, then migrate the data with rsync on Linux or robocopy on Windows.",
         },
-        { kind: "p", text: "Two shortcuts look promising and don’t get you there:" },
+        { kind: "p", text: "Two shortcuts don’t work:" },
         {
           kind: "ul",
           items: [
             [
               { b: "Restoring from a snapshot." },
-              " A volume restored from a snapshot can’t be smaller than the snapshot. The create-volume command accepts only “a volume size that is equal to or larger than the snapshot size.”",
+              " A restored volume can’t be smaller than the snapshot. The create-volume command accepts only “a volume size that is equal to or larger than the snapshot size.”",
             ],
             [
               { b: "Shrinking the filesystem first." },
-              " It doesn’t change what you pay, because the volume under it keeps its provisioned size. Whether a filesystem can shrink at all has its own pages, for ",
+              " The volume under it keeps its provisioned size, so you pay the same. Whether a filesystem can shrink at all has its own pages, for ",
               { a: "XFS", href: "/learn/shrink-xfs-filesystem" },
               " and for ",
               { a: "ext4 with resize2fs", href: "/learn/resize2fs-shrink-ext4" },
@@ -97,14 +96,14 @@ export const article: Article = {
     },
     {
       id: "shrink-ebs-volume",
-      title: "How to shrink an EBS volume: copy to a smaller one",
+      title: "Copy to a smaller volume",
       blocks: [
         {
           kind: "p",
           text: [
-            "Use this route for a data volume on a Linux instance, mounted at ",
+            "These steps are for a data volume on a Linux instance, mounted at ",
             { code: "/data" },
-            " in the example.",
+            ".",
           ],
         },
         { kind: "h3", id: "prepare-the-new-volume", title: "Prepare the new volume" },
@@ -112,14 +111,14 @@ export const article: Article = {
           kind: "ol",
           items: [
             [
-              "Take a snapshot of the old volume, as AWS recommends before you unmount a volume, to guard against data loss. You pay for ",
+              "Snapshot the old volume. AWS advises a snapshot before you unmount a volume, to guard against data loss. You pay for ",
               { a: "snapshot storage", href: "/learn/ebs-snapshot-cost" },
-              " by the space your data uses, not by the volume’s size.",
+              " by the data it holds, not the volume’s size.",
             ],
             "Choose the new size: the data you measured, plus the headroom you want for growth.",
             {
               text: [
-                "Create an empty gp3\u00a0volume in the instance’s Availability Zone, since a volume attaches only to instances in its own zone. The AWS Command Line Interface (CLI) creates gp2 when you leave out ",
+                "Create an empty gp3\u00a0volume in the instance’s Availability Zone. A volume attaches only to instances in its own zone. The AWS Command Line Interface (CLI) creates gp2 when you leave out ",
                 { code: "--volume-type" },
                 ", so name the type.",
               ],
@@ -134,9 +133,9 @@ export const article: Article = {
                   text: [
                     "If the old volume is encrypted, add ",
                     { code: "--encrypted" },
-                    ". Add ",
+                    ". If it uses a customer managed key in AWS Key Management Service (KMS), also add ",
                     { code: "--kms-key-id <key-id>" },
-                    " too if it uses a customer managed key in AWS Key Management Service (KMS). The CLI accepts a key only with ",
+                    ", which the CLI accepts only with ",
                     { code: "--encrypted" },
                     ".",
                   ],
@@ -152,11 +151,11 @@ export const article: Article = {
             ],
             {
               text: [
-                "Create a filesystem on the new device and mount it at a temporary path. The ",
+                "Create a filesystem on the new device and mount it at a temporary path. ",
                 { code: "mkfs" },
-                " command erases whatever is on the device you name. Check the name against ",
+                " erases whatever is on the device you name, so check the name against ",
                 { code: "lsblk" },
-                " before you run it.",
+                " first.",
               ],
               blocks: [
                 {
@@ -175,15 +174,15 @@ export const article: Article = {
           items: [
             {
               text: [
-                "Copy the data while the application runs. In the command, ",
+                "Copy the data while the application runs. ",
                 { code: "-a" },
-                " is archive mode. Adding ",
+                " is archive mode. ",
                 { code: "-H" },
                 ", ",
                 { code: "-A" },
                 " and ",
                 { code: "-X" },
-                " keeps hard links, access control lists (ACLs) and extended attributes, which archive mode leaves out.",
+                " keep hard links, access control lists (ACLs) and extended attributes, which archive mode leaves out.",
               ],
               blocks: [
                 { kind: "code", lang: "bash", code: "sudo rsync -aHAX /data/ /mnt/new/" },
@@ -192,7 +191,7 @@ export const article: Article = {
                   text: [
                     "The trailing slash on ",
                     { code: "/data/" },
-                    " copies the directory’s contents rather than the directory itself.",
+                    " copies the directory’s contents, not the directory itself.",
                   ],
                 },
               ],
@@ -200,7 +199,7 @@ export const article: Article = {
             [
               "Stop every service that writes to ",
               { code: "/data" },
-              ", which is where the downtime starts.",
+              ". The downtime starts here.",
             ],
             {
               text: [
@@ -210,11 +209,11 @@ export const article: Article = {
                 { code: "/mnt/new" },
                 " that were deleted from ",
                 { code: "/data" },
-                " after the first pass. Because it deletes on the receiving side, a swapped source and destination would delete from the old volume. The rsync manual suggests a trial run with ",
+                " since the first pass. It deletes on the receiving side, so a swapped source and destination would delete from the old volume. The rsync manual advises a trial run with ",
                 { code: "--dry-run" },
                 " first, and ",
                 { code: "-v" },
-                " makes that run show what it would do.",
+                " lists what it would do.",
               ],
               blocks: [
                 {
@@ -228,7 +227,7 @@ export const article: Article = {
               text: [
                 "Move the mount. Unmount both, back up ",
                 { code: "/etc/fstab" },
-                ", find the new filesystem’s universally unique identifier, or UUID, with ",
+                ", find the new filesystem’s UUID with ",
                 { code: "blkid" },
                 ", and point the ",
                 { code: "/data" },
@@ -254,7 +253,7 @@ export const article: Article = {
                 },
               ],
             },
-            "Start the services again and check that they read and write on the new volume, which ends the downtime.",
+            "Start the services again and check that they read and write on the new volume. The downtime ends here.",
           ],
         },
         { kind: "h3", id: "remove-the-old-volume", title: "Remove the old volume" },
@@ -263,7 +262,7 @@ export const article: Article = {
           start: 11,
           items: [
             {
-              text: "When you trust the new volume, detach the old one. Step 9 already unmounted it, which AWS requires before a detach.",
+              text: "When you trust the new volume, detach the old one. AWS requires it unmounted first, which step 9 did.",
               blocks: [
                 {
                   kind: "code",
@@ -274,9 +273,9 @@ export const article: Article = {
             },
             {
               text: [
-                "Delete the old volume. AWS can’t delete a volume while it’s attached, so check that its state reads ",
+                "Delete the old volume. AWS can’t delete an attached volume, so check that its state reads ",
                 { code: "available" },
-                " first. AWS says a deleted volume’s data is gone. Keep the snapshot until you’re sure.",
+                ". A deleted volume’s data is gone, so keep the snapshot until you’re sure.",
               ],
               blocks: [
                 {
@@ -296,7 +295,7 @@ export const article: Article = {
     },
     {
       id: "what-the-copy-costs-you",
-      title: "What the EBS volume copy costs you",
+      title: "What the copy costs",
       blocks: [
         { kind: "p", text: "You pay for the copy in four ways:" },
         {
@@ -304,19 +303,19 @@ export const article: Article = {
           items: [
             [
               { b: "Downtime." },
-              " Every service on that mount is down from step 7 to step 10. The rsync quick check skips files whose size and modification time match. So the final pass copies only new and changed files, but it still checks every file.",
+              " Every service on the mount is down from step 7 to step 10. The rsync quick check skips files whose size and modification time match. So the final pass copies only new and changed files, but it still checks every file.",
             ],
             [
-              { b: "Paying for both." },
-              " You pay for both volumes from step 3, where you create the new one, to step 12, where you delete the old one.",
+              { b: "Both volumes." },
+              " You pay for both from step 3, where you create the new one, to step 12, where you delete the old one.",
             ],
             [
               { b: "A new fixed size." },
               " When the data grows, you grow the volume again. When it shrinks, you copy it all again.",
             ],
             [
-              { b: "More downtime for a root volume." },
-              " AWS requires you to stop the instance before you detach its root volume. So the whole instance is down, not one mount.",
+              { b: "The whole instance, for a root volume." },
+              " AWS requires you to stop the instance before you detach its root volume, so everything on it is down.",
             ],
           ],
         },
@@ -325,11 +324,11 @@ export const article: Article = {
     },
     {
       id: "on-gp2-a-smaller-volume-is-a",
-      title: "On gp2, a smaller volume is a slower one",
+      title: "Performance after a shrink",
       blocks: [
         {
           kind: "p",
-          text: "Watch performance if the old volume is gp2, because gp2 performance follows size. Its baseline is 3 input/output operations per second (IOPS) per GiB, with a minimum of 100. A 1,000\u00a0GiB volume gets 3,000\u00a0IOPS, while a 100\u00a0GiB one gets 300 and bursts to 3,000 only while its I/O credits last.",
+          text: "On gp2, performance follows size. The baseline is 3 input/output operations per second (IOPS) per GiB, with a minimum of 100. A 1,000\u00a0GiB volume gets 3,000\u00a0IOPS. A 100\u00a0GiB one gets 300, and bursts to 3,000 only while its I/O credits last.",
         },
         {
           kind: "p",
@@ -338,7 +337,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "By contrast, gp3 includes 3,000\u00a0IOPS and 125\u00a0MiB/s at any size. IOPS or throughput above those levels costs extra. AWS also prices gp3 20 percent below gp2 per GiB, as the ",
+            "A gp3 volume includes 3,000\u00a0IOPS and 125\u00a0MiB/s at any size, and costs extra only above those levels. gp3 also costs 20 percent less per GiB than gp2, as the ",
             { a: "gp2 and gp3 comparison", href: "/learn/gp2-vs-gp3" },
             " explains.",
           ],
@@ -361,7 +360,7 @@ export const article: Article = {
             { a: "IOPS", href: "/learn/glossary/iops" },
             ". If the workload needs that, set ",
             { code: "--iops" },
-            " to match on the new gp3\u00a0volume, and add ",
+            " to match on the new gp3\u00a0volume. Add ",
             { code: "--throughput 250" },
             " if it used gp2’s 250\u00a0MiB/s.",
           ],
@@ -370,56 +369,56 @@ export const article: Article = {
     },
     {
       id: "can-you-resize-an-ebs-volume-with",
-      title: "Can you resize an EBS volume without any downtime?",
+      title: "Resizing without downtime",
       blocks: [
         {
           kind: "p",
-          text: "In one direction. Increasing the size with Elastic Volumes needs no detach and no restart on a supported instance. A size increase takes effect when the modification reaches the optimizing state, which AWS says usually takes a few seconds.",
+          text: "With EBS alone, only growing works without downtime. A shrink always needs the copy. Elastic Volumes grows a volume with no detach and no restart on a supported instance. The new size takes effect when the change reaches the optimizing state, which AWS says usually takes a few seconds.",
         },
         {
           kind: "p",
           text: [
-            "You can modify a volume up to four times in a rolling 24-hour period, each one after the last has completed. The steps for ",
+            "You can modify a volume up to four times in a rolling 24-hour period, each after the last completes. ",
             {
-              a: "growing a volume while it stays mounted",
+              a: "Growing a volume while it stays mounted",
               href: "/learn/increase-ebs-volume-size",
             },
-            " have their own page. So does ",
+            " and ",
             { a: "what else Elastic Volumes can change", href: "/learn/ebs-elastic-volumes" },
-            ".",
+            " have their own pages.",
           ],
-        },
-        {
-          kind: "p",
-          text: "A shrink always needs the copy, and its downtime from step 7 to step 10.",
         },
       ],
     },
     {
       id: "how-amoeba-rightsizes-ebs-data-volumes",
-      title: "How Amoeba rightsizes EBS data volumes",
+      title: "How Amoeba rightsizes data volumes",
       blocks: [
         {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " makes the copy above once, onto a ",
-            { a: "btrfs pool", href: "/learn/combine-ebs-volumes" },
-            " of ",
-            { a: "gp3", href: "/learn/glossary/ebs-gp3" },
-            " volumes in the instance’s Availability Zone, then rightsizes that pool autonomously. It works on the data volumes of running Windows and Linux instances, and never touches the root volume.",
+            " makes this copy for you, once, on the data volumes of running Windows and Linux instances. Then it rightsizes them without any downtime. It never touches the root volume.",
           ],
         },
         {
           kind: "ul",
           items: [
             [
+              { b: "The pool." },
+              " Amoeba moves the instance’s data volumes onto one ",
+              { a: "btrfs pool", href: "/learn/combine-ebs-volumes" },
+              " sized to your data, with room to grow. On AWS the pool uses ",
+              { a: "gp3", href: "/learn/glossary/ebs-gp3" },
+              " volumes in the instance’s Availability Zone.",
+            ],
+            [
               { b: "The move." },
               " Amoeba copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it. If the switch fails, it puts the original mounts back and tries again.",
             ],
             [
               { b: "The old volumes." },
-              " Once the switch is checked, Amoeba snapshots each old volume, deletes the volume, and keeps the snapshot for a few days before deleting it too.",
+              " Once the switch is checked, Amoeba snapshots each old volume and deletes the volume. It keeps the snapshot for 7\u00a0days, then deletes it too.",
             ],
             [
               { b: "Rightsizing." },
@@ -429,20 +428,20 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "You pay for both sets of volumes only while the move runs, and then for the snapshots while they’re kept.",
+          text: "You pay for both sets of volumes only while the move runs, then for the snapshots while they’re kept.",
         },
         { kind: "h3", id: "what-the-instance-needs", title: "What the instance needs" },
         {
           kind: "p",
-          text: "On AWS, the instance must be managed by AWS Systems Manager, with the SSM agent connected. It must be a Nitro type that exposes EBS as NVMe, with a few free attachment slots for the pool. On Linux, it needs a recent kernel with btrfs, and every service that keeps a data mount open must run under systemd.",
+          text: "The instance must be managed by AWS Systems Manager, with the SSM agent connected. It must be a Nitro type that exposes EBS as NVMe, with a few free attachment slots for the pool. On Linux, it needs a recent kernel with btrfs, and every service that keeps a data mount open must run under systemd.",
         },
         {
           kind: "p",
           text: [
             { a: "What Amoeba needs on AWS", href: "/amoeba-faq#what-does-amoeba-need-on-aws" },
-            " also covers the AWS role Amoeba uses and what that role can do. ",
+            " covers the AWS role it uses. ",
             { a: "EBS cost optimization", href: "/ebs-cost-optimization" },
-            " shows Amoeba on AWS end to end. On Azure, the same job is in ",
+            " shows Amoeba on AWS end to end. On Azure, see ",
             { a: "shrinking an Azure managed disk", href: "/learn/shrink-azure-managed-disk" },
             ".",
           ],
@@ -452,7 +451,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves an EC2 instance’s EBS data volumes onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one volume at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves an EC2 instance’s EBS data volumes onto one pool sized to your data, then rightsizes it autonomously, without any downtime, one volume at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
@@ -503,22 +502,22 @@ export const article: Article = {
       href: "/learn/shrink-azure-managed-disk",
     },
     {
-      title: "How to increase EBS volume size without downtime on Linux",
+      title: "Increase EBS volume size without downtime",
       where: "Learn",
       href: "/learn/increase-ebs-volume-size",
     },
     {
-      title: "How to check EBS volume usage: used space vs paid space",
+      title: "How to check EBS volume usage",
       where: "Learn",
       href: "/learn/check-ebs-volume-usage",
     },
     {
-      title: "How to combine EBS volumes into one: LVM, RAID 0 or a btrfs pool",
+      title: "How to combine EBS volumes",
       where: "Learn",
       href: "/learn/combine-ebs-volumes",
     },
     {
-      title: "EBS volume types compared: how to choose one",
+      title: "Amazon EBS volume types",
       where: "Learn",
       href: "/learn/ebs-volume-types",
     },

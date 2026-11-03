@@ -4,29 +4,29 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/kubernetes-
 export const term: GlossaryTerm = {
   slug: "kubernetes-cpu-throttling",
   term: "CPU throttling (Kubernetes)",
-  title: "What is Kubernetes CPU throttling?",
-  meta: "What is CPU throttling in Kubernetes? The kernel slows a container at its CPU limit. See the causes, the CFS throttling metrics, and how a fix can add nodes.",
-  h1: "What is Kubernetes CPU throttling?",
-  card: "CPU throttling in Kubernetes is when the Linux kernel holds back a container that hits its CPU limit.",
+  title: "What is CPU throttling in Kubernetes?",
+  meta: "CPU throttling in Kubernetes is when the kernel pauses a container at its CPU limit. The causes, how to measure it, and how to fix it.",
+  h1: "What is CPU throttling in Kubernetes?",
+  card: "CPU throttling in Kubernetes is when the Linux kernel pauses a container that reaches its CPU limit.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "CPU throttling in Kubernetes is when the Linux kernel holds back a container that hits its CPU limit. It keeps running, only slower.",
+      text: "CPU throttling in Kubernetes is when the Linux kernel pauses a container that reaches its CPU limit. The container keeps running, only slower.",
     },
     {
       kind: "p",
-      text: "On Linux, a CPU limit becomes a quota of CPU time per period, 100 milliseconds by default. Once it’s used up, the container waits for the next period.",
+      text: "On Linux, a CPU limit becomes a quota of CPU time per period, 100 milliseconds by default. Once the quota is used up, the container waits for the next period.",
     },
     { kind: "svg", figure: figure1 },
   ],
   sections: [
     {
       id: "what-causes-cpu-throttling-in-kubernetes",
-      title: "What causes CPU throttling in Kubernetes",
+      title: "Causes",
       blocks: [
         {
           kind: "ul",
@@ -37,34 +37,29 @@ export const term: GlossaryTerm = {
               " below the app’s peak use.",
             ],
             "Busy threads on several CPUs sharing one quota.",
-            "A LimitRange default for containers with no limit.",
+            "A LimitRange default limit, given to containers that set none.",
           ],
         },
       ],
     },
     {
       id: "how-to-check-for-cpu-throttling",
-      title: "How to check CPU throttling in Kubernetes",
+      title: "How to check for it",
       blocks: [
         {
           kind: "p",
-          text: "The Kubernetes docs run a pod with a 0.5\u00a0CPU request and a 1\u00a0CPU limit. Its app tries to use 2\u00a0CPUs.",
-        },
-        {
-          kind: "p",
           text: [
+            "In the Kubernetes docs’ example, a pod has a 0.5\u00a0CPU request and a 1\u00a0CPU limit, and its app tries to use 2\u00a0CPUs. ",
             { code: "kubectl top pod" },
-            " shows 974m, or 0.974\u00a0CPU, just under the limit. The docs say the container’s CPU use is being throttled.",
+            " shows 974m (0.974 CPU), just under the limit, while the container is throttled. So ",
+            { code: "kubectl top" },
+            " can’t show throttling by itself.",
           ],
-        },
-        {
-          kind: "p",
-          text: ["So ", { code: "kubectl top" }, " can’t show throttling by itself."],
         },
         {
           kind: "h3",
           id: "prometheus-metrics-for-cpu-throttling",
-          title: "Prometheus metrics for CPU throttling",
+          title: "Prometheus metrics",
         },
         { kind: "p", text: "Two Prometheus counters show throttling for each container:" },
         {
@@ -79,28 +74,38 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "Divide the second by the first over the same window. Microsoft’s AKS docs give the share of throttled periods as:",
+          text: "Microsoft’s AKS docs give the share of throttled periods, as a percentage:",
         },
         {
-          kind: "p",
-          text: [
-            {
-              code: "rate(container_cpu_cfs_throttled_periods_total[5m]) / rate(container_cpu_cfs_periods_total[5m]) * 100",
-            },
+          kind: "code",
+          lang: "promql",
+          code: "rate(container_cpu_cfs_throttled_periods_total[5m]) / rate(container_cpu_cfs_periods_total[5m]) * 100",
+        },
+      ],
+    },
+    {
+      id: "how-to-fix-cpu-throttling",
+      title: "How to fix it",
+      blocks: [
+        {
+          kind: "ul",
+          items: [
+            "Raise the CPU limit to cover the app’s peak.",
+            "Or remove it, as Microsoft’s AKS guidance suggests. Containers then share a node’s CPU in proportion to their requests.",
           ],
         },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why CPU throttling matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "p",
           text: [
-            "The scheduler places pods by ",
+            "The scheduler places pods by their ",
             { a: "requests", href: "/learn/glossary/kubernetes-resource-requests" },
-            ". Raising a limit to stop Kubernetes CPU throttling can add nodes if the request rises too.",
+            ", not their limits. Raising a limit alone adds no nodes. Raising the request with it can.",
           ],
         },
         {
@@ -109,7 +114,7 @@ export const term: GlossaryTerm = {
             { a: "Coral", href: "/coral" },
             " rebalances CPU and memory requests on AKS and EKS to ",
             { a: "match real use", href: "/learn/kubernetes-pod-right-sizing" },
-            ", so the same pods fit on fewer nodes. Its built-in policies never reduce a regular pod’s limit.",
+            ", so the same pods fit on fewer nodes. Its built-in policies never reduce a regular pod’s CPU limit.",
           ],
         },
       ],
@@ -127,13 +132,18 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-resource-requests",
     },
     {
+      title: "QoS class",
+      line: "The class a pod’s requests and limits give it.",
+      href: "/learn/glossary/kubernetes-qos-class",
+    },
+    {
       title: "Kubernetes cluster utilization",
       line: "How full nodes are.",
       href: "/learn/glossary/kubernetes-cluster-utilization",
     },
   ],
-  relatedTitle: "Terms related to CPU throttling",
-  next: { title: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
+  relatedTitle: "Related terms",
+  next: { title: "Kubernetes requests vs limits", href: "/learn/kubernetes-pod-right-sizing" },
   sources: [
     {
       publisher: "Kubernetes",

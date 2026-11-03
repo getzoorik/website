@@ -5,37 +5,38 @@ import { figure as figure3 } from "@/features/learn/figures/in-place-pod-resize/
 
 export const article: Article = {
   slug: "in-place-pod-resize",
-  title: "InPlacePodVerticalScaling: in-place pod resize",
-  meta: "In-place pod resize, the InPlacePodVerticalScaling feature, changes a running pod’s CPU and memory without a restart. Versions, resizePolicy, AKS and EKS.",
-  h1: "In-place pod resize (InPlacePodVerticalScaling): change CPU and memory without a restart",
-  deck: "Stable since Kubernetes 1.35, though each container’s resizePolicy decides whether a resize restarts it.",
-  card: "Change a running pod’s CPU and memory without recreating it: versions, restart rules, limits, AKS and EKS.",
+  title: "In-place pod resize (InPlacePodVerticalScaling)",
+  meta: "In-place pod resize changes a running pod’s CPU and memory without recreating it. Versions, resizePolicy, kubectl steps, the VPA, AKS and EKS.",
+  h1: "In-place pod resize in Kubernetes",
+  deck: "Change a running pod’s CPU and memory without recreating it, on Kubernetes 1.33 and later.",
+  card: "Change a running pod’s CPU and memory without recreating it, from Kubernetes 1.33.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes cost basics",
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "aditya",
   cover: "/learn-covers/zoorik-learn-in-place-pod-resize-1200x630.webp",
   coverAlt: "CPU and memory change inside a running pod, with no restart",
-  short:
-    "In-place pod resize changes a running container’s CPU and memory requests and limits without recreating its pod. It’s on by default from Kubernetes 1.33.",
+  short: [
+    "Patch the pod’s ",
+    { code: "resize" },
+    " subresource with new CPU or memory requests and limits. The kubelet applies them to the running container, on the same node. Each container’s ",
+    { code: "resizePolicy" },
+    " decides whether that restarts it. The feature is on by default from Kubernetes 1.33 and stable from 1.35.",
+  ],
   sections: [
     {
       id: "in-place-pod-resize",
-      title: "In-place pod resize changes a running pod instead of replacing it",
+      title: "How it works",
       blocks: [
         {
           kind: "p",
-          text: "Picture a Burstable pod whose container requests 1\u00a0CPU, which you want at 300m. Before in-place resize, a container’s CPU and memory were fixed for its pod’s life.",
+          text: "Before in-place resize, a container’s CPU and memory were fixed for its pod’s life. You changed them in the Pod template of its Deployment or StatefulSet, and the controller replaced each pod. That still works on every version and can change any field.",
         },
         {
           kind: "p",
-          text: "You changed them in the Pod template of its Deployment or StatefulSet, and the controller replaced each pod. That still works on every version and can change any field.",
-        },
-        {
-          kind: "p",
-          text: "In-place pod resize, also called in-place pod vertical scaling, patches the running pod instead. With the default resize policy, its container keeps running on the same node at 300m.",
+          text: "In-place pod resize, also called in-place pod vertical scaling, patches the running pod instead. Say a Burstable pod’s container requests 1\u00a0CPU and you want 300m. With the default resize policy, the container keeps running on the same node at 300m.",
         },
         {
           kind: "h3",
@@ -47,9 +48,9 @@ export const article: Article = {
           text: [
             "A container’s ",
             { code: "spec.containers[*].resources" },
-            " is the size you want, and its ",
+            " is the size you want. Its ",
             { code: "status.containerStatuses[*].resources" },
-            " the size the node applied. When they differ, the kubelet tries the new size and reports a pod condition:",
+            " is the size the node applied. When they differ, the kubelet tries the new size and reports a pod condition:",
           ],
         },
         {
@@ -68,17 +69,17 @@ export const article: Article = {
             [
               [{ code: "PodResizePending" }],
               [{ code: "Deferred" }],
-              "The new size doesn’t fit right now but might later, for example once another pod leaves. The kubelet retries",
+              "The new size doesn’t fit now but might later, for example once another pod leaves. The kubelet retries",
             ],
             [
               [{ code: "PodResizePending" }],
               [{ code: "Infeasible" }],
-              "The new size is impossible on this node, for example a request larger than the node itself",
+              "The new size can never fit this node, for example a request larger than the node itself",
             ],
           ],
         },
         { kind: "svg", figure: figure1 },
-        { kind: "p", text: "Deferred resizes are retried in order:" },
+        { kind: "p", text: "Deferred resizes are retried in this order:" },
         {
           kind: "ul",
           items: [
@@ -92,23 +93,23 @@ export const article: Article = {
           text: [
             "Kubernetes 1.37 adds ",
             { code: "InPlacePodVerticalScalingSchedulerPreemption" },
-            ", an alpha gate that is off by default. It lets the scheduler evict pods of lesser priority to make room for a deferred resize. Without it, the resize waits.",
+            ", an alpha gate that is off by default. With it, the scheduler can evict lower-priority pods to make room for a deferred resize. Without it, the resize waits.",
           ],
         },
         {
           kind: "callout",
           label: "Watch out",
-          text: "A resize changes one Pod, not its Deployment or StatefulSet. So a pod created later, after a rollout, an eviction or a drain, starts at the template’s old size.",
+          text: "A resize changes one Pod, not its Deployment or StatefulSet. A pod created later, after a rollout, an eviction or a drain, starts at the template’s old size.",
         },
       ],
     },
     {
       id: "a-resize-frees-room-on-a-node",
-      title: "A resize frees room on a node, but only an emptied node reduces cost",
+      title: "What a resize saves",
       blocks: [
         {
           kind: "p",
-          text: "For cost, the request matters. The scheduler places a pod only while the node’s requests add up to less than its capacity, however low real use is.",
+          text: "For cost, the request matters. The scheduler places a pod only while the requests on a node add up to less than its capacity, however low real use is.",
         },
         {
           kind: "p",
@@ -122,7 +123,7 @@ export const article: Article = {
         { kind: "svg", figure: figure2 },
         {
           kind: "p",
-          text: "A resize never moves a pod, so it can’t empty a node by itself.",
+          text: "A resize never moves a pod, so it can’t empty a node by itself. The freed room reduces cost only when a node can then be removed.",
         },
         {
           kind: "p",
@@ -138,26 +139,22 @@ export const article: Article = {
     },
     {
       id: "which-kubernetes-versions-support-in-place-resize",
-      title: "Which Kubernetes versions support in-place resize",
+      title: "Supported versions",
       blocks: [
         {
           kind: "p",
           text: [
             "The feature was alpha from Kubernetes 1.27, behind the ",
             { code: "InPlacePodVerticalScaling" },
-            " feature gate, and beta and on by default in 1.33.",
+            " feature gate and off by default. It became beta and on by default in 1.33, then stable in 1.35, where the gate can’t turn it off.",
           ],
-        },
-        {
-          kind: "p",
-          text: "From 1.35 the feature is always enabled, and the gate can’t disable it.",
         },
         { kind: "p", text: "Three versions decide:" },
         {
           kind: "ol",
           items: [
             [{ b: "The control plane," }, " at 1.33 or later."],
-            [{ b: "The node the pod runs on," }, " whose kubelet does the work."],
+            [{ b: "The node the pod runs on," }, " whose kubelet applies the change."],
             [
               { b: "kubectl," },
               " at 1.32 or later, for the ",
@@ -170,14 +167,14 @@ export const article: Article = {
     },
     {
       id: "how-to-resize-a-kubernetes-pod-without",
-      title: "How to resize a Kubernetes pod without a restart",
+      title: "How to resize a pod",
       blocks: [
         {
           kind: "p",
           text: [
             "Each container’s ",
             { code: "resizePolicy" },
-            " sets, per resource, whether a resize restarts that container or changes it while it keeps running:",
+            " sets, per resource, whether a resize restarts the container:",
           ],
         },
         {
@@ -189,9 +186,9 @@ export const article: Article = {
           kind: "p",
           text: [
             { code: "NotRequired" },
-            ", the default, applies the change to the running container, and ",
+            ", the default, changes the running container. ",
             { code: "RestartContainer" },
-            " applies it with a restart. A pod whose ",
+            " applies the change with a restart. A pod whose ",
             { code: "restartPolicy" },
             " is ",
             { code: "Never" },
@@ -202,14 +199,14 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "With that policy, a CPU change applies in place, and a memory change, or a change to both, restarts the container.",
+          text: "In the example above, a CPU change applies in place. A memory change, or a change to both, restarts the container.",
         },
         {
           kind: "p",
           text: [
             "Set memory to ",
             { code: "RestartContainer" },
-            " for Java and Python services. The 1.35 announcement notes that neither runtime supports resizing memory without a restart.",
+            " for Java and Python services. The 1.35 announcement says neither runtime can resize memory without a restart.",
           ],
         },
         {
@@ -223,33 +220,39 @@ export const article: Article = {
             ", is “best-effort and not guaranteed,” in the announcement’s words. If use is above the new limit, the resize stays in progress.",
           ],
         },
-        { kind: "h3", id: "resize-a-pod-with-kubectl", title: "Resize a pod with kubectl" },
+        { kind: "h3", id: "resize-a-pod-with-kubectl", title: "With kubectl" },
         {
           kind: "ol",
           items: [
-            [
-              { b: "Patch the pod’s resize subresource." },
-              " ",
-              { code: "kubectl edit" },
-              " or a server-side ",
-              { code: "kubectl apply" },
-              " with ",
-              { code: "--subresource resize" },
-              " works too. This patch sets one container’s CPU request to 300m on a Burstable pod:",
-            ],
-          ],
-        },
-        {
-          kind: "code",
-          lang: "bash",
-          code: 'kubectl patch pod <pod> -n <namespace> --subresource resize --patch \\\n  \'{"spec":{"containers":[{"name":"<container>","resources":{"requests":{"cpu":"300m"}}}]}}\'',
-        },
-        { kind: "ol", start: 2, items: [[{ b: "Read the pod back:" }]] },
-        { kind: "code", lang: "bash", code: "kubectl get pod <pod> -n <namespace> -o yaml" },
-        {
-          kind: "ol",
-          start: 3,
-          items: [
+            {
+              text: [
+                { b: "Patch the pod’s resize subresource." },
+                " ",
+                { code: "kubectl edit" },
+                " or a server-side ",
+                { code: "kubectl apply" },
+                " with ",
+                { code: "--subresource resize" },
+                " also works. This patch sets one container’s CPU request to 300m on a Burstable pod:",
+              ],
+              blocks: [
+                {
+                  kind: "code",
+                  lang: "bash",
+                  code: 'kubectl patch pod <pod> -n <namespace> --subresource resize --patch \\\n  \'{"spec":{"containers":[{"name":"<container>","resources":{"requests":{"cpu":"300m"}}}]}}\'',
+                },
+              ],
+            },
+            {
+              text: [{ b: "Read the pod back." }],
+              blocks: [
+                {
+                  kind: "code",
+                  lang: "bash",
+                  code: "kubectl get pod <pod> -n <namespace> -o yaml",
+                },
+              ],
+            },
             [
               { b: "Check three fields." },
               " Read ",
@@ -277,7 +280,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "vpa-in-place-pod-resize-with-eviction",
-          title: "VPA in-place pod resize, with eviction as the fallback",
+          title: "With the VPA",
         },
         {
           kind: "p",
@@ -300,7 +303,7 @@ export const article: Article = {
           kind: "p",
           text: [
             { code: "InPlaceOrRecreate" },
-            " has been generally available since VPA 1.6.0 and needs Kubernetes 1.33 or later. ",
+            " is generally available from VPA 1.6.0 and needs Kubernetes 1.33 or later. ",
             { code: "InPlace" },
             ", alpha in VPA 1.7.0, never evicts. ",
             { code: "Auto" },
@@ -320,15 +323,15 @@ export const article: Article = {
     },
     {
       id: "a-resize-changes-only-cpu-and-memory",
-      title: "A resize changes only CPU and memory, within the pod’s QoS class",
+      title: "Limitations",
       blocks: [
-        { kind: "p", text: "As of Kubernetes 1.37, the documentation lists these limits:" },
+        { kind: "p", text: "As of Kubernetes 1.37, the documentation lists these:" },
         {
           kind: "ul",
           items: [
             [
               { b: "Only CPU and memory" },
-              " can be resized, apart from one alpha gate in Kubernetes 1.37, off by default. It lets ",
+              " can be resized. One exception is an alpha gate in 1.37, off by default. It lets ",
               { code: "/resize" },
               " change the ",
               { code: "sizeLimit" },
@@ -367,7 +370,7 @@ export const article: Article = {
           text: [
             "When a resize is ",
             { code: "Infeasible" },
-            ", the kubelet leaves the running size as it was. The docs’ fix is to patch the pod again with a size that fits.",
+            ", the running size stays as it was. The docs’ fix is to patch the pod again with a size that fits.",
           ],
         },
         {
@@ -378,19 +381,19 @@ export const article: Article = {
     },
     {
       id: "in-place-pod-resize-on-aks-and",
-      title: "In-place pod resize on AKS and EKS: check every node pool’s version",
+      title: "On AKS and EKS",
       blocks: [
         {
           kind: "p",
-          text: "On the Azure Kubernetes Service (AKS) calendar, 1.33 reached end of life in July 2026, and 1.34 reaches it in November 2026. Version 1.37 reached general availability in October 2026.",
+          text: "On the Azure Kubernetes Service (AKS) calendar, 1.33 reached end of life in July 2026, and 1.34 reaches it in November 2026. Version 1.37 became generally available in October 2026.",
         },
         {
           kind: "p",
-          text: "Outside long-term support, every AKS version in its support window is 1.34 or later. On AKS 1.35 and later the feature is always on.",
+          text: "Outside long-term support, every AKS version in its support window is 1.34 or later. From 1.35 the feature is always on.",
         },
         {
           kind: "p",
-          text: "AKS lets the control plane run up to three minor versions ahead of node pools, so check each pool. Below 1.33 the feature was alpha and off by default.",
+          text: "The AKS control plane can run up to three minor versions ahead of node pools, so check each pool. Below 1.33 the feature is alpha and off by default.",
         },
         {
           kind: "p",
@@ -398,7 +401,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "EKS says alpha features aren’t supported, so in-place resize isn’t supported at 1.31 or 1.32, and neither is the 1.37 preemption gate.",
+          text: "EKS doesn’t support alpha features. So in-place resize isn’t supported at 1.31 or 1.32, and neither is the 1.37 preemption gate.",
         },
         { kind: "svg", figure: figure3 },
         {
@@ -412,20 +415,19 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "In that output, a Linux node needs v1.33 or later, and pods on a Windows node can’t be resized in place.",
+          text: "A Linux node needs v1.33 or later. Pods on a Windows node can’t be resized in place.",
         },
       ],
     },
     {
       id: "how-coral-applies-a-new-size-to",
-      title: "How Coral applies a new size to running pods",
+      title: "How Coral applies new sizes",
       blocks: [
         {
           kind: "p",
           text: [
-            "Coral is ",
-            { a: "Kubernetes optimization", href: "/coral" },
-            " for AKS and EKS clusters at Kubernetes 1.30 or later. It rebalances each container’s CPU and memory requests from observed use, through in-place resize where the node allows:",
+            { a: "Coral", href: "/coral" },
+            " rebalances each container’s CPU and memory requests from observed use, on AKS and EKS at Kubernetes 1.30 or later. It applies new sizes without any downtime, in place where the node allows:",
           ],
         },
         {
@@ -433,17 +435,17 @@ export const article: Article = {
           items: [
             [
               { b: "Running pods." },
-              " Resized in place on nodes at 1.33 or later. On older nodes, Coral restarts them one at a time within their ",
+              " Resized in place on nodes at 1.33 or later. On older nodes, restarted one at a time within their ",
               { a: "PodDisruptionBudgets", href: "/learn/pod-disruption-budget-best-practices" },
               ".",
             ],
             [
               { b: "New pods." },
-              " Coral never changes your manifest. It sizes pods as they start, so a pod from your unchanged template still starts at the new size.",
+              " Your manifest never changes. Coral sizes pods as they start, so a pod from your unchanged template still starts at the new size.",
             ],
             [
               { b: "Single replicas." },
-              " Resized in place where possible, or a new pod is Ready before the old one goes. With the Recreate strategy or a ReadWriteOnce volume, the new size waits for a natural restart.",
+              " Resized in place where possible. Otherwise a new pod is Ready before the old one goes. With the Recreate strategy or a ReadWriteOnce volume, the new size waits for the pod’s next restart.",
             ],
             [
               { b: "Your VPA." },
@@ -451,17 +453,13 @@ export const article: Article = {
             ],
             [
               { b: "Your switch." },
-              " Until you turn on “Automatically optimize” for a policy or a workload, Coral only recommends sizes and resizes nothing.",
+              " Until you turn on “Automatically optimize” for a policy or a workload, Coral only recommends sizes.",
             ],
           ],
         },
         {
           kind: "p",
-          text: "Windows nodes are listed and costed, but Coral doesn’t rebalance their workloads.",
-        },
-        {
-          kind: "p",
-          text: "Coral also removes the nodes you don’t need, one at a time.",
+          text: "Windows nodes are listed and costed, but Coral doesn’t rebalance their workloads. Coral also removes the nodes you don’t need, one at a time.",
         },
         {
           kind: "p",
@@ -522,6 +520,11 @@ export const article: Article = {
       url: "https://github.com/kubernetes/autoscaler/blob/master/vertical-pod-autoscaler/docs/features.md",
     },
     {
+      publisher: "Kubernetes Autoscaler (GitHub)",
+      title: "“Vertical Pod Autoscaler: quick start”",
+      url: "https://github.com/kubernetes/autoscaler/blob/master/vertical-pod-autoscaler/docs/quickstart.md",
+    },
+    {
       publisher: "Microsoft Learn",
       title: "“Supported Kubernetes versions in Azure Kubernetes Service (AKS)”",
       url: "https://learn.microsoft.com/en-us/azure/aks/supported-kubernetes-versions",
@@ -534,31 +537,30 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "Kubernetes pod right sizing: set requests from real use",
+      title: "Kubernetes requests vs limits",
       where: "Learn",
       href: "/learn/kubernetes-pod-right-sizing",
     },
     {
-      title: "VPA vs HPA: when to use which",
+      title: "HPA vs VPA in Kubernetes",
       where: "Learn",
       href: "/learn/vpa-vs-hpa",
     },
     {
-      title: "OOMKilled exit code 137: why Kubernetes kills a container",
+      title: "Exit code 137 (OOMKilled) in Kubernetes",
       where: "Learn",
       href: "/learn/oomkilled-exit-code-137",
     },
     {
-      title: "Kubernetes cost optimization: rebalance requests, then remove spare nodes",
+      title: "Kubernetes cost optimization",
       where: "Learn",
       href: "/kubernetes-cost-optimization",
     },
     {
-      title:
-        "Can optimization happen without downtime for applications that have only one replica?",
+      title: "Can single-replica apps be optimized without downtime?",
       where: "Coral FAQ",
       href: "/coral-faq#can-optimization-happen-without-downtime-for",
     },
   ],
-  relatedTitle: "More on pod sizing and requests",
+  relatedTitle: "More on pod sizing",
 };

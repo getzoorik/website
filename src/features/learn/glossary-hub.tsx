@@ -10,7 +10,7 @@ import { LearnFrame } from "@/features/learn/learn-parts";
  *   hero      the link back to /learn over the h1 (`gl-kl`, as on a term: it keeps the kicker's quiet colour), and
  *             its line
  *   groups    Kubernetes, Block storage, FinOps and pricing: each a section head with its count and the words after
- *             it ("17 terms, a Kubernetes glossary from …"), then one tile per term, A–Z by the term's name, its h1
+ *             it ("17 terms, from requests and limits to AKS and EKS"), then one tile per term, A–Z by the term's name, its h1
  *             over its definition's first sentence (the hub's More from Zoorik tiles, `LinkTile`), two up from 981px
  *             (`lr-2`, learn.css)
  *

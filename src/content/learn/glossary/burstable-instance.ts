@@ -5,44 +5,44 @@ export const term: GlossaryTerm = {
   slug: "burstable-instance",
   term: "Burstable instance",
   title: "What is a burstable instance?",
-  meta: "A burstable instance is a VM with a baseline CPU and credits to burst above it. See AWS T3 and T4g, Azure B-series burstable VMs, and T3 unlimited.",
+  meta: "Burstable instances earn CPU credits below a baseline and spend them to burst. How AWS T3, T4g and Azure B-series VMs work, and what they cost.",
   h1: "What is a burstable instance?",
   card: "A burstable instance is a virtual machine (VM) with a baseline CPU level.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "A burstable instance is a virtual machine (VM) with a baseline CPU level. It earns CPU credits below that baseline and spends them to burst above it.",
+      text: "A burstable instance is a virtual machine (VM) with a baseline CPU level. It earns CPU credits while it runs below the baseline and spends them to burst above it.",
     },
     {
       kind: "p",
       text: [
         "Kubernetes’ ",
         { a: "Burstable QoS class", href: "/learn/glossary/kubernetes-qos-class" },
-        " is different: a pod class with no credits.",
+        " is unrelated: a pod class, with no credits.",
       ],
     },
   ],
   sections: [
     {
       id: "burstable-instances-in-aws-and-azure",
-      title: "Burstable instances in AWS and Azure",
+      title: "On AWS and Azure",
       blocks: [
         {
           kind: "ul",
           items: [
             [
-              "A burstable instance in AWS is a ",
-              { a: "T instance", href: "/learn/glossary/aws-instance-families" },
-              ", such as T3, T4g or the newest, T8i.",
+              "AWS ",
+              { a: "T instances", href: "/learn/glossary/aws-instance-families" },
+              ": T8i, T4g, T3a, T3 and the previous-generation T2.",
             ],
             [
-              "A burstable VM in Azure is a ",
-              { a: "B-series VM", href: "/learn/glossary/azure-vm-series" },
-              ", such as Bsv2.",
+              "Azure ",
+              { a: "B-series VMs", href: "/learn/glossary/azure-vm-series" },
+              ": Bsv2 on Intel, Basv2 on AMD and Bpsv2 on Arm.",
             ],
           ],
         },
@@ -50,15 +50,13 @@ export const term: GlossaryTerm = {
         {
           kind: "ul",
           items: [
-            "A CPU credit in AWS is one virtual CPU (vCPU) at 100% for one minute.",
-            "Unlimited mode is the default for T3, T3a, T4g and T8i, but T3 on a Dedicated Host runs only in standard mode.",
+            "On AWS, one CPU credit is one virtual CPU (vCPU) at 100% for one minute.",
+            "Out of credits, a B-series VM or an AWS instance in standard mode drops back to its baseline.",
+            "In AWS unlimited mode, an instance keeps bursting. A 24-hour average above the baseline costs extra.",
+            "Unlimited is the default for T3, T3a, T4g and T8i. T3 on a Dedicated Host runs only in standard mode.",
           ],
         },
-        {
-          kind: "p",
-          text: "Out of credits, a B-series VM or an AWS instance in standard mode drops to its baseline. In AWS unlimited mode, it keeps bursting.",
-        },
-        { kind: "p", text: "T3 baseline by size:" },
+        { kind: "p", text: "T3 baselines by size, the same for T3a and T4g:" },
         {
           kind: "table",
           columns: [
@@ -85,18 +83,20 @@ export const term: GlossaryTerm = {
     },
     {
       id: "aws-t2-vs-t3-vs-t3a-instances",
-      title: "AWS T2 vs T3 vs T3a instances",
+      title: "T2, T3, T3a and T4g",
       blocks: [
         {
           kind: "ul",
           items: [
-            "A stopped T2 loses its earned credits. A stopped T3 or T3a keeps them for seven days.",
-            "t2.nano, t2.micro and t2.small have 1 vCPU. Every T3 and T3a size has at least 2.",
+            [
+              "T4g runs on Arm-based ",
+              { a: "AWS Graviton2", href: "/learn/glossary/aws-graviton" },
+              " processors. AWS lists it at 20% less than T3.",
+            ],
+            "T3a runs on AMD EPYC processors instead of T3’s Intel Xeon. AWS lists it at 10% less than T3.",
+            "A stopped T2 loses its earned credits. A stopped T3, T3a or T4g keeps them for seven days.",
+            "t2.nano, t2.micro and t2.small have 1\u00a0vCPU. Every T3, T3a and T4g size has at least 2.",
           ],
-        },
-        {
-          kind: "p",
-          text: "T3a has T3’s sizes, credits and baselines, on AMD EPYC processors instead of Intel Xeon. AWS lists it at 10% less than T3.",
         },
       ],
     },
@@ -106,21 +106,22 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "AWS’s example runs an unlimited t3.large at a 24-hour average of 40% CPU. Only the 10% above its 30% baseline costs extra, at a flat rate per vCPU-hour.",
+          text: "In AWS’s example, an unlimited t3.large averages 40% CPU over 24 hours. The hourly price covers its 30% baseline. Only the extra 10% costs more, at a flat rate per vCPU-hour.",
         },
         { kind: "svg", figure: figure1 },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why burstable instances matter for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            "At AWS’s example prices, a t3.large costs less than a fixed-CPU m5.large below a 42.5% daily average CPU.",
+            "At AWS’s example prices, an unlimited t3.large costs less than a fixed-CPU m5.large below a 42.5% daily average CPU.",
+            "Bursting at 100% all the time, a T3 costs about 1.5 times an M5 of the same size.",
             [
-              "Check the baseline when you pick a ",
+              "So check the baseline against your real use before you pick a burstable ",
               { a: "node size", href: "/learn/kubernetes-node-size-best-practices" },
               ".",
             ],
@@ -130,6 +131,11 @@ export const term: GlossaryTerm = {
     },
   ],
   related: [
+    {
+      title: "AWS Graviton",
+      line: "The Arm processors behind T4g.",
+      href: "/learn/glossary/aws-graviton",
+    },
     {
       title: "On-demand instance",
       line: "One way to buy T instances.",
@@ -146,9 +152,9 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-qos-class",
     },
   ],
-  relatedTitle: "Terms related to burstable instances",
+  relatedTitle: "Related terms",
   next: {
-    title: "Kubernetes node size best practices: large or small nodes",
+    title: "Kubernetes node size best practices",
     href: "/learn/kubernetes-node-size-best-practices",
   },
   sources: [

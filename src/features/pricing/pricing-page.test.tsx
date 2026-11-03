@@ -26,7 +26,7 @@ describe("/pricing", () => {
   it("is titled, described and canonicalised as its draft, with its own card", () => {
     expect(metadata.title).toBe("Pricing");
     expect(metadata.description).toBe(
-      "Kubernetes optimization pricing: Coral is priced per vCPU it manages, Amoeba per GB. Run the free assessment first, then buy on AWS or Microsoft Marketplace.",
+      "Coral is priced per vCPU it manages, and Amoeba per GB it manages. Run the free assessment first, then buy in AWS Marketplace or Microsoft Marketplace.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/pricing" });
     expect(metadata.openGraph).toMatchObject({

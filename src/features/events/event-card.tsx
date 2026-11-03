@@ -162,7 +162,7 @@ export function NextUp({ event }: { readonly event: EventEntry }): React.JSX.Ele
 }
 
 /**
- * "FinOps conferences in 2026 and 2027": the page's one prose section, under the list and its source line. A line
+ * "FinOps events": the page's one prose section, under the list and its source line. A line
  * for each kind of FinOps event, shown while one of its events is still to come on the build's day, so a line whose
  * events have all ended drops off at the next build. With none left, the section goes.
  */

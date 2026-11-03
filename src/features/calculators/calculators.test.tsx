@@ -37,24 +37,24 @@ const plain = (cell: string): string => cell.replace(/`/g, "");
 
 describe("the calculators' metadata", () => {
   it("titles, describes and canonicalises each at the site's root, with its own card", () => {
-    /* The 2 Nov 2026 plan's titles and descriptions: each page carries its search. */
-    expect(nodeMetadata.title).toBe("EKS pricing and AKS pricing calculator for nodes");
+    /* The zero-noise titles and descriptions (2 Nov 2026): each page carries its search. */
+    expect(nodeMetadata.title).toBe("EKS and AKS pricing calculator");
     expect(nodeMetadata.description).toBe(
-      "AWS EKS pricing and AKS pricing for nodes: price an EKS or AKS node pool at AWS and Azure list prices, and see how much of each node your pods can use.",
+      "EKS and AKS pricing at list price: each node's monthly cost, each cloud's cluster fee, and how much of a node your pods can use.",
     );
     expect(nodeMetadata.alternates).toEqual({ canonical: "/eks-and-aks-pricing-calculator" });
     expect(nodeMetadata.openGraph).toMatchObject({
       url: "/eks-and-aks-pricing-calculator",
-      title: "EKS pricing and AKS pricing calculator for nodes | Zoorik",
+      title: "EKS and AKS pricing calculator | Zoorik",
       images: [{ url: "/og/pages/eks-pricing-and-aks-pricing-calculator.png" }],
     });
-    expect(diskMetadata.title).toBe("Amazon EBS pricing and Azure disk cost calculator");
+    expect(diskMetadata.title).toBe("Amazon EBS and Azure disk pricing calculator");
     expect(diskMetadata.description).toBe(
-      "EBS volume pricing and Azure disk pricing in one calculator: what an EBS volume or a managed disk costs a month at list price, and what its empty space costs.",
+      "Amazon EBS pricing and Azure disk pricing at list price: what a volume or managed disk costs a month, and what its empty space costs.",
     );
     expect(diskMetadata.alternates).toEqual({ canonical: "/ebs-and-azure-disk-pricing" });
     expect(diskMetadata.openGraph).toMatchObject({
-      title: "Amazon EBS pricing and Azure disk cost calculator | Zoorik",
+      title: "Amazon EBS and Azure disk pricing calculator | Zoorik",
       images: [{ url: "/og/pages/amazon-ebs-pricing-and-azure-disk-cost-calculator.png" }],
     });
     for (const meta of [nodeMetadata, diskMetadata]) {
@@ -70,28 +70,24 @@ describe("the calculators' metadata", () => {
   it("dates both by the day their content last changed, their prices still those of 30 October", () => {
     expect(pricesRetrievedAt.startsWith("2026-10-30")).toBe(true);
     expect(pricesRetrieved).toBe("30 October 2026");
-    /* The 2 Nov 2026 plan's titles, h1s, descriptions and first paragraphs. */
-    expect(calculatorsLastUpdated).toBe("2 November 2026");
+    /* The zero-noise rewrite's titles, h1s, descriptions and first paragraphs. */
+    expect(calculatorsLastUpdated).toBe("3 November 2026");
   });
 
-  it("opens each page on the plan's h1 and first paragraph", () => {
-    expect(nodeCalculator.hero.title).toBe(
-      "EKS pricing calculator: what an EKS or AKS node costs a month",
-    );
+  it("opens each page on its h1 and first paragraph", () => {
+    expect(nodeCalculator.hero.title).toBe("EKS and AKS pricing calculator");
     expect(nodeCalculator.intro).toEqual([
-      "Your pods can't use all of a node: Kubernetes keeps some CPU and memory on every node for itself.",
+      "Pods can't use a whole node. Kubernetes keeps some CPU and memory on each node for itself.",
     ]);
-    expect(diskCalculator.hero.title).toBe(
-      "Amazon EBS pricing and Azure disk pricing: what a disk costs a month",
-    );
+    expect(diskCalculator.hero.title).toBe("EBS and Azure disk pricing calculator");
     expect(diskCalculator.intro[0]).toBe(
-      "On AWS and Azure, block storage pricing follows a disk's full size, however little data it holds. So empty space costs the same as space your data uses.",
+      "Amazon EBS pricing and Azure disk pricing follow a disk's full size, however little data it holds. Empty space costs as much as used space.",
     );
     /* The node page's cluster fees rest on AWS's and Azure's pricing pages, which its sources name. */
     const node: CalculatorCopy = nodeCalculator;
     const sources = node.frame.find((section) => section.id === "sources")!;
     expect(JSON.stringify(sources.blocks)).toContain(
-      "Cluster fees from AWS's [Amazon EKS pricing](https://aws.amazon.com/eks/pricing/), and from Microsoft Learn's [AKS pricing tiers](https://learn.microsoft.com/en-us/azure/aks/free-standard-pricing-tiers) and Azure's [AKS pricing](https://azure.microsoft.com/en-us/pricing/details/kubernetes-service/), checked 2 November 2026.",
+      "Cluster fees: AWS's [Amazon EKS pricing](https://aws.amazon.com/eks/pricing/), Microsoft Learn's [AKS pricing tiers](https://learn.microsoft.com/en-us/azure/aks/free-standard-pricing-tiers) and Azure's [AKS pricing](https://azure.microsoft.com/en-us/pricing/details/kubernetes-service/), checked 2 November 2026.",
     );
   });
 });
@@ -192,7 +188,8 @@ describe("/eks-and-aks-pricing-calculator", () => {
     });
     const section = root.querySelector("#calculator")!;
     expect(section).toHaveAttribute("aria-labelledby", "calculator-h");
-    expect(text(root.querySelector("#calculator-h"))).toBe("EKS and AKS pricing calculator");
+    /* The h1 names the calculator, so the section's h2 is the frame's default. */
+    expect(text(root.querySelector("#calculator-h"))).toBe("Calculator");
     expect(root.querySelector("#nodes")).toHaveAttribute("inputmode", "numeric");
     expect(root.querySelector("#maxpods")).toHaveAttribute("inputmode", "numeric");
   });
@@ -227,18 +224,16 @@ describe("/eks-and-aks-pricing-calculator", () => {
     );
     expect(root.querySelector("#sources details#list-prices")).not.toHaveAttribute("open");
     expect(root.querySelectorAll("#list-prices table.doc-tbl")).toHaveLength(4);
-    /* Each cloud's price table under an h3 named for its search (2 Nov 2026 plan). */
+    /* Each cloud's tables under one h3 that names its search. */
     expect([...root.querySelectorAll("#list-prices .fq-body > h3")].map(text)).toEqual([
-      "Azure virtual machine pricing for AKS nodes, per month",
-      "AWS EC2 pricing for EKS nodes, per month",
+      "Azure VM pricing for AKS",
+      "AWS EC2 pricing for EKS",
     ]);
   });
 
   it("ends on Coral's closing row, its line over the cards", () => {
     const row = render(<NodePage />).container.querySelector("main > section#assess")!;
-    expect(text(row.querySelector("p.calc-close"))).toBe(
-      nodeCalculator.close.replace("cluster's", "cluster’s"),
-    );
+    expect(text(row.querySelector("p.calc-close"))).toBe(nodeCalculator.close.replace(/'/g, "’"));
     expect(row.querySelector("a.btn-ink")).toHaveAttribute("href", "/assessment?p=coral");
   });
 });
@@ -307,7 +302,7 @@ describe("both calculators", () => {
       .flatMap((copy) => copy.frame.flatMap((section) => section.related ?? []))
       .map((link) => link.href);
     hrefs.push(...[...diskCalculator.help.used.matchAll(/\]\((\/[^)]+)\)/g)].map((m) => m[1]!));
-    expect(hrefs).toHaveLength(10);
+    expect(hrefs).toHaveLength(11);
     expect(hrefs.filter((href) => !live.has(href))).toEqual([]);
   });
 

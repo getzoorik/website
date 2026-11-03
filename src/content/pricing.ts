@@ -2,9 +2,7 @@ import { calendarUrl, contactEmail, routes } from "@/config/site";
 import { assessmentHref } from "@/content/assess";
 
 /**
- * `/pricing`: every string it prints, word for word from the checked draft
- * (docs/website-seo/new-pages-2026-10-30/contact-pricing/pricing.md, each fact traced in its ledger.md) and the mock
- * (pricing.html).
+ * `/pricing`: every string it prints, laid out as the mock (pricing.html) draws it.
  *
  * 🔴 NO PRICE, RATE, CURRENCY OR FIGURE (D193, 9 Oct 2026: "no prices on the site, only one true sentence about
  * pricing"). The one line is the owner's, word for word (D226, 30 Oct 2026): its first sentence is the hero's deck,
@@ -20,7 +18,7 @@ import { assessmentHref } from "@/content/assess";
  * The day /pricing's content last changed, for the sitemap's `lastmod` only: the page prints no date. Whoever changes
  * the page moves it in the same PR; never the build's date.
  */
-export const pricingLastUpdated = "2 November 2026";
+export const pricingLastUpdated = "3 November 2026";
 
 /**
  * The owner's line (D226) in its two sentences, word for word, never paraphrased: the hero's deck, then the free
@@ -53,7 +51,7 @@ export const pricingPage = {
   meta: {
     title: "Pricing",
     description:
-      "Kubernetes optimization pricing: Coral is priced per vCPU it manages, Amoeba per GB. Run the free assessment first, then buy on AWS or Microsoft Marketplace.",
+      "Coral is priced per vCPU it manages, and Amoeba per GB it manages. Run the free assessment first, then buy in AWS Marketplace or Microsoft Marketplace.",
   },
   hero: {
     title: "Pricing",
@@ -70,10 +68,10 @@ export const pricingPage = {
       {
         kind: "ul",
         items: [
-          "It is free and read-only.",
-          "Run it in Cloud Shell or your terminal, on Azure or AWS.",
-          "It writes the PDF on your machine and uploads nothing.",
-          "You decide whether to email us the report.",
+          "Free and read-only.",
+          "Runs in Cloud Shell or your terminal, on Azure or AWS.",
+          "Writes one PDF on your machine and uploads nothing.",
+          "You choose whether to send us the report.",
         ],
       },
       {
@@ -95,13 +93,13 @@ export const pricingPage = {
       },
       {
         kind: "p",
-        text: `Sign in to your cloud first: \`az login\` or \`aws sso login\` in your terminal, or run it directly in Cloud Shell. The [assessment page](${routes.assessment}) has every step.`,
+        text: `Sign in first with \`az login\` or \`aws sso login\`, or run it in Cloud Shell. The [assessment page](${routes.assessment}) has every step.`,
       },
     ] satisfies readonly PricingBlock[] as readonly PricingBlock[],
   },
   products: {
     id: "products",
-    title: "Coral and Amoeba",
+    title: "What you pay for",
     blocks: [
       {
         kind: "table",
@@ -119,7 +117,7 @@ export const pricingPage = {
       },
       {
         kind: "p",
-        text: "Your order, or your marketplace purchase, sets the price, how often you pay and the payment terms.",
+        text: "Your order or marketplace purchase sets the price, how often you pay and the payment terms.",
       },
     ] satisfies readonly PricingBlock[] as readonly PricingBlock[],
   },
@@ -127,10 +125,10 @@ export const pricingPage = {
   buy: {
     id: "buy",
     title: "Buy through your cloud marketplace",
-    line: "Coral and Amoeba are available in AWS Marketplace and Microsoft Marketplace. Buy through the account you already use to pay for AWS or Azure.",
+    line: "Coral and Amoeba are in AWS Marketplace and Microsoft Marketplace. Buy them with the AWS or Azure account you already use.",
     /** A listing's name: the product, then the store in full ("Coral on AWS Marketplace"). */
     on: " on ",
-    offer: `Want a private offer? We can set one up on AWS or Microsoft Marketplace. [Write to us](${mail("Marketplace")}).`,
+    offer: `For a private offer on either marketplace, [write to us](${mail("Marketplace")}).`,
     all: { text: "Every marketplace, review site and registry", href: routes.marketplaces },
   },
   /** The pair on the band: early access on the white card, design partners on the navy one. */
@@ -145,7 +143,7 @@ export const pricingPage = {
   },
   partners: {
     title: "Design partners",
-    line: "Design partners run Coral and Amoeba free on their non-production clusters and disks. Places are limited. They help shape what we build next, and production runs on terms agreed with each partner.",
+    line: "Design partners run Coral and Amoeba free on non-production clusters and disks, and help shape what we build next. Places are limited. Production runs on terms agreed with each partner.",
     go: { label: "Apply to be a design partner", href: mail("Design partner program") },
     more: { text: "Design partner program", href: routes.designPartners },
   },
@@ -159,7 +157,7 @@ export const pricingPage = {
         answer: [
           {
             kind: "p",
-            text: "Yes, but only while the move runs. The source disks are deleted once the switch is checked. Then you pay for the safety snapshots for the seven days they're kept.",
+            text: "Yes, but only while the move runs. Once the switch is checked, Amoeba snapshots each old disk and deletes it. You then pay for the snapshots for the seven days they're kept.",
           },
           {
             kind: "p",

@@ -212,7 +212,7 @@ describe("the home page's structured data", () => {
     expect(amoeba.description).toBe(amoebaPageContent.meta.appDescription);
     /* What "What is Amoeba?" says. */
     expect(amoeba.description).toBe(
-      "Block storage optimization for VMs on Azure and AWS. Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. Then it rightsizes that pool, one disk at a time.",
+      "Block storage optimization for VMs on Azure and AWS. Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. Then it grows and shrinks that pool as your data changes.",
     );
     /* The paragraph as its words: its one link, "btrfs pool", as the words it shows. */
     const whatIs = [amoebaPageContent.about.paragraphs[0]]
@@ -228,20 +228,16 @@ describe("the home page's structured data", () => {
     expect(whatIs).toContain("block storage optimization platform for VMs on Azure and AWS");
     expect(whatIs).toContain(String(amoeba.description).split(". ")[1]!.replace(/\.$/, ""));
     expect(amoeba.applicationSubCategory).toBe("Block storage optimization");
-    expect(amoeba.featureList).toEqual([
-      "Monitoring",
-      "Savings insights",
-      "Block storage optimization",
-    ]);
+    expect(amoeba.featureList).toEqual(["Monitoring", "Savings insights", "Rightsizing"]);
     expect(amoeba.operatingSystem).toBe("Windows, Linux");
     expect(coral.name).toBe(products.coral.name);
     expect(coral.description).toBe(coralPageContent.meta.appDescription);
     expect(coral.description).toBe(
-      "Kubernetes optimization on AKS and EKS. Coral sizes pod requests to real use and removes the nodes you don’t need.",
+      "Kubernetes cost optimization for AKS and EKS. Coral rebalances pod requests to real use and removes the nodes you don’t need.",
     );
     expect(coral.applicationSubCategory).toBe("Kubernetes optimization");
     expect(coral.featureList).toEqual([
-      "Kubernetes cost monitoring",
+      "Cost monitoring",
       "Recommendations",
       "Workload optimization",
       "Node optimization",
@@ -528,12 +524,12 @@ describe("every indexed page's structured data", () => {
     expect(names(routes.eksAndAksPricingCalculator)).toEqual([
       "Zoorik",
       "Cloud cost optimization tools",
-      "EKS pricing calculator: what an EKS or AKS node costs a month",
+      "EKS and AKS pricing calculator",
     ]);
     expect(names(routes.ebsAndAzureDiskPricing)).toEqual([
       "Zoorik",
       "Cloud cost optimization tools",
-      "Amazon EBS pricing and Azure disk pricing: what a disk costs a month",
+      "EBS and Azure disk pricing calculator",
     ]);
     /* The ten pages of 31 Oct 2026, each under its product's page by its h1. */
     expect(names(routes.aksCostOptimization)).toEqual(["Zoorik", "Coral", "AKS cost optimization"]);
@@ -580,7 +576,7 @@ describe("every indexed page's structured data", () => {
     expect(names(routes.compareCoralAlternatives)).toEqual([
       "Zoorik",
       "Cloud cost optimization tools",
-      "Kubernetes cost optimization tools compared",
+      "Kubernetes cost optimization tools",
     ]);
   });
 
@@ -741,14 +737,14 @@ describe("every indexed page's structured data", () => {
       );
     }
     const [study] = ofType(graphOf(routes.caseStudyCoralDevCluster), "TechArticle");
-    /* Published on the day each study prints; modified on the day its content last changed (1 Nov 2026). */
-    expect(study).toMatchObject({ datePublished: "2026-10-12", dateModified: "2026-11-01" });
+    /* Published on the day each study prints; modified on the day its content last changed (3 Nov 2026). */
+    expect(study).toMatchObject({ datePublished: "2026-10-12", dateModified: "2026-11-03" });
     expect(caseStudy.band.date).toBe("12 October 2026");
     const [amoeba] = ofType(graphOf(routes.caseStudyAmoebaLabVms), "TechArticle");
     expect(amoeba).toMatchObject({
       headline: "How Amoeba rightsized our own lab VM’s btrfs pool by 25%",
       datePublished: "2026-10-19",
-      dateModified: "2026-11-01",
+      dateModified: "2026-11-03",
       image: "https://zoorik.com/og/pages/value-lab-amoeba-lab-vms.png",
     });
     expect(orgRef).toEqual({ "@id": "https://zoorik.com/#organization" });
@@ -809,7 +805,7 @@ describe("every indexed page's structured data", () => {
     const set = {
       "@type": "DefinedTermSet",
       "@id": `${hubUrl}#terms`,
-      name: "Cloud computing terms: a cloud cost glossary",
+      name: "Cloud computing terms",
       url: hubUrl,
     };
     expect(glossaryPage.hero.title).toBe(set.name);

@@ -5,9 +5,7 @@ import type { ArticleText } from "@/content/learn/article";
  * band: four promises, each a drawing with its title as the caption.
  *
  * The band says what both products have in common, so a promise only belongs
- * here if it is true of BOTH: "No maintenance window" is Coral's alone, because
- * Amoeba restarts the services on a VM at the switch onto its pool, and it is
- * not printed here.
+ * here if it is true of BOTH, in its title and in its drawing's sentence.
  *
  * 🔴 THE SENTENCES LEFT THE SCREEN, NOT THE PAGE (owner, 23 Oct 2026: "It should
  * not heavy on texts + it should use proper visuals + motions"). Each card's
@@ -42,15 +40,16 @@ export const byDesignHeader: { readonly title: ArticleText } = {
 export const byDesignCards: readonly ByDesignCard[] = [
   {
     id: "cost",
-    title: "Pay for what your workloads use",
+    title: "Pay for what you use",
     drawing: "use",
     description: "Capacity follows what is used, not what was provisioned for the peak.",
   },
   {
     id: "safe",
-    title: "Drains nodes safely, one at a time",
+    /* Both products: Coral drains a node before it removes it, Amoeba empties a disk before it leaves the pool. */
+    title: "Drains safely, one at a time",
     drawing: "drain",
-    description: "A disk leaves the pool only when it is empty.",
+    description: "A node or a disk is removed only once it is empty.",
   },
   {
     id: "reliable",

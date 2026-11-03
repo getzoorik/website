@@ -44,7 +44,7 @@ describe("/referrals's metadata", () => {
   it("has the mock's title through the site's template, its description and its canonical", () => {
     expect(metadata.title).toBe("Referral program");
     expect(metadata.description).toBe(
-      "Introduce a team that runs Kubernetes or block storage on Azure or AWS to Zoorik. The referral program is coming soon.",
+      "Zoorik's referral program is coming soon. Introduce a team that runs Kubernetes or block storage on Azure or AWS, and be rewarded.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/referrals" });
     expect(metadata).not.toHaveProperty("robots");

@@ -5,63 +5,65 @@ import { figure as figure2 } from "@/features/learn/figures/oomkilled-exit-code-
 export const article: Article = {
   slug: "oomkilled-exit-code-137",
   title: "Exit code 137 (OOMKilled) in Kubernetes: how to fix",
-  meta: "Exit Code: 137, or exit status 137, means a container got SIGKILL. Confirm OOMKilled with kubectl, tell it from pod eviction, and fix it on AKS and EKS.",
-  h1: "Exit code 137 and OOMKilled: why Kubernetes kills a container",
-  deck: "The code only proves a SIGKILL, so the pod’s Reason field decides whether memory is to blame.",
-  card: "Read the Reason field, tell an OOM kill from eviction and probe kills, then fix the memory or the leak.",
+  meta: "Exit code 137 means a container got SIGKILL. Confirm OOMKilled with kubectl, tell it from eviction and probe kills, then fix the memory or the leak.",
+  h1: "Exit code 137 (OOMKilled) in Kubernetes",
+  deck: "The code proves only a SIGKILL. The pod’s Reason field shows whether memory caused it.",
+  card: "Confirm an OOM kill, tell it from eviction and probe kills, then fix the memory or the leak.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes cost basics",
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "prashant",
   cover: "/learn-covers/zoorik-learn-oomkilled-exit-code-137-1200x630.webp",
   coverAlt: "Memory climbs to the memory limit, then SIGKILL stops the container with exit 137",
   short: [
-    "OOMKilled exit code 137 means the kernel’s out-of-memory (OOM) killer sent SIGKILL because a container passed its memory limit or the node ran out. Confirm OOMKilled with ",
+    "Exit code 137 means the container got SIGKILL (128 + 9). In Kubernetes, ",
+    { code: "Reason: OOMKilled" },
+    " means the kernel’s out-of-memory (OOM) killer sent it: the container passed its memory limit, or the node ran out. Check with ",
     { code: "kubectl describe pod" },
-    ", then raise the limit or, if memory keeps climbing, find the leak.",
+    ". Then raise the memory limit, or find the leak if memory keeps climbing.",
   ],
   sections: [
     {
       id: "oomkilled-exit-code-137",
-      title: "How to confirm OOMKilled exit code 137 with kubectl",
+      title: "Confirm OOMKilled with kubectl",
       blocks: [
-        {
-          kind: "p",
-          text: "Picture a pod whose container has restarted five times. Nothing in its log says why.",
-        },
-        { kind: "p", text: "Start with the pod list:" },
+        { kind: "p", text: "List the pods:" },
         { kind: "code", lang: "bash", code: "kubectl get pods -n <namespace>" },
-        { kind: "p", text: "Then read the record of the container’s last run:" },
+        { kind: "p", text: "Then read the container’s last run:" },
         { kind: "code", lang: "bash", code: "kubectl describe pod <pod-name> -n <namespace>" },
         {
           kind: "p",
-          text: "Every OOMKilled Kubernetes container leaves the same record under its name. Here is the Kubernetes documentation’s example, trimmed:",
+          text: "An OOM-killed container shows this record. The example is from the Kubernetes documentation, trimmed:",
         },
         {
           kind: "code",
           lang: "text",
           code: "    Limits:\n      cpu:          100m\n      memory:       50Mi\n    State:          Running\n    Last State:     Terminated\n      Reason:       OOMKilled\n      Exit Code:    137\n    Ready:          False\n    Restart Count:  5",
         },
-        { kind: "p", text: "Read it from the top:" },
         {
           kind: "ul",
           items: [
-            "State is the current run, and Last State records the run that ended.",
+            [
+              { code: "Last State" },
+              " is the run that ended. ",
+              { code: "State" },
+              " is the current run.",
+            ],
             [
               { code: "Reason: OOMKilled" },
               " with ",
               { code: "Exit Code: 137" },
-              " confirms that the kernel’s OOM killer ended it.",
+              " confirms the kernel’s OOM killer ended it.",
             ],
-            "Limits shows the container’s limit, 50Mi here.",
-            "In a pod with several containers, check which one carries the record. A sidecar can be the one running out.",
+            [{ code: "Limits" }, " shows the container’s memory limit: 50Mi here."],
+            "In a pod with several containers, check which one has the record. A sidecar can be the one running out.",
           ],
         },
         {
           kind: "p",
-          text: "Two more commands help: the killed run’s log, and the namespace’s events in time order.",
+          text: "Two more commands: the killed run’s log, and the namespace’s events in time order.",
         },
         {
           kind: "code",
@@ -71,70 +73,65 @@ export const article: Article = {
         {
           kind: "h3",
           id: "crashloopbackoff-why-an-oomkilled-pod-keeps-restarting",
-          title: "CrashLoopBackOff: why an OOMKilled pod keeps restarting",
+          title: "CrashLoopBackOff after OOM kills",
         },
         {
           kind: "p",
-          text: "After each kill, the kubelet restarts the container under the pod’s restartPolicy. It waits 10\u00a0seconds by default, then 20, then 40, up to a cap of 5\u00a0minutes.",
+          text: "After a kill, the kubelet restarts the container under the pod’s restartPolicy. The first restart is immediate. Then it waits 10 seconds, 20, 40 and so on, up to 5 minutes by default.",
         },
         {
           kind: "p",
-          text: "The STATUS column can read OOMKilled just after a kill, then CrashLoopBackOff while the kubelet waits.",
+          text: "The STATUS column can read OOMKilled just after a kill, then CrashLoopBackOff while the kubelet waits. A container that runs for 10 minutes without trouble resets the back-off.",
         },
         {
           kind: "p",
-          text: "A container that keeps getting killed shows CrashLoopBackOff. One that runs for 10\u00a0minutes without trouble resets that back-off.",
-        },
-        {
-          kind: "p",
-          text: "Each restart runs at the same memory limit, so the container is likely to be killed again. To fix a Kubernetes pod in CrashLoopBackOff from OOM kills, raise its memory or fix the leak. The Kubernetes troubleshooting steps for it include checking resource limits.",
+          text: "Each restart runs at the same memory limit, so the kill tends to repeat. To fix a pod in CrashLoopBackOff from OOM kills, give it more memory or fix the leak. The Kubernetes checklist for CrashLoopBackOff also says to check resource limits.",
         },
       ],
     },
     {
       id: "what-is-oomkilled-in-kubernetes",
-      title: "What is OOMKilled in Kubernetes?",
+      title: "What is OOMKilled?",
       blocks: [
         {
           kind: "p",
-          text: "An OOM kill gives the application no chance to clean up or to log why it stopped. The kill is SIGKILL (signal 9), which a process can’t catch, block or ignore. Exit code 137 means a container received it.",
+          text: "OOMKilled means the kernel stopped the container for using too much memory. On Linux nodes, the container runtime writes each container’s limits into kernel cgroups. When the container tries to allocate past its memory limit, the kernel’s OOM subsystem steps in.",
         },
         {
           kind: "p",
-          text: "A memory limit is a ceiling the kernel enforces. On Linux nodes, the container runtime writes each container’s limits into kernel cgroups. When a container tries to allocate beyond its limit, the OOM subsystem steps in.",
+          text: "The kill is SIGKILL (signal 9). A process can’t catch, block or ignore it, so the app gets no chance to clean up or log why it stopped.",
         },
         {
           kind: "p",
-          text: "The Kubernetes documentation calls memory limits “enforced reactively”. The kernel acts when it detects memory pressure, so a container that goes over its limit may not be killed at once.",
+          text: "Kubernetes calls memory limits “enforced reactively”. The kernel acts only when it detects memory pressure, so a container over its limit may not be killed at once.",
         },
         {
           kind: "p",
           text: [
-            "OOM kills are scoped to one container, not the whole pod. On nodes that use cgroup v2, the kubelet sets ",
+            "The kill is scoped to one container, not the whole pod. On cgroup v2 nodes, the kubelet sets ",
             { code: "memory.oom.group" },
-            " on each container’s cgroup. One OOM event then kills every process in that container together.",
+            " on each container’s cgroup, so one OOM event kills every process in that container.",
           ],
         },
         {
           kind: "callout",
           label: "For engineers",
           text: [
-            "On cgroup v1\u00a0nodes, or with the kubelet setting ",
+            "On cgroup v1 nodes, or with the kubelet setting ",
             { code: "singleProcessOOMKill: true" },
-            ", the kernel may kill a single process instead. The container ends only if that is its main process (PID 1). Kubernetes 1.35 and later don’t start the kubelet on a cgroup v1\u00a0node by default.",
+            ", the kernel may kill one process at a time. That can leave a multi-process container partly working. From Kubernetes 1.35, the kubelet doesn’t start on a cgroup v1 node by default.",
           ],
         },
       ],
     },
     {
       id: "kubernetes-exit-code-137-has-more-than",
-      title: "Kubernetes exit code 137 has more than one cause",
+      title: "Other causes of exit code 137",
       blocks: [
         {
           kind: "p",
-          text: "Microsoft’s guide to memory saturation on AKS states the rule: “Exit code 137 indicates that a container received a SIGKILL signal, but this code can have more than one cause.”",
+          text: "Any SIGKILL gives 137, so the code alone doesn’t prove an OOM kill. The Reason field tells the causes apart.",
         },
-        { kind: "p", text: "The Reason field tells the causes apart." },
         {
           kind: "table",
           columns: [
@@ -144,20 +141,28 @@ export const article: Article = {
           ],
           rows: [
             [
-              "Last State: Terminated, Reason: OOMKilled, Exit Code: 137",
-              "The kernel, because the container went past its memory limit or the node ran out of memory first",
-              "The container’s memory use against its limit, and the node’s memory",
+              "Reason: OOMKilled, Exit Code: 137",
+              "The kernel: the container went past its memory limit, or the node ran out of memory",
+              "Memory use against the limit, and the node’s memory",
             ],
             [
-              "Last State: Terminated, Reason: Error, Exit Code: 137",
-              "Another SIGKILL, for example after a failed liveness probe, or when the app outlasted its grace period on a deletion",
-              "The pod’s events, its probes, and how long the app takes to stop",
+              "Reason: Error, Exit Code: 137",
+              "Another SIGKILL, such as a failed liveness probe or a shutdown that ran past its grace period",
+              "The pod’s events, its probes and how long the app takes to stop",
             ],
             [
               "Pod status Failed, reason Evicted",
-              "The kubelet, because the node ran short of memory",
+              "The kubelet: the node ran short of memory",
               "The node’s memory, and the pod’s use against its request",
             ],
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "When a pod is deleted, the kubelet has the runtime send SIGTERM to each container’s main process. After ",
+            { code: "terminationGracePeriodSeconds" },
+            ", 30 seconds by default, any process still running gets KILL.",
           ],
         },
         {
@@ -165,33 +170,25 @@ export const article: Article = {
           label: "Watch out",
           text: "An app that ignores SIGTERM, or needs longer than its grace period to stop, gets SIGKILL on every rollout. More memory changes nothing.",
         },
-        {
-          kind: "p",
-          text: [
-            "When a pod is deleted, the kubelet has the runtime send SIGTERM to each container’s main process. It waits ",
-            { code: "terminationGracePeriodSeconds" },
-            ", 30\u00a0seconds by default, then any process still running gets KILL.",
-          ],
-        },
       ],
     },
     {
       id: "docker-exit-code-137-and-the-other",
-      title: "Docker exit code 137, and the other places 137 shows up",
+      title: "Docker exit code 137",
       blocks: [
         {
           kind: "p",
+          text: "The number comes from Linux. In the bash shell, a command ended by signal n returns 128 + n. SIGKILL is signal 9, so 137 means SIGKILL: 128 + 9 = 137. Tools print it as exit code 137, exit status 137 or return code 137.",
+        },
+        {
+          kind: "p",
           text: [
-            "A Docker container that exits with code 137 got a SIGKILL signal. ",
+            "A Docker container that exits with code 137 got SIGKILL. ",
             { code: "docker ps -a" },
             ", which also lists stopped containers, shows it as ",
             { code: "Exited (137)" },
             ".",
           ],
-        },
-        {
-          kind: "p",
-          text: "The number comes from Linux. In the bash shell, a command ended by signal n gets the return code 128 + n. SIGKILL is signal 9 on Linux, so return code 137 means SIGKILL: 128 + 9 = 137.",
         },
         {
           kind: "p",
@@ -203,80 +200,88 @@ export const article: Article = {
             " when the command it ran inside the container got SIGKILL.",
           ],
         },
+        {
+          kind: "p",
+          text: [
+            "SIGTERM is signal 15, so a process it ends returns ",
+            { a: "exit code 143", href: "/learn/exit-code-143" },
+            ".",
+          ],
+        },
       ],
     },
     {
       id: "why-a-container-can-be-killed-below",
-      title: "Why a container can be killed below its memory limit",
+      title: "Killed below the memory limit",
       blocks: [
         {
           kind: "p",
-          text: "A container can also be killed under its own limit when the node fills up around it.",
+          text: "A container can also be stopped under its own limit when the node runs out of memory around it.",
         },
         {
           kind: "p",
           text: [
-            "The ",
+            "The scheduler places a pod by its ",
             { a: "request", href: "/learn/glossary/kubernetes-resource-requests" },
-            " is mainly used to schedule the pod. The kubelet reserves at least that much for the container, while the ",
+            ", and the kubelet reserves at least that much for the container. The ",
             { a: "limit", href: "/learn/glossary/kubernetes-resource-limits" },
-            " is the kill point. A container that uses more than its request, on a node that runs short of memory, is likely to see its pod evicted.",
+            " is the kill point. A container that uses more than its request, on a node short of memory, is likely to see its pod evicted.",
           ],
         },
         {
           kind: "h3",
           id: "when-the-kubelet-evicts-the-pod",
-          title: "Pod evicted: when the kubelet acts on node memory pressure",
+          title: "Eviction by the kubelet",
         },
         {
           kind: "p",
           text: [
-            "Eviction works on the whole pod. The kubelet watches the node’s available memory and acts when it falls below ",
+            "Eviction stops the whole pod. The kubelet acts when the node’s available memory falls below ",
             {
               a: "its hard eviction threshold",
               href: "/learn/kubernetes-allocatable-vs-capacity",
             },
-            ". Its built-in default is ",
+            ": ",
             { code: "memory.available<100Mi" },
-            " on Linux nodes, and its configuration can set another.",
+            " on Linux nodes by default.",
           ],
         },
         {
           kind: "p",
           text: [
-            "Below the threshold, the kubelet sets chosen pods to Failed and terminates them. Here it doesn’t respect ",
+            "It sets the chosen pods to Failed and stops them. It ignores ",
             {
               a: "PodDisruptionBudgets (PDBs)",
               href: "/learn/pod-disruption-budget-best-practices",
             },
-            ", and under a hard threshold it gives no grace period. If a Deployment or StatefulSet manages the pod, a replacement is created.",
+            ", and under a hard threshold it gives no grace period. If a Deployment or StatefulSet manages the pod, the control plane creates a replacement.",
           ],
         },
-        { kind: "p", text: "The kubelet ranks pods for eviction by three tests, in this order:" },
+        { kind: "p", text: "The kubelet ranks pods for eviction by three tests, in order:" },
         {
           kind: "ul",
           items: [
             "whether their use exceeds their requests",
             "their Priority",
-            "how far over their requests they are",
+            "how far their use is over their requests",
           ],
         },
         {
           kind: "h3",
           id: "when-the-kernels-oom-killer-picks-a",
-          title: "When the kernel’s OOM killer picks a container",
+          title: "The kernel’s OOM killer",
         },
         {
           kind: "p",
-          text: "A fast spike can beat the kubelet, which polls memory statistics at an interval and can miss the pressure. Then the kernel’s OOM killer picks a container itself.",
+          text: "The kubelet checks memory at an interval, so a fast spike can beat it. Then the kernel’s OOM killer picks a container itself.",
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
           text: [
-            "Each container’s OOM score is its share of the node’s memory, plus an adjustment the kubelet sets for its ",
+            "Each container’s OOM score is its share of the node’s memory, plus an adjustment the kubelet sets from its ",
             { a: "Quality of Service (QoS) class", href: "/learn/glossary/kubernetes-qos-class" },
-            ". The OOM killer ends the highest score first.",
+            ". The highest score is killed first.",
           ],
         },
         {
@@ -302,15 +307,15 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "So containers in low-QoS pods that use a lot of memory compared with their requests go first.",
+          text: "So containers in low-QoS pods that use far more memory than they request go first.",
         },
       ],
     },
     {
       id: "how-to-fix-oomkilled-in-kubernetes",
-      title: "How to fix OOMKilled in Kubernetes",
+      title: "How to fix OOMKilled",
       blocks: [
-        { kind: "p", text: "The Reason field, then the memory curve, decides the fix." },
+        { kind: "p", text: "Read the Reason field first, then the memory curve." },
         { kind: "svg", figure: figure2 },
         { kind: "h3", id: "find-the-cause", title: "Find the cause" },
         {
@@ -318,14 +323,14 @@ export const article: Article = {
           items: [
             [
               { b: "Confirm the reason." },
-              " Memory is the fix only when it reads OOMKilled. For ",
+              " Memory is the fix only for OOMKilled. For ",
               { code: "Reason: Error" },
-              " with 137, look at the probe, or at a shutdown that runs past its grace period.",
+              " with 137, check the probes and how long the app takes to stop.",
             ],
             {
               text: [
                 { b: "Read memory use over the hours before the kill." },
-                " Memory that stays high but steady means the workload needs that much, or its requests and limits are wrong. Memory that climbs and doesn’t return to a baseline after load falls typically means a leak. On a cgroup v2\u00a0node, read the current figure in bytes:",
+                " High but steady means the workload needs that much, or its requests and limits are wrong. A climb that doesn’t fall back to a baseline after load drops usually means a leak. On a cgroup v2 node, read current use in bytes:",
               ],
               blocks: [
                 {
@@ -340,7 +345,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "change-the-size-or-fix-the-leak",
-          title: "Change the size, or fix the leak",
+          title: "Resize, or fix the leak",
         },
         {
           kind: "ol",
@@ -351,7 +356,7 @@ export const article: Article = {
                 { b: "If the use is expected, give the container more memory." },
                 " Raise the limit, and the request with it. ",
                 { a: "Size it from the peak", href: "/learn/kubernetes-pod-right-sizing" },
-                " of a window that includes the workload’s busiest day, not from an average. Then put the same values in your manifest or Git, or the next deploy brings the old ones back. For a single-container Deployment:",
+                " of a window that includes the busiest day, not from an average. Put the same values in your manifest or Git, or the next deploy brings back the old ones. For a single-container Deployment:",
               ],
               blocks: [
                 {
@@ -363,22 +368,22 @@ export const article: Article = {
             },
             [
               { b: "If memory keeps climbing, treat it as a leak." },
-              " A bigger limit only moves the kill later. Raise it as a stopgap while the application team looks for the leak.",
+              " A bigger limit only moves the kill later. Raise it as a stopgap while the app team finds the leak.",
             ],
             [
-              { b: "Make the workloads that should go last Guaranteed." },
+              { b: "Make the pods that should go last Guaranteed." },
               " Set CPU and memory requests equal to their limits in every container. The kubelet never evicts a Guaranteed pod because of another pod’s use.",
             ],
             [
               { b: "Count everything the limit covers." },
-              " The kubelet tracks a memory-backed emptyDir volume as container memory use, so files written there can count toward the limit. For a Java or .NET app, Microsoft also asks you to check that it runs the latest runtime version.",
+              " The kubelet counts a memory-backed emptyDir volume as container memory, so files written there count toward the limit. For a Java or .NET app, Microsoft also advises checking for the latest runtime version.",
             ],
           ],
         },
         {
           kind: "p",
           text: [
-            "Requests sized from real use are also the first step of ",
+            "Requests set from real use are also the first step of ",
             { a: "Kubernetes cost optimization", href: "/kubernetes-cost-optimization" },
             ".",
           ],
@@ -387,13 +392,16 @@ export const article: Article = {
     },
     {
       id: "oomkilled-on-aks-and-eks-where-the",
-      title: "OOMKilled on AKS and EKS: where the memory history lives",
+      title: "Memory history on AKS and EKS",
       blocks: [
-        { kind: "p", text: "The kubectl steps are the same on both clouds." },
+        {
+          kind: "p",
+          text: "The kubectl steps are the same on both clouds. The memory history lives in each cloud’s monitoring.",
+        },
         {
           kind: "h3",
           id: "aks-container-insights-in-the-azure-portal",
-          title: "AKS: Container insights in the Azure portal",
+          title: "AKS: Container insights",
         },
         {
           kind: "p",
@@ -409,22 +417,22 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Read the memory figures, not the percentages. A pod’s percentage is based on its memory request, not on the node.",
+          text: "Read the memory values, not the percentages. A pod’s percentage is of its memory request, not of the node.",
         },
         {
           kind: "p",
-          text: "For an OOMKilled AKS system pod in kube-system, Microsoft gives specific fixes:",
+          text: "For an OOM-killed AKS system pod in kube-system, Microsoft gives these fixes:",
         },
         {
           kind: "ul",
           items: [
             [
               { b: "metrics-server." },
-              " When it’s OOMKilled for lack of resources, configure the Metrics Server VPA to give it more.",
+              " When it’s OOM-killed for lack of resources, configure the Metrics Server VPA to give it more.",
             ],
             [
               { b: "CoreDNS." },
-              " When traffic spikes get it OOMKilled, customize CoreDNS scaling.",
+              " When traffic spikes get it OOM-killed, customize CoreDNS scaling.",
             ],
             [
               { b: "Other system pods." },
@@ -437,11 +445,11 @@ export const article: Article = {
         {
           kind: "h3",
           id: "eks-container-insights-in-amazon-cloudwatch",
-          title: "EKS: Container Insights in Amazon CloudWatch",
+          title: "EKS: Container Insights",
         },
         {
           kind: "p",
-          text: "On Amazon Elastic Kubernetes Service (EKS), OOM killed containers leave a trail in Amazon CloudWatch once Container Insights with enhanced observability is collecting. Two of its metrics help:",
+          text: "On Amazon Elastic Kubernetes Service (EKS), OOM killed containers show up in Amazon CloudWatch once Container Insights with enhanced observability is collecting. Two of its metrics help:",
         },
         {
           kind: "ul",
@@ -452,7 +460,7 @@ export const article: Article = {
             ],
             [
               { code: "pod_memory_utilization_over_pod_limit" },
-              " gives a pod’s memory use as a share of its limit. It’s missing for any pod in which a container doesn’t set a memory limit.",
+              " is a pod’s memory use as a share of its limit. It’s missing when any container in the pod has no memory limit.",
             ],
           ],
         },
@@ -460,7 +468,7 @@ export const article: Article = {
     },
     {
       id: "how-coral-sets-memory-and-responds-to",
-      title: "How Coral sets memory and responds to OOM kills",
+      title: "How Coral handles OOM kills",
       blocks: [
         {
           kind: "p",
@@ -474,22 +482,22 @@ export const article: Article = {
           text: [
             "Its ",
             { a: "memory rules", href: "/coral-faq#what-happens-if-an-optimized-pod" },
-            " work like this:",
+            ":",
           ],
         },
         {
           kind: "ul",
           items: [
             [
-              { b: "The size." },
+              { b: "Size." },
               " Coral sets memory from the peak of recent use, plus a margin. It uses a peak, not a percentile, because running out of memory kills the container.",
             ],
             [
-              { b: "The limit." },
-              " On the built-in policies, Coral never reduces a memory limit on regular pods. When it changes a memory request, it keeps your limit or raises it, so the limit is never below the request. A container with no memory limit keeps none.",
+              { b: "Limits." },
+              " On the built-in policies, Coral never reduces a memory limit on regular pods. When it changes a memory request, it keeps your limit or raises it, so the limit never sits below the request. A container with no memory limit keeps none.",
             ],
             [
-              { b: "Policy choices." },
+              { b: "Custom policies." },
               " A custom policy can keep, remove or set limits its own way. Where a policy keeps a pod Guaranteed, its limit stays equal to its request.",
             ],
             [
@@ -497,7 +505,7 @@ export const article: Article = {
               " With automation on, Coral raises that container’s memory request straight away. The limit rises with it, so the new size isn’t killed at the old limit. With automation off, Coral records the kill and changes nothing.",
             ],
             [
-              { b: "How the new size lands." },
+              { b: "Rollout." },
               " Crash-looping pods, and pods not Ready after a recent kill, are recreated at the new size. Other pods are resized in place or restarted within their PDBs.",
             ],
             [
@@ -505,20 +513,20 @@ export const article: Article = {
               " Raises stop at a cap. If repeated kills look like a memory leak, Coral stops raising and holds memory at the cap for a set time. The extra margin fades after the last kill, and a Job keeps it through its next clean runs.",
             ],
             [
-              { b: "What stays yours." },
-              " Coral changes a container’s CPU and memory, never application settings such as JVM heap or Redis maxmemory. A leak stays a fix in the application.",
+              { b: "Your app." },
+              " Coral changes only CPU and memory, never app settings such as JVM heap or Redis maxmemory. A leak stays a fix in the app.",
             ],
           ],
         },
         {
           kind: "h3",
           id: "what-coral-did-on-our-own-cluster",
-          title: "What Coral did on our own cluster",
+          title: "On our own cluster",
         },
         {
           kind: "p",
           text: [
-            "By 12 October 2026, Coral had rebalanced the requests of 14 apps on our own AKS development cluster, and given one of them more memory. The memory the apps reserve went from 6.4 to 5.4\u00a0GiB, 16% less. ",
+            "By 12 October 2026, Coral had rebalanced the requests of 14 apps on our own AKS development cluster, and given one of them more memory. The memory the apps reserve went from 6.4 to 5.4 GiB, 16% less. ",
             { a: "The Coral Value Lab study", href: "/coral-value-lab" },
             " has the full run.",
           ],
@@ -562,6 +570,11 @@ export const article: Article = {
       url: "https://man7.org/linux/man-pages/man7/signal.7.html",
     },
     {
+      publisher: "Linux man-pages",
+      title: "“bash(1)”",
+      url: "https://man7.org/linux/man-pages/man1/bash.1.html",
+    },
+    {
       publisher: "Microsoft Learn",
       title: "“Troubleshoot memory saturation in AKS clusters”",
       url: "https://learn.microsoft.com/en-us/troubleshoot/azure/azure-kubernetes/availability-performance/identify-memory-saturation-aks",
@@ -577,39 +590,39 @@ export const article: Article = {
       url: "https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Container-Insights-metrics-enhanced-EKS.html",
     },
     {
-      publisher: "Linux man-pages",
-      title: "“bash(1)”",
-      url: "https://man7.org/linux/man-pages/man1/bash.1.html",
+      publisher: "AWS",
+      title: "“Docker diagnostics in Amazon ECS”",
+      url: "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-diags.html",
     },
     {
       publisher: "Kubernetes source",
       title: "“client-go/tools/remotecommand/v4.go”",
       url: "https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/client-go/tools/remotecommand/v4.go",
     },
-    {
-      publisher: "AWS",
-      title: "“Docker diagnostics in Amazon ECS”",
-      url: "https://docs.aws.amazon.com/AmazonECS/latest/developerguide/docker-diags.html",
-    },
   ],
   related: [
     {
-      title: "Kubernetes pod right sizing: set requests from real use",
+      title: "Kubernetes requests vs limits",
       where: "Learn",
       href: "/learn/kubernetes-pod-right-sizing",
     },
     {
-      title: "In-place pod resize: change CPU and memory without a restart",
+      title: "Exit code 143 in Kubernetes",
+      where: "Learn",
+      href: "/learn/exit-code-143",
+    },
+    {
+      title: "In-place pod resize in Kubernetes",
       where: "Learn",
       href: "/learn/in-place-pod-resize",
     },
     {
-      title: "Kubernetes allocatable vs capacity: what pods can use",
+      title: "Kubernetes allocatable vs capacity",
       where: "Learn",
       href: "/learn/kubernetes-allocatable-vs-capacity",
     },
     {
-      title: "What happens if an optimized pod starts getting OOM-killed?",
+      title: "What if a pod gets OOM-killed?",
       where: "Coral FAQ",
       href: "/coral-faq#what-happens-if-an-optimized-pod",
     },

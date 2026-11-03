@@ -10,7 +10,7 @@ import { documentMetadata } from "@/features/documents/document-page";
 import "@/styles/value-lab.css";
 
 /**
- * `/value-lab`: Value Lab by Zoorik, the case studies' hub. Indexed, listed in
+ * `/value-lab`: Value Lab, the case studies' hub. Indexed, listed in
  * the sitemap, and prerendered at build like every page here. Not in the
  * footer, which links each study; /learn's More from Zoorik leads here. The
  * header has none. Its old address, /case-studies, redirects here

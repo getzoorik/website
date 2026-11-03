@@ -4,58 +4,92 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/ebs-volume/
 export const term: GlossaryTerm = {
   slug: "ebs-volume",
   term: "EBS volume",
-  title: "What is AWS EBS? Amazon EBS volumes explained",
-  meta: "What is EBS in AWS? It’s Amazon Elastic Block Store: block storage for an EC2 instance. See how an EBS volume is charged, and why it can grow but never shrink.",
-  h1: "What is AWS EBS? Amazon EBS volumes explained",
-  card: "Amazon EBS is block storage for EC2 instances.",
+  title: "What is AWS EBS (Elastic Block Store)?",
+  meta: "AWS EBS (Elastic Block Store) is block storage for EC2 instances. What an EBS volume is, the volume types, how it’s charged, and why it can’t shrink.",
+  h1: "What is AWS EBS (Elastic Block Store)?",
+  card: "Amazon Elastic Block Store (EBS) is the AWS block storage service for EC2 instances.",
   group: "block-storage",
   product: "amoeba",
   published: "2026-10-25",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
       text: [
-        "Amazon EBS is ",
+        "Amazon Elastic Block Store (EBS) is the AWS ",
         { a: "block storage", href: "/learn/glossary/block-storage" },
-        " for EC2 instances. An EBS volume is a block-level storage device you attach to an instance, usually a virtual machine (VM). Once attached, it works like a physical hard drive.",
+        " service for EC2 instances. An EBS volume is one of its drives. You attach it to an instance, a virtual machine (VM) in AWS, and use it like a physical hard drive.",
       ],
     },
     {
       kind: "p",
-      text: "An EBS volume can be an EC2 instance’s root volume, the system drive it starts from, or a data volume for a database. It must share its instance’s Availability Zone.",
+      text: "A volume can be the instance’s root volume, the system drive it starts from, or a data volume, such as a database’s storage. It must be in the instance’s Availability Zone, and it can outlive the instance.",
     },
   ],
   sections: [
     {
-      id: "ebs-full-form-and-meaning-in-aws",
-      title: "EBS full form and meaning in AWS",
+      id: "ebs-volume-types",
+      title: "EBS volume types",
       blocks: [
         {
           kind: "p",
-          text: "EBS stands for Amazon Elastic Block Store. Elastic Block Store is the AWS block storage service, and an EBS volume is one drive it provides.",
+          text: "Volume types come in two groups: SSD-backed for transactional work, and HDD-backed for throughput-heavy work.",
+        },
+        {
+          kind: "ul",
+          items: [
+            [
+              "General Purpose SSD (solid-state drive): ",
+              { a: "gp3", href: "/learn/glossary/ebs-gp3" },
+              " and gp2.",
+            ],
+            "Provisioned IOPS SSD: io2 and io1.",
+            "Throughput Optimized HDD (hard disk drive): st1.",
+            "Cold HDD: sc1.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            { a: "Amazon EBS volume types", href: "/learn/ebs-volume-types" },
+            " compares their speed and price.",
+          ],
         },
       ],
     },
     {
       id: "an-example-of-ebs-in-aws",
-      title: "An example of an EBS volume in AWS",
+      title: "How EBS is charged",
       blocks: [
         {
           kind: "p",
-          text: "Say your database runs on a 500\u00a0GiB gp3 data volume, a General Purpose SSD (solid-state drive). The database writes 200\u00a0GiB.",
+          text: [
+            "AWS charges each volume for the GB you provision, every month, until you delete it. The data you write doesn’t change the price. Our ",
+            { a: "EBS pricing calculator", href: "/ebs-and-azure-disk-pricing" },
+            " gives a volume’s monthly list price.",
+          ],
         },
-        { kind: "p", text: "AWS charges for all 500\u00a0GiB, not the 200\u00a0GiB written." },
+        {
+          kind: "p",
+          text: "Say a database runs on a 500\u00a0GiB gp3 data volume and writes 200\u00a0GiB. AWS charges for all 500\u00a0GiB.",
+        },
         { kind: "svg", figure: figure1 },
+        {
+          kind: "p",
+          text: [
+            { a: "Snapshots", href: "/learn/glossary/disk-snapshot" },
+            ", point-in-time backups of a volume, are different: they’re charged by the data they hold.",
+          ],
+        },
       ],
     },
     {
       id: "delete-on-termination",
-      title: "Delete on termination: when a volume outlives its instance",
+      title: "Delete on termination",
       blocks: [
         {
           kind: "p",
-          text: "An EBS volume’s “Delete on termination” setting decides if it’s deleted with its instance.",
+          text: "Each volume’s “Delete on termination” setting decides if it’s deleted with its instance. The defaults:",
         },
         {
           kind: "table",
@@ -74,24 +108,14 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "A kept volume is still charged until you delete it. You can change the setting at launch, overriding the default in the Amazon Machine Image (AMI), or later on a running instance.",
+          text: "A kept volume is still charged until you delete it. You can change the setting at launch, overriding the Amazon Machine Image (AMI) default, or later on a running instance.",
         },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why AWS EBS volumes matter for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
-        {
-          kind: "p",
-          text: [
-            "EBS charges for each provisioned GB, every month, until you delete the volume. Our ",
-            { a: "EBS pricing calculator", href: "/ebs-and-azure-disk-pricing" },
-            " gives a volume’s monthly list price. To see how much of it holds data, ",
-            { a: "check EBS volume usage", href: "/learn/check-ebs-volume-usage" },
-            " inside the instance.",
-          ],
-        },
         {
           kind: "ul",
           items: [
@@ -100,7 +124,12 @@ export const term: GlossaryTerm = {
             [
               "To ",
               { a: "shrink an EBS volume", href: "/learn/shrink-ebs-volume" },
-              ", you copy the data to a new, smaller one.",
+              ", you copy its data to a new, smaller one.",
+            ],
+            [
+              "To see how much of a volume holds data, ",
+              { a: "check EBS volume usage", href: "/learn/check-ebs-volume-usage" },
+              " inside the instance.",
             ],
           ],
         },
@@ -108,7 +137,9 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " moves a VM’s data disks onto one btrfs pool sized to your data, then rightsizes it autonomously. It works on EBS data volumes on Windows and Linux VMs, never the root volume.",
+            " moves a VM’s data disks onto one btrfs pool sized to your data, then rightsizes it autonomously. It works on EBS data volumes on Windows and Linux VMs, never the root volume. See ",
+            { a: "EBS cost optimization", href: "/ebs-cost-optimization" },
+            ".",
           ],
         },
       ],
@@ -120,7 +151,11 @@ export const term: GlossaryTerm = {
       line: "The storage type it belongs to.",
       href: "/learn/glossary/block-storage",
     },
-    { title: "IOPS", line: "Input/output operations per second.", href: "/learn/glossary/iops" },
+    {
+      title: "Instance store",
+      line: "Temporary storage on the instance’s host.",
+      href: "/learn/glossary/instance-store",
+    },
     {
       title: "Thin provisioning",
       line: "Space taken only as you write data.",
@@ -132,9 +167,9 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/azure-managed-disk",
     },
   ],
-  relatedTitle: "Terms related to EBS volumes",
+  relatedTitle: "Related terms",
   next: {
-    title: "How to shrink an EBS volume when AWS only lets it grow",
+    title: "How to shrink an EBS volume",
     href: "/learn/shrink-ebs-volume",
   },
   sources: [

@@ -2,11 +2,10 @@ import { learnPath, routes } from "@/config/site";
 import type { FaqSection } from "@/content/faq";
 
 /**
- * `/coral-faq`: every string the page prints, verbatim from the approved mock:
- * the first group "About Coral" (8 questions), then the client FAQ, 8 groups
- * and 36 questions in all, and the two cards as callouts atop their groups. The
- * five answers that pointed at another question by its number restate the
- * point; the PDF keeps its own numbering.
+ * `/coral-faq`: every string the page prints. The first group "About Coral"
+ * (8 questions), then the client FAQ, 8 groups and 36 questions in all, and
+ * the two callouts atop their groups. No answer points at another question by
+ * its number; the PDF keeps its own numbering.
  *
  * 🔴 CLIENT ANSWERS ONLY. Each question carries its short answer and nothing
  * else: the internal team's answers never reach this site.
@@ -66,14 +65,14 @@ export const coralFaqPage = {
   meta: {
     title: "Coral FAQ",
     description:
-      "Answers on how Coral sizes CPU and memory requests, keeps workloads safe, works with HPA, KEDA, Karpenter, NAP and Cluster Autoscaler on AKS and EKS.",
+      "How Coral rebalances requests and nodes on AKS and EKS, keeps workloads safe, and works with HPA, KEDA, Karpenter, NAP and the Cluster Autoscaler.",
   },
   /* The deck is the Docs hub tile's line, with a period. */
   hero: {
     title: "Coral FAQ",
     deck: "Sizing, safety, HPA, nodes and autoscalers.",
   },
-  updated: "Updated 2 November 2026",
+  updated: "Updated 3 November 2026",
   /** The one download line after the last group: the FAQ's PDF, and no other. */
   download: { label: "FAQ PDF", document: "coral-faq" },
 } as const;
@@ -88,13 +87,9 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
         id: "what-is-coral",
         question: "What is Coral?",
         short: [
-          "Coral is Kubernetes optimization for Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS).",
-          "It sizes each container’s CPU and memory requests to what it really uses, and removes the nodes you don’t need, one at a time. No code changes.",
-          [
-            "More on the product page: ",
-            { href: routes.coral, text: "Coral for AKS and EKS" },
-            ".",
-          ],
+          "Coral is Kubernetes cost optimization for Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS).",
+          "It rebalances CPU and memory requests to real use and removes the nodes you don’t need, without any downtime. No code changes.",
+          ["More on the ", { href: routes.coral, text: "Coral product page" }, "."],
         ],
       },
       {
@@ -102,33 +97,34 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
         question: "Which clusters does Coral work on?",
         short: [
           "AKS and EKS on Kubernetes 1.30 or later, with at least one Linux node (amd64 or arm64).",
-          "Running pods are resized in place on 1.33+ nodes. On older nodes they restart one at a time.",
-          "Windows nodes are listed and costed, but their workloads are not resized.",
+          "On 1.33+ nodes, running pods are resized in place. On older nodes, they restart one at a time.",
+          "Windows nodes are listed and costed. Coral doesn’t resize, rebalance or live-migrate their workloads.",
         ],
       },
       {
         id: "what-does-connecting-a-cluster-change",
         question: "What does connecting a cluster change?",
         short: [
-          "One zoorikctl command installs the agent, its webhook and a node daemon, two CRDs and admission policies.",
-          "In your cloud it creates one identity: on AKS, a role on that cluster that can read it and delete its machines; on EKS, an IAM role that can only terminate instances in its Auto Scaling groups. If the cluster has no autoscaler, it sets up NAP on AKS or Karpenter on EKS, with your approval.",
-          "On AKS, connect turns on workload identity and the OIDC issuer if they are off, and the OIDC issuer can’t be turned off again. On an EKS cluster that uses only aws-auth, installing Karpenter switches authentication to API_AND_CONFIG_MAP for good.",
+          "One zoorikctl command installs the agent, its webhook, a node daemon, two CRDs and admission policies.",
+          "It creates one cloud identity. On AKS, its role can read the cluster, delete its machines and reduce a pool’s minimum. On EKS, its IAM role can terminate instances in the cluster’s Auto Scaling groups and reduce their minimum.",
+          "If the cluster has no node autoscaler, connect sets up NAP on AKS or Karpenter on EKS.",
+          "On AKS, it turns on workload identity and the OIDC issuer if they are off. The OIDC issuer can’t be turned off again. On an EKS cluster that uses only aws-auth, installing Karpenter switches authentication to API_AND_CONFIG_MAP for good.",
           [
             "It lists every cloud change and asks once. ",
             { code: "--dry-run" },
-            " prints everything and changes nothing.",
+            " shows them all and changes nothing.",
           ],
-          "Node optimization and the Evictor start at connect. Pod sizing waits until you switch on “Automatically optimize”.",
+          "Node optimization and the Evictor start at connect. Pod sizing waits until you turn on “Automatically optimize”.",
         ],
       },
       {
         id: "what-leaves-my-cluster",
         question: "What leaves my cluster?",
         short: [
-          "Per-container usage summaries and an inventory every 5\u00a0minutes, events with pod and node names, and a heartbeat every 60\u00a0seconds.",
+          "Usage summaries per container, an inventory of the cluster, events with pod and node names, and a regular heartbeat.",
           "No env var values, commands, image names or request payloads. The agent can’t read your Secrets or ConfigMaps.",
           [
-            "Details: ",
+            "The full list: ",
             {
               href: `${routes.coralGuide}#what-leaves-your-cluster`,
               text: "What leaves your cluster",
@@ -141,17 +137,17 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
         id: "how-is-the-saving-worked-out",
         question: "How is the saving worked out?",
         short: [
-          "At your cloud’s published list price for the region, with spot nodes at the spot rate and a 730-hour month. Discounts, reservations and savings plans are left out.",
-          "A smaller request reduces your cloud cost when the freed capacity lets a node go.",
-          "Every figure says where it comes from. Until data exists, figures read “Calculating”.",
+          "At your cloud’s list price for the region, with spot nodes at the spot rate and a 730-hour month. Discounts, reservations and savings plans are left out.",
+          "A smaller request reduces your cloud cost only when the freed capacity lets a node go.",
+          "Every figure shows where it comes from. Until there is data, figures read “Calculating”.",
         ],
       },
       {
         id: "do-i-need-coral-with-karpenter",
         question: "Do I need Coral with Karpenter or NAP?",
         short: [
-          "They do a different job. Karpenter and NAP choose and remove machines from pod requests; they don’t change the requests.",
-          "Coral sizes requests to real use, so the same autoscaler can run fewer or smaller nodes. Pools that Karpenter or NAP consolidate are left to them.",
+          "They do different jobs. Karpenter and NAP choose and remove machines from pod requests. They don’t change the requests.",
+          "Coral rebalances requests to real use, so the same autoscaler can run fewer or smaller nodes. Pools that Karpenter or NAP consolidate are left to them.",
           [
             "Compared in full: ",
             {
@@ -178,7 +174,7 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
         id: "where-can-i-buy-coral",
         question: "Where can I buy Coral?",
         short: [
-          "Coral is available in AWS Marketplace and Microsoft Marketplace.",
+          "In AWS Marketplace and Microsoft Marketplace.",
           "If you pay for Coral, your order or marketplace purchase sets the price, how often you pay and the payment terms.",
         ],
       },
@@ -186,7 +182,7 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
   },
   {
     id: "how-coral-sizes-workloads",
-    title: "How Coral sizes workloads",
+    title: "Workload sizing",
     callout: {
       title: "Pod sizing is opt-in",
       text: [
@@ -198,97 +194,107 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
     questions: [
       {
         id: "is-the-recommendation-based-on-average",
-        question: "Is the recommendation based on Average, P95, P99, Max, or a mix?",
+        question: "Is sizing based on average, P95, P99 or max?",
         short: [
           [
             { b: "CPU:" },
-            " a percentile of the last 3\u00a0days (P80 by default), plus 10% headroom.",
+            " a percentile of recent use, plus headroom. The default is P80 of the last 3\u00a0days, plus 10%.",
           ],
-          "With a CPU-based HPA, the CPU request comes from replaying 3\u00a0days of load through your HPA instead.",
+          "With a CPU-based HPA, Coral picks the CPU request by replaying recent load through your HPA’s own settings.",
           [
             { b: "Memory:" },
-            " the peak of the last 8\u00a0days, plus 10% headroom, because running out of memory kills the container.",
+            " the highest use of the last 8\u00a0days, plus 10% by default. It uses the peak because running out of memory kills the container.",
           ],
-          "During a surge or CPU pressure, the CPU target is raised for a while, up to P99.",
-          "You can change the target per workload or in a custom policy, up to P99.9 or max.",
+          "During a surge or CPU pressure, Coral raises the CPU request for a while.",
+          "A custom policy or a per-workload setting can target any percentile up to P99.9, or max.",
         ],
       },
       {
         id: "what-does-each-coral-policy-do",
-        question: "What does each Coral policy do, and which one does a workload get?",
+        question: "What does each policy do?",
         short: [
-          "A policy sets how Coral sizes a workload’s CPU and memory requests. Six come built in.",
+          "A policy sets how Coral sizes CPU and memory requests. Six are built in. Memory is the highest use of the last 8\u00a0days, plus 10 to 20%.",
           [
-            { b: "CPU:" },
-            " Balanced uses the 80th percentile of the last 3 days plus 10%, Stability the 90th plus 15%, Cost savings the 70th plus 10%, and Burstable the 60th percentile of the last 8 days plus 25%.",
+            { b: "Balanced:" },
+            " CPU at P80 of the last 3\u00a0days, plus 10%. The default for most workloads.",
           ],
-          [{ b: "Memory:" }, " the highest use of the last 8 days, plus 10 to 20%."],
-          "Resiliency sizes like Balanced and keeps limits equal to requests on Guaranteed pods. Read-only shows recommendations and never changes anything.",
-          "By default, StatefulSets get Resiliency, Jobs and CronJobs get Burstable, the cluster’s own add-ons get Read-only, and everything else gets Balanced. You can assign another policy to any of your workloads, or create your own.",
+          [{ b: "Stability:" }, " CPU at P90, plus 15%. For latency-sensitive apps."],
+          [{ b: "Cost savings:" }, " CPU at P70, plus 10%. For dev and non-critical work."],
+          [
+            { b: "Burstable:" },
+            " CPU at P60 of the last 8\u00a0days, plus 25%. The default for Jobs and CronJobs.",
+          ],
+          [
+            { b: "Resiliency:" },
+            " sizes like Balanced and keeps Guaranteed pods Guaranteed. The default for StatefulSets.",
+          ],
+          [
+            { b: "Read-only:" },
+            " recommends and never changes anything. Always used for Zoorik’s own namespace and for add-ons labelled ",
+            { code: "addonmanager.kubernetes.io/mode: Reconcile" },
+            ".",
+          ],
+          "You can give any of your workloads another policy, or create your own.",
         ],
       },
       {
         id: "how-much-history-is-needed-before",
-        question: "How much history is needed before the first recommendation?",
+        question: "How much history does Coral need?",
         short: [
           "A first recommendation appears within the first hour.",
-          "It is trusted after 24\u00a0hours of data. Jobs and CronJobs need 3 runs.",
-          "The window then grows to 3\u00a0days for CPU and 8\u00a0days for memory.",
+          "Coral trusts it after 24\u00a0hours of data. Jobs and CronJobs need 3 runs.",
+          "The look-back then grows to 3\u00a0days for CPU and 8\u00a0days for memory.",
         ],
       },
       {
         id: "cpu-is-100m-at-night-and",
-        question:
-          "CPU is 100m at night and 2000m from 10\u00a0AM to 2\u00a0PM. What does Coral recommend?",
+        question: "What if CPU is 100m at night and 2000m from 10\u00a0AM to 2\u00a0PM?",
         short: [
-          "Without an HPA, the base request sits near the night level: the 4 busy hours are only 17% of the day, and P80 leaves out the busiest 20%.",
-          "At 10\u00a0AM Coral detects the surge within minutes and raises the request. It drops back a few hours after the peak.",
-          "With a CPU-based HPA, Coral sizes the CPU request by replaying 3\u00a0days of load through your HPA instead.",
-          "To reserve 2000m all day, use the Stability policy or set a CPU minimum.",
+          "Without an HPA, the request sits near the night level. The 4 busy hours are 17% of the day, and P80 leaves out the busiest 20%.",
+          "At 10\u00a0AM, Coral sees the surge within minutes and raises the request. It drops back a few hours after the peak.",
+          "With a CPU-based HPA, Coral sizes CPU by replaying recent load through your HPA instead.",
+          "To reserve 2000m all day, set a CPU minimum or use the Stability policy.",
         ],
       },
       {
         id: "a-workload-is-idle-for-6",
-        question:
-          "A workload is idle for 6\u00a0days and busy every Monday. Will Coral reduce resources before Monday?",
+        question: "Will Coral reduce a workload that is busy only on Mondays?",
         short: [
           [
             { b: "Memory: no." },
-            " Coral keeps last Monday’s peak, because it looks back 8\u00a0days (unless more than about 10% of the data is missing).",
+            " Coral sizes memory from the highest use of the last 8\u00a0days, so last Monday’s peak holds unless too much of that data is missing.",
           ],
           [
             { b: "CPU: yes." },
-            " A short Monday peak doesn’t hold the CPU request up, so it returns to the idle level after the peak.",
+            " A short Monday peak doesn’t hold the CPU request up, so it drops to the idle level after the peak.",
           ],
-          "On Monday Coral starts raising CPU within minutes. To be ready from the first minute, set a CPU minimum.",
+          "On Monday, Coral raises CPU within minutes. To be ready from the first minute, set a CPU minimum.",
         ],
       },
       {
         id: "how-are-workloads-handled-that-spike",
-        question: "How are workloads handled that spike only at month-end or quarter-end?",
+        question: "What about month-end or quarter-end spikes?",
         short: [
           "Coral looks back at most 8\u00a0days, so it doesn’t remember last month’s peak.",
-          "When the spike comes, Coral raises CPU within minutes, and raises memory after any OOM kill.",
+          "When the spike comes, Coral raises CPU within minutes, and memory after any OOM kill.",
           "For known month-end workloads, set minimums or use a more conservative policy.",
         ],
       },
       {
         id: "how-does-coral-learn-black-friday",
-        question: "How does Coral learn Black Friday, Diwali or holiday traffic patterns?",
+        question: "Does Coral plan for Black Friday or Diwali?",
         short: [
-          "It doesn’t forecast or use a calendar. It reacts to live usage.",
+          "No. It doesn’t forecast or read a calendar. It reacts to live usage.",
           "Your HPA adds pods, your autoscaler adds nodes, and Coral raises requests that run hot.",
-          "Before a known event, set minimums on critical workloads.",
-          "For the event window, pause node optimization and the Evictor.",
+          "Before a known event, set minimums on critical workloads. Pause node optimization and the Evictor for the event window.",
         ],
       },
       {
         id: "a-workload-needs-4-cpus-during",
-        question:
-          "A workload needs 4\u00a0CPUs during startup but only 500m afterwards. How is it handled?",
+        question: "What if startup needs 4\u00a0CPUs, then only 500m?",
         short: [
-          "By default Coral ignores the first 2\u00a0minutes of CPU after a container starts, so the request ends up near 500m.",
-          "Startup can still go above the request, using free CPU on the node, because Coral doesn’t reduce CPU limits on regular pods.",
+          "By default, Coral leaves out CPU use just after a container starts, so the request lands near 500m.",
+          "Startup can still use more than the request, from free CPU on the node, because Coral doesn’t reduce CPU limits on regular pods.",
           "If startup must be fast, set a CPU minimum or use a policy that counts startup CPU.",
           "Guaranteed StatefulSet pods and workloads with a CPU-based HPA are sized differently.",
         ],
@@ -297,116 +303,113 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
   },
   {
     id: "safety-memory-and-rollback",
-    title: "Safety, memory and rollback",
+    title: "Safety and rollback",
     questions: [
       {
         id: "how-does-coral-decide-a-change",
-        question: "How does Coral decide a change is safe to apply automatically?",
+        question: "How does Coral decide a change is safe?",
         short: [
-          "Only workloads with “Automatically optimize” on are changed. Zoorik’s own namespace is never changed.",
-          "Through a policy, reductions in the first 24\u00a0hours of data are capped at 10%, 25%, then 35%. After that Coral needs at least 90% of the expected samples.",
-          "Every change respects your minimums, LimitRanges and quotas. Routine changes under 10% are skipped.",
-          "Pods are resized in place where possible. Otherwise they are replaced one at a time, within your PDBs.",
+          "Coral changes only workloads with “Automatically optimize” on, and never Zoorik’s own namespace.",
+          "Reductions start small while data builds up. After that, Coral applies a size only when it has enough data.",
+          "Every change stays within your minimums, LimitRanges and quotas. Small routine changes are skipped.",
+          "Pods are resized in place where possible. Otherwise they are replaced one at a time, within your PodDisruptionBudgets.",
         ],
       },
       {
         id: "how-does-a-change-reach-the",
-        question:
-          "How does a change reach the pods of a Deployment, StatefulSet, DaemonSet or Job?",
+        question: "How does a new size reach my pods?",
         short: [
           "New pods always start at the new size. Running pods are resized in place where the node allows it (Kubernetes 1.33+).",
           [
             { b: "Deployment:" },
-            " otherwise pods are replaced one at a time, each after the last is Ready, within your PodDisruptionBudgets.",
+            " otherwise one pod at a time, each after the last is Ready, within your PodDisruptionBudgets.",
           ],
           [
             { b: "StatefulSet:" },
             " one pod at a time, highest ordinal first, and never an extra pod.",
           ],
+          [{ b: "DaemonSet:" }, " one node at a time."],
           [
-            { b: "DaemonSet:" },
-            " one node at a time. ",
             { b: "Job and CronJob:" },
             " a running job is left alone, and the next run gets the new size.",
           ],
-          "Pods with no controller, and ReplicaSets on their own, aren’t resized.",
+          "Pods with no controller, and standalone ReplicaSets, aren’t resized.",
         ],
       },
       {
         id: "is-there-a-warm-up-period",
-        question: "Is there a warm-up period before automation?",
+        question: "Is there a warm-up period?",
         short: [
-          "For pod sizing, yes. When you turn it on through a policy, reductions in the first 24\u00a0hours of data are capped at 10%, then 25%, then 35%.",
-          "Workloads that already have 24\u00a0hours of good data get the full recommendation straight away.",
-          "Turning on a single workload directly skips this warm-up.",
+          "For pod sizing, yes. When you turn on a policy, reductions start small while data builds up.",
+          "Workloads that already have 24\u00a0hours of good data get the full recommendation at once.",
+          "Turning on a single workload skips the warm-up.",
           "Node optimization has no warm-up. It starts at install.",
         ],
       },
       {
         id: "memory-spikes-can-cause-oom-kills",
-        question: "Memory spikes can cause OOM kills. How much safety buffer is kept?",
+        question: "How much memory headroom does Coral keep?",
         short: [
-          "Memory is set from the highest usage of the last 8\u00a0days, plus 10% (15 to 20% on some other policies).",
-          "Coral never reduces a memory limit on regular pods, so a container with a limit is OOM-killed at the same point.",
-          "A container with no memory limit can be evicted sooner if the node runs short of memory.",
-          "If an OOM kill still happens, Coral raises that container’s memory straight away, by 20% per kill and at least 100\u00a0MiB.",
+          "Memory is sized from the highest use of the last 8\u00a0days, plus 10% on Balanced and up to 20% on other policies.",
+          "On the built-in policies, Coral never reduces the memory limit of a regular pod. So the limit at which a container is OOM-killed never goes down.",
+          "A container with no memory limit can be evicted sooner if its node runs short of memory.",
+          "If an OOM kill still happens, Coral raises that container’s memory straight away.",
         ],
       },
       {
         id: "what-happens-if-an-optimized-pod",
-        question: "What happens if an optimized pod starts getting OOM-killed?",
+        question: "What if a pod gets OOM-killed?",
         short: [
-          "Coral raises that container’s memory by 20% per OOM kill (at least 100\u00a0MiB), straight away.",
-          "Crash-looping pods are recreated at the new size, and the extra margin fades over 24\u00a0hours.",
-          "Raises stop at 2.5× the base size. If the kills look like a memory leak, Coral stops raising and holds that cap for 24\u00a0hours.",
+          "Coral raises that container’s memory request straight away, and again with each further kill.",
+          "A crash-looping pod is recreated at the new size. The extra memory fades once the kills stop.",
+          "Raises stop at a cap. If the kills look like a memory leak, Coral stops raising and holds memory at the cap. A leak needs a fix in the app.",
+          "With automation off, Coral records the kill and changes nothing.",
         ],
       },
       {
         id: "if-optimization-causes-performance-degradation-how",
-        question:
-          "If optimization causes performance degradation, how is it rolled back automatically?",
+        question: "How does rollback work?",
         short: [
-          "OOM kills, failing probes and CPU pressure make Coral raise requests back up automatically.",
+          "Coral raises requests again by itself on OOM kills, failing probes and CPU pressure.",
           "If a pod can’t be scheduled at its new size, Coral caps the request to fit.",
-          "A replacement pod that isn’t Ready within 10\u00a0minutes goes back to its original size (except in StatefulSets).",
+          "A replacement pod that isn’t Ready in time goes back to its original size, except in StatefulSets.",
           "Coral doesn’t read latency or error rates.",
-          "To roll back by hand, turn automation off. New pods start at your manifest’s size; running pods keep theirs until they restart.",
+          "To roll back by hand, turn automation off. New pods start at your manifest’s size. Running pods keep theirs until they restart.",
         ],
       },
       {
         id: "does-coral-change-my-git-or",
-        question: "Does Coral change my Git or GitOps manifests?",
+        question: "Does Coral change my Git manifests?",
         short: [
-          "No. Coral never edits Git or your workload’s template. It sets sizes on pods as they’re created, or resizes running pods in place, so Argo CD and Flux see no drift.",
-          "The one change Coral makes to a Deployment, a temporary second replica for a single-replica workload, is skipped when Argo CD or Flux own the replica count.",
-          "A CPU or memory limit in your manifest doesn’t cap Coral. Where it sits below the new request, the pod’s limit is raised: to 100× the request for CPU, and 1.5× (at least 128 MiB) for memory. Without a limit, Coral adds none unless the namespace requires one.",
-          "What does cap it: a maximum in a policy or in the workload’s Coral annotation (which can live in Git), the namespace’s LimitRange, and its ResourceQuota.",
+          "No. Coral never edits Git or your workload’s template. It sizes pods as they are created, or resizes running pods in place, so Argo CD and Flux see no drift.",
+          "Its one change to a Deployment, a temporary extra replica while a node drains, is skipped when Argo CD or Flux own the replica count.",
+          "A limit in your manifest doesn’t cap Coral. Where it sits below the new request, Coral raises the pod’s limit above it. Without a limit, Coral adds none unless the namespace requires one.",
+          "What caps Coral: a policy or annotation maximum, the namespace’s LimitRange and its ResourceQuota. The annotation can live in Git.",
         ],
       },
     ],
   },
   {
     id: "stateful-and-single-replica-workloads",
-    title: "Stateful and single-replica workloads",
+    title: "Stateful and single-replica apps",
     questions: [
       {
         id: "how-are-databases-kafka-elasticsearch-redis",
-        question: "How are databases, Kafka, Elasticsearch, Redis and StatefulSets optimized?",
+        question: "How does Coral handle databases and StatefulSets?",
         short: [
           "Coral changes only CPU and memory, never app settings such as JVM heap or Redis maxmemory.",
           "StatefulSet pods are resized in place, or replaced one at a time, highest ordinal first, within the PDB.",
-          "When a node is removed, a StatefulSet pod gets a short restart within its PDB. Nodes with local data or do-not-disrupt pods are kept.",
+          "When a node is removed, a StatefulSet pod moves by live migration where both nodes support it, or else by eviction within its PDB. Nodes with local data or do-not-disrupt pods are kept.",
           "For a careful start, put databases on the Read-only policy and mark them do-not-disrupt.",
         ],
       },
       {
         id: "can-optimization-happen-without-downtime-for",
-        question:
-          "Can optimization happen without downtime for applications that have only one replica?",
+        question: "Can single-replica apps be optimized without downtime?",
         short: [
-          "Usually, yes. Coral resizes the pod in place (Kubernetes 1.33+), or starts a new pod and waits until it’s Ready before removing the old one.",
-          "Where that isn’t safe (for example Recreate strategy or a ReadWriteOnce volume), the new size waits for the pod’s next natural restart.",
-          "When a node is removed, a pod whose replacement can’t start first gets a short restart. Mark it do-not-disrupt to prevent that.",
+          "Yes. Coral resizes the pod in place (Kubernetes 1.33+), or starts a new pod and waits until it is Ready before removing the old one.",
+          "Where a new pod can’t start first, as with the Recreate strategy or a ReadWriteOnce volume, the new size waits for the pod’s next restart.",
+          "When a node is removed, the pod moves by live migration where both nodes support it, or else by eviction. Mark it do-not-disrupt to keep it in place.",
         ],
       },
     ],
@@ -417,41 +420,41 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
     questions: [
       {
         id: "if-the-hpa-wants-to-scale",
-        question:
-          "If the HPA wants to scale up while Coral wants to reduce CPU requests, which one wins?",
+        question: "Do Coral and the HPA conflict?",
         short: [
-          "There is no conflict. The HPA decides how many pods run, and Coral decides how big each pod is.",
-          "While the HPA is scaling and below its max, Coral holds back its surge and CPU-pressure raises (OOM raises still apply), and pauses pod replacements until every pod is Ready.",
-          "For CPU-based HPAs, Coral picks the request by replaying the last 3\u00a0days of load through your HPA’s own settings.",
+          "No. The HPA decides how many pods run. Coral decides how big each pod is.",
+          "While the HPA is still scaling and below its max, Coral holds back its own CPU raises. OOM raises still apply.",
+          "In that time, Coral also waits for every pod to be Ready before it replaces any.",
         ],
       },
       {
         id: "could-reducing-cpu-requests-make-the",
-        question: "Could reducing CPU requests make the HPA scale more aggressively?",
+        question: "Can smaller requests make the HPA scale more?",
         short: [
-          "It could, because HPA utilization is usage divided by request.",
-          "So for workloads with a CPU-based HPA, Coral replays the last 3\u00a0days of load through your HPA’s own settings.",
+          "They can. HPA utilization is usage divided by request, so the same load reads higher on a smaller request.",
+          "So for a CPU-based HPA, Coral replays recent load through your HPA’s own settings before it picks the request.",
           "A smaller request wins only if its saving beats the cost of unserved load and extra scaling.",
+          "KEDA ScaledObjects with a CPU trigger get the same replay.",
         ],
       },
       {
         id: "does-optimization-ever-modify-hpa-minreplicas",
-        question: "Does optimization ever modify HPA minReplicas or maxReplicas?",
+        question: "Does Coral change HPA minReplicas or maxReplicas?",
         short: [
-          "Only on HPAs Coral manages: ones it creates for safe Deployments, with minReplicas of 2 or more, and ones you created by hand that it takes over.",
-          "On an HPA it takes over, Coral keeps minReplicas, only raises maxReplicas, and restores your values when it lets go.",
+          "Only on HPAs Coral manages: ones it creates for safe Deployments, with minReplicas of 2 or more, and hand-made ones it takes over.",
+          "On an HPA it takes over, Coral keeps minReplicas, only raises maxReplicas, and restores your values when it hands it back.",
           "An HPA that Coral creates can scale a steady Deployment down to its minimum.",
-          "Outside a rebalance’s warm handover, it never changes min or max on HPAs from Helm, KEDA or kubectl apply, and never on HPAs whose bounds Argo CD or Flux own.",
+          "Outside a rebalance’s warm handover, Coral never changes min or max on HPAs from Helm, KEDA or kubectl apply. It never changes them where Argo CD or Flux own the bounds.",
         ],
       },
       {
         id: "what-happens-when-demand-goes-past",
-        question: "What happens when demand goes past the maxReplicas set in Git?",
+        question: "What if demand goes past maxReplicas?",
         short: [
           "Your maxReplicas stays. Coral never changes min or max on an HPA managed from Git.",
-          "When the HPA reaches its max, Coral records it and recalculates. For a CPU-based HPA, its sizing replays the last 3 days of load through your HPA’s settings, max included, so when the HPA can’t add pods, each pod gets more CPU instead.",
-          "Coral’s surge and CPU-pressure raises, held back while the HPA is still scaling, switch on once it is at its max.",
-          "Each raise still stays within your LimitRange and ResourceQuota.",
+          "For a CPU-based HPA, Coral’s replay includes your max. When the HPA can’t add pods, each pod gets more CPU instead.",
+          "Coral’s own CPU raises, held back while the HPA scales, resume once it reaches its max.",
+          "Each raise stays within your LimitRange and ResourceQuota.",
         ],
       },
     ],
@@ -461,71 +464,75 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
     title: "Nodes and spare capacity",
     callout: {
       title: "Node optimization is on from install",
-      text: "Removing spare nodes starts at install, through node optimization and the Evictor (which empties nodes for your autoscaler to delete). Switch both off, put the Evictor in dry-run, or limit them to chosen node pools.",
+      text: "Node optimization and the Evictor start at install. The Evictor empties nodes for your autoscaler to delete. Switch either off, run the Evictor in dry run, or limit both to chosen node pools.",
     },
     questions: [
       {
         id: "if-workload-optimization-reduces-requests-how",
-        question:
-          "If workload optimization reduces requests, how soon are nodes consolidated and removed?",
+        question: "How soon are spare nodes removed?",
         short: [
-          "Within minutes of the running pods carrying the smaller requests. Coral checks every 5\u00a0minutes and drains nodes gradually, never in bulk.",
-          "An emptied node waits 5\u00a0minutes (you can change this), then your autoscaler deletes it. Coral deletes it itself only in fixed-size pools that nothing else manages.",
-          "Pools that Karpenter or NAP already consolidates are left to them.",
+          "Within minutes of running pods taking the smaller requests. Coral drains one node at a time, never in bulk.",
+          "An emptied node is kept for the “Wait before removing empty nodes” setting, 5\u00a0minutes by default. Then your autoscaler removes it on its own timers.",
+          "Coral deletes a machine itself only in fixed-size pools that nothing else manages.",
         ],
       },
       {
         id: "how-do-you-make-sure-node",
-        question:
-          "How do you make sure node consolidation doesn’t cause scheduling failures later?",
+        question: "How does Coral avoid scheduling failures?",
         short: [
-          "Before draining, Coral simulates the scheduler on the live cluster. Every pod must fit elsewhere, with its affinity, taints, spread, ports and zones.",
-          "It respects PDBs and do-not-disrupt.",
+          "Before draining a node, Coral simulates the scheduler on the live cluster. Every pod must fit elsewhere, with its affinity, taints, spread, ports and zones.",
+          "It respects PodDisruptionBudgets and do-not-disrupt.",
           "Room for future growth is your autoscaler’s job.",
-          "Known gap: per-node disk-attach limits aren’t checked yet.",
+          "Not checked yet: per-node disk-attach limits.",
         ],
       },
       {
         id: "how-much-spare-capacity-is-kept",
-        question: "How much spare capacity is kept for sudden workload growth?",
+        question: "How much spare capacity does Coral keep?",
         short: [
-          "Coral keeps no idle spare nodes. The headroom sits inside each pod’s request.",
-          "Sudden growth is handled by your autoscaler adding nodes.",
-          "To keep warm spare capacity, run a low-priority placeholder deployment. Put it on the Read-only policy so Coral doesn’t shrink it.",
+          "No idle spare nodes. The headroom sits inside each pod’s request, and your autoscaler adds nodes for sudden growth.",
+          "To keep warm spare capacity, run a low-priority placeholder deployment on the Read-only policy, so Coral doesn’t shrink it.",
+          [
+            "How to set one up: ",
+            {
+              href: learnPath("cluster-autoscaler-overprovisioning"),
+              text: "Cluster Autoscaler overprovisioning",
+            },
+            ".",
+          ],
         ],
       },
       {
         id: "during-cluster-upgrades-is-optimization-paused",
-        question: "During cluster upgrades, is optimization paused or does it continue?",
+        question: "Does Coral pause during cluster upgrades?",
         short: [
-          "It continues, but steps around the upgrade. It skips cordoned, NotReady or deleting nodes, and never drains a node someone else cordoned.",
-          "We recommend pausing node optimization and the Evictor during the upgrade window.",
+          "No, it works around the upgrade. It skips cordoned, NotReady or deleting nodes, and never drains a node someone else cordoned.",
+          "We recommend pausing node optimization and the Evictor for the upgrade window.",
         ],
       },
     ],
   },
   {
     id: "autoscalers-and-traffic-surges",
-    title: "Autoscalers and traffic surges",
+    title: "Autoscalers and surges",
     questions: [
       {
         id: "how-does-coral-interact-with-cluster",
-        question: "How does Coral interact with Cluster Autoscaler or Karpenter decisions?",
+        question: "How does Coral work with Karpenter or the Cluster Autoscaler?",
         short: [
-          "Coral never adds nodes for demand and never raises a pool’s minimum. By default it may reduce a minimum that alone keeps an emptied node, and disconnect puts the old one back.",
-          "Karpenter, NAP or the Cluster Autoscaler deletes the nodes Coral empties.",
-          "Pools that Karpenter or NAP already consolidates are left to them. Coral deletes nodes itself only in fixed-size pools that nothing else manages.",
+          "Coral empties nodes, and Karpenter, NAP or the Cluster Autoscaler deletes them.",
+          "Coral never adds nodes for demand and never raises a pool’s minimum.",
+          "By default, it may reduce a pool’s minimum when that alone keeps an emptied node. Disconnect puts the old minimum back.",
+          "Pools that Karpenter or NAP already consolidate are left to them. Coral deletes nodes itself only in fixed-size pools that nothing else manages.",
         ],
       },
       {
         id: "after-node-and-workload-optimization-move",
-        question:
-          "After node and workload optimization move us from larger machines to smaller ones, how do we get back to bigger machines in a sudden surge?",
+        question: "How do we get bigger machines back in a surge?",
         short: [
-          "Coral never adds capacity for demand. Scale-up belongs to your Karpenter, NAP or Cluster Autoscaler, and Coral doesn’t change or fight it.",
+          "Your node autoscaler adds them. Coral never adds capacity for demand, and doesn’t change or fight scale-up.",
           "In a surge, the HPA adds pods, pending pods trigger your autoscaler, and Karpenter or NAP can pick bigger machines.",
-          "If you have no autoscaler, we set up NAP (AKS) or Karpenter (EKS) during onboarding, with your approval.",
-          "If one can’t be set up (for example AKS with kubenet networking), nothing adds nodes until an autoscaler exists.",
+          "If you have no autoscaler, connect sets up NAP (AKS) or Karpenter (EKS), with your approval. Where one can’t be set up, such as AKS with kubenet networking, nothing adds nodes until an autoscaler exists.",
           "Coral moves workloads to smaller machine types only with Karpenter or NAP. With only the Cluster Autoscaler, Coral removes nodes but never changes their size.",
         ],
       },
@@ -537,11 +544,11 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
     questions: [
       {
         id: "can-optimization-be-restricted-to-one",
-        question: "Can optimization be restricted to one namespace or application first?",
+        question: "Can I start with one namespace or app?",
         short: [
-          "Yes. Create a policy with automation on and assign it to a namespace or by labels. Everything else stays recommendation-only.",
-          "That policy can also create HPAs. Turn HPA optimization off in it if you want sizing only.",
-          "Node optimization is scoped by node pool, not namespace. Enable only the pools you want, and start with the Evictor in dry-run.",
+          "Yes. Create a policy with automation on, and assign it to a namespace or by labels. Everything else stays recommendation-only.",
+          "That policy can also create HPAs. Set its Optimization type to “Vertical” to size pods only.",
+          "Node optimization works by node pool, not namespace. Turn on only the pools you want, and start the Evictor in dry run.",
         ],
       },
     ],

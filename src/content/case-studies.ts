@@ -3,11 +3,9 @@ import type { DocumentId } from "@/content/documents";
 import { platformLabel, products, type ProductId } from "@/content/products";
 
 /**
- * Case studies: the hub (`/value-lab`) and the first study
- * (`/coral-value-lab`), every string and figure verbatim from
- * the mocks. The study is the published PDF on the web: its six numbered
- * sections, its copy and figures word for word, its drawings in the site's
- * figure style, and the PDF itself to download.
+ * Case studies: the hub (`/value-lab`) and the two studies (`/coral-value-lab`, `/amoeba-value-lab`). Every figure
+ * is the run's own; the words were rewritten plain on 2 Nov 2026. The Coral study is the published PDF on the web:
+ * its six numbered sections, its figures, its drawings in the site's figure style, and the PDF itself to download.
  *
  * 🔴 NOTHING THAT NAMES THE CLUSTER. The study names no cluster, node, pool or
  * resource, no ID, version, machine-type code, region or app; apps stay
@@ -86,26 +84,26 @@ const SYSTEM = "$73.73";
 const WORKER = "$147.46";
 
 /**
- * The day the /value-lab hub's content last changed (its description, deck and total's line, 1 Nov 2026), for the
+ * The day the /value-lab hub's content last changed (its h1, deck, cards and Want to be next?, 2 Nov 2026), for the
  * sitemap's `lastmod` only: the page does not print it. Whoever changes the hub's content
  * moves this to that day in the same PR; never the build's date.
  */
-export const caseStudiesHubLastUpdated = "1 November 2026";
+export const caseStudiesHubLastUpdated = "3 November 2026";
 
 /**
  * The day each study's content last changed, for the sitemap's `lastmod` only: each page prints the day its result
  * was published (`band.date`), which a later edit does not move. Whoever changes a study's content moves its day here
  * in the same PR; never the build's date.
  */
-export const caseStudyLastUpdated = "1 November 2026";
-export const amoebaStudyLastUpdated = "1 November 2026";
+export const caseStudyLastUpdated = "3 November 2026";
+export const amoebaStudyLastUpdated = "3 November 2026";
 
 export const caseStudy = {
   route: routes.caseStudyCoralDevCluster,
   meta: {
-    title: "How We Reduced AKS Cluster Costs by 58%",
+    title: "How we reduced our AKS machine cost by 58%",
     description:
-      "Our own AKS cost reduction case study: eight days after we connected Coral, our development cluster’s machines cost $154.76 a month instead of $368.65.",
+      "AKS cost reduction case study: eight days after we connected Coral, our development cluster’s machines cost $154.76 a month instead of $368.65.",
   },
   hero: {
     kicker: "Value Lab · Coral on Azure Kubernetes Service · October 2026",
@@ -113,9 +111,9 @@ export const caseStudy = {
     title: "How we reduced our own AKS cluster’s",
     titleGreen: "machine cost by 58%",
     deck: [
-      "Before we ask anyone to trust Coral with their cluster, we run it on ours. In October 2026 we connected Coral to the Kubernetes cluster that runs Zoorik’s own development platform on Azure. Eight days later the cluster’s machines cost ",
+      "Eight days after we connected Coral to our development cluster, its machines cost ",
       { b: "$154.76 a month instead of $368.65" },
-      ", and every app was still running.",
+      ".",
     ] satisfies CaseStudyText,
     /** The download block's one row. */
     download: "Download the PDF",
@@ -130,26 +128,26 @@ export const caseStudy = {
     publisher: { text: "Zoorik", href: routes.about },
     stats: [
       { value: "−58%", label: "machine cost", good: true },
-      { value: "$213.89", label: "saved every month, about $2,567 a year", good: true },
+      { value: "$213.89", label: "saved a month, about $2,567 a year", good: true },
       { value: "10 → 6", label: "CPU, on 2 machines instead of 3", good: false },
-      { value: "8 days", label: "from connecting Coral to the result", good: false },
+      { value: "8 days", label: "after connecting Coral", good: false },
     ],
     about: [
       { b: "Coral" },
-      " is Zoorik’s Kubernetes optimization for AKS and EKS. It sizes each app’s CPU and memory requests to real use, removes machines a cluster no longer needs, and rebalances onto cheaper machines, all within each app’s safety limits.",
+      " is Zoorik’s Kubernetes cost optimization for AKS and EKS. It rebalances CPU and memory requests to real use, removes machines a cluster no longer needs, and moves apps onto cheaper machines.",
     ] satisfies CaseStudyText,
   },
-  /** The section names, as the mock prints them in the left column and the chips: plain text. */
+  /** The section names, in the left column and the chips: plain text. Their ids stay the page's addresses. */
   sections: [
-    { id: "the-starting-point", title: "The starting point" },
+    { id: "the-starting-point", title: "Starting point" },
     { id: "connecting-coral", title: "Connecting Coral" },
     { id: "what-coral-did", title: "What Coral did" },
-    { id: "how-the-apps-came-through", title: "How the apps came through" },
-    { id: "how-the-apps-stayed-safe", title: "How the apps stayed safe" },
-    { id: "the-result", title: "The result" },
+    { id: "how-the-apps-came-through", title: "Effect on the apps" },
+    { id: "how-the-apps-stayed-safe", title: "Safeguards" },
+    { id: "the-result", title: "Result" },
   ] satisfies readonly { id: CaseStudySectionId; title: string }[],
   start: {
-    text: "Our development cluster runs Coral’s own API, our consoles and our deployment tooling. It is a typical small team cluster: a system machine that Azure requires, and two worker machines for the apps. It was sized for safety, not for what the apps used.",
+    text: "Our development cluster runs Coral’s API, our consoles and our deployment tooling. It had three machines: the system machine AKS requires, and two workers for the apps. It was sized for safety, not for what the apps used.",
     machines: [
       {
         badge: "Stays",
@@ -187,18 +185,18 @@ export const caseStudy = {
     text: [
       "One ",
       { b: "zoorikctl" },
-      " command installed Coral’s agent in the cluster. Two days later we gave Coral permission to remove machines, in this cluster only. From then on Coral worked on its own, and we watched.",
+      " command installed Coral’s agent in the cluster. Two days later we let Coral remove machines, in this cluster only.",
     ] satisfies CaseStudyText,
     features: [
       {
         icon: "wl",
         title: "Workload optimization",
-        text: "Sets each app’s CPU and memory to what it really uses, and raises it when an app needs more.",
+        text: "Sets each app’s CPU and memory requests to what it uses, and raises them when an app needs more.",
       },
       {
         icon: "node",
         title: "Node optimization",
-        text: "Spots a machine the apps no longer need, moves the apps off it and removes it.",
+        text: "Finds a machine the apps no longer need, moves the apps off it and removes it.",
       },
       {
         icon: "rb",
@@ -212,12 +210,12 @@ export const caseStudy = {
     node: {
       id: "node-optimization",
       icon: "node",
-      title: "Node optimization: a spare worker removed",
+      title: "Node optimization: one worker removed",
       date: "6 Oct",
       text: [
-        "Coral worked out that the apps would fit on fewer machines. It moved them to the remaining machines and removed one 4-CPU worker, ",
+        "Coral found that the apps fit on fewer machines. It moved them off one 4-CPU worker and removed it, ",
         { b: "on its own, in under 10 minutes" },
-        ". Nobody switched anything on. Apps that run a single copy restarted once on another machine, and every app was running again afterwards.",
+        ". Apps that run a single copy restarted once on another machine.",
       ],
       pill: "−$147.46 a month",
     } satisfies CaseStudyStep,
@@ -236,14 +234,14 @@ export const caseStudy = {
     workload: {
       id: "workload-optimization",
       icon: "wl",
-      title: "Workload optimization: apps sized to what they use",
+      title: "Workload optimization: apps resized",
       date: "from 8 Oct",
       text: [
         "We switched workload optimization to automatic. By 12 October Coral had resized ",
         { b: "14 of the cluster’s apps" },
-        ". Most were reserving more than they used; one app needed more memory, and Coral gave it more.",
+        ". Most reserved more than they used. One needed more memory, and Coral gave it more.",
       ],
-      pill: "Less reserved, more room on every machine",
+      pill: "Less reserved, more room per machine",
     } satisfies CaseStudyStep,
     reserve: {
       alt: "What the apps reserve: CPU 0.78 cores before and 0.43 cores now, 45% less; memory 6.4 GiB before and 5.4 GiB now, 16% less.",
@@ -267,12 +265,12 @@ export const caseStudy = {
     rebalance: {
       id: "rebalancing",
       icon: "rb",
-      title: "Rebalancing: one click, a cheaper machine",
+      title: "Rebalancing: a cheaper worker",
       date: "12 Oct",
       text: [
         "With one click, Coral swapped the remaining worker for a ",
         { b: "cheaper machine of the same size" },
-        ", chosen from Azure’s prices. Azure built the new machine in under 2 minutes; Coral moved the apps one copy at a time and then removed the old machine. ",
+        ", chosen from Azure’s prices. Azure built the new machine in under 2 minutes. Coral moved the apps one copy at a time, then removed the old machine: ",
         { b: "8 minutes 36 seconds" },
         " from start to finish.",
       ],
@@ -298,8 +296,8 @@ export const caseStudy = {
     },
   },
   through: {
-    text: "Moving an app to another machine means stopping it in one place and starting it in another. Here is what that meant for our apps during the rebalance on 12 October, measured from the moment the old copy stopped to the moment the new one was ready.",
-    caption: "Apps that run a single copy: each restarted once",
+    text: "During the rebalance on 12 October, we timed each app from the moment its old copy stopped to the moment its new copy was ready.",
+    caption: "Single-copy apps: each restarted once",
     unit: "seconds until back up",
     /** Each single-copy app's seconds until it was back up, longest first. The bars run to 78% at the longest. */
     apps: [
@@ -317,25 +315,27 @@ export const caseStudy = {
     ],
     twoCopies: [
       { b: "0 seconds" },
-      " for the 6 apps that run two copies, including Coral’s API and both of our consoles: one copy was always running while the other moved.",
+      " for the 6 apps that run two copies, including Coral’s API and both our consoles. One copy kept running while the other moved.",
     ] satisfies CaseStudyText,
+    /* Why the single-copy apps restarted on this cluster that day: none qualified for a warm handover (Argo CD sets
+       their replica counts; the rest are StatefulSets or use Recreate). Never say it as a general rule. */
     means: [
-      { b: "What this means:" },
-      " an app that runs a single copy is down for a short time whenever it moves, with Coral or without it. Here that was 5 to 82 seconds. Apps that must never pause should run two copies, and Coral keeps one of them running. When the spare worker was removed on 6 October, single-copy apps also restarted once; those times were not measured.",
+      { b: "Why they restarted:" },
+      " none of these apps could take Coral’s warm handover, which starts a new copy on another machine before the old one stops. Our GitOps tool owns their copy counts, or they are StatefulSets or use the Recreate strategy. They also restarted once when the spare worker was removed on 6 October; those times were not measured.",
     ] satisfies CaseStudyText,
   },
   safe: [
     {
       title: "New machine first",
-      text: "Nothing was removed until its replacement was ready and its apps had moved.",
+      text: "In the rebalance, the old worker went only after the new one was ready and the apps had moved.",
     },
     {
       title: "One copy at a time",
-      text: "Every move kept within each app’s own limits, so apps that run two copies always kept one running.",
+      text: "Coral moved one copy of each app at a time, so apps with two copies always kept one running.",
     },
     {
-      title: "Checks before every move",
-      text: "Where a faster move could have put an app at risk, Coral chose the safe one.",
+      title: "Disruption budgets",
+      text: "Coral never moves an app past its PodDisruptionBudget, and keeps any machine it cannot empty safely.",
     },
   ],
   result: {
@@ -403,7 +403,7 @@ export const caseStudy = {
     kind: "Value Lab · PDF · ",
     go: "Download",
   },
-  fine: "Zoorik’s own development cluster on Azure Kubernetes Service, 4 to 12 October 2026. Costs are Azure pay-as-you-go list prices for the cluster’s machines at 730 hours a month. App figures cover the cluster’s own apps. Results depend on each cluster’s apps and machines.",
+  fine: "Zoorik’s own development cluster on Azure Kubernetes Service, 4 to 12 October 2026. Costs are Azure pay-as-you-go list prices for its machines, at 730 hours a month. App figures cover the cluster’s own apps. Results depend on each cluster’s apps and machines.",
 } as const;
 
 /* ─── The second study: Amoeba on our own Azure lab VMs ───────────────────── */
@@ -450,9 +450,8 @@ export type AmoebaStudySectionId =
 export const GIB_PER_SQUARE = 8;
 
 /**
- * `/amoeba-value-lab`: Amoeba on two of our own lab VMs on Azure, 19 October 2026. Every string is the
- * checked draft's (`docs/website-seo/new-pages-2026-10-29/value-lab-amoeba/study.md`), every figure traced in its
- * ledger; the mock checks each string against the draft on every build.
+ * `/amoeba-value-lab`: Amoeba on two of our own lab VMs on Azure, 19 October 2026. Every figure is the run's own, as
+ * traced in the study's draft and its ledger; the words were rewritten plain on 2 Nov 2026.
  *
  * 🔴 NOTHING THAT NAMES A VM. The study names no VM, disk, resource, ID, subscription, region, size code, version or
  * time of day: the VMs are "Lab VM A" and "Lab VM B", the folders "folders". No PDF, and no link to any internal
@@ -461,9 +460,9 @@ export const GIB_PER_SQUARE = 8;
 export const amoebaStudy = {
   route: routes.caseStudyAmoebaLabVms,
   meta: {
-    title: "How Amoeba Rightsized a Lab VM’s btrfs Pool by 25%",
+    title: "How Amoeba rightsized our btrfs pool by 25%",
     description:
-      "Before we ask anyone to trust Amoeba with their VMs, we run it on ours. On an Azure lab VM, its btrfs pool went from 96 GiB to 72 GiB, with 0 lost mounts.",
+      "Amoeba case study: on our own Azure lab VM, a btrfs pool went from 96 GiB to 72 GiB while it stayed mounted, with 0 app errors.",
   },
   hero: {
     kicker: "Value Lab · Amoeba on Azure VMs · October 2026",
@@ -471,9 +470,9 @@ export const amoebaStudy = {
     title: "How Amoeba rightsized our own lab VM’s",
     titleGreen: "btrfs pool by 25%",
     deck: [
-      "Before we ask anyone to trust Amoeba with their VMs, we run it on ours. In October 2026 we ran Amoeba on our own lab VMs on Azure. On one of them, Amoeba took a disk out of the btrfs pool while our test app ran. The pool went from ",
+      "On an Azure lab VM, Amoeba shrank the pool from ",
       { b: "96 GiB to 72 GiB" },
-      ". Every folder stayed mounted, and our test app logged 0 errors.",
+      " while it stayed mounted. Our test app logged 0 errors.",
     ] satisfies CaseStudyText,
   },
   /** The result, under the hero: the date and who publishes it, the four figures in one line, what Amoeba is. */
@@ -483,26 +482,26 @@ export const amoebaStudy = {
     by: " · Published by ",
     publisher: { text: "Zoorik", href: routes.about },
     stats: [
-      { value: "−25%", label: "the size of Lab VM A’s btrfs pool", good: true },
-      { value: "96 → 72 GiB", label: "the same 60.07 GiB of data, on a smaller pool", good: false },
-      { value: "0", label: "lost mounts, and 0 errors from our test app", good: true },
+      { value: "−25%", label: "pool size on Lab VM A", good: true },
+      { value: "96 → 72 GiB", label: "holding the same 60.07 GiB of data", good: false },
+      { value: "0", label: "lost mounts or test app errors", good: true },
       { value: "8 min 14 s", label: "from our click to the smaller pool", good: false },
     ],
     about: [
       { b: "Amoeba" },
-      " is Zoorik’s block storage optimization for Windows and Linux VMs on Azure and AWS. It moves a VM’s data disks onto one btrfs pool sized to the data, with room to grow. Then it rightsizes that pool, one disk at a time, while it stays mounted.",
+      " is Zoorik’s block storage optimization for Windows and Linux VMs on Azure and AWS. It moves a VM’s data disks onto one btrfs pool sized to the data, with room to grow. Then it rightsizes the pool as the data changes, without any downtime.",
     ] satisfies CaseStudyText,
   },
   sections: [
-    { id: "the-starting-point", title: "The starting point" },
+    { id: "the-starting-point", title: "Starting point" },
     { id: "connecting-amoeba", title: "Connecting Amoeba" },
     { id: "what-amoeba-did", title: "What Amoeba did" },
-    { id: "how-the-apps-and-data-came-through", title: "How the apps and data came through" },
-    { id: "how-they-stayed-safe", title: "How they stayed safe" },
-    { id: "the-result", title: "The result" },
+    { id: "how-the-apps-and-data-came-through", title: "Effect on the apps and data" },
+    { id: "how-they-stayed-safe", title: "Safeguards" },
+    { id: "the-result", title: "Result" },
   ] satisfies readonly { id: AmoebaStudySectionId; title: string }[],
   start: {
-    text: "Our lab is a set of VMs on Azure that we run ourselves. This Value Lab follows two of them on 19 October 2026. Each one runs a test app of ours that keeps writing to its data folders.",
+    text: "This study follows two of our own lab VMs on Azure on 19 October 2026. On each, a test app of ours keeps writing to the data folders.",
     label:
       "Lab VM A: a btrfs pool of 64 and 32 GiB disks, 96 GiB, holding 60.07 GiB, on Manual. Lab VM B: new, two 32 GiB disks, about 10 GiB of data on each.",
     vms: [
@@ -531,7 +530,7 @@ export const amoebaStudy = {
   },
   connect: {
     text: [
-      "Lab VM B was new. One click in the Amoeba console onboarded it. Amoeba installed its agent on the VM by itself. The agent was running in under a minute and a half. From then on, Amoeba watched the VM’s data. Then it started the move on its own.",
+      "One click in the Amoeba console onboarded the new Lab VM B. Amoeba installed its agent on the VM by itself, and the agent was running in under a minute and a half. Amoeba then watched the VM’s data and started the move on its own.",
       "Lab VM A was onboarded before 19 October.",
     ],
     features: [
@@ -557,12 +556,12 @@ export const amoebaStudy = {
     move: {
       id: "move-onto-a-pool",
       icon: "rb",
-      title: "The move onto a pool: two folders, while the app kept writing",
+      title: "Move onto a pool",
       date: "19 Oct",
       text: [
-        "On Lab VM B, Amoeba built a btrfs pool beside the two source disks. It copied both folders onto the pool while our test app kept writing. Then it copied what had changed and switched both folders to the pool. ",
-        { b: "Not one write failed" },
-        " at the switch, and writing never paused for more than 1.5 seconds. We then let Amoeba release the source disks. It took a safety snapshot of each, then deleted them.",
+        "On Lab VM B, Amoeba built a btrfs pool beside the two source disks. It copied both folders while our test app kept writing, then copied what had changed and switched both folders to the pool. ",
+        { b: "No write failed" },
+        " at the switch, and writing never paused for more than 1.5 seconds. Amoeba then took a safety snapshot of each source disk and deleted the disk.",
       ],
       pill: "2 folders moved · 0 failed writes at the switch",
     } satisfies CaseStudyStep,
@@ -588,10 +587,10 @@ export const amoebaStudy = {
     shrink: {
       id: "shrink-on-a-click",
       icon: "node",
-      title: "A shrink on our click: 96 GiB down to 72 GiB",
+      title: "Shrink on our click",
       date: "19 Oct",
       text: [
-        "Lab VM A is set to Manual, so its shrinks wait for us. First, Amoeba packed the pool’s data more tightly. That freed 5.00 GiB inside the pool. No disk was added or removed, so it cost nothing more. Later, Amoeba planned a shrink and waited for our click. Then it added an 8 GiB disk and moved 16.06 GiB off the 32 GiB disk in 2 minutes 55 seconds. It removed that disk and deleted it. ",
+        "Lab VM A is set to Manual, so its shrinks wait for us. First, Amoeba packed the pool’s data more tightly, freeing 5.00 GiB inside the pool at no extra cost. Then it planned a shrink and waited for our click. It added an 8 GiB disk, moved 16.06 GiB off the 32 GiB disk in 2 minutes 55 seconds, then removed and deleted that disk. ",
         { b: "8 minutes 14 seconds" },
         " from our click to done.",
       ],
@@ -616,17 +615,17 @@ export const amoebaStudy = {
     },
   },
   through: {
-    text: "The move onto a pool is the big step for an app: its folders switch from the source disks to the pool. Here is how long our test app’s writes took on Lab VM B, before and through that move. The app wrote to both folders every second. Each write was saved to disk before it counted.",
+    text: "The move is the big step for an app: its folders switch from the source disks to the pool. On Lab VM B, our test app wrote to both folders every second. A write counted only once it was saved to disk.",
     felt: {
-      caption: "What the test app felt on Lab VM B",
+      caption: "Write times on Lab VM B",
       unit: "milliseconds: 99 in 100 writes, and the slowest",
-      alt: "What the test app felt on Lab VM B, in milliseconds, for 99 in 100 writes and for the slowest write: Before the move, while Amoeba watched, 18 and 198; Copying the first folder, 26 and 270; Copying the second folder, during our 1.5 GiB burst, 28 and 2,420; The last copy and the switch onto the pool, 20 and 68.",
+      alt: "Write times on Lab VM B, in milliseconds, for 99 in 100 writes and for the slowest write: Before the move, 18 and 198; Copying folder 1, 26 and 270; Copying folder 2, with our 1.5 GiB burst, 28 and 2,420; Last copy and switch, 20 and 68.",
       /** Each stage's bar is the time 99 in 100 writes took, the longest at 78% of the row; the slowest write after it. */
       stages: [
-        { name: "Before the move, while Amoeba watched", p99: 18, slowest: 198 },
-        { name: "Copying the first folder", p99: 26, slowest: 270 },
-        { name: "Copying the second folder, during our 1.5 GiB burst", p99: 28, slowest: 2420 },
-        { name: "The last copy and the switch onto the pool", p99: 20, slowest: 68 },
+        { name: "Before the move", p99: 18, slowest: 198 },
+        { name: "Copying folder 1", p99: 26, slowest: 270 },
+        { name: "Copying folder 2, with our 1.5 GiB burst", p99: 28, slowest: 2420 },
+        { name: "Last copy and switch", p99: 20, slowest: 68 },
       ] satisfies readonly CaseStudyStage[] as readonly CaseStudyStage[],
       up: "At the switch: 0 failed writes, no pause over 1.5 seconds and 0 lost mounts.",
     },
@@ -644,7 +643,7 @@ export const amoebaStudy = {
           ],
         },
         {
-          name: "Folders found mounted",
+          name: "Folders mounted",
           cells: [
             {
               text: "5,677 of 5,677 checks before the shrink, and 118 of 118 during it",
@@ -654,31 +653,31 @@ export const amoebaStudy = {
           ],
         },
         {
-          name: "Test files whose checksum matched",
+          name: "Checksums matched",
           cells: [
             { text: "not checked", tone: "muted" },
-            { text: "Every one, before and after the switch", tone: "good" },
+            { text: "Every test file, before and after the switch", tone: "good" },
           ],
         },
       ] satisfies readonly { name: string; cells: readonly CaseStudyCell[] }[],
     },
     means: [
       { b: "What this means:" },
-      " through the copy and the switch, 99 in 100 writes took 28 ms or less. The slowest write, 2,420 ms, came in the stage where we added our own 1.5 GiB burst. In every other stage shown, no write took longer than 270 ms. A service that keeps the data open, like a database, gets a short restart at the switch. Our test app was not restarted. Lab VM A’s test app keeps no timings, so its speed during the shrink was not measured.",
+      " through the move, 99 in 100 writes took 28 ms or less. The slowest, 2,420 ms, came during our own 1.5 GiB burst. In every other stage, no write took over 270 ms. A service that keeps its data open, like a database, gets a short restart at the switch. Our test app was not restarted. Lab VM A’s test app records no timings, so its speed during the shrink was not measured.",
     ] satisfies CaseStudyText,
   },
   safe: [
     {
       title: "Snapshot first",
-      text: "After the move, Amoeba took a safety snapshot of each source disk before it deleted that disk.",
+      text: "After the move, Amoeba took a safety snapshot of each source disk before deleting it.",
     },
     {
       title: "Data off first",
-      text: "The 32 GiB disk left Lab VM A’s pool only after its 16.06 GiB of data had moved to the other disks. The folders stayed mounted throughout.",
+      text: "The 32 GiB disk left the pool only after its 16.06 GiB of data moved to the other disks. The folders stayed mounted.",
     },
     {
       title: "Manual waits for you",
-      text: "Lab VM A is on Manual. Amoeba planned its shrink, then waited for our click before it added or removed a disk.",
+      text: "On Manual, Amoeba planned Lab VM A’s shrink, then waited for our click before it changed any disk.",
     },
   ],
   result: {
@@ -716,7 +715,7 @@ export const amoebaStudy = {
         },
       ] satisfies readonly { name: string; cells: readonly CaseStudyCell[] }[],
       /** Under the table: where the money figure comes from. */
-      cap: "Each month: Amoeba’s own figure, at the Azure list prices it reads.",
+      cap: "Each month: Amoeba’s own figure, at Azure list prices.",
     },
     share: {
       caption: "Share of Lab VM A’s pool removed",
@@ -729,7 +728,7 @@ export const amoebaStudy = {
       line: "24 of 96 GiB, holding the same 60.07 GiB of data",
     },
   },
-  fine: "Zoorik’s own lab VMs on Azure, on 19 October 2026. The figures show Amoeba as it ran that day. Each VM ran Linux and a test app of ours, not a customer’s workload. In our lab, Amoeba read a shorter history of each VM’s data than it does for a customer. So its timing differed, and it sized each pool more tightly. A pool’s size is the total of its disks. Money is Amoeba’s own figure at Azure list prices. Results depend on each VM’s data.",
+  fine: "Zoorik’s own lab VMs on Azure, on 19 October 2026. The figures show Amoeba as it ran that day. Each VM ran Linux and a test app of ours, not a customer’s workload. In the lab, Amoeba read a shorter history of each VM’s data than it does for a customer. So its timing differed, and it sized each pool more tightly. A pool’s size is the total of its disks. Results depend on each VM’s data.",
 } as const;
 
 /** One figure on a study card's cover: the value its bar is drawn to, and how it is printed. */
@@ -776,7 +775,7 @@ const perYear = (monthly: number): string => `$${Math.round(monthly * 12).toLoca
 const shortDay = (day: string): string => day.replace(/ (\w{3})\w* /, " $1 ");
 
 /**
- * Value Lab by Zoorik, the hub: what the studies saved so far, the featured study beside "Want to be next?", then the
+ * Value Lab, the hub: what the studies saved so far, the two studies' cards, "Want to be next?" under them, then the
  * closing row. Every figure is the studies' own, read from their content above, never typed twice. The hub draws no
  * client studies until the first one exists; a new study is one more entry in `studies`.
  */
@@ -829,11 +828,11 @@ export const caseStudiesHub = {
   meta: {
     title: "Value Lab",
     description:
-      "Zoorik Value Lab: cloud cost case studies from our own AKS cluster and Azure lab VM. What Coral and Amoeba reduced, with the figures.",
+      "Coral and Amoeba case studies from our own AKS cluster and Azure lab VMs: what each reduced, with every figure at list prices.",
   },
   hero: {
-    title: "Value Lab by Zoorik",
-    deck: "What Coral and Amoeba reduced on our own AKS cluster and Azure lab VMs, every figure at list prices.",
+    title: "Value Lab",
+    deck: "Coral and Amoeba case studies from our own AKS cluster and Azure lab VMs, every figure at list prices.",
   },
   /** Beside the hero's words: what the studies saved so far, as of the newest study's day. */
   total: {
@@ -843,22 +842,22 @@ export const caseStudiesHub = {
     asOfLabel: `As of ${shortDay(caseStudy.band.date)}`,
     amount: savedMonthly,
     unit: "a month",
-    line: `About ${perYear(savedMonthly)} a year from the ${products.coral.name} Value Lab study, at list prices.`,
+    line: `About ${perYear(savedMonthly)} a year, from the ${products.coral.name} study at Azure list prices.`,
   },
   studies,
   /** The band, named for a screen reader: the studies' cards and "Want to be next?". */
   label: "Value Lab studies",
   /**
-   * The studies' cards, side by side on the band: the featured one, our own cluster, its bill before and with Coral
-   * on one scale; then the newest, our own lab VM, its btrfs pool before and with Amoeba. "Want to be next?" takes
-   * its own row under the pair. Only the first study counts towards "Saved so far", as the mock draws it.
+   * The studies' cards, side by side on the band, each flagged by what it optimizes: our own cluster, its machine cost
+   * before and with Coral on one scale; then our own lab VM, its btrfs pool before and with Amoeba. "Want to be next?"
+   * takes its own row under the pair. Only the Coral study counts towards "Saved so far", as the mock draws it.
    */
   cards: [
     {
-      flag: "Featured",
+      flag: "Kubernetes",
       title: "Our own AKS cluster",
-      /* "58%" is the study's own "−58%" (`band.stats[0]`). */
-      line: `We reduced its monthly machine cost by ${caseStudy.band.stats[0].value.replace("−", "")} with Coral.`,
+      /* "58%" is the study's own "−58%" (`band.stats[0]`); "eight days" its "8 days" (`band.stats[3]`), in words. */
+      line: `Coral reduced its machine cost by ${caseStudy.band.stats[0].value.replace("−", "")} in eight days.`,
       before: { ...studies[0]!.before, name: "Before" },
       after: { ...studies[0]!.after, name: "With Coral" },
       per: "a month",
@@ -866,10 +865,10 @@ export const caseStudiesHub = {
       read: `Read the ${products.coral.name} Value Lab study`,
     },
     {
-      flag: "New",
+      flag: "Block storage",
       title: "Our own Azure lab VM",
-      /* "25%" is the study's own "−25%" (`band.stats[0]`); "0 lost mounts" its third figure. */
-      line: `Amoeba rightsized its btrfs pool by ${amoebaStudy.band.stats[0].value.replace("−", "")}, with ${amoebaStudy.band.stats[2].value} lost mounts.`,
+      /* "25%" is the study's own "−25%" (`band.stats[0]`); "stayed mounted" its "0 lost mounts" (`band.stats[2]`). */
+      line: `Amoeba rightsized its btrfs pool by ${amoebaStudy.band.stats[0].value.replace("−", "")} while it stayed mounted.`,
       before: { value: amoebaBefore.amount, label: amoebaBefore.label, name: "Before" },
       after: { value: amoebaAfter.amount, label: amoebaAfter.label, name: "With Amoeba" },
       per: "btrfs pool",
@@ -877,11 +876,14 @@ export const caseStudiesHub = {
       read: `Read the ${products.amoeba.name} Value Lab study`,
     },
   ] satisfies readonly ValueLabCard[] as readonly ValueLabCard[],
-  /** The navy card beside it: the free assessment. */
+  /**
+   * The navy card under the pair: how to become the next study, the design partner program. The closing row under
+   * it already offers the free assessment, so this card does not repeat it.
+   */
   next: {
     title: "Want to be next?",
-    body: "Run the free assessment on your clusters or disks: one command, one PDF with your estimated saving at list price.",
-    go: "Run the free assessment",
-    href: routes.assessment,
+    body: "Design partners run Coral and Amoeba free on non-production clusters and disks. If you agree, your results become a case study.",
+    go: "Become a design partner",
+    href: routes.designPartners,
   },
 } as const;

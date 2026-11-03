@@ -16,7 +16,7 @@ import type { ProductId } from "@/content/products";
 export const assessContent = {
   assessment: {
     title: "Find your own number",
-    body: "One line in your cloud console. One PDF report with your estimated saving at list price.",
+    body: "One command in your terminal. One PDF report with your estimated saving at list price.",
     /** Same tab, to `/assessment`, or `/assessment?p=<product>` (`assessmentHref`). */
     cta: { label: "Estimate your saving" },
   },

@@ -33,7 +33,7 @@ import LearnRoute, { metadata } from "@/app/learn/page";
 import { LearnArticleList } from "./learn-list";
 
 /**
- * `/learn`: the metadata, the hero, the band (Start here beside Find the right fix), All articles, Watch and read and
+ * `/learn`: the metadata, the hero, the band (Start here beside Common cost problems), All articles, Watch and read and
  * More from Zoorik, and the page's rules: only published articles, each read from the Learn index; no article both on
  * the band and in the list; the list in the priority order; chips and Show all that work in the page and store nothing;
  * no tool of the market named anywhere on the page. Every row, tile and count is worked out from the index, so a new
@@ -106,16 +106,16 @@ const competitors = [
 const literal = (name: string) => name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 describe("/learn's metadata", () => {
-  it("titles and describes the hub as its mock does, with the /learn card", () => {
-    expect(metadata.title).toBe("Kubernetes and block storage cost guides");
+  it("titles the hub by its three subjects and describes it, with the /learn card", () => {
+    expect(metadata.title).toBe("Kubernetes, block storage and cloud cost guides");
     expect(metadata.description).toBe(
-      "Kubernetes blog articles and block storage guides on cloud cost for Azure and AWS: AKS and EKS nodes, pods and requests, Azure managed disks and Amazon EBS.",
+      "How-tos and comparisons for AKS and EKS clusters, Azure managed disks, Amazon EBS and cloud cost, each sourced from the official docs.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/learn" });
     expect(metadata).not.toHaveProperty("robots");
     expect(metadata.openGraph).toMatchObject({
       url: "/learn",
-      title: "Kubernetes and block storage cost guides | Zoorik",
+      title: "Kubernetes, block storage and cloud cost guides | Zoorik",
       images: [pageCards["/learn"]],
     });
     /* The sitemap's date for the hub: a printed day, not ahead of today. */
@@ -126,9 +126,7 @@ describe("/learn's metadata", () => {
 describe("/learn", () => {
   it("has one h1 and its line, then the band, All articles, Watch and read and More from Zoorik, and no closing row", () => {
     const root = page();
-    expect([...root.querySelectorAll("h1")].map(text)).toEqual([
-      "Zoorik Learn: Kubernetes and block storage cost guides",
-    ]);
+    expect([...root.querySelectorAll("h1")].map(text)).toEqual(["Zoorik Learn"]);
     expect(text(root.querySelector(".doc-hero .doc-deck"))).toBe(learnPage.hero.deck);
     const parts = [...root.querySelectorAll("main > section")].map(
       (section) => section.id || section.getAttribute("aria-label"),
@@ -137,7 +135,7 @@ describe("/learn", () => {
     expect(root.querySelector("#assess")).toBeNull();
   });
 
-  it("starts each subject on its pillar, and leads each cause into the guide that fixes it, once published", () => {
+  it("starts each subject on its pillar, and leads each problem into the guide that fixes it, once published", () => {
     const root = page();
     const [start, fix] = [...root.querySelectorAll(".lr-pair .lr-c")];
     expect(text(start!.querySelector("h2"))).toBe(learnPage.start.title);
@@ -159,11 +157,11 @@ describe("/learn", () => {
           : [];
       }),
     );
-    /* The problem leads in; the link's words end on the guide's short name, the words it is searched by. */
+    /* The problem leads in; the link's words end on the guide's short name. */
     expect(learnFixes.map((entry) => `${entry.problem}: ${entry.words}`)).toEqual([
-      "Machines sit half empty: Cluster Autoscaler not scaling down",
-      "Disks are bigger than their data: reduce Azure disk size",
-      "You can’t see where the money goes: Kubernetes cost estimation",
+      "Nodes sit half empty: Cluster Autoscaler not scaling down",
+      "Disks are bigger than their data: shrink an Azure disk",
+      "Cluster cost is a guess: Kubernetes cost estimation",
     ]);
     expect(fix!.querySelector(".lr-list.lr-dark")).not.toBeNull();
   });
@@ -279,7 +277,7 @@ describe("/learn", () => {
       ],
     ]);
     expect(learnMore[3]!.line.startsWith(caseStudy.band.stats[0].value)).toBe(true);
-    /* The glossary is linked once on the hub, by its h1. */
+    /* The glossary is linked once on the hub, by its short name. */
     expect([...root.querySelectorAll(`a[href="${routes.learnGlossary}"]`)].map(text)).toEqual([
       expect.stringContaining("Cloud cost glossary"),
     ]);

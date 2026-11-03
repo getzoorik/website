@@ -3,30 +3,37 @@ import { figure as figure1 } from "@/features/learn/figures/kubernetes-taints-an
 
 export const article: Article = {
   slug: "kubernetes-taints-and-tolerations",
-  title: "Kubernetes taints and tolerations explained",
-  meta: "Kubernetes taints and tolerations keep pods off nodes: what NoSchedule, PreferNoSchedule and NoExecute do, kubectl taint, and taints on AKS and EKS pools.",
-  h1: "Kubernetes taints and tolerations: how a node keeps pods off",
-  deck: "A toleration lets a pod onto a tainted node without sending it there, so dedicated pools need node affinity too.",
+  title: "Kubernetes taints and tolerations",
+  meta: "How Kubernetes taints and tolerations keep pods off nodes: the three effects, how a toleration matches, built-in taints, and taints on AKS and EKS pools.",
+  h1: "Kubernetes taints and tolerations",
+  deck: "A toleration lets a pod onto a tainted node but doesn’t send it there: that takes node affinity.",
   card: "What taints and tolerations do, the three effects, the built-in taints, and pool taints on AKS and EKS.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Node lifecycle and scheduling",
   published: "2026-11-02",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "zoorik",
   cover: "/learn-covers/zoorik-learn-kubernetes-taints-and-tolerations-1200x630.webp",
   coverAlt:
     "Kubernetes taints and tolerations: a tainted node keeps out a pod with no toleration and lets in one that tolerates the taint",
-  short:
-    "Kubernetes taints and tolerations work as a pair. A node’s taint keeps off pods without a matching toleration, and its effect decides whether running pods are evicted.",
+  short: [
+    "Kubernetes taints and tolerations work as a pair. A taint on a node keeps off pods that don’t tolerate it, and a toleration on a pod lets it past a matching taint. The taint’s effect sets how strict it is: ",
+    { code: "NoSchedule" },
+    " keeps new pods off, ",
+    { code: "PreferNoSchedule" },
+    " tries to, and ",
+    { code: "NoExecute" },
+    " also evicts running pods.",
+  ],
   sections: [
     {
       id: "what-a-taint-and-a-toleration-do",
-      title: "What a taint and a toleration do in Kubernetes",
+      title: "What taints and tolerations do",
       blocks: [
         {
           kind: "p",
-          text: "A taint is a mark on a node that repels pods. A toleration on a pod lets that pod past a matching taint. The Kubernetes docs give three uses for the pair:",
+          text: "A taint is a mark on a node that repels pods. A toleration on a pod lets the scheduler place it on a node with a matching taint. The Kubernetes docs give three uses:",
         },
         {
           kind: "ul",
@@ -39,11 +46,11 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "To dedicate nodes, the docs’ example taints them ",
+            "To dedicate nodes to one group, the docs taint them ",
             { code: "dedicated=groupName:NoSchedule" },
-            " and gives one group’s pods the toleration. Those pods may still run on any other node too. So it also labels the same nodes ",
+            " and give that group’s pods the toleration. Those pods can still land on other nodes. So the docs also label the dedicated nodes ",
             { code: "dedicated=groupName" },
-            " and gives the pods required ",
+            " and give the pods required ",
             { a: "node affinity", href: "/learn/pod-affinity-vs-node-affinity" },
             " for that label.",
           ],
@@ -53,7 +60,7 @@ export const article: Article = {
     },
     {
       id: "the-three-taint-effects-noschedule-prefernoschedule-and",
-      title: "The three taint effects: NoSchedule, PreferNoSchedule and NoExecute",
+      title: "The three effects",
       blocks: [
         {
           kind: "p",
@@ -64,15 +71,15 @@ export const article: Article = {
           items: [
             [
               { code: "NoSchedule" },
-              ": no new pod lands without a matching toleration. Pods already running stay.",
+              ": new pods without a matching toleration don’t land. Pods already running stay.",
             ],
             [
               { code: "PreferNoSchedule" },
-              ": the control plane tries to keep those pods off the node, but the docs say “it is not guaranteed.”",
+              ": the control plane tries to keep those pods off, but the docs say “it is not guaranteed.”",
             ],
             [
               { code: "NoExecute" },
-              ": running pods without a matching toleration are evicted immediately, and new ones don’t land.",
+              ": running pods without a matching toleration are evicted at once, and new ones don’t land.",
             ],
           ],
         },
@@ -81,9 +88,9 @@ export const article: Article = {
           text: [
             "Under ",
             { code: "NoExecute" },
-            ", a pod that tolerates the taint with no ",
+            ", a pod that tolerates the taint without ",
             { code: "tolerationSeconds" },
-            " stays bound for good. With ",
+            " stays for good. With ",
             { code: "tolerationSeconds: 3600" },
             ", it stays an hour after the taint is added, then it’s evicted. If the taint is removed first, the pod stays.",
           ],
@@ -91,11 +98,11 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "A node can carry several taints, and a pod several tolerations. Kubernetes ignores each taint the pod tolerates. Any ",
+            "A node can carry several taints, and a pod several tolerations. Kubernetes ignores each taint the pod tolerates and applies the rest. Any ",
             { code: "NoSchedule" },
-            " taint left keeps the pod off, and any ",
+            " taint left keeps the pod off. Any ",
             { code: "NoExecute" },
-            " taint left also evicts it if it’s already running there.",
+            " taint left also evicts it if it’s running there.",
           ],
         },
         {
@@ -114,7 +121,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "add-and-remove-a-taint-with-kubectl",
-          title: "Add and remove a taint with kubectl taint",
+          title: "Add and remove a taint",
         },
         {
           kind: "code",
@@ -124,7 +131,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "The first command adds the taint, and the second, ending in ",
+            "The first command adds the taint. The second, ending in ",
             { code: "NoSchedule-" },
             ", removes it. ",
             { code: "kubectl describe node <node-name>" },
@@ -142,7 +149,7 @@ export const article: Article = {
     },
     {
       id: "how-kubernetes-tolerations-match-a-taint",
-      title: "How Kubernetes tolerations match a taint",
+      title: "How a toleration matches",
       blocks: [
         {
           kind: "p",
@@ -197,11 +204,11 @@ export const article: Article = {
     },
     {
       id: "built-in-taints-kubernetes-adds-to-nodes",
-      title: "Built-in taints Kubernetes adds to nodes",
+      title: "Built-in taints",
       blocks: [
         {
           kind: "p",
-          text: "The node controller taints a node when certain conditions are true. The scheduler checks those taints, not the node conditions, when it places a pod.",
+          text: "Kubernetes adds all but the last of these taints itself, when certain conditions are true. The scheduler checks the taints, not the node conditions, when it places a pod.",
         },
         {
           kind: "table",
@@ -249,7 +256,7 @@ export const article: Article = {
             [
               [{ code: "node.cloudprovider.kubernetes.io/uninitialized" }],
               [{ code: "NoSchedule" }],
-              "The kubelet started with an external cloud provider, until the cloud-controller-manager initializes the node",
+              "The kubelet runs with an external cloud provider, until the cloud-controller-manager initializes the node",
             ],
             [
               [{ code: "node.kubernetes.io/out-of-service" }],
@@ -261,13 +268,13 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Kubernetes adds tolerations for ",
+            "Kubernetes gives every pod tolerations for ",
             { code: "not-ready" },
             " and ",
             { code: "unreachable" },
-            " to every pod, with ",
+            ", with ",
             { code: "tolerationSeconds: 300" },
-            ", unless you or a controller set them. So pods stay bound to a node for 5\u00a0minutes after one of these problems is detected.",
+            ", unless you or a controller set them. So pods stay on a node for 5 minutes after one of these problems is detected.",
           ],
         },
         {
@@ -299,15 +306,16 @@ export const article: Article = {
           kind: "callout",
           label: "Watch out",
           text: [
+            "On a node tainted ",
             { code: "node.kubernetes.io/out-of-service" },
-            " is for a non-graceful node shutdown. Pods without a matching toleration are force-deleted, and their volumes detach immediately.",
+            ", pods without a matching toleration are force-deleted, and their volumes detach immediately.",
           ],
         },
       ],
     },
     {
       id: "taints-and-tolerations-on-aks-and-eks",
-      title: "Taints and tolerations on AKS and EKS node pools",
+      title: "Taints on AKS and EKS",
       blocks: [
         {
           kind: "p",
@@ -324,7 +332,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "aks-node-pool-taints-and-the-system",
-          title: "AKS: node pool taints, and the system and Spot pools",
+          title: "AKS node pools",
         },
         {
           kind: "p",
@@ -369,7 +377,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "eks-managed-node-groups-and-karpenter-nodepools",
-          title: "EKS managed node groups and Karpenter NodePools",
+          title: "EKS node groups and NodePools",
         },
         {
           kind: "p",
@@ -380,7 +388,7 @@ export const article: Article = {
             { code: "PREFER_NO_SCHEDULE" },
             " and ",
             { code: "NO_EXECUTE" },
-            ", and a managed node group holds up to 50\u00a0taints. To add or change one on an existing group:",
+            ". A managed node group holds up to 50 taints. To add or change one on an existing group:",
           ],
         },
         {
@@ -394,7 +402,7 @@ export const article: Article = {
             { code: "removeTaints" },
             " in place of ",
             { code: "addOrUpdateTaints" },
-            " takes a taint off. Either way, the running nodes get the change without being replaced. A taint removed from a node by hand isn’t added back, even though the node group still lists it.",
+            " takes a taint off. Either way, running nodes get the change without being replaced. A taint removed from a node by hand isn’t added back, even though the node group still lists it.",
           ],
         },
         {
@@ -418,37 +426,37 @@ export const article: Article = {
           text: [
             "Changing a NodePool’s taints counts as drift, so ",
             { a: "EKS Auto Mode", href: "/learn/glossary/eks-auto-mode" },
-            " and Karpenter drain and replace its nodes. Change a taint on one node with ",
+            " and Karpenter drain and replace its nodes. If you change a taint on one node with ",
             { code: "kubectl taint" },
-            ", and they put the NodePool’s version back.",
+            ", they put the NodePool’s version back.",
           ],
         },
         {
           kind: "p",
-          text: "A taint on GPU nodes also repels a device-plugin DaemonSet you install yourself. Give it the toleration too. Otherwise the node reports no allocatable GPUs, and GPU pods stay Pending.",
+          text: "A taint on GPU nodes also repels a device-plugin DaemonSet you install yourself, so give it the toleration too. Otherwise the node reports no allocatable GPUs, and GPU pods stay Pending.",
         },
       ],
     },
     {
       id: "how-coral-checks-taints-before-it-drains",
-      title: "How Coral checks taints before it drains a node",
+      title: "How Coral checks taints",
       blocks: [
         {
           kind: "p",
           text: [
             "Before ",
             { a: "Coral", href: "/coral" },
-            " drains a spare node, it simulates the scheduler on the live cluster. Every pod there must fit on another node, with its affinity, taints, spread, ports and zones.",
+            " drains a spare node, it simulates the scheduler on the live cluster. Every pod there must fit on another node, with its affinity, taints, spread, ports and zones. A node holding a pod that fits nowhere else isn’t drained.",
           ],
         },
         {
           kind: "p",
           text: [
-            "It also respects ",
+            "Coral also respects ",
             { a: "PodDisruptionBudgets (PDBs)", href: "/learn/glossary/pod-disruption-budget" },
             " and ",
             { a: "do-not-disrupt", href: "/learn/safe-to-evict-do-not-disrupt" },
-            ". A node holding a pod that fits nowhere else isn’t drained. ",
+            ". ",
             { a: "The Coral FAQ", href: "/coral-faq#how-do-you-make-sure-node" },
             " explains how it avoids scheduling failures.",
           ],
@@ -508,22 +516,22 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "kubectl cordon vs drain in Kubernetes: what each does to a node",
+      title: "kubectl cordon vs drain",
       where: "Learn",
       href: "/learn/cordon-vs-drain",
     },
     {
-      title: "Kubernetes node affinity vs pod affinity: what each rule decides",
+      title: "Kubernetes node affinity vs pod affinity",
       where: "Learn",
       href: "/learn/pod-affinity-vs-node-affinity",
     },
     {
-      title: "Kubernetes topologySpreadConstraints: maxSkew, zones and scale-down",
+      title: "Kubernetes topologySpreadConstraints",
       where: "Learn",
       href: "/learn/topology-spread-constraints",
     },
     {
-      title: "What is Karpenter? How the Kubernetes node autoscaler picks and removes nodes",
+      title: "What is Karpenter in Kubernetes?",
       where: "Learn",
       href: "/learn/what-is-karpenter",
     },

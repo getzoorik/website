@@ -6,39 +6,35 @@ import { figure as figure3 } from "@/features/learn/figures/resize-pvc-kubernete
 export const article: Article = {
   slug: "resize-pvc-kubernetes",
   title: "Expand a PVC in Kubernetes, and why it can’t shrink",
-  meta: "To resize a Kubernetes persistent volume, set allowVolumeExpansion and raise the PVC’s request. Steps for AKS, EKS and StatefulSets, and why it can’t shrink.",
-  h1: "How to expand or resize a PVC in Kubernetes, and why it can’t shrink",
-  deck: "Steps for AKS, EKS and StatefulSets, and how Azure charges for the size you pick.",
-  card: "Grow a PVC on AKS and EKS, resize a StatefulSet’s claims, and what to do when a claim is too big.",
+  meta: "To expand a PVC in Kubernetes, allow expansion in its StorageClass and raise its request. Steps for AKS, EKS and StatefulSets, and why it can’t shrink.",
+  h1: "Expand a PVC in Kubernetes",
+  deck: "Steps for AKS, EKS and StatefulSets, and what to do when a claim is too big.",
+  card: "Grow a PVC on AKS and EKS, resize a StatefulSet’s claims, and move data to a smaller claim.",
   product: "both",
   hub: "Kubernetes",
   topic: "Kubernetes storage",
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "shashank",
   cover: "/learn-covers/zoorik-learn-resize-pvc-kubernetes-1200x630.webp",
   coverAlt: "Resize a PVC: you can grow it, but not shrink it",
   short: [
-    "To expand or resize a PVC (PersistentVolumeClaim) in Kubernetes, raise its storage request once its StorageClass sets ",
+    "To expand a PVC (PersistentVolumeClaim), raise its storage request. Its StorageClass must set ",
     { code: "allowVolumeExpansion: true" },
-    " and its storage driver supports expansion. The disk and its filesystem grow, and the pod can keep running, but a PVC can’t shrink: a smaller claim means copying the data.",
+    ", and its storage driver must support expansion. The disk and its filesystem grow, and the pod can keep running. A PVC can’t shrink: a smaller claim means copying the data.",
   ],
   sections: [
     {
       id: "resize-pvc-kubernetes",
-      title: "What you need to resize a PVC in Kubernetes",
+      title: "Requirements",
       blocks: [
         {
           kind: "p",
-          text: "Picture a database pod on Azure Kubernetes Service (AKS) whose 100Gi claim is nearly full. You raise its request to 200Gi, the disk behind it grows, and the pod can keep running.",
-        },
-        {
-          kind: "p",
-          text: "If the data later drops back, the claim and its disk stay at 200Gi. You keep paying for the larger disk.",
-        },
-        {
-          kind: "p",
-          text: "A PVC is a request for storage. The PersistentVolume (PV) bound to it is the storage that serves it, usually a cloud disk.",
+          text: [
+            "A PVC is a request for storage. The ",
+            { a: "PersistentVolume (PV)", href: "/learn/kubernetes-persistent-volume" },
+            " bound to it is the storage itself, usually a cloud disk.",
+          ],
         },
         {
           kind: "p",
@@ -49,17 +45,17 @@ export const article: Article = {
           items: [
             [
               { b: "The class allows it." },
-              " Kubernetes accepts a larger size only for claims whose StorageClass sets ",
+              " Kubernetes accepts a larger size only when the claim’s StorageClass sets ",
               { code: "allowVolumeExpansion" },
               " to true.",
             ],
             [
               { b: "The driver supports it." },
-              " Kubernetes leaves expansion to each Container Storage Interface (CSI) driver. The Azure Disk driver on AKS and the Amazon Elastic Block Store (EBS) driver both support it.",
+              " Each Container Storage Interface (CSI) driver does its own expansion. The Azure Disk driver on Azure Kubernetes Service (AKS) and the Amazon Elastic Block Store (EBS) driver both support it.",
             ],
             [
               { b: "The filesystem can grow." },
-              " If the volume holds a filesystem, it’s XFS, ext3 or ext4, the three Kubernetes can resize.",
+              " If the volume holds a filesystem, it must be XFS, ext3 or ext4, the ones Kubernetes can resize.",
             ],
           ],
         },
@@ -67,16 +63,16 @@ export const article: Article = {
     },
     {
       id: "how-to-expand-a-pvc-in-kubernetes",
-      title: "How to expand a PVC in Kubernetes",
+      title: "Steps to expand a PVC",
       blocks: [
         {
           kind: "ol",
           items: [
             {
               text: [
-                "Find the claim’s class in the STORAGECLASS column of ",
-                { code: "kubectl get pvc" },
-                ", then check the class’s YAML:",
+                "Find the claim’s class in the STORAGECLASS column, then check the class for ",
+                { code: "allowVolumeExpansion: true" },
+                ":",
               ],
               blocks: [
                 {
@@ -87,11 +83,7 @@ export const article: Article = {
               ],
             },
             {
-              text: [
-                "If ",
-                { code: "allowVolumeExpansion: true" },
-                " is missing, add it to the existing class:",
-              ],
+              text: "If the field is missing, add it to the class:",
               blocks: [
                 {
                   kind: "code",
@@ -121,63 +113,56 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Kubernetes resizes the volume that already backs the claim. In the docs’ words, “a new PersistentVolume is never created to satisfy the claim.”",
+          text: "Kubernetes resizes the volume that already backs the claim. It never creates a new PV.",
         },
         {
           kind: "p",
-          text: "The CSI driver expands the cloud disk, then the filesystem grows on the node. That second step happens when a pod starts with the claim, or while the pod runs if the filesystem can grow while mounted. A claim that no pod uses can’t finish expanding until a pod mounts it.",
+          text: "The CSI driver grows the cloud disk first. The filesystem then grows on the node: when a pod starts with the claim, or while it runs if the filesystem supports that. A claim no pod uses finishes expanding only once a pod mounts it.",
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "callout",
           label: "Watch out",
-          text: "Edit the claim, never the PV: the Kubernetes docs warn that a hand-edited PV capacity can stop the resize. The control plane then sees matching sizes and concludes the disk was already grown.",
+          text: "Edit the claim, never the PV. A hand-edited PV capacity can stop the resize: Kubernetes sees matching sizes and concludes the disk already grew.",
         },
-        {
-          kind: "p",
-          text: "If you ask for more than the storage system can supply, Kubernetes keeps retrying. On Kubernetes 1.32 or later, you can then retry with a smaller request than the one that failed.",
-        },
+        { kind: "h3", id: "when-expansion-fails", title: "When expansion fails" },
         {
           kind: "p",
           text: [
-            "The new request must still be higher than the claim’s ",
+            "If you ask for more than the storage can supply, Kubernetes keeps retrying. You can then ask for a smaller size, as long as it stays above the claim’s ",
             { code: ".status.capacity" },
-            ". This recovery is beta and on by default in 1.32, and stable since 1.34.",
+            ". This recovery is beta and on by default in Kubernetes 1.32, and stable since 1.34.",
           ],
         },
       ],
     },
     {
       id: "how-to-resize-a-pvc-on-aks",
-      title: "How to resize a PVC on AKS",
+      title: "Expand a PVC on AKS",
       blocks: [
         {
           kind: "p",
           text: [
-            "On AKS, an expansion request goes to the Azure Disk CSI driver. Microsoft’s docs say the built-in ",
+            "On AKS, the Azure Disk CSI driver does the expansion. Microsoft’s docs say the built-in ",
             { code: "managed-csi" },
-            " class “already supports expansion.”",
+            " class “already supports expansion.” The built-in classes create these disks:",
           ],
         },
-        { kind: "p", text: "Of the other built-in classes:" },
         {
           kind: "ul",
           items: [
-            "The default class creates Standard SSD disks.",
-            [{ code: "managed-csi-premium" }, " creates Premium SSD."],
-            [
-              { code: "managed-csi-premium-v2" },
-              " provisions Premium SSD v2, on Kubernetes 1.35 or later.",
-            ],
+            [{ code: "default" }, " and ", { code: "managed-csi" }, ": Standard SSD."],
+            [{ code: "managed-csi-premium" }, ": Premium SSD."],
+            [{ code: "managed-csi-premium-v2" }, ": Premium SSD v2, on Kubernetes 1.35 or later."],
           ],
         },
         {
           kind: "p",
-          text: "The limit to know is 4\u00a0TiB. A Standard HDD, Standard SSD or Premium SSD volume grows without any downtime while the new size stays at 4\u00a0TiB or less.",
+          text: "The limit to know is 4 TiB. A Standard HDD, Standard SSD or Premium SSD volume grows without any downtime up to 4 TiB.",
         },
         {
           kind: "p",
-          text: "Growing one of those from 4\u00a0TiB or less to more than 4\u00a0TiB means unmounting the disk and detaching it from the node. So you scale the workload to zero replicas before you patch the claim.",
+          text: "Growing one beyond 4 TiB means unmounting the disk and detaching it from the node. So scale the workload to zero replicas before you patch the claim.",
         },
         {
           kind: "p",
@@ -193,53 +178,47 @@ export const article: Article = {
         {
           kind: "h3",
           id: "how-azure-charges-for-the-new-size",
-          title: "How Azure charges for the new size",
+          title: "What the new size costs",
         },
         {
           kind: "p",
           text: [
-            "The size you pick also sets what you pay, and not one GiB at a time. Azure charges for a managed disk on its provisioned size, rounded up to the nearest offered ",
+            "Azure charges a managed disk for its provisioned size, rounded up to the nearest offered ",
             { a: "disk size", href: "/learn/glossary/azure-disk-sizes" },
-            ".",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "Premium SSD v2 is charged per GiB, so it doesn’t round. ",
-            { a: "Which disk each AKS class creates", href: "/learn/aks-storage-classes" },
-            " covers each built-in class’s disk type and redundancy.",
+            ". Premium SSD v2 and Ultra Disk are charged per GiB, so they don’t round.",
           ],
         },
         {
           kind: "callout",
           label: "Worked example",
-          text: "The 200Gi patch above, on the default class, matches Microsoft’s example. A 200\u00a0GiB Standard SSD maps to E15 and is charged as 256\u00a0GiB.",
+          text: "The 200Gi patch above, on the default class, matches Microsoft’s example. A 200 GiB Standard SSD maps to E15 and is charged as 256 GiB. The extra 56 GiB you pay for is space the claim can’t use.",
         },
         {
           kind: "p",
-          text: "Of the 256\u00a0GiB you pay for, 56\u00a0GiB (256 − 200) is space the claim can’t use. A 128\u00a0GiB claim sits exactly on E10. Growing it to 130\u00a0GiB moves it to E15: twice the capacity (256 ÷ 128) for 2\u00a0GiB more room.",
+          text: "A small increase can move a disk up a whole tier. A 128 GiB claim sits exactly on E10. Growing it to 130 GiB moves it to E15: twice the capacity for 2 GiB more room.",
         },
         {
           kind: "p",
           text: [
-            "So when you grow a Standard SSD or Premium SSD claim, ask for the full size of the tier you pay for. Here that’s 256\u00a0GiB. To price other sizes, use the ",
+            "So when you grow a Standard SSD or Premium SSD claim, ask for the full size of the tier you pay for. To price other sizes, use the ",
             { a: "Azure disk pricing calculator", href: "/ebs-and-azure-disk-pricing" },
-            ".",
+            ". ",
+            { a: "AKS storage classes", href: "/learn/aks-storage-classes" },
+            " covers each class’s disk type and redundancy.",
           ],
         },
       ],
     },
     {
       id: "a-gp3-storageclass-that-can-grow-on",
-      title: "A gp3 StorageClass that can grow on EKS",
+      title: "Expand a PVC on EKS",
       blocks: [
         {
           kind: "p",
           text: [
-            "On Amazon Elastic Kubernetes Service (EKS) with the Amazon EBS CSI driver, a class like this one creates ",
+            "On Amazon Elastic Kubernetes Service (EKS), the Amazon EBS CSI driver does the expansion. This class creates ",
             { a: "gp3", href: "/learn/glossary/ebs-gp3" },
-            " volumes and allows expansion:",
+            " volumes that can grow:",
           ],
         },
         {
@@ -250,9 +229,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Naming ",
+            "The driver creates gp3 when no ",
             { code: "type" },
-            " keeps the class readable, though the driver creates gp3 when none is given. Unless you set them, the filesystem is ext4 and a gp3\u00a0volume’s throughput is 125\u00a0MiB/s.",
+            " is set, so naming it only keeps the class readable. Unless you set them, the filesystem is ext4 and throughput is 125 MiB/s.",
           ],
         },
         {
@@ -270,20 +249,20 @@ export const article: Article = {
             { a: "input/output operations per second (IOPS)", href: "/learn/glossary/iops" },
             " with ",
             { code: "iopsPerGB" },
-            ", you can set ",
+            ", set ",
             { code: "allowAutoIOPSIncreaseOnModify" },
             " to ",
             { code: '"true"' },
-            ". That lets the driver adjust IOPS as the volume grows, so the IOPS-per-GiB ratio holds.",
+            ". The driver then adjusts IOPS as the volume grows, so the IOPS-per-GiB ratio holds.",
           ],
         },
         {
           kind: "p",
           text: [
-            "You expand a claim of this class like any other. ",
+            "A claim of this class expands with the same patch. ",
             { a: "Growing an EBS volume in place", href: "/learn/increase-ebs-volume-size" },
             " covers what happens to the volume underneath. The case for gp3 over gp2 is in ",
-            { a: "comparing gp2 and gp3", href: "/learn/gp2-vs-gp3" },
+            { a: "gp2 vs gp3", href: "/learn/gp2-vs-gp3" },
             ".",
           ],
         },
@@ -291,24 +270,24 @@ export const article: Article = {
     },
     {
       id: "how-to-resize-a-pvc-in-a",
-      title: "How to resize a StatefulSet PVC when volumeClaimTemplates can’t change",
+      title: "Resize a StatefulSet’s volumeClaimTemplates",
       blocks: [
         {
           kind: "p",
           text: [
-            "You can’t resize a StatefulSet’s claims through its template: the API server treats ",
+            "You can’t resize a StatefulSet’s claims through its template. The API server treats ",
             { code: "volumeClaimTemplates" },
-            " as immutable and rejects the edit. Each pod gets its own claim from that template.",
+            " as immutable and rejects the edit.",
           ],
         },
         {
           kind: "p",
           text: [
-            "The claim is named after the template, the StatefulSet and the pod’s ordinal, such as ",
+            "Each pod gets its own claim from the template, named after the template, the StatefulSet and the pod’s ordinal: ",
             { code: "www-web-0" },
             " for pod ",
             { code: "web-0" },
-            ". So grow the claims that exist, then recreate the StatefulSet object around its pods.",
+            ". So grow the claims that exist, then recreate the StatefulSet around its pods.",
           ],
         },
         { kind: "svg", figure: figure2 },
@@ -316,7 +295,7 @@ export const article: Article = {
           kind: "ol",
           items: [
             {
-              text: "Patch each claim to the new size, listing them by the StatefulSet’s pod label:",
+              text: "List the claims by the StatefulSet’s pod label, then patch each one to the new size:",
               blocks: [
                 {
                   kind: "code",
@@ -326,7 +305,7 @@ export const article: Article = {
               ],
             },
             {
-              text: "As insurance for the next step, set each claim’s PV to keep its disk if the claim is ever deleted:",
+              text: "In case a claim gets deleted, set each claim’s PV to keep its disk:",
               blocks: [
                 {
                   kind: "code",
@@ -337,9 +316,9 @@ export const article: Article = {
             },
             {
               text: [
-                "Delete the StatefulSet object without its pods. Without ",
+                "Delete the StatefulSet but not its pods. ",
                 { code: "--cascade=orphan" },
-                ", the delete removes the pods as well, so check the flag before you run it. With it, Kubernetes deletes only the StatefulSet and leaves its pods running.",
+                " leaves the pods running. Without it, the pods are deleted too.",
               ],
               blocks: [
                 {
@@ -352,16 +331,16 @@ export const article: Article = {
             [
               "Apply the manifest again with the new size in ",
               { code: "volumeClaimTemplates" },
-              ", so new replicas get claims at that size. The recreated StatefulSet adopts pods that are Running and Ready. A pod it relaunches mounts its original volume again, as the Kubernetes StatefulSet tutorial shows.",
+              ", so new replicas get claims at that size. The new StatefulSet adopts pods that are Running and Ready. A pod it relaunches mounts its original volume again.",
             ],
           ],
         },
         {
           kind: "p",
           text: [
-            "When the claims show the new size, set each PV’s reclaim policy back to what it was. A dynamically provisioned PV inherits its class’s policy, which defaults to ",
+            "When the claims show the new size, set each PV’s reclaim policy back. A dynamically provisioned PV takes its class’s policy, ",
             { code: "Delete" },
-            ". A PV left on ",
+            " by default. A PV left on ",
             { code: "Retain" },
             " keeps its disk, and its cost, after the claim is gone.",
           ],
@@ -370,7 +349,7 @@ export const article: Article = {
     },
     {
       id: "can-you-shrink-a-pvc-in-kubernetes",
-      title: "Can you shrink a PVC in Kubernetes?",
+      title: "Can a PVC shrink?",
       blocks: [
         {
           kind: "p",
@@ -378,7 +357,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Microsoft’s AKS docs give the reason, “due to the risk of data loss,” and show this error for a smaller patch:",
+          text: "Microsoft’s AKS docs give the reason, “the risk of data loss,” and show this error for a smaller patch:",
         },
         {
           kind: "code",
@@ -388,16 +367,12 @@ export const article: Article = {
         { kind: "h3", id: "why-a-claim-cant-shrink", title: "Why a claim can’t shrink" },
         {
           kind: "p",
-          text: "The disk underneath is a block device whose filesystem can keep data in any block, including the last ones.",
-        },
-        {
-          kind: "p",
-          text: "Removing the end of the device would remove part of that data. Only the operating system using the filesystem can move it first.",
+          text: "A filesystem can keep data in any block of its disk, including the last ones. Removing the end of the disk would remove that data. Only the operating system using the filesystem can move it first.",
         },
         {
           kind: "p",
           text: [
-            "So grow a claim as its data accumulates, instead of allocating a large volume up front. The cloud disks underneath can’t shrink in place either: see ",
+            "So grow a claim as its data grows, rather than sizing it large up front. The cloud disks underneath can’t shrink in place either: see ",
             { a: "Azure managed disks", href: "/learn/shrink-azure-managed-disk" },
             " and ",
             { a: "EBS volumes", href: "/learn/shrink-ebs-volume" },
@@ -407,7 +382,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "how-to-move-the-data-to-a",
-          title: "How to move the data to a smaller claim",
+          title: "Move to a smaller claim",
         },
         {
           kind: "p",
@@ -420,22 +395,22 @@ export const article: Article = {
             [
               "Set the old claim’s PV to ",
               { code: "Retain" },
-              ", with the patch in the StatefulSet section, so deleting the claim later keeps the disk.",
+              ", with the patch from the StatefulSet steps, so deleting the claim later keeps the disk.",
             ],
             [
-              "Scale the workload to zero so nothing writes during the copy. A StatefulSet’s ",
+              "Scale the workload to zero so nothing writes during the copy. If a StatefulSet’s ",
               { code: "persistentVolumeClaimRetentionPolicy" },
-              " may set ",
+              " sets ",
               { code: "whenScaled: Delete" },
-              ". If it does, scaling down deletes the claims of the removed pods, so set it to ",
+              ", scaling down deletes its claims, so set it to ",
               { code: "Retain" },
-              " before you scale.",
+              " first.",
             ],
             "Create a claim in the same class, sized to the data plus the headroom you want.",
             [
-              "Run a one-off pod that mounts both claims and copies the files across, with a tool that keeps ownership, permissions and links. The rsync flags for that are in ",
-              { a: "how to shrink an EBS volume", href: "/learn/shrink-ebs-volume" },
-              ". With ",
+              "Run a one-off pod that mounts both claims and copies the files, keeping ownership, permissions and links. ",
+              { a: "How to shrink an EBS volume", href: "/learn/shrink-ebs-volume" },
+              " gives the rsync flags. With ",
               { code: "WaitForFirstConsumer" },
               ", the new disk is created when this pod starts.",
             ],
@@ -445,22 +420,21 @@ export const article: Article = {
               " at the new claim and scale it back up.",
             ],
             [
-              "Delete the old claim once you trust the copy. Because its PV is set to ",
+              "Delete the old claim once you trust the copy. Its PV, on ",
               { code: "Retain" },
-              ", the PV becomes Released and keeps the disk. Deleting the PV leaves the disk in place too. Delete the disk itself in Azure or AWS last, since its data goes with it.",
+              ", becomes Released and keeps the disk, and deleting the PV keeps it too. Delete the disk in Azure or AWS last, since its data goes with it.",
             ],
           ],
         },
         {
           kind: "h3",
           id: "keep-the-claim-name-in-a-statefulset",
-          title: "Keep the claim name in a StatefulSet",
+          title: "Keep a StatefulSet’s claim name",
         },
         {
           kind: "p",
-          text: "In a StatefulSet the claim’s name is fixed, so the new disk has to end up behind a claim with the old name. The Kubernetes docs give these steps for binding a recreated claim to an existing PV after a failed expansion.",
+          text: "A StatefulSet’s claim names are fixed, so the new disk must end up behind a claim with the old name. These steps follow the Kubernetes docs’ recovery from a failed expansion. After the copy:",
         },
-        { kind: "p", text: "After the copy:" },
         {
           kind: "ol",
           items: [
@@ -468,9 +442,9 @@ export const article: Article = {
             ["Set the new PV to ", { code: "Retain" }, ", then delete the temporary claim."],
             ["Clear that PV’s ", { code: "claimRef" }, "."],
             [
-              "Create a claim under the original name, in the same class and at the new size, whose ",
+              "Create a claim under the original name, in the same class and at the new size, with ",
               { code: "volumeName" },
-              " is that PV.",
+              " set to that PV.",
             ],
             "Once it binds, restore that PV’s reclaim policy.",
             [
@@ -484,26 +458,23 @@ export const article: Article = {
     },
     {
       id: "the-same-grow-only-rule-on-vm",
-      title: "The same grow-only rule on VM data disks",
+      title: "Where Amoeba fits",
       blocks: [
         {
           kind: "p",
-          text: "An Azure Disk or EBS claim sits on a cloud disk. Outside Kubernetes, the same grow-only rule applies to a virtual machine’s (VM’s) data disks.",
-        },
-        {
-          kind: "p",
           text: [
+            "Outside Kubernetes, a virtual machine’s (VM’s) data disks follow the same grow-only rule. ",
             { a: "Amoeba", href: "/amoeba" },
-            ", Zoorik’s block storage optimization product, optimizes Azure managed disks and Amazon EBS volumes. It works on the data disks of Windows and Linux VMs, not on PVCs, and never touches the OS disk or root volume.",
+            ", Zoorik’s block storage optimization product, works on those: Azure managed disks and Amazon EBS volumes on Windows and Linux VMs. It doesn’t work on PVCs, and it never touches the OS disk or root volume.",
           ],
         },
         {
           kind: "p",
-          text: "Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. It copies your data while your services run. Then it switches each mount to the pool, with a short restart of the services that use it.",
+          text: "Amoeba moves a VM’s data disks onto one btrfs pool sized to your data, then rightsizes the pool without any downtime. It grows the pool before it fills, and sooner when data arrives fast.",
         },
         {
           kind: "p",
-          text: "After that, it grows the pool before it fills, and sooner when data arrives fast. When your data goes down and stays down, it shrinks the pool one disk at a time. So you pay for close to what you use.",
+          text: "When your data goes down and stays down, it shrinks the pool one disk at a time. So you pay for close to what you use.",
         },
         {
           kind: "p",
@@ -522,7 +493,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
@@ -568,6 +539,11 @@ export const article: Article = {
     },
     {
       publisher: "Amazon EBS CSI driver (Kubernetes SIGs)",
+      title: "“Amazon Elastic Block Store (EBS) CSI driver”",
+      url: "https://github.com/kubernetes-sigs/aws-ebs-csi-driver",
+    },
+    {
+      publisher: "Amazon EBS CSI driver (Kubernetes SIGs)",
       title: "“CreateVolume (StorageClass) Parameters”",
       url: "https://github.com/kubernetes-sigs/aws-ebs-csi-driver/blob/master/docs/parameters.md",
     },
@@ -579,25 +555,25 @@ export const article: Article = {
       href: "/learn/shrink-azure-managed-disk",
     },
     {
-      title: "How to shrink an EBS volume when AWS only lets it grow",
+      title: "How to shrink an EBS volume",
       where: "Learn",
       href: "/learn/shrink-ebs-volume",
     },
     {
-      title: "AKS storage classes: which Azure disk each one creates",
+      title: "Kubernetes storage classes on AKS",
       where: "Learn",
       href: "/learn/aks-storage-classes",
     },
     {
-      title: "How to expand an Azure disk without downtime",
+      title: "Expand an Azure disk without downtime",
       where: "Learn",
       href: "/learn/azure-disk-expand-without-downtime",
     },
     {
-      title: "How to increase EBS volume size without downtime on Linux",
+      title: "Increase EBS volume size without downtime",
       where: "Learn",
       href: "/learn/increase-ebs-volume-size",
     },
   ],
-  relatedTitle: "More on resizing claims and cloud disks",
+  relatedTitle: "More on resizing storage",
 };

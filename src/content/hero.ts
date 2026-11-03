@@ -28,11 +28,11 @@ import { routes } from "@/config/site";
 export const heroPhotoAlt = "Server racks in a data centre, lit by blue status lights";
 
 /**
- * The day the home page's content last changed (the 2 Nov 2026 plan: the hero's one line, the
- * company sentence gone), for the sitemap's `lastmod` only: the page does not print it. Whoever changes the home page's content
- * moves this to that day in the same PR; never the build's date.
+ * The day the home page's content last changed (2 Nov 2026: the zero-noise rewrite of the hero line, the two
+ * product lines and the By design band), for the sitemap's `lastmod` only: the page does not print it. Whoever
+ * changes the home page's content moves this to that day in the same PR; never the build's date.
  */
-export const homeLastUpdated = "2 November 2026";
+export const homeLastUpdated = "3 November 2026";
 
 export const heroContent = {
   /**
@@ -45,8 +45,8 @@ export const heroContent = {
    */
   name: "Zoorik",
   headline: "Reduce cloud cost, autonomously.",
-  /* One line under the h1 (2 Nov 2026): "on its own" repeated the h1's "autonomously", and the company sentence
-     under it went, the meta description carrying it. */
-  sub: "Software that optimizes Kubernetes and block storage on Azure and AWS.",
+  /* One line under the h1: what Zoorik optimizes and where, in the two categories the sections below take as
+     their headings. */
+  sub: "Kubernetes and block storage optimization on Azure and AWS.",
   cta: { label: "Estimate your saving", href: routes.assessment },
 } as const;

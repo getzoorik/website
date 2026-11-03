@@ -22,7 +22,7 @@ import { ProgramPair } from "@/features/programs/program-parts";
  *   hero                              the title, the first sentence of the owner's line (D226) as the deck,
  *                                     Estimate your saving and Book a demo
  *   Start with the free assessment    its second sentence, what the assessment is, and the two commands
- *   Coral and Amoeba                  on the band: what each does, what it is priced per, and its page
+ *   What you pay for                  on the band: what each does, what it is priced per, and its page
  *   Buy through your cloud marketplace  the four listings by name, the private offer and every listing
  *   the pair                          on the band: early access on the white card, design partners on the navy one
  *   Questions                         the FAQ's one row, closed, with no number

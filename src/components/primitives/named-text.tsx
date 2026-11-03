@@ -18,7 +18,7 @@ export function NamedText({
 }: {
   text: string;
   /** One name, or several where a sentence names more than one (/login's panel:
-   *  "Coral optimizes Kubernetes. Amoeba optimizes block storage."). */
+   *  "Coral rebalances Kubernetes. Amoeba rightsizes block storage."). */
   name: string | readonly string[];
 }): React.JSX.Element {
   const names = typeof name === "string" ? [name] : name;

@@ -1,7 +1,8 @@
 import { calendarUrl } from "@/config/site";
 
 /**
- * `/design-partners`: every string the page prints, verbatim from the approved mock.
+ * `/design-partners`: every string the page prints, from the approved mock, tightened in the zero-noise content pass
+ * (3 Nov 2026).
  *
  * The program is open now: the offer and what we ask, side by side on the band; what a partner gets; how it works in
  * four steps; and who it is for. Product names are written plainly here; the page keeps each one out of a
@@ -20,7 +21,7 @@ import { calendarUrl } from "@/config/site";
  * The day /design-partners's content last changed, for the sitemap's `lastmod` only: the page does not print it.
  * Whoever changes /design-partners's content moves this to that day in the same PR; never the build's date.
  */
-export const designPartnersLastUpdated = "1 November 2026";
+export const designPartnersLastUpdated = "3 November 2026";
 
 /** How many design partners get the offer: their non-production infrastructure is free. */
 export const designPartnerPlaces = 10;
@@ -38,8 +39,7 @@ export const designPartnersPage = {
   /** The page's `<title>` (through the site's "%s | Zoorik" template) and description. */
   meta: {
     title: "Design partner program",
-    description:
-      "Join Zoorik's design partner program: the first 10 partners run Coral and Amoeba free on their non-production infrastructure and shape what we build next.",
+    description: `Join Zoorik's design partner program: the first ${designPartnerPlaces} partners run Coral and Amoeba free on their non-production infrastructure and shape what we build next.`,
   },
   hero: {
     title: "Design partner program",
@@ -101,7 +101,7 @@ export const designPartnersPage = {
       },
       {
         title: "Connect a non-production cluster or VM",
-        line: `Coral with zoorikctl, Helm or Terraform; Amoeba with a script in Azure Cloud Shell or AWS CloudShell. Free for the first ${designPartnerPlaces} partners.`,
+        line: "Coral with zoorikctl, Helm or Terraform; Amoeba with a script in Azure Cloud Shell or AWS CloudShell.",
       },
       {
         title: "Review together",

@@ -2,9 +2,9 @@ import { calendarUrl, contactEmail, routes, site } from "@/config/site";
 import { about, registeredOffice, type AboutFact } from "@/content/about";
 
 /**
- * `/contact`: every string it prints, word for word from the checked draft
+ * `/contact`: every string it prints, from the checked draft
  * (docs/website-seo/new-pages-2026-10-30/contact-pricing/contact.md, each fact traced in its ledger.md) and the mock
- * (contact.html). The owner added the page on 28 Oct 2026.
+ * (contact.html), tightened in the zero-noise content pass (3 Nov 2026). The owner added the page on 28 Oct 2026.
  *
  * Two ways to reach us and nothing else: the calendar and the one address. No phone number, no form and no chat, as
  * the site has none. The only reply times are the three the sources state, each in its own row: the emailed
@@ -19,7 +19,7 @@ import { about, registeredOffice, type AboutFact } from "@/content/about";
  * The day /contact's content last changed, for the sitemap's `lastmod` only: the page prints no date. Whoever changes
  * the page moves it in the same PR; never the build's date.
  */
-export const contactLastUpdated = "1 November 2026";
+export const contactLastUpdated = "3 November 2026";
 
 /** A ready email with its subject, as the mock encodes it ("Design%20partner%20program"). */
 const mail = (subject: string): string =>
@@ -64,7 +64,7 @@ export const contactPage = {
   /** The page's `<title>` (through the site's "%s | Zoorik" template) and its description. */
   meta: {
     title: "Contact",
-    description: `Book a demo with the people who build Coral and Amoeba, or email ${contactEmail}. For early access, partners, press, security and privacy.`,
+    description: `Book a demo with the people who build Coral and Amoeba, or email ${contactEmail} about early access, partners, press, security or privacy.`,
   },
   hero: {
     title: "Contact Zoorik",
@@ -76,26 +76,26 @@ export const contactPage = {
    */
   call: {
     title: "Book a demo",
-    line: "Pick a time with the people who build Coral and Amoeba. A call takes thirty minutes.",
+    line: "A thirty-minute call, at a time you pick.",
     go: { label: "Book a demo", href: calendarUrl },
   },
   email: {
     title: "Email",
-    line: `Write to ${contactEmail}. Every topic below uses this one address.`,
+    line: `Write to ${contactEmail} about any topic below.`,
     go: { label: "Write to us", href: `mailto:${contactEmail}` },
     fine: "Remove tokens, keys and other secrets from anything you send.",
   },
-  /** What to write to us about: three groups of topics; the grievance officer closes the last. */
+  /** What to write about: three groups of topics; the grievance officer closes the last. */
   topics: {
     id: "topics",
-    title: "What to write to us about",
+    title: "What to write about",
     groups: [
       {
         title: "Coral and Amoeba",
         topics: [
           {
-            term: "A demo",
-            text: `[Book a demo](${calendarUrl}), or write to us. How Coral and Amoeba are priced is on [Pricing](${routes.pricing}).`,
+            term: "Pricing",
+            text: `[Pricing](${routes.pricing}) shows how Coral and Amoeba are priced. To ask about your case, [book a demo](${calendarUrl}) or write to us.`,
           },
           {
             term: "Early access",
@@ -125,15 +125,15 @@ export const contactPage = {
         topics: [
           {
             term: "Design partners",
-            text: `Run Coral and Amoeba free on your non-production clusters and disks, and shape what we build next. [Apply to be a design partner](${mail("Design partner program")}), or read about the [Design partner program](${routes.designPartners}).`,
+            text: `Run Coral and Amoeba free on non-production clusters and disks. [Apply to be a design partner](${mail("Design partner program")}), or read about the [Design partner program](${routes.designPartners}).`,
           },
           {
             term: "Partners",
-            text: `For consultancies, managed service providers and resellers. The program is coming soon. [Write to us](${mail("Partner program")}), or read about the [Partner program](${routes.partners}).`,
+            text: `For consultancies, managed service providers and resellers. Coming soon. [Write to us](${mail("Partner program")}), or read about the [Partner program](${routes.partners}).`,
           },
           {
             term: "Referrals",
-            text: `The program is coming soon. [Write to us](${mail("Referral program")}) and we will tell you first, or read about the [Referral program](${routes.referrals}).`,
+            text: `Coming soon. [Write to us](${mail("Referral program")}) and we will tell you first, or read about the [Referral program](${routes.referrals}).`,
           },
           {
             term: "Press, or writing about Zoorik",
@@ -179,7 +179,7 @@ export const contactPage = {
   },
   buy: {
     title: "Buy through your cloud marketplace",
-    line: "Coral and Amoeba are available in AWS Marketplace and Microsoft Marketplace.",
+    line: "Coral and Amoeba are on AWS Marketplace and Microsoft Marketplace.",
     all: { text: "Every marketplace, review site and registry", href: routes.marketplaces },
   },
 } as const;

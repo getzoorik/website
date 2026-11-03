@@ -20,7 +20,7 @@
     sections, which have no .sec-head, can carry the same eyebrow. */
 .kicker{display:inline-flex;align-items:center;gap:9px;font-size:.8125rem;font-weight:500;
   letter-spacing:.075em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
-/* The section eyebrow in accent: By design, How it works and Free assessment all
+/* The section eyebrow in accent: By design, How it works and the Assessment card all
    open on it. The two product sections no longer carry a kicker at all - each
    opens on its own lockup, `.lockup` in site-system.css, which is why the old
    `.kicker.product` rules are gone from here rather than left unused. */

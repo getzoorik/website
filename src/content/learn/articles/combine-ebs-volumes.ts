@@ -4,65 +4,63 @@ import { figure as figure2 } from "@/features/learn/figures/combine-ebs-volumes/
 
 export const article: Article = {
   slug: "combine-ebs-volumes",
-  title: "AWS EBS RAID 0, LVM or btrfs: combine EBS volumes",
-  meta: "EBS RAID 0 on AWS, LVM with lvextend, or a btrfs pool: how to combine EBS volumes into one, the commands for each, and what each takes to give a volume back.",
-  h1: "How to combine EBS volumes: AWS EBS RAID 0, LVM or a btrfs pool",
-  deck: "They differ most in giving a volume back: LVM needs free extents, RAID 0 a new array, btrfs one command.",
+  title: "Combine EBS volumes with LVM (lvextend), RAID 0 or btrfs",
+  meta: "Combine EBS volumes into one with LVM and lvextend, an mdadm RAID 0 array or a btrfs pool: the commands, and what giving a volume back takes.",
+  h1: "How to combine EBS volumes",
+  deck: "The commands for LVM, RAID 0 and btrfs, and what adding a volume or giving one back takes.",
   card: "LVM, RAID 0 or a btrfs pool across EBS volumes: the commands, and what adding or removing a volume takes.",
   product: "amoeba",
   hub: "Block storage",
   topic: "AWS block storage",
   versus: ["LVM · RAID 0", "btrfs pool"],
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "sujal",
   cover: "/learn-covers/zoorik-learn-combine-ebs-volumes-1200x630.webp",
   coverAlt: "LVM, RAID 0 or a btrfs pool joins EBS volumes under one /data mount",
   short:
-    "To combine EBS volumes into one on Linux, you join them with LVM, an mdadm RAID 0 array or a btrfs pool. All three add up the volumes’ space, and RAID 0 also adds up their IOPS and throughput.",
+    "On Linux, join EBS volumes with LVM, an mdadm RAID 0 array or a btrfs pool. All three add up the volumes’ space, and RAID 0 also adds up their IOPS and throughput. They differ in giving a volume back: LVM needs free extents on the others, RAID 0 a new array, and btrfs one command while mounted.",
   sections: [
     {
       id: "combine-ebs-volumes-into-one",
-      title: "Why combine EBS volumes into one: a volume never shrinks and has a ceiling",
+      title: "Why combine volumes",
       blocks: [
+        {
+          kind: "p",
+          text: "An EBS volume can grow but can’t shrink, and one volume has a size and speed ceiling. Joining several volumes into one filesystem lifts the ceiling, and can let you give a volume back when data falls.",
+        },
+        {
+          kind: "h3",
+          id: "you-pay-for-every-provisioned-gb-and",
+          title: "A volume can’t shrink",
+        },
+        {
+          kind: "p",
+          text: [
+            "AWS charges for Amazon Elastic Block Store (EBS) storage “by the amount of GB you provision per month until you release the storage.” ",
+            { a: "Elastic Volumes", href: "/learn/ebs-elastic-volumes" },
+            ", AWS’s way to change an attached volume, can increase its size but not decrease it.",
+          ],
+        },
         {
           kind: "p",
           text: [
             "Picture ",
             { code: "/data" },
-            " on three 500\u00a0GiB gp3\u00a0volumes, sized for a seasonal peak that has passed. The data is back to 600\u00a0GiB, so 900\u00a0GiB that you pay for sit empty.",
+            " on three 500 GiB gp3 volumes, sized for a peak that has passed. The data is back to 600 GiB, so you pay for 900 GiB of empty space.",
           ],
         },
         {
           kind: "p",
-          text: "Two volumes can hold that data, so deleting the third leaves 1,000\u00a0GiB to pay for. How you joined them decides whether that takes an unmount, a copy or neither.",
+          text: "Two volumes can hold that data, so deleting the third leaves 1,000 GiB to pay for. How you joined the volumes decides whether that takes an unmount, a copy or neither.",
         },
         { kind: "svg", figure: figure1 },
-        {
-          kind: "h3",
-          id: "you-pay-for-every-provisioned-gb-and",
-          title: "You pay for every provisioned GB, and a volume can’t shrink",
-        },
-        {
-          kind: "p",
-          text: "AWS charges Amazon Elastic Block Store (EBS) volume storage “by the amount of GB you provision per month until you release the storage.”",
-        },
         {
           kind: "p",
           text: [
             "The ",
             { a: "EBS pricing calculator", href: "/ebs-and-azure-disk-pricing" },
-            " shows what a volume costs a month, and what its empty space costs.",
-          ],
-        },
-        {
-          kind: "p",
-          text: "Elastic Volumes, AWS’s way to change an attached volume, can increase a volume’s size but not decrease it. In AWS’s words, “You can’t decrease the volume size.”",
-        },
-        {
-          kind: "p",
-          text: [
-            "That’s why ",
+            " shows what that empty space costs. With a single volume, ",
             { a: "shrinking an EBS volume", href: "/learn/shrink-ebs-volume" },
             " takes a copy and a switch.",
           ],
@@ -70,22 +68,22 @@ export const article: Article = {
         {
           kind: "h3",
           id: "volumes-and-instances-have-ceilings",
-          title: "Volumes and instances have ceilings",
+          title: "Volume and instance limits",
         },
         {
           kind: "p",
           text: [
             "A ",
             { a: "gp3", href: "/learn/glossary/ebs-gp3" },
-            " volume runs from 1\u00a0GiB to 64\u00a0TiB. Its price includes 3,000\u00a0IOPS and 125\u00a0MiB/s, and you can provision up to 80,000\u00a0IOPS and 2,000\u00a0MiB/s.",
+            " volume holds 1 GiB to 64 TiB. Its price includes 3,000 IOPS and 125 MiB/s, and you can provision up to 80,000 IOPS and 2,000 MiB/s.",
           ],
         },
         {
           kind: "p",
           text: [
-            "A filesystem that needs more has to span several volumes. For speed alone, the other way is a faster ",
+            "A filesystem that needs more has to span several volumes. For speed alone, a faster ",
             { a: "EBS volume type", href: "/learn/ebs-volume-types" },
-            ".",
+            " is the other option.",
           ],
         },
         {
@@ -94,7 +92,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "AWS also advises against parity and mirroring. RAID 5 and RAID 6 give 20 to 30 percent fewer usable IOPS than RAID 0. RAID 1 needs more EC2-to-EBS bandwidth without improving writes.",
+          text: "AWS advises against parity and mirroring on EBS. RAID 5 and RAID 6 give 20 to 30 percent fewer usable IOPS than RAID 0. RAID 1 needs more EC2-to-EBS bandwidth and doesn’t speed up writes.",
         },
         {
           kind: "p",
@@ -104,13 +102,12 @@ export const article: Article = {
     },
     {
       id: "lvm-vs-raid-0-vs-btrfs-where",
-      title: "LVM vs RAID 0 vs btrfs: where the volumes are joined decides what a change takes",
+      title: "LVM vs RAID 0 vs btrfs",
       blocks: [
         {
           kind: "p",
-          text: "All three join the volumes inside the instance. AWS says all RAID on EBS “is accomplished at the software level.”",
+          text: "All three join the volumes inside the instance: AWS says all RAID on EBS “is accomplished at the software level.” LVM and RAID 0 add a layer under the filesystem. Only btrfs joins the volumes inside the filesystem itself.",
         },
-        { kind: "p", text: "Only btrfs joins them inside the filesystem itself." },
         { kind: "svg", figure: figure2 },
         {
           kind: "table",
@@ -164,15 +161,11 @@ export const article: Article = {
     },
     {
       id: "lvm-on-aws-ebs-volumes-growing-is",
-      title: "LVM on EBS volumes: growing is easy, giving a volume back needs free extents",
+      title: "LVM on EBS",
       blocks: [
         {
           kind: "p",
           text: "LVM, the Logical Volume Manager, pools physical volumes (PVs) into a volume group (VG). It then carves logical volumes (LVs) out of the group. Here each PV is a whole EBS volume.",
-        },
-        {
-          kind: "p",
-          text: "A linear LV, in Red Hat’s words, lets you “merge multiple physical storage units into one virtual storage space.”",
         },
         { kind: "h3", id: "create-the-logical-volume", title: "Create the logical volume" },
         {
@@ -180,7 +173,7 @@ export const article: Article = {
           text: [
             "The device names below are examples, so check yours with ",
             { code: "lsblk" },
-            ". Red Hat warns that formatting a logical volume erases all data on it. So use new, empty volumes.",
+            ". Red Hat warns that formatting a logical volume erases all data on it, so use new, empty volumes.",
           ],
         },
         {
@@ -191,7 +184,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "add-a-volume-to-the-volume-group",
-          title: "Add an EBS volume to the volume group, then run lvextend",
+          title: "Add a volume with lvextend",
         },
         {
           kind: "p",
@@ -211,11 +204,12 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "In this ",
-            { code: "lvextend" },
-            " example, ",
             { code: "--extents +100%FREE" },
-            " adds all the remaining free space in the volume group to the LV. Here, that’s the whole new volume.",
+            " adds all the free space left in the volume group, here the whole new volume. ",
+            { code: "--resizefs" },
+            " grows the filesystem with the LV. The short form is ",
+            { code: "lvextend -l +100%FREE -r data_vg/data_lv" },
+            ".",
           ],
         },
         {
@@ -226,25 +220,22 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "To give a volume back, ",
             { code: "pvmove" },
-            " moves its extents onto the other PVs. Red Hat says data “can be rearranged on disks while the disks are in use.”",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "Next, ",
+            " moves a volume’s extents onto the other PVs. Red Hat says data “can be rearranged on disks while the disks are in use.” Then ",
             { code: "vgreduce" },
             " drops the empty PV from the VG, and ",
             { code: "pvremove" },
-            " takes the device out of LVM use. Then you detach and delete the volume in AWS. A deleted volume’s data is gone, so keep a snapshot until you’re sure.",
+            " takes it out of LVM use.",
           ],
         },
         {
           kind: "code",
           lang: "bash",
           code: "sudo pvmove /dev/nvme2n1\nsudo vgreduce data_vg /dev/nvme2n1\nsudo pvremove /dev/nvme2n1",
+        },
+        {
+          kind: "p",
+          text: "Then detach and delete the volume in AWS. A deleted volume’s data is gone, so keep a snapshot until you’re sure.",
         },
         {
           kind: "callout",
@@ -261,7 +252,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Red Hat’s procedure unmounts the LV, runs ",
+            "Red Hat’s shrink procedure unmounts the LV, runs ",
             { code: "e2fsck -f" },
             " and then ",
             { code: "lvreduce --resizefs" },
@@ -270,62 +261,53 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "XFS can’t shrink in any useful way. Red Hat says “XFS does not support reducing the size of a volume formatted with an XFS file system.”",
-        },
-        {
-          kind: "p",
-          text: "With XFS on LVM you can swap a volume for another, but the LV never gets smaller. Neither does your cloud cost.",
+          text: "XFS can’t shrink in any useful way. Red Hat says “XFS does not support reducing the size of a volume formatted with an XFS file system.” With XFS on LVM you can swap one volume for another, but the LV never gets smaller, and neither does its cost.",
         },
         {
           kind: "p",
           text: [
             { a: "Shrinking XFS", href: "/learn/shrink-xfs-filesystem" },
-            " and ",
+            ", ",
             { a: "shrinking ext4 with resize2fs", href: "/learn/resize2fs-shrink-ext4" },
-            " have their own pages. So does ",
+            " and ",
             { a: "removing a disk from LVM", href: "/learn/remove-disk-from-lvm" },
-            ".",
+            " each have their own page.",
           ],
         },
       ],
     },
     {
       id: "ebs-raid-0-iops-add-up-and",
-      title: "EBS RAID 0: IOPS add up, and the set stays fixed",
+      title: "RAID 0 on EBS",
       blocks: [
         {
           kind: "p",
-          text: "AWS’s own RAID 0 steps use mdadm, the Linux software RAID tool. RAID 0 spreads I/O across the volumes in a stripe. In AWS’s words, “If you add a volume, you get the straight addition of throughput and IOPS.”",
+          text: "AWS’s RAID 0 steps use mdadm, the Linux software RAID tool. RAID 0 spreads I/O across the volumes in a stripe. In AWS’s words, “If you add a volume, you get the straight addition of throughput and IOPS.”",
         },
         {
           kind: "p",
-          text: "A stripe performs only as well as its worst volume. So AWS says to use volumes with identical size and IOPS. It also warns that “the loss of a single volume in the set results in a complete data loss for the array.”",
+          text: "A stripe is only as fast as its slowest volume, so AWS says to use volumes with identical size and IOPS. It also warns that “the loss of a single volume in the set results in a complete data loss for the array.”",
         },
         {
           kind: "callout",
           label: "Worked example",
-          text: "Stripe four gp3\u00a0volumes, each with its included 3,000\u00a0IOPS and 125\u00a0MiB/s. The array gets 4 × 3,000 = 12,000\u00a0IOPS and 4 × 125 = 500\u00a0MiB/s before you provision any extra, if the instance can carry it.",
+          text: "Stripe four gp3 volumes, each with its included 3,000 IOPS and 125 MiB/s. The array gets 4 × 3,000 = 12,000 IOPS and 4 × 125 = 500 MiB/s before you provision any extra, if the instance can carry it.",
         },
         {
           kind: "p",
-          text: "AWS designs gp3 for an annual failure rate no higher than 0.2 percent. If failures are independent, the yearly chance of losing the array is at most 1 − 0.998⁴. That’s about 0.8 percent.",
+          text: "AWS designs gp3 for an annual failure rate of 0.1 to 0.2 percent. If failures are independent, the yearly chance of losing that array is at most 1 − 0.998⁴, about 0.8 percent.",
         },
-        { kind: "h3", id: "create-the-raid-0-array", title: "Create the RAID 0 array with mdadm" },
+        { kind: "h3", id: "create-the-raid-0-array", title: "Create the array with mdadm" },
         {
           kind: "p",
           text: [
             "These are AWS’s steps for Amazon Linux. Other distributions may keep ",
             { code: "mdadm.conf" },
-            " elsewhere.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
+            " elsewhere. ",
             { code: "mdadm --create" },
-            " writes its metadata to each volume, and ",
+            " writes its metadata to each volume and ",
             { code: "mkfs.ext4" },
-            " erases the array. So use empty volumes.",
+            " erases the array, so use empty volumes.",
           ],
         },
         {
@@ -353,23 +335,15 @@ export const article: Article = {
           kind: "p",
           text: "Keep the root volume out of the array. AWS advises against booting from one.",
         },
-        { kind: "h3", id: "why-a-raid-0-set-stays-fixed", title: "Why a RAID 0 set stays fixed" },
-        { kind: "p", text: "When you add a volume later, mdadm takes four steps:" },
-        {
-          kind: "ol",
-          items: [
-            "It converts the array to RAID 4.",
-            "It adds the new volume.",
-            "It runs a reshape.",
-            "It converts the array back to RAID 0.",
-          ],
-        },
-        { kind: "p", text: "Then you grow the filesystem." },
+        { kind: "h3", id: "why-a-raid-0-set-stays-fixed", title: "Why the set stays fixed" },
         {
           kind: "p",
-          text: "The mdadm manual warns that fewer devices also means a smaller array. Data in it “could get destroyed and this is not reversible.”",
+          text: "To add a volume later, mdadm converts the array to RAID 4, adds the volume, reshapes, and converts back to RAID 0. Then you grow the filesystem.",
         },
-        { kind: "p", text: "So taking a volume out follows a strict order:" },
+        {
+          kind: "p",
+          text: "Taking a volume out is riskier. With fewer devices, the mdadm manual warns, data “could get destroyed and this is not reversible.” So the order is strict:",
+        },
         {
           kind: "ol",
           items: [
@@ -380,13 +354,13 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Step 1 is an unmounted shrink for ext4, and XFS can’t do it. Treat a RAID 0 set as fixed. When it has to get smaller, copy the data to a new array.",
+          text: "Step 1 needs an unmount for ext4, and XFS can’t do it. So treat a RAID 0 set as fixed. To make it smaller, copy the data to a new array.",
         },
       ],
     },
     {
       id: "a-btrfs-pool-takes-ebs-volumes-in",
-      title: "A btrfs pool takes EBS volumes in and out while mounted",
+      title: "A btrfs pool on EBS",
       blocks: [
         {
           kind: "p",
@@ -399,9 +373,9 @@ export const article: Article = {
             { code: "mkfs.btrfs" },
             " stores data and metadata in profiles. On several devices, data defaults to ",
             { code: "single" },
-            ": one copy, with no striping. That default dates from btrfs-progs 5.8, and data used ",
+            ", one copy with no striping, since btrfs-progs 5.8. Before that, it was ",
             { code: "raid0" },
-            " before it.",
+            ".",
           ],
         },
         {
@@ -409,15 +383,9 @@ export const article: Article = {
           text: [
             "Metadata defaults to ",
             { code: "raid1" },
-            ", two copies. Name both profiles on the command line, so the result doesn’t depend on the btrfs-progs version.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "Check the device names with ",
+            ", two copies. Name both profiles on the command line, so the result doesn’t depend on the version. Check the device names with ",
             { code: "lsblk" },
-            " first. ",
+            " first: ",
             { code: "mkfs.btrfs" },
             " writes a new filesystem over every device you list.",
           ],
@@ -431,7 +399,7 @@ export const article: Article = {
           kind: "p",
           text: [
             { code: "btrfs device scan" },
-            " registers the devices with the kernel. You can then mount the pool by naming any one of them.",
+            " registers the devices with the kernel, so you can mount the pool by naming any one of them.",
           ],
         },
         {
@@ -442,7 +410,7 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Adding a volume “is instant and does not affect existing data,” in the btrfs documentation’s words. Then ",
+            "Adding a volume “is instant and does not affect existing data,” the btrfs documentation says. Then ",
             { code: "btrfs device usage" },
             " shows what each device holds.",
           ],
@@ -466,68 +434,61 @@ export const article: Article = {
           text: [
             "So the other volumes need room for that data, and the profiles must still hold. With ",
             { code: "raid1" },
-            " metadata, a pool needs at least two devices. Taking one out of a two-device pool fails with “unable to go below two devices on raid1.”",
+            " metadata, a pool needs at least two devices. Removing one from a two-device pool fails with “unable to go below two devices on raid1.”",
           ],
         },
         { kind: "code", lang: "bash", code: "sudo btrfs device remove /dev/nvme2n1 /data" },
         {
           kind: "p",
           text: [
-            "Once the command returns, the volume is ready to detach and delete in AWS. ",
+            "When the command returns, detach and delete the volume in AWS. ",
             { a: "Removing a device from a btrfs pool", href: "/learn/btrfs-device-remove" },
-            " walks through the checks. For the profiles, see ",
+            " walks through the checks, and ",
             { a: "btrfs on multiple disks", href: "/learn/btrfs-multiple-disks" },
-            ".",
+            " covers the profiles.",
           ],
         },
       ],
     },
     {
       id: "ebs-volume-pools-share-snapshot-and-cost",
-      title: "EBS volume pools share snapshot and cost rules, so choose by what will change",
+      title: "Snapshots and cost",
       blocks: [
         {
           kind: "p",
           text: [
             "EBS takes a ",
             { a: "snapshot", href: "/learn/glossary/disk-snapshot" },
-            " of each volume independently. AWS says restoring a RAID array from snapshots that are out of sync “would degrade the integrity of the array.”",
+            " of each volume on its own. AWS warns that restoring a RAID array from snapshots that are out of sync “would degrade the integrity of the array.”",
           ],
         },
         {
           kind: "p",
-          text: "AWS’s answer is EBS multi-volume snapshots. They’re crash-consistent across the volumes attached to an instance, and taken without stopping it. An LVM volume group or a btrfs pool needs the same care.",
-        },
-        {
-          kind: "p",
           text: [
+            "Use EBS multi-volume snapshots instead. They’re crash-consistent across the volumes attached to an instance, and you don’t have to stop it. An LVM volume group or a btrfs pool needs the same care. ",
             { a: "What those snapshots cost", href: "/learn/ebs-snapshot-cost" },
             " has its own page.",
           ],
         },
         {
           kind: "p",
-          text: "AWS charges for each volume, not for the pool. So a detached volume still costs money until you delete it.",
-        },
-        {
-          kind: "p",
           text: [
-            "Elastic Volumes can modify a volume up to four times in a rolling 24-hour period. One use is to ",
-            { a: "grow it while it stays mounted", href: "/learn/increase-ebs-volume-size" },
-            ". Taking a whole volume out is the only way to pay for fewer GB.",
+            "AWS charges for each volume, not for the pool, so a detached volume costs money until you delete it. Elastic Volumes can ",
+            { a: "grow a volume while it stays mounted", href: "/learn/increase-ebs-volume-size" },
+            ", up to four times in a rolling 24-hour period. Only removing a whole volume makes you pay for fewer GB.",
           ],
         },
-        { kind: "p", text: "Choose by what you expect to change:" },
+        { kind: "h3", id: "which-one-to-choose", title: "Which one to choose" },
         {
           kind: "ul",
           items: [
             [
-              { b: "Speed past one gp3\u00a0volume." },
-              " If one filesystem needs more than 80,000\u00a0IOPS or 2,000\u00a0MiB/s, first see if ",
+              { b: "Speed past one gp3 volume." },
+              " Above 80,000 IOPS or 2,000 MiB/s, first check ",
               { a: "one io2 Block Express volume", href: "/learn/io2-vs-gp3" },
-              " covers it. On a Nitro-based instance, one can be provisioned with up to 256,000\u00a0IOPS and reach 4,000\u00a0MiB/s. If it can’t, use AWS EBS striping: RAID 0, or an LVM striped volume made with ",
+              ". On a Nitro-based instance, it can be provisioned with up to 256,000 IOPS and reach 4,000 MiB/s. If one volume can’t cover it, stripe with RAID 0 or ",
               { code: "lvcreate --stripes" },
-              ". Then plan the volume set as fixed.",
+              ", and plan the set as fixed.",
             ],
             [
               { b: "Data that mostly grows." },
@@ -543,26 +504,26 @@ export const article: Article = {
     },
     {
       id: "how-amoeba-runs-a-btrfs-pool-on",
-      title: "How Amoeba runs a btrfs pool on EBS",
+      title: "How Amoeba runs a btrfs pool",
       blocks: [
         {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " optimizes block storage on Azure and AWS. On AWS it builds a btrfs pool of EBS volumes for you, then rightsizes it as your data changes.",
+            " optimizes block storage on Azure and AWS. On AWS it builds a btrfs pool of EBS volumes for you, then rightsizes it without any downtime as your data changes.",
           ],
         },
         {
           kind: "h3",
           id: "what-amoeba-does-with-your-volumes",
-          title: "What Amoeba does with your volumes",
+          title: "What Amoeba does",
         },
         {
           kind: "ul",
           items: [
             [
               { b: "The pool." },
-              " It moves an instance’s EBS data volumes onto one btrfs pool of gp3\u00a0volumes, sized to your data with room to grow. Each data mount keeps its old path. It never touches the root volume.",
+              " It moves an instance’s EBS data volumes onto one btrfs pool of gp3 volumes, sized to your data with room to grow. Each data mount keeps its old path. It never touches the root volume.",
             ],
             [
               { b: "The move." },
@@ -580,7 +541,7 @@ export const article: Article = {
             ],
             [
               { b: "The old volumes." },
-              " Once the switch is checked, Amoeba snapshots and deletes each old volume. It keeps each snapshot a few days, then deletes it too.",
+              " Once the switch is checked, Amoeba snapshots and deletes each old volume. It keeps each snapshot for 7 days, then deletes it too.",
             ],
           ],
         },
@@ -605,7 +566,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves an EC2 instance’s EBS data volumes onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one volume at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves an EC2 instance’s EBS data volumes onto one pool sized to your data, then rightsizes it autonomously, without any downtime, one volume at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
@@ -657,30 +618,30 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "How to shrink an EBS volume when AWS only lets it grow",
+      title: "How to shrink an EBS volume",
       where: "Learn",
       href: "/learn/shrink-ebs-volume",
     },
     {
-      title: "btrfs on multiple disks: how a btrfs pool works",
+      title: "btrfs on multiple disks: single or RAID 1",
       where: "Learn",
       href: "/learn/btrfs-multiple-disks",
     },
     {
-      title: "btrfs vs LVM: which one can shrink on a cloud VM?",
+      title: "btrfs vs ext4 vs XFS: which can shrink?",
       where: "Learn",
       href: "/learn/btrfs-vs-lvm",
     },
     {
-      title: "How to remove a disk from LVM without losing data",
+      title: "Remove a disk from LVM in Linux",
       where: "Learn",
       href: "/learn/remove-disk-from-lvm",
     },
     {
-      title: "btrfs device remove: take a disk out of a btrfs pool",
+      title: "btrfs device remove",
       where: "Learn",
       href: "/learn/btrfs-device-remove",
     },
   ],
-  relatedTitle: "More on btrfs pools, LVM and shrinking EBS",
+  relatedTitle: "More on btrfs, LVM and EBS",
 };

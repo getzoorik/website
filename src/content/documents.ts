@@ -76,7 +76,7 @@ export interface PublishedDocument {
  * `lastmod` only: the page does not print it. Whoever changes the hub's content
  * moves this to that day in the same PR; never the build's date.
  */
-export const docsHubLastUpdated = "2 November 2026";
+export const docsHubLastUpdated = "3 November 2026";
 
 export const documents: Readonly<Record<DocumentId, PublishedDocument>> = {
   "coral-guide": {
@@ -264,10 +264,10 @@ const shelves: Readonly<Record<ProductId, readonly ShelfEntry[]>> = {
       pdf: { label: "PDF", document: "amoeba-guide" },
       released: amoebaDocs,
     },
-    /* The FAQ has no PDF yet, so the hub says "PDF to come" under it. */
+    /* The FAQ has no PDF yet, so the hub says "PDF to come" under it. Its line is the FAQ's own deck. */
     {
       title: "FAQ",
-      line: "Safety, downtime, expanding, agent and costs",
+      line: "Data safety, downtime, requirements and costs",
       href: routes.amoebaFaq,
       pdf: { label: "FAQ PDF" },
       released: amoebaDocs,
@@ -317,13 +317,13 @@ export const docsHub = {
   meta: {
     title: "Product docs",
     description:
-      "Product guides, FAQs and one-pagers for Coral (Kubernetes optimization on AKS and EKS) and Amoeba (Azure managed disks and Amazon EBS), online or as PDFs.",
+      "Guides, FAQs, one-pagers, install steps and troubleshooting for Coral (Kubernetes cost optimization) and Amoeba (block storage optimization).",
   },
   title: "Product docs",
   deck: "Read online or download as PDF.",
   /** After the groups, one line to the articles. */
   more: {
-    label: "Cloud cost optimization guides for Kubernetes and block storage",
+    label: "Kubernetes, block storage and cloud cost guides",
     href: routes.learn,
   },
   /** The third group, after Amoeba: what is open source, and how to contribute. */

@@ -9,12 +9,12 @@ import { AmoebaGuide } from "@/features/amoeba-guide/amoeba-guide";
 import { documentMetadata } from "@/features/documents/document-page";
 
 /**
- * `/amoeba-guide`: the Amoeba product guide (a draft). Prerendered at build
- * like every page here.
+ * `/amoeba-guide`: the Amoeba product guide. Prerendered at build like every
+ * page here.
  *
- * 🔴 HELD WHILE `amoebaDocs` IS OFF: the route calls
+ * Published while `amoebaDocs` is on. With the flag off, the route calls
  * `notFound()`, so the build prerenders the site's 404 here, nothing links to
- * it and the sitemap leaves it out. Turning the flag on publishes it.
+ * it and the sitemap leaves it out.
  */
 export const metadata: Metadata = documentMetadata(routes.amoebaGuide, amoebaGuide.meta);
 

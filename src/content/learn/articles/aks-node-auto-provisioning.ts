@@ -5,41 +5,41 @@ import { figure as figure3 } from "@/features/learn/figures/aks-node-auto-provis
 
 export const article: Article = {
   slug: "aks-node-auto-provisioning",
-  title: "Karpenter on Azure: AKS node auto provisioning",
-  meta: "Karpenter on AKS is node auto provisioning (NAP), run by AKS: its October 2026 status, network needs, and how to enable or disable it with az or Terraform.",
-  h1: "Karpenter on Azure: AKS node auto provisioning (NAP) and how to enable it",
-  deck: "Microsoft runs it in the AKS control plane, always on the latest Karpenter version, so there’s nothing to install.",
-  card: "What AKS node auto provisioning is, its October 2026 status, and how to enable or disable it.",
+  title: "AKS node auto provisioning (NAP): how to enable it",
+  meta: "AKS node auto provisioning (NAP) is Karpenter, run by AKS. What it needs, and how to enable or disable it with the Azure CLI or Terraform.",
+  h1: "AKS node auto provisioning (NAP)",
+  deck: "Karpenter, run by AKS in its control plane on the latest version, with nothing to install.",
+  card: "What AKS node auto provisioning is, what it needs, and how to enable or disable it.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes autoscaling",
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "saurav",
   cover: "/learn-covers/zoorik-learn-aks-node-auto-provisioning-1200x630.webp",
   coverAlt: "AKS node auto provisioning: pending pods go to the VM size that fits them",
   short: [
-    "AKS node auto provisioning (NAP) is Microsoft’s managed Karpenter: it picks VM sizes for pods that can’t be scheduled, and consolidates empty or underused nodes. On AKS Standard, enable it with ",
+    "NAP picks VM sizes for pods that can’t be scheduled, and consolidates empty or underused nodes. It has been generally available since July 2025. On AKS Standard, turn it on with ",
     { code: "az aks update --node-provisioning-mode Auto" },
-    " on a cluster using Azure CNI Overlay or Node Subnet, not kubenet.",
+    " on Azure CNI Overlay or Node Subnet. It doesn’t support kubenet.",
   ],
   sections: [
     {
       id: "aks-node-auto-provisioning",
-      title: "AKS node auto provisioning is Karpenter that AKS runs for you",
+      title: "How NAP works",
       blocks: [
         {
           kind: "p",
-          text: "Picture three pods on an AKS cluster with NAP on, each requesting 2\u00a0CPU. No node has room for them, so they stay pending. NAP reads their requests, 6\u00a0CPU in all.",
+          text: "Say three pods on an AKS cluster each request 2\u00a0CPU, and no node has room, so they stay pending. NAP reads their requests, 6\u00a0CPU in all.",
         },
         {
           kind: "p",
-          text: "It “uses pending pod resource requirements to decide the optimal VM configuration,” within the rules of the NodePool those pods match. Then it launches the VM.",
+          text: "It picks a VM size that fits them, within the rules of the NodePool they match, and launches it.",
         },
         {
           kind: "p",
           text: [
-            "When nodes empty out or run underused, the NodePool’s consolidation policy decides whether NAP removes them. ",
+            "When a node empties or runs underused, the NodePool’s consolidation policy decides whether NAP removes it. ",
             { a: "Karpenter consolidation", href: "/learn/karpenter-consolidation" },
             " covers those policies.",
           ],
@@ -48,7 +48,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "what-nap-runs-and-the-objects-it",
-          title: "What NAP runs, and the objects it uses",
+          title: "The objects NAP uses",
         },
         {
           kind: "p",
@@ -63,16 +63,16 @@ export const article: Article = {
           kind: "ul",
           items: [
             [
-              { b: "NodePool" },
-              " resources are yours to write. They say which VM sizes, capacity types and totals NAP may use.",
+              { b: "NodePools" },
+              " are yours to write. They set the VM sizes, capacity types and totals NAP may use.",
             ],
             [
-              { b: "AKSNodeClass" },
-              " resources, also yours, hold Azure settings such as the node image family and the subnet.",
+              { b: "AKSNodeClasses" },
+              " are yours too. They hold Azure settings such as the node image family and the subnet.",
             ],
             [
               { b: "NodeClaims" },
-              " come from NAP, which writes one for each node it launches. ",
+              " are NAP’s: one for each node it launches. ",
               { code: "kubectl get nodeclaims" },
               " lists them.",
             ],
@@ -81,12 +81,12 @@ export const article: Article = {
         {
           kind: "h3",
           id: "nap-sizes-nodes-from-requests-not-use",
-          title: "NAP sizes nodes from requests, not use",
+          title: "Sized from requests, not use",
         },
         {
           kind: "p",
           text: [
-            "Microsoft’s pre-migration checklist for NAP asks you to size workloads for consolidation. It also asks for proper ",
+            "Microsoft’s pre-migration checklist for NAP asks you to size workloads for consolidation. That means proper ",
             { a: "requests", href: "/learn/glossary/kubernetes-resource-requests" },
             ", limits, replicas and PodDisruptionBudgets.",
           ],
@@ -98,7 +98,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "NAP still looks for room for all 6. Once they run, 6 − 1.5 = 4.5\u00a0CPU of that room is reserved and idle. That’s 4.5 ÷ 6, or three-quarters of what they request.",
+          text: "NAP still finds room for all 6. Once they run, 6 − 1.5 = 4.5\u00a0CPU of that room sits reserved and idle: three-quarters of what they request.",
         },
         { kind: "svg", figure: figure2 },
         {
@@ -115,28 +115,31 @@ export const article: Article = {
     },
     {
       id: "aks-nap-status-in-october-2026-generally",
-      title: "AKS NAP status in October 2026: generally available, with limits",
+      title: "Status and limits",
       blocks: [
         {
           kind: "p",
-          text: "Guides written before NAP became generally available in July 2025 can be out of date.",
+          text: "Guides from before July 2025 describe the preview and can be out of date.",
         },
         {
           kind: "table",
           columns: [
             { label: "Question", width: "21%" },
-            { label: "Answer, October 2026", width: "79%" },
+            { label: "Answer, November 2026", width: "79%" },
           ],
           rows: [
             ["Status", "Generally available since July 2025"],
-            ["AKS Automatic", "Preconfigured by default"],
+            [
+              "AKS Automatic",
+              "Preconfigured. Microsoft’s recommended default for most production workloads",
+            ],
             [
               "AKS Standard",
               ["Off until you set the node provisioning mode to ", { code: "Auto" }],
             ],
             ["Azure CLI", "2.76.0 or later"],
             [
-              "Supported networking",
+              "Networking",
               "Azure CNI Overlay or Azure CNI Node Subnet. Microsoft recommends Overlay with the Azure CNI Powered by Cilium data plane",
             ],
             [
@@ -145,13 +148,13 @@ export const article: Article = {
             ],
             [
               "Other limits",
-              "No Windows node pools, no IPv6 clusters, no service principals (use a managed identity), and you can’t stop a NAP cluster",
+              "No Windows node pools, no IPv6 clusters (dual-stack is in preview), no service principals (use a managed identity), and you can’t stop a NAP cluster",
             ],
             ["Custom virtual network", "Needs a Standard Load Balancer"],
             [
-              "Cluster autoscaler on the same cluster",
+              "With the Cluster Autoscaler",
               [
-                "Only with the ",
+                "Only under the ",
                 { code: "AllowClusterAutoscalerAndNAP" },
                 " feature flag, as a migration step",
               ],
@@ -161,15 +164,15 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Watch out",
-          text: "You can’t change the egress outbound type of a cluster created with NAP, so pick it at creation.",
+          text: "You can’t change a NAP cluster’s egress outbound type after you create it, so choose it at creation.",
         },
       ],
     },
     {
       id: "how-to-enable-nap-on-aks-depends",
-      title: "How to enable NAP on AKS depends on where your cluster starts",
+      title: "Enable NAP",
       blocks: [
-        { kind: "p", text: "Check three things before you run anything:" },
+        { kind: "p", text: "Check three things first:" },
         {
           kind: "ul",
           items: [
@@ -178,21 +181,15 @@ export const article: Article = {
             "its network plugin",
           ],
         },
-        { kind: "p", text: "The plugin and whatever scales your nodes today then set the path:" },
         {
-          kind: "ul",
-          items: [
-            "A kubenet cluster needs a network move first.",
-            "A cluster autoscaler hands over to NAP.",
-            "A self-hosted Karpenter install makes way for it.",
-          ],
+          kind: "p",
+          text: "A kubenet cluster moves its network first. A cluster on the Cluster Autoscaler or self-hosted Karpenter hands over to NAP. A cluster on Azure CNI Overlay or Node Subnet, with no other node autoscaler, takes one update.",
         },
-        { kind: "p", text: "Otherwise, enabling NAP takes one update." },
         { kind: "svg", figure: figure3 },
         { kind: "h3", id: "new-and-existing-clusters", title: "New and existing clusters" },
         {
           kind: "p",
-          text: "For a new cluster, Microsoft’s example turns NAP on at creation, with the networking it recommends:",
+          text: "For a new cluster, Microsoft’s example turns NAP on with the networking it recommends:",
         },
         {
           kind: "code",
@@ -201,7 +198,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "For an existing cluster on a supported Azure CNI mode with no cluster autoscaler, it’s one update:",
+          text: "For an existing cluster, it’s one update:",
         },
         {
           kind: "code",
@@ -211,35 +208,31 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "To confirm that NAP is active, Microsoft’s check is ",
+            "To check that NAP is on, run ",
             { code: "kubectl get crd | grep karpenter" },
-            ". Once NAP is on, it lists the NodePool and AKSNodeClass CRDs. In an ARM template the same switch is ",
-            { code: "properties.nodeProvisioningProfile.mode" },
-            ", which defaults to ",
-            { code: "Manual" },
-            ".",
+            ". It lists the NodePool and AKSNodeClass CRDs.",
           ],
         },
         {
           kind: "h3",
           id: "clusters-on-kubenet",
-          title: "Clusters on kubenet: NAP needs Azure CNI Overlay first",
+          title: "From kubenet",
         },
         {
           kind: "p",
-          text: "NAP won’t run on kubenet, so the cluster has to move to Azure CNI Overlay first. Microsoft calls that move “a one-way, irreversible operation.” It needs:",
+          text: "NAP doesn’t run on kubenet, so move the cluster to Azure CNI Overlay first. Microsoft calls that move “a one-way, irreversible operation.” It needs:",
         },
         {
           kind: "ul",
           items: [
             "Kubernetes 1.27 or later",
             "no network policy enabled",
-            "a user-assigned managed identity, so that AKS can detach kubenet’s route table",
+            "a user-assigned managed identity, so AKS can detach kubenet’s route table",
           ],
         },
         {
           kind: "p",
-          text: "The move reimages every node pool at the same time, so plan it like a node image upgrade. Then run:",
+          text: "The move reimages every node pool at once, so plan it like a node image upgrade:",
         },
         {
           kind: "code",
@@ -249,22 +242,20 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "If you also want the Cilium data plane, add it as a second update (",
+            "For the Cilium data plane, run a second update (",
             { code: "--network-dataplane cilium" },
-            ") before you enable NAP. Microsoft notes that a cluster with NAP on can’t be updated to Cilium without turning NAP off first.",
+            ") before you enable NAP. A cluster with NAP on can’t move to Cilium until NAP is off.",
           ],
         },
         {
           kind: "h3",
           id: "clusters-running-the-cluster-autoscaler",
-          title: "Clusters running the cluster autoscaler: migrate to NAP",
+          title: "From the Cluster Autoscaler",
         },
-        { kind: "p", text: "Microsoft gives two paths. The simple one takes three steps:" },
+        { kind: "p", text: "Microsoft gives two paths. The simpler one has three steps:" },
         {
           kind: "ol",
-          items: [
-            "Switch the autoscaler off. Nodes aren’t removed when it goes off, so capacity holds while you switch.",
-          ],
+          items: ["Turn the autoscaler off. Its nodes stay, so capacity holds while you switch."],
         },
         {
           kind: "code",
@@ -277,7 +268,7 @@ export const article: Article = {
           items: [
             ["Turn NAP on with the ", { code: "az aks update" }, " command above."],
             [
-              "Keep the system pool, and empty your user node pools gradually, in waves. Scaling a pool to zero evicts its pods, and NAP launches nodes for the pods that move. Watch replica counts and ",
+              "Keep the system pool, and scale your user node pools to zero in waves. NAP launches nodes for the evicted pods. Watch replica counts and ",
               { a: "PodDisruptionBudgets", href: "/learn/pod-disruption-budget-best-practices" },
               " as you go.",
             ],
@@ -291,35 +282,25 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "The second path runs both side by side under the ",
+            "The other path runs both side by side under the ",
             { code: "AllowClusterAutoscalerAndNAP" },
-            " feature flag. Taints keep the two sets of nodes apart. Microsoft warns that both react to pending pods and “can lead to double provisioning of nodes,” so treat it only as a migration step.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            {
-              a: "Karpenter vs Cluster Autoscaler",
-              href: "/learn/karpenter-vs-cluster-autoscaler",
-            },
-            " explains how the two remove nodes differently.",
+            " feature flag, with taints keeping their nodes apart. Microsoft warns that both react to pending pods and “can lead to double provisioning of nodes,” so use it only to migrate.",
           ],
         },
         {
           kind: "h3",
           id: "clusters-running-self-hosted-karpenter",
-          title: "Clusters running self-hosted Karpenter on AKS",
+          title: "From self-hosted Karpenter",
         },
         {
           kind: "p",
-          text: "If you run Karpenter on AKS yourself, from the AKS provider’s Helm chart, Microsoft documents how to switch to NAP:",
+          text: "If you installed Karpenter from the AKS provider’s Helm chart, Microsoft’s steps to switch to NAP are:",
         },
         {
           kind: "ol",
           items: [
-            "Run the latest Karpenter first.",
-            "Keep the Karpenter CRDs. Deleting them deletes the NodeClaims, which can disrupt workloads.",
+            "Upgrade to the latest Karpenter.",
+            "Remove Helm’s labels and annotations from the Karpenter CRDs, so the uninstall keeps them. Deleting the CRDs deletes the NodeClaims, which can disrupt workloads.",
             "Uninstall the chart.",
             [
               "Enable NAP with ",
@@ -332,7 +313,7 @@ export const article: Article = {
     },
     {
       id: "nap-nodepools-are-separate-from-aks-node",
-      title: "NAP NodePools are separate from AKS node pools",
+      title: "NodePools vs AKS node pools",
       blocks: [
         {
           kind: "p",
@@ -347,16 +328,17 @@ export const article: Article = {
           items: [
             [
               { b: "An AKS node pool" },
-              " is a group of identical VMs that you manage through the AKS API and ",
+              " is a group of identical VMs you manage with the AKS API and ",
               { code: "az aks nodepool" },
-              " commands. Your system node pool belongs to this kind, and AKS still requires one for system components such as CoreDNS.",
+              ". AKS still needs one as the system pool, for components such as CoreDNS.",
             ],
             [
               { b: "A NAP NodePool" },
-              " is a Karpenter custom resource you apply with kubectl. Microsoft is plain about which of the two NAP reads: it “doesn’t use Azure CLI commands to manage node behavior.”",
+              " is a Karpenter resource you apply with kubectl. NAP takes its rules from these resources: in Microsoft’s words, it “doesn’t use Azure CLI commands to manage node behavior.”",
             ],
           ],
         },
+        { kind: "h3", id: "default-nodepools", title: "Default NodePools" },
         {
           kind: "p",
           text: [
@@ -375,7 +357,10 @@ export const article: Article = {
             "never expires them",
           ],
         },
-        { kind: "p", text: "Microsoft documents it like this:" },
+        {
+          kind: "p",
+          text: "Its core settings, with Karpenter’s default consolidation policy written out:",
+        },
         {
           kind: "code",
           lang: "yaml",
@@ -386,7 +371,7 @@ export const article: Article = {
           text: [
             "The second, ",
             { code: "system-surge" },
-            ", gives critical add-ons their own on-demand capacity on amd64\u00a0nodes. It’s for add-ons that tolerate the ",
+            ", gives critical add-ons on-demand Linux capacity on amd64. It serves pods that tolerate the ",
             { code: "CriticalAddonsOnly=true:NoSchedule" },
             " taint.",
           ],
@@ -396,14 +381,21 @@ export const article: Article = {
           text: [
             "With ",
             { code: "None" },
-            ", NAP creates no NodePools, so you write your own: NAP needs at least one. Switching an existing cluster from ",
+            ", NAP creates no NodePools. Write your own, since NAP needs at least one.",
+          ],
+        },
+        {
+          kind: "callout",
+          label: "Watch out",
+          text: [
+            "Microsoft’s docs disagree on switching an existing cluster from ",
             { code: "Auto" },
             " to ",
             { code: "None" },
-            " leaves the defaults in place until you delete them.",
+            ". The NodePool guide says the defaults stay until you delete them. The API reference says they’re deleted and their nodes drained. Either way, have room ready first for the pods on those nodes, critical add-ons included.",
           ],
         },
-        { kind: "p", text: "A few rules shape your own NodePools:" },
+        { kind: "h3", id: "your-own-nodepools", title: "Your own NodePools" },
         {
           kind: "ul",
           items: [
@@ -414,7 +406,7 @@ export const article: Article = {
             ],
             [
               { code: "spec.limits" },
-              " caps the memory and CPU a NodePool can hold. Without limits, NAP schedules within your Azure quota.",
+              " caps the total CPU and memory a NodePool can hold. Without limits, NAP stays within your Azure quota.",
             ],
             [
               "If a NodePool allows both ",
@@ -424,7 +416,7 @@ export const article: Article = {
             [
               "A NodePool with a ",
               { code: "replicas" },
-              " field is a static pool. It keeps that many nodes whatever the demand, takes only a ",
+              " field is static. It keeps that many nodes whatever the demand, takes only a ",
               { code: "nodes" },
               " limit, and isn’t consolidated.",
             ],
@@ -443,16 +435,16 @@ export const article: Article = {
     },
     {
       id: "node-auto-provisioning-on-aks-with-terraform",
-      title: "Node auto provisioning on AKS with Terraform is one cluster property",
+      title: "NAP in Terraform",
       blocks: [
         {
           kind: "p",
           text: [
-            "Microsoft’s Terraform reference for AKS covers the AzAPI provider. There, the cluster resource takes the same properties as an ARM template. On ",
+            "In an ARM template, and in Terraform through the AzAPI provider, NAP is one property of ",
             { code: "Microsoft.ContainerService/managedClusters" },
-            ", NAP is the ",
+            ": ",
             { code: "nodeProvisioningProfile" },
-            " property.",
+            ".",
           ],
         },
         {
@@ -481,7 +473,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "This example uses the API version from Microsoft’s ARM template for NAP:",
+          text: "This example uses the API version of Microsoft’s ARM template for NAP:",
         },
         {
           kind: "code",
@@ -499,22 +491,22 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "The moves to Azure CNI Overlay and to the Cilium data plane each reimage every node pool. AKS won’t take both in one operation, so read the plan before each apply. NAP goes last because a cluster with NAP on can’t move to Cilium.",
+          text: "The moves to Azure CNI Overlay and to the Cilium data plane each reimage every node pool, and AKS won’t take both in one operation. Read the plan before each apply. NAP goes last because a cluster with NAP on can’t move to Cilium.",
         },
         {
           kind: "p",
-          text: "NodePools and AKSNodeClasses aren’t properties of that resource: they’re Kubernetes objects, applied to the cluster once it exists.",
+          text: "NodePools and AKSNodeClasses aren’t properties of the cluster. Apply them as Kubernetes objects once it exists.",
         },
       ],
     },
     {
       id: "how-to-disable-node-auto-provisioning-on",
-      title: "How to disable node auto provisioning on AKS: empty NAP’s nodes first",
+      title: "Disable NAP",
       blocks: [
         {
           kind: "p",
           text: [
-            "AKS lets you turn NAP off only when no NAP nodes are left and every NodePool has ",
+            "AKS turns NAP off only when no NAP nodes are left and every NodePool has ",
             { code: "spec.limits.cpu" },
             " set to ",
             { code: "0" },
@@ -534,7 +526,7 @@ export const article: Article = {
               { code: "karpenter.azure.com/disable" },
               " and effect ",
               { code: "NoSchedule" },
-              " to every NodePool’s template. NAP starts moving pods to non-NAP nodes where they fit, within PodDisruptionBudgets and disruption limits.",
+              " to every NodePool’s template. NAP moves pods to non-NAP nodes where they fit, within PodDisruptionBudgets and disruption limits.",
             ],
             "Scale up your fixed-size AKS node pools, or add new ones, so those pods have somewhere to go.",
             [
@@ -556,38 +548,38 @@ export const article: Article = {
           text: [
             "Microsoft also documents a shorter route: skip steps 2 and 3, and delete each NAP node with ",
             { code: "kubectl delete node" },
-            ". Microsoft recommends against it, since that route “might leave some pods pending and doesn’t honor Pod Disruption Budgets (PDBs).”",
+            ". It advises against it, since that “might leave some pods pending and doesn’t honor Pod Disruption Budgets (PDBs).”",
           ],
         },
         {
           kind: "p",
           text: [
-            "If you take it anyway, check the ",
+            "If you take it anyway, delete only nodes with the ",
             { code: "karpenter.sh/nodepool" },
-            " label first, so you delete only NAP nodes.",
+            " label.",
           ],
         },
       ],
     },
     {
       id: "how-coral-works-with-nap",
-      title: "How Coral works with NAP",
+      title: "Where Coral fits",
       blocks: [
         {
           kind: "p",
           text: [
-            "NAP picks machines for the requests it’s given, but doesn’t change those requests. ",
+            "NAP picks machines for the requests it’s given, but doesn’t change them. ",
             { a: "Coral", href: "/coral" },
-            " optimizes Kubernetes on AKS and EKS clusters running 1.30 or later.",
+            " rebalances each container’s CPU and memory requests to what it uses, on AKS and EKS with Kubernetes 1.30 or later.",
           ],
         },
         {
           kind: "p",
-          text: "Coral rebalances each container’s CPU and memory requests to what it uses. With smaller requests, NAP can run fewer or smaller nodes. Coral never adds nodes for demand, so scale-up stays with NAP.",
+          text: "With smaller requests, NAP can run fewer or smaller nodes. Coral never adds nodes for demand, so scale-up stays with NAP.",
         },
         {
           kind: "p",
-          text: "On our own AKS development cluster, Coral removed one of two 4-CPU workers. It then rebalanced the remaining worker onto a cheaper machine of the same size.",
+          text: "On our own AKS development cluster, Coral removed one of two 4-CPU workers. It then rebalanced the other onto a cheaper machine of the same size.",
         },
         {
           kind: "p",
@@ -596,18 +588,13 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            { a: "How we reduced AKS cluster costs by 58%", href: "/coral-value-lab" },
-            " has the details. For a side-by-side view, see ",
+            { a: "The case study", href: "/coral-value-lab" },
+            " has the details. ",
             {
-              a: "what Coral and NAP each do",
+              a: "Coral with NAP",
               href: "/coral-works-with-aks-node-auto-provisioning",
             },
-            ". For where NAP sits beside the HPA, the VPA and the Cluster Autoscaler, see ",
-            {
-              a: "Kubernetes autoscaling",
-              href: "/learn/kubernetes-autoscaling",
-            },
-            ".",
+            " sets out what each does.",
           ],
         },
       ],
@@ -666,20 +653,25 @@ export const article: Article = {
         "“Microsoft.ContainerService/managedClusters 2025-05-01 - Bicep, ARM template & Terraform AzAPI reference”",
       url: "https://learn.microsoft.com/en-us/azure/templates/microsoft.containerservice/2025-05-01/managedclusters?pivots=deployment-language-terraform",
     },
+    {
+      publisher: "Karpenter",
+      title: "“Disruption”",
+      url: "https://karpenter.sh/docs/concepts/disruption/",
+    },
   ],
   related: [
     {
-      title: "What is Karpenter? How it picks and removes nodes",
+      title: "What is Karpenter in Kubernetes?",
       where: "Learn",
       href: "/learn/what-is-karpenter",
     },
     {
-      title: "Karpenter consolidation: policies, budgets and limits",
+      title: "Karpenter consolidation",
       where: "Learn",
       href: "/learn/karpenter-consolidation",
     },
     {
-      title: "Karpenter vs Cluster Autoscaler: how each removes nodes",
+      title: "Karpenter vs Cluster Autoscaler",
       where: "Learn",
       href: "/learn/karpenter-vs-cluster-autoscaler",
     },
@@ -689,7 +681,7 @@ export const article: Article = {
       href: "/learn/how-to-choose-aks-node-sizes",
     },
     {
-      title: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
+      title: "Kubernetes autoscaling",
       where: "Learn",
       href: "/learn/kubernetes-autoscaling",
     },

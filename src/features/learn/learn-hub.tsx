@@ -23,15 +23,15 @@ import { offSiteProps } from "@/lib/links";
  * `/learn`, as the approved redesign draws it:
  *
  *   hero            the page's name and its line
- *   band            Start here (the three subjects' guides) on the white card, beside Find the right fix (three causes
+ *   band            Start here (the three subjects' guides) on the white card, beside Common cost problems (three causes
  *                   of a high bill, each to its guide) on the navy one, as #assess's pair; each a list of rows
  *   All articles    every other published article as a cover tile, in the order the site publishes by, with the
  *                   subject chips and Show all (`LearnArticleList`, the page's only script)
  *   Watch and read  the two product films and the Medium post, each a tile that opens it in a new tab
- *   More from       Value Lab, Cloud cost optimization tools, the two calculators, Community, News and the glossary
+ *   more            Calculators, glossary and more: Value Lab, Cloud cost optimization tools, the two calculators, Community, News and the glossary
  *                   (/learn/glossary)
  *
- * No closing row: the redesign ends on More from Zoorik. The pair rises as it arrives; nothing else moves but hover.
+ * No closing row: the redesign ends on Calculators, glossary and more. The pair rises as it arrives; nothing else moves but hover.
  */
 
 /** A row of the band: its words, the article's h1 as its hover title, and the arrow. */

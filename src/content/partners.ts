@@ -3,7 +3,8 @@ import type { ProductId } from "@/content/products";
 import { savingsQualifier } from "@/content/savings";
 
 /**
- * `/partners`: every string the page prints, verbatim from the approved mock.
+ * `/partners`: every string the page prints, from the approved mock, tightened in the zero-noise content pass
+ * (3 Nov 2026).
  *
  * The program is coming soon: what a partner brings its customers (the two products' estimated ranges) and the ask,
  * side by side on the band; who it is for; what works today; and where customers buy. Product names are written
@@ -22,7 +23,7 @@ import { savingsQualifier } from "@/content/savings";
  * The day /partners's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /partners's content moves this to that day in the same PR; never the build's date.
  */
-export const partnersLastUpdated = "1 November 2026";
+export const partnersLastUpdated = "3 November 2026";
 
 /** A tile's glyph: the Zoorik mark, a line glyph, or the document. */
 export type PartnerTileIcon = "zoorik" | "shield" | "eye" | "package" | "doc";
@@ -75,7 +76,7 @@ export const partnersPage = {
       {
         icon: "package",
         title: "Resellers and marketplace partners",
-        line: "Zoorik is on AWS Marketplace and Microsoft Marketplace.",
+        line: "Offer Coral and Amoeba to the teams you already sell to.",
       },
     ] satisfies readonly { icon: PartnerTileIcon; title: string; line: string }[],
   },
@@ -98,7 +99,7 @@ export const partnersPage = {
       {
         icon: "doc",
         title: "Terraform modules",
-        line: "AKS and EKS modules on the Terraform Registry.",
+        line: "Create Coral’s cloud permissions on AKS and EKS.",
         href: routes.docsInstallTerraform,
       },
     ] satisfies readonly { icon: PartnerTileIcon; title: string; line: string; href: string }[],

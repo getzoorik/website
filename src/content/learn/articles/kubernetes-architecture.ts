@@ -4,43 +4,43 @@ import { figure as figure1 } from "@/features/learn/figures/kubernetes-architect
 export const article: Article = {
   slug: "kubernetes-architecture",
   title: "Kubernetes architecture: control plane and nodes",
-  meta: "K8s architecture explained: the control plane parts, what runs on each node, how a pod gets placed, how the parts talk, and what AKS and EKS run for you.",
-  h1: "Kubernetes architecture: control plane, nodes and pods",
+  meta: "Kubernetes (K8s) architecture explained: the control plane components, what runs on each node, how a pod gets scheduled, and what AKS and EKS run for you.",
+  h1: "Kubernetes architecture",
   deck: "One pod’s path from kubectl apply to a running container shows what each part does.",
-  card: "What the control plane and each node run, how a pod gets placed, and what AKS and EKS operate for you.",
+  card: "The control plane, the node components, how a pod gets placed, and what AKS and EKS run for you.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes cost basics",
   published: "2026-11-02",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "zoorik",
   cover: "/learn-covers/zoorik-learn-kubernetes-architecture-1200x630.webp",
   coverAlt:
     "Kubernetes architecture: the control plane above two worker nodes running pods, with every arrow meeting the API server",
   short:
-    "Kubernetes architecture is a control plane plus worker nodes. The control plane stores the cluster’s state and decides which node runs each pod. On every node, the kubelet has a container runtime start the pods placed there. On Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS), the cloud provider operates the control plane for you.",
+    "Kubernetes architecture has two parts: a control plane and worker nodes. The control plane (API server, etcd, scheduler and controller managers) stores the cluster’s state and decides where each pod runs. Each worker node runs the kubelet and a container runtime, which start the pods placed there, and usually kube-proxy for Service traffic. On Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS), the cloud provider operates the control plane.",
   sections: [
     {
       id: "the-two-halves-control-plane-and-worker",
-      title: "The two halves: control plane and worker nodes",
+      title: "Control plane and worker nodes",
       blocks: [
         {
           kind: "p",
-          text: "The control plane makes cluster-wide decisions, such as scheduling. It also responds to events, for example by starting a new pod when a Deployment has fewer replicas than it asks for.",
+          text: "The control plane makes cluster-wide decisions, such as scheduling. It also responds to events: for example, it starts a new pod when a Deployment has fewer replicas than it asks for.",
         },
         {
           kind: "p",
-          text: "Every cluster needs at least one worker node to run pods. In production, the control plane usually runs across several machines, and the cluster runs several nodes. That gives it fault tolerance and high availability.",
+          text: "Worker nodes run the pods, and every cluster needs at least one. In production, the control plane usually runs across several machines and the cluster runs several nodes, for fault tolerance and high availability.",
         },
         {
           kind: "p",
-          text: "A pod is a group of one or more containers that share network and storage. Worker nodes host the pods, and the scheduler picks the node for each one.",
+          text: "A pod is one or more containers that share network and storage. The scheduler places each pod on one node.",
         },
       ],
     },
     {
       id: "kubernetes-control-plane-components",
-      title: "Kubernetes control plane components",
+      title: "Control plane components",
       blocks: [
         {
           kind: "ul",
@@ -51,11 +51,13 @@ export const article: Article = {
             ],
             [
               { code: "etcd" },
-              ": the consistent, highly available key-value store that holds all cluster data. The Kubernetes docs advise a backup plan for that data.",
+              ": the consistent, highly available key-value store that holds all cluster data. The Kubernetes docs advise a backup plan for it.",
             ],
             [
               { code: "kube-scheduler" },
-              ": watches for new pods that have no node and picks a node for each. It weighs resource requests, hardware and policy constraints, and affinity rules, among other factors.",
+              ": watches for new pods with no node and picks a node for each. It weighs resource requests, hardware and policy constraints, ",
+              { a: "affinity rules", href: "/learn/pod-affinity-vs-node-affinity" },
+              " and other factors.",
             ],
             [
               { code: "kube-controller-manager" },
@@ -70,21 +72,21 @@ export const article: Article = {
         {
           kind: "h3",
           id: "how-controllers-keep-the-cluster-at-its",
-          title: "How controllers keep the cluster at its desired state",
+          title: "How controllers work",
         },
         {
           kind: "p",
-          text: "A controller is a control loop, like a thermostat. It watches the state of the cluster, then makes or requests changes that move the current state closer to the desired state.",
+          text: "A controller is a control loop, like a thermostat. It watches the cluster’s current state, then makes or requests changes that move it toward the desired state.",
         },
         {
           kind: "p",
-          text: "Built-in controllers act through the API server. The Job controller runs no pods or containers itself. It asks the API server to create or remove pods, then marks the Job finished once the work is done.",
+          text: "Built-in controllers act through the API server. The Job controller runs no pods itself. It asks the API server to create or remove pods, then marks the Job finished when the work is done.",
         },
       ],
     },
     {
       id: "what-runs-on-each-node",
-      title: "What runs on each node",
+      title: "Node components",
       blocks: [
         {
           kind: "ul",
@@ -93,7 +95,7 @@ export const article: Article = {
               { a: { code: "kubelet" }, href: "/learn/glossary/kubelet" },
               ": the agent on each node. It makes sure the containers in the node’s pods are running and healthy.",
             ],
-            "Container runtime: runs the containers. Kubernetes supports containerd, CRI-O and any other runtime that implements the Container Runtime Interface (CRI). AKS uses containerd on Linux node pools running Kubernetes 1.19 and later.",
+            "Container runtime: runs the containers. Kubernetes supports containerd, CRI-O and any other runtime that implements the Container Runtime Interface (CRI). AKS uses containerd on Linux node pools on Kubernetes 1.19 and later.",
             [
               { code: "kube-proxy" },
               " (optional): a network proxy that maintains each node’s network rules for Services. A network plugin that forwards Service traffic itself can replace it. AKS clusters on Azure CNI powered by Cilium use Cilium instead.",
@@ -131,7 +133,7 @@ export const article: Article = {
     },
     {
       id: "how-a-pod-gets-from-kubectl-apply",
-      title: "How a pod gets from kubectl apply to a node",
+      title: "How a pod gets placed",
       blocks: [
         {
           kind: "steps",
@@ -150,11 +152,11 @@ export const article: Article = {
         {
           kind: "h3",
           id: "how-the-scheduler-picks-a-node",
-          title: "How the scheduler picks a node",
+          title: "Filtering and scoring",
         },
         {
           kind: "p",
-          text: "Filtering comes first. It keeps the feasible nodes, such as those with enough free resources for the pod’s requests. Scoring then ranks them, and the pod binds to the top-scoring node, with a tie picked at random.",
+          text: "The scheduler picks a node in two steps. Filtering keeps the feasible nodes, such as those with enough free resources for the pod’s requests. Scoring ranks them, and the pod binds to the top-scoring node, with a tie broken at random.",
         },
         {
           kind: "p",
@@ -176,7 +178,7 @@ export const article: Article = {
     },
     {
       id: "how-the-control-plane-and-nodes-talk",
-      title: "How the control plane and nodes talk",
+      title: "How the parts communicate",
       blocks: [
         {
           kind: "p",
@@ -184,7 +186,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "In the other direction, the API server calls each node’s kubelet. It does this to fetch pod logs, to attach to running pods and for port-forwarding.",
+          text: "In the other direction, the API server calls each node’s kubelet to fetch pod logs, attach to running pods and forward ports.",
         },
         {
           kind: "p",
@@ -200,16 +202,16 @@ export const article: Article = {
     },
     {
       id: "kubernetes-architecture-on-aks-and-eks",
-      title: "Kubernetes architecture on AKS and EKS",
+      title: "On AKS and EKS",
       blocks: [
         {
           kind: "p",
           text: [
             "Both follow the same architecture. Azure operates the ",
             { a: "AKS", href: "/learn/glossary/aks" },
-            " control plane in Automatic and Standard modes alike, and each ",
+            " control plane in both Automatic and Standard modes. AWS runs a separate control plane for each ",
             { a: "EKS", href: "/learn/glossary/eks" },
-            " cluster gets a control plane of its own.",
+            " cluster.",
           ],
         },
         {
@@ -240,7 +242,9 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "On AKS, system node pools host critical system pods such as CoreDNS and ",
+            "On AKS, system ",
+            { a: "node pools", href: "/learn/glossary/node-pool" },
+            " host critical system pods such as CoreDNS and ",
             { code: "konnectivity-agent" },
             ". User node pools host your apps.",
           ],
@@ -249,7 +253,7 @@ export const article: Article = {
     },
     {
       id: "how-requests-and-nodes-shape-your-cloud",
-      title: "How requests and nodes shape your cloud cost",
+      title: "Requests, nodes and cost",
       blocks: [
         {
           kind: "p",
@@ -257,12 +261,12 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Node autoscalers add nodes with room for pending pods’ requests, and don’t directly look at the pods’ real use. So a pod that requests far more than it uses still gets a node with room for its full request.",
+          text: "Node autoscalers add nodes with room for pending pods’ requests. They don’t directly look at the pods’ real use. So a pod that requests far more than it uses still gets a node with room for its full request.",
         },
         {
           kind: "p",
           text: [
-            "Requests set from measured use fit the same pods on fewer nodes, which is what ",
+            "Requests set from measured use fit the same pods on fewer nodes. That is what ",
             { a: "pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
             " is for.",
           ],
@@ -272,7 +276,7 @@ export const article: Article = {
   ],
   help: {
     product: "coral",
-    text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and removes the nodes you don’t need. We estimate it takes 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and removes the nodes you don’t need. We estimate 40–50% off AKS and EKS cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Kubernetes optimization with Coral", href: "/coral" },
       { label: "Estimate your saving", href: "/assessment?p=coral" },
@@ -322,22 +326,22 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "What is Kubernetes? Kubernetes explained simply, from clusters to containers",
+      title: "What is Kubernetes?",
       where: "Learn",
       href: "/learn/kubernetes-explained-simply",
     },
     {
-      title: "Kubernetes allocatable vs capacity: what pods can use",
+      title: "Kubernetes allocatable vs capacity",
       where: "Learn",
       href: "/learn/kubernetes-allocatable-vs-capacity",
     },
     {
-      title: "Kubernetes autoscaling: HPA and Cluster Autoscaler",
+      title: "Kubernetes autoscaling",
       where: "Learn",
       href: "/learn/kubernetes-autoscaling",
     },
     {
-      title: "Kubernetes bin packing: fewer nodes for the same pods",
+      title: "Kubernetes bin packing",
       where: "Learn",
       href: "/learn/kubernetes-bin-packing",
     },

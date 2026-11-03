@@ -74,7 +74,7 @@ describe("/docs", () => {
     expect(link).toHaveClass("alink");
     expect(link).toHaveAttribute("href", "/learn");
     expect(link).not.toHaveAttribute("target");
-    expect(text(link)).toBe("Cloud cost optimization guides for Kubernetes and block storage");
+    expect(text(link)).toBe("Kubernetes, block storage and cloud cost guides");
     expect(link.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
   });
 
@@ -178,7 +178,7 @@ describe("/docs", () => {
         ),
       ).toEqual([
         "Onboard, what changes, staying in control",
-        "Safety, downtime, expanding, agent and costs",
+        "Data safety, downtime, requirements and costs",
         "Cost, safety, visibility and how it works",
         "When a VM is missing or its disks aren’t rightsized",
       ]);

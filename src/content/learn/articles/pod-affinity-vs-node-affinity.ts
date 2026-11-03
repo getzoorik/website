@@ -6,43 +6,43 @@ import { figure as figure3 } from "@/features/learn/figures/pod-affinity-vs-node
 export const article: Article = {
   slug: "pod-affinity-vs-node-affinity",
   title: "Kubernetes node affinity vs pod affinity",
-  meta: "nodeAffinity reads node labels; pod affinity and pod anti-affinity read running pods. Hard vs soft rules, examples, and how a required rule keeps a node.",
-  h1: "Kubernetes node affinity vs pod affinity: what each rule decides",
-  deck: "Each affinity rule is a hard filter or a soft score; hard ones can keep a node in the cluster.",
+  meta: "Kubernetes node affinity picks nodes by label. Pod affinity and anti-affinity read the pods already running. Hard vs soft rules, YAML and scale-down.",
+  h1: "Kubernetes node affinity vs pod affinity",
+  deck: "Each rule is a hard filter or a soft score, and hard rules can keep a node running.",
   card: "Node affinity reads node labels, pod affinity reads other pods. Hard and soft rules, and the nodes they hold.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Node lifecycle and scheduling",
   versus: ["Pod affinity", "Node affinity"],
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "harsh",
   cover: "/learn-covers/zoorik-learn-pod-affinity-vs-node-affinity-1200x630.webp",
   coverAlt:
     "Pod affinity vs node affinity: pod affinity reads running pods, node affinity reads node labels",
   short:
-    "Node affinity picks nodes by their own labels. Pod affinity and pod anti-affinity read the pods already running in a topology domain, and place a pod near them or away from them.",
+    "Node affinity picks nodes by their own labels, such as a zone or a node pool. Pod affinity and pod anti-affinity read the pods already running in a topology domain, and place a pod near them or away from them.",
   sections: [
     {
       id: "the-difference-between-pod-affinity-and-node",
-      title: "The difference between pod affinity and node affinity is what the rule reads",
+      title: "What each rule reads",
       blocks: [
         {
           kind: "p",
-          text: "Take a web Deployment with 3\u00a0replicas that must stay in one Azure Kubernetes Service (AKS) node pool. No two replicas may share a node.",
+          text: "Take a web Deployment with 3 replicas that must stay in one Azure Kubernetes Service (AKS) node pool, with no two replicas on one node.",
         },
         {
           kind: "p",
-          text: "A rule to stay in the pool reads the node’s own label, so it’s node affinity. A rule to keep replicas apart reads the pods already on each node, so it’s pod anti-affinity. Made required, that rule needs 3\u00a0nodes, whatever the replicas request.",
+          text: "Staying in the pool is node affinity: the rule reads the node’s own label. Keeping replicas apart is pod anti-affinity: the rule reads the pods already on each node. Made required, that second rule needs 3 nodes, whatever the replicas request.",
         },
         {
           kind: "p",
           text: [
             "Node affinity in Kubernetes sits in ",
             { code: ".spec.affinity.nodeAffinity" },
-            " and reads the node’s own labels. Those can be a zone (",
+            " and reads node labels: a zone (",
             { code: "topology.kubernetes.io/zone" },
-            "), a node pool label your cloud adds, or one you add yourself.",
+            "), a node pool label your cloud adds, or your own.",
           ],
         },
         {
@@ -58,24 +58,23 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "The domain is set by ",
             { code: "topologyKey" },
-            ", which names a node label: with ",
+            " sets the domain by naming a node label. With ",
             { code: "kubernetes.io/hostname" },
-            " each node is its own domain. With ",
+            ", each node is a domain. With ",
             { code: "topology.kubernetes.io/zone" },
-            ", each zone is one domain.",
+            ", each zone is.",
           ],
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "h3",
           id: "required-rules-filter-nodes-preferred-rules-score",
-          title: "Required rules filter nodes, preferred rules score them",
+          title: "Required vs preferred",
         },
         {
           kind: "p",
-          text: "Scheduling a pod takes two passes. The scheduler filters out every node where the pod can’t run, then scores the rest and picks the highest.",
+          text: "The scheduler places a pod in two passes. It filters out every node where the pod can’t run, then scores the rest and picks the highest.",
         },
         {
           kind: "ul",
@@ -84,13 +83,13 @@ export const article: Article = {
               { b: "Required." },
               " A ",
               { code: "requiredDuringSchedulingIgnoredDuringExecution" },
-              " rule is a hard filter. A node that breaks it is never a candidate.",
+              " rule is a filter. A node that breaks it is never a candidate.",
             ],
             [
               { b: "Preferred." },
               " A ",
               { code: "preferredDuringSchedulingIgnoredDuringExecution" },
-              " rule carries a weight from 1 to 100, which is added to the score of every node that meets it. For anti-affinity, the weight is subtracted from every node whose domain already runs a matching pod. When no node meets a preferred rule, the pod still lands on one that passes the filters.",
+              " rule carries a weight from 1 to 100. Each node that meets it gets the weight added to its score. For anti-affinity, the weight is subtracted from each node whose domain runs a matching pod. If no node meets the rule, the pod still lands on one that passes the filter.",
             ],
           ],
         },
@@ -98,7 +97,7 @@ export const article: Article = {
           kind: "callout",
           label: "Watch out",
           text: [
-            "No affinity rule moves a running pod. IgnoredDuringExecution in each name means a rule is checked only when a pod is placed: on a rollout, a scale-up or a ",
+            "No affinity rule moves a running pod. IgnoredDuringExecution means a rule is checked only when a pod is placed: on a rollout, a scale-up or a ",
             { a: "node drain", href: "/learn/kubernetes-drain-node-without-downtime" },
             ". The Karpenter docs note that Kubernetes never implemented any other variant.",
           ],
@@ -107,24 +106,17 @@ export const article: Article = {
     },
     {
       id: "node-affinity-vs-node-selector-exact-labels",
-      title: "Node affinity vs node selector: exact labels, or operators and preferences",
+      title: "Node affinity",
       blocks: [
         {
           kind: "p",
           text: [
-            "Use nodeSelector when one exact label match says everything. Use node affinity when you need an OR, a ",
-            { code: "NotIn" },
-            ", a numeric comparison or a preference.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
+            "Use ",
             { code: "nodeSelector" },
-            " is the simplest constraint: a map of labels. Kubernetes schedules the pod only onto nodes that carry every one of them.",
+            " when one exact label match says everything. It’s a map of labels, and Kubernetes schedules the pod only onto nodes that carry every one of them.",
           ],
         },
-        { kind: "p", text: "Node affinity adds three things:" },
+        { kind: "p", text: "Use node affinity when you need more:" },
         {
           kind: "ul",
           items: [
@@ -147,7 +139,7 @@ export const article: Article = {
               { code: "nodeSelectorTerms" },
               ", with AND inside one term",
             ],
-            "preferred rules, which only shift the score",
+            "preferred rules, which only change the score",
           ],
         },
         {
@@ -157,7 +149,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "kubernetes-node-affinity-example-one-pool-one",
-          title: "Kubernetes node affinity example: one pool, one preferred zone",
+          title: "Node affinity example",
         },
         { kind: "p", text: "List your nodes’ labels first:" },
         { kind: "code", lang: "bash", code: "kubectl get nodes --show-labels" },
@@ -185,18 +177,20 @@ export const article: Article = {
             { code: "kubernetes.azure.com/agentpool" },
             " is an AKS reserved label that holds the node pool’s name. On Amazon Elastic Kubernetes Service (EKS), managed node groups carry labels prefixed ",
             { code: "eks.amazonaws.com" },
-            ". Among them is ",
-            { code: "eks.amazonaws.com/capacityType" },
-            ", with the value ",
-            { code: "ON_DEMAND" },
-            " or ",
-            { code: "SPOT" },
             ".",
           ],
         },
         {
           kind: "p",
-          text: "The EKS docs suggest that label for keeping stateful or fault-intolerant apps on On-Demand nodes. Fault-tolerant ones can go on Spot.",
+          text: [
+            "One of them is ",
+            { code: "eks.amazonaws.com/capacityType" },
+            ", set to ",
+            { code: "ON_DEMAND" },
+            " or ",
+            { code: "SPOT" },
+            ". AWS suggests it for keeping stateful or fault-intolerant apps on On-Demand nodes, and fault-tolerant ones on Spot.",
+          ],
         },
         { kind: "h3", id: "node-anti-affinity-and-taints", title: "Node anti-affinity and taints" },
         {
@@ -205,29 +199,27 @@ export const article: Article = {
             { code: "NotIn" },
             " and ",
             { code: "DoesNotExist" },
-            " give you node anti-affinity, which keeps a pod off nodes with a given label. ",
-            { a: "Taints", href: "/learn/cordon-vs-drain" },
-            " work from the node’s side.",
+            " give you node anti-affinity: they keep a pod off nodes with a given label. ",
+            { a: "Taints", href: "/learn/kubernetes-taints-and-tolerations" },
+            " work from the node’s side: a tainted node repels pods that don’t tolerate the taint.",
           ],
         },
         {
           kind: "p",
-          text: "The docs call node affinity a property of pods that attracts them to nodes. Taints are “the opposite”: a tainted node repels pods that don’t tolerate the taint.",
-        },
-        {
-          kind: "p",
-          text: "A toleration lets a pod onto a tainted node but doesn’t send it there. So dedicating a pool to one workload takes both halves. The taint keeps other pods out, and node affinity keeps that workload in.",
+          text: "A toleration lets a pod onto a tainted node but doesn’t send it there. So dedicating a pool to one workload takes both: the taint keeps other pods out, and node affinity keeps that workload in.",
         },
       ],
     },
     {
       id: "pod-affinity-and-anti-affinity-place-a",
-      title: "Pod affinity and pod anti-affinity place a pod next to, or away from, other pods",
+      title: "Pod affinity and anti-affinity",
       blocks: [
         {
           kind: "p",
           text: [
-            "Kubernetes pod affinity pairs a label selector over pods with a topologyKey. In the docs’ own example, each web replica requires a node (",
+            "Pod affinity pairs a label selector over pods with a ",
+            { code: "topologyKey" },
+            ". In the Kubernetes docs’ example, each web replica requires a node (",
             { code: "topologyKey: kubernetes.io/hostname" },
             ") that already runs a cache pod labelled ",
             { code: "app=store" },
@@ -236,11 +228,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Pod anti-affinity flips the test, so the pod avoids domains that already run matching pods. Its common job is spreading a Deployment’s replicas so that one node failure can’t take them all.",
+          text: "Pod anti-affinity flips the test: the pod avoids domains that already run matching pods. Its common job is spreading a Deployment’s replicas, so one node failure can’t take them all.",
         },
         {
           kind: "p",
-          text: "A preferred anti-affinity rule on hostname asks the scheduler to spread replicas when it can. It lets two share a node when it must:",
+          text: "This preferred rule spreads replicas across nodes when it can, and lets two share a node when it must:",
         },
         {
           kind: "code",
@@ -286,26 +278,24 @@ export const article: Article = {
             { code: "Lt" },
             " are for node affinity only, and ",
             { code: "topologyKey" },
-            " can’t be empty.",
+            " can’t be empty. Pod anti-affinity also needs every node to carry the ",
+            { code: "topologyKey" },
+            " label.",
           ],
         },
         {
           kind: "p",
-          text: "Inter-pod rules cost scheduling time. The docs say they “require substantial amounts of processing” and don’t recommend them in clusters larger than several hundred nodes.",
-        },
-        {
-          kind: "p",
-          text: "The Cluster Autoscaler FAQ adds that its latency targets hold only if no pod uses pod affinity or anti-affinity. Anti-affinity also needs every node to carry the topologyKey label.",
+          text: "Inter-pod rules cost scheduling time. The Kubernetes docs say they “require substantial amounts of processing” and don’t recommend them in clusters larger than several hundred nodes. The Cluster Autoscaler FAQ adds that its latency targets hold only if no pod uses pod affinity or anti-affinity.",
         },
         {
           kind: "h3",
           id: "pod-anti-affinity-vs-node-affinity",
-          title: "podAntiAffinity vs node affinity",
+          title: "Pod anti-affinity vs node affinity",
         },
         {
           kind: "p",
           text: [
-            "Node affinity asks what the node is, and pod anti-affinity asks what already runs there. “Not on Spot nodes” is node affinity with ",
+            "Node affinity asks what the node is. Pod anti-affinity asks what already runs there. “Not on Spot nodes” is node affinity with ",
             { code: "NotIn" },
             ". “Not beside another replica” is pod anti-affinity.",
           ],
@@ -318,7 +308,7 @@ export const article: Article = {
     },
     {
       id: "pod-affinity-vs-node-affinity",
-      title: "Pod affinity vs node affinity: node labels per node, or pods per domain",
+      title: "Comparison table",
       blocks: [
         {
           kind: "table",
@@ -399,11 +389,11 @@ export const article: Article = {
     },
     {
       id: "a-required-rule-can-keep-a-node",
-      title: "A required rule can keep a node, and its cost, in the cluster",
+      title: "Rules that block scale-down",
       blocks: [
         {
           kind: "p",
-          text: "Draining a node evicts its pods. Their controllers create replacements, and the scheduler places each one under the same rules as before. So a replacement with nowhere to go stays Pending.",
+          text: "Draining a node evicts its pods. Their controllers create replacements, and the scheduler places each one under the same rules as before. A replacement with nowhere to go stays Pending.",
         },
         {
           kind: "p",
@@ -412,44 +402,43 @@ export const article: Article = {
         {
           kind: "h3",
           id: "required-anti-affinity-holds-one-node-per",
-          title: "Required anti-affinity holds one node per replica",
+          title: "One node per replica",
         },
         {
           kind: "p",
           text: [
             "Required anti-affinity on ",
             { code: "kubernetes.io/hostname" },
-            " is the plain case: a Deployment with 3\u00a0replicas runs one per node.",
+            " is the plain case: a Deployment with 3 replicas runs one per node. Suppose they can run only in a 3-node pool. Every node in it could be close to idle, and still none could go.",
           ],
         },
         {
           kind: "p",
-          text: "Suppose they can run only in a 3-node pool. Every node in it could be close to idle, and still none could go.",
-        },
-        {
-          kind: "p",
-          text: "The FAQ names this pattern. Pods that fit one per node on some subset of nodes “will always block CA from scaling down their nodes”.",
+          text: "The FAQ names this pattern: pods that fit one per node on some subset of nodes “will always block CA from scaling down their nodes”.",
         },
         {
           kind: "callout",
           label: "Worked example",
-          text: "Try removing node-3 from that pool: its replica would need a node that runs no other replica. But node-1 and node-2 each run one, so 0 of the 2\u00a0nodes left pass the filter.",
+          text: "Try removing node-3 from that pool: its replica would need a node that runs no other replica. But node-1 and node-2 each run one, so 0 of the 2 nodes left pass the filter.",
         },
         {
           kind: "p",
-          text: "The replacement would stay Pending, so the Cluster Autoscaler keeps node-3, and the same check keeps node-1 and node-2. The floor is the replica count, so 4\u00a0replicas would need 4\u00a0nodes.",
+          text: "The replacement would stay Pending, so the Cluster Autoscaler keeps node-3, and the same check keeps node-1 and node-2. The floor is the replica count: 4 replicas would need 4 nodes.",
         },
         { kind: "svg", figure: figure3 },
         {
           kind: "p",
-          text: "The docs’ web-and-cache example locks the same way. Both tiers carry required hostname anti-affinity, and each web pod also requires a cache pod on its node. So each node of the docs’ three-node cluster ends up with one pair that can’t move.",
+          text: "The Kubernetes docs’ web-and-cache example locks the same way. Both tiers allow only one of their pods per node, and each web pod also needs a cache pod on its node. On the example’s three nodes, no pod of either tier can move.",
         },
         {
           kind: "h3",
           id: "other-required-rules-narrow-where-a-pod",
-          title: "Other required rules narrow where a pod can go",
+          title: "Other required rules",
         },
-        { kind: "p", text: "These don’t pin a pod to one node, but each one narrows its choices:" },
+        {
+          kind: "p",
+          text: "These don’t pin a pod to one node, but each one narrows where it can go:",
+        },
         {
           kind: "ul",
           items: [
@@ -465,32 +454,28 @@ export const article: Article = {
             ],
             [
               { b: "Volumes." },
-              " A volume can carry node affinity too. Topology-aware provisioners set it on the PersistentVolumes they create. That ties the pods using that volume to nodes in its zone.",
+              " Topology-aware provisioners set node affinity on the PersistentVolumes they create. That ties the pods using a volume to nodes in its zone.",
             ],
           ],
         },
         {
           kind: "h3",
           id: "preferred-rules-depend-on-the-autoscaler",
-          title: "Preferred rules depend on the autoscaler",
+          title: "Preferred rules and autoscalers",
         },
         {
           kind: "p",
-          text: "The Cluster Autoscaler respects nodeSelector and required node affinity when it picks a node group to grow. That works if the groups are labelled to match. Preferred rules play no part in that choice.",
+          text: "The Cluster Autoscaler respects nodeSelector and required node affinity when it picks a node group to grow, if the groups are labelled to match. Preferred rules play no part in that choice.",
         },
         {
           kind: "p",
-          text: "When Karpenter builds a pod’s requirements, it starts by treating preferred affinities as required. It relaxes them one at a time, only when they can’t be met.",
-        },
-        {
-          kind: "p",
-          text: "Karpenter also uses them to judge whether a pod can shift to another node. Its docs warn that preferred affinities “can result in more nodes being created than expected”.",
+          text: "Karpenter starts by treating preferred affinities as required, and relaxes them one at a time only when they can’t be met. It also uses them to judge whether a pod can shift to another node. Its docs warn that preferred affinities “can result in more nodes being created than expected”.",
         },
       ],
     },
     {
       id: "choosing-the-rule-preferred-by-default-required",
-      title: "Choosing the rule: preferred by default, required only where the app needs it",
+      title: "Which rule to use",
       blocks: [
         {
           kind: "ul",
@@ -511,8 +496,8 @@ export const article: Article = {
           kind: "p",
           text: [
             "Within the room these rules leave, requests decide how many nodes the pods fill. ",
-            { a: "How bin packing works", href: "/learn/kubernetes-bin-packing" },
-            " covers that half. The ",
+            { a: "Kubernetes bin packing", href: "/learn/kubernetes-bin-packing" },
+            " covers that half, and the ",
             { a: "Kubernetes cost optimization guide", href: "/kubernetes-cost-optimization" },
             " takes requests first, then nodes.",
           ],
@@ -531,7 +516,7 @@ export const article: Article = {
     },
     {
       id: "how-coral-checks-affinity-before-it-drains",
-      title: "How Coral checks affinity before it drains a node",
+      title: "How Coral handles affinity",
       blocks: [
         {
           kind: "p",
@@ -546,11 +531,11 @@ export const article: Article = {
           items: [
             [
               { b: "The check." },
-              " Before it drains a spare node, Coral simulates the scheduler on the live cluster, with affinity, taints, spread, ports and zones. If one pod has nowhere to go, the node isn’t drained.",
+              " Before it drains a node, Coral simulates the scheduler on the live cluster. Every pod must fit elsewhere, with its affinity, taints, spread, ports and zones. If one can’t, the node stays.",
             ],
             [
               { b: "The limits." },
-              " It respects PodDisruptionBudgets and do-not-disrupt. Where only a pool’s minimum keeps a node it has emptied, Coral can reduce that minimum, with permission, and puts it back later. Every pool keeps at least one node.",
+              " It respects PodDisruptionBudgets and do-not-disrupt. Where only a pool’s minimum keeps an emptied node, Coral can reduce that minimum, with permission, and puts it back later. Every pool keeps at least one node.",
             ],
             [
               { b: "The drain." },
@@ -560,7 +545,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Rebalancing requests that sit above real use leaves more room on the nodes that stay, so more nodes can go. A required one-per-node rule still keeps its nodes, because that floor comes from the rule, not from requests.",
+          text: "Rebalancing requests to real use leaves more room on the nodes that stay, so more nodes can go. A required one-per-node rule still keeps its nodes: that floor comes from the rule, not from requests.",
         },
         {
           kind: "p",
@@ -628,25 +613,24 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "Topology spread constraints: maxSkew, zones and scale-down",
+      title: "Kubernetes topologySpreadConstraints",
       where: "Learn",
       href: "/learn/topology-spread-constraints",
     },
     {
-      title: "Cluster Autoscaler not scaling down: what keeps nodes running",
+      title: "Kubernetes taints and tolerations",
+      where: "Learn",
+      href: "/learn/kubernetes-taints-and-tolerations",
+    },
+    {
+      title: "Cluster Autoscaler not scaling down",
       where: "Learn",
       href: "/learn/cluster-autoscaler-not-scaling-down",
     },
     {
-      title: "Kubernetes bin packing: fewer nodes for the same pods",
-      where: "Learn",
-      href: "/learn/kubernetes-bin-packing",
-    },
-    {
-      title: "How do you make sure node consolidation doesn’t cause scheduling failures later?",
+      title: "How does Coral avoid scheduling failures?",
       where: "Coral FAQ",
       href: "/coral-faq#how-do-you-make-sure-node",
     },
   ],
-  relatedTitle: "More on pod placement and node scale-down",
 };

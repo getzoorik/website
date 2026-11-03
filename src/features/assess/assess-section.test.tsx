@@ -23,7 +23,7 @@ describe("the closing row's copy", () => {
       "Talk to the builders",
     ]);
     expect(text(row.querySelector(".as-card p"))).toBe(
-      "One line in your cloud console. One PDF report with your estimated saving at list price.",
+      "One command in your terminal. One PDF report with your estimated saving at list price.",
     );
     expect(text(row.querySelector(".as-card .btn-ink")).trim()).toBe("Estimate your saving");
     expect(text(row.querySelector(".cta-fine"))).toBe(`Or write to ${contactEmail}`);

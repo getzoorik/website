@@ -4,14 +4,14 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/cost-alloca
 export const term: GlossaryTerm = {
   slug: "cost-allocation-tags",
   term: "Cost allocation tags",
-  title: "AWS cost allocation tags, Azure tags and EKS tags",
-  meta: "Cost allocation tags, or cost tags, split cloud cost by team, app or cost center. See how AWS cost tags reach Cost Explorer, and how Azure and EKS use them.",
-  h1: "AWS cost allocation tags, Azure tags and EKS tags",
+  title: "What are cost allocation tags?",
+  meta: "AWS cost allocation tags split cloud cost by team, app or environment once you activate them. How tags reach cost reports on AWS, EKS and Azure.",
+  h1: "What are cost allocation tags?",
   card: "Cost allocation tags are labels on cloud resources that let cost reports split your cloud cost by team, app or environment.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
@@ -29,34 +29,42 @@ export const term: GlossaryTerm = {
   sections: [
     {
       id: "cost-allocation-tags-on-aws-azure-and",
-      title: "Cost allocation tags on AWS, Azure and EKS",
+      title: "On AWS, Azure and EKS",
       blocks: [
         {
           kind: "h3",
           id: "user-defined-and-aws-generated-cost-allocation",
-          title: "User-defined and AWS-generated cost allocation tags",
+          title: "AWS",
         },
         {
           kind: "p",
-          text: "AWS cost allocation tags are user-defined tags you create, or AWS-generated tags such as aws:createdBy. Each one shows in Cost Explorer only after you activate it in the Billing and Cost Management console. In AWS Organizations, only the management account can activate tags.",
+          text: [
+            "AWS cost allocation tags are user-defined tags you create, or AWS-generated tags such as ",
+            { code: "aws:createdBy" },
+            ". Each one shows in Cost Explorer only after you activate it in the Billing and Cost Management console. Tags can take up to 24\u00a0hours to appear in that console.",
+          ],
         },
         {
           kind: "p",
-          text: "Costs from before activation carry no tag. The management account can backfill tags for up to 12\u00a0months, but only where the tag was on the resource then.",
+          text: "In AWS Organizations, only the management account can activate tags. Costs from before activation carry no tag. The management account can backfill tags for up to 12\u00a0months, but only where the tag was on the resource then.",
         },
-        { kind: "h3", id: "azure-cost-allocation-tags", title: "Azure cost allocation tags" },
+        { kind: "h3", id: "azure-cost-allocation-tags", title: "Azure" },
         {
           kind: "p",
-          text: "For Azure cost allocation tags, Microsoft Cost Management reads the tags on each usage record. Resource group and subscription tags reach them only with tag inheritance on.",
+          text: "Microsoft Cost Management reads the tags on each usage record. A tag reaches usage data only while it is on the resource. Resources don’t inherit resource group or subscription tags.",
         },
         {
           kind: "p",
-          text: "Tag inheritance copies those tags into cost data only, not onto your resources. Resources never inherit resource group or subscription tags on their own.",
+          text: "Tag inheritance, a Cost Management setting, copies subscription and resource group tags into usage records, not onto your resources. It works on Enterprise Agreement and Microsoft Customer Agreement accounts, and on Microsoft Partner Agreement accounts with Azure plan subscriptions. It applies to the current month’s usage.",
         },
-        { kind: "h3", id: "eks-cost-allocation-tags", title: "EKS cost allocation tags" },
+        { kind: "h3", id: "eks-cost-allocation-tags", title: "EKS" },
         {
           kind: "p",
-          text: "On Amazon Elastic Kubernetes Service (EKS), AWS adds aws:eks:cluster-name to each EC2 instance (virtual machine) in a cluster. Once active, this EKS cost allocation tag splits instance cost by cluster, not control plane cost.",
+          text: [
+            "On Amazon Elastic Kubernetes Service (EKS), AWS adds ",
+            { code: "aws:eks:cluster-name" },
+            " to each EC2 instance in a cluster. Once activated, it splits instance cost by cluster, but not control plane cost.",
+          ],
         },
         { kind: "svg", figure: figure1 },
         {
@@ -71,19 +79,19 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why cost allocation tags matter for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
             [
-              "Cost allocation tags show who owns your node, virtual machine (VM) and disk cost. Tags alone don’t ",
+              "Tags show who owns your node, virtual machine (VM) and disk cost. They don’t ",
               { a: "reduce cloud cost", href: "/cloud-cost-optimization" },
-              ".",
+              " on their own.",
             ],
             [
               { a: "Coral", href: "/coral" },
-              " rebalances CPU and memory requests on AKS and EKS to match real use. It removes the nodes you don’t need.",
+              " rebalances CPU and memory requests on AKS and EKS to match real use, and removes the nodes you don’t need.",
             ],
             [
               { a: "Amoeba", href: "/amoeba" },
@@ -96,29 +104,29 @@ export const term: GlossaryTerm = {
   ],
   related: [
     {
-      title: "Kubernetes cost allocation",
-      line: "Splits a shared cluster by pod.",
-      href: "/learn/glossary/kubernetes-cost-allocation",
-    },
-    {
       title: "Cloud tagging strategy",
       line: "Which tags to require.",
       href: "/learn/glossary/cloud-tagging-strategy",
     },
     {
+      title: "Kubernetes cost allocation",
+      line: "Splits a shared cluster’s cost by pod.",
+      href: "/learn/glossary/kubernetes-cost-allocation",
+    },
+    {
       title: "Showback",
-      line: "Reports a team’s share with no charge.",
+      line: "Reports each team’s share, with no charge.",
       href: "/learn/glossary/showback",
     },
     {
       title: "Cloud chargeback",
-      line: "The team pays its share.",
+      line: "Each team pays its share.",
       href: "/learn/glossary/cloud-chargeback",
     },
   ],
-  relatedTitle: "Cloud cost terms related to cost allocation tags",
+  relatedTitle: "Related terms",
   next: {
-    title: "Cloud cost optimization: how to reduce cloud costs",
+    title: "Cloud cost optimization",
     href: "/cloud-cost-optimization",
   },
   sources: [
@@ -126,6 +134,16 @@ export const term: GlossaryTerm = {
       publisher: "AWS",
       title: "“Organizing and tracking costs using AWS cost allocation tags”",
       url: "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html",
+    },
+    {
+      publisher: "AWS",
+      title: "“Backfill cost allocation tags”",
+      url: "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-allocation-backfill.html",
+    },
+    {
+      publisher: "AWS",
+      title: "“Building a cost allocation strategy”",
+      url: "https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/building-a-cost-allocation-strategy.html",
     },
     {
       publisher: "AWS",
@@ -141,11 +159,6 @@ export const term: GlossaryTerm = {
       publisher: "Microsoft Learn",
       title: "“Group and allocate costs using tag inheritance”",
       url: "https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/enable-tag-inheritance",
-    },
-    {
-      publisher: "AWS",
-      title: "“Backfill cost allocation tags”",
-      url: "https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-allocation-backfill.html",
     },
     {
       publisher: "Microsoft Learn",

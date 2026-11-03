@@ -1,7 +1,8 @@
 import { contactEmail } from "@/config/site";
 
 /**
- * `/brand-assets`: every string the page prints, verbatim from the approved mock.
+ * `/brand-assets`: every string the page prints, from the approved mock, tightened in the zero-noise content pass
+ * (3 Nov 2026).
  *
  * Every rule and figure is the brand guidelines' own (brand 2.0): the two colours and their RGB, the
  * two contrast ratios (proved from the hex values in `brand-assets-page.test.tsx`), the 33 px / 32 px / 69 px sizes,
@@ -21,7 +22,7 @@ import { contactEmail } from "@/config/site";
  * The day /brand-assets's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /brand-assets's content moves this to that day in the same PR; never the build's date.
  */
-export const brandAssetsLastUpdated = "2 November 2026";
+export const brandAssetsLastUpdated = "3 November 2026";
 
 /** Where the kit's files are served (`public/brand-kit/`, a month in the browser: `public/_headers`). */
 export const brandKitDir = "/brand-kit";
@@ -95,7 +96,7 @@ export const brandAssetsPage = {
   },
   hero: {
     title: "Brand assets",
-    deck: "The Zoorik logo, colours and words, ready to use. Use the files as they are: never redraw or retype the logo.",
+    deck: "The Zoorik logo, colours and words. Use the files as they are: never redraw or retype the logo.",
     /** The kit's button: its label, then "ZIP · <size>", the size read from the file. */
     download: { label: "Download all files", kind: "ZIP" },
     rules: { label: "How to use them", href: "#rules" },

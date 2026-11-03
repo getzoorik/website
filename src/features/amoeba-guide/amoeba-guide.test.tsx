@@ -55,7 +55,7 @@ const GROUP_IDS = [
 
 /** Every row, by its group: a section's opening blocks are its first row, under the mock's name. */
 const ROWS: Record<string, readonly string[]> = {
-  "how-amoeba-works": ["how-amoeba-works-the-four-steps", "two-stages-on-every-vm"],
+  "how-amoeba-works": ["how-amoeba-works-the-four-steps"],
   "before-you-start": ["before-you-start-what-you-need"],
   "onboard-a-vm": [
     "onboard-a-vm-step-by-step",
@@ -135,7 +135,7 @@ describe("/amoeba-guide groups and rows", () => {
     );
   });
 
-  it("draws 35 numbered rows, closed, numbered on across the groups", () => {
+  it("draws 34 numbered rows, closed, numbered on across the groups", () => {
     const container = page();
     for (const [group, rows] of Object.entries(ROWS)) {
       expect(
@@ -190,7 +190,7 @@ describe("/amoeba-guide groups and rows", () => {
     expect(words.replace(/\b7 days\b/g, "")).not.toMatch(
       /\b\d+ days\b|\bminutes\b|\b12 hours\b|quietest|device remove|governance/i,
     );
-    expect(words).toContain("The kernel must be recent and support btrfs");
+    expect(words).toContain("A recent kernel that supports btrfs");
     expect(words).toContain("The VM’s kernel is too old, or doesn’t support btrfs.");
   });
 
@@ -198,14 +198,14 @@ describe("/amoeba-guide groups and rows", () => {
     const items = [...page().querySelectorAll("#at-the-switch li")].map(text);
     expect(items).toHaveLength(5);
     expect(items[2]).toBe(
-      "If any step fails, the agent tries to put the original mounts back and start the services again. The source disks are never written during the switch. Amoeba then tries the switch again, so your services can restart more than once.",
+      "If a step fails, the agent puts the original mounts back and starts the services again. The source disks are never written during the switch. Amoeba then retries, so your services can restart more than once.",
     );
     expect(items[3]).toBe(
       "To come: what happens to writes made on the pool if a late check fails after the services restarted",
     );
   });
 
-  it("closes two groups on a Related line to Learn and the assessment", () => {
+  it("closes three groups on a Related line to Learn, troubleshooting and the assessment", () => {
     const related = [...page().querySelectorAll(".fq-sec-b > p.doc-related")];
     expect(
       related.map((line) => [
@@ -229,10 +229,13 @@ describe("/amoeba-guide groups and rows", () => {
     );
     expect(related.map((line) => line.closest("section")!.id)).toEqual([
       "how-amoeba-works",
+      "onboard-a-vm",
       "savings-and-figures",
     ]);
-    expect(text(related[1]!)).toBe("Related: Free block storage cost assessment");
-    /* How Amoeba works closes on a Learn article. */
+    expect(text(related[1]!)).toBe("Related: Amoeba troubleshooting");
+    expect(related[1]!.querySelector("a")).toHaveAttribute("href", "/amoeba-troubleshooting");
+    expect(text(related[2]!)).toBe("Related: Free block storage cost assessment");
+    /* How Amoeba works closes on two Learn articles: shrinking an Azure disk and an EBS volume. */
     const learn = amoebaGuide.sections.find((section) => section.id === "how-amoeba-works")!;
     expect(learn.related!.every((link) => learnSlugOf(link.href) !== null)).toBe(true);
   });
@@ -260,7 +263,7 @@ describe("/amoeba-guide page", () => {
     expect(text(container.querySelector("h1"))).toBe("Amoeba product guide");
     expect(container.querySelector("a.skip")).toHaveAttribute("href", "#main");
     expect(text(container.querySelector(".doc-deck"))).toBe(
-      "How to onboard a VM, what Amoeba changes, and how you stay in control.",
+      "Onboard an Azure or AWS VM, see what Amoeba changes, and stay in control.",
     );
   });
 
@@ -288,7 +291,7 @@ describe("/amoeba-guide page", () => {
   it("opens the column on the Updated line and the summary: the product page first", () => {
     const container = page();
     const top = container.querySelector("article.gd-main > .fq-upd")!;
-    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 2 November 2026");
+    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 3 November 2026");
     const list = top.querySelector("dl.doc-sum")!;
     expect([...list.querySelectorAll("dt")].map(text)).toEqual([
       "Product page",
@@ -299,8 +302,8 @@ describe("/amoeba-guide page", () => {
     expect(list.querySelector("dd a")).toHaveAttribute("href", "/amoeba");
     const last = [...list.querySelectorAll("dd")][3]!;
     expect([...last.querySelectorAll("p")].map(text)).toEqual([
-      "You pick each VM. Per VM, you choose whether shrinks run on their own or wait for you.",
-      "Onboarding starts the move, and services on the data mounts restart at the switch. See Moving a VM onto its pool.",
+      "You pick the VMs, and choose for each one whether shrinks run on their own or wait for you.",
+      "Onboarding starts the move, which briefly restarts the services on the data mounts. See “Moving onto a pool”.",
     ]);
     expect(last.querySelector("a")).toHaveAttribute("href", "#moving-a-vm-onto-its-pool");
   });
@@ -333,7 +336,7 @@ describe("/amoeba-guide page", () => {
     const well = wells[0]!;
     expect(well.className).toBe("as-well doc-well");
     expect(well.closest(".doc-steps > li")!.querySelector(".doc-st")!.textContent).toBe(
-      "Connect Azure",
+      "Connect Azure or AWS",
     );
     const pre = well.querySelector("pre")!;
     expect(pre.textContent).toBe("$ To come: the connect script, exactly as the console prints it");
@@ -342,7 +345,7 @@ describe("/amoeba-guide page", () => {
     expect(container.querySelector(".as-copy, .doc-well-note, .os")).toBeNull();
   });
 
-  it("has two step lists of 4 and 6, three callouts and 15 tables, every cell labelled", () => {
+  it("has two step lists of 4 and 6, three callouts and 14 tables, every cell labelled", () => {
     const container = page();
     expect(
       [...container.querySelectorAll("ol.doc-steps")].map((list) => list.children.length),
@@ -357,7 +360,7 @@ describe("/amoeba-guide page", () => {
       ["what-the-role-allows", "Good to know"],
       ["remove-amoeba-from-a-vm", "Review it first"],
     ]);
-    expect(container.querySelectorAll(".fq-body table.doc-tbl")).toHaveLength(15);
+    expect(container.querySelectorAll(".fq-body table.doc-tbl")).toHaveLength(14);
     expect(container.querySelectorAll(".fq-body table.is-cont")).toHaveLength(1);
     for (const cell of container.querySelectorAll(".fq-body td")) {
       expect(cell).toHaveAttribute("data-label");
@@ -490,7 +493,7 @@ describe("the /amoeba-guide route", () => {
   it("titles, describes and canonicalises the page", () => {
     expect(metadata.title).toBe("Amoeba product guide");
     expect(metadata.description).toBe(
-      "Amoeba product guide: onboard a VM on Azure or AWS, see how its data moves onto one btrfs pool, how that pool grows and shrinks, and how you stay in control.",
+      "Onboard Azure and AWS VMs to Amoeba. See what it installs, how it moves data disks onto a btrfs pool, how the pool grows and shrinks, and what you control.",
     );
     expect(metadata.alternates).toEqual({ canonical: "/amoeba-guide" });
     expect(metadata).not.toHaveProperty("robots");

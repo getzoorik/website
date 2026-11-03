@@ -4,79 +4,88 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/max-pods-pe
 export const term: GlossaryTerm = {
   slug: "max-pods-per-node",
   term: "Max pods per node",
-  title: "Max pods per node in Kubernetes on EKS and AKS",
-  meta: "Kubernetes max pods per node defaults to 110. See how many pods per node EKS allows from ENI limits, how to raise it on AKS, and what it costs you.",
-  h1: "Max pods per node in Kubernetes on EKS and AKS",
+  title: "Kubernetes max pods per node",
+  meta: "Kubernetes allows 110 pods per node by default. How EKS and AKS set max pods, how to raise it, and why full pod slots leave paid capacity unused.",
+  h1: "Kubernetes max pods per node",
   card: "Max pods per node is the most pods one Kubernetes node can run.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "Max pods per node is the most pods one Kubernetes node can run. Kubernetes max pods per node defaults to 110, set by the kubelet (node agent).",
+      text: "Max pods per node is the most pods one Kubernetes node can run. The kubelet, the agent on each node, enforces it, with a default of 110. EKS and AKS set their own values.",
     },
   ],
   sections: [
     {
-      id: "max-pods-per-node-on-eks-and",
-      title: "Max pods per node on EKS and AKS",
+      id: "how-eks-works-out-max-pods",
+      title: "On EKS",
       blocks: [
-        { kind: "h3", id: "how-eks-works-out-max-pods", title: "How EKS works out max pods" },
         {
-          kind: "ul",
-          items: [
-            "On EKS, most pods take an IP address from the node, so by default the cap is interfaces × (addresses per interface minus 1) + 2.",
-            "Without a custom machine image, managed node groups cap it at 110 below 30 virtual CPUs and 250 above.",
-          ],
-        },
-        {
-          kind: "h3",
-          id: "how-to-change-max-pods-per-node",
-          title: "How to change max pods per node on AKS",
+          kind: "p",
+          text: "On EKS, most pods take an IP address from the node. So by default, max pods follows the instance type’s network interfaces and addresses:",
         },
         {
           kind: "ul",
           items: [
-            "Each AKS node pool sets its own cap, up to 250. The default runs from 30 to 250, by network plugin.",
-            [
-              "On an existing cluster, add a node pool with the new ",
-              { code: "--max-pods" },
-              " value and move your pods to it. You pay for both pools until the old one goes.",
-            ],
+            "Max pods = interfaces × (IPv4 addresses per interface − 1) + 2.",
+            "The + 2 is for the Amazon VPC CNI and kube-proxy, which don’t take a pod IP address.",
+            "An m5.large has 3 interfaces with 10 addresses each, so it allows 3 × 9 + 2 = 29 pods.",
+            "Managed node groups without a custom Amazon Machine Image (AMI) cap it at 110 below 30 virtual CPUs, and at 250 above.",
           ],
+        },
+        {
+          kind: "p",
+          text: "To set your own value on a managed node group, use a custom AMI in its launch template. Nitro instances can get far more IP addresses through IP prefixes, with Amazon VPC CNI 1.9.0 or later.",
         },
       ],
     },
     {
-      id: "a-full-node-on-eks",
-      title: "A full node on EKS",
+      id: "how-to-change-max-pods-per-node",
+      title: "On AKS",
       blocks: [
         {
           kind: "p",
-          text: "An m5.large has 8\u00a0GiB of memory and 3 network interfaces with 10 IPv4 addresses each. EKS allows 3 × 9 + 2 = 29\u00a0pods.",
+          text: "Each AKS node pool sets its own max pods, up to 250. The default depends on the network plugin:",
+        },
+        {
+          kind: "ul",
+          items: [
+            "Azure CNI Overlay: 250.",
+            "Azure CNI Pod Subnet and kubenet: 110.",
+            "Azure CNI (legacy): 30.",
+          ],
         },
         {
           kind: "p",
-          text: "Say each pod requests 100\u00a0MiB, as an illustration: about 2.8\u00a0GiB in all. Pod 30 needs another node, with most memory unclaimed.",
+          text: [
+            "Set it with ",
+            { code: "--max-pods" },
+            " when you create a cluster or add a node pool. To change it later, add a pool with the new value, move your pods to it and delete the old pool. You pay for both pools until then.",
+          ],
         },
-        { kind: "svg", figure: figure1 },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why max pods per node matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "p",
-          text: "You pay for each node, however many pods it runs. When pod slots fill first, the CPU and memory you pay for sit unclaimed.",
+          text: "You pay for each node, however many pods it runs. If pod slots fill before CPU and memory do, the rest of the node sits unclaimed.",
         },
+        {
+          kind: "p",
+          text: "Say each pod on an m5.large requests 100 MiB. Its 29 slots hold about 2.8 GiB of its 8 GiB of memory. Pod 30 needs another node.",
+        },
+        { kind: "svg", figure: figure1 },
         {
           kind: "ul",
           items: [
             [
-              "A higher cap, or a bigger EKS instance, allows denser ",
+              "A higher cap, or a larger instance type with more addresses, allows denser ",
               { a: "bin packing", href: "/learn/kubernetes-bin-packing" },
               ".",
             ],
@@ -87,7 +96,7 @@ export const term: GlossaryTerm = {
             [
               "The ",
               { a: "free assessment", href: "/assessment?p=coral" },
-              " works out your own figure.",
+              " counts pod slots, as well as CPU and memory, when it estimates the nodes you need.",
             ],
           ],
         },
@@ -95,10 +104,10 @@ export const term: GlossaryTerm = {
     },
   ],
   related: [
-    { title: "Node pool", line: "Where AKS sets it.", href: "/learn/glossary/node-pool" },
+    { title: "Node pool", line: "Where AKS sets max pods.", href: "/learn/glossary/node-pool" },
     {
       title: "DaemonSet",
-      line: "Runs a copy of a pod on each targeted node, each copy taking a slot.",
+      line: "A pod copy on each node, each one taking a slot.",
       href: "/learn/glossary/daemonset",
     },
     {
@@ -108,13 +117,13 @@ export const term: GlossaryTerm = {
     },
     {
       title: "EKS Auto Mode",
-      line: "Caps each node at 110\u00a0pods, or fewer when it has fewer IP addresses.",
+      line: "Caps each node at 110 pods, or fewer when it has fewer IP addresses.",
       href: "/learn/glossary/eks-auto-mode",
     },
   ],
-  relatedTitle: "Terms related to max pods per node",
+  relatedTitle: "Related terms",
   next: {
-    title: "Kubernetes bin packing: fewer nodes for the same pods",
+    title: "Kubernetes bin packing",
     href: "/learn/kubernetes-bin-packing",
   },
   sources: [

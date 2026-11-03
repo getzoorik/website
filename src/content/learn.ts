@@ -10,10 +10,10 @@ import type { ProductId } from "@/content/products";
 import { shortDay } from "@/lib/content-date";
 
 /**
- * `/learn`, the hub: every string it prints, verbatim from the approved mock. The
- * page's name and its line; on the band, Start here (the three subjects' guides) beside Find the right fix (three
- * causes of high cloud cost, each to its guide); All articles, in the order the site publishes by; Watch and read;
- * Calculators, glossary and more. Always the three subjects, Cloud cost, Kubernetes and Block storage.
+ * `/learn`, the hub: every string it prints. The page's name and its line; on the band, Start here (the three
+ * subjects' guides) beside Common cost problems (three problems, each to the guide that fixes it); All articles, in
+ * the order the site publishes by; Watch and read; Calculators, glossary and more. Always the three subjects, Cloud
+ * cost, Kubernetes and Block storage.
  *
  * ─── ONLY WHAT IS PUBLISHED ─────────────────────────────────────────────────
  * Every row and tile is an article of the Learn index (`@/content/learn/published`), read from the article's own file,
@@ -37,30 +37,30 @@ export const learnSubjects: readonly { readonly id: LearnSubject; readonly label
 export const learnPage = {
   path: routes.learn,
   meta: {
-    /** The `<title>`'s own words, before " | Zoorik". The header's Docs menu names the hub "Zoorik Learn" and the
-     *  footer "Learn". */
-    title: "Kubernetes and block storage cost guides",
+    /** The `<title>`'s own words, before " | Zoorik": the hub's three subjects. The h1 is the hub's name, as the
+     *  header's Docs menu names it; the footer says "Learn". */
+    title: "Kubernetes, block storage and cloud cost guides",
     description:
-      "Kubernetes blog articles and block storage guides on cloud cost for Azure and AWS: AKS and EKS nodes, pods and requests, Azure managed disks and Amazon EBS.",
+      "How-tos and comparisons for AKS and EKS clusters, Azure managed disks, Amazon EBS and cloud cost, each sourced from the official docs.",
   },
   hero: {
-    title: "Zoorik Learn: Kubernetes and block storage cost guides",
-    deck: "How-tos and comparisons for Azure and AWS engineers, each sourced from the official docs.",
+    title: "Zoorik Learn",
+    deck: "Kubernetes, block storage and cloud cost guides, each sourced from the official docs.",
   },
   /**
    * The day the hub's own content last changed, for the sitemap; it is not printed. A new article moves the hub's
    * sitemap day on its own (`sitemap.ts`), so this moves only when the hub itself changes.
    */
-  updated: "Updated 2 November 2026",
+  updated: "Updated 3 November 2026",
   /** The band's name for a screen reader: the two cards have no section heading of their own. */
-  band: "Start here, and find the right fix",
+  band: "Start here, and common cost problems",
   start: {
     title: "Start here",
     line: "One guide for each subject: cloud cost, Kubernetes and block storage.",
   },
   fix: {
-    title: "Find the right fix",
-    line: "Three causes of high cloud cost, and the fix for each.",
+    title: "Common cost problems",
+    line: "Each leads to the guide that fixes it.",
   },
   articles: {
     id: "articles",
@@ -92,9 +92,8 @@ export const learnPillars: readonly { readonly subject: LearnSubject; readonly p
   ];
 
 /**
- * Find the right fix: what is costing the reader, and the guide that fixes it. The row reads the problem as its
- * lead-in, then the guide's short name, the words it is searched by (owner, 1 Nov 2026): "Machines sit half empty:
- * Cluster Autoscaler not scaling down".
+ * Common cost problems: what the reader sees, and the guide that fixes it. The row reads the problem as its lead-in,
+ * then the guide's short name: "Nodes sit half empty: Cluster Autoscaler not scaling down".
  */
 export const learnFixes: readonly {
   readonly problem: string;
@@ -102,17 +101,17 @@ export const learnFixes: readonly {
   readonly slug: string;
 }[] = [
   {
-    problem: "Machines sit half empty",
+    problem: "Nodes sit half empty",
     words: "Cluster Autoscaler not scaling down",
     slug: "cluster-autoscaler-not-scaling-down",
   },
   {
     problem: "Disks are bigger than their data",
-    words: "reduce Azure disk size",
+    words: "shrink an Azure disk",
     slug: "shrink-azure-managed-disk",
   },
   {
-    problem: "You can’t see where the money goes",
+    problem: "Cluster cost is a guess",
     words: "Kubernetes cost estimation",
     slug: "kubernetes-cost-estimation",
   },
@@ -192,17 +191,17 @@ export const learnPriority: readonly string[] = [
  * before the colon. The full h1 is the link's hover title.
  */
 const learnNames: Readonly<Record<string, string>> = {
-  "how-to-reduce-cloud-costs": "Cloud cost optimization: how to reduce cloud costs",
+  "how-to-reduce-cloud-costs": "Cloud cost optimization",
   "reduce-kubernetes-cost": "Kubernetes cost optimization",
   "azure-disk-reservations": "Azure disk reservations",
-  "shrink-azure-managed-disk": "Reduce Azure disk size: can a managed disk shrink?",
+  "shrink-azure-managed-disk": "Shrink an Azure managed disk",
   "kubernetes-cost-estimation": "Kubernetes cost estimation",
-  "kubernetes-pod-right-sizing": "Kubernetes pod right sizing",
+  "kubernetes-pod-right-sizing": "Kubernetes requests vs limits",
   "cluster-autoscaler-not-scaling-down": "Cluster Autoscaler not scaling down",
   "change-eks-node-group-instance-type": "Change an EKS node group instance type",
   "find-unattached-disks-azure": "Find unattached disks in Azure",
   "azure-vm-disk-usage": "Azure VM disk usage: used vs provisioned",
-  "check-ebs-volume-usage": "Check EBS volume usage: used vs paid",
+  "check-ebs-volume-usage": "EBS volume usage: used vs provisioned",
   "kubernetes-autoscaling": "Kubernetes autoscaling",
   "keda-vs-karpenter": "KEDA vs Karpenter",
   "kubernetes-allocatable-vs-capacity": "Kubernetes allocatable vs capacity",
@@ -224,12 +223,12 @@ const learnNames: Readonly<Record<string, string>> = {
   "pod-disruption-budget-best-practices": "Pod disruption budget best practices",
   "change-aks-node-pool-vm-size": "Change an AKS node pool VM size",
   "oomkilled-exit-code-137": "OOMKilled exit code 137",
-  "resize-pvc-kubernetes": "Resize a PVC",
-  "azure-disk-expand-without-downtime": "Azure disk expand without downtime",
-  "resize2fs-shrink-ext4": "resize2fs shrink ext4",
+  "resize-pvc-kubernetes": "Expand a PVC",
+  "azure-disk-expand-without-downtime": "Expand an Azure disk without downtime",
+  "resize2fs-shrink-ext4": "Shrink ext4 with resize2fs",
   "remove-disk-from-lvm": "Remove a disk from LVM",
   "vpa-vs-hpa": "VPA vs HPA",
-  "keda-vs-hpa-vs-vpa": "KEDA vs HPA",
+  "keda-vs-hpa-vs-vpa": "KEDA vs HPA vs VPA",
   "premium-ssd-v2-vs-premium-ssd": "Premium SSD v2 vs Premium SSD",
   "cordon-vs-drain": "Cordon vs drain",
   "premium-ssd-vs-standard-ssd-azure": "Premium SSD vs Standard SSD",
@@ -257,7 +256,19 @@ const learnNames: Readonly<Record<string, string>> = {
   "topology-spread-constraints": "Topology spread constraints",
   "ebs-elastic-volumes": "EBS Elastic Volumes",
   "is-btrfs-stable": "Is btrfs stable?",
-  "poor-architecture-cloud-bill": "How poor architecture increases your cloud costs",
+  "poor-architecture-cloud-bill": "Container vs VM",
+  "kubernetes-explained-simply": "What is Kubernetes?",
+  "kubernetes-architecture": "Kubernetes architecture",
+  "exit-code-143": "Exit code 143",
+  "ebs-volume-types": "EBS volume types",
+  "azure-managed-disk-types": "Azure disk types",
+  "aws-nat-gateway-pricing": "AWS NAT gateway pricing",
+  "how-to-choose-aks-node-sizes": "Choose AKS VM sizes",
+  "how-to-choose-eks-instance-types": "Choose EKS instance types",
+  "kubernetes-ephemeral-storage": "Kubernetes ephemeral storage",
+  "kubernetes-persistent-volume": "Persistent volumes and PVCs",
+  "kubernetes-taints-and-tolerations": "Taints and tolerations",
+  "statefulset-vs-deployment": "StatefulSet vs Deployment",
 };
 
 /** A row of the band: where it goes, the words it shows and the article's h1, its hover title. */
@@ -310,7 +321,7 @@ export const learnStart: readonly LearnRow[] = published(
   learnPillars.map((entry) => entry.pillar),
 ).map(rowOf);
 
-/** Find the right fix: each cause and its guide's short name, with the guide's address and h1, once it is published. */
+/** Common cost problems: each problem and its guide's short name, with the guide's address and h1, once published. */
 export const learnFixRows: readonly LearnRow[] = learnFixes.flatMap((fix) => {
   const article = findArticle(fix.slug);
   return article ? [{ ...rowOf(article), name: `${fix.problem}: ${fix.words}` }] : [];
@@ -355,9 +366,9 @@ const curled = (line: string): string => line.replaceAll("'", "’");
 /**
  * Calculators, glossary and more: the two calculators, the glossary, Value Lab, Cloud cost optimization tools,
  * Community and News, each its name and one line. Value Lab's figure is the study's own (`caseStudy.band`), and the
- * pages' names are their own h1s, but for the calculators, the glossary and News. Each calculator is named by the
- * words it is searched by (owner, 1 Nov 2026), Coral's first, and keeps the line its tile has on the tools page. The
- * glossary and News go by the short names their h1s carry, "Cloud cost glossary" and "Zoorik News".
+ * pages' names are their own h1s, but for the calculators, the glossary, the tools and News. Each calculator is named
+ * by the words it is searched by, Coral's first, and keeps the line its tile has on the tools page. The glossary goes
+ * by "Cloud cost glossary", which says what its terms are about, and News by "Zoorik News".
  */
 export const learnMore: readonly {
   readonly href: string;
@@ -392,7 +403,7 @@ export const learnMore: readonly {
   {
     href: routes.community,
     title: communityPage.hero.title,
-    line: "r/zoorik and the FinOps and cloud cost communities on Kubernetes, Azure and AWS.",
+    line: "r/zoorik, plus cloud cost communities for FinOps, Kubernetes, Azure and AWS.",
   },
   {
     href: routes.news,

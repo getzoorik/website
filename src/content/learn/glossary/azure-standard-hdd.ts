@@ -5,20 +5,20 @@ export const term: GlossaryTerm = {
   slug: "azure-standard-hdd",
   term: "Azure Standard HDD (with the OS disk retirement)",
   title: "What is Azure Standard HDD?",
-  meta: "Azure Standard HDD is the hard disk type of Azure managed disk. See its limits, how it’s charged, and what the 2028 Azure HDD retirement changes for OS disks.",
+  meta: "Azure Standard HDD is the hard disk type of Azure managed disk. Its limits, how it’s charged, and what the 2028 OS disk retirement changes.",
   h1: "What is Azure Standard HDD?",
   card: "Azure Standard HDD is the hard disk drive (HDD) type of Azure managed disk.",
   group: "block-storage",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
       text: [
         "Azure Standard HDD is the hard disk drive (HDD) type of ",
         { a: "Azure managed disk", href: "/learn/glossary/azure-managed-disk" },
-        ". It suits backup and rarely used data, not OS disks or databases that need low ",
+        ". It suits backups and rarely used data, not OS disks or databases that need low ",
         { a: "disk latency", href: "/learn/glossary/disk-latency" },
         ".",
       ],
@@ -27,50 +27,57 @@ export const term: GlossaryTerm = {
     {
       kind: "ul",
       items: [
-        "It’s designed for writes under 10\u00a0ms and reads under 20\u00a0ms, for most operations.",
+        "Latency: writes under 10\u00a0ms and reads under 20\u00a0ms, for most operations.",
         [
-          "Its largest sizes reach 2,000 input/output operations per second (",
+          "Speed: up to 2,000 ",
           { a: "IOPS", href: "/learn/glossary/iops" },
-          "), or 3,000 with performance plus turned on.",
+          " and 500\u00a0MB/s, or 3,000\u00a0IOPS with performance plus turned on.",
         ],
-        "It’s locally redundant storage (LRS) only: three copies in one data center.",
+        "Size: up to 32,767\u00a0GiB.",
+        "Redundancy: locally redundant storage (LRS) only, three copies in one data center.",
       ],
     },
   ],
   sections: [
     {
       id: "azure-standard-hdd-os-disk-retirement",
-      title: "Azure Standard HDD OS disk retirement",
+      title: "OS disk retirement in 2028",
       blocks: [
         {
           kind: "p",
-          text: "On 8 September 2028, Azure stops supporting Standard HDD as an OS disk. It then converts each one automatically to a Standard SSD of equivalent size. Microsoft warns that workloads may see a service disruption if you don’t migrate first.",
+          text: "On 8 September 2028, Azure stops supporting Standard HDD as an OS disk. It then converts each one to a Standard SSD of equivalent size. Microsoft warns of possible service disruption if you haven’t converted first.",
         },
         {
           kind: "p",
-          text: "The retirement covers OS disks only. Data disks, snapshots and Azure Site Recovery’s OS disks aren’t part of it.",
+          text: "Only OS disks are affected. Standard HDD data disks, snapshots and OS disks that Azure Site Recovery creates stay supported.",
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
-          text: "To find yours, filter the portal’s disk list by storage type Standard HDD LRS and OS type Linux and Windows. Then convert each to Standard SSD or Premium SSD.",
+          text: "To find affected disks across subscriptions, filter the Azure portal’s disk list by storage type Standard HDD LRS and OS type Linux and Windows. For one subscription, the Azure CLI gives the same list:",
         },
+        {
+          kind: "code",
+          lang: "bash",
+          code: "az disk list \\\n  --query \"[?sku.name=='Standard_LRS' && osType!=null]\" \\\n  --output table",
+        },
+        { kind: "p", text: "Then convert each one to Standard SSD or Premium SSD." },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why Standard HDD matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
-        { kind: "p", text: "Two things set the price:" },
+        { kind: "p", text: "Two things set its price:" },
         {
           kind: "ul",
           items: [
             [
-              "the ",
+              "The ",
               { a: "size tier", href: "/learn/glossary/azure-disk-sizes" },
-              " its size rounds up to, however little data it holds",
+              " its size rounds up to, however little data it holds.",
             ],
-            "transactions: each read or write of up to 16\u00a0KiB counts as one",
+            "Transactions, counted in operations of up to 16\u00a0KiB and charged per 10,000, with an hourly cap per disk.",
           ],
         },
         {
@@ -78,15 +85,7 @@ export const term: GlossaryTerm = {
           text: [
             "After conversion, an OS disk is charged as ",
             { a: "Standard SSD", href: "/learn/premium-ssd-vs-standard-ssd-azure" },
-            ". Microsoft says it generally comes closest to Standard HDD on price for performance.",
-          ],
-        },
-        {
-          kind: "p",
-          text: [
-            "The ",
-            { a: "free assessment", href: "/assessment?p=amoeba" },
-            " works out what your disks could save.",
+            ". Microsoft says Standard SSD generally comes closest to Standard HDD on price for performance.",
           ],
         },
       ],
@@ -95,7 +94,7 @@ export const term: GlossaryTerm = {
   related: [
     {
       title: "Azure managed disk",
-      line: "Its disk family.",
+      line: "The disk family it belongs to.",
       href: "/learn/glossary/azure-managed-disk",
     },
     {
@@ -105,18 +104,18 @@ export const term: GlossaryTerm = {
     },
     {
       title: "Disk latency",
-      line: "The time per read or write.",
+      line: "The time one read or write takes.",
       href: "/learn/glossary/disk-latency",
     },
     {
       title: "Disk snapshot",
-      line: "A disk copy, which Azure can store on Standard HDD.",
+      line: "A disk copy Azure can keep on Standard HDD.",
       href: "/learn/glossary/disk-snapshot",
     },
   ],
-  relatedTitle: "Terms related to Azure Standard HDD",
+  relatedTitle: "Related terms",
   next: {
-    title: "Premium SSD vs Standard SSD on Azure: what you pay for",
+    title: "Azure Premium SSD vs Standard SSD",
     href: "/learn/premium-ssd-vs-standard-ssd-azure",
   },
   sources: [

@@ -4,25 +4,25 @@ import { figure as figure2 } from "@/features/learn/figures/kubernetes-node-size
 
 export const article: Article = {
   slug: "kubernetes-node-size-best-practices",
-  title: "Kubernetes node size best practices on AKS and EKS",
-  meta: "Kubernetes node size best practices: what large and small nodes cost on AKS and EKS, the pod and reserve limits behind them, and how to size each pool.",
-  h1: "Kubernetes node size best practices: large or small nodes",
-  deck: "AWS advises the largest nodes your workloads can fully use that still meet your availability goals.",
-  card: "Large or small nodes: the reserves, pod limits and autoscaler rules that decide the right size per pool.",
+  title: "Kubernetes node size best practices",
+  meta: "Kubernetes node size best practices for AKS and EKS: what large and small nodes cost, the reserve and pod limits, and how to size pools.",
+  h1: "Kubernetes node size best practices",
+  deck: "Large or small nodes on AKS and EKS: what each costs, and how to size every pool.",
+  card: "Large or small nodes: the reserves, pod limits and autoscaler rules that set each pool’s size.",
   product: "coral",
   hub: "Kubernetes",
   topic: "Kubernetes cost basics",
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "soumya",
   cover: "/learn-covers/zoorik-learn-kubernetes-node-size-best-practices-1200x630.webp",
   coverAlt: "Small nodes or one large node, with resources reserved on every node",
   short:
-    "Kubernetes node size best practices come down to one trade-off. Larger nodes pay the per-node overhead fewer times, while smaller ones leave less idle and are easier to empty.",
+    "Use the largest nodes your pods can fill that still meet your availability goals, as AWS advises. Larger nodes pay the per-node overhead fewer times. Smaller nodes leave less idle, are easier to empty and lose less in a failure. Size each pool from its own pod requests.",
   sections: [
     {
       id: "fewer-larger-nodes-pay-the-per-node",
-      title: "Fewer, larger nodes pay the per-node overhead fewer times",
+      title: "Per-node overhead",
       blocks: [
         { kind: "p", text: "Every node carries a fixed overhead, whatever it runs:" },
         {
@@ -35,75 +35,70 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Picture an AKS pool of 16\u00a0cores and 64\u00a0GB. Built from four 4-core, 16\u00a0GB nodes, it reserves more than twice the CPU and three times the memory of one 16-core, 64\u00a0GB node. It also runs four copies of every DaemonSet instead of one.",
+          text: "Take an AKS pool of 16\u00a0cores and 64\u00a0GB. Four 4-core, 16\u00a0GB nodes reserve over twice the CPU and three times the memory of one 16-core, 64\u00a0GB node. They also run four copies of every DaemonSet instead of one.",
         },
         {
           kind: "h3",
           id: "how-the-reserve-scales-with-node-size",
-          title: "How the reserve scales with node size",
+          title: "How the reserve scales",
         },
         {
           kind: "p",
           text: [
-            "The reserve is the CPU and memory kept back for the kubelet and other system components. Pods can claim only what’s left, the node’s ",
+            "The reserve is the CPU and memory kept back for the kubelet and other system components. Pods can request only what’s left, the node’s ",
             { a: "allocatable", href: "/learn/kubernetes-allocatable-vs-capacity" },
-            ". You pay for the reserve, and no pod can request it.",
+            ". You pay for the reserve, but no pod can request it.",
           ],
         },
         {
           kind: "p",
-          text: "For Kubernetes node sizing, what matters is how that reserve scales with the machine. On AKS, the CPU reserve grows much more slowly than the node. Microsoft’s table gives 140\u00a0millicores (written 140m, each a thousandth of a core) on a 4-core node, 260m on 16\u00a0cores and 740m on 64.",
+          text: "On AKS, the CPU reserve grows much more slowly than the node. Microsoft’s table gives 140\u00a0millicores (140m, thousandths of a core) on a 4-core node, 260m on 16\u00a0cores and 740m on 64. That’s 3.5%, 1.6% and 1.2% of each node.",
         },
-        { kind: "p", text: "That’s 3.5%, 1.6% and 1.2% of each node." },
         {
           kind: "p",
           text: [
-            "Memory works differently on AKS 1.29 and later. Kube-reserved memory mostly follows ",
+            "On AKS 1.29 and later, the memory reserve follows ",
             { a: "max pods", href: "/learn/glossary/max-pods-per-node" },
-            ", not node size. Microsoft’s formula is 20\u00a0MB per max pod plus 50\u00a0MB, or 25% of the node’s memory, whichever is less.",
+            " more than node size. It’s 20\u00a0MB per max pod plus 50\u00a0MB, or 25% of the node’s memory, whichever is less.",
           ],
         },
         {
           kind: "p",
-          text: "At the Azure CNI Overlay default of 250 max pods, the formula gives 5,050\u00a0MB. Max pods is set per pool at creation, and raising it takes a new pool. So plan that reserve for the pool’s life.",
+          text: "At the Azure CNI Overlay default of 250 max pods, that’s 5,050\u00a0MB. Max pods is set when a pool is created, and raising it takes a new pool. So plan that reserve for the pool’s life.",
         },
         {
           kind: "callout",
           label: "Worked example",
-          text: "At 250 max pods, each small node reserves 140m of CPU and hits the 25% memory cap at 4\u00a0GB. Four of them reserve 4 × 140m = 560m and 4 × 4\u00a0GB = 16\u00a0GB, a quarter of their memory.",
-        },
-        {
-          kind: "p",
-          text: "One large node in their place reserves 260m and 5,050\u00a0MB, about 8% of its memory.",
+          text: "At 250 max pods, each 4-core node reserves 140m of CPU and hits the 25% memory cap at 4\u00a0GB. Four of them reserve 560m and 16\u00a0GB, a quarter of their memory. One 16-core node in their place reserves 260m and 5,050\u00a0MB, about 8% of its memory.",
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "h3",
           id: "every-node-runs-its-own-daemonset-pods",
-          title: "Every node runs its own DaemonSet pods",
+          title: "DaemonSet copies",
         },
         {
           kind: "p",
-          text: "A DaemonSet runs one copy of its pod on every node, or on a chosen set. The EKS user guide says “fewer, larger instances are better, especially if you have a lot of Daemonsets”. Each instance also adds calls to the API server.",
+          text: "A DaemonSet runs one copy of its pod on every node, or on a chosen set. The EKS user guide says “fewer, larger instances are better, especially if you have a lot of Daemonsets”. Each instance also adds API server calls.",
         },
       ],
     },
     {
       id: "large-nodes-are-harder-to-fill-and",
-      title: "Large nodes are harder to fill and to empty, and costlier to lose",
+      title: "Downsides of large nodes",
       blocks: [
         {
           kind: "h3",
           id: "pod-slots-can-run-out-before-cpu",
-          title: "Pod slots can run out before CPU does",
+          title: "Pod slot limits",
         },
         {
           kind: "p",
-          text: "Take a 64-core AKS node at 110 max pods. It has at most 63.26\u00a0cores allocatable, 64\u00a0cores less the 740m reserve. To fill it, its pods must average about 575m of CPU each.",
+          text: "Take a 64-core AKS node at 110 max pods. Its 740m reserve leaves at most 63.26\u00a0cores allocatable. To fill it, its pods must average about 575m of CPU each.",
         },
         {
           kind: "p",
-          text: "Pods that request 100m each take all 110 slots with 11\u00a0cores requested (110 × 100m). That leaves 52.26\u00a0cores, most of the machine, unrequested.",
+          text: "Pods that request 100m each fill all 110 slots with 11\u00a0cores requested (110 × 100m). The other 52.26\u00a0cores, most of the machine, stay unrequested.",
         },
         { kind: "svg", figure: figure2 },
         { kind: "p", text: "Max pods depends on the cloud and its settings:" },
@@ -120,43 +115,43 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "AWS also notes that each instance type caps the EBS volumes it can attach. A node full of pods with their own volumes can reach that cap first.",
+          text: "Each instance type also caps the EBS volumes it can attach. A node full of pods with their own volumes can reach that cap first.",
         },
         {
           kind: "h3",
           id: "node-autoscalers-buy-capacity-a-whole-node",
-          title: "Node autoscalers buy capacity a whole node at a time",
+          title: "Whole-node scale-ups",
         },
         {
           kind: "p",
-          text: "One pending pod that requests 500m, in a node group of 64-core machines, brings up 64 more cores. You pay for all of them until work arrives to fill them.",
+          text: "One pending pod that requests 500m, in a group of 64-core machines, brings up 64 more cores. You pay for all of them until work arrives to fill them.",
         },
         {
           kind: "p",
-          text: "With the Cluster Autoscaler, the group fixes that step, because “Inside a node group, all machines have identical capacity”. Its expander chooses only among the groups you’ve defined.",
+          text: "The Cluster Autoscaler can’t add a smaller machine to that group, because “Inside a node group, all machines have identical capacity”. Its expander picks only among the groups you’ve defined.",
         },
         {
           kind: "h3",
           id: "a-large-node-is-harder-to-empty",
-          title: "A large node is harder to empty",
+          title: "Harder to empty",
         },
         { kind: "p", text: "The Cluster Autoscaler removes a node only when both of these hold:" },
         {
           kind: "ul",
           items: [
-            "its pods’ CPU and memory requests are each under 50% of its allocatable, the default utilization threshold, which you can change",
+            "its pods’ CPU and memory requests are each under 50% of its allocatable, the default threshold, which you can change",
             "every pod on it, other than DaemonSet and static pods, can move",
           ],
         },
         {
           kind: "p",
           text: [
-            "One pod that can’t move keeps the whole machine, and every extra pod is one more chance of that. Each blocker is covered in ",
+            "One pod that can’t move keeps the whole machine, and a large node holds more pods that might not. ",
             {
               a: "Cluster Autoscaler not scaling down",
               href: "/learn/cluster-autoscaler-not-scaling-down",
             },
-            ".",
+            " covers each blocker.",
           ],
         },
         {
@@ -177,58 +172,54 @@ export const article: Article = {
         {
           kind: "h3",
           id: "one-failure-takes-more-with-it",
-          title: "One failure takes more with it",
+          title: "Bigger failures",
         },
         {
           kind: "p",
-          text: "In AWS’s example of a cluster of three very large instances, “1 instance outage could impact 1/3 of the cluster”. Spread the same capacity over nine nodes and one outage takes a ninth.",
+          text: "AWS’s example is a cluster of three very large instances, where “1 instance outage could impact 1/3 of the cluster”. Spread the same capacity over nine nodes and one outage takes a ninth.",
         },
       ],
     },
     {
       id: "kubernetes-node-size-best-practices",
-      title: "Kubernetes node size best practices: what AKS and EKS recommend",
+      title: "What AKS and EKS recommend",
       blocks: [
         {
           kind: "p",
-          text: "There’s no single Kubernetes recommended node size, but both clouds publish a starting point.",
+          text: "Neither cloud names one right node size, but both publish a starting point.",
         },
         {
           kind: "p",
           text: [
-            "On AKS, a system node pool needs a VM of at least 4\u00a0vCPUs and 4\u00a0GB of memory. ",
+            "On AKS, a system node pool needs VMs of at least 4\u00a0vCPUs and 4\u00a0GB of memory. ",
             { a: "B-series burstable VMs", href: "/learn/glossary/burstable-instance" },
             " aren’t supported there.",
           ],
         },
         {
           kind: "p",
-          text: "The recommended minimum is higher: three system nodes of 8\u00a0vCPUs, or two of at least 16. That applies especially to large clusters with several CoreDNS replicas and add-ons.",
+          text: "Microsoft recommends more: three system nodes of 8\u00a0vCPUs, or two of at least 16, especially for large clusters with several CoreDNS replicas and add-ons. System pools shouldn’t run your applications, so your own sizing happens in user pools.",
         },
         {
           kind: "p",
-          text: "Microsoft also says system pools shouldn’t run your applications. So Kubernetes worker node sizing happens in your user pools.",
+          text: "On EKS, AWS recommends slightly larger nodes, 4xlarge to 12xlarge, so DaemonSets and system reserves take less of each node.",
         },
         {
           kind: "p",
-          text: "On EKS, AWS’s scalability guidance recommends slightly larger nodes, 4xlarge to 12xlarge, so less of each node goes to DaemonSets and system reserves.",
-        },
-        {
-          kind: "p",
-          text: "The guidance stops below the very large sizes with non-uniform memory access (NUMA). Most applications needn’t pay their performance cost, since Kubernetes scales out. AWS also advises against burstable T-series instances where performance must be consistent.",
+          text: "That range stops below the very large sizes with non-uniform memory access (NUMA). Kubernetes scales out, so most applications needn’t pay their performance cost. AWS also advises against burstable T-series instances where performance must be consistent.",
         },
       ],
     },
     {
       id: "how-to-choose-kubernetes-node-sizes-for",
-      title: "How to choose Kubernetes node sizes for each pool",
+      title: "How to size each pool",
       blocks: [
         {
           kind: "p",
           text: [
-            "A Kubernetes node size calculator is five lines of arithmetic. Do it per pool, with your own requests. The scheduler places pods by their ",
+            "Size each pool from its own pods, because the scheduler places pods by their ",
             { a: "requests", href: "/learn/glossary/kubernetes-resource-requests" },
-            ", not by what they use.",
+            ", not by what they use. Five steps:",
           ],
         },
         {
@@ -259,31 +250,31 @@ export const article: Article = {
             },
             [
               { b: "Divide the pool’s pods by pods per node" },
-              " and round up. That’s the node count this size implies.",
+              " and round up. That’s the node count at this size.",
             ],
             [
               { b: "If the count is one or two, try a smaller size." },
-              " For a production cluster with a single system node pool, Microsoft recommends at least three nodes in it. The reasons are fault tolerance and availability zones. A pool spread across three zones needs three nodes anyway.",
+              " For fault tolerance and availability zones, Microsoft recommends at least three nodes in a production system pool. A pool spread across three zones needs three nodes anyway.",
             ],
           ],
         },
         {
           kind: "p",
           text: [
-            "For a candidate node’s monthly cost at list price, and what Kubernetes keeps on it, see the ",
+            "The ",
             { a: "EKS and AKS pricing calculator", href: "/eks-and-aks-pricing-calculator" },
-            ".",
+            " gives a candidate node’s monthly list price and what Kubernetes keeps on it.",
           ],
         },
         {
           kind: "h3",
           id: "pick-a-machine-family-that-fits-your",
-          title: "Pick a machine family that fits your requests",
+          title: "Match the machine family",
         },
         {
           kind: "p",
           text: [
-            "Pick the Kubernetes instance type whose CPU-to-memory ratio matches your pods’ requests, or one resource fills first and strands the other. On Azure, the ",
+            "Pick the family whose CPU-to-memory ratio matches your pods’ requests. Otherwise one resource fills first and strands the other. On Azure, the ",
             { a: "VM series", href: "/learn/glossary/azure-vm-series" },
             " differ in that ratio:",
           ],
@@ -299,26 +290,26 @@ export const article: Article = {
         {
           kind: "h3",
           id: "separate-pools-for-batch-and-steady-work",
-          title: "Separate pools for batch and steady work",
+          title: "Split pools by churn",
         },
         {
           kind: "p",
-          text: "Split pools by churn, and keep sizes similar inside each one. The Cluster Autoscaler needs similarly sized node groups to scale them consistently.",
+          text: "Put work with very different churn in separate pools, and keep sizes similar inside each one. The Cluster Autoscaler needs similarly sized node groups to scale them consistently.",
         },
         {
           kind: "p",
-          text: "AWS suggests 4xlarge instances for small batch work that comes and goes quickly. For a low-churn service such as Kafka at 8\u00a0vCPU, it suggests the 12xlarge family.",
+          text: "AWS suggests the 4xlarge family for small batch work that comes and goes quickly. For a low-churn service such as Kafka at 8\u00a0vCPU, it suggests the 12xlarge family.",
         },
       ],
     },
     {
       id: "let-karpenter-or-nap-pick-the-size",
-      title: "Let Karpenter or NAP pick the size from a range",
+      title: "Let Karpenter or NAP choose",
       blocks: [
         {
           kind: "p",
           text: [
-            "A fixed node group makes size a decision you revisit by hand, usually with a new pool and a drain. The guides to ",
+            "In a fixed node group, size is a choice you revisit by hand, usually with a new pool and a drain. The guides to ",
             { a: "changing an AKS node pool VM size", href: "/learn/change-aks-node-pool-vm-size" },
             " and ",
             {
@@ -333,7 +324,7 @@ export const article: Article = {
           text: [
             "Karpenter on EKS and ",
             { a: "node auto provisioning (NAP)", href: "/learn/aks-node-auto-provisioning" },
-            " on AKS turn size into a range. NAP uses Karpenter’s NodePool API.",
+            " on AKS make size a range instead. NAP uses Karpenter’s NodePool API.",
           ],
         },
         {
@@ -355,7 +346,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "set-the-range-with-nodepool-requirements",
-          title: "Set the range with NodePool requirements",
+          title: "Set the range",
         },
         {
           kind: "p",
@@ -383,7 +374,7 @@ export const article: Article = {
         {
           kind: "callout",
           label: "Watch out",
-          text: "Don’t narrow Karpenter to one instance type, because each AWS Region has a limited number of instances of each type. A cluster that scales past them gets an error that none are available.",
+          text: "Don’t narrow Karpenter to one instance type. Each AWS Region has a limited number of instances of each type. A cluster that scales past them gets an error that none are available.",
         },
         {
           kind: "p",
@@ -399,13 +390,13 @@ export const article: Article = {
     },
     {
       id: "how-coral-works-with-your-node-sizes",
-      title: "How Coral works with your node sizes",
+      title: "Where Coral fits",
       blocks: [
         {
           kind: "p",
           text: [
-            { a: "Coral optimizes Kubernetes", href: "/coral" },
-            " on AKS and EKS, and never creates machines itself. Instead, it works on what decides whether a node size fits: the requests, and the nodes they leave spare.",
+            { a: "Coral", href: "/coral" },
+            " rebalances requests and nodes on AKS and EKS without any downtime, and never launches machines itself. It works on what decides whether a node size fits: the requests, and the nodes they leave spare.",
           ],
         },
         { kind: "h3", id: "what-coral-changes", title: "What Coral changes" },
@@ -414,35 +405,35 @@ export const article: Article = {
           items: [
             [
               { b: "Requests." },
-              " Coral rebalances each container’s CPU and memory requests to what it really uses. The same autoscaler can then run fewer or smaller nodes. Pod sizing starts when you switch on “Automatically optimize” for a policy or a workload.",
+              " Coral rebalances each container’s CPU and memory requests to real use, so the same autoscaler can run fewer or smaller nodes. This starts when you switch on “Automatically optimize” for a policy or a workload.",
             ],
             [
               { b: "Spare nodes." },
-              " Node optimization is on from install and works out from pod requests how many nodes each pool needs. Coral drains and removes the nodes you don’t need, one at a time. Pools that Karpenter or NAP already consolidate are left to them.",
+              " Node optimization is on from install. It works out from pod requests how many nodes each pool needs, and drains and removes the rest one at a time. Pools that Karpenter or NAP already consolidate are left to them.",
             ],
             [
               { b: "Machine size." },
-              " With Karpenter or NAP, a rebalance swaps the nodes you choose for cheaper machines that your autoscaler launches, and never goes past a PDB. Where Coral starts a new copy first, the old one goes only once the new one is Ready and serving. A node that can’t be emptied is kept.",
+              " With Karpenter or NAP, a rebalance swaps the nodes you choose for cheaper machines that your autoscaler launches. It never goes past a PDB, and a node that can’t be emptied is kept.",
             ],
             [
               { b: "Cluster Autoscaler only." },
-              " Coral drains spare nodes for it to remove but never changes their size.",
+              " Coral removes spare nodes but never changes their size.",
             ],
           ],
         },
         {
           kind: "p",
-          text: "When a node is emptied, a single-copy app that can’t get a new copy first gets a short restart. StatefulSets are one example.",
+          text: "Coral moves each pod the first way that works: warm handover, live migration, then eviction within its PDB. In a warm handover, a replacement is Ready on another node before the old pod goes.",
         },
-        { kind: "h3", id: "what-one-real-cluster-showed", title: "What one real cluster showed" },
+        { kind: "h3", id: "what-one-real-cluster-showed", title: "One real cluster" },
         {
           kind: "p",
-          text: "On our own AKS development cluster, node optimization removed one of two 4-CPU workers on 6 October. On 12 October, a rebalance swapped the remaining worker for a cheaper machine with the same 4\u00a0CPUs. That was AMD at $81.03 a month in place of Intel at $147.46.",
+          text: "On our own AKS development cluster, node optimization removed one of two 4-CPU workers on 6 October. On 12 October, a rebalance swapped the other for a cheaper machine of the same size. That was AMD at $81.03 a month in place of Intel at $147.46.",
         },
         {
           kind: "p",
           text: [
-            "Apps that run a single copy were back in 5 to 82\u00a0seconds. By then, the cluster’s machines cost $154.76 a month instead of $368.65, at Azure list prices. ",
+            "The cluster’s machines then cost $154.76 a month instead of $368.65, at Azure list prices. ",
             { a: "The Coral Value Lab study", href: "/coral-value-lab" },
             " has the full run.",
           ],
@@ -505,12 +496,12 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "Kubernetes allocatable vs capacity: what pods can use",
+      title: "Kubernetes allocatable vs capacity",
       where: "Learn",
       href: "/learn/kubernetes-allocatable-vs-capacity",
     },
     {
-      title: "Kubernetes bin packing: fewer nodes for the same pods",
+      title: "Kubernetes bin packing",
       where: "Learn",
       href: "/learn/kubernetes-bin-packing",
     },
@@ -530,5 +521,5 @@ export const article: Article = {
       href: "/learn/change-aks-node-pool-vm-size",
     },
   ],
-  relatedTitle: "More on choosing node sizes",
+  relatedTitle: "More on node sizes",
 };

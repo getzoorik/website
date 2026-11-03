@@ -4,89 +4,94 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/horizontal-
 export const term: GlossaryTerm = {
   slug: "horizontal-pod-autoscaler",
   term: "Horizontal Pod Autoscaler (HPA)",
-  title: "Kubernetes HPA: the Horizontal Pod Autoscaler",
-  meta: "What is HPA? The k8s HPA, or Horizontal Pod Autoscaler, adds or removes pods to match demand. See how its CPU target works and why it shapes node cost.",
-  h1: "Kubernetes HPA: the Horizontal Pod Autoscaler",
+  title: "What is HPA in Kubernetes?",
+  meta: "The Kubernetes HPA (Horizontal Pod Autoscaler) adds or removes pods to match demand. How it decides, its defaults and how it shapes cloud cost.",
+  h1: "What is HPA in Kubernetes?",
   card: "HPA in Kubernetes stands for Horizontal Pod Autoscaler.",
   group: "kubernetes",
   product: "coral",
   published: "2026-10-26",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "HPA in Kubernetes stands for Horizontal Pod Autoscaler. It changes the number of pods in a workload, such as a Deployment, to match demand, and can’t scale a DaemonSet.",
+      text: "HPA in Kubernetes stands for Horizontal Pod Autoscaler. It changes how many pods a workload, such as a Deployment or StatefulSet, runs to match demand.",
     },
     {
       kind: "p",
       text: [
-        "Horizontal means more pods, not bigger ones. ",
+        "Horizontal means more pods, not bigger ones. It can’t scale a DaemonSet. ",
         { a: "VPA vs HPA", href: "/learn/vpa-vs-hpa" },
-        " compares it with vertical scaling, and ",
-        { a: "Kubernetes autoscaling", href: "/learn/kubernetes-autoscaling" },
-        " sets it beside the VPA and the Cluster Autoscaler.",
+        " compares it with vertical scaling.",
       ],
     },
   ],
   sections: [
     {
       id: "how-the-hpa-decides",
-      title: "How horizontal pod autoscaling works",
+      title: "How it works",
       blocks: [
         {
           kind: "ul",
           items: [
-            "It needs a metrics source, such as Metrics Server.",
-            "It checks its metrics every 15\u00a0seconds by default.",
+            "Kubernetes runs horizontal pod autoscaling as a control loop, every 15\u00a0seconds by default.",
             [
-              "A CPU utilization target is a percentage of each pod’s CPU ",
+              "For CPU and memory, it reads the metrics API, which ",
+              { a: "Metrics Server", href: "/learn/glossary/metrics-server" },
+              " usually serves.",
+            ],
+            [
+              "A CPU target is a percentage of each pod’s CPU ",
               { a: "request", href: "/learn/glossary/kubernetes-resource-requests" },
               ". If any container has no CPU request, the HPA takes no action on CPU.",
             ],
-            "By default, it adds up to 4\u00a0pods or doubles the count per 15\u00a0seconds, whichever is more.",
+            "It sets the replica count to the current count times the ratio of current use to the target, rounded up.",
           ],
         },
         {
           kind: "h3",
           id: "scaling-behavior-stabilizationwindowseconds",
-          title: "Scaling behavior: stabilizationWindowSeconds",
+          title: "Scaling behavior",
+        },
+        {
+          kind: "ul",
+          items: [
+            "Scale-up has no stabilization window. Every 15\u00a0seconds, it can add 4\u00a0pods or double the count, whichever is more.",
+            "Scale-down uses the highest count recommended in the last 300\u00a0seconds. So the HPA doesn’t remove pods only to recreate them moments later.",
+          ],
         },
         {
           kind: "p",
-          text: "To scale down, the HPA uses the highest replica count from its stabilization window, 300\u00a0seconds by default. So it won’t remove pods only to recreate them. By default, scale-up has no window.",
-        },
-        {
-          kind: "p",
-          text: "The docs’ example sets a 1-minute scale-down window in an HPA’s spec:",
+          text: "The docs’ example shortens the scale-down window to 1\u00a0minute:",
         },
         {
           kind: "code",
           lang: "yaml",
           code: "behavior:\n  scaleDown:\n    stabilizationWindowSeconds: 60",
         },
-        { kind: "h3", id: "hpa-on-eks-and-aks", title: "HPA on EKS and AKS" },
+        { kind: "h3", id: "hpa-on-eks-and-aks", title: "On EKS and AKS" },
         {
           kind: "p",
-          text: "The Horizontal Pod Autoscaler on EKS is built in. EKS lists Metrics Server as a prerequisite.",
+          text: "On EKS, the HPA is a standard Kubernetes API resource. It needs only a metrics source, such as Metrics Server.",
         },
         {
           kind: "p",
-          text: "On AKS, Microsoft advises the HPA when a workload can run several identical replicas and its demand changes. When the replicas outgrow your nodes, Cluster Autoscaler or node autoprovisioning adds nodes.",
+          text: "On AKS, Microsoft advises the HPA when a workload can run several identical replicas and its demand changes. When replicas outgrow your nodes, the Cluster Autoscaler or node autoprovisioning adds nodes. Microsoft also advises against running the HPA and the VPA on the same CPU or memory metric.",
         },
       ],
     },
     {
       id: "an-example-from-the-kubernetes-docs",
-      title: "An HPA example from the Kubernetes docs",
+      title: "An HPA example",
       blocks: [
         {
           kind: "p",
-          text: "In the HPA walkthrough, each php-apache pod requests 200\u00a0millicores (200m) of CPU. The HPA targets 50% average CPU utilization. So it aims for 100m of use per pod.",
+          text: "In the Kubernetes walkthrough, each php-apache pod requests 200\u00a0millicores (200m) of CPU. The HPA targets 50% average CPU use, so it aims for 100m per pod.",
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
-          text: "At 200m average use, twice the target, the HPA would double the pods.",
+          text: "At 200m average use, twice the target, the HPA would double the pods, up to its maximum of 10.",
         },
         {
           kind: "code",
@@ -97,17 +102,17 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why the HPA matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            "At a 50% target, each pod’s request is twice its target use.",
+            "At a 50% target, each pod requests twice the CPU it is meant to use.",
             [
               { a: "Node autoscalers", href: "/learn/kubernetes-autoscaling" },
               " add nodes to fit pods’ requests, not their real use.",
             ],
-            "When new replicas don’t fit, you pay for nodes sized to those requests.",
+            "So when new replicas don’t fit, you pay for nodes sized to their requests.",
           ],
         },
         {
@@ -132,13 +137,18 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/vertical-pod-autoscaler",
     },
     {
+      title: "Metrics Server",
+      line: "Serves the CPU and memory use the HPA reads.",
+      href: "/learn/glossary/metrics-server",
+    },
+    {
       title: "Kubernetes headroom",
       line: "Spare room for new pods.",
       href: "/learn/glossary/kubernetes-headroom",
     },
   ],
-  relatedTitle: "Terms related to the HPA",
-  next: { title: "VPA vs HPA", href: "/learn/vpa-vs-hpa" },
+  relatedTitle: "Related terms",
+  next: { title: "HPA vs VPA in Kubernetes", href: "/learn/vpa-vs-hpa" },
   sources: [
     {
       publisher: "Kubernetes",

@@ -67,7 +67,7 @@ const ROWS: Record<string, readonly (readonly [string, string])[]> = {
   "before-you-start": [["before-you-start-what-you-need", "What you need"]],
   "connect-a-cluster": [
     ["connect-a-cluster-step-by-step", "Step by step"],
-    ["what-connect-asks-to-change", "What connect asks to change in your cloud"],
+    ["what-connect-asks-to-change", "Cloud changes"],
   ],
   "what-gets-installed": [
     ["what-gets-installed-the-components", "The components"],
@@ -75,19 +75,19 @@ const ROWS: Record<string, readonly (readonly [string, string])[]> = {
   ],
   "the-console": [["the-console-the-pages", "The pages"]],
   "workload-optimization": [
-    ["how-sizes-are-worked-out", "How sizes are worked out"],
-    ["turn-it-on", "Turn it on"],
+    ["how-sizes-are-worked-out", "How sizing works"],
+    ["turn-it-on", "Turn on automation"],
     ["built-in-policies", "Built-in policies"],
     ["custom-policies", "Custom policies"],
-    ["how-a-workload-gets-its-policy", "How a workload gets its policy"],
-    ["status-words", "Status words"],
+    ["how-a-workload-gets-its-policy", "Which policy applies"],
+    ["status-words", "Workload statuses"],
     ["per-workload-settings", "Per-workload settings"],
     ["hpas-and-vpas", "HPAs and VPAs"],
   ],
   "node-optimization": [
     ["consolidation", "Consolidation"],
     ["the-evictor", "The Evictor"],
-    ["how-pods-are-moved", "How pods are moved: warm handover, live migration or eviction"],
+    ["how-pods-are-moved", "How pods are moved"],
     ["nodes-held", "Nodes held"],
     ["rebalancing", "Rebalancing"],
   ],
@@ -101,7 +101,7 @@ const ROWS: Record<string, readonly (readonly [string, string])[]> = {
     ["what-leaves-your-cluster", "What leaves your cluster"],
     ["what-never-leaves", "What never leaves"],
     ["how-it-connects", "How it connects"],
-    ["the-live-migration-daemon", "The live-migration daemon"],
+    ["the-live-migration-daemon", "Live-migration checkpoints"],
     ["sign-in", "Sign-in"],
   ],
   disconnect: [
@@ -230,7 +230,7 @@ describe("/coral-guide page", () => {
       ...(amoebaDocs ? [["Amoeba Block storage", "/amoeba-guide", null]] : []),
     ]);
     expect(text(container.querySelector(".doc-deck"))).toBe(
-      "How to connect an AKS or EKS cluster, what Coral changes, and how you stay in control.",
+      "Connect an AKS or EKS cluster, see what Coral changes, and stay in control.",
     );
     expect(
       container.querySelector(".doc-date, .doc-crumb, .doc-q, .doc-rail, .doc-toc"),
@@ -255,7 +255,7 @@ describe("/coral-guide page", () => {
     const container = page();
     const top = container.querySelector("article.gd-main > .fq-upd")!;
     expect(top).toBe(container.querySelector("article.gd-main")!.firstElementChild);
-    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 2 November 2026");
+    expect(text(top.querySelector(".doc-updated"))).toBe("Updated 3 November 2026");
     const list = top.querySelector("dl.doc-sum")!;
     expect([...list.querySelectorAll("dt")].map(text)).toEqual([
       "Product page",

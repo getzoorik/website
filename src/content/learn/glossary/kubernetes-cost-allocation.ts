@@ -4,19 +4,19 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/kubernetes-
 export const term: GlossaryTerm = {
   slug: "kubernetes-cost-allocation",
   term: "Kubernetes cost allocation",
-  title: "What does Kubernetes cost allocation mean?",
-  meta: "Kubernetes cost allocation splits a cluster’s cost by pod and team. See how EKS cost allocation uses split cost allocation data and how AKS shows idle cost.",
-  h1: "What does Kubernetes cost allocation mean?",
-  card: "Kubernetes cost allocation splits a shared cluster’s cost across its pods, then adds up pod costs by namespace, label or team.",
+  title: "What is Kubernetes cost allocation?",
+  meta: "Kubernetes cost allocation splits a shared cluster’s cost by pod, namespace and team. How it works on EKS with split cost allocation data, and on AKS.",
+  h1: "What is Kubernetes cost allocation?",
+  card: "Kubernetes cost allocation splits a shared cluster’s cost across the pods that run on it.",
   group: "finops-pricing",
   product: "coral",
   published: "2026-10-25",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
       text: [
-        "Kubernetes cost allocation splits a shared cluster’s cost across its pods, then adds up pod costs by namespace, label or team. A pod’s share follows its ",
+        "Kubernetes cost allocation splits a shared cluster’s cost across the pods that run on it. Pod costs then add up by namespace, label or team. A pod’s share follows its CPU and memory ",
         { a: "requests", href: "/learn/glossary/kubernetes-resource-requests" },
         ", or the larger of its requests and its use.",
       ],
@@ -25,27 +25,36 @@ export const term: GlossaryTerm = {
   sections: [
     {
       id: "how-aws-eks-split-cost-allocation-data",
-      title: "How AWS EKS split cost allocation data works",
+      title: "On EKS",
       blocks: [
         {
           kind: "p",
-          text: "Split cost allocation data is an opt-in feature for Amazon Elastic Kubernetes Service (EKS). It adds each pod’s cost to your AWS Cost and Usage Report. Its Kubernetes label support for cost allocation turns up to 50 labels per pod into cost allocation tags, which you then activate.",
-        },
-        {
-          kind: "p",
-          text: "AWS Cost Explorer doesn’t show EKS split cost allocation data. It shows only in the Cost and Usage Report (CUR) and CUR 2.0, up to 24\u00a0hours after you opt in.",
-        },
-        {
-          kind: "p",
-          text: "In AWS’s example, four pods share a 16\u00a0GB m5.xlarge node. Each is charged for the larger of its memory request and use:",
+          text: [
+            "AWS calls it split cost allocation data. You opt in under Cost Management preferences. It splits each EC2 instance’s ",
+            { a: "amortized cost", href: "/learn/glossary/amortized-cost" },
+            " across its pods, and adds each pod’s cost to the Cost and Usage Report (CUR).",
+          ],
         },
         {
           kind: "ul",
           items: [
-            "Pod1: requests 4\u00a0GB, uses 3\u00a0GB, charged for 4\u00a0GB",
-            "Pod2: requests 4\u00a0GB, uses 6\u00a0GB, charged for 6\u00a0GB",
-            "Pod3 and Pod4: request and use 2\u00a0GB each",
-            "Idle: 2\u00a0GB that no pod requests or uses",
+            "It shows in CUR and CUR 2.0 only, not in Cost Explorer. Data can take up to 24 hours to appear.",
+            "Allocation can use requests only, or the higher of requests and actual use, read from Amazon Managed Service for Prometheus.",
+            "On GPU and other accelerated instances, it splits accelerator cost too, by requests only.",
+            "Costs are tagged by cluster, namespace, node and workload, and by up to 50 pod labels once you activate them.",
+          ],
+        },
+        {
+          kind: "p",
+          text: "In AWS’s example, four pods share one m5.xlarge node with 16 GB of memory. Each pod is charged for the larger of its memory request and its use:",
+        },
+        {
+          kind: "ul",
+          items: [
+            "Pod1: requests 4 GB, uses 3 GB, charged for 4 GB.",
+            "Pod2: requests 4 GB, uses 6 GB, charged for 6 GB.",
+            "Pod3 and Pod4: request and use 2 GB each.",
+            "Idle: the 2 GB no pod requests or uses. Its cost is split among the pods by the size of their shares.",
           ],
         },
         { kind: "svg", figure: figure1 },
@@ -53,35 +62,44 @@ export const term: GlossaryTerm = {
     },
     {
       id: "how-idle-cost-is-allocated-on-eks-and-aks",
-      title: "How idle cost is allocated on EKS and AKS",
+      title: "On AKS",
       blocks: [
         {
           kind: "p",
           text: [
-            "AWS splits idle cost among the pods by share size. Azure Kubernetes Service (AKS) cost allocation comes from its ",
+            "On AKS, the ",
             { a: "cost analysis add-on", href: "/learn/aks-cost-analysis" },
-            ", which shows idle cost separately.",
+            " shows cluster costs by namespace and by asset in Microsoft Cost Management. It’s built on OpenCost. It needs the Standard or Premium tier, and an Enterprise Agreement or Microsoft Customer Agreement.",
+          ],
+        },
+        {
+          kind: "p",
+          text: "Unlike AWS, it keeps idle cost separate, beside the other shared charges:",
+        },
+        {
+          kind: "ul",
+          items: [
+            "Idle: capacity no workload uses.",
+            "System: capacity AKS reserves on each node for the kubelet and container runtime.",
+            "Service: charges such as the Uptime SLA and Microsoft Defender for Containers.",
+            "Unallocated: cost it can’t assign to a namespace.",
           ],
         },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why Kubernetes cost allocation matters",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            "Unused requests are charged too. That shows which teams hold spare capacity.",
-            "Allocation splits the cost but doesn’t reduce it.",
+            "Allocation shows who uses what. It doesn’t reduce the cost.",
+            "A pod pays for its requests even when it uses less. That shows which teams hold spare capacity.",
+            "Idle cost is node capacity no pod requests or uses. A large idle cost points to nodes you could remove.",
             [
               { a: "Coral", href: "/coral" },
               " rebalances CPU and memory requests on AKS and EKS to match real use, so the same pods fit on fewer nodes.",
-            ],
-            [
-              "Our library lists FinOps tools and other ",
-              { a: "cloud cost optimization tools", href: "/cloud-cost-optimization-library" },
-              ", with what each one does.",
             ],
           ],
         },
@@ -100,31 +118,36 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/cloud-chargeback",
     },
     {
+      title: "Cost allocation tags",
+      line: "Labels that split cost reports by team or app.",
+      href: "/learn/glossary/cost-allocation-tags",
+    },
+    {
       title: "Kubernetes resource requests",
       line: "What a container asks for.",
       href: "/learn/glossary/kubernetes-resource-requests",
     },
-    {
-      title: "Kubernetes cluster utilization",
-      line: "How full your nodes are.",
-      href: "/learn/glossary/kubernetes-cluster-utilization",
-    },
   ],
-  relatedTitle: "Terms related to cost allocation",
+  relatedTitle: "Related terms",
   next: {
-    title: "AKS cost analysis: what the add-on shows and what it doesn’t",
+    title: "AKS cost analysis",
     href: "/learn/aks-cost-analysis",
   },
   sources: [
     {
       publisher: "AWS",
-      title: "“Example of split cost allocation data”",
-      url: "https://docs.aws.amazon.com/cur/latest/userguide/example-split-cost-allocation-data.html",
+      title: "“Understanding split cost allocation data”",
+      url: "https://docs.aws.amazon.com/cur/latest/userguide/split-cost-allocation-data.html",
     },
     {
       publisher: "AWS",
-      title: "“Understanding split cost allocation data”",
-      url: "https://docs.aws.amazon.com/cur/latest/userguide/split-cost-allocation-data.html",
+      title: "“Enabling split cost allocation data”",
+      url: "https://docs.aws.amazon.com/cur/latest/userguide/enabling-split-cost-allocation-data.html",
+    },
+    {
+      publisher: "AWS",
+      title: "“Example of split cost allocation data”",
+      url: "https://docs.aws.amazon.com/cur/latest/userguide/example-split-cost-allocation-data.html",
     },
     {
       publisher: "AWS",
@@ -135,11 +158,6 @@ export const term: GlossaryTerm = {
       publisher: "Microsoft Learn",
       title: "“Azure Kubernetes Service (AKS) cost analysis”",
       url: "https://learn.microsoft.com/en-us/azure/aks/cost-analysis",
-    },
-    {
-      publisher: "AWS",
-      title: "“Enabling split cost allocation data”",
-      url: "https://docs.aws.amazon.com/cur/latest/userguide/enabling-split-cost-allocation-data.html",
     },
   ],
 };

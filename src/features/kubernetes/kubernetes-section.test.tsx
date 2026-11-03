@@ -57,10 +57,10 @@ describe("KubernetesSection", () => {
     expect(video).toHaveAttribute("poster", "/motion/coral-poster.webp");
     expect(video).toHaveAttribute("aria-label", homeFilms.coral.label);
     expect(video.getAttribute("aria-label")).toMatch(
-      /^Coral product preview with example figures: the Overview, /,
+      /^Coral console with example figures: the Overview, /,
     );
     expect(film.querySelector("figcaption.mo-cap")!.textContent).toBe(
-      "Coral product preview with example figures.",
+      "Coral console with example figures.",
     );
   });
 
@@ -71,13 +71,13 @@ describe("KubernetesSection", () => {
     /* The copy column is the page's voice, and the page never says Coral
        "right-sizes": that is Amoeba's verb. */
     expect(copy).not.toMatch(/right-?siz/i);
-    /* The h2 names the category and links to /coral; the line leads with what Coral stops (23 Oct 2026). */
+    /* The h2 names the category and links to /coral; the line says what Coral does, why, and its claim. */
     const h2 = container.querySelector("h2")!;
     expect(h2.textContent).toBe("Kubernetes optimization");
     expect(h2.querySelector("a")).toHaveAttribute("href", "/coral");
     const line = container.querySelector(".st-body")!;
     expect(line.textContent).toBe(
-      "Stop paying for idle Kubernetes capacity. Coral rebalances workloads and removes the nodes you don’t need. Read our guide to Kubernetes cost optimization.",
+      "Coral rebalances workloads and removes spare nodes to reduce your cloud cost, without any downtime. Read the Kubernetes cost optimization guide.",
     );
     expect(line.querySelector('[translate="no"]')).toHaveTextContent("Coral");
     /* The guide's sentence links the subject's pillar, in the prose link's own style (no class). */

@@ -4,22 +4,22 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/azure-vm-se
 export const term: GlossaryTerm = {
   slug: "azure-vm-series",
   term: "Azure VM series",
-  title: "What is an Azure VM series?",
-  meta: "An Azure virtual machine series is a group of Azure VM sizes. See the Azure VM types and families, how to read Standard_D4s_v5 and the memory per vCPU.",
-  h1: "What is an Azure VM series?",
-  card: "An Azure VM series is a group of virtual machine (VM) sizes with similar hardware and features.",
+  title: "Azure VM sizes and series",
+  meta: "Azure virtual machine sizes come in types, families and series. How to read a size name such as Standard_D4s_v5, and what an Azure SKU is.",
+  h1: "Azure VM sizes and series",
+  card: "An Azure VM series is a group of Azure virtual machine (VM) sizes with similar hardware and features.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "An Azure VM series is a group of virtual machine (VM) sizes with similar hardware and features. Each size sets the virtual CPUs (vCPUs) and memory your Azure VMs get. Standard_D4s_v5 is one size in the Dsv5 series.",
+      text: "An Azure VM series is a group of Azure virtual machine (VM) sizes with similar hardware and features. Each size, such as Standard_D4s_v5 in the Dsv5 series, sets the virtual CPUs (vCPUs) and memory your Azure VMs get.",
     },
     {
       kind: "p",
-      text: "Azure instance types go by another name: what AWS calls an instance type, Azure calls a VM size. Microsoft says AWS instance types and Azure VM sizes have similar categories, but their RAM, CPU and storage differ.",
+      text: "A VM size is Azure’s name for what AWS calls an instance type. Microsoft says the two have similar categories, but their RAM, CPU and storage differ.",
     },
   ],
   sections: [
@@ -29,33 +29,33 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "Azure VM families sit one level above a series. Microsoft groups them into types, including:",
+          text: "Microsoft sorts sizes by workload type. Each type holds families, and each family holds series. The main types:",
         },
         {
           kind: "ul",
           items: [
             "General purpose (such as B and D): balanced CPU and memory.",
-            "Compute optimized (F family): more CPU for each GiB.",
+            "Compute optimized (F family): more CPU for each GiB of memory.",
             "Memory optimized (such as E and M): more memory for each vCPU.",
             "Storage optimized (L family): high disk throughput and I/O. Microsoft says a storage optimized VM series is ideal for big data, SQL and NoSQL databases, and data warehousing.",
           ],
         },
         {
           kind: "p",
-          text: "Microsoft’s overview of sizes for virtual machines in Azure is the full Azure VM size list. Each series page has a size chart: a table of vCPUs and memory.",
+          text: "Microsoft’s overview of sizes for virtual machines in Azure lists every current series. Each series page has a table of its sizes, with their vCPUs and memory.",
         },
       ],
     },
     {
       id: "the-azure-vm-size-naming-convention",
-      title: "How to read Azure VM sizes",
+      title: "How to read a size name",
       blocks: [
         { kind: "p", text: "Read Standard_D4s_v5 left to right:" },
         {
           kind: "ul",
           items: [
             "D is the family.",
-            "4 is its vCPU count.",
+            "4 is the vCPU count.",
             "s means it can use any Premium SSD type.",
             "v5 is the series version.",
           ],
@@ -74,56 +74,64 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "The memory optimized Standard_E4s_v5 has the same 4\u00a0vCPUs but 32\u00a0GiB of memory, not 16.",
+          text: "The memory optimized Standard_E4s_v5 has the same 4\u00a0vCPUs, but 32\u00a0GiB of memory instead of 16.",
         },
         { kind: "svg", figure: figure1 },
       ],
     },
     {
       id: "what-an-azure-sku-is",
-      title: "What an Azure SKU is",
+      title: "Azure VM SKUs",
       blocks: [
         {
           kind: "p",
-          text: "SKUs in Azure are the options a resource comes in. Microsoft’s examples are a VM size and a storage account type. For a VM, the SKU is its size, such as Standard_D4s_v5.",
+          text: "A SKU is an option a resource comes in. Microsoft’s examples are a VM size and a storage account type. For a VM, the SKU is its size, such as Standard_D4s_v5.",
         },
         {
           kind: "p",
           text: [
-            "Not all Azure VM SKUs are offered in every region or zone, or to every subscription. Deploying a VM with a SKU that isn’t available there fails. The Azure portal’s activity log shows the error code ",
+            "Not every SKU is offered in every region or zone, or to every subscription. Deploying one that isn’t available fails. The activity log shows ",
             { code: "SkuNotAvailable" },
             ", or ",
             { code: "InvalidTemplateDeployment" },
-            " when you deploy from a template.",
+            " for a template.",
           ],
         },
         {
           kind: "p",
           text: [
-            "To get the Azure VM SKU list for a region, run ",
-            { code: "az vm list-skus" },
-            " with ",
-            { code: "--location" },
-            " and ",
+            "This command lists the Standard_D sizes in one region. The ",
             { code: "--all" },
-            ". The list shows each VM size and any restrictions, including sizes your subscription can’t use.",
+            " flag includes sizes your subscription can’t use:",
+          ],
+        },
+        {
+          kind: "code",
+          lang: "bash",
+          code: "az vm list-skus --location centralus --size Standard_D --all --output table",
+        },
+        {
+          kind: "p",
+          text: [
+            "The Restrictions column shows ",
+            { code: "NotAvailableForSubscription" },
+            " for those.",
           ],
         },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why Azure VM sizing matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            "Your VM series in Azure sets the memory you get with each vCPU.",
-            "If it doesn’t fit your workload, CPU or memory sits idle.",
-            "Esv5 has no temp disk, which Microsoft says reduces its entry price.",
-            "Disks are charged separately from VMs.",
+            "The series sets how much memory comes with each vCPU. If that doesn’t fit your workload, you pay for CPU or memory that sits idle.",
+            "Esv5 has no temporary disk, which Microsoft says reduces its price of entry.",
+            "Disks are charged separately from the VM.",
             [
-              "On Azure Windows VM sizes, the pay-as-you-go rate also includes the Windows Server license, unless you use ",
+              "On Azure Windows VM sizes, you also pay for Windows Server, unless you bring your own licenses with ",
               { a: "Azure Hybrid Benefit", href: "/learn/glossary/azure-hybrid-benefit" },
               ".",
             ],
@@ -139,7 +147,7 @@ export const term: GlossaryTerm = {
           text: [
             "The ",
             { a: "free assessment", href: "/assessment" },
-            " works out what your clusters and disks could save.",
+            " estimates what your clusters and disks could save.",
           ],
         },
       ],
@@ -163,7 +171,7 @@ export const term: GlossaryTerm = {
     },
     { title: "Node pool", line: "Where you pick a VM size.", href: "/learn/glossary/node-pool" },
   ],
-  relatedTitle: "Terms related to Azure VM series",
+  relatedTitle: "Related terms",
   next: {
     title: "How to change an AKS node pool VM size",
     href: "/learn/change-aks-node-pool-vm-size",

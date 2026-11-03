@@ -4,18 +4,18 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/cloud-taggi
 export const term: GlossaryTerm = {
   slug: "cloud-tagging-strategy",
   term: "Cloud tagging strategy",
-  title: "What is a cloud tagging strategy?",
-  meta: "A cloud tagging strategy sets which cloud tags your resources must carry and how you enforce them. See example Azure tags, and tag policies on AWS and Azure.",
-  h1: "What is a cloud tagging strategy?",
-  card: "A cloud tagging strategy is your set of rules for the labels on cloud resources.",
+  title: "Cloud tagging strategy",
+  meta: "A cloud tagging strategy sets which tags every cloud resource carries and how you enforce them. Example tags, limits and tag policies on AWS and Azure.",
+  h1: "Cloud tagging strategy",
+  card: "A cloud tagging strategy is your set of rules for the tags on cloud resources.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-26",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "A cloud tagging strategy is your set of rules for the labels on cloud resources. It says which tag keys your resources must carry, which values they allow, and how you enforce them.",
+      text: "A cloud tagging strategy is your set of rules for the tags on cloud resources. It says which tag keys every resource must carry, which values each key allows, and how you enforce them.",
     },
     { kind: "svg", figure: figure1 },
   ],
@@ -27,28 +27,32 @@ export const term: GlossaryTerm = {
         {
           kind: "p",
           text: [
-            "Cloud tagging is adding labels, called cloud tags or resource tags, to your cloud resources. Each tag is a key and a value, such as ",
+            "Cloud tagging is adding labels, called tags or resource tags, to your cloud resources. Each tag is a key and a value, such as ",
             { code: "Environment: Production" },
             ".",
           ],
         },
         {
           kind: "p",
-          text: "Tagging in AWS works the same way. You create some tags, and AWS services create others. Each resource can carry up to 50 user-created tags, and their keys and values are case sensitive.",
+          text: [
+            "On AWS, each resource can carry up to 50 tags you create. Tags that AWS creates start with ",
+            { code: "aws:" },
+            " and don’t count. Keys and values are case sensitive.",
+          ],
         },
         {
           kind: "p",
-          text: "Tags in Azure go on resources, resource groups and subscriptions, with up to 50 on each. Resources don’t inherit the tags on their resource group or subscription unless a policy applies them.",
+          text: "Azure tags go on resources, resource groups and subscriptions, up to 50 on each. Tag names aren’t case sensitive, but values are. Resources don’t inherit tags from their resource group or subscription unless a policy adds them.",
         },
       ],
     },
     {
       id: "an-example-tag-set",
-      title: "An example set of Azure tags",
+      title: "Example tag set",
       blocks: [
         {
           kind: "p",
-          text: "Microsoft sorts Azure tags into five types. A small strategy might require three, here with Microsoft’s examples:",
+          text: "Microsoft sorts tags into five types: functional, classification, accounting, purpose and ownership. A small strategy might require three keys, here with Microsoft’s examples:",
         },
         {
           kind: "ul",
@@ -58,61 +62,64 @@ export const term: GlossaryTerm = {
             [{ code: "env: prod" }, " (functional): which environment."],
           ],
         },
+        { kind: "p", text: "Two rules hold on both clouds:" },
         {
-          kind: "p",
-          text: [
-            "Keep the case of values consistent. On Azure, ",
-            { code: "Production" },
-            " and ",
-            { code: "production" },
-            " show as two lines in cost reports.",
+          kind: "ul",
+          items: [
+            [
+              "Keep one case for keys and values. On Azure, ",
+              { code: "Production" },
+              " and ",
+              { code: "production" },
+              " are two values, and cost reports show them apart.",
+            ],
+            "Keep passwords, personal data and other sensitive values out of tags. Tags are plain text, and cost reports show them.",
           ],
         },
       ],
     },
     {
       id: "tag-policy-on-aws-and-azure",
-      title: "Tag policy on AWS and Azure",
+      title: "Tag policies",
       blocks: [
-        { kind: "h3", id: "aws-tag-policies", title: "AWS tagging with tag policies" },
+        { kind: "h3", id: "aws-tag-policies", title: "AWS tag policies" },
         {
           kind: "p",
-          text: "In an AWS tagging strategy, AWS Organizations tag policies set a key’s case and allowed values. With enforcement on, a tagging request that breaks them fails. Missing tags need a “required tag key” rule, checked in infrastructure as code (IaC) tools such as AWS CloudFormation.",
+          text: "AWS Organizations tag policies set a key’s exact case and its allowed values. With enforcement on, a request that breaks them fails.",
         },
-        { kind: "p", text: "AWS tag best practices include these rules:" },
         {
-          kind: "ul",
-          items: [
-            "Keep personal, confidential or sensitive data out of tags.",
-            "Use one case-sensitive format for tags across every resource type.",
-            [
-              "Write keys in lowercase, with hyphens between words and a company prefix, as in AWS’s example ",
-              { code: "anycompany:cost-center" },
-              ".",
-            ],
+          kind: "p",
+          text: "Tag policies don’t stop a resource created with no tags. To require tags, AWS points to service control policies (SCPs). It also points to “required tag key” rules in infrastructure as code (IaC) tools such as AWS CloudFormation.",
+        },
+        {
+          kind: "p",
+          text: [
+            "AWS’s tag best practices suggest lowercase keys, hyphens between words and a company prefix, as in ",
+            { code: "anycompany:cost-center" },
+            ".",
           ],
         },
         {
           kind: "h3",
           id: "azure-tagging-with-azure-policy",
-          title: "Azure tagging with Azure Policy",
+          title: "Azure Policy",
         },
         {
           kind: "p",
-          text: "In an Azure tagging strategy, Azure Policy’s built-in “Require a tag on resources” definition blocks deploying a resource without the tag. Other definitions add a missing tag, and a remediation task can tag existing resources.",
+          text: "Azure Policy’s built-in “Require a tag on resources” definition blocks a deployment that lacks the tag. Other definitions, such as “Inherit a tag from the resource group if missing”, add the tag instead. A remediation task can tag resources that already exist.",
         },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why a tagging strategy matters for your cloud cost",
+      title: "Tags and cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            "A tagging strategy lets you assign cloud cost to an owner. Cloud cost on an untagged resource is a gap to fix.",
+            "Tags let you assign cloud cost to an owner. Cost on an untagged resource is a gap to fix.",
             [
-              "Tagged cloud cost feeds ",
+              "Tagged cost feeds ",
               { a: "showback", href: "/learn/glossary/showback" },
               " and ",
               { a: "chargeback", href: "/learn/glossary/cloud-chargeback" },
@@ -123,8 +130,9 @@ export const term: GlossaryTerm = {
               { a: "tag compliance", href: "/learn/glossary/cloud-cost-governance" },
               " as a key performance indicator (KPI).",
             ],
+            "Tag inheritance in Microsoft Cost Management copies subscription and resource group tags onto cost data. It doesn’t change the tags on your resources.",
             [
-              "Tags don’t ",
+              "Tags show where cost goes. They don’t ",
               { a: "reduce your cloud cost", href: "/cloud-cost-optimization" },
               " by themselves.",
             ],
@@ -151,9 +159,9 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-cost-allocation",
     },
   ],
-  relatedTitle: "Cloud cost terms related to tagging strategy",
+  relatedTitle: "Related terms",
   next: {
-    title: "Cloud cost optimization: how to reduce cloud costs",
+    title: "Cloud cost optimization",
     href: "/cloud-cost-optimization",
   },
   sources: [
@@ -161,6 +169,11 @@ export const term: GlossaryTerm = {
       publisher: "Microsoft Learn",
       title: "“Define your tagging strategy”",
       url: "https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-tagging",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“Use tags to organize your Azure resources and management hierarchy”",
+      url: "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/tag-resources",
     },
     {
       publisher: "Microsoft Learn",
@@ -174,10 +187,9 @@ export const term: GlossaryTerm = {
       note: " (FinOps Framework)",
     },
     {
-      publisher: "AWS",
-      title: "“Enforce tagging consistency”",
-      url: "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies-enforcement.html",
-      note: " (AWS Organizations)",
+      publisher: "Microsoft Learn",
+      title: "“Group and allocate costs using tag inheritance”",
+      url: "https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/enable-tag-inheritance",
     },
     {
       publisher: "AWS",
@@ -186,9 +198,10 @@ export const term: GlossaryTerm = {
       note: " (Tagging AWS resources)",
     },
     {
-      publisher: "Microsoft Learn",
-      title: "“Use tags to organize your Azure resources and management hierarchy”",
-      url: "https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/tag-resources",
+      publisher: "AWS",
+      title: "“Enforce tagging consistency”",
+      url: "https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies-enforcement.html",
+      note: " (AWS Organizations)",
     },
   ],
 };

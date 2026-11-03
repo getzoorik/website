@@ -4,19 +4,19 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/metrics-ser
 export const term: GlossaryTerm = {
   slug: "metrics-server",
   term: "Metrics Server (metrics-server)",
-  title: "What is Metrics Server in Kubernetes?",
-  meta: "Metrics Server feeds live CPU and memory use to the HPA, the VPA and kubectl top. Where it runs on AKS, and how to install the k8s metrics server on EKS.",
-  h1: "What is Metrics Server in Kubernetes?",
-  card: "Metrics Server (metrics-server) is a Kubernetes cluster add-on that collects CPU and memory use from the kubelet on each node.",
+  title: "What is the Kubernetes Metrics Server?",
+  meta: "The Kubernetes Metrics Server serves live CPU and memory use to the HPA, the VPA and kubectl top. How it works, and how to add it on EKS.",
+  h1: "What is the Kubernetes Metrics Server?",
+  card: "Metrics Server (metrics-server) is a Kubernetes add-on that collects CPU and memory use from the kubelet on each node.",
   group: "kubernetes",
   product: "coral",
   published: "2026-11-02",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
       text: [
-        "Metrics Server (metrics-server) is a Kubernetes cluster add-on that collects CPU and memory use from the kubelet on each node. It serves that data through the Kubernetes API as the Metrics API, ",
+        "Metrics Server (metrics-server) is a Kubernetes add-on that collects CPU and memory use from the kubelet on each node. It serves that data through the Kubernetes API as the Metrics API, ",
         { code: "metrics.k8s.io" },
         ".",
       ],
@@ -30,7 +30,7 @@ export const term: GlossaryTerm = {
         { a: "Vertical Pod Autoscaler (VPA)", href: "/learn/glossary/vertical-pod-autoscaler" },
         " and ",
         { code: "kubectl top" },
-        " read it. The Metrics API answers only once metrics-server, or another adapter that serves it, is deployed.",
+        " read it. The Metrics API works only once metrics-server, or another adapter that serves it, is deployed.",
       ],
     },
     { kind: "svg", figure: figure1 },
@@ -38,24 +38,24 @@ export const term: GlossaryTerm = {
   sections: [
     {
       id: "how-metrics-server-works",
-      title: "How Metrics Server works",
+      title: "How it works",
       blocks: [
         {
           kind: "ul",
           items: [
             [
-              "It tracks nodes and pods through the Kubernetes API, and queries each node’s ",
+              "It finds nodes and pods through the Kubernetes API, and queries each node’s ",
               { a: "kubelet", href: "/learn/glossary/kubelet" },
-              " over HTTP. From metrics-server v0.6.0 it reads ",
+              " over HTTP. Version 0.6.0 and later read ",
               { code: "/metrics/resource" },
-              ", and older versions used ",
+              ". Older versions read ",
               { code: "/stats/summary" },
               ".",
             ],
             [
               "An APIService registers ",
               { code: "metrics.k8s.io" },
-              " with the API server’s aggregation layer. So Kubernetes role-based access control (RBAC) decides who can read it.",
+              " with the API server’s aggregation layer. So Kubernetes access control decides who can read it.",
             ],
             "CPU is average core use over a time window. Memory is the working set in bytes, at the moment it was collected.",
           ],
@@ -64,23 +64,23 @@ export const term: GlossaryTerm = {
     },
     {
       id: "metrics-server-on-aks-and-eks",
-      title: "Metrics Server on AKS and EKS",
+      title: "On AKS and EKS",
       blocks: [
         {
           kind: "p",
           text: [
-            "On AKS, Metrics Server already runs in the ",
+            "On AKS, metrics-server already runs in the ",
             { code: "kube-system" },
-            " namespace, which every cluster gets by default.",
+            " namespace, which every cluster has.",
           ],
         },
         {
           kind: "p",
-          text: "Amazon EKS doesn’t deploy Metrics Server by default. AWS’s current route is the Metrics Server community add-on. In the AWS console, open your cluster, choose Add-ons, then Get More Add-ons, then Metrics Server.",
+          text: "Amazon EKS doesn’t deploy it by default. AWS offers it as a community add-on: in the AWS console, open your cluster, choose Add-ons, then Get More Add-ons, then Metrics Server.",
         },
         {
           kind: "p",
-          text: "AWS still documents the manifest route: apply it, check the deployment, then read node use.",
+          text: "AWS still documents the manifest route, but plans to archive it. Apply the manifest, check the deployment, then read node use:",
         },
         {
           kind: "code",
@@ -90,7 +90,7 @@ export const term: GlossaryTerm = {
         {
           kind: "callout",
           label: "Watch out",
-          text: "Your security groups and network access control lists (ACLs) must allow port 10250 between the metrics-server pods and all other nodes and pods. Fargate reserves 10250, so on Fargate the manifest needs another port. The EKS add-on already uses 10251.",
+          text: "Security groups and network access control lists (ACLs) must allow port 10250 between the metrics-server pods and all other nodes and pods. Fargate reserves 10250, so on Fargate the manifest needs another port. The EKS add-on already uses 10251.",
         },
         {
           kind: "p",
@@ -99,18 +99,18 @@ export const term: GlossaryTerm = {
             { code: "kubectl top" },
             " returns ",
             { code: "Error from server (Forbidden)" },
-            ", your Kubernetes RBAC identity lacks permission to read cluster metrics.",
+            ", your Kubernetes RBAC identity can’t read cluster metrics.",
           ],
         },
       ],
     },
     {
       id: "what-metrics-server-isnt-for",
-      title: "What Metrics Server isn’t for",
+      title: "What it isn’t for",
       blocks: [
         {
           kind: "p",
-          text: "Metrics Server keeps a short-term, in-memory view. AWS says its metrics are meant for point-in-time analysis, not for history. They can’t be used as a monitoring solution, or for purposes other than autoscaling.",
+          text: "Metrics Server is a short-term, in-memory store. AWS says its metrics are for point-in-time analysis, not history. They can’t be used for monitoring, or for anything other than autoscaling.",
         },
         {
           kind: "p",
@@ -130,11 +130,11 @@ export const term: GlossaryTerm = {
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why Metrics Server matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "p",
-          text: "As load drops, the HPA reads this API and scales replicas back down. Its CPU target is a share of each pod’s CPU request. If any container has no CPU request, the HPA takes no action on CPU.",
+          text: "As load drops, the HPA reads this API and scales replicas back down. Its CPU target is a share of each pod’s CPU request. If a container has no CPU request, the HPA takes no action on CPU.",
         },
         {
           kind: "p",
@@ -156,7 +156,7 @@ export const term: GlossaryTerm = {
             [
               "The ",
               { a: "free assessment", href: "/assessment?p=coral" },
-              " works out your own figure. It samples use with ",
+              " estimates your saving. It samples use with ",
               { code: "kubectl top" },
               ". Without Metrics Server, requests stay as they are and only surplus nodes count.",
             ],
@@ -187,8 +187,9 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-resource-requests",
     },
   ],
+  relatedTitle: "Related terms",
   next: {
-    title: "Kubernetes pod right sizing: set requests from real use",
+    title: "Kubernetes requests vs limits",
     href: "/learn/kubernetes-pod-right-sizing",
   },
   sources: [

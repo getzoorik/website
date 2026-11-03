@@ -7,9 +7,9 @@ import type { ProductId } from "@/content/products";
  * it: the page at /learn/glossary/<slug>, its metadata and share card, its structured data, the sitemap and the
  * glossary's hub. A term is published when its file is in the index.
  *
- * A term's page is a Learn article's page cut short: the definition where an article has its short answer, then two
- * to four sections in the article's blocks and its one drawn figure, the Related terms as the article's Related tiles,
- * the article to read next, and the sources. No help box, author or cover.
+ * A term's page is a Learn article's page cut short: the definition where an article has its short answer, then the
+ * sections it needs in the article's blocks and its one drawn figure, the Related terms as the article's Related
+ * tiles, the article to read next, and the sources. No help box, author or cover.
  *
  * ─── PLAIN DATA, THE ARTICLES' MARKUP ──────────────────────────────────────
  * Its text is written as an article's is (`ArticleText`): a string, or pieces where a piece is bold, inline code or a
@@ -58,8 +58,8 @@ export interface GlossaryTerm {
   /** What stands before the first heading: the definition first, then any list, command or figure with it. */
   readonly definition: readonly ArticleBlock[];
   /**
-   * Two to four sections, `#why-it-matters-for-your-cloud-cost` among them, named for the term ("Why rightsizing
-   * matters for your cloud cost"); the related terms are `related`.
+   * The sections the term needs, `#why-it-matters-for-your-cloud-cost` among them, named for the term ("Why
+   * rightsizing matters for your cloud cost"); the related terms are `related`.
    */
   readonly sections: readonly ArticleSection[];
   readonly related: readonly GlossaryRelated[];
@@ -74,5 +74,5 @@ export interface GlossaryTerm {
 export const glossaryWords = {
   updated: "Updated ",
   next: "Read next:",
-  related: "More cloud cost terms",
+  related: "Related terms",
 } as const;

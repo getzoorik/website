@@ -144,7 +144,7 @@ describe("the page", () => {
     const top = page.querySelector("article.fq-main > .fq-upd")!;
     expect(top).toBe(page.querySelector("article.fq-main")!.firstElementChild);
     expect([...top.children].map((child) => child.className)).toEqual(["doc-updated"]);
-    expect(text(top)).toBe("Updated 2 November 2026");
+    expect(text(top)).toBe("Updated 3 November 2026");
   });
 
   it("has no contents rail and no summary, and names its groups in the phone's chip row", () => {
@@ -219,7 +219,7 @@ describe("each question", () => {
     });
   });
 
-  it("names no other question by its number, and links out only from About Coral", () => {
+  it("names no other question by its number, and links out from About Coral and the spare-capacity answer", () => {
     expect(text(page.querySelector(".fq-main"))).not.toMatch(
       /\(question \d+\)|next question|\(see /,
     );
@@ -229,6 +229,11 @@ describe("each question", () => {
       .short.flatMap((line) => (typeof line === "string" ? [] : line))
       .find((part) => typeof part !== "string" && "href" in part && learnSlugOf(part.href))!;
     const compared = titleLink(stored as { readonly text: string; readonly href: string });
+    /* The placeholder-pods how-to: the Learn article by its h1, a link once it is published. */
+    const howTo = titleLink({
+      text: "Cluster Autoscaler overprovisioning",
+      href: "/learn/cluster-autoscaler-overprovisioning",
+    });
     expect(text(page.querySelector("#do-i-need-coral-with-karpenter .fq-a"))).toContain(
       `Compared in full: ${compared.text}.`,
     );
@@ -236,7 +241,7 @@ describe("each question", () => {
     expect(
       links.map((link) => [link.closest("details")!.id, text(link), link.getAttribute("href")]),
     ).toEqual([
-      ["what-is-coral", "Coral for AKS and EKS", "/coral"],
+      ["what-is-coral", "Coral product page", "/coral"],
       [
         "what-leaves-my-cluster",
         "What leaves your cluster",
@@ -245,16 +250,17 @@ describe("each question", () => {
       /* "Compared in full": the Learn article by its h1, a link once it is published. */
       ...(compared.href ? [["do-i-need-coral-with-karpenter", compared.text, compared.href]] : []),
       ["how-much-can-coral-save", "free AKS and EKS cost assessment", "/assessment?p=coral"],
+      ...(howTo.href ? [["how-much-spare-capacity-is-kept", howTo.text, howTo.href]] : []),
     ]);
   });
 
   it("restates the five answers that named a question by its number", () => {
     const answer = (id: string) => text(page.querySelector(`#${id} .fq-a`));
     expect(answer("is-the-recommendation-based-on-average")).toContain(
-      "With a CPU-based HPA, the CPU request comes from replaying 3 days of load through your HPA instead.",
+      "With a CPU-based HPA, Coral picks the CPU request by replaying recent load through your HPA’s own settings.",
     );
     expect(answer("memory-spikes-can-cause-oom-kills")).toContain(
-      "If an OOM kill still happens, Coral raises that container’s memory straight away, by 20% per kill and at least 100 MiB.",
+      "If an OOM kill still happens, Coral raises that container’s memory straight away.",
     );
   });
 

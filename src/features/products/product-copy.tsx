@@ -27,9 +27,9 @@ import { Text } from "@/features/learn/article-page";
  * "Estimate your saving" opens the assessment on this product, same tab, with
  * the plain arrow. Its arrow moves 2px on hover and 3px on keyboard focus (the
  * site system and motion.css). The link after it names what the page is about
- * rather than "Learn more": Amoeba's the category alone ("Block storage cost
- * optimization"), Coral's the product ("Kubernetes optimization with Coral",
- * 1 Nov 2026), so the two blocks' links differ by their own words; it ends on
+ * rather than "Learn more": Amoeba's ("Block storage optimization with
+ * Amoeba") and Coral's ("Kubernetes optimization with Coral") each name their
+ * product, so the two blocks' links differ by their own words; it ends on
  * the same arrow at 14px. A product's name in it is still kept out of
  * translation.
  *

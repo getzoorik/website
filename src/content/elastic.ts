@@ -5,8 +5,8 @@ import { workedExample } from "@/content/savings";
 /**
  * Product 02 — the Amoeba section's words.
  *
- * Copied from the design source verbatim. The headline and the deck are
- * marketing claims, and a paraphrase is a different claim.
+ * The headline and the deck are claims: change them only with the claims the
+ * site already makes about Amoeba.
  *
  * 🔴 THE FIGURES ARE A WORKED EXAMPLE, AND THE CAPTION SAYS SO. `/amoeba` prints
  * `caption` under its How it works cards, whose figures are the one-pager's:
@@ -17,10 +17,9 @@ export const elasticContent: ProductSectionContent = {
   product: "amoeba",
   /* The SEO heading pass (owner, 23 Oct 2026): the h2 names the category and links to /amoeba. */
   headline: "Block storage optimization",
-  /* "After the one switch" (owner, 1 Nov 2026): the services restart once, at the switch onto the pool, as the How it works
-     card says. The pool in place of the clouds, the OSs and "autonomously" (2 Nov 2026): the description and the Runs on
-     chips say those. */
-  body: "Stop paying for empty disk space. Amoeba moves a VM’s data disks onto one btrfs pool and rightsizes it, without any downtime after the one switch.",
+  /* Why Amoeba matters, then what it does and its claim (2 Nov 2026: without any downtime, said plainly). The clouds
+     and the OSs are the Runs on chips'. */
+  body: "Cloud disks can grow but not shrink. Amoeba moves a VM’s data disks onto one pool, then rightsizes it without any downtime.",
   /* Azure and AWS link to their cloud pages on the home page; Windows and Linux stay plain (owner, 1 Nov 2026). */
   runsOn: {
     label: "Runs on",

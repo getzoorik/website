@@ -61,13 +61,13 @@ describe("the home page", () => {
       [
         "coral",
         "/coral",
-        "Stop paying for idle Kubernetes capacity. Coral rebalances workloads and removes the nodes you don’t need. Read our guide to Kubernetes cost optimization.",
+        "Coral rebalances workloads and removes spare nodes to reduce your cloud cost, without any downtime. Read the Kubernetes cost optimization guide.",
         "Coral",
       ],
       [
         "amoeba",
         "/amoeba",
-        "Stop paying for empty disk space. Amoeba moves a VM’s data disks onto one btrfs pool and rightsizes it, without any downtime after the one switch.",
+        "Cloud disks can grow but not shrink. Amoeba moves a VM’s data disks onto one pool, then rightsizes it without any downtime.",
         "Amoeba",
       ],
     ] as const) {
@@ -133,13 +133,13 @@ describe("the home page", () => {
       "h2 Kubernetes optimization",
       "h2 Block storage optimization",
       "h2 Autonomous optimization, without the risk",
-      "h3 Pay for what your workloads use",
-      "h3 Drains nodes safely, one at a time",
+      "h3 Pay for what you use",
+      "h3 Drains safely, one at a time",
       "h3 Without any downtime or code changes",
       "h3 Full control and visibility",
       "h2 How we reduced our own AKS cluster’s machine cost by 58%",
-      "h2 Cloud cost assessment",
-      "h3 Free assessment",
+      "h2 What you can save",
+      "h3 Assessment",
       "h3 Coral",
       "h3 Amoeba",
       "h3 Coral and Amoeba together",
@@ -255,7 +255,7 @@ describe("the home page", () => {
       .join("");
     expect(tagline).toBe(" Reduce cloud cost, autonomously.");
     expect(page.querySelector(".hero .hero-sub")).toHaveTextContent(
-      /^Software that optimizes Kubernetes and block storage on Azure and AWS\.$/,
+      /^Kubernetes and block storage optimization on Azure and AWS\.$/,
     );
   });
 
@@ -400,7 +400,7 @@ describe("the home page", () => {
       expect(video.closest("section")!.id).toBe(id);
       expect(video).toHaveAttribute("aria-label", homeFilms[id].label);
       expect(video.getAttribute("aria-label")).toMatch(
-        /^(Coral|Amoeba) product preview with example figures: /,
+        /^(Coral|Amoeba) console with example figures: /,
       );
       /* Started by script while in view, so it has to be silent and in the page. */
       expect(video.muted).toBe(true);
@@ -410,8 +410,8 @@ describe("the home page", () => {
       expect(video).not.toHaveAttribute("controls");
     }
     expect([...page.querySelectorAll("main .mo-cap")].map((p) => p.textContent)).toEqual([
-      "Coral product preview with example figures.",
-      "Amoeba product preview with example figures.",
+      "Coral console with example figures.",
+      "Amoeba console with example figures.",
     ]);
     /* Mirrored: Coral's film after its copy, Amoeba's before it; each comes in
        once, 120ms after the copy beside it. */
@@ -438,7 +438,7 @@ describe("the home page", () => {
     expect(offers).toHaveAttribute("aria-labelledby", "offers-h");
     /* The qualifier stands under the title, so no figure stands without it. */
     const side = offers.querySelector(".ofx-side")!;
-    expect(side.querySelector("h2#offers-h")).toHaveTextContent("Cloud cost assessment");
+    expect(side.querySelector("h2#offers-h")).toHaveTextContent("What you can save");
     expect(side.querySelector(".ofx-note")).toHaveTextContent("Estimated ranges, not a promise.");
     expect(side.querySelector(".ofx-free .ofx-free-n")).toHaveTextContent("Free");
     /* Each row's name is an h3, as the free card's label is (the outline above). */
@@ -497,7 +497,7 @@ describe("the home page", () => {
     /* The sentences left the screen and name the drawings, word for word. */
     expect(cards.map((card) => card.querySelector("figure")!.getAttribute("aria-label"))).toEqual([
       "Capacity follows what is used, not what was provisioned for the peak.",
-      "A disk leaves the pool only when it is empty.",
+      "A node or a disk is removed only once it is empty.",
       "No code changes, and the resize runs beside live traffic.",
       "You decide what each product manages, and see every change it makes.",
     ]);

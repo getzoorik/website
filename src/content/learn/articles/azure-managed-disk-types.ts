@@ -5,16 +5,16 @@ import { figure as figure3 } from "@/features/learn/figures/azure-managed-disk-t
 
 export const article: Article = {
   slug: "azure-managed-disk-types",
-  title: "Azure disk types compared: how to choose one",
-  meta: "Azure managed disk types: how Ultra Disk, Premium SSD v2, Premium SSD, Standard SSD and Standard HDD charge, one disk priced on all five, and which to pick.",
-  h1: "Azure disk types: how to choose one for each disk",
-  deck: "Three types charge by size tier, two charge for the capacity and performance you set.",
-  card: "The five Azure disk types side by side: how each charges, one disk priced on all five, and how to pick.",
+  title: "Azure disk types: pricing and how to choose",
+  meta: "The five Azure disk types compared: their limits, how each charges, one disk priced on all five, and which to pick.",
+  h1: "Azure disk types",
+  deck: "Three types charge a size tier, and two charge for the capacity and performance you set.",
+  card: "The five Azure disk types side by side: limits, prices and which to pick for each disk.",
   product: "amoeba",
   hub: "Block storage",
   topic: "Azure block storage",
   published: "2026-11-01",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   author: "sheldon",
   cover: "/learn-covers/zoorik-learn-azure-managed-disk-types-1200x630.webp",
   coverAlt:
@@ -22,17 +22,17 @@ export const article: Article = {
   short: [
     "The five Azure disk types, all ",
     { a: "managed disks", href: "/learn/glossary/azure-managed-disk" },
-    ", are Ultra Disk, Premium SSD v2, Premium SSD, Standard SSD and Standard HDD. For most general-purpose data disks, Premium SSD v2 gives the best price performance, and Premium SSD is the fastest OS disk type.",
+    ", are Ultra Disk, Premium SSD v2, Premium SSD, Standard SSD and Standard HDD. Start most data disks on Premium SSD v2, which Microsoft says can give the best price performance for most general-purpose workloads. Premium SSD is the fastest OS disk type. Use Ultra Disk only when one disk needs more than v2 can give.",
   ],
   sections: [
     {
       id: "azure-disk-types",
-      title: "Azure disk types compared",
+      title: "The five types compared",
       blocks: [
         {
           kind: "table",
           columns: [
-            { label: "What you decide on", width: "14%" },
+            { label: "Feature", width: "14%" },
             { label: "Ultra Disk", width: "16%" },
             { label: "Premium SSD v2", width: "18%" },
             { label: "Premium SSD", width: "14%" },
@@ -86,7 +86,7 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Latency follows the same order. Microsoft designs Ultra Disk and v2 for under a millisecond, and Premium SSD and Standard SSD for single-digit milliseconds. Standard HDD aims for writes under 10\u00a0ms and reads under 20\u00a0ms, for most I/O.",
+          text: "Latency follows the same order. Ultra Disk and Premium SSD v2 aim for under a millisecond, and Premium SSD and Standard SSD for single-digit milliseconds. Standard HDD aims for writes under 10\u00a0ms and reads under 20\u00a0ms, for most I/O.",
         },
         {
           kind: "p",
@@ -94,18 +94,18 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "Premium SSD needs a VM size that supports Premium storage, while Standard SSD and Standard HDD work on every Azure VM.",
+          text: "Premium SSD needs a VM size that supports Premium storage. Standard SSD and Standard HDD work on every Azure VM.",
         },
       ],
     },
     {
       id: "how-azure-disk-types-pricing-works",
-      title: "How each Azure disk type charges",
+      title: "How each type charges",
       blocks: [
         {
           kind: "h3",
           id: "three-types-charge-a-size-tier",
-          title: "Three types charge a size tier",
+          title: "Size tiers",
         },
         {
           kind: "p",
@@ -143,7 +143,7 @@ export const article: Article = {
         {
           kind: "h3",
           id: "premium-ssd-v2-and-ultra-disk-charge",
-          title: "Premium SSD v2 and Ultra Disk charge what you set",
+          title: "Premium SSD v2 and Ultra Disk",
         },
         {
           kind: "p",
@@ -165,7 +165,7 @@ export const article: Article = {
           kind: "p",
           text: [
             { a: "Ultra Disk", href: "/learn/glossary/azure-ultra-disk" },
-            " charges for capacity, IOPS and throughput too, with no free baseline. In East US it lists at $0.000164 per GiB, $0.000068 per IOPS and $0.000479 per MB/s, each by the hour.",
+            " charges for capacity, IOPS and throughput too, with nothing included. In East US it lists at $0.000164 per GiB, $0.000068 per IOPS and $0.000479 per MB/s, each by the hour.",
           ],
         },
         {
@@ -177,13 +177,13 @@ export const article: Article = {
     },
     {
       id: "what-one-disk-costs-on-each-of",
-      title: "What one disk costs on each of the five types",
+      title: "One disk, five prices",
       blocks: [
         { kind: "h3", id: "a-1-024-gib-database-disk", title: "A 1,024\u00a0GiB database disk" },
         {
           kind: "callout",
           label: "Worked example",
-          text: "Take a 1,024\u00a0GiB data disk under a production database that needs 5,000\u00a0IOPS and 200\u00a0MB/s. These are East US pay-as-you-go list prices for LRS on 1 November 2026, from Microsoft’s Azure Retail Prices API, over a 730-hour month.",
+          text: "Take a 1,024\u00a0GiB data disk under a production database that needs 5,000\u00a0IOPS and 200\u00a0MB/s. The prices are East US pay-as-you-go list prices for LRS on 1 November 2026, from Microsoft’s Azure Retail Prices API, over a 730-hour month.",
         },
         {
           kind: "table",
@@ -242,11 +242,11 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "On a small, quiet disk, v2 and Standard SSD sit close. A 128\u00a0GiB v2\u00a0disk costs 128 × $0.0803 = $10.28 a month, with its 3,000\u00a0IOPS included. A 128\u00a0GiB Standard SSD, an E10, costs $9.60 plus transactions, for up to 500\u00a0IOPS.",
+          text: "On a small, quiet disk, v2 and Standard SSD sit close. A 128\u00a0GiB v2\u00a0disk costs 128 × $0.0803 = $10.28 a month, with 3,000\u00a0IOPS included. A 128\u00a0GiB Standard SSD, an E10, costs $9.60 plus transactions, for up to 500\u00a0IOPS.",
         },
         {
           kind: "p",
-          text: "A P10 of the same size costs $19.71 for 500\u00a0IOPS. That’s nearly twice the v2 price, for a sixth of its included IOPS.",
+          text: "A P10 of the same size costs $19.71 for 500\u00a0IOPS: nearly twice the v2 price, for a sixth of its included IOPS.",
         },
         {
           kind: "p",
@@ -260,41 +260,44 @@ export const article: Article = {
     },
     {
       id: "which-azure-disk-type-to-choose-for",
-      title: "Which Azure disk type to choose for each disk",
+      title: "How to choose",
       blocks: [
         {
           kind: "p",
-          text: "A VM boots from its OS disk and keeps application data on data disks. So the Azure VM disk types you need depend first on each disk’s job.",
+          text: "A VM boots from its OS disk and keeps application data on data disks. Choose the type for each disk by its job.",
         },
-        { kind: "h3", id: "the-azure-os-disk-type", title: "The Azure OS disk type" },
+        { kind: "h3", id: "the-azure-os-disk-type", title: "OS disk" },
         {
           kind: "p",
           text: "An OS disk can be Premium SSD, Standard SSD or Standard HDD. Microsoft says Standard HDD doesn’t suit OS disks, and retires its use as one on 8 September 2028.",
         },
         {
           kind: "p",
-          text: "Use Premium SSD for the OS disk when uptime matters. A single VM gets Microsoft’s highest uptime service level agreement (SLA) only on premium disks. The OS disk must be Premium SSD, and data disks Premium SSD, v2 or Ultra Disk.",
+          text: "Use Premium SSD for the OS disk when uptime matters. A single VM gets Microsoft’s highest uptime service level agreement (SLA) only on premium disks. That needs a Premium SSD OS disk, and data disks on Premium SSD, v2 or Ultra Disk. Standard SSD suits a lightly used VM, such as one for dev and test.",
         },
         {
           kind: "h3",
           id: "azure-data-disk-types-in-order",
-          title: "Azure data disk types, in order",
+          title: "Data disks",
         },
-        { kind: "p", text: "All five types work as data disks. Take these in order for each one:" },
+        {
+          kind: "p",
+          text: "All five types work as data disks. Go down this list for each disk, and take the first type that fits:",
+        },
         {
           kind: "ol",
           items: [
             [
-              { b: "Start at Premium SSD v2." },
-              " Microsoft says v2 can give the best price performance for most general-purpose workloads. The worked example shows why.",
+              { b: "Ultra Disk" },
+              " when one disk needs more than 80,000\u00a0IOPS or 2,000\u00a0MB/s, the most v2 gives.",
             ],
             [
-              { b: "Use Standard HDD for backups." },
-              " Microsoft suggests it for backup and noncritical, infrequently accessed workloads, and for large, sequential I/O.",
+              { b: "Standard HDD" },
+              " for backups, rarely read data and latency-tolerant workloads with large, sequential I/O.",
             ],
             [
-              { b: "Use Standard SSD for light I/O." },
-              " It suits web servers and dev and test disks within 500\u00a0IOPS and 100\u00a0MB/s. Busy disks pay more in transactions, and ",
+              { b: "Standard SSD" },
+              " for light I/O, such as web servers and dev and test disks within 500\u00a0IOPS and 100\u00a0MB/s. Busy disks pay more in transactions, and ",
               {
                 a: "Premium SSD vs Standard SSD on Azure",
                 href: "/learn/premium-ssd-vs-standard-ssd-azure",
@@ -302,14 +305,14 @@ export const article: Article = {
               " works out the break-even.",
             ],
             [
-              { b: "Keep Premium SSD where v2 can’t go." },
-              " That means a disk that needs host caching or ZRS, or one used with Azure Compute Gallery. It also means a VM whose region or zone doesn’t offer v2. ",
+              { b: "Premium SSD" },
+              " where v2 can’t go. That means a disk that needs host caching or ZRS, or one used with Azure Compute Gallery. It also means a VM whose region or zone doesn’t offer v2. ",
               { a: "Premium SSD v2 vs Premium SSD", href: "/learn/premium-ssd-v2-vs-premium-ssd" },
               " covers each limit.",
             ],
             [
-              { b: "Pick Ultra Disk only past v2’s ceiling." },
-              " Choose it when one disk needs more than 80,000\u00a0IOPS or 2,000\u00a0MB/s.",
+              { b: "Premium SSD v2" },
+              " for every other data disk. In the worked example, it costs least of the types that meet the need.",
             ],
           ],
         },
@@ -318,7 +321,7 @@ export const article: Article = {
     },
     {
       id: "settings-that-sit-on-top-of-the",
-      title: "Settings that sit on top of the disk type",
+      title: "Redundancy, tiers and bursting",
       blocks: [
         {
           kind: "ul",
@@ -326,18 +329,18 @@ export const article: Article = {
             [
               { b: "Redundancy." },
               " Every type offers LRS, which keeps three copies of the data in one datacenter. Only Premium SSD and Standard SSD also offer ZRS, which spreads the copies across three availability zones. In East US a P20 lists at $109.81 a month on ZRS, 1.5 times its LRS price of $73.22. ",
-              { a: "Azure disk LRS vs ZRS", href: "/learn/azure-disk-lrs-vs-zrs" },
+              { a: "Azure LRS vs ZRS", href: "/learn/azure-disk-lrs-vs-zrs" },
               " covers when that’s worth it.",
             ],
             [
               { b: "Performance tiers." },
-              " A Premium SSD can run at a higher tier’s IOPS and throughput without growing. Most tier changes run without any downtime. You pay that tier’s price while it runs there, as ",
+              " A Premium SSD can run at a higher tier’s IOPS and throughput without growing. Most tier changes need no downtime. You pay the higher tier’s price while the disk runs at it, as ",
               { a: "Azure disk performance tiers", href: "/learn/azure-disk-performance-tiers" },
               " explains.",
             ],
             [
               { b: "Bursting." },
-              " Premium SSD up to 512\u00a0GiB and Standard SSD up to 1,024\u00a0GiB can burst on credits at no extra cost, on a best-effort basis. A larger Premium SSD can use on-demand bursting, which you enable and pay for.",
+              " Premium SSD up to 512\u00a0GiB and Standard SSD up to 1,024\u00a0GiB burst on credits, at no extra cost and on a best-effort basis. A larger Premium SSD can use on-demand bursting, which you turn on and pay for.",
             ],
           ],
         },
@@ -345,15 +348,15 @@ export const article: Article = {
     },
     {
       id: "how-to-change-a-disk-type-in",
-      title: "How to change a disk type in Azure later",
+      title: "Change a disk type",
       blocks: [
         {
           kind: "p",
-          text: "You can switch a disk between Premium SSD, Standard SSD and Standard HDD directly. Microsoft calls the conversion instantaneous, but it requires a restart of the VM, so plan a maintenance window. You can change a disk’s type twice a day.",
+          text: "You can switch a disk between Premium SSD, Standard SSD and Standard HDD directly. Microsoft calls the conversion instantaneous, but it needs a VM restart, so plan a maintenance window. You can change a disk’s type twice a day.",
         },
         {
           kind: "p",
-          text: "Moving to Premium SSD also needs a VM size that supports Premium storage.",
+          text: "A move to Premium SSD also needs a VM size that supports Premium storage.",
         },
         {
           kind: "code",
@@ -362,16 +365,17 @@ export const article: Article = {
         },
         {
           kind: "p",
-          text: "A data disk can move to Premium SSD v2 the same way, after a few checks such as turning off host caching and bursting. Its performance is degraded until the conversion completes.",
+          text: "A data disk can move to Premium SSD v2 the same way. For that move:",
         },
-        { kind: "p", text: "Two more checks apply to a move to v2:" },
         {
           kind: "ul",
           items: [
+            [{ b: "Settings." }, " Turn off host caching and bursting on the disk first."],
             [
               { b: "Backups." },
               " A VM with Azure Backup needs the Enhanced Backup policy first. Azure Backup then takes a full snapshot of the new disk, and that snapshot is charged.",
             ],
+            [{ b: "Performance." }, " The disk runs degraded until the conversion completes."],
             [
               { b: "Batches." },
               " For many disks, Microsoft suggests converting 50 to 100 at a time per subscription per region.",
@@ -392,16 +396,16 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "Disk type sets the rate per GiB, and the provisioned size sets how many GiB you pay for. Azure lets a managed disk grow but not shrink, as the article on how to ",
-            { a: "reduce Azure disk size", href: "/learn/shrink-azure-managed-disk" },
-            " explains.",
+            "The disk type sets the price per GiB, and the provisioned size sets how many GiB you pay for. Azure lets a managed disk ",
+            { a: "grow but not shrink", href: "/learn/shrink-azure-managed-disk" },
+            ".",
           ],
         },
         {
           kind: "p",
           text: [
             { a: "Amoeba", href: "/amoeba" },
-            " optimizes block storage on Azure and AWS by working on the size. It moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. It works on running Windows and Linux VMs, and never touches the OS disk.",
+            " rightsizes block storage on Azure and AWS without any downtime. It moves a VM’s data disks onto one btrfs pool sized to your data, with room to grow. It works on running Windows and Linux VMs and never touches the OS disk.",
           ],
         },
         {
@@ -424,7 +428,6 @@ export const article: Article = {
         {
           kind: "p",
           text: [
-            "On Azure, Amoeba prices disks from the same Azure Retail Prices API as this guide. ",
             {
               a: "Azure managed disk cost optimization",
               href: "/azure-managed-disk-cost-optimization",
@@ -437,7 +440,7 @@ export const article: Article = {
   ],
   help: {
     product: "amoeba",
-    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime after the one switch, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
+    text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage optimization with Amoeba", href: "/amoeba" },
       { label: "Estimate your saving", href: "/assessment?p=amoeba" },
@@ -487,22 +490,22 @@ export const article: Article = {
   ],
   related: [
     {
-      title: "Premium SSD v2 vs Premium SSD: which one costs less?",
+      title: "Premium SSD v2 vs Premium SSD",
       where: "Learn",
       href: "/learn/premium-ssd-v2-vs-premium-ssd",
     },
     {
-      title: "Premium SSD vs Standard SSD on Azure: what you pay for",
+      title: "Azure Premium SSD vs Standard SSD",
       where: "Learn",
       href: "/learn/premium-ssd-vs-standard-ssd-azure",
     },
     {
-      title: "Azure disk performance tiers: more IOPS without more space",
+      title: "Azure disk performance tiers",
       where: "Learn",
       href: "/learn/azure-disk-performance-tiers",
     },
     {
-      title: "Azure disk LRS vs ZRS: what zone redundancy costs",
+      title: "Azure LRS vs ZRS for managed disks",
       where: "Learn",
       href: "/learn/azure-disk-lrs-vs-zrs",
     },
@@ -512,5 +515,5 @@ export const article: Article = {
       href: "/learn/azure-disk-reservations",
     },
   ],
-  relatedTitle: "More on Azure disk types and pricing",
+  relatedTitle: "More on Azure managed disks",
 };

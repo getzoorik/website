@@ -42,8 +42,7 @@ import { sectionSlug } from "@/features/open-source/os-guide-page";
  * and the short answer, the sections in order at their anchors, Who does what's three columns, the numbered
  * steps, the questions as /pricing's rows (closed, no numerals), the Read more links, that every link lands (an anchor
  * on another page among the ids that page prints), the sheet's scope, and the closing row on Coral.
- * The copy is the checked drafts' (docs/website-seo/new-pages-2026-10-31/<slug>/page.md), so it holds no figure and
- * no price.
+ * The copy (rewritten 2 Nov 2026) holds no figure and no price.
  */
 
 const text = (el: Element | null): string => (el?.textContent ?? "").replace(/[\s ]+/g, " ").trim();
@@ -57,27 +56,25 @@ const pages = [
     Page: CoralWorksWithClusterAutoscaler,
     meta: clusterAutoscalerMeta,
     copy: worksWithPages.clusterAutoscaler,
-    title: "Coral works with Cluster Autoscaler on AKS and EKS",
+    title: "Cluster Autoscaler on EKS and AKS with Coral",
     h1: "Coral works with Cluster Autoscaler",
     description:
-      "How Coral works with the Cluster Autoscaler on AWS EKS and Azure AKS: Coral rebalances pod requests and empties spare nodes; the autoscaler removes them.",
+      "How the Kubernetes Cluster Autoscaler and Coral work together on EKS and AKS: Coral empties spare nodes, and the autoscaler removes them.",
     tool: "Cluster Autoscaler",
     rows: 5,
-    /* No section on what Coral leaves to it (2 Nov 2026): each line repeated the table, the steps or the deck. */
+    /* What stays yours only on Helm and Terraform (2 Nov 2026): elsewhere each line repeated the table or a question. */
     leaves: null,
     questions: [
       "Does the Cluster Autoscaler use requests or actual usage?",
-      "Can Coral move work to cheaper machines with only the Cluster Autoscaler?",
-      "Does Coral change my Cluster Autoscaler’s minimums?",
       "What about pools the Cluster Autoscaler doesn’t run?",
       "What happens in a sudden surge?",
     ],
     readMore: [
       "/coral-guide#node-optimization",
-      "/coral-faq#how-does-coral-interact-with-cluster",
       "/learn/cluster-autoscaler-not-scaling-down",
-      "/coral-works-with-aks-node-auto-provisioning",
+      "/learn/karpenter-vs-cluster-autoscaler",
       "/coral-works-with-karpenter",
+      "/coral-works-with-aks-node-auto-provisioning",
     ],
   },
   {
@@ -88,21 +85,20 @@ const pages = [
     title: "Coral works with Karpenter",
     h1: "Coral works with Karpenter",
     description:
-      "Karpenter picks machines; Coral rebalances pod requests so Karpenter can run fewer or smaller nodes. How they work together on EKS, and what Coral leaves alone.",
+      "Karpenter launches machines to fit pod requests. Coral rebalances those requests to real use, so Karpenter can run fewer or smaller nodes on EKS.",
     tool: "Karpenter",
     rows: 5,
-    leaves: "What Coral leaves to Karpenter",
+    leaves: null,
     questions: [
-      "Do I need Coral if I already run Karpenter?",
       "What does a rebalance need on EKS?",
-      "What happens in a surge after Coral moves work to smaller machines?",
+      "Can Karpenter pick bigger machines in a surge?",
       "Does Coral respect karpenter.sh/do-not-disrupt?",
-      "What stays if I disconnect?",
+      "What stays after disconnect?",
     ],
     readMore: [
       "/coral-guide#rebalancing",
-      "/coral-faq#do-i-need-coral-with-karpenter",
-      "/learn/keda-vs-karpenter",
+      "/learn/what-is-karpenter",
+      "/learn/karpenter-consolidation",
       "/coral-works-with-aks-node-auto-provisioning",
       "/coral-works-with-keda",
     ],
@@ -115,22 +111,19 @@ const pages = [
     title: "Coral works with AKS node auto provisioning",
     h1: "Coral works with AKS node auto provisioning",
     description:
-      "AKS node auto provisioning (NAP) launches nodes; Coral rebalances the pod requests NAP reads. What connect turns on, and how Coral moves work to cheaper nodes.",
+      "AKS node auto provisioning (NAP) picks machines from pod requests. Coral rebalances those requests to real use, so NAP can run fewer or smaller nodes.",
     tool: "NAP",
     rows: 5,
-    leaves: "What Coral leaves to NAP",
+    leaves: null,
     questions: [
-      "Do I need Coral if I run NAP?",
-      "Is NAP the same as Karpenter?",
-      "My AKS cluster runs the Cluster Autoscaler. Will connect turn on NAP?",
-      "What does rebalancing need on AKS?",
-      "What stays if I disconnect?",
+      "What does a rebalance need on AKS?",
+      "Can NAP pick bigger machines in a surge?",
+      "Does Coral respect karpenter.sh/do-not-disrupt?",
+      "What stays after disconnect?",
     ],
     readMore: [
       "/coral-guide#rebalancing",
-      "/coral-faq#do-i-need-coral-with-karpenter",
       "/learn/aks-node-auto-provisioning",
-      "/learn/kubernetes-autoscaling",
       "/coral-works-with-cluster-autoscaler",
       "/coral-works-with-karpenter",
     ],
@@ -143,22 +136,20 @@ const pages = [
     title: "Coral works with KEDA",
     h1: "Coral works with KEDA",
     description:
-      "On AKS and EKS, KEDA sets how many pods run and Coral rebalances each pod's CPU and memory requests. See how they work together and what Coral leaves to KEDA.",
+      "KEDA sets how many pods run. Coral rebalances each pod's CPU and memory requests and never takes over the HPA that KEDA creates.",
     tool: "KEDA",
-    rows: 5,
-    leaves: "What Coral leaves to KEDA",
+    rows: 4,
+    leaves: null,
     questions: [
-      "Will Coral and KEDA fight over the replica count?",
-      "Does Coral ever change my ScaledObject?",
-      "Could smaller requests make KEDA add more pods?",
-      "Does Coral create its own HPA for a KEDA workload?",
-      "What happens to KEDA’s pods when Coral empties a spare node?",
+      "Does Coral change my ScaledObject?",
+      "Could smaller requests make KEDA add pods?",
+      "What happens to KEDA’s pods when Coral empties a node?",
     ],
     readMore: [
       "/coral-guide#hpas-and-vpas",
-      "/coral-faq#working-with-hpa",
-      "/learn/keda-vs-karpenter",
+      "/learn/what-is-keda",
       "/learn/glossary/horizontal-pod-autoscaler",
+      "/learn/keda-vs-karpenter",
       "/coral-works-with-karpenter",
     ],
   },
@@ -170,21 +161,19 @@ const pages = [
     title: "Coral works with Helm",
     h1: "Coral works with Helm",
     description:
-      "Install Coral's agent with Helm, Argo CD or Flux, and upgrade it when you choose. Coral rebalances what your charts deploy and never edits your templates.",
+      "Install Coral's agent with Helm, Argo CD or Flux. Coral rebalances what your charts deploy and never edits your templates, so GitOps sees no drift.",
     tool: "Helm",
     rows: 5,
     leaves: "What stays yours",
     questions: [
-      "Does Coral edit my charts or templates?",
-      "Will Coral add HPAs that my chart doesn’t have?",
-      "Does a CPU or memory limit in my chart cap Coral?",
-      "Can my chart keep a workload out of Coral’s sizing?",
-      "How do I remove Coral if I installed it with Helm?",
+      "Will Coral add HPAs my chart doesn’t have?",
+      "Does a limit in my chart cap Coral?",
+      "Can my chart keep a workload out of Coral?",
+      "How do you uninstall Coral?",
     ],
     readMore: [
       "/docs/install-coral-with-helm",
       "/coral-guide#workload-optimization",
-      "/coral-faq#does-coral-change-my-git-or",
       "/learn/glossary/kubernetes-resource-requests",
       "/coral-works-with-terraform",
     ],
@@ -197,21 +186,19 @@ const pages = [
     title: "Coral works with Terraform",
     h1: "Coral works with Terraform",
     description:
-      "Create Coral's cloud permissions for AKS and EKS with our Terraform modules. See which node pool fields Coral changes, so each apply doesn't undo them.",
+      "Create Coral's cloud permissions for AKS and EKS with our Terraform modules, and keep terraform apply from undoing Coral's node pool changes.",
     tool: "Terraform",
-    rows: 5,
+    rows: 3,
     leaves: "What stays yours",
     questions: [
       "What do Coral’s Terraform modules create?",
       "Will terraform apply undo what Coral changes?",
-      "Can I keep every pool minimum as I set it?",
-      "Do I need Terraform to use Coral?",
-      "How do I revoke Coral’s cloud access?",
+      "Does Coral need Terraform?",
+      "How do you revoke Coral’s cloud access?",
     ],
     readMore: [
       "/docs/install-coral-with-terraform",
       "/coral-guide#node-optimization",
-      "/coral-faq#nodes-and-spare-capacity",
       "/learn/glossary/node-pool",
       "/coral-works-with-helm",
     ],
@@ -276,12 +263,10 @@ describe("the works-with pages", () => {
     expect(Object.values(worksWithPages).map((copy) => copy.route)).toEqual(
       pages.map((page) => page.route),
     );
-    expect(worksWithLastUpdated).toBe("1 November 2026");
-    /* A page changed on its own carries its own day (2 Nov 2026): Cluster Autoscaler's plan, and the link words KEDA,
-       Helm and Karpenter give the pages they link, after those pages' new h1s. */
-    const changed = new Set(["clusterAutoscaler", "keda", "helm", "karpenter"]);
+    /* All six rewritten together, so all six carry the shared day (3 Nov 2026). */
+    expect(worksWithLastUpdated).toBe("3 November 2026");
     for (const [id, copy] of Object.entries(worksWithPages)) {
-      expect(copy.lastUpdated, id).toBe(changed.has(id) ? "2 November 2026" : worksWithLastUpdated);
+      expect(copy.lastUpdated, id).toBe(worksWithLastUpdated);
     }
   });
 

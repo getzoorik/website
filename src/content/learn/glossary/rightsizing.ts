@@ -4,61 +4,84 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/rightsizing
 export const term: GlossaryTerm = {
   slug: "rightsizing",
   term: "Rightsizing (cloud)",
-  title: "What is right sizing (rightsizing) in cloud?",
-  meta: "Rightsizing, or right sizing, means matching VMs, disks and databases to real use. See how AWS and Azure find oversized VMs, and why you pay a disk’s full size.",
-  h1: "What is right sizing (rightsizing) in cloud?",
-  card: "Rightsizing, or right sizing, in cloud cost optimization means matching a resource’s size to what it needs, from measured use.",
+  title: "What is right sizing in the cloud?",
+  meta: "Right sizing, or rightsizing, matches VMs, disks and databases to their use. How AWS and Azure find oversized VMs, and why you pay for a disk’s full size.",
+  h1: "What is right sizing in the cloud?",
+  card: "Right sizing, or rightsizing, means matching a cloud resource’s size to its measured use.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-25",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "Rightsizing, or right sizing, in cloud cost optimization means matching a resource’s size to what it needs, from measured use. It applies to virtual machines (VMs), disks and databases. You change the size, type or count, or shut down idle ones.",
+      text: "Right sizing, or rightsizing, means matching a cloud resource’s size to its measured use. You change the size, type or count of virtual machines (VMs), disks and databases, or shut down the idle ones.",
     },
   ],
   sections: [
     {
-      id: "provisioned-vs-used-storage",
-      title: "Right sizing cloud storage: provisioned vs used",
-      blocks: [
-        {
-          kind: "p",
-          text: "Right sizing cloud storage compares the size you provisioned with the data on it. Azure managed disks and Amazon EBS volumes are charged by provisioned size.",
-        },
-        {
-          kind: "p",
-          text: "In Microsoft’s example, a 1\u00a0TiB Standard SSD holding 120\u00a0GiB is charged for all 1\u00a0TiB, the E30 tier. Its snapshots are charged only for the 120\u00a0GiB used.",
-        },
-        { kind: "svg", figure: figure1 },
-      ],
-    },
-    {
       id: "rightsizing-in-aws-and-azure",
-      title: "AWS rightsizing and Azure rightsizing",
+      title: "Right sizing on AWS and Azure",
       blocks: [
         {
           kind: "ul",
           items: [
-            "For AWS rightsizing, the Well-Architected Framework says to rightsize instances whose peak CPU and memory stay under 40% for four weeks.",
-            "AWS Compute Optimizer and AWS Trusted Advisor give rightsizing advice.",
-            "For rightsizing in Azure, Azure Advisor suggests a cheaper VM size that fits the current load. It reads CPU, memory and outbound network use over 7\u00a0days by default, or up to 90.",
+            [
+              { b: "AWS" },
+              ": the Well-Architected Framework says to right size instances whose peak CPU and memory stay under 40% for four weeks. AWS Compute Optimizer and AWS Trusted Advisor give rightsizing advice.",
+            ],
+            [
+              { b: "Azure" },
+              ": Azure Advisor suggests a cheaper VM size that fits the current load, from CPU, memory and outbound network use. It looks back 7 days by default, or up to 90.",
+            ],
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "Advisor’s savings figures use retail prices and leave out your reservations and ",
+            { a: "savings plans", href: "/learn/glossary/savings-plan" },
+            ", so they can be higher than you’ll see.",
+          ],
+        },
+      ],
+    },
+    {
+      id: "provisioned-vs-used-storage",
+      title: "Right sizing storage",
+      blocks: [
+        {
+          kind: "p",
+          text: "Azure managed disks and Amazon EBS volumes are charged by provisioned size, not by the data on them.",
+        },
+        {
+          kind: "p",
+          text: "In Microsoft’s example, a 1 TiB Standard SSD holding 120 GiB is charged for all 1 TiB, at the E30 tier. Its snapshots are charged only for the 120 GiB used.",
+        },
+        { kind: "svg", figure: figure1 },
+        {
+          kind: "p",
+          text: [
+            "Neither kind of disk can shrink. To right size one down, you copy its data to a smaller disk: see how to ",
+            { a: "shrink an EBS volume", href: "/learn/shrink-ebs-volume" },
+            " or ",
+            { a: "an Azure managed disk", href: "/learn/shrink-azure-managed-disk" },
+            ".",
           ],
         },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why rightsizing matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
+        { kind: "p", text: "You pay for what you provision, busy or idle." },
         {
           kind: "ul",
           items: [
-            "You pay for what you provision, busy or idle.",
             [
               { a: "Amoeba", href: "/amoeba" },
-              " moves a VM’s data disks onto one btrfs pool sized to your data, then rightsizes it autonomously. It works on Azure managed disks and Amazon EBS volumes, on Windows and Linux VMs.",
+              " moves a VM’s data disks onto one btrfs pool sized to your data, then rightsizes the pool autonomously. It works on Azure managed disks and Amazon EBS volumes, on Windows and Linux VMs.",
             ],
             [
               { a: "Coral", href: "/coral" },
@@ -89,8 +112,11 @@ export const term: GlossaryTerm = {
       href: "/learn/glossary/kubernetes-resource-requests",
     },
   ],
-  relatedTitle: "Terms related to rightsizing",
-  next: { title: "Kubernetes pod right sizing", href: "/learn/kubernetes-pod-right-sizing" },
+  relatedTitle: "Related terms",
+  next: {
+    title: "Kubernetes requests vs limits",
+    href: "/learn/kubernetes-pod-right-sizing",
+  },
   sources: [
     {
       publisher: "AWS",
@@ -109,5 +135,15 @@ export const term: GlossaryTerm = {
       url: "https://learn.microsoft.com/en-us/azure/virtual-machines/disks-understand-billing",
     },
     { publisher: "AWS", title: "“Amazon EBS pricing”", url: "https://aws.amazon.com/ebs/pricing/" },
+    {
+      publisher: "AWS",
+      title: "“Modify an Amazon EBS volume using Elastic Volumes operations”",
+      url: "https://docs.aws.amazon.com/ebs/latest/userguide/ebs-modify-volume.html",
+    },
+    {
+      publisher: "Microsoft Learn",
+      title: "“Expand Virtual Hard Disks on a Linux VM”",
+      url: "https://learn.microsoft.com/en-us/azure/virtual-machines/linux/expand-disks",
+    },
   ],
 };

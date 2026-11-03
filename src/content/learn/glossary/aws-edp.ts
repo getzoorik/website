@@ -4,61 +4,69 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/aws-edp/1";
 export const term: GlossaryTerm = {
   slug: "aws-edp",
   term: "AWS EDP (Enterprise Discount Program)",
-  title: "What is AWS EDP (Enterprise Discount Program)?",
-  meta: "AWS EDP meaning: the AWS Enterprise Discount Program gives a discount for a commitment to AWS. How the EDP discount shows in your cost data, and PPA vs EDP.",
-  h1: "What is AWS EDP (Enterprise Discount Program)?",
-  card: "AWS EDP, the AWS Enterprise Discount Program, gives you a discount for a commitment to AWS.",
+  title: "What is AWS EDP?",
+  meta: "AWS EDP, the Enterprise Discount Program, is a discount for a commitment to spend on AWS. Where it shows in your cost data, and what counts toward it.",
+  h1: "What is AWS EDP?",
+  card: "AWS EDP, the AWS Enterprise Discount Program, is a discount for a commitment to spend on AWS.",
   group: "finops-pricing",
   product: "both",
   published: "2026-11-02",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "AWS EDP, the AWS Enterprise Discount Program, gives you a discount for a commitment to AWS. Eligible purchases count toward the commitment, and the discount shows in your AWS cost data.",
+      text: "AWS EDP, the AWS Enterprise Discount Program, is a discount for a commitment to spend on AWS. Eligible purchases count toward the commitment, and the discount shows as its own line items in your cost data.",
     },
   ],
   sections: [
     {
       id: "how-the-aws-edp-discount-shows-in-your-cost-data",
-      title: "How the AWS EDP discount shows in your cost data",
+      title: "In your cost data",
       blocks: [
         {
           kind: "p",
-          text: "The AWS Cost and Usage Report (CUR) lists discounts as their own line items, named by discount. AWS’s example queries in its CloudWatch cost guide call the EDP one EdpDiscount.",
+          text: [
+            "The AWS Cost and Usage Report (CUR) lists each discount as its own line item. In AWS’s example queries, the EDP one is ",
+            { code: "EdpDiscount" },
+            ".",
+          ],
         },
         {
-          kind: "p",
-          text: [
-            "Unblended cost is the cost of your usage before discounts. ",
-            { a: "Net unblended cost", href: "/learn/glossary/blended-vs-unblended-cost" },
-            " is the actual after-discount cost you pay. Its CUR column appears only in months with a discount.",
+          kind: "ul",
+          items: [
+            [{ b: "Unblended cost" }, " is the cost of your usage before discounts."],
+            [
+              {
+                b: [{ a: "Net unblended cost", href: "/learn/glossary/blended-vs-unblended-cost" }],
+              },
+              " is the after-discount cost you pay. Its CUR column appears only in months with a discount.",
+            ],
           ],
         },
         { kind: "svg", figure: figure1 },
         {
           kind: "p",
           text: [
-            "In AWS Cost Explorer, choose net unblended or ",
+            "In AWS Cost Explorer, group unblended costs by Charge type to see each discount on its own line. To see costs after discounts, choose net unblended or ",
             { a: "net amortized costs", href: "/learn/glossary/amortized-cost" },
-            " under Advanced options to see costs after discounts.",
+            " under Advanced options.",
           ],
         },
       ],
     },
     {
       id: "aws-ppa-vs-edp",
-      title: "AWS PPA vs EDP",
+      title: "EDP and PPA",
       blocks: [
         {
           kind: "p",
-          text: "PPA is short for AWS Private Pricing Agreement. AWS names the two side by side as commitments. For example, AWS Security Hub’s Extended plan purchases are eligible toward a PPA or EDP commitment.",
+          text: "PPA is the AWS Private Pricing Agreement. AWS names the two together as committed spend (EDP/PPA). For example, AWS Security Hub’s Extended plan purchases can count toward either one.",
         },
       ],
     },
     {
       id: "aws-edp-and-aws-marketplace-purchases",
-      title: "AWS EDP and AWS Marketplace purchases",
+      title: "AWS Marketplace purchases",
       blocks: [
         {
           kind: "p",
@@ -66,19 +74,19 @@ export const term: GlossaryTerm = {
         },
         {
           kind: "p",
-          text: "A Marketplace purchase can draw down your EDP or PPA commitment if the product is eligible. AWS’s Marketplace FAQ says products deployed on AWS typically qualify. Eligibility is set for each product separately.",
+          text: "A Marketplace purchase can draw down an EDP or PPA commitment if the product is eligible. Eligibility is determined for each product separately. For multi-product solutions, AWS says products deployed on AWS typically qualify.",
         },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why AWS EDP matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
           items: [
-            "AWS Pricing Calculator’s before discount rates are AWS’s public On-Demand prices, with no discounts or commitments. So they don’t show your EDP discount.",
-            "The EDP discount applies to the usage you run. It reduces the rate you pay, not how much you run.",
+            "The discount reduces the rate you pay, not how much you run.",
+            "AWS Pricing Calculator’s before discount rates are public On-Demand prices, so they leave out your EDP discount. Its after discount rates include your organization’s pricing discounts.",
           ],
         },
       ],
@@ -87,12 +95,12 @@ export const term: GlossaryTerm = {
   related: [
     {
       title: "Azure MACC",
-      line: "A commitment to a set amount of Azure.",
+      line: "Azure’s commitment to spend a set amount.",
       href: "/learn/glossary/azure-macc",
     },
     {
       title: "Savings plan",
-      line: "A commitment to a set hourly compute amount.",
+      line: "A commitment to a fixed hourly compute spend.",
       href: "/learn/glossary/savings-plan",
     },
     {
@@ -102,13 +110,13 @@ export const term: GlossaryTerm = {
     },
     {
       title: "Amortized cost",
-      line: "Its net form includes discounts.",
+      line: "Commitment fees spread over the days they cover.",
       href: "/learn/glossary/amortized-cost",
     },
   ],
-  relatedTitle: "Terms related to AWS EDP",
+  relatedTitle: "Related terms",
   next: {
-    title: "AWS cost optimization: how to reduce AWS costs",
+    title: "AWS cost optimization",
     href: "/aws-cost-optimization",
   },
   sources: [

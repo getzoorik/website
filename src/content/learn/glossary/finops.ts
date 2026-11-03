@@ -4,22 +4,22 @@ import { figure as figure1 } from "@/features/learn/figures/glossary/finops/1";
 export const term: GlossaryTerm = {
   slug: "finops",
   term: "FinOps",
-  title: "What is FinOps? Cloud FinOps explained",
-  meta: "The FinOps meaning is in the name: finance plus DevOps, with teams sharing ownership of cloud cost. See the three FinOps phases, and FinOps on AWS and Azure.",
-  h1: "What is FinOps? Cloud FinOps explained",
+  title: "What is FinOps?",
+  meta: "FinOps is how finance, engineering and business teams share ownership of cloud cost. What FinOps means, its three phases, and FinOps on AWS and Azure.",
+  h1: "What is FinOps?",
   card: "FinOps, or cloud FinOps, is a practice where finance, engineering and business teams share ownership of cloud cost.",
   group: "finops-pricing",
   product: "both",
   published: "2026-10-25",
-  updated: "2026-11-02",
+  updated: "2026-11-03",
   definition: [
     {
       kind: "p",
-      text: "FinOps, or cloud FinOps, is a practice where finance, engineering and business teams share ownership of cloud cost. The FinOps meaning is in its name: finance plus DevOps.",
+      text: "FinOps, or cloud FinOps, is a practice where finance, engineering and business teams share ownership of cloud cost. The name means finance plus DevOps. It’s also called cloud financial management.",
     },
     {
       kind: "p",
-      text: "Microsoft says FinOps means more business value from the cloud. Its goal isn’t to save money.",
+      text: "Its goal isn’t to save money. Microsoft says it’s to get the most business value from the cloud.",
     },
   ],
   sections: [
@@ -29,17 +29,17 @@ export const term: GlossaryTerm = {
       blocks: [
         {
           kind: "p",
-          text: "DevOps combines development and operations, so developers also answer for how their changes run. FinOps adds finance, so engineers weigh cloud cost as well as uptime and performance.",
+          text: "DevOps joins development and operations, so developers also answer for how their changes run. FinOps adds finance: engineers weigh cloud cost as well as uptime and performance.",
         },
       ],
     },
     {
       id: "the-finops-framework-inform-optimize-operate",
-      title: "The FinOps Framework: inform, optimize, operate",
+      title: "The FinOps Framework",
       blocks: [
         {
           kind: "p",
-          text: "The FinOps Foundation’s FinOps Framework splits the work into three phases that repeat:",
+          text: "The FinOps Foundation, a non-profit at the Linux Foundation, publishes the FinOps Framework. It splits the work into three phases that repeat:",
         },
         {
           kind: "ul",
@@ -53,7 +53,7 @@ export const term: GlossaryTerm = {
         {
           kind: "h3",
           id: "an-example-idle-developer-vms",
-          title: "An example: idle developer VMs",
+          title: "Example: idle developer VMs",
         },
         {
           kind: "p",
@@ -63,7 +63,7 @@ export const term: GlossaryTerm = {
           kind: "ul",
           items: [
             "Tag each resource with its environment, such as development.",
-            "Stop each developer VM off-peak with a script if it wasn’t used in 2\u00a0hours.",
+            "Stop a developer VM off-peak with a script if it wasn’t used in 2\u00a0hours.",
             "Expect storage charges while it’s stopped.",
           ],
         },
@@ -80,35 +80,35 @@ export const term: GlossaryTerm = {
         {
           kind: "h3",
           id: "aws-cloud-financial-management-four-pillars",
-          title: "AWS Cloud Financial Management: four pillars",
+          title: "AWS Cloud Financial Management",
         },
         {
           kind: "p",
-          text: "FinOps is sometimes called cloud financial management. For FinOps in AWS, AWS Cloud Financial Management (CFM) lets finance, product, technology and business teams manage, optimize and plan costs. It has four pillars:",
+          text: "AWS frames this work as Cloud Financial Management (CFM). It lets finance, product, technology and business teams manage, optimize and plan costs. It has four pillars:",
         },
         {
           kind: "ul",
           items: [
-            "See measures where costs come from and holds teams accountable.",
-            "Save optimizes costs with pricing and resource recommendations.",
-            "Plan sets budgets and forecasts.",
-            "Run sets guardrails and governance.",
+            "See: measure where costs come from and hold teams accountable.",
+            "Save: optimize costs with pricing and resource recommendations.",
+            "Plan: set budgets and forecasts.",
+            "Run: set guardrails and governance.",
           ],
         },
         {
           kind: "h3",
           id: "focus-one-format-for-cloud-cost-data",
-          title: "FOCUS: one format for cloud cost data",
+          title: "FOCUS: one cost data format",
         },
         {
           kind: "p",
-          text: "Microsoft Cost Management offers a dataset in the FinOps Open Cost and Usage Specification (FOCUS). AWS Data Exports offers a FOCUS 1.0 table. So cost data from both clouds fits one schema.",
+          text: "Microsoft Cost Management and AWS Data Exports both offer cost data in the FinOps Open Cost and Usage Specification (FOCUS). So data from both clouds fits one schema.",
         },
       ],
     },
     {
       id: "why-it-matters-for-your-cloud-cost",
-      title: "Why FinOps matters for your cloud cost",
+      title: "Why it matters for cloud cost",
       blocks: [
         {
           kind: "ul",
@@ -131,9 +131,9 @@ export const term: GlossaryTerm = {
             ],
             [
               { a: "Amoeba", href: "/amoeba" },
-              " moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously.",
+              " moves a VM’s data disks onto one btrfs pool sized to your data, then rightsizes it autonomously.",
             ],
-            ["The ", { a: "free assessment", href: "/assessment" }, " works out your own figure."],
+            ["The ", { a: "free assessment", href: "/assessment" }, " estimates your own saving."],
           ],
         },
       ],
@@ -141,9 +141,14 @@ export const term: GlossaryTerm = {
   ],
   related: [
     {
-      title: "Rightsizing",
-      line: "Sizes a resource to its use.",
-      href: "/learn/glossary/rightsizing",
+      title: "FinOps personas",
+      line: "The roles that take part.",
+      href: "/learn/glossary/finops-personas",
+    },
+    {
+      title: "FinOps maturity model",
+      line: "How far each capability has come.",
+      href: "/learn/glossary/finops-maturity-model",
     },
     { title: "Showback", line: "Shows each team its costs.", href: "/learn/glossary/showback" },
     {
@@ -151,15 +156,10 @@ export const term: GlossaryTerm = {
       line: "The cloud cost of one sale or user.",
       href: "/learn/glossary/cloud-unit-economics",
     },
-    {
-      title: "Cloud chargeback",
-      line: "Charges each team’s budget.",
-      href: "/learn/glossary/cloud-chargeback",
-    },
   ],
-  relatedTitle: "Terms related to FinOps",
+  relatedTitle: "Related terms",
   next: {
-    title: "Cloud cost optimization: how to reduce cloud costs",
+    title: "Cloud cost optimization",
     href: "/cloud-cost-optimization",
   },
   sources: [

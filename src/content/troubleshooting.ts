@@ -3,18 +3,18 @@ import type { OpenSourceGuide } from "@/content/open-source";
 
 /**
  * The two troubleshooting pages, one per product: /coral-troubleshooting and /amoeba-troubleshooting. Each is a check
- * list in the docs guide frame (`OsGuidePage`, the install guides' frame): one section per topic, opening on the
- * topic's short answer with each check under it as an h3, then "Still stuck?" and the foot links. The topics were
- * generated once from the checked drafts in `docs/website-seo/new-pages-2026-10-29/troubleshooting/` through the
- * mock's own parser, so every string is the mock's. Text is the guides' markup-lite: `code`, **bold** and [text](href).
+ * list in the docs guide frame (`OsGuidePage`, the install guides' frame): one section per symptom, opening on its
+ * short answer, with each check under it as an h3 (the cause, then the fix), then "Still stuck?" and the foot links.
+ * The symptoms keep their first headings' addresses (`id`), so older links still land. Text is the guides'
+ * markup-lite: `code`, **bold** and [text](href).
  *
  * 🔴 PRODUCT LEVEL, CLIENT SOURCES ONLY. Every check traces to a line in the client-facing guides, FAQs and install
- * guides (the drafts' `ledger.md`), never to an internal document: no thresholds, no internal timings, no phase
- * names, no slot counts. Re-read those sources before changing a line.
+ * guides, never to an internal document: no thresholds, no internal timings, no phase names, no slot counts. Re-read
+ * those sources before changing a line.
  */
 
-/** The printed date ("Updated 1 November 2026") of a page not changed since, which the sitemap gives it too. */
-export const troubleshootingUpdated = "1 November 2026";
+/** The printed date ("Updated 2 November 2026"), which the sitemap gives both pages too. */
+export const troubleshootingUpdated = "3 November 2026";
 
 export type TroubleshootingId = "coral" | "amoeba";
 
@@ -22,60 +22,39 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
   coral: {
     route: routes.coralTroubleshooting,
     product: "coral",
-    /* Its related link's words follow the safe-to-evict article's new h1 (2 Nov 2026). */
-    updated: "2 November 2026",
+    updated: troubleshootingUpdated,
     meta: {
       title: "Coral troubleshooting",
       description:
-        "Coral is not connecting to your AKS or EKS cluster, or not removing a node? The checks to run in order, what each one means and what to do.",
+        "What to check, in order, when Coral won’t connect to an AKS or EKS cluster or doesn’t remove a node, and the fix for each.",
     },
     hero: {
       title: "Coral troubleshooting",
-      deck: "What to check, in order, when a cluster doesn’t connect or a node isn’t removed.",
+      deck: "What to check, in order, when a cluster won’t connect or a node isn’t removed.",
     },
     sections: [
       {
-        title: "Coral is not connecting to my cluster",
+        title: "Cluster not connecting",
+        id: "coral-is-not-connecting-to-my-cluster",
         blocks: [
           {
             kind: "p",
-            text: "**Short answer.** To connect, you need a supported cluster, the right access, a new connect command, and a cluster that can reach Zoorik. Check them in the order below. Once the agent registers, the cluster appears on Overview, and its figures follow within minutes.",
+            text: "**Short answer.** Coral connects when the cluster is supported, you have the right access, the connect command is new, and the cluster can reach Zoorik. The cluster then appears on Overview, and its figures follow within minutes.",
           },
-          { kind: "h3", text: "Check the cluster is supported" },
+          { kind: "h3", text: "Supported cluster" },
           {
             kind: "p",
-            text: "**Look at:** the cluster’s cloud, its Kubernetes version and its nodes.",
+            text: "Coral works on AKS and EKS, on Kubernetes 1.30 or later, with at least one Linux node on amd64 or arm64. Other clusters connect as “Local”, without cloud prices.",
           },
+          { kind: "h3", text: "Cluster access" },
           {
             kind: "p",
-            text: "**What it means:** Coral works on AKS on Azure and EKS on AWS. Other clusters connect as “Local”, without cloud prices. The cluster needs Kubernetes 1.30 or later, and at least one Linux node, on amd64 or arm64.",
+            text: "Run connect as a user with cluster-admin. Add `--kube-context <name>` to pick the cluster.",
           },
+          { kind: "h3", text: "Connect token" },
           {
             kind: "p",
-            text: "**What to do:** Make sure the cluster meets these before you connect it. A cluster that shows as “Local” still connects, but its figures have no cloud prices.",
-          },
-          { kind: "h3", text: "Check the command points at the right cluster" },
-          { kind: "p", text: "**Look at:** the kubeconfig context the connect command uses." },
-          {
-            kind: "p",
-            text: "**What it means:** To connect, you need cluster-admin on the cluster, through a kubeconfig context.",
-          },
-          {
-            kind: "p",
-            text: "**What to do:** Add `--kube-context <name>` to the command to pick the cluster. Run it as a user with cluster-admin.",
-          },
-          { kind: "h3", text: "Check the connect command is new" },
-          {
-            kind: "p",
-            text: "**Look at:** when you copied the command, and whether you ran it before.",
-          },
-          {
-            kind: "p",
-            text: "**What it means:** The command carries a connect token. The token works only once, and only for a short time after you get it.",
-          },
-          {
-            kind: "p",
-            text: "**What to do:** On Overview, open “Connect cluster” again and copy a new command. If you installed with Helm, connect again with a new token:",
+            text: "The command carries a connect token that works once and expires after one hour. Copy a new command from “Connect cluster” on Overview. With Helm, pass a new token:",
           },
           {
             kind: "cmd",
@@ -89,14 +68,10 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             kind: "cmd",
             text: "kubectl --context <context> -n zoorik-agent rollout restart deployment/zoorik-agent",
           },
-          { kind: "h3", text: "Check your cloud tools and permissions" },
+          { kind: "h3", text: "Cloud tools and permissions" },
           {
             kind: "p",
-            text: "**Look at:** your cloud’s command-line tool, and your permissions in your cloud account.",
-          },
-          {
-            kind: "p",
-            text: "**What it means:** zoorikctl lists every change it will make in your cloud and asks you once. To connect, you need:",
+            text: "Connect needs these tools and permissions:",
           },
           {
             kind: "table",
@@ -110,7 +85,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
               [
                 "EKS",
                 "The AWS CLI (`aws`), signed in",
-                "Permission to create IAM roles and EKS Pod Identity associations",
+                "Create IAM roles and EKS Pod Identity associations",
               ],
               [
                 "EKS, when connect installs Karpenter",
@@ -122,79 +97,59 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "**What to do:** Sign in, or ask for these permissions, then run the command again. To see what connect will change first, add `--dry-run`. It prints every cloud command and everything the agent setup installs, and changes nothing.",
+            text: "Sign in or get these permissions, then run the command again. zoorikctl lists every cloud change and asks you once. To review them first, add `--dry-run`: it prints every cloud command and everything the agent setup installs, and changes nothing.",
           },
-          { kind: "h3", text: "Check the network" },
-          { kind: "p", text: "**Look at:** what the cluster can reach on the internet." },
+          { kind: "h3", text: "Network access" },
           {
             kind: "p",
-            text: "**What it means:** The agent always starts the connection to Zoorik itself, over HTTPS. Nothing outside the cluster connects in. So the cluster must be able to reach these over HTTPS:",
+            text: "The agent starts its connection to Zoorik itself, and nothing connects into the cluster. Allow outbound HTTPS to:",
           },
           {
             kind: "ul",
             items: [
-              "Zoorik.",
+              "Zoorik, for the agent’s connection.",
               "`ghcr.io` and `pkg-containers.githubusercontent.com`, for the images.",
               "Your cloud’s APIs, for node removal: Azure Resource Manager and Entra ID, or AWS STS and Auto Scaling.",
             ],
           },
+          { kind: "h3", text: "Cloud changes" },
           {
             kind: "p",
-            text: "**What to do:** Allow these, then wait for the agent’s first report.",
-          },
-          { kind: "h3", text: "Check what connect set up in your cloud" },
-          {
-            kind: "p",
-            text: "**Look at:** your answer when zoorikctl asked about the cloud changes.",
-          },
-          {
-            kind: "p",
-            text: "**What it means:** If you said no, the agent still installs. Pools that an autoscaler runs are optimized as usual. Fixed-size pools wait until you give the permission to remove nodes.",
-          },
-          {
-            kind: "p",
-            text: "On AKS, connect turns on NAP only if the cluster has no autoscaler. NAP needs Azure CNI networking and doesn’t work with kubenet. On kubenet with no autoscaler, nothing adds nodes until you set one up.",
-          },
-          {
-            kind: "p",
-            text: "**What to do:** Give the permission to remove nodes when you are ready:",
+            text: "If you declined the cloud changes, the agent still installs. Pools an autoscaler runs are optimized as usual. Fixed-size pools wait for the permission to remove nodes. Grant it when you are ready:",
           },
           { kind: "cmd", text: "zoorikctl cluster grant-node-deletion" },
-          { kind: "p", text: "To set up an autoscaler later, run `zoorikctl cluster prepare`." },
-          { kind: "h3", text: "Wait for the first report" },
-          { kind: "p", text: "**Look at:** Overview, and the cluster’s own pages." },
           {
             kind: "p",
-            text: "**What it means:** After you approve, zoorikctl installs the agent and waits for it to register. The cluster then appears on Overview, and its figures follow within minutes. Until data arrives, pages show “Waiting for the agent’s first report…”, then “Calculating”.",
+            text: "On AKS, connect turns on NAP only when the cluster has no autoscaler. NAP needs Azure CNI and doesn’t work with kubenet. On kubenet with no autoscaler, nothing adds nodes until you set one up. To set up an autoscaler later, run `zoorikctl cluster prepare`.",
           },
+          { kind: "h3", text: "Waiting for the first report" },
           {
             kind: "p",
-            text: "**What to do:** Keep the page open: it updates by itself. Until data arrives, figures read “Calculating” or “Fetching prices”, never a guess. If the page keeps waiting, check the network again.",
+            text: "After you approve, zoorikctl installs the agent and waits for it to register. Until data arrives, pages read “Waiting for the agent’s first report…”, then “Calculating” or “Fetching prices”. They update by themselves. If a page keeps waiting, check network access.",
           },
-          { kind: "h3", text: "Check your Helm install if it says a resource already exists" },
-          { kind: "p", text: "**Look at:** your `helm install` command and its values." },
+          { kind: "h3", text: "Helm install problems" },
           {
             kind: "p",
-            text: "**What it means, and what to do:** If you installed with the coral-agent Helm chart rather than zoorikctl, check these.",
+            text: "If you installed with the coral-agent Helm chart instead of zoorikctl:",
           },
           {
             kind: "table",
-            head: ["If", "What it means", "What to do"],
+            head: ["If", "Why", "Fix"],
             rows: [
               [
                 "You installed into `zoorik-agent` or `zoorik-node`",
-                "The chart creates those two namespaces itself, so the install fails with an ownership error.",
-                "Install the release in any other namespace, such as `default`.",
+                "The chart creates those namespaces itself, so the install fails with an ownership error.",
+                "Install the release in another namespace, such as `default`.",
               ],
               [
-                "The cluster was connected with zoorikctl before",
-                "Helm doesn’t own the objects zoorikctl created, so `helm install` won’t take them over.",
-                "Run `zoorikctl cluster disconnect` first. Then install the chart with a new connect token.",
+                "zoorikctl connected the cluster before",
+                "Helm won’t take over the objects zoorikctl created.",
+                "Run `zoorikctl cluster disconnect`, then install with a new connect token.",
               ],
               [
                 "`controlPlaneUrl` has a path or a trailing slash",
-                "It must be the base address only, exactly as the console shows it.",
-                "Remove the path and the trailing slash.",
+                "It takes the base address only, as the console shows it.",
+                "Remove the path and the slash.",
               ],
               [
                 "You set `connectToken.existingSecret`",
@@ -214,67 +169,57 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             ],
             widths: ["30%", "36%", "34%"],
           },
-          { kind: "h3", text: "If the cluster shows “Not reporting”" },
-          { kind: "p", text: "**Look at:** the cluster’s entry in the console." },
+          { kind: "h3", text: "“Not reporting”" },
           {
             kind: "p",
-            text: "**What it means:** After a disconnect, the cluster stays in the console as “Not reporting”. The data Zoorik already received stays with it.",
+            text: "A disconnected cluster stays in the console as “Not reporting”, with the data Zoorik already received. To bring it back, connect it again with a new command from “Connect cluster”. If nobody disconnected it, email us.",
+          },
+          { kind: "h3", text: "“Re-run connect”" },
+          {
+            kind: "p",
+            text: "The agent updates itself to each Zoorik release, but can’t give itself new permissions. When a release needs more, the “Agent release” card on the cluster’s Dashboard shows “Re-run connect”. Run the connect command again.",
           },
           {
             kind: "p",
-            text: "**What to do:** If you disconnected it, connect it again with a new command from “Connect cluster”. If you didn’t, email us.",
-          },
-          { kind: "h3", text: "If the Agent release card says “Re-run connect”" },
-          { kind: "p", text: "**Look at:** the “Agent release” card on the cluster’s Dashboard." },
-          {
-            kind: "p",
-            text: "**What it means:** The agent updates itself to each Zoorik release. It can’t give itself new permissions, so a release that needs more shows “Re-run connect”. An agent that Argo CD, Flux or Helm manages doesn’t update itself.",
-          },
-          {
-            kind: "p",
-            text: "**What to do:** Run the connect command again. With Helm, `helm upgrade` to a newer chart version updates the agent.",
+            text: "An agent that Argo CD, Flux or Helm manages doesn’t update itself. With Helm, `helm upgrade` to a newer chart version updates it.",
           },
         ],
       },
       {
-        title: "Coral is not removing a node",
+        title: "Node not removed",
+        id: "coral-is-not-removing-a-node",
         blocks: [
           {
             kind: "p",
-            text: "**Short answer.** As Coral rebalances your cluster, it removes the nodes you don’t need. A node often stays because a switch is off, a pod can’t move safely, there’s no room elsewhere, or the pool is at its minimum. Node list → “What’s holding them” shows the reason for each held node.",
+            text: "**Short answer.** A node usually stays because a switch is off, a pod can’t move safely, other nodes lack room, or the pool is at its minimum. Node list → “What’s holding them” gives the reason for each held node. An emptied node can also be waiting for your autoscaler.",
           },
-          { kind: "h3", text: "Check Node optimization and the Evictor are on" },
-          { kind: "p", text: "**Look at:** Settings, and the Evictor’s “Advanced settings”." },
+          { kind: "h3", text: "Switches" },
           {
-            kind: "p",
-            text: "**What it means:** With Node optimization off, Coral plans no node removal. With the Evictor off, Coral still drains nodes while Node optimization is on.",
-          },
-          {
-            kind: "p",
-            text: "The Evictor moves pods off lightly used nodes, and has its own switch in Settings → General. In “Dry run”, it only writes the nodes it would empty to the Event log.",
-          },
-          {
-            kind: "p",
-            text: "**What to do:** Switch Node optimization on. When you are ready for the Evictor to move pods, switch it on and untick “Dry run”.",
-          },
-          { kind: "h3", text: "Check the node’s pool is enabled" },
-          {
-            kind: "p",
-            text: "**Look at:** the pool’s “Enabled” switch in Configuration → Node pools.",
-          },
-          {
-            kind: "p",
-            text: "**What it means:** When it is off, Coral leaves that pool’s nodes alone.",
-          },
-          { kind: "p", text: "**What to do:** Switch the pool on if Coral may empty its nodes." },
-          { kind: "h3", text: "Check what is holding the node" },
-          {
-            kind: "p",
-            text: "**Look at:** Node list → “What’s holding them”. Its “Nodes held” figure counts the nodes Coral can’t empty.",
+            kind: "table",
+            head: ["Switch", "Where", "While it is off"],
+            rows: [
+              ["Node optimization", "Settings", "Coral plans no node removal."],
+              [
+                "Pool “Enabled”",
+                "Configuration → Node pools",
+                "Coral leaves that pool’s nodes alone.",
+              ],
+              [
+                "Evictor",
+                "Settings → General",
+                "The Evictor moves no pods. Consolidation still drains nodes while Node optimization is on.",
+              ],
+            ],
+            widths: ["26%", "30%", "44%"],
           },
           {
             kind: "p",
-            text: "**What it means:** A held node is one Coral won’t empty, because a pod on it can’t be moved safely. The common reasons, and the fix for each, are below. How each one holds a node in Kubernetes is in [Cluster Autoscaler not scaling down](/learn/cluster-autoscaler-not-scaling-down).",
+            text: "Switch on Node optimization and each pool Coral may empty. The Evictor moves pods off lightly used nodes. In “Dry run”, under its “Advanced settings”, it only lists the nodes it would empty in the Event log. To let it move pods, switch it on and untick “Dry run”.",
+          },
+          { kind: "h3", text: "Held nodes" },
+          {
+            kind: "p",
+            text: "A held node has a pod that can’t move safely. The common reasons, and the fix for each:",
           },
           {
             kind: "table",
@@ -300,10 +245,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             ],
             widths: ["50%", "50%"],
           },
-          {
-            kind: "p",
-            text: "**What to do:** Apply the fix for each reason. These markers keep a pod, or its node, in place:",
-          },
+          { kind: "p", text: "These markers keep a pod, or its node, in place:" },
           {
             kind: "ul",
             items: [
@@ -314,94 +256,61 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "Which autoscaler reads which marker is in [Safe-to-evict and do-not-disrupt](/learn/safe-to-evict-do-not-disrupt).",
+            text: "How each reason holds a node in Kubernetes: [Cluster Autoscaler not scaling down](/learn/cluster-autoscaler-not-scaling-down). Which autoscaler reads which marker: [Safe-to-evict and do-not-disrupt](/learn/safe-to-evict-do-not-disrupt).",
           },
-          { kind: "h3", text: "Check the other nodes have room" },
+          { kind: "h3", text: "Room on other nodes" },
           {
             kind: "p",
-            text: "**Look at:** the room on the cluster’s other Ready nodes, and the Optimization constraints page.",
-          },
-          {
-            kind: "p",
-            text: "**What it means:** Before it moves anything, the agent checks the live cluster. Every pod on the node must fit on another Ready node, with its affinity, taints, spread, ports and zones. If a pod doesn’t fit, the node stays.",
+            text: "Before it moves anything, the agent checks the live cluster. Every pod on the node must fit on another Ready node, with its affinity, taints, spread, ports and zones. If one doesn’t fit, the node is still needed and stays.",
           },
           {
             kind: "p",
-            text: "**What to do:** If the other nodes have no room, the node is still needed. If placement rules hold a pod here, open Optimization constraints. It lists workload setups that make optimization risky, such as topology spread, with the fix for each.",
+            text: "If placement rules hold a pod, open Optimization constraints. It lists workload setups that make optimization risky, such as topology spread, with the fix for each.",
           },
-          { kind: "h3", text: "Check the pool is above its minimum" },
+          { kind: "h3", text: "Pool minimum" },
           {
             kind: "p",
-            text: "**Look at:** how many nodes the pool has, and your autoscaler’s minimum for it.",
+            text: "Every pool keeps at least one node, so the last node in a pool stays. Coral never raises your autoscaler’s minimum. By default, it may reduce a minimum that alone keeps an emptied node.",
           },
-          {
-            kind: "p",
-            text: "**What it means:** Every pool keeps at least one node. Coral never raises your autoscaler’s minimum. By default it may reduce a minimum that alone keeps an emptied node.",
-          },
-          {
-            kind: "p",
-            text: "With the Terraform module’s `lower_minimums = false`, it can’t.",
-          },
-          { kind: "p", text: "**What to do:** The last node in a pool stays." },
           {
             kind: "ul",
             items: [
-              "If you set `lower_minimums = false`, set it back to `true`, the default, to let the agent reduce the minimum.",
-              "If Terraform manages your node pools, each apply undoes what the agent changes. Tell Terraform to ignore those fields in your own code, as [Your own node pool code](/docs/install-coral-with-terraform#your-own-node-pool-code) shows.",
+              "With the Terraform module’s `lower_minimums = false`, Coral can’t. Set it back to `true`, the default.",
+              "If Terraform manages your node pools, each apply undoes the agent’s change. Tell Terraform to ignore those fields, as [Your own node pool code](/docs/install-coral-with-terraform#your-own-node-pool-code) shows.",
             ],
           },
-          { kind: "h3", text: "Check who removes the empty node" },
-          {
-            kind: "p",
-            text: "**Look at:** a node Coral has emptied that is still in the cluster.",
-          },
-          {
-            kind: "p",
-            text: "**What it means:** Coral empties the node, and your autoscaler removes it.",
-          },
+          { kind: "h3", text: "Empty node still running" },
+          { kind: "p", text: "Coral empties the node. Who removes it depends on the pool:" },
           {
             kind: "ul",
             items: [
-              "After “Wait before removing empty nodes”, Coral hands the empty node to your autoscaler. Its own timers decide when the node goes.",
+              "After “Wait before removing empty nodes”, set in Configuration → Node scaling, Coral hands the node to your autoscaler. Its own timers decide when the node goes.",
               "Pools that Karpenter or NAP already consolidates are left to them.",
-              "Coral deletes the machine itself only in fixed-size pools that nothing else manages.",
+              "In fixed-size pools that nothing else manages, Coral deletes the machine itself. That needs the permission to remove nodes.",
             ],
           },
           {
             kind: "p",
-            text: "**What to do:** Check your autoscaler’s own settings. To change Coral’s wait, set “Wait before removing empty nodes” in Configuration → Node scaling.",
-          },
-          {
-            kind: "p",
-            text: "For a fixed-size pool, Coral needs the permission to remove nodes. If you declined it at connect, run:",
+            text: "Check your autoscaler’s own settings. If you declined the permission at connect, grant it:",
           },
           { kind: "cmd", text: "zoorikctl cluster grant-node-deletion" },
           {
             kind: "p",
-            text: "If you installed with Helm, [Install Coral with Terraform + Helm](/docs/install-coral-with-terraform) creates the same permission as code.",
+            text: "With Helm, [Install Coral with Terraform + Helm](/docs/install-coral-with-terraform) creates the same permission as code.",
           },
-          { kind: "h3", text: "Check the node is not cordoned" },
-          { kind: "p", text: "**Look at:** the node’s state, and any cluster upgrade under way." },
+          { kind: "h3", text: "Cordoned nodes" },
           {
             kind: "p",
-            text: "**What it means:** Coral skips cordoned, NotReady and deleting nodes. It never drains a node someone else cordoned. During a cluster upgrade, it keeps working but stays out of the upgrade’s way.",
-          },
-          {
-            kind: "p",
-            text: "**What to do:** If you cordoned the node yourself, Coral leaves it to you. Uncordon it if Coral may empty it. During an upgrade window, we recommend pausing Node optimization and the Evictor.",
-          },
-          { kind: "h3", text: "Check the drain finished" },
-          {
-            kind: "p",
-            text: "**Look at:** the Event log, which lists everything Coral did or saw, newest first.",
+            text: "Coral skips cordoned, NotReady and deleting nodes, and never drains a node someone else cordoned. If you cordoned the node and Coral may empty it, uncordon it.",
           },
           {
             kind: "p",
-            text: "**What it means:** Coral cordons and drains one node at a time. If a drain can’t finish in time, the node goes back into service.",
+            text: "During a cluster upgrade, Coral keeps working but stays out of the upgrade’s way. We recommend pausing Node optimization and the Evictor for the upgrade window.",
           },
+          { kind: "h3", text: "Drain not finished" },
           {
             kind: "p",
-            text: "**What to do:** Find the node in the Event log. Then check what is holding it, as above.",
+            text: "Coral cordons and drains one node at a time. If a drain can’t finish in time, the node goes back into service. Find the node in the Event log, which lists everything Coral did or saw, newest first. Then see Held nodes for what keeps it.",
           },
         ],
       },
@@ -414,7 +323,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "Email founders@zoorik.com, or [pick a time to talk](https://cal.com/zoorik/talk). Tell us what you ran and what the console shows, and for a node, what Node list and the Event log show. Remove tokens, keys and other secrets from anything you send.",
+            text: "Email founders@zoorik.com, or [pick a time to talk](https://cal.com/zoorik/talk). Tell us what you ran and what the console shows. For a node, add what Node list and the Event log show. Remove tokens, keys and other secrets first.",
           },
         ],
       },
@@ -426,22 +335,13 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
         text: "Coral FAQ: What does connecting a cluster change?",
         href: "/coral-faq#what-does-connecting-a-cluster-change",
       },
-      { text: "Install Coral with Helm", href: "/docs/install-coral-with-helm" },
-      { text: "Coral product guide: Node optimization", href: "/coral-guide#node-optimization" },
       { text: "Coral product guide: Nodes held", href: "/coral-guide#nodes-held" },
-      { text: "Coral product guide: Stay in control", href: "/coral-guide#stay-in-control" },
       {
-        text: "Coral FAQ: How do you make sure node consolidation doesn’t cause scheduling failures later?",
+        text: "Coral FAQ: How does Coral avoid scheduling failures?",
         href: "/coral-faq#how-do-you-make-sure-node",
       },
-      {
-        text: "Cluster Autoscaler not scaling down: what keeps nodes running",
-        href: "/learn/cluster-autoscaler-not-scaling-down",
-      },
-      {
-        text: "Karpenter do-not-disrupt and the Kubernetes safe-to-evict annotation, explained",
-        href: "/learn/safe-to-evict-do-not-disrupt",
-      },
+      { text: "Coral product guide: Stay in control", href: "/coral-guide#stay-in-control" },
+      { text: "Install Coral with Helm", href: "/docs/install-coral-with-helm" },
       { text: "Install Coral with Terraform + Helm", href: "/docs/install-coral-with-terraform" },
     ],
   },
@@ -452,40 +352,38 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
     meta: {
       title: "Amoeba troubleshooting",
       description:
-        "Amoeba troubleshooting: why a VM or EC2 instance is not showing, or its disks are not rightsized yet. The checks to run in order, and what to do.",
+        "What to check, in order, when Amoeba doesn’t list a VM or EC2 instance or hasn’t rightsized its disks yet, and the fix for each.",
     },
     hero: {
       title: "Amoeba troubleshooting",
-      deck: "What to check, in order, when a VM is missing or its disks haven’t been rightsized yet.",
+      deck: "What to check, in order, when a VM is missing or its disks aren’t rightsized yet.",
     },
     sections: [
       {
-        title: "Amoeba is not showing my VM",
+        title: "VM not showing",
+        id: "amoeba-is-not-showing-my-vm",
         blocks: [
           {
             kind: "p",
-            text: "**Short answer.** Amoeba lists only running VMs with at least one data disk, from the subscriptions Zoorik can read. A VM that can’t be onboarded is counted in one line under the list, with the reason. Once you onboard a VM, its used space and savings appear after its agent reports.",
+            text: "**Short answer.** Amoeba lists only running VMs with at least one data disk, from the Azure subscriptions Zoorik can read. The line under the list gives the reason for any VM it can’t onboard. On AWS, it works on running EC2 instances that Systems Manager manages. Used space and savings appear once the VM’s agent reports.",
           },
-          { kind: "h3", text: "Read the line under the list" },
-          { kind: "p", text: "**Look at:** “Onboard VMs”, and the line under the list." },
+          { kind: "h3", text: "Onboarding list" },
           {
             kind: "p",
-            text: "**What it means:** VMs that can’t be onboarded are counted in one line under the list, with the reason. For example, the VM is stopped, or it has only an OS disk.",
+            text: "The line under “Onboard VMs” gives the reason, such as a stopped VM or one with only an OS disk. Amoeba works only on data disks, never the OS disk, and their data must sit on mounted filesystems.",
           },
           {
             kind: "p",
-            text: "**What to do:** Fix the reason shown, then open “Onboard VMs” again. The checks below explain what each requirement means.",
+            text: "Fix the reason, for example start the VM, then open “Onboard VMs” again. On Azure, the list comes from Azure Resource Graph and can be a little behind. If you just created, started or changed the VM, try again a little later.",
           },
-          { kind: "h3", text: "Check the cloud connection" },
-          { kind: "p", text: "**Look at:** the connection’s state in the console." },
-          { kind: "p", text: "**What it means:**" },
+          { kind: "h3", text: "Azure connection" },
           {
             kind: "table",
             head: ["State", "What it means"],
             rows: [
               [
                 "Verifying",
-                "Zoorik can’t read a subscription yet. The console says why: Zoorik’s app isn’t in your directory yet, the role isn’t assigned, or the directory wasn’t found.",
+                "Zoorik can’t read a subscription yet. The console says why: Zoorik’s app isn’t in your directory, the role isn’t assigned, or the directory wasn’t found.",
               ],
               ["Connected", "Zoorik reads your subscriptions through the role."],
               [
@@ -495,181 +393,117 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
             ],
             widths: ["24%", "76%"],
           },
-          { kind: "p", text: "**What to do:**" },
           {
             kind: "ul",
             items: [
-              "For “Verifying”: run the connect script the console shows in Azure Cloud Shell, with your own Azure sign-in. Then click “Verify”.",
-              "The script adds Zoorik’s app to your directory, creates the role “Zoorik Storage Operator”, and assigns it on each subscription you name. You need permission to do all three.",
-              "If the directory wasn’t found, check the directory (tenant) ID you entered in “Connect Azure”.",
-              "For “Access lost”: check the role is still assigned to Zoorik’s app on that subscription. If it isn’t, run the connect script again. Zoorik checks access again regularly.",
+              "**Verifying:** run the connect script the console shows in Azure Cloud Shell, with your own Azure sign-in, then click “Verify”. The script adds Zoorik’s app to your directory, creates the role “Zoorik Storage Operator” and assigns it on each subscription you name. You need permission for all three.",
+              "**Directory not found:** check the directory (tenant) ID you entered in “Connect Azure”.",
+              "**Access lost:** check the role is still assigned to Zoorik’s app on that subscription. If it isn’t, run the connect script again. Zoorik checks access again regularly.",
             ],
           },
-          { kind: "h3", text: "Check the VM’s subscription is included" },
+          { kind: "h3", text: "Subscription not included" },
           {
             kind: "p",
-            text: "**Look at:** the subscriptions you named when you ran the connect script.",
+            text: "The script assigns the role only on the subscriptions you name, and Zoorik acts in your Azure only through that role. Run the script for the VM’s subscription too, then click “Verify” again to pick it up.",
+          },
+          { kind: "h3", text: "EC2 instances" },
+          {
+            kind: "p",
+            text: "On AWS, Amoeba works on running EC2 instances managed by AWS Systems Manager, with the SSM agent connected. Each must be a Nitro type that exposes EBS as NVMe, with at least one EBS data volume.",
           },
           {
             kind: "p",
-            text: "**What it means:** The script assigns the role only on the subscriptions you name. Zoorik acts in your Azure only through that role.",
+            text: "Connect the instance to Systems Manager, and check its type and volumes. If the account isn’t connected, enter its AWS account ID, then run the script in AWS CloudShell that creates the IAM role `ZoorikStorageOperator`.",
+          },
+          { kind: "h3", text: "Waiting for the first report" },
+          {
+            kind: "p",
+            text: "Amoeba installs its agent on each VM you onboard, through Azure Run Command or AWS Systems Manager. On Overview, the VM’s agent reads “Installing”, then “Connected” once its first report arrives. Until then, used space and savings read “Available once the agent reports”.",
           },
           {
             kind: "p",
-            text: "**What to do:** Run the script for the VM’s subscription too. Then click “Verify” again: it picks up the subscriptions you added since.",
+            text: "Each VM must reach Zoorik, for the agent’s reports and commands, and the sites the agent downloads from.",
           },
-          { kind: "h3", text: "Check the VM is running and has a data disk" },
+          { kind: "h3", text: "Failed install or stopped agent" },
           {
             kind: "p",
-            text: "**Look at:** the VM in Azure: whether it is running, and its disks.",
-          },
-          {
-            kind: "p",
-            text: "**What it means:** Amoeba lists only running VMs with at least one data disk. It works on data disks and never touches the OS disk. The data on those disks must sit on mounted filesystems.",
+            text: "The console says why an install failed: the script failed, Azure refused the run, or the install stalled. It also says when Zoorik can’t reach the subscription, or the first report didn’t arrive in time. Amoeba tries again for as long as the VM stays onboarded.",
           },
           {
             kind: "p",
-            text: "**What to do:** Start a stopped VM, then open “Onboard VMs” again. A VM with only an OS disk has nothing for Amoeba to move.",
-          },
-          { kind: "h3", text: "Give the list a moment" },
-          { kind: "p", text: "**Look at:** a VM you just created, started or changed." },
-          {
-            kind: "p",
-            text: "**What it means:** The list comes from Azure Resource Graph, which can take a little while to catch up with changes.",
-          },
-          { kind: "p", text: "**What to do:** Open “Onboard VMs” again a little later." },
-          { kind: "h3", text: "On AWS, check the instance and Systems Manager" },
-          { kind: "p", text: "**Look at:** the EC2 instance, and how the account is connected." },
-          {
-            kind: "p",
-            text: "**What it means:** Amoeba works on EC2 instances that are running and managed by AWS Systems Manager, with the SSM agent connected. Each must be a Nitro type that exposes EBS as NVMe, with at least one EBS data volume. The account connects with its AWS account ID and the IAM role ZoorikStorageOperator.",
+            text: "An agent that stops reporting reads “Disconnected”. Amoeba reinstalls it, but never during a move step or a pool operation. Until it reconnects, the pool stays mounted but can’t expand or shrink.",
           },
           {
             kind: "p",
-            text: "**What to do:** Connect the instance to Systems Manager, and check its type and volumes. If the account isn’t connected yet, run the script in AWS CloudShell that creates the role.",
-          },
-          { kind: "h3", text: "Check the agent has reported" },
-          { kind: "p", text: "**Look at:** the VM’s agent on Overview, and its figures." },
-          {
-            kind: "p",
-            text: "**What it means:** Amoeba installs its agent on each VM you onboard, through Azure Run Command or AWS Systems Manager. The VM’s agent reads “Installing”, then “Connected” once its first report arrives. Until then, used space and savings read “Available once the agent reports”.",
-          },
-          {
-            kind: "p",
-            text: "**What to do:** Wait for the first report. Each VM must be able to reach Zoorik, for the agent’s reports and commands, and the sites the agent downloads from.",
-          },
-          { kind: "h3", text: "If the install failed or the agent stopped" },
-          { kind: "p", text: "**Look at:** “Needs you” on Overview, and the VM’s Settings page." },
-          { kind: "p", text: "**What it means:**" },
-          {
-            kind: "ul",
-            items: [
-              "The console says why an install failed: the script failed, Azure refused the run, or the install stalled.",
-              "It also says when Zoorik can’t reach the subscription, or when the first report didn’t arrive in time.",
-              "Amoeba tries again for as long as the VM stays onboarded.",
-              "An agent that stops reporting reads “Disconnected”. Amoeba reinstalls it, but never during a move step or a pool operation.",
-              "Until the agent reconnects, the pool stays mounted but can’t expand or shrink.",
-            ],
-          },
-          {
-            kind: "p",
-            text: "**What to do:** Click “Reinstall” in Settings → Agent. It starts a new install straight away, or when the current step of the move ends. It’s available while the VM is running.",
+            text: "“Needs you” on Overview lists agents to reinstall. To reinstall now, click “Reinstall” in Settings → Agent while the VM is running. It starts straight away, or when the current move step ends.",
           },
         ],
       },
       {
-        title: "Amoeba has not rightsized my disks yet",
+        title: "Disks not rightsized",
+        id: "amoeba-has-not-rightsized-my-disks-yet",
         blocks: [
           {
             kind: "p",
-            text: "**Short answer.** Amoeba rightsizes a VM’s disks in two stages. First it moves the data onto one btrfs pool sized to your data, then it grows and shrinks the pool with your data. The checks below cover what holds each stage back, in order.",
+            text: "**Short answer.** Amoeba first moves a VM’s data onto one btrfs pool sized to your data, then grows and shrinks the pool with it. A move can wait on the agent, free disk slots, a pause or a Linux requirement. A shrink waits until your data goes down and stays down, or for you in “Manual”.",
           },
-          { kind: "h3", text: "Check the agent is reporting" },
-          { kind: "p", text: "**Look at:** the VM’s status and its agent on Overview." },
+          { kind: "h3", text: "Agent not reporting" },
           {
             kind: "p",
-            text: "**What it means:** The move onto the pool starts by itself after the agent’s first report. “Ready for a pool” means the agent has reported. While the agent isn’t reporting, the pool can’t expand or shrink.",
+            text: "The move starts by itself after the agent’s first report, and “Ready for a pool” means it has reported. While the agent isn’t reporting, the pool can’t expand or shrink. If it hasn’t reported, or reads “Disconnected”, see [VM not showing](#amoeba-is-not-showing-my-vm).",
           },
+          { kind: "h3", text: "Declined VM" },
           {
             kind: "p",
-            text: "**What to do:** If the agent hasn’t reported, or reads “Disconnected”, see [Amoeba is not showing my VM](#amoeba-is-not-showing-my-vm).",
-          },
-          { kind: "h3", text: "Check whether Amoeba declined the VM" },
-          {
-            kind: "p",
-            text: "**Look at:** the VM’s status, and the Disks page, which shows how many data-disk slots are in use.",
+            text: "During the move, the pool’s disks attach beside the source disks, so the VM needs a few free disk slots. A VM Amoeba declines, for example one with too few slots, shows why and stays on its own disks. The Disks page shows how many data-disk slots are in use.",
           },
           {
             kind: "p",
-            text: "**What it means:** During the move, the pool’s disks attach beside the source disks, so the VM needs a few free disk slots. A VM Amoeba declines, for example one with too few slots, shows why and stays on its own disks. Amoeba doesn’t move a VM that uses Azure Disk Encryption as it is.",
+            text: "Free some disk slots for the pool. Amoeba doesn’t move a VM that uses Azure Disk Encryption as it is. For one of those, email us.",
+          },
+          { kind: "h3", text: "Paused move" },
+          {
+            kind: "p",
+            text: "The move pauses when a step can’t go on safely. For example, the VM can’t take a pool, a copy fails, or Amoeba can’t tell whether the switch worked. A disk error found after the switch also pauses it. Pool → Migration shows where it paused and why.",
           },
           {
             kind: "p",
-            text: "**What to do:** Make room for the pool’s disks. For a VM that uses Azure Disk Encryption, email us.",
+            text: "Fix the reason shown, then click “Resume” when it appears. If Amoeba couldn’t tell whether the switch worked, the move waits for you to click “Resume”.",
           },
-          { kind: "h3", text: "Check whether the move paused" },
-          { kind: "p", text: "**Look at:** Pool → Migration, and “Needs you” on Overview." },
-          {
-            kind: "p",
-            text: "**What it means:** The move pauses when a step can’t go on safely. For example, the VM can’t take a pool, a copy fails, or Amoeba can’t tell whether the switch worked. A disk error found after the switch also pauses it.",
-          },
-          { kind: "p", text: "Pool → Migration shows where it paused and why." },
-          {
-            kind: "p",
-            text: "**What to do:** Fix the reason shown. “Resume” appears when the move can run again: click it. If Amoeba can’t tell whether the switch worked, the move waits for you to click “Resume”.",
-          },
-          { kind: "h3", text: "Check the Linux requirements" },
-          {
-            kind: "p",
-            text: "**Look at:** on a Linux VM, its kernel, its packages and its services.",
-          },
-          { kind: "p", text: "**What it means:**" },
+          { kind: "h3", text: "Linux requirements" },
+          { kind: "p", text: "A Linux VM needs:" },
           {
             kind: "ul",
             items: [
-              "The kernel must be recent and support btrfs, built in or as a module. Amoeba loads the module if it isn’t loaded. If the kernel has no btrfs, the move pauses.",
-              "The agent needs rsync, btrfs-progs and psmisc. The installer doesn’t add them.",
-              "Every process that keeps a data mount open must run as a systemd service. Otherwise the switch can’t finish.",
-              "The agent needs cgroup v2 to read disk load. Without it, the copy can’t slow down when your apps are busy.",
-              "Amoeba checks the running kernel, never the OS name.",
+              "A recent kernel with btrfs, built in or as a module. Amoeba loads the module if it isn’t loaded. Without btrfs, the move pauses.",
+              "rsync, btrfs-progs and psmisc. The installer doesn’t add them.",
+              "Every process that keeps a data mount open to run as a systemd service. Otherwise the switch can’t finish.",
+              "cgroup v2, for the agent’s disk-load readings. Without it, the copy doesn’t slow down when your apps are busy.",
             ],
           },
           {
             kind: "p",
-            text: "**What to do:** Install the missing packages, and run each service that uses a data mount under systemd. Then click “Resume” if the move paused.",
+            text: "Amoeba checks the running kernel, never the OS name. Install what’s missing and run each service that uses a data mount under systemd. Then click “Resume” if the move paused.",
           },
-          { kind: "h3", text: "Check the shrink setting" },
+          { kind: "h3", text: "Shrink timing" },
           {
             kind: "p",
-            text: "**Look at:** “When Zoorik shrinks” in Settings → Shrinking, and the Operations page.",
+            text: "A shrink waits until the move is done and Amoeba has seen enough of your use. Then it runs when your data goes down and stays down. Meanwhile, the pool still grows before it fills. Nothing needs fixing: Operations logs each expand and shrink, with its outcome and reason.",
           },
+          { kind: "h3", text: "Shrink setting" },
           {
             kind: "p",
-            text: "**What it means:** In “Auto”, the default, each shrink starts by itself when the pool is quiet. In “Manual”, a shrink waits for you on Operations as “Waiting for you”, and Overview lists it under “Needs you”. Expands are automatic either way.",
-          },
-          {
-            kind: "p",
-            text: "**What to do:** Click “Start shrink” on Operations. Or set “When Zoorik shrinks” to “Auto”, and click “Save”.",
-          },
-          { kind: "h3", text: "Give it time after the move" },
-          {
-            kind: "p",
-            text: "**Look at:** when the move finished, and how your data has changed since.",
+            text: "“When Zoorik shrinks”, in Settings → Shrinking, is “Auto” by default: each shrink starts by itself when the pool is quiet. In “Manual”, a shrink waits on Operations as “Waiting for you”, and Overview lists it under “Needs you”. Expands are automatic either way.",
           },
           {
             kind: "p",
-            text: "**What it means:** A shrink waits until the move is done and Amoeba has watched your data for long enough. It runs when your data goes down and stays down. Meanwhile, the pool still grows before it fills.",
+            text: "Click “Start shrink” on Operations, or switch the setting to “Auto” and click “Save”.",
           },
+          { kind: "h3", text: "“Can’t shrink now”" },
           {
             kind: "p",
-            text: "**What to do:** Nothing. Operations logs each expand and shrink, with its outcome and reason.",
+            text: "In “Manual”, a shrink that fails a check reads “Can’t shrink now” on Operations, with the reason:",
           },
-          { kind: "h3", text: "Read why a shrink can’t run" },
-          {
-            kind: "p",
-            text: "**Look at:** Operations. In “Manual”, a shrink that fails a check reads “Can’t shrink now”, with the reason.",
-          },
-          { kind: "p", text: "**What it means, and what to do:**" },
           {
             kind: "table",
             head: ["Reason", "What to do"],
@@ -684,15 +518,15 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
               ],
               [
                 "The other disks couldn’t keep up with the VM’s disk load.",
-                "Nothing. Amoeba doesn’t shrink a pool when the disks that stay couldn’t serve your load.",
+                "Nothing. Amoeba doesn’t shrink onto disks that couldn’t serve your load.",
               ],
               [
                 "Amoeba is waiting for disk-load readings from the agent.",
-                "Check the agent is reporting. On Linux, the agent needs cgroup v2 to read disk load.",
+                "Check the agent is reporting. On Linux, it needs cgroup v2 for these readings.",
               ],
               [
                 "The VM’s kernel is too old, or doesn’t support btrfs.",
-                "Use a recent kernel that supports btrfs.",
+                "Use a recent kernel with btrfs.",
               ],
               [
                 "The pool reports disk errors.",
@@ -716,7 +550,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
           },
           {
             kind: "p",
-            text: "Email founders@zoorik.com, or [pick a time to talk](https://cal.com/zoorik/talk). Tell us what “Onboard VMs”, the VM’s agent, Pool → Migration and Operations show. Remove tokens, keys and other secrets from anything you send.",
+            text: "Email founders@zoorik.com, or [pick a time to talk](https://cal.com/zoorik/talk). Tell us what “Onboard VMs”, the VM’s agent, Pool → Migration and Operations show. Remove tokens, keys and other secrets first.",
           },
         ],
       },
@@ -724,16 +558,7 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
     related: [
       { text: "Amoeba product guide: Before you start", href: "/amoeba-guide#before-you-start" },
       {
-        text: "Amoeba product guide: Which VMs are listed",
-        href: "/amoeba-guide#which-vms-are-listed",
-      },
-      { text: "Amoeba product guide: Connection states", href: "/amoeba-guide#connection-states" },
-      {
-        text: "Amoeba FAQ: What happens if the agent stops reporting?",
-        href: "/amoeba-faq#what-happens-if-the-agent-stops",
-      },
-      {
-        text: "Amoeba product guide: Moving a VM onto its pool",
+        text: "Amoeba product guide: Moving onto a pool",
         href: "/amoeba-guide#moving-a-vm-onto-its-pool",
       },
       {
@@ -741,6 +566,10 @@ export const troubleshootingGuides: Readonly<Record<TroubleshootingId, OpenSourc
         href: "/amoeba-guide#what-stops-a-shrink",
       },
       { text: "Amoeba product guide: Stay in control", href: "/amoeba-guide#stay-in-control" },
+      {
+        text: "Amoeba FAQ: What happens if the agent stops reporting?",
+        href: "/amoeba-faq#what-happens-if-the-agent-stops",
+      },
       {
         text: "Amoeba FAQ: Which Linux distributions does Amoeba support?",
         href: "/amoeba-faq#which-linux-distributions-does-amoeba-support",

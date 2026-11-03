@@ -14,7 +14,7 @@ import { socialProfiles } from "@/content/footer";
  * The day /community's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /community's content moves this to that day in the same PR; never the build's date.
  */
-export const communityLastUpdated = "2 November 2026";
+export const communityLastUpdated = "3 November 2026";
 
 /** A profile of the footer's list, by its platform. */
 const profile = (platform: (typeof socialProfiles)[number]["platform"]): string =>
@@ -54,12 +54,12 @@ export const communityPage = {
   meta: {
     title: "Community",
     description:
-      "Talk to the people who build Coral and Amoeba on r/zoorik, and find FinOps communities on Reddit and Slack for cloud cost on Kubernetes, Azure and AWS.",
+      "Where to talk about cloud cost: r/zoorik for Coral and Amoeba, plus the main FinOps, Kubernetes, Azure and AWS communities.",
   },
   /** The page's name (its h1) and the deck under it. */
   hero: {
     title: "Zoorik Community",
-    deck: "Where to ask about cloud cost on Kubernetes, Azure and AWS, our own subreddit included.",
+    deck: "Where to ask about cloud cost on Kubernetes, Azure and AWS.",
   },
   /** Our own two, on the band: r/zoorik on the white card, Zoorik News on Medium on the navy one. */
   ours: {
@@ -67,26 +67,26 @@ export const communityPage = {
     label: "Zoorik on Reddit and Medium",
     reddit: {
       title: "r/zoorik",
-      line: "Ask about Coral and Amoeba, share your results and talk to the people who build them.",
+      line: "Ask the people who build Coral and Amoeba, and share your results.",
       join: { label: "Join r/zoorik", href: profile("reddit") },
     },
     news: {
       title: "Zoorik News",
-      line: "Our newsletter: what we ship, and each week’s Zoorik Radar, by email.",
+      line: "Our newsletter: what we ship, plus the week’s Kubernetes, cloud cost and FinOps news.",
       subscribe: { label: "Subscribe on Medium", href: profile("medium") },
     },
   },
   /** The communities, three per group, each its own page in a new tab; then the day they were checked. */
   communities: {
     id: "communities",
-    title: "FinOps and cloud cost communities",
+    title: "Cloud cost communities",
     groups: [
       {
         name: "FinOps",
         communities: [
           {
             name: "FinOps Foundation Slack",
-            what: "The FinOps Foundation’s Slack: practitioners discuss cloud cost by topic.",
+            what: "Practitioners discuss cloud cost in topic channels.",
             href: "https://www.finops.org/community/community-slack/",
             logo: "finops-foundation",
           },
@@ -98,7 +98,7 @@ export const communityPage = {
           },
           {
             name: "FinOps meetups",
-            what: "The FinOps Foundation’s in-person meetups for practitioners, city by city.",
+            what: "The FinOps Foundation’s in-person meetups, city by city.",
             href: "https://www.finops.org/community/events/?prod_COR_EVENTS%5BrefinementList%5D%5Bevent_type%5D%5B0%5D=FinOps%20Meetup",
             logo: "finops-foundation",
           },

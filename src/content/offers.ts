@@ -59,12 +59,12 @@ export const offersContent: {
    */
   readonly tools: readonly { readonly label: string; readonly href: string }[];
 } = {
-  title: "Cloud cost assessment",
+  title: "What you can save",
   note: savingsQualifier,
   free: {
-    label: "Free assessment",
+    label: "Assessment",
     word: "Free",
-    line: "Your estimated saving at list price, in one PDF report, from one line in your cloud console.",
+    line: "One command in your terminal, one PDF with your estimated saving at list price.",
     cta: { label: "Estimate your saving", href: routes.assessment },
   },
   rows: [
