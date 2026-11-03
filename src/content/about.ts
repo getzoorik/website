@@ -136,9 +136,12 @@ const announced = (href: string) => newsFromZoorik.find((item) => item.href === 
 const installs = announced(routes.openSource);
 const assessment = announced(routes.assessment);
 const assessmentVersion = assessment.title.match(/\d+\.\d+/)![0];
-/* The NVIDIA Inception announcement, which links to the programs here: the milestone's day and title are its. */
+/* The two program announcements, NVIDIA Inception and Microsoft for Startups: each milestone's day and title are its
+   announcement's, and Microsoft's line too. Both link to the programs here, so each is found by its title. */
 const programs = { id: "programs", title: "Programs" } as const;
-const inception = announced(`${routes.about}#${programs.id}`);
+const announcedAs = (title: string) => newsFromZoorik.find((item) => item.title === title)!;
+const inception = announcedAs("Zoorik joins the NVIDIA Inception Program");
+const microsoftForStartups = announcedAs("Zoorik joins Microsoft for Startups");
 
 /* The Coral case study's own figures: its headline figure and what it measures (−58% machine cost), the machine cost
    on the day Coral was connected and today's, and the day it was published. The Amoeba study's: its headline figure
@@ -210,8 +213,8 @@ export const about = {
    * Milestones: public, dated facts only; no customer, revenue or user figure until there is one to state. The
    * case studies' figures are read from the studies (`case-studies.ts`); "eight days" is the Coral study's "8 days"
    * (`band.stats[3]`), in words as its prose and the hub's card say it. The Helm and Terraform milestone's day, the
-   * assessment's day and version, and the NVIDIA Inception milestone's day and title are read from their
-   * announcements on /news (`newsFromZoorik`).
+   * assessment's day and version, the NVIDIA Inception milestone's day and title, and the Microsoft for Startups
+   * milestone's day, title and line are read from their announcements on /news (`newsFromZoorik`).
    */
   milestones: {
     section: { id: "milestones", title: "Milestones" },
@@ -249,6 +252,11 @@ export const about = {
         date: dayOf(inception.date),
         title: inception.title,
         line: "Inception is NVIDIA’s program for startups.",
+      },
+      {
+        date: dayOf(microsoftForStartups.date),
+        title: microsoftForStartups.title,
+        line: microsoftForStartups.line,
       },
     ] satisfies readonly AboutMilestone[] as readonly AboutMilestone[],
   },

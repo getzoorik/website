@@ -362,7 +362,8 @@ describe("the home page's structured data", () => {
     const png = readFileSync(`public${brandLogo.path}`);
     expect(png.readUInt32BE(16)).toBe(brandLogo.width);
     expect(png.readUInt32BE(20)).toBe(brandLogo.height);
-    /* The program /about lists under Programs, run by NVIDIA (its Wikidata entry). */
+    /* The programs /about lists under Programs, NVIDIA's then Microsoft's, each run by its company (its Wikidata
+       entry). */
     expect(org.memberOf).toEqual([
       {
         "@type": "ProgramMembership",
@@ -373,6 +374,17 @@ describe("the home page's structured data", () => {
           name: "NVIDIA",
           url: "https://www.nvidia.com/",
           sameAs: "https://www.wikidata.org/wiki/Q182477",
+        },
+      },
+      {
+        "@type": "ProgramMembership",
+        programName: "Microsoft for Startups",
+        url: "https://www.microsoft.com/en-us/startups/",
+        hostingOrganization: {
+          "@type": "Organization",
+          name: "Microsoft",
+          url: "https://www.microsoft.com/",
+          sameAs: "https://www.wikidata.org/wiki/Q2283",
         },
       },
     ]);
