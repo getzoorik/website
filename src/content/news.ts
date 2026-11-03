@@ -251,6 +251,14 @@ export const newsRadar: NewsRadar = {
 
 export const newsFromZoorik: readonly NewsAnnouncement[] = [
   {
+    date: "2026-11-03",
+    tag: "Company",
+    title: "Zoorik joins Microsoft for Startups",
+    line: "It’s Microsoft’s program for startups.",
+    href: `${routes.about}#programs`,
+    cta: "About Zoorik",
+  },
+  {
     date: "2026-10-27",
     tag: "Company",
     title: "Zoorik joins the NVIDIA Inception Program",

@@ -102,6 +102,7 @@ describe("/about", () => {
       "Free assessment 1.3",
       "Amoeba case study: −25% pool size",
       "Zoorik joins the NVIDIA Inception Program",
+      "Zoorik joins Microsoft for Startups",
       "Find us",
       "Available on",
       "Follow us",
@@ -178,20 +179,43 @@ describe("/about", () => {
     expect(demo.querySelector("svg.ext")).not.toBeNull();
   });
 
-  it("closes the facts with the programs: NVIDIA's own badge, the line, and NVIDIA's trademark line", () => {
+  it("closes the facts with the programs: each one's own badge and line, NVIDIA's with its trademark line", () => {
     const programs = main().querySelector("#company dl.ab-facts + div.ab-prog#programs")!;
     expect(text(programs.querySelector(":scope > h3"))).toBe("Programs");
-    const badge = programs.querySelector(".ab-pg > .ab-pr > img")!;
-    /* The program's file, unchanged, named for a screen reader as NVIDIA names it in a title. */
-    expect(badge).toHaveAttribute("src", "/badges/nvidia-inception-program-badge.svg");
-    expect(badge).toHaveAttribute("alt", "NVIDIA Inception Program");
-    expect([badge.getAttribute("width"), badge.getAttribute("height")]).toEqual(["200", "86"]);
-    expect(text(programs.querySelector(".ab-pr > p"))).toBe(
+    const [nvidia, microsoft] = [...programs.querySelectorAll(":scope > .ab-pg")];
+    expect(programs.querySelectorAll(":scope > .ab-pg")).toHaveLength(2);
+    /* NVIDIA's file, unchanged, named for a screen reader as NVIDIA names it in a title, and moved left by the clear
+       space it carries. */
+    const nvidiaBadge = nvidia!.querySelector(":scope > .ab-pr > img")!;
+    expect(nvidiaBadge).toHaveAttribute("src", "/badges/nvidia-inception-program-badge.svg");
+    expect(nvidiaBadge).toHaveAttribute("alt", "NVIDIA Inception Program");
+    expect([nvidiaBadge.getAttribute("width"), nvidiaBadge.getAttribute("height")]).toEqual([
+      "200",
+      "86",
+    ]);
+    expect(nvidiaBadge).toHaveStyle({ marginLeft: "-10px" });
+    expect(text(nvidia!.querySelector(".ab-pr > p"))).toBe(
       "Zoorik is a member of the NVIDIA Inception program.",
     );
-    expect(programs.querySelector(".ab-pr > p span[translate='no']")).toHaveTextContent("Zoorik");
-    expect(text(programs.querySelector(".ab-pg > p.ab-tm"))).toBe(nvidiaInceptionLegal);
-    /* No link: the badge says Zoorik is a member, and nothing more. */
+    expect(nvidia!.querySelector(".ab-pr > p span[translate='no']")).toHaveTextContent("Zoorik");
+    expect(text(nvidia!.querySelector(":scope > p.ab-tm"))).toBe(nvidiaInceptionLegal);
+    /* Microsoft's file, unchanged, the same 86px high; drawn to its edges, so not moved; no trademark line. */
+    const microsoftBadge = microsoft!.querySelector(":scope > .ab-pr > img")!;
+    expect(microsoftBadge).toHaveAttribute("src", "/badges/microsoft-for-startups-badge.png");
+    expect(microsoftBadge).toHaveAttribute("alt", "Microsoft for Startups");
+    expect([microsoftBadge.getAttribute("width"), microsoftBadge.getAttribute("height")]).toEqual([
+      "201",
+      "86",
+    ]);
+    expect(microsoftBadge).not.toHaveAttribute("style");
+    expect(text(microsoft!.querySelector(".ab-pr > p"))).toBe(
+      "Zoorik is part of Microsoft for Startups.",
+    );
+    expect(microsoft!.querySelector(".ab-pr > p span[translate='no']")).toHaveTextContent("Zoorik");
+    expect(microsoft!.querySelector("p.ab-tm")).toBeNull();
+    /* Member, never partner: the words the programs allow. */
+    expect(programs.textContent).not.toMatch(/partner|backed by|endorsed by/i);
+    /* No link: a badge says Zoorik is a member, and nothing more. */
     expect(programs.querySelector("a")).toBeNull();
   });
 
@@ -202,7 +226,14 @@ describe("/about", () => {
     expect(svg).not.toMatch(/<script|<foreignObject|href=/i);
   });
 
-  it("lists six milestones on a line, each dated, the case studies' read from the studies", () => {
+  it("serves Microsoft's badge as Microsoft made it: its 400 × 171 PNG, drawn at 86px high", () => {
+    const png = readFileSync("public/badges/microsoft-for-startups-badge.png");
+    expect(png.subarray(1, 4).toString("ascii")).toBe("PNG");
+    expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([400, 171]);
+    expect(Math.round((400 * 86) / 171)).toBe(201);
+  });
+
+  it("lists seven milestones on a line, each dated, the case studies' read from the studies", () => {
     const items = [...main().querySelectorAll("#milestones ol.ab-ms > li")];
     expect(
       items.map((item) => [
@@ -248,6 +279,12 @@ describe("/about", () => {
         "Zoorik joins the NVIDIA Inception Program",
         "Inception is NVIDIA’s program for startups.",
       ],
+      [
+        "2026-11-03",
+        "3 Nov 2026",
+        "Zoorik joins Microsoft for Startups",
+        "It’s Microsoft’s program for startups.",
+      ],
     ]);
     expect(
       items.map((item) => {
@@ -260,6 +297,7 @@ describe("/about", () => {
       ["See open source", routes.openSource, null],
       ["Run it", routes.assessment, null],
       ["Read the case study", routes.caseStudyAmoebaLabVms, null],
+      null,
       null,
     ]);
     /* The names stay out of translation, in the titles and the lines alike. */
@@ -287,13 +325,25 @@ describe("/about", () => {
     expect(study!.link?.href).toBe(caseStudy.route);
   });
 
-  it("reads the installs and assessment milestones from their announcements on /news, never typed twice", () => {
-    const [, , installs, assessment, , inception] = about.milestones.items;
+  it("reads the installs, assessment and program milestones from their announcements on /news, never typed twice", () => {
+    const [, , installs, assessment, , inception, microsoft] = about.milestones.items;
     const announced = (href: string) => newsFromZoorik.find((item) => item.href === href)!;
+    /* Both program announcements link to /about#programs, so each is found by its title. */
+    const announcedAs = (title: string) => newsFromZoorik.find((item) => item.title === title)!;
     expect(installs!.date.iso).toBe(announced(routes.openSource).date);
     expect(assessment!.date.iso).toBe(announced(routes.assessment).date);
-    expect(inception!.date.iso).toBe(announced(`${routes.about}#programs`).date);
-    expect(inception!.title).toBe(announced(`${routes.about}#programs`).title);
+    const nvidia = announcedAs("Zoorik joins the NVIDIA Inception Program");
+    expect([inception!.date.iso, inception!.title]).toEqual([nvidia.date, nvidia.title]);
+    const msft = announcedAs("Zoorik joins Microsoft for Startups");
+    expect([microsoft!.date.iso, microsoft!.title, microsoft!.line]).toEqual([
+      msft.date,
+      msft.title,
+      msft.line,
+    ]);
+    expect([nvidia.href, msft.href]).toEqual([
+      `${routes.about}#programs`,
+      `${routes.about}#programs`,
+    ]);
     /* "Free assessment 1.3": the version is the announcement's, "Zoorik assessment 1.3: …". */
     expect(announced(routes.assessment).title).toContain(
       `${assessment!.title.replace("Free ", "")}: `,

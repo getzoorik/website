@@ -25,7 +25,8 @@ import { NEW_TAB_HINT, isOffSite, offSiteProps } from "@/lib/links";
  *   How we build    the home page's four cards, a tick for each (on the band)
  *   Company         the facts, four to a row on a wide screen, then the
  *                   programs Zoorik is a member of: each program's badge,
- *                   its line, and its trademark line in small print
+ *                   its line, and its trademark line in small print when
+ *                   the program asks for one
  *   Milestones      dated facts on a line, most with their page (on the
  *                   band)
  *   Find us         the two stores as buttons, the social row, where Zoorik
@@ -178,11 +179,12 @@ export function AboutPage(): React.JSX.Element {
                   alt={program.name}
                   width={program.badge.width}
                   height={program.badge.height}
+                  style={program.badge.inset ? { marginLeft: -program.badge.inset } : undefined}
                   loading="lazy"
                 />
                 <p>{named(program.line)}</p>
               </div>
-              <p className="ab-tm">{program.legal}</p>
+              {program.legal ? <p className="ab-tm">{program.legal}</p> : null}
             </div>
           ))}
         </div>

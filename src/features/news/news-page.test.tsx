@@ -101,15 +101,14 @@ describe("/news", () => {
     expect(mark).toHaveAttribute("aria-hidden", "true");
     expect(mark).toHaveAttribute("viewBox", "0 0 512 512");
     const meta = latest!.querySelector("p.nw-meta")!;
-    expect(text(meta)).toBe("27 October 2026 · Company");
+    expect(text(meta)).toBe("3 November 2026 · Company");
     expect(meta.querySelector("time")).toHaveAttribute("datetime", item.date);
-    /* NVIDIA's own naming: "Program" in a title, "program" in a sentence, never "Inception" alone. */
-    expect(text(latest!.querySelector("h2.as-h"))).toBe(
-      "Zoorik joins the NVIDIA Inception Program",
-    );
+    /* The program's own name; Zoorik is part of it, never its "partner". */
+    expect(text(latest!.querySelector("h2.as-h"))).toBe("Zoorik joins Microsoft for Startups");
     expect(text(latest!.querySelector("p:not(.nw-meta)"))).toBe(
-      "It’s NVIDIA’s program for startups.",
+      "It’s Microsoft’s program for startups.",
     );
+    expect(latest!.textContent).not.toMatch(/partner|backed by|endorsed by/i);
     const button = latest!.querySelector("a.btn-ink")!;
     /* To the programs on /about, which keeps its hash. */
     expect(button).toHaveAttribute("href", `${routes.about}#programs`);
@@ -163,6 +162,15 @@ describe("/news", () => {
         tile.querySelector(".nw-m time")!.getAttribute("datetime"),
       ]),
     ).toEqual([
+      [
+        `${routes.about}#programs`,
+        "zoorik",
+        /* NVIDIA's own naming: "Program" in a title, "program" in a sentence, never "Inception" alone. */
+        "Zoorik joins the NVIDIA Inception Program",
+        "It’s NVIDIA’s program for startups.",
+        "27 Oct · Company",
+        "2026-10-27",
+      ],
       [
         routes.assessment,
         "zoorik",
