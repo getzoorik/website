@@ -136,8 +136,8 @@ const announced = (href: string) => newsFromZoorik.find((item) => item.href === 
 const installs = announced(routes.openSource);
 const assessment = announced(routes.assessment);
 const assessmentVersion = assessment.title.match(/\d+\.\d+/)![0];
-/* The two program announcements, NVIDIA Inception and Microsoft for Startups: each milestone's day and title are its
-   announcement's, and Microsoft's line too. Both link to the programs here, so each is found by its title. */
+/* The two program announcements, NVIDIA Inception and Microsoft for Startups: each milestone's day, title and line are
+   its announcement's. Both link to the programs here, so each is found by its title. */
 const programs = { id: "programs", title: "Programs" } as const;
 const announcedAs = (title: string) => newsFromZoorik.find((item) => item.title === title)!;
 const inception = announcedAs("Zoorik joins the NVIDIA Inception Program");
@@ -251,7 +251,7 @@ export const about = {
       {
         date: dayOf(inception.date),
         title: inception.title,
-        line: "Inception is NVIDIA’s program for startups.",
+        line: inception.line,
       },
       {
         date: dayOf(microsoftForStartups.date),

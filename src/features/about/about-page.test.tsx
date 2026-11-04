@@ -277,7 +277,7 @@ describe("/about", () => {
         "2026-10-27",
         "27 Oct 2026",
         "Zoorik joins the NVIDIA Inception Program",
-        "Inception is NVIDIA’s program for startups.",
+        "It’s NVIDIA’s program for startups.",
       ],
       [
         "2026-11-03",
