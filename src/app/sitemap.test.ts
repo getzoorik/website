@@ -94,6 +94,7 @@ describe("sitemap.xml", () => {
       `${site.url}/news`,
       `${site.url}/community`,
       `${site.url}/pricing`,
+      `${site.url}/status`,
       `${site.url}/contact`,
       `${site.url}/about`,
       `${site.url}/careers`,
@@ -193,6 +194,8 @@ describe("sitemap.xml", () => {
       "/community": "2026-11-03",
       /* /pricing and /contact print no day: the day their content last changed. */
       "/pricing": "2026-11-03",
+      /* /status prints "Updated 6 November 2026". */
+      "/status": "2026-11-06",
       "/contact": "2026-11-03",
       "/about": "2026-11-03",
       "/careers": "2026-11-03",
@@ -223,7 +226,7 @@ describe("sitemap.xml", () => {
        without one is never told to recrawl. */
     const entries = sitemap();
     expect(entries).toHaveLength(
-      (amoebaDocs ? 58 : 55) + learnArticles.length + glossaryTerms.length,
+      (amoebaDocs ? 59 : 56) + learnArticles.length + glossaryTerms.length,
     );
     /* Today is `LEARN_TODAY` when set (articles dated ahead, checked as of the day they go live), else the latest
        calendar day anywhere on Earth (UTC+14), so a date set to today in any time zone is not "the future". */

@@ -77,6 +77,7 @@ import { securityPage } from "@/content/security";
 import { termsCopy } from "@/content/terms";
 import { topicPages } from "@/content/topic-pages";
 import { troubleshootingGuides } from "@/content/troubleshooting";
+import { statusPage } from "@/content/status";
 import { trustPage } from "@/content/trust";
 import { worksWithPages } from "@/content/works-with";
 import { isoDay } from "@/lib/content-date";
@@ -729,6 +730,13 @@ const pages: Readonly<Record<string, PageEntry>> = {
     name: titled(pricingPage.meta.title),
     description: pricingPage.meta.description,
     trail: [{ name: pricingPage.hero.title, path: routes.pricing }],
+    about: "organization",
+  },
+  [routes.status]: {
+    kind: "WebPage",
+    name: titled(statusPage.meta.title),
+    description: statusPage.meta.description,
+    trail: [{ name: statusPage.meta.title, path: routes.status }],
     about: "organization",
   },
   ...Object.fromEntries(

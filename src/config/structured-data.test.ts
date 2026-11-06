@@ -155,6 +155,7 @@ const pageModules: Readonly<Record<string, () => Promise<PageModule>>> = {
   "/trust": () => import("@/app/trust/page"),
   "/contact": () => import("@/app/contact/page"),
   "/pricing": () => import("@/app/pricing/page"),
+  "/status": () => import("@/app/status/page"),
   "/eks-and-aks-pricing-calculator": () => import("@/app/eks-and-aks-pricing-calculator/page"),
   "/ebs-and-azure-disk-pricing": () => import("@/app/ebs-and-azure-disk-pricing/page"),
   "/open-source": () => import("@/app/open-source/page"),
@@ -429,7 +430,7 @@ describe("the home page's structured data", () => {
 
 describe("every indexed page's structured data", () => {
   it("renders on every page in the sitemap as one block that parses to the page's graph", async () => {
-    expect(listed).toHaveLength(58 + learnArticles.length + glossaryTerms.length);
+    expect(listed).toHaveLength(59 + learnArticles.length + glossaryTerms.length);
     for (const { path } of listed) {
       pathname.current = path;
       const { default: Page } = await pageModule(path);
@@ -574,6 +575,7 @@ describe("every indexed page's structured data", () => {
     expect(names(routes.trust)).toEqual(["Zoorik", "Trust center"]);
     expect(names(routes.contact)).toEqual(["Zoorik", "Contact"]);
     expect(names(routes.pricing)).toEqual(["Zoorik", "Pricing"]);
+    expect(names(routes.status)).toEqual(["Zoorik", "Status"]);
     expect(names(routes.privacy)).toEqual(["Zoorik", "Privacy"]);
     expect(names(routes.careers)).toEqual(["Zoorik", "Careers"]);
     expect(names(routes.events)).toEqual(["Zoorik", "Events"]);

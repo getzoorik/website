@@ -236,6 +236,7 @@ const CARDS: readonly {
   },
   { file: "pricing", words: "How Coral and Amoeba are priced", paths: [routes.pricing] },
   { file: "contact", words: "Contact Zoorik", paths: [routes.contact] },
+  { file: "status", words: "Coral and Amoeba status", paths: [routes.status] },
   { file: "trust", words: "Security overview, DPA and sub-processors", paths: [routes.trust] },
   { file: "login", words: "Sign in", paths: ["/login"] },
   {

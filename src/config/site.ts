@@ -193,6 +193,8 @@ export const routes = {
   trust: "/trust",
   contact: "/contact",
   pricing: "/pricing",
+  /* One page for both products, in no menu. */
+  status: "/status",
   /* The two calculators at the address of their search (D230, owner, 1 Nov 2026); their 30 Oct addresses,
      /node-cost-calculator and /disk-cost-calculator, redirect here. */
   eksAndAksPricingCalculator: "/eks-and-aks-pricing-calculator",
