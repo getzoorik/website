@@ -15,4 +15,17 @@ import staticAssetsIncrementalCache from "@opennextjs/cloudflare/overrides/incre
  * `opennextjs-cloudflare populateCache local`, which deploy.yml runs between
  * the build and the deploy.
  */
-export default defineCloudflareConfig({ incrementalCache: staticAssetsIncrementalCache });
+/**
+ * `enableCacheInterception: true` serves each cached page from static assets
+ * BEFORE the Next.js handler boots. Without it, every request still cold-boots
+ * the full app inside the Worker and then reads the cache, which on Workers
+ * Free (10 ms CPU) produces the 1102 "exceeded resource limits" errors and
+ * ~45 s cold-start hangs that took /coral and /amoeba down. Every route here
+ * is static except `/api/lead`, which still boots the handler as before.
+ *
+ * Must stay `false` if PPR is ever enabled in next.config.ts.
+ */
+export default defineCloudflareConfig({
+  incrementalCache: staticAssetsIncrementalCache,
+  enableCacheInterception: true,
+});
