@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**Effective date:** 2 November 2026 · **Version:** 1.5
+**Effective date:** 6 November 2026 · **Version:** 1.6
 
 This policy explains what personal data Zoorik collects, why, who we share it with, where we keep it, how long we keep it, and how you can see, correct or delete it. Where a point is technical, we say exactly what happens.
 
@@ -11,7 +11,7 @@ This policy explains what personal data Zoorik collects, why, who we share it wi
 - The Coral agent sends us usage figures, an inventory of your nodes and workloads, and events. Its Kubernetes permissions do not let it read your Secrets or ConfigMaps. Its node daemon runs as root on each Linux node so that it can move running pods; the daemon has no connection to Zoorik, and nothing it can reach is sent to us.
 - To connect Amoeba on Azure, your admin gives Zoorik's Amoeba app a role in your subscription. On AWS, your admin creates a role in your account that Zoorik can assume only with your organisation's external ID. Either role lets Zoorik run commands as root on your VMs, create, change and delete disks, and create and delete snapshots; the Azure role also lets it read the settings of every resource in the subscription.
 - Amoeba's agent runs as root on each VM you choose. Every 30 seconds it sends us storage figures, your mount paths and disk ids, and the names of the services writing to each disk. Once Amoeba starts moving a VM's data, the agent also sends disk-speed figures every 2 seconds. The contents of your files are never sent to us.
-- zoorik.com has no forms that send what you enter, and its own code sets no cookies. Cloudflare hosts it, measures visits and checks for bots, and Microsoft Clarity records how visitors use its pages. The Coral and Amoeba pages play their films in YouTube's player.
+- zoorik.com has no forms that send what you enter. Cloudflare hosts it, measures visits and checks for bots, Microsoft Clarity records how visitors use its pages, and Google Analytics counts visits, with cookies outside the EEA, the UK and Switzerland. The Coral and Amoeba pages play their films in YouTube's player.
 - The free assessment scripts upload nothing. You decide whether to email us the file they write.
 - Coral's and Amoeba's data are stored in Microsoft Azure, in the Central India region.
 - To see, correct, export or delete your data, email founders@zoorik.com.
@@ -32,7 +32,7 @@ Zoorik makes two products: Coral, which rebalances Kubernetes clusters on Azure 
 - **The free assessment**: the `zoorik` package on npm and PyPI, which you run with `npx -y zoorik assess coral` or `npx -y zoorik assess amoeba`, and the older scripts at zoorik.com/assess/k8s and zoorik.com/assess/disks.
 - **Email** you send us, **calls** you book with us, and **leads and subscriptions** that reach us from Microsoft Marketplace and AWS Marketplace.
 
-**What other companies do for themselves.** When you sign in with Microsoft or Google, book a call through Cal.com, download from GitHub, visit zoorik.com while Microsoft Clarity records the visit, or reach a film that YouTube's player shows on zoorik.com, those companies also use your data for their own purposes, under their own privacy policies. This policy covers what reaches Zoorik and what those companies do for us (section 7). It does not cover sites we only link to, such as LinkedIn, X, Reddit, Medium, our YouTube channel, and the AI assistants our footer opens with a question about the page (ChatGPT, Claude, Perplexity and Grok).
+**What other companies do for themselves.** When you sign in with Microsoft or Google, book a call through Cal.com, download from GitHub, visit zoorik.com while Microsoft Clarity and Google Analytics record the visit, or reach a film that YouTube's player shows on zoorik.com, those companies also use your data for their own purposes, under their own privacy policies. This policy covers what reaches Zoorik and what those companies do for us (section 7). It does not cover sites we only link to, such as LinkedIn, X, Reddit, Medium, our YouTube channel, and the AI assistants our footer opens with a question about the page (ChatGPT, Claude, Perplexity and Grok).
 
 ## 3. Our two roles
 
@@ -153,9 +153,9 @@ We use logs to run the service, keep it secure and fix problems. Legal basis: ou
 ### 4.6 zoorik.com
 
 **What the site itself does**
-- It has no forms that send what you enter. Its two cost calculators work out their figures in your browser. The product you pick on zoorik.com/assessment is written into the page's address (for example `?p=amoeba`), which Clarity records with the page; nothing else you choose there leaves your browser. The Copy button writes the command only to your clipboard: Clarity learns that you copied it, not what (below).
-- Its own code sets no cookies and uses no browser storage. It serves its own fonts.
-- It has no advertising, no chat widget and no embedded maps. Its own code loads one analytics service, Microsoft Clarity, and Cloudflare adds its Web Analytics as it serves each page (both below). Its one embedded video player is YouTube's, on two pages (below).
+- It has no forms that send what you enter. Its two cost calculators work out their figures in your browser. The product you pick on zoorik.com/assessment is written into the page's address (for example `?p=amoeba`), which Clarity and Google Analytics record with the page; nothing else you choose there leaves your browser. The Copy button writes the command only to your clipboard: Clarity learns that you copied it, not what (below).
+- Apart from Google Analytics (below), its own code sets no cookies and uses no browser storage. It serves its own fonts.
+- It has no advertising, no chat widget and no embedded maps. Its own code loads two analytics services, Microsoft Clarity and Google Analytics, and Cloudflare adds its Web Analytics as it serves each page (all below). Its one embedded video player is YouTube's, on two pages (below).
 
 **Microsoft Clarity.** Every page of zoorik.com, this one included, loads Microsoft Clarity once the page has finished loading. Clarity records how the page is used, so that we can see what helps visitors and what gets in their way. While you are on a page, it sends Microsoft:
 - your clicks, taps, scrolling and mouse movements, and the size of your window;
@@ -165,6 +165,13 @@ We use logs to run the service, keep it secure and fix problems. Legal basis: ou
 - page-speed measures and script errors.
 
 Microsoft receives your IP address with each upload and uses it to work out your country. On zoorik.com, Clarity sets no cookies and uses no browser storage, so it does not link one page you view to the next, or one visit to the next. Microsoft also uses this data for its own purposes, including Microsoft Advertising, as the Microsoft Privacy Statement describes (https://privacy.microsoft.com/privacystatement). To stop Clarity recording your visits, turn on Global Privacy Control in your browser, opt out of Microsoft at https://optout.aboutads.info, or block scripts from clarity.ms.
+
+**Google Analytics.** Every page of zoorik.com, this one included, loads Google Analytics, through Google Tag Manager, once the page has finished loading. It counts visits and shows us which pages people read and how they found them. While you are on a page, it sends Google:
+- the page's address and title, the page you came from, and each new page you open on the site;
+- when you reach the end of a page (90% of the way down), click a link that leaves zoorik.com, download a file, or start using a cost calculator: that you did it, not what you enter. It can also report a film starting, how far it plays and its end;
+- your browser, operating system, device type, screen size and language.
+
+Google receives your IP address, uses it to work out your rough location and to detect spam, and then discards it. Outside the EEA, the UK and Switzerland, Google Analytics sets two cookies (section 6) that hold a random id, so that it can link the pages you view and your return visits in the same browser. In the EEA, the UK and Switzerland it sets no cookies, so it does not link one page you view to the next, or one visit to the next. Google Signals, which links visits to signed-in Google accounts, is off. Google describes how it uses this data at https://policies.google.com/technologies/partner-sites. To stop Google Analytics, install Google's opt-out add-on from https://tools.google.com/dlpage/gaoptout, or block scripts from googletagmanager.com.
 
 **YouTube.** zoorik.com/coral and zoorik.com/amoeba each show a 2-minute film in YouTube's player, in its privacy-enhanced mode (youtube-nocookie.com). The player loads when you scroll to the film, and the film then starts by itself: with its sound if you have already clicked, tapped or typed on the page, otherwise muted until you do. If your device asks for reduced motion, the player loads only when you press play or a chapter. Once it loads, your browser connects to YouTube, which is Google: Google receives your IP address, your browser and device details and how you use the player, and the player may set cookies and use browser storage. Google uses this under its own privacy policy (https://policies.google.com/privacy). No other page of zoorik.com loads anything from YouTube. To avoid it, block youtube-nocookie.com in your browser, or leave the page before you reach the film.
 
@@ -240,8 +247,10 @@ The two cookies are needed to sign in; both are Secure and HttpOnly, use SameSit
 | `cf_clearance` | Cookie | Set by Cloudflare's bot detection: records that your browser passed its check | 1 year |
 | `__cf_ob` | Cookie | Set by Cloudflare's bot detection while its check runs | Until you close your browser |
 | `_cfPre_tabId` | Session storage | Set by Cloudflare's bot detection | Until you close the tab |
+| `_ga` | Cookie | Set by Google Analytics outside the EEA, the UK and Switzerland: a random id that tells one browser from another | Up to 2 years |
+| `_ga_DPV4MD0ZBX` | Cookie | Set by Google Analytics outside the EEA, the UK and Switzerland: keeps track of the visit | Up to 2 years |
 
-All three are Cloudflare's, for bot detection (section 4.6). `cf_clearance` is set for zoorik.com and its subdomains, so your browser also sends it to the Coral and Amoeba consoles. zoorik.com's own code sets no cookies, and Microsoft Clarity is set to use no cookies or storage here. YouTube's player on the Coral and Amoeba pages may set its own cookies and browser storage once it loads (section 4.6).
+`cf_clearance`, `__cf_ob` and `_cfPre_tabId` are Cloudflare's, for bot detection (section 4.6). `cf_clearance` is set for zoorik.com and its subdomains, so your browser also sends it to the Coral and Amoeba consoles. The two `_ga` cookies are Google Analytics', for counting visits (section 4.6), and are set the same way. zoorik.com's own code sets no other cookies, and Microsoft Clarity is set to use no cookies or storage here. YouTube's player on the Coral and Amoeba pages may set its own cookies and browser storage once it loads (section 4.6).
 
 You can block or clear cookies and storage in your browser. If you block the consoles' cookies, you cannot sign in to Coral or Amoeba.
 
@@ -261,6 +270,7 @@ These companies help us run Zoorik. When one of them handles personal data for u
 | AWS Marketplace | Our listings for Coral and Amoeba | When you subscribe: your company, your AWS account id and a registration token |
 | Cloudflare | DNS and the secure proxy in front of Coral and Amoeba; hosting for zoorik.com; get.zoorik.com and the assessment redirects; bot detection, web analytics, error reports and request logs | Every request in transit, including IP addresses, cookies and agent uploads (it decrypts and re-encrypts each request); what its scripts send |
 | Microsoft (Clarity) | Analytics for zoorik.com: recordings of visits, heatmaps and page statistics | What section 4.6 lists, and your IP address. Microsoft also uses it for its own purposes (section 2) |
+| Google (Analytics) | Analytics for zoorik.com: counts of visits, pages and actions | What section 4.6 lists, and your IP address. Google also uses it for its own purposes (section 2) |
 | Google (YouTube) | Plays the films on zoorik.com/coral and zoorik.com/amoeba | What section 4.6 lists, and your IP address. Google also uses it for its own purposes (section 2) |
 | GitHub | Hosts zoorikctl, its Homebrew tap and Scoop bucket, the install scripts behind get.zoorik.com, the Coral agent images and Helm chart, the Amoeba agent releases, and the assessment's source and older scripts | The IP address of whoever downloads them, including your clusters and VMs; and, when Amoeba installs its agent on a VM, that VM's agent key (section 4.3) |
 | npm and the Python Package Index (PyPI) | Serve the free assessment (`npx -y zoorik …`) | The IP address and tool user agent of whoever downloads it |
@@ -272,7 +282,7 @@ Inside your organisation, other members see what section 4.1 describes and the c
 ## 8. Where data is stored, and international transfers
 
 - Coral's and Amoeba's databases, backups, key vault and container registry are in Microsoft Azure, Central India. Backups are not copied to another region. Sessions are held in memory only, inside our cluster.
-- Our email, sign-in, hosting, download, website analytics, video, booking and video-call providers, and the cloud marketplaces, may process data in other countries, including the United States. Amoeba makes its requests to assume your AWS role, and reads AWS prices, through AWS's us-east-1 region in the United States. Microsoft Clarity stores what it records in Microsoft's cloud.
+- Our email, sign-in, hosting, download, website analytics, video, booking and video-call providers, and the cloud marketplaces, may process data in other countries, including the United States. Amoeba makes its requests to assume your AWS role, and reads AWS prices, through AWS's us-east-1 region in the United States. Microsoft Clarity stores what it records in Microsoft's cloud, and Google Analytics what it receives in Google's cloud.
 - If you are outside India, your data is transferred to India, where Coral and Amoeba are hosted. Some providers in section 7 handle data outside India. From about May 2027, India's DPDP Act allows this except to countries the Government of India restricts. India has no EU adequacy decision. Where the law requires a safeguard for such a transfer, such as standard contractual clauses for data from the EU or UK, we put one in place; email us for a copy.
 
 ## 9. How long we keep data
@@ -301,6 +311,9 @@ From about 13 May 2027, India's DPDP Rules require us to keep personal data, and
 **Set by Microsoft Clarity (zoorik.com)**
 - Recordings of visits: 30 days. Recordings we mark as favourites, and a random sample Microsoft keeps: up to 9 months.
 - Heatmaps: up to 9 months.
+
+**Set by Google Analytics (zoorik.com)**
+- Data about each visit: up to 14 months. The totals in its standard reports are kept after that.
 
 **Disconnecting a cluster.** `zoorikctl cluster disconnect` removes Coral from your cluster and offers to undo Coral's cloud changes: it puts back each node pool minimum Coral lowered, which may add machines, then removes the cloud identity it created. It does not contact Zoorik or delete the data we already hold; to have it deleted, email founders@zoorik.com.
 
@@ -343,7 +356,7 @@ Your local law may give you similar rights. Email us and we will help.
 
 ### 11.5 Do you have to give us data?
 
-You can browse zoorik.com without giving us your name or email address; Cloudflare and Microsoft Clarity still receive what section 4.6 describes, as does YouTube once its player loads on the Coral and Amoeba pages, and section 4.6 says how to stop Clarity recording your visits. To use Coral or Amoeba, you must sign in with Microsoft or Google. To use Amoeba, your admin must also connect your Azure subscription or AWS account (section 4.3).
+You can browse zoorik.com without giving us your name or email address; Cloudflare, Microsoft Clarity and Google Analytics still receive what section 4.6 describes, as does YouTube once its player loads on the Coral and Amoeba pages, and section 4.6 says how to stop Clarity and Google Analytics recording your visits. To use Coral or Amoeba, you must sign in with Microsoft or Google. To use Amoeba, your admin must also connect your Azure subscription or AWS account (section 4.3).
 
 ### 11.6 Automated decisions
 

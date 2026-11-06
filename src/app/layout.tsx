@@ -3,6 +3,7 @@ import { IBM_Plex_Mono, Inter } from "next/font/google";
 import type { ReactNode } from "react";
 
 import { Clarity } from "@/components/analytics/clarity";
+import { GoogleTag } from "@/components/analytics/google-tag";
 import { InPageLinks } from "@/components/layout/in-page-links";
 import { site } from "@/config/site";
 import { baseOpenGraph, baseTwitter } from "@/config/social";
@@ -84,10 +85,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             should not have to remember to opt in. Renders nothing. */}
         <InPageLinks />
         {children}
-        {/* Every page, /login and the 404 included. The snippet itself does
-            nothing anywhere but zoorik.com, and nothing before the page has
-            loaded. */}
+        {/* Every page, /login and the 404 included. Each snippet does nothing
+            anywhere but zoorik.com, and nothing before the page has loaded. */}
         <Clarity />
+        <GoogleTag />
       </body>
     </html>
   );
