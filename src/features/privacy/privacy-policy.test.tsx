@@ -164,8 +164,9 @@ describe("/privacy anchors", () => {
     /* The mock's 30, plus "4.3", "4.4" and "4.7" in §4, less "section 7" of the Act;
        plus version 1.2's three (YouTube in §6 and in §7's table); plus version
        1.5's four ("4.3" in §5's sign-in token, "section 4.2" in §4.4 and in §5,
-       and "section 4.3" in §7's GitHub row). */
-    expect(refs).toHaveLength(39);
+       and "section 4.3" in §7's GitHub row); plus version 1.6's four (Google
+       Analytics in §4.6, §6, and twice in §7's table). */
+    expect(refs).toHaveLength(43);
     for (const [label, href] of refs) {
       const number = /^(?:[Ss]ections? )?(\d+(?:\.\d)?)$/.exec(label!)?.[1];
       expect(number, label!).toBeDefined();
@@ -204,7 +205,7 @@ describe("/privacy outline", () => {
     const column = main().querySelector(".doc-main")!;
     const lines = [...column.children].filter((el) => !el.matches("details"));
     expect(lines[0]).toHaveClass("pp-date");
-    expect(text(lines[0]!)).toBe("Effective 2 November 2026 · Version 1.5");
+    expect(text(lines[0]!)).toBe("Effective 6 November 2026 · Version 1.6");
     expect(text(lines[1]!)).toMatch(/^This policy explains what personal data Zoorik collects/);
     expect(lines[2]).toHaveAttribute("id", "short-version");
   });
@@ -331,6 +332,8 @@ describe("/privacy tables and callouts", () => {
         "cf_clearance",
         "__cf_ob",
         "_cfPre_tabId",
+        "_ga",
+        "_ga_DPV4MD0ZBX",
       ].map((name) => [name, true]),
     );
   });
@@ -401,11 +404,13 @@ describe("/privacy links", () => {
     }
   });
 
-  it("opens the five off-site addresses in a new tab, and says so", () => {
+  it("opens the seven off-site addresses in a new tab, and says so", () => {
     const away = [...main().querySelectorAll('a[href^="http"]')];
     expect(away.map((a) => a.getAttribute("href"))).toEqual([
       "https://privacy.microsoft.com/privacystatement",
       "https://optout.aboutads.info",
+      "https://policies.google.com/technologies/partner-sites",
+      "https://tools.google.com/dlpage/gaoptout",
       "https://policies.google.com/privacy",
       "https://cal.com/zoorik/talk",
       "https://cal.com/zoorik/support",
@@ -419,7 +424,7 @@ describe("/privacy links", () => {
       expect(a.querySelector("svg.ext")!.nextElementSibling).toHaveClass("sr-only");
     }
     /* The policy's booking page is the site's calendar: if one moves, the policy needs a new version. */
-    expect(away[3]).toHaveAttribute("href", calendarUrl);
+    expect(away[5]).toHaveAttribute("href", calendarUrl);
   });
 
   it("keeps the product names out of translation, everywhere but code", () => {
@@ -470,7 +475,7 @@ describe("/privacy content", () => {
       container.querySelector('a[href="https://privacy.microsoft.com/privacystatement"]'),
     ).not.toBeNull();
     expect(text(container.querySelector(".pp-short"))).toContain(
-      "and Microsoft Clarity records how visitors use its pages.",
+      "Microsoft Clarity records how visitors use its pages, and Google Analytics counts visits",
     );
     const companies = [...container.querySelectorAll("#sharing td:first-child")].map(text);
     expect(companies).toContain("Microsoft (Clarity)");
@@ -478,7 +483,27 @@ describe("/privacy content", () => {
       "Set by Microsoft Clarity (zoorik.com)",
     );
     expect(text(container.querySelector("#rights-required")!.nextElementSibling)).toContain(
-      "Cloudflare and Microsoft Clarity still receive what section 4.6 describes",
+      "Cloudflare, Microsoft Clarity and Google Analytics still receive what section 4.6 describes",
+    );
+  });
+
+  it("discloses Google Analytics where the policy does, cookies included", () => {
+    const container = page();
+    const website = container.querySelector("#website")!.parentElement!;
+    expect(text(website)).toContain(
+      "Every page of zoorik.com, this one included, loads Google Analytics, through Google Tag Manager, once the page has finished loading.",
+    );
+    expect(text(website)).toContain("In the EEA, the UK and Switzerland it sets no cookies");
+    expect(
+      container.querySelector('a[href="https://policies.google.com/technologies/partner-sites"]'),
+    ).not.toBeNull();
+    expect(
+      container.querySelector('a[href="https://tools.google.com/dlpage/gaoptout"]'),
+    ).not.toBeNull();
+    const companies = [...container.querySelectorAll("#sharing td:first-child")].map(text);
+    expect(companies).toContain("Google (Analytics)");
+    expect([...container.querySelectorAll("#retention .pp-k")].map(text)).toContain(
+      "Set by Google Analytics (zoorik.com)",
     );
   });
 
@@ -597,9 +622,9 @@ describe("/privacy, word for word", () => {
 
   it("reads its date line and version from the policy", () => {
     expect(POLICY).toMatch(
-      /^# Privacy Policy\n\n\*\*Effective date:\*\* 2 November 2026 · \*\*Version:\*\* 1\.5\n/,
+      /^# Privacy Policy\n\n\*\*Effective date:\*\* 6 November 2026 · \*\*Version:\*\* 1\.6\n/,
     );
-    expect(text(main().querySelector(".pp-date"))).toBe("Effective 2 November 2026 · Version 1.5");
+    expect(text(main().querySelector(".pp-date"))).toBe("Effective 6 November 2026 · Version 1.6");
   });
 });
 

@@ -1,6 +1,6 @@
 /**
  * `/privacy`: the privacy policy, every word of it, verbatim from its source
- * (Effective 2 November 2026, Version 1.5, with Amoeba on AWS and its own
+ * (Effective 6 November 2026, Version 1.6, with Amoeba on AWS and its own
  * sign-in in §4.3, §6, §7, §9 and §10, the Helm chart and Terraform modules in
  * §2, §4.4 and §7, AWS Marketplace in §4.7 and §7, and Cloudflare's request
  * logs in §4.6 and §9). The page is laid out as the mock draws it.
@@ -160,7 +160,7 @@ export const privacy: PrivacyContent = {
     deck: "What we collect, why, and how you can see, correct or delete it.",
   },
 
-  effective: "Effective 2 November 2026 · Version 1.5",
+  effective: "Effective 6 November 2026 · Version 1.6",
 
   intro:
     "This policy explains what personal data Zoorik collects, why, who we share it with, where we keep it, how long we keep it, and how you can see, correct or delete it. Where a point is technical, we say exactly what happens.",
@@ -173,7 +173,7 @@ export const privacy: PrivacyContent = {
       "The Coral agent sends us usage figures, an inventory of your nodes and workloads, and events. Its Kubernetes permissions do not let it read your Secrets or ConfigMaps. Its node daemon runs as root on each Linux node so that it can move running pods; the daemon has no connection to Zoorik, and nothing it can reach is sent to us.",
       "To connect Amoeba on Azure, your admin gives Zoorik's Amoeba app a role in your subscription. On AWS, your admin creates a role in your account that Zoorik can assume only with your organisation's external ID. Either role lets Zoorik run commands as root on your VMs, create, change and delete disks, and create and delete snapshots; the Azure role also lets it read the settings of every resource in the subscription.",
       "Amoeba's agent runs as root on each VM you choose. Every 30 seconds it sends us storage figures, your mount paths and disk ids, and the names of the services writing to each disk. Once Amoeba starts moving a VM's data, the agent also sends disk-speed figures every 2 seconds. The contents of your files are never sent to us.",
-      "zoorik.com has no forms that send what you enter, and its own code sets no cookies. Cloudflare hosts it, measures visits and checks for bots, and Microsoft Clarity records how visitors use its pages. The Coral and Amoeba pages play their films in YouTube's player.",
+      "zoorik.com has no forms that send what you enter. Cloudflare hosts it, measures visits and checks for bots, Microsoft Clarity records how visitors use its pages, and Google Analytics counts visits, with cookies outside the EEA, the UK and Switzerland. The Coral and Amoeba pages play their films in YouTube's player.",
       "The free assessment scripts upload nothing. You decide whether to email us the file they write.",
       "Coral's and Amoeba's data are stored in Microsoft Azure, in the Central India region.",
       ["To see, correct, export or delete your data, email ", MAIL, "."],
@@ -255,7 +255,7 @@ export const privacy: PrivacyContent = {
           kind: "p",
           text: [
             b("What other companies do for themselves."),
-            " When you sign in with Microsoft or Google, book a call through Cal.com, download from GitHub, visit zoorik.com while Microsoft Clarity records the visit, or reach a film that YouTube's player shows on zoorik.com, those companies also use your data for their own purposes, under their own privacy policies. This policy covers what reaches Zoorik and what those companies do for us (",
+            " When you sign in with Microsoft or Google, book a call through Cal.com, download from GitHub, visit zoorik.com while Microsoft Clarity and Google Analytics record the visit, or reach a film that YouTube's player shows on zoorik.com, those companies also use your data for their own purposes, under their own privacy policies. This policy covers what reaches Zoorik and what those companies do for us (",
             ref("sharing", "section 7"),
             "). It does not cover sites we only link to, such as LinkedIn, X, Reddit, Medium, our YouTube channel, and the AI assistants our footer opens with a question about the page (ChatGPT, Claude, Perplexity and Grok).",
           ],
@@ -693,10 +693,10 @@ export const privacy: PrivacyContent = {
             [
               "It has no forms that send what you enter. Its two cost calculators work out their figures in your browser. The product you pick on zoorik.com/assessment is written into the page's address (for example ",
               code("?p=amoeba"),
-              "), which Clarity records with the page; nothing else you choose there leaves your browser. The Copy button writes the command only to your clipboard: Clarity learns that you copied it, not what (below).",
+              "), which Clarity and Google Analytics record with the page; nothing else you choose there leaves your browser. The Copy button writes the command only to your clipboard: Clarity learns that you copied it, not what (below).",
             ],
-            "Its own code sets no cookies and uses no browser storage. It serves its own fonts.",
-            "It has no advertising, no chat widget and no embedded maps. Its own code loads one analytics service, Microsoft Clarity, and Cloudflare adds its Web Analytics as it serves each page (both below). Its one embedded video player is YouTube's, on two pages (below).",
+            "Apart from Google Analytics (below), its own code sets no cookies and uses no browser storage. It serves its own fonts.",
+            "It has no advertising, no chat widget and no embedded maps. Its own code loads two analytics services, Microsoft Clarity and Google Analytics, and Cloudflare adds its Web Analytics as it serves each page (all below). Its one embedded video player is YouTube's, on two pages (below).",
           ],
         },
         {
@@ -727,6 +727,39 @@ export const privacy: PrivacyContent = {
             "). To stop Clarity recording your visits, turn on Global Privacy Control in your browser, opt out of Microsoft at ",
             { href: "https://optout.aboutads.info", text: "https://optout.aboutads.info" },
             ", or block scripts from clarity.ms.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            b("Google Analytics."),
+            " Every page of zoorik.com, this one included, loads Google Analytics, through Google Tag Manager, once the page has finished loading. It counts visits and shows us which pages people read and how they found them. While you are on a page, it sends Google:",
+          ],
+        },
+        {
+          kind: "ul",
+          items: [
+            "the page's address and title, the page you came from, and each new page you open on the site;",
+            "when you reach the end of a page (90% of the way down), click a link that leaves zoorik.com, download a file, or start using a cost calculator: that you did it, not what you enter. It can also report a film starting, how far it plays and its end;",
+            "your browser, operating system, device type, screen size and language.",
+          ],
+        },
+        {
+          kind: "p",
+          text: [
+            "Google receives your IP address, uses it to work out your rough location and to detect spam, and then discards it. Outside the EEA, the UK and Switzerland, Google Analytics sets two cookies (",
+            ref("cookies", "section 6"),
+            ") that hold a random id, so that it can link the pages you view and your return visits in the same browser. In the EEA, the UK and Switzerland it sets no cookies, so it does not link one page you view to the next, or one visit to the next. Google Signals, which links visits to signed-in Google accounts, is off. Google describes how it uses this data at ",
+            {
+              href: "https://policies.google.com/technologies/partner-sites",
+              text: "https://policies.google.com/technologies/partner-sites",
+            },
+            ". To stop Google Analytics, install Google's opt-out add-on from ",
+            {
+              href: "https://tools.google.com/dlpage/gaoptout",
+              text: "https://tools.google.com/dlpage/gaoptout",
+            },
+            ", or block scripts from googletagmanager.com.",
           ],
         },
         {
@@ -1053,16 +1086,37 @@ export const privacy: PrivacyContent = {
               "Set by Cloudflare's bot detection",
               "Until you close the tab",
             ],
+            [
+              [code("_ga")],
+              "Cookie",
+              "Set by Google Analytics outside the EEA, the UK and Switzerland: a random id that tells one browser from another",
+              "Up to 2 years",
+            ],
+            [
+              [code("_ga_DPV4MD0ZBX")],
+              "Cookie",
+              "Set by Google Analytics outside the EEA, the UK and Switzerland: keeps track of the visit",
+              "Up to 2 years",
+            ],
           ],
         },
         {
           kind: "p",
           text: [
-            "All three are Cloudflare's, for bot detection (",
+            code("cf_clearance"),
+            ", ",
+            code("__cf_ob"),
+            " and ",
+            code("_cfPre_tabId"),
+            " are Cloudflare's, for bot detection (",
             ref("website", "section 4.6"),
             "). ",
             code("cf_clearance"),
-            " is set for zoorik.com and its subdomains, so your browser also sends it to the Coral and Amoeba consoles. zoorik.com's own code sets no cookies, and Microsoft Clarity is set to use no cookies or storage here. YouTube's player on the Coral and Amoeba pages may set its own cookies and browser storage once it loads (",
+            " is set for zoorik.com and its subdomains, so your browser also sends it to the Coral and Amoeba consoles. The two ",
+            code("_ga"),
+            " cookies are Google Analytics', for counting visits (",
+            ref("website", "section 4.6"),
+            "), and are set the same way. zoorik.com's own code sets no other cookies, and Microsoft Clarity is set to use no cookies or storage here. YouTube's player on the Coral and Amoeba pages may set its own cookies and browser storage once it loads (",
             ref("website", "section 4.6"),
             ").",
           ],
@@ -1145,6 +1199,17 @@ export const privacy: PrivacyContent = {
               ],
             ],
             [
+              "Google (Analytics)",
+              "Analytics for zoorik.com: counts of visits, pages and actions",
+              [
+                "What ",
+                ref("website", "section 4.6"),
+                " lists, and your IP address. Google also uses it for its own purposes (",
+                ref("scope", "section 2"),
+                ")",
+              ],
+            ],
+            [
               "Google (YouTube)",
               "Plays the films on zoorik.com/coral and zoorik.com/amoeba",
               [
@@ -1203,7 +1268,7 @@ export const privacy: PrivacyContent = {
           kind: "ul",
           items: [
             "Coral's and Amoeba's databases, backups, key vault and container registry are in Microsoft Azure, Central India. Backups are not copied to another region. Sessions are held in memory only, inside our cluster.",
-            "Our email, sign-in, hosting, download, website analytics, video, booking and video-call providers, and the cloud marketplaces, may process data in other countries, including the United States. Amoeba makes its requests to assume your AWS role, and reads AWS prices, through AWS's us-east-1 region in the United States. Microsoft Clarity stores what it records in Microsoft's cloud.",
+            "Our email, sign-in, hosting, download, website analytics, video, booking and video-call providers, and the cloud marketplaces, may process data in other countries, including the United States. Amoeba makes its requests to assume your AWS role, and reads AWS prices, through AWS's us-east-1 region in the United States. Microsoft Clarity stores what it records in Microsoft's cloud, and Google Analytics what it receives in Google's cloud.",
             [
               "If you are outside India, your data is transferred to India, where Coral and Amoeba are hosted. Some providers in ",
               ref("sharing", "section 7"),
@@ -1259,6 +1324,13 @@ export const privacy: PrivacyContent = {
           items: [
             "Recordings of visits: 30 days. Recordings we mark as favourites, and a random sample Microsoft keeps: up to 9 months.",
             "Heatmaps: up to 9 months.",
+          ],
+        },
+        { kind: "label", text: "Set by Google Analytics (zoorik.com)" },
+        {
+          kind: "ul",
+          items: [
+            "Data about each visit: up to 14 months. The totals in its standard reports are kept after that.",
           ],
         },
         {
@@ -1393,11 +1465,11 @@ export const privacy: PrivacyContent = {
         {
           kind: "p",
           text: [
-            "You can browse zoorik.com without giving us your name or email address; Cloudflare and Microsoft Clarity still receive what ",
+            "You can browse zoorik.com without giving us your name or email address; Cloudflare, Microsoft Clarity and Google Analytics still receive what ",
             ref("website", "section 4.6"),
             " describes, as does YouTube once its player loads on the Coral and Amoeba pages, and ",
             ref("website", "section 4.6"),
-            " says how to stop Clarity recording your visits. To use Coral or Amoeba, you must sign in with Microsoft or Google. To use Amoeba, your admin must also connect your Azure subscription or AWS account (",
+            " says how to stop Clarity and Google Analytics recording your visits. To use Coral or Amoeba, you must sign in with Microsoft or Google. To use Amoeba, your admin must also connect your Azure subscription or AWS account (",
             ref("amoeba", "section 4.3"),
             ").",
           ],

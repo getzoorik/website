@@ -203,7 +203,7 @@ describe("sitemap.xml", () => {
       "/referrals": "2026-11-03",
       "/partners": "2026-11-03",
       "/design-partners": "2026-11-03",
-      "/privacy": "2026-11-02",
+      "/privacy": "2026-11-06",
       "/terms": "2026-11-02",
       /* /security prints "Updated 3 November 2026". */
       "/security": "2026-11-03",
