@@ -47,6 +47,7 @@ import { securityPage } from "@/content/security";
 import { termsCopy } from "@/content/terms";
 import { topicPages } from "@/content/topic-pages";
 import { troubleshootingGuides, troubleshootingUpdated } from "@/content/troubleshooting";
+import { statusUpdated } from "@/content/status";
 import { trustUpdated } from "@/content/trust";
 import { worksWithPages } from "@/content/works-with";
 import { isoDay } from "@/lib/content-date";
@@ -144,6 +145,8 @@ const contentDates: Partial<Record<string, string>> = {
   [routes.trust]: trustUpdated,
   [routes.contact]: contactLastUpdated,
   [routes.pricing]: pricingLastUpdated,
+  /* /status prints its day. */
+  [routes.status]: statusUpdated,
   [routes.eksAndAksPricingCalculator]: calculatorsLastUpdated,
   [routes.ebsAndAzureDiskPricing]: calculatorsLastUpdated,
   /* The ten pages of 31 Oct 2026 print no day: each its content's, the four per-cloud pages' and the six works-with
@@ -208,6 +211,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     routes.news,
     routes.community,
     routes.pricing,
+    routes.status,
     routes.contact,
     routes.about,
     routes.careers,
