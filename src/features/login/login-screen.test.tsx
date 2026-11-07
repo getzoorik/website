@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { calendarUrl, consoles, navLogin } from "@/config/site";
+import { calendarUrl, consoles, navLogin, support } from "@/config/site";
 import { footerColumns } from "@/content/footer";
 import { FIRST_PAINT_SCRIPT } from "@/lib/product-choice";
 
@@ -180,7 +180,7 @@ describe("the login screen", () => {
     expect(assessment!.querySelector(".ext")).toBeNull();
   });
 
-  it("closes on the copyright line, then Privacy and Terms on the right, in the same tab", () => {
+  it("closes on the copyright line, then Support, Privacy and Terms on the right", () => {
     const { container } = render(<LoginScreen />);
     const foot = container.querySelector("section.col > footer.foot")!;
     const [copyright, legals] = [...foot.children];
@@ -193,11 +193,19 @@ describe("the login screen", () => {
     expect(legals).toHaveClass("foot-legals");
     const links = [...legals!.querySelectorAll("a")];
     expect(links.map((a) => [a.textContent, a.getAttribute("href")])).toEqual([
+      ["Support (opens in a new tab)", support.center],
       ["Privacy", "/privacy"],
       ["Terms", "/terms"],
     ]);
-    for (const link of links) {
+    /* The help center leaves the site: a new tab, and the arrow that says so. */
+    const [help, ...legal] = links;
+    expect(help).toHaveClass("foot-legal", "foot-support");
+    expect(help).toHaveAttribute("target", "_blank");
+    expect(help).toHaveAttribute("rel", "noopener noreferrer");
+    expect(help!.querySelector(".ext")).not.toBeNull();
+    for (const link of legal) {
       expect(link).toHaveClass("foot-legal");
+      expect(link).not.toHaveClass("foot-support");
       expect(link.hasAttribute("target")).toBe(false);
     }
   });
@@ -273,7 +281,7 @@ describe("the login screen", () => {
     expect(container.textContent).not.toContain("Each product has its own console.");
 
     const newTabs = [...container.querySelectorAll<HTMLAnchorElement>('a[target="_blank"]')];
-    expect(newTabs).toHaveLength(3);
+    expect(newTabs).toHaveLength(4);
     for (const a of newTabs) {
       expect(a.querySelector(".sr-only")?.textContent, a.textContent ?? "").toBe(
         " (opens in a new tab)",

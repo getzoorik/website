@@ -1,4 +1,4 @@
-import { calendarUrl, routes } from "@/config/site";
+import { calendarUrl, routes, support } from "@/config/site";
 import type { ProductId } from "@/content/products";
 
 /**
@@ -27,9 +27,15 @@ export const loginCopy = {
 } as const;
 
 /**
+ * The help center, first on the right of the footer row, ahead of Privacy and
+ * Terms. It leaves the site, so it opens a new tab and carries the arrow.
+ */
+export const loginSupport = { label: "Support", href: support.center } as const;
+
+/**
  * The legal links on the right of the footer row (`span.foot-legals` in the
- * mock): the two pages the site footer's Company column ends on, in the same
- * tab.
+ * mock), after Support: the two pages the site footer's Company column ends on,
+ * in the same tab.
  */
 export const loginLegals = [
   { label: "Privacy", href: routes.privacy },

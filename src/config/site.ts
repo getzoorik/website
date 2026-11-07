@@ -343,6 +343,18 @@ export const calendarUrl = "https://cal.com/zoorik/talk";
 export const contactEmail = "founders@zoorik.com";
 
 /**
+ * The help center, and its two forms: one for a question, one for a problem
+ * report. Each form has its own address, so each link opens on its own choice.
+ */
+export const support = {
+  center: "https://zoorik.atlassian.net/helpcenter/support",
+  question:
+    "https://zoorik.atlassian.net/helpcenter/support/contact-us/dfec30ca-e82d-46b0-aa27-05d1b48d5d25",
+  problem:
+    "https://zoorik.atlassian.net/helpcenter/support/contact-us/8411e12d-6dbf-4c4c-8264-838be9cf502d",
+} as const;
+
+/**
  * Section anchors from before the products were named, and the section each one
  * now lands on.
  *

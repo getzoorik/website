@@ -140,9 +140,9 @@ describe("sitemap.xml", () => {
       "/docs": "2026-11-03",
       /* The Coral guide and FAQ. */
       "/coral-guide": "2026-11-03",
-      "/coral-faq": "2026-11-03",
-      /* The Amoeba guide and FAQ print "Updated 3 November 2026". */
-      ...(amoebaDocs ? { "/amoeba-guide": "2026-11-03", "/amoeba-faq": "2026-11-03" } : {}),
+      "/coral-faq": "2026-11-08",
+      /* The Amoeba guide prints "Updated 3 November 2026", its FAQ "Updated 8 November 2026". */
+      ...(amoebaDocs ? { "/amoeba-guide": "2026-11-03", "/amoeba-faq": "2026-11-08" } : {}),
       /* The install guides and Contributing print "Updated 3 November 2026"; /open-source gives its content file's
          date. */
       "/docs/install-coral-with-helm": "2026-11-03",

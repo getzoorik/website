@@ -1,5 +1,5 @@
 import { blueskyProfile, substackPublication } from "@/config/entity";
-import { amoebaDocs, calendarUrl, contactEmail, routes, site } from "@/config/site";
+import { amoebaDocs, calendarUrl, contactEmail, routes, site, support } from "@/config/site";
 import type { ProductId } from "@/content/products";
 
 /**
@@ -196,9 +196,10 @@ export function askQuestion(path: string, title: string | undefined): string {
 /**
  * 🔴 THREE KINDS OF HREF IN THESE COLUMNS, AND THE MARKUP TREATS THEM APART.
  * The products, Assessment, the documents, Login and Privacy are pages of this
- * site, in the same tab; "Book a demo" is the calendar, which is off-site and
- * so opens in a new tab, says so, and shows the arrow; and the one address is a
- * `mailto:`, which stays in the tab.
+ * site, in the same tab; "Book a demo" (the calendar) and the three support
+ * links (the help center and its two forms) are off-site and so open in a new
+ * tab, say so, and show the arrow; and the one address is a `mailto:`, which
+ * stays in the tab.
  *
  * The same on every page. Assessment is the plain `/assessment`, never with a
  * `?p=`. Three columns after the brand: Products, with Pricing; Resources, the
@@ -301,6 +302,10 @@ export const footerColumns: readonly FooterColumn[] = [
       { label: "Book a demo", href: calendarUrl },
       { label: "Contact", href: routes.contact },
       { label: contactEmail, href: `mailto:${contactEmail}` },
+      /* The help center, then its two forms. Each leaves the site, so each opens a new tab. */
+      { label: "Support", href: support.center },
+      { label: "Ask a question", href: support.question },
+      { label: "Report a problem", href: support.problem },
       { label: "Login", href: routes.login },
       { label: "Privacy", href: routes.privacy },
       { label: "Terms", href: routes.terms },
