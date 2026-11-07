@@ -159,12 +159,23 @@ describe("the body", () => {
   it("opens its column on the Updated line, over the questions", () => {
     const top = page.querySelector("article.fq-main > .fq-upd")!;
     expect(top).toBe(page.querySelector("article.fq-main")!.firstElementChild);
-    expect(text(top)).toBe("Updated 3 November 2026");
+    expect(text(top)).toBe("Updated 8 November 2026");
   });
 
-  it("ends after question 30: no download line, no PDF, and links out only where an answer needs it", () => {
+  it("ends with the ask line after question 30: no download line, no PDF, and links out only where an answer needs it", () => {
     const article = page.querySelector("article.fq-main")!;
-    expect(article.lastElementChild).toHaveAttribute("id", "getting-started");
+    const ask = article.lastElementChild!;
+    expect(ask).toHaveClass("fq-ask");
+    expect(ask.previousElementSibling).toHaveAttribute("id", "getting-started");
+    expect(text(ask.firstElementChild)).toBe("Didn’t find your answer?");
+    const link = ask.querySelector("a")!;
+    expect(link).toHaveAttribute(
+      "href",
+      "https://zoorik.atlassian.net/helpcenter/support/contact-us/dfec30ca-e82d-46b0-aa27-05d1b48d5d25",
+    );
+    expect(link).toHaveAttribute("target", "_blank");
+    expect(link).toHaveAttribute("rel", "noopener noreferrer");
+    expect(text(link)).toBe("Ask a question (opens in a new tab)");
     expect(page.querySelector(".fq-dl, a[download], a[href$='.pdf']")).toBeNull();
     expect(
       [...page.querySelectorAll(".fq-body a, .doc-call a")].map((a) => [

@@ -101,11 +101,18 @@ html:not([data-ap="amoeba"]) .login .card[data-p="amoeba"],html[data-ap="amoeba"
   border-top:1px solid var(--line);font-size:.8125rem;color:var(--muted)}
 /* repo: the browser's own `smaller` (10.83px here); Tailwind preflight's small{font-size:80%} gives 10.4px */
 .login .foot small{font-size:smaller}
+/* on the narrowest phones the links take a second line, and the copyright never breaks */
+.login .foot{flex-wrap:wrap;row-gap:8px}
+.login .foot small{white-space:nowrap}
 /* Privacy and Terms. The colour changes at once and on any device: the mock has no transition and
    no hover gate on this link. */
 .login .foot-legals{display:flex;gap:20px}
 .login .foot-legal{color:var(--muted);transition:none}
 .login .foot-legal:hover{color:var(--text)}
+/* Support, ahead of the legal links: in the ink at 500, the accent on hover, with an 11px new-tab arrow for the row's 13px type */
+.login .foot-support{color:var(--text);font-weight:500;white-space:nowrap}
+.login .foot-support:hover{color:var(--accent)}
+.login .foot-support .ext{width:11px;height:11px;margin-left:1px}
 
 /* ---- the panel: the home hero's ground and photograph, one line of brand ---- */
 .login .panel{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;

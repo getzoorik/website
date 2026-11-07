@@ -315,6 +315,15 @@ describe("the footer's columns", () => {
           ["Book a demo (opens in a new tab)", "https://cal.com/zoorik/talk"],
           ["Contact", "/contact"],
           ["founders@zoorik.com", "mailto:founders@zoorik.com"],
+          ["Support (opens in a new tab)", "https://zoorik.atlassian.net/helpcenter/support"],
+          [
+            "Ask a question (opens in a new tab)",
+            "https://zoorik.atlassian.net/helpcenter/support/contact-us/dfec30ca-e82d-46b0-aa27-05d1b48d5d25",
+          ],
+          [
+            "Report a problem (opens in a new tab)",
+            "https://zoorik.atlassian.net/helpcenter/support/contact-us/8411e12d-6dbf-4c4c-8264-838be9cf502d",
+          ],
           ["Login", "/login"],
           ["Privacy", "/privacy"],
           ["Terms", "/terms"],
@@ -334,6 +343,33 @@ describe("the footer's columns", () => {
     for (const path of ["/coral", "/amoeba", "/amoeba-guide", "/docs", "/learn", "/privacy"]) {
       expect(columns(path), path).toEqual(columns("/"));
     }
+  });
+
+  it("open the help center and its two forms from Company, each in a new tab with the arrow", () => {
+    const footer = footerOf();
+    const links = [
+      ["Support", "https://zoorik.atlassian.net/helpcenter/support"],
+      [
+        "Ask a question",
+        "https://zoorik.atlassian.net/helpcenter/support/contact-us/dfec30ca-e82d-46b0-aa27-05d1b48d5d25",
+      ],
+      [
+        "Report a problem",
+        "https://zoorik.atlassian.net/helpcenter/support/contact-us/8411e12d-6dbf-4c4c-8264-838be9cf502d",
+      ],
+    ] as const;
+    for (const [label, href] of links) {
+      const link = footer.querySelector<HTMLAnchorElement>(`.foot-col a[href="${href}"]`)!;
+      expect(link, label).not.toBeNull();
+      expect(link.firstElementChild!.firstChild!.textContent).toBe(label);
+      expect(link).toHaveAttribute("target", "_blank");
+      expect(link).toHaveAttribute("rel", "noopener noreferrer");
+      expect(link.querySelector(":scope > svg.ext")).not.toBeNull();
+    }
+    /* Right after the one address, in this order. */
+    const company = columns()[2]!.links.map(([, href]) => href);
+    const at = company.indexOf("mailto:founders@zoorik.com");
+    expect(company.slice(at + 1, at + 4)).toEqual(links.map(([, href]) => href));
   });
 
   it("put Privacy then Terms last in Company, and the legal name and the copyright line in the bar", () => {
@@ -379,20 +415,27 @@ describe("the footer's columns", () => {
     expect(footer.querySelector(".brand [translate='no']")).toHaveTextContent("Zoorik");
   });
 
-  it("mark the one link that leaves the site, to the eye and to the ear", () => {
+  it("mark the four links that leave the site, to the eye and to the ear", () => {
     const footer = footerOf();
     const away = [...footer.querySelectorAll<HTMLAnchorElement>(".foot-col a[target]")];
-    expect(away).toHaveLength(1);
-    const demo = away[0]!;
-    expect(demo).toHaveAttribute("target", "_blank");
-    expect(demo).toHaveAttribute("rel", "noopener noreferrer");
-    /* The label and the hidden phrase in one span, then the arrow. */
-    expect(demo.firstElementChild!.tagName).toBe("SPAN");
-    expect(demo.querySelector(".sr-only")).toHaveTextContent("(opens in a new tab)");
-    expect(demo.lastElementChild).toHaveClass("ext");
-    expect(demo.lastElementChild).toHaveAttribute("aria-hidden", "true");
-    /* Only that one carries the arrow: a page of this site and the mailto stay put. */
-    expect(footer.querySelectorAll(".foot-col .ext")).toHaveLength(1);
+    /* The calendar, then the help center and its two forms. */
+    expect(away.map((a) => new URL(a.href).host)).toEqual([
+      "cal.com",
+      "zoorik.atlassian.net",
+      "zoorik.atlassian.net",
+      "zoorik.atlassian.net",
+    ]);
+    for (const link of away) {
+      expect(link).toHaveAttribute("target", "_blank");
+      expect(link).toHaveAttribute("rel", "noopener noreferrer");
+      /* The label and the hidden phrase in one span, then the arrow. */
+      expect(link.firstElementChild!.tagName).toBe("SPAN");
+      expect(link.querySelector(".sr-only")).toHaveTextContent("(opens in a new tab)");
+      expect(link.lastElementChild).toHaveClass("ext");
+      expect(link.lastElementChild).toHaveAttribute("aria-hidden", "true");
+    }
+    /* Only those carry the arrow: a page of this site and the mailto stay put. */
+    expect(footer.querySelectorAll(".foot-col .ext")).toHaveLength(away.length);
   });
 
   it("lead only to pages at the site's root, nothing nested (owner, 29 Oct 2026)", () => {

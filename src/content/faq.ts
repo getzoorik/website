@@ -47,6 +47,9 @@ export interface FaqSection<Id extends string> {
   readonly questions: readonly FaqQuestion<Id>[];
 }
 
+/** The line after the last group on every FAQ, under the download line when there is one. */
+export const faqAsk = { lead: "Didn’t find your answer?", label: "Ask a question" } as const;
+
 /** The one download line after the last group, when the FAQ has a PDF. */
 export interface FaqDownload {
   readonly label: string;

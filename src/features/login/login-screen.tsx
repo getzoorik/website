@@ -6,7 +6,14 @@ import { ExternalArrow } from "@/components/primitives/external-arrow";
 import { NamedText } from "@/components/primitives/named-text";
 import { NewTabHint } from "@/components/primitives/new-tab-hint";
 import { routes, site } from "@/config/site";
-import { loginCopy, loginDemo, loginLegals, loginPanel, loginProducts } from "@/content/login";
+import {
+  loginCopy,
+  loginDemo,
+  loginLegals,
+  loginPanel,
+  loginProducts,
+  loginSupport,
+} from "@/content/login";
 import { HeroPhoto } from "@/features/hero/hero-photo";
 import heroImage from "@/features/hero/hero-racks-graded.webp";
 import { EstimateLink, LoginSwitch } from "@/features/login/login-switch";
@@ -90,9 +97,19 @@ export function LoginScreen(): JSX.Element {
             <small>
               <NamedText text={loginCopy.copyright} name={site.name} />
             </small>
-            {/* Privacy and Terms, on the right of the row:
-                pages of this site, in the same tab. */}
+            {/* Support, then Privacy and Terms, on the right of the row. Support
+                leaves the site, so it opens a new tab and says so; the legal
+                pages are pages of this site, in the same tab. */}
             <span className="foot-legals">
+              <a
+                className="foot-legal foot-support"
+                href={loginSupport.href}
+                {...offSiteProps(loginSupport.href)}
+              >
+                {loginSupport.label}
+                <NewTabHint href={loginSupport.href} />
+                <ExternalArrow />
+              </a>
               {loginLegals.map((legal) => (
                 <a key={legal.href} className="foot-legal" href={legal.href}>
                   {legal.label}

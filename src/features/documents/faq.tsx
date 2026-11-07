@@ -1,13 +1,17 @@
 import { Fragment } from "react";
 
+import { ExternalArrow } from "@/components/primitives/external-arrow";
+import { NewTabHint } from "@/components/primitives/new-tab-hint";
+import { support } from "@/config/site";
 import { documents } from "@/content/documents";
-import type { FaqDownload, FaqSection, FaqText } from "@/content/faq";
+import { faqAsk, type FaqDownload, type FaqSection, type FaqText } from "@/content/faq";
 import { titleLink } from "@/content/learn/published";
 import { DocRow, DocRows, DocUpdated } from "@/features/doc-rows/doc-rows";
 import { DocPlaceholder } from "@/features/documents/doc-placeholder";
 import { documentFacts } from "@/features/documents/document-facts";
 import { DownloadGlyph } from "@/features/documents/document-glyphs";
 import { DocCallout, DocCode } from "@/features/documents/prose";
+import { offSiteProps } from "@/lib/links";
 
 /**
  * The body of an FAQ page, `/coral-faq` and `/amoeba-faq`: a page of questions
@@ -17,13 +21,14 @@ import { DocCallout, DocCode } from "@/features/documents/prose";
  *   the Updated line over the questions' column;
  *   section.fq-sec#<group> > h2, .fq-sec-b > the callout (if any), .fq-list > details.fq#<question>
  *   then p.fq-dl, the one download line, when the FAQ has a PDF
+ *   then p.fq-ask, the line that opens the help center's question form
  *
  * A question's summary is its numeral ("01", hidden from screen readers; the
  * numbers run on across the groups), the h3 and a chevron; its body is the
  * short answer's bullets.
  *
- * An FAQ with no PDF (Amoeba's) ends after its last question: no download line
- * and no "to come" row.
+ * An FAQ with no PDF (Amoeba's) has no download line and no "to come" row; its
+ * ask line follows the last question.
  */
 
 export interface FaqProps<Id extends string> {
@@ -84,6 +89,22 @@ function FaqDownloadLine({ label, document }: FaqDownload): React.JSX.Element {
   );
 }
 
+/** "Didn’t find your answer?", then the help center's question form, in a new tab. */
+function FaqAskLine(): React.JSX.Element {
+  return (
+    <p className="fq-ask">
+      <span>{faqAsk.lead}</span>
+      <a className="fq-ask-a" href={support.question} {...offSiteProps(support.question)}>
+        <span>
+          {faqAsk.label}
+          <NewTabHint href={support.question} />
+        </span>
+        <ExternalArrow />
+      </a>
+    </p>
+  );
+}
+
 export function Faq<Id extends string>({
   updated,
   sections,
@@ -117,7 +138,12 @@ export function Faq<Id extends string>({
           </DocRow>
         )),
       }))}
-      end={download ? <FaqDownloadLine {...download} /> : null}
+      end={
+        <>
+          {download ? <FaqDownloadLine {...download} /> : null}
+          <FaqAskLine />
+        </>
+      }
     />
   );
 }

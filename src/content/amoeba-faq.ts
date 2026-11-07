@@ -72,7 +72,7 @@ export const amoebaFaqPage = {
     title: "Amoeba FAQ",
     deck: "Data safety, downtime, requirements and costs.",
   },
-  updated: "Updated 3 November 2026",
+  updated: "Updated 8 November 2026",
 } as const;
 
 /** The 8 groups and 30 questions, in the page's order. */

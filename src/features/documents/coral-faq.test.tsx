@@ -144,7 +144,7 @@ describe("the page", () => {
     const top = page.querySelector("article.fq-main > .fq-upd")!;
     expect(top).toBe(page.querySelector("article.fq-main")!.firstElementChild);
     expect([...top.children].map((child) => child.className)).toEqual(["doc-updated"]);
-    expect(text(top)).toBe("Updated 3 November 2026");
+    expect(text(top)).toBe("Updated 8 November 2026");
   });
 
   it("has no contents rail and no summary, and names its groups in the phone's chip row", () => {
@@ -190,6 +190,23 @@ describe("the page", () => {
     expect(links[0]!.firstChild!.nodeName).toBe("svg");
     expect(links[0]!.querySelector("small")!.textContent).toBe(facts.short);
     expect(page.querySelectorAll('a[download], a[href$=".pdf"]')).toHaveLength(1);
+  });
+
+  it("puts the ask line under the download line: the help center's question form, in a new tab", () => {
+    const ask = page.querySelector("article.fq-main > p.fq-ask")!;
+    expect(ask.previousElementSibling).toHaveClass("fq-dl");
+    expect(ask).toBe(page.querySelector("article.fq-main")!.lastElementChild);
+    expect(ask.firstElementChild).toHaveTextContent("Didn’t find your answer?");
+    const links = [...ask.querySelectorAll("a")];
+    expect(links).toHaveLength(1);
+    expect(links[0]).toHaveAttribute(
+      "href",
+      "https://zoorik.atlassian.net/helpcenter/support/contact-us/dfec30ca-e82d-46b0-aa27-05d1b48d5d25",
+    );
+    expect(links[0]).toHaveAttribute("target", "_blank");
+    expect(links[0]).toHaveAttribute("rel", "noopener noreferrer");
+    expect(links[0]).toHaveTextContent("Ask a question (opens in a new tab)");
+    expect(links[0]!.lastElementChild).toHaveClass("ext");
   });
 
   it("ends with Coral's assessment row", () => {
