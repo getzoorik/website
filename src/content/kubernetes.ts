@@ -29,7 +29,7 @@ export const kubernetesContent: ProductSectionContent = {
     links: { aks: routes.aksCostOptimization, eks: routes.eksCostOptimization },
   },
   cta: {
-    href: `${routes.assessment}?p=coral`,
+    href: routes.assessment,
     label: "Estimate your saving",
   },
   /* Not the category: "Kubernetes cost optimization" is the pillar's search (D229), so the link to /coral names the

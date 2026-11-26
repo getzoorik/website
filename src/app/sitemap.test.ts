@@ -134,7 +134,7 @@ describe("sitemap.xml", () => {
       "/coral-works-with-keda": "2026-11-03",
       "/coral-works-with-helm": "2026-11-03",
       "/coral-works-with-terraform": "2026-11-03",
-      "/assessment": "2026-11-03",
+      "/assessment": "2026-11-27",
       "/marketplaces": "2026-11-03",
       /* The docs hub's product lines. */
       "/docs": "2026-11-03",
@@ -200,7 +200,7 @@ describe("sitemap.xml", () => {
       "/about": "2026-11-03",
       "/careers": "2026-11-03",
       "/brand-assets": "2026-11-03",
-      "/referrals": "2026-11-03",
+      "/referrals": "2026-11-27",
       "/partners": "2026-11-03",
       "/design-partners": "2026-11-03",
       "/privacy": "2026-11-06",

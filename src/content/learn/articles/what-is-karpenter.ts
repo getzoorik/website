@@ -454,7 +454,7 @@ export const article: Article = {
     text: "Coral rebalances CPU and memory requests to real use on AKS and EKS, works with your HPA, and removes the nodes you don’t need. We estimate it reduces AKS and EKS cost by 40–50%. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Kubernetes optimization with Coral", href: "/coral" },
-      { label: "Estimate your saving", href: "/assessment?p=coral" },
+      { label: "Estimate your saving", href: "/assessment" },
     ],
   },
   sources: [

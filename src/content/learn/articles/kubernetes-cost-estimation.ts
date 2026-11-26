@@ -270,7 +270,7 @@ export const article: Article = {
           kind: "p",
           text: [
             "Zoorik’s ",
-            { a: "free assessment", href: "/assessment?p=coral" },
+            { a: "free assessment", href: "/assessment" },
             " runs a version of this estimate on your own clusters and writes one PDF. Sign in with the ",
             { code: "az" },
             " or ",
@@ -370,7 +370,7 @@ export const article: Article = {
     text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and removes the nodes you don’t need, without any downtime. We estimate it reduces AKS and EKS cost by 40–50%, a range rather than a promise. The free assessment works out your own figure.",
     links: [
       { label: "Kubernetes optimization with Coral", href: "/coral" },
-      { label: "Estimate your saving", href: "/assessment?p=coral" },
+      { label: "Estimate your saving", href: "/assessment" },
     ],
   },
   sources: [

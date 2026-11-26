@@ -60,7 +60,6 @@ export const loginDemo: readonly LoginDemoRun[] = [
   { text: "New to Zoorik? " },
   { text: "Book a demo", href: calendarUrl },
   { text: " or " },
-  /* The page's product follows it: `/assessment?p=amoeba` while the switch is on Amoeba (`EstimateLink`). */
   { text: "estimate your saving", href: routes.assessment },
   { text: "." },
 ];

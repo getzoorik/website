@@ -579,7 +579,7 @@ export const article: Article = {
     text: "Amoeba moves a VM’s data disks onto one pool sized to your data, then rightsizes it autonomously, without any downtime, one disk at a time. We estimate it takes 50–60% off block storage cost. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Block storage optimization with Amoeba", href: "/amoeba" },
-      { label: "Estimate your saving", href: "/assessment?p=amoeba" },
+      { label: "Estimate your saving", href: "/assessment" },
     ],
   },
   sources: [

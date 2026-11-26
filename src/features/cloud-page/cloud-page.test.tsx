@@ -350,10 +350,10 @@ describe.each(cases)("%s", (path, c) => {
     expect(text(h1!)).toBe(c.title);
     expect(line).toHaveClass("hero-sub");
     expect(text(line!)).toBe(plain(content.hero.line));
-    /* One button, same tab, to this product's assessment. */
+    /* One button, same tab, to the assessment. */
     expect(
       [...hero.querySelectorAll("a")].map((a) => [text(a), a.getAttribute("href"), a.target]),
-    ).toEqual([["Estimate your saving", `/assessment?p=${product}`, ""]]);
+    ).toEqual([["Estimate your saving", "/assessment", ""]]);
     expect(text(hero.querySelector(".hero-chips .chips-l"))).toBe("Runs on");
     expect([...hero.querySelectorAll(".hero-chips .chip")].map(text)).toEqual(c.chips);
     /* The product hero's ground, all decorative: the glow, the turning mark and the racks photo. No film. */
@@ -503,7 +503,7 @@ describe.each(cases)("%s", (path, c) => {
     );
     expect(read.querySelector(`a[href="/docs#${product}"]`)).toHaveTextContent("All docs");
     const assess = page.querySelector("section#assess")!;
-    expect(assess.querySelector("a.btn-ink")).toHaveAttribute("href", `/assessment?p=${product}`);
+    expect(assess.querySelector("a.btn-ink")).toHaveAttribute("href", "/assessment");
     expect(text(assess.querySelector(".as-cal p"))).toBe(
       `Thirty minutes with the people who build ${name}.`,
     );

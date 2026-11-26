@@ -137,7 +137,7 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
           "We estimate Amoeba reduces block storage cost by 50–60%.",
           [
             "The ",
-            { href: `${routes.assessment}?p=amoeba`, text: "free assessment" },
+            { href: routes.assessment, text: "free assessment" },
             " works out your own figure at list price.",
           ],
           [
@@ -407,7 +407,7 @@ export const amoebaFaqSections: readonly FaqSection<AmoebaFaqQuestionId>[] = [
         short: [
           [
             "Run the free ",
-            { href: `${routes.assessment}?p=amoeba`, text: "block storage cost assessment" },
+            { href: routes.assessment, text: "block storage cost assessment" },
             " in your terminal or Cloud Shell, on Azure or AWS.",
           ],
           "It writes one PDF report with each VM’s estimated saving at list price.",

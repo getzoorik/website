@@ -1219,7 +1219,7 @@ export const coralGuide: GuideContent<CoralGuideAnchor> = {
           ],
         },
       ],
-      related: [{ text: "Free AKS and EKS cost assessment", href: `${routes.assessment}?p=coral` }],
+      related: [{ text: "Free AKS and EKS cost assessment", href: routes.assessment }],
     },
     {
       id: "security-and-data",

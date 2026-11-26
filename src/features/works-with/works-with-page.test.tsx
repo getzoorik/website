@@ -471,7 +471,7 @@ describe("the works-with pages", () => {
     expect(copy).not.toMatch(/\b(price|prices|priced|pricing|cost per|per month)\b/i);
     const row = main.querySelector("section#assess")!;
     expect(row).toBe(main.lastElementChild);
-    expect(row.querySelector("a.btn-ink")).toHaveAttribute("href", "/assessment?p=coral");
+    expect(row.querySelector("a.btn-ink")).toHaveAttribute("href", "/assessment");
     expect(text(row.querySelector(".as-cal"))).toMatch(/Coral\./);
   });
 });

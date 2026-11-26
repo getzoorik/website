@@ -234,7 +234,7 @@ describe("/eks-and-aks-pricing-calculator", () => {
   it("ends on Coral's closing row, its line over the cards", () => {
     const row = render(<NodePage />).container.querySelector("main > section#assess")!;
     expect(text(row.querySelector("p.calc-close"))).toBe(nodeCalculator.close.replace(/'/g, "’"));
-    expect(row.querySelector("a.btn-ink")).toHaveAttribute("href", "/assessment?p=coral");
+    expect(row.querySelector("a.btn-ink")).toHaveAttribute("href", "/assessment");
   });
 });
 
@@ -287,7 +287,7 @@ describe("/ebs-and-azure-disk-pricing", () => {
 
   it("ends on Amoeba's closing row", () => {
     const row = render(<DiskPage />).container.querySelector("main > section#assess")!;
-    expect(row.querySelector("a.btn-ink")).toHaveAttribute("href", "/assessment?p=amoeba");
+    expect(row.querySelector("a.btn-ink")).toHaveAttribute("href", "/assessment");
   });
 });
 

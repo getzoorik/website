@@ -43,9 +43,9 @@ describe("the closing row's copy", () => {
   it.each([
     ["coral", "Coral"],
     ["amoeba", "Amoeba"],
-  ] as const)("on a %s page opens that product's assessment and names only it", (id, name) => {
+  ] as const)("on a %s page opens the assessment and names only that product", (id, name) => {
     const row = rowOf({ product: id });
-    expect(row.querySelector(".as-card .btn-ink")).toHaveAttribute("href", `/assessment?p=${id}`);
+    expect(row.querySelector(".as-card .btn-ink")).toHaveAttribute("href", "/assessment");
     expect(text(row.querySelector(".as-cal p"))).toBe(
       `Thirty minutes with the people who build ${name}.`,
     );

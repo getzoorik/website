@@ -1,5 +1,4 @@
 import { comparePath, glossaryPath, learnPath, routes } from "@/config/site";
-import { assessmentHref } from "@/content/assess";
 import type { ProductId } from "@/content/products";
 import {
   h3,
@@ -353,7 +352,7 @@ export const versusPages: readonly VersusPage[] = [
         },
         {
           question: "How much would Coral save on AKS?",
-          answer: `Run the [free assessment](${assessmentHref("coral")}) to find out. It's read-only, runs in Azure Cloud Shell or your terminal, and writes one PDF with your estimated saving at list price. Nothing is sent to Zoorik.`,
+          answer: `Run the [free assessment](${routes.assessment}) to find out. It's read-only, runs in Azure Cloud Shell or your terminal, and writes one PDF with your estimated saving at list price. Nothing is sent to Zoorik.`,
         },
       ],
     },
@@ -491,7 +490,7 @@ export const versusPages: readonly VersusPage[] = [
         },
         {
           question: "How much would Coral save on EKS?",
-          answer: `Run the [free assessment](${assessmentHref("coral")}) to find out. It's read-only, runs in AWS CloudShell or your terminal, and writes one PDF with your estimated saving at list price. Nothing is sent to Zoorik.`,
+          answer: `Run the [free assessment](${routes.assessment}) to find out. It's read-only, runs in AWS CloudShell or your terminal, and writes one PDF with your estimated saving at list price. Nothing is sent to Zoorik.`,
         },
       ],
     },

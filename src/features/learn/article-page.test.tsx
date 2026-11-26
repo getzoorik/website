@@ -635,10 +635,7 @@ describe.each(learnArticles.map((article) => [articleRoute(article), article.slu
     it("ends on the closing row for its product", async () => {
       const row = (await main(slug)).querySelector("section#assess")!;
       const product = closingProduct(article);
-      expect(row.querySelector("a.btn-ink")).toHaveAttribute(
-        "href",
-        product ? `/assessment?p=${product}` : "/assessment",
-      );
+      expect(row.querySelector("a.btn-ink")).toHaveAttribute("href", "/assessment");
       expect(text(row.querySelector("#contact p"))).toBe(
         `Thirty minutes with the people who build ${product ? products[product].name : "Coral and Amoeba"}.`,
       );

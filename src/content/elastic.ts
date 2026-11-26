@@ -27,7 +27,7 @@ export const elasticContent: ProductSectionContent = {
     links: { azure: routes.azureManagedDiskCostOptimization, aws: routes.ebsCostOptimization },
   },
   cta: {
-    href: `${routes.assessment}?p=amoeba`,
+    href: routes.assessment,
     label: "Estimate your saving",
   },
   /* The category, then the product (2 Nov 2026), as Coral's and the Learn help boxes word it. */

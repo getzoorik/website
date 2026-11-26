@@ -372,7 +372,7 @@ describe("/coral-guide page", () => {
 
   it("closes with the assessment row for Coral", () => {
     const row = page().querySelector("#assess")!;
-    expect(row.querySelector('a[href="/assessment?p=coral"]')).not.toBeNull();
+    expect(row.querySelector('a[href="/assessment"]')).not.toBeNull();
     expect(row.previousElementSibling).toHaveClass("sec", "doc-body");
   });
 

@@ -1,5 +1,4 @@
 import { calendarUrl, contactEmail, routes } from "@/config/site";
-import { assessmentHref } from "@/content/assess";
 
 /**
  * `/pricing`: every string it prints, laid out as the mock (pricing.html) draws it.
@@ -79,16 +78,8 @@ export const pricingPage = {
         head: ["Product", "Run", "Page"],
         widths: ["22%", "39%", "39%"],
         rows: [
-          [
-            "Coral",
-            "`npx -y zoorik assess coral`",
-            `[Coral assessment](${assessmentHref("coral")})`,
-          ],
-          [
-            "Amoeba",
-            "`npx -y zoorik assess amoeba`",
-            `[Amoeba assessment](${assessmentHref("amoeba")})`,
-          ],
+          ["Coral", "`npx -y zoorik assess coral`", `[Coral assessment](${routes.assessment})`],
+          ["Amoeba", "`npx -y zoorik assess amoeba`", `[Amoeba assessment](${routes.assessment})`],
         ],
       },
       {

@@ -1,8 +1,8 @@
 import { products, type ProductId } from "@/content/products";
 
 /**
- * The product a page with a [Coral | Amoeba] switch is on (`/assessment` and `/login`), from `?p=`: Coral by default.
- * Both pages are prerendered once and read the address in the browser.
+ * The product a page with a [Coral | Amoeba] switch is on (`/login`), from `?p=`: Coral by default.
+ * The page is prerendered once and reads the address in the browser.
  *
  * 🔴 ONLY THE TABLE'S OWN KEYS. The query string is the one thing on these pages a stranger can write, and it picks a
  * product. `in`, or a bare `table[value]`, would accept `?p=constructor` off the prototype. Matching is exact and

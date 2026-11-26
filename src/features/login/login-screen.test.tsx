@@ -63,7 +63,7 @@ describe("the login screen", () => {
     expect(links[1]).not.toHaveAttribute("aria-current");
     expect(container.querySelector("main p.new a[href^='/assessment']")).toHaveAttribute(
       "href",
-      "/assessment?p=coral",
+      "/assessment",
     );
 
     fireEvent.click(links[1]!);
@@ -72,10 +72,10 @@ describe("the login screen", () => {
     return waitFor(() => {
       expect(links[1]).toHaveAttribute("aria-current", "page");
       expect(links[0]).not.toHaveAttribute("aria-current");
-      /* The estimate follows the product the page is on. */
+      /* One assessment for both products: the estimate stays put. */
       expect(container.querySelector("main p.new a[href^='/assessment']")).toHaveAttribute(
         "href",
-        "/assessment?p=amoeba",
+        "/assessment",
       );
     });
   });
@@ -175,7 +175,7 @@ describe("the login screen", () => {
     /* A page of this site: it must not be flung into a new tab. */
     expect(assessment).toHaveClass("lk");
     expect(assessment).toHaveTextContent("estimate your saving");
-    expect(assessment).toHaveAttribute("href", "/assessment?p=coral");
+    expect(assessment).toHaveAttribute("href", "/assessment");
     expect(assessment!.hasAttribute("target")).toBe(false);
     expect(assessment!.querySelector(".ext")).toBeNull();
   });

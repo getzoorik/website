@@ -1,5 +1,5 @@
 import { amoebaDocs, amoebaOnePager, learnPath, routes } from "@/config/site";
-import { assessContent, assessmentHref } from "@/content/assess";
+import { assessContent } from "@/content/assess";
 import { elasticContent } from "@/content/elastic";
 import { howItWorksSteps } from "@/content/how-it-works";
 import { productFilms } from "@/content/product-films";
@@ -67,7 +67,7 @@ export const amoebaPageContent: ProductPageContent = {
     title: "Block\u00a0storage optimization",
     /* The page's own line: what Amoeba does, on which disks and VMs, and how. */
     line: "Amoeba rightsizes Azure managed disks and Amazon EBS volumes on Windows and Linux VMs, autonomously and without any downtime.",
-    cta: { label: assessContent.assessment.cta.label, href: assessmentHref("amoeba") },
+    cta: { label: assessContent.assessment.cta.label, href: routes.assessment },
   },
   about: {
     title: "What is Amoeba?",

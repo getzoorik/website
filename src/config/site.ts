@@ -449,8 +449,7 @@ export const navLinks: readonly NavProductLink[] = [
 ];
 
 /** The plain link after the product links, in the bar and the drawer: the
- *  assessment itself, with no product in its address. Its page opens on Coral
- *  and switches to Amoeba on its own (`productFromQuery` in `@/lib/product-choice`). */
+ *  assessment, one page for both products. */
 export const navAssessment: NavLink = {
   key: "assessment",
   label: "Assessment",

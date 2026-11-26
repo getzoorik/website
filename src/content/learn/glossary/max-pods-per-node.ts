@@ -95,7 +95,7 @@ export const term: GlossaryTerm = {
             ],
             [
               "The ",
-              { a: "free assessment", href: "/assessment?p=coral" },
+              { a: "free assessment", href: "/assessment" },
               " counts pod slots, as well as CPU and memory, when it estimates the nodes you need.",
             ],
           ],

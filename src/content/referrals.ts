@@ -4,14 +4,14 @@ import { routes } from "@/config/site";
  * `/referrals`: every string the page prints, from the approved mock; the description was reworded in the
  * zero-noise content pass (3 Nov 2026).
  *
- * The program is coming soon: the offer and the ask, side by side on the band, with the free assessment's two
- * commands to share; how it will work, as three cards joined by arrows (who hands what to whom); and who to
+ * The program is coming soon: the offer and the ask, side by side on the band, with the free assessment's
+ * command to share; how it will work, as three cards joined by arrows (who hands what to whom); and who to
  * introduce. Product names are written plainly here; the page keeps each one out of a translator's hands (`named()`)
  * wherever the mock marks it.
  *
  * 🔴 THE PROGRAM HAS NO TERMS YET, SO THE PAGE STATES NONE: no reward amount, no commission rate, no payout, no
  * figure of our own making. The page says the terms will be on it when the program opens, and nothing more
- * (`referrals-page.test.tsx` holds the page to it). The two commands are the assessment's own (`assessment.ts`).
+ * (`referrals-page.test.tsx` holds the page to it). The command is the assessment's own (`assessment.ts`).
  *
  * ─── THE IDS ARE ADDRESSES ──────────────────────────────────────────────────
  * `#how` and `#who` are the mock's. Keep an id when its heading changes.
@@ -21,7 +21,7 @@ import { routes } from "@/config/site";
  * The day /referrals's content last changed, for the sitemap's `lastmod` only: the page does not print it. Whoever
  * changes /referrals's content moves this to that day in the same PR; never the build's date.
  */
-export const referralsLastUpdated = "3 November 2026";
+export const referralsLastUpdated = "27 November 2026";
 
 /** A team's glyph in Who you could introduce: a product's mark, or a line glyph for the roles both serve. */
 export type ReferralTeamIcon = "coral" | "amoeba" | "eye" | "shield";
@@ -44,8 +44,8 @@ export const referralsPage = {
     line: "The terms will be on this page when the program opens. Until then, share the free assessment: one command, one PDF with their estimated saving.",
     go: { label: "See the free assessment", href: routes.assessment },
   },
-  /** The Copy buttons beside the two commands: their label at rest and for 1.6 s after a copy, and what a screen
-   *  reader hears then. Each button's name is the assessment's own ("Copy the Coral command"). */
+  /** The Copy button beside the command: its label at rest and for 1.6 s after a copy, and what a screen reader
+   *  hears then. The button's name is the assessment's own ("Copy the command"). */
   copy: { idle: "Copy", done: "Copied", announcement: "Copied" },
   /** The navy card: a ready email to the founders. */
   ask: {

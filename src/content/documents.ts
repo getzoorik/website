@@ -34,13 +34,13 @@ export type DocumentId =
   | "amoeba-guide"
   | "amoeba-one-pager"
   | "coral-case-study"
-  | "coral-assessment-example"
-  | "amoeba-assessment-example"
+  | "assessment-example"
   | "coral-dpa";
 
 export interface PublishedDocument {
   readonly id: DocumentId;
-  readonly product: ProductId;
+  /** The product it belongs to; absent for one that covers both (the assessment's example report). */
+  readonly product?: ProductId;
   /** Served from `public/`, so this is also the file under `public/`. */
   readonly pdf: `/docs/${string}.pdf`;
   /** The page the PDF's canonical Link header names. */
@@ -55,18 +55,17 @@ export interface PublishedDocument {
 }
 
 /**
- * The nine PDFs the site knows, each copied from its source, never from an earlier copy:
+ * The eight PDFs the site knows, each copied from its source, never from an earlier copy:
  *   coral-product-guide.pdf
  *   coral-faq.pdf
  *   coral-one-pager.pdf
  *   amoeba-product-guide.pdf
  *   amoeba-one-pager.pdf
  *   coral-case-study-dev-cluster.pdf
- *   coral-assessment-example.pdf
- *   amoeba-assessment-example.pdf
+ *   assessment-example.pdf
  *   coral-data-processing-agreement-v1.0.pdf
  *
- * 🔴 THERE IS NO TENTH. The internal FAQ for Zoorik's own team never ships:
+ * 🔴 THERE IS NO NINTH. The internal FAQ for Zoorik's own team never ships:
  * not as a file, an entry, a link or a fact (`src/app/internal-docs.test.ts`).
  * Neither does the full security overview: /trust is its public summary, and
  * its PDF goes out with the pilot paperwork.
@@ -130,23 +129,14 @@ export const documents: Readonly<Record<DocumentId, PublishedDocument>> = {
     released: true,
     spokenName: "the case study",
   },
-  /* The assessment's example reports: offered by /assessment alone, under each run in What you
-     get; not tiles on the Docs hub. */
-  "coral-assessment-example": {
-    id: "coral-assessment-example",
-    product: "coral",
-    pdf: "/docs/coral-assessment-example.pdf",
+  /* The assessment's example report, Kubernetes and disks in one PDF: offered by /assessment alone, under the run in
+     What you get; not a tile on the Docs hub. */
+  "assessment-example": {
+    id: "assessment-example",
+    pdf: "/docs/assessment-example.pdf",
     canonical: routes.assessment,
     released: true,
-    spokenName: "the Coral example report",
-  },
-  "amoeba-assessment-example": {
-    id: "amoeba-assessment-example",
-    product: "amoeba",
-    pdf: "/docs/amoeba-assessment-example.pdf",
-    canonical: routes.assessment,
-    released: true,
-    spokenName: "the Amoeba example report",
+    spokenName: "the example report",
   },
   /* The data processing agreement, version 1.0 (23 October 2026): offered by /trust alone, in its DPA section; not a
      tile on the Docs hub. A Pilot Schedule names a version, and a named version never changes, so the version is in

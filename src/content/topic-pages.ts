@@ -1,5 +1,5 @@
 import { comparePath, glossaryPath, learnPath, routes } from "@/config/site";
-import { assessContent, assessmentHref } from "@/content/assess";
+import { assessContent } from "@/content/assess";
 import type { ProductId } from "@/content/products";
 import {
   h3,
@@ -75,10 +75,10 @@ export interface TopicPage {
 /** Built 1 Nov 2026; rewritten 2 Nov 2026. */
 const UPDATED = "3 November 2026";
 
-/** The hero's button: the closing row's own words, to the assessment with no product preset. */
+/** The hero's button: the closing row's own words, to the assessment. */
 const estimate = {
   label: assessContent.assessment.cta.label,
-  href: assessmentHref(),
+  href: routes.assessment,
 };
 
 const term = (slug: string): string => glossaryPath(slug);
