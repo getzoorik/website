@@ -34,7 +34,7 @@ describe("the hero", () => {
     const badge = hero.querySelector(".ax-hero-t > .hero-badges > p.az-badge.hero-badge")!;
     expect(text(badge)).toBe("Built for Azure and AWS");
     expect(text(hero.querySelector(".ax-hero-t > .hero-badges + h1"))).toBe(
-      "Free cloud cost assessment",
+      "Cloud cost assessment",
     );
     expect(text(hero.querySelector(".ax-hero-t > h1 + p.doc-deck.ax-lead"))).toBe(
       "One command reads your Kubernetes clusters and VM disks, and writes one PDF of everything you could save.",

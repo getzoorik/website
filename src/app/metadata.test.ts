@@ -31,7 +31,7 @@ describe("page metadata", () => {
       template: "%s | Zoorik",
     });
     expect(home).not.toHaveProperty("title");
-    expect(assessment.title).toBe("Free cloud cost assessment");
+    expect(assessment.title).toBe("Cloud cost assessment");
     expect(login.title).toBe("Sign in");
     expect(amoeba.title).toBe("Amoeba: Block storage optimization");
     expect(coral.title).toBe("Coral: Kubernetes optimization");

@@ -36,12 +36,12 @@ export type AssessmentQuestion = { readonly title: string } & (
 export const assessmentCopy = {
   /** The page's `<title>` (through the site's template) and description. */
   meta: {
-    title: "Free cloud cost assessment",
+    title: "Cloud cost assessment",
     description:
       "A free, read-only assessment for AKS, EKS and block storage on Azure and AWS. One command in your terminal, one PDF with your estimated saving.",
   },
   /** The h1; the page's `<title>` is `meta.title`. */
-  title: "Free cloud cost assessment",
+  title: "Cloud cost assessment",
   /** The one line under the h1. */
   lead: "One command reads your Kubernetes clusters and VM disks, and writes one PDF of everything you could save.",
   /** The one command, its Copy button, and what the live region says. */

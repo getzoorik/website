@@ -136,7 +136,7 @@ const CARDS: readonly {
     words: "AWS cost optimization: how to reduce AWS costs",
     paths: [routes.awsCostOptimization],
   },
-  { file: "assessment", words: "Free cloud cost assessment", paths: ["/assessment"] },
+  { file: "cloud-cost-assessment", words: "Cloud cost assessment", paths: ["/assessment"] },
   { file: "docs", words: "Product guides, FAQs and one-pagers", paths: ["/docs"] },
   { file: "coral-guide", words: "Coral product guide", paths: [routes.coralGuide] },
   { file: "coral-faq", words: "Coral FAQ", paths: [routes.coralFaq] },
