@@ -2,7 +2,7 @@ import { act, fireEvent, render } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { contactEmail, routes } from "@/config/site";
-import { assessmentProducts } from "@/content/assessment";
+import { assessmentCopy } from "@/content/assessment";
 
 /* The nav and the footer read the pathname. */
 vi.mock("next/navigation", () => ({ usePathname: () => "/referrals" }));
@@ -10,7 +10,7 @@ vi.mock("next/navigation", () => ({ usePathname: () => "/referrals" }));
 import ReferralsRoute, { metadata } from "@/app/referrals/page";
 
 /**
- * `/referrals`: the metadata, the hero, the pair (the program to come with the assessment's two commands to share,
+ * `/referrals`: the metadata, the hero, the pair (the program to come with the assessment's command to share,
  * and a ready email), How it will work as three cards joined by arrows, who to introduce, the Copy buttons; and no
  * terms of any kind, since the program has none. The sitemap entry is in `src/app/sitemap.test.ts`, the structured
  * data in `src/config/structured-data.test.ts`.
@@ -80,7 +80,7 @@ describe("/referrals", () => {
     expect(m.querySelector("#assess, #contact")).toBeNull();
   });
 
-  it("puts the program on the white card, with the assessment's two commands to share", () => {
+  it("puts the program on the white card, with the assessment's command to share", () => {
     const card = main().querySelector(".cp-pair .as-grid > .as-card.as-mini.cp-w.rise")!;
     expect(text(card.querySelector(".cp-flag"))).toBe("Coming soon");
     expect(card.querySelector("svg.cp-own.cp-own-l")).toHaveAttribute("aria-hidden", "true");
@@ -90,23 +90,21 @@ describe("/referrals", () => {
     );
     const lines = [...card.querySelectorAll(".cp-share > .cp-cmd")];
     expect(lines.map((line) => text(line.querySelector("code")))).toEqual([
-      `$ ${assessmentProducts.coral.run}`,
-      `$ ${assessmentProducts.amoeba.run}`,
+      `$ ${assessmentCopy.run.command}`,
     ]);
+    expect(assessmentCopy.run.command).toBe("npx zoorik assess");
     for (const line of lines) {
       expect(line.querySelector("code")).toHaveAttribute("translate", "no");
       expect(line.querySelector("code > i")).toHaveAttribute("aria-hidden", "true");
     }
     const buttons = lines.map((line) => line.querySelector<HTMLButtonElement>("button.cp-copy")!);
     expect(buttons.map((button) => button.getAttribute("data-copy"))).toEqual([
-      assessmentProducts.coral.run,
-      assessmentProducts.amoeba.run,
+      assessmentCopy.run.command,
     ]);
     expect(buttons.map((button) => button.getAttribute("aria-label"))).toEqual([
-      assessmentProducts.coral.copy,
-      assessmentProducts.amoeba.copy,
+      "Copy the command",
     ]);
-    expect(buttons.map(text)).toEqual(["Copy", "Copy"]);
+    expect(buttons.map(text)).toEqual(["Copy"]);
     const go = card.querySelector<HTMLAnchorElement>("a.btn-ink")!;
     expect(text(go)).toBe("See the free assessment");
     expect(go.getAttribute("href")).toBe(routes.assessment);
@@ -177,13 +175,13 @@ describe("/referrals's Copy buttons", () => {
     vi.useFakeTimers();
     const writeText = vi.fn().mockResolvedValue(undefined);
     allowCopying({ writeText }, true);
-    const line = main().querySelectorAll(".cp-cmd")[1]!;
+    const line = main().querySelector(".cp-cmd")!;
     const button = line.querySelector<HTMLButtonElement>("button.cp-copy")!;
 
     await act(async () => {
       fireEvent.click(button);
     });
-    expect(writeText).toHaveBeenCalledWith(assessmentProducts.amoeba.run);
+    expect(writeText).toHaveBeenCalledWith("npx zoorik assess");
     expect(button).toHaveAttribute("data-done", "");
     expect(text(button)).toBe("Copied");
     expect(text(line.querySelector('[aria-live="polite"]'))).toBe("Copied");

@@ -147,7 +147,7 @@ export const term: GlossaryTerm = {
             ],
             [
               "The ",
-              { a: "free assessment", href: "/assessment?p=coral" },
+              { a: "free assessment", href: "/assessment" },
               " estimates what your clusters could save.",
             ],
           ],

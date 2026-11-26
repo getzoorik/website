@@ -434,7 +434,7 @@ export const article: Article = {
           text: [
             { a: "AKS cost optimization", href: "/aks-cost-optimization" },
             " covers what Coral does on AKS and what connecting a cluster sets up. The ",
-            { a: "free assessment", href: "/assessment?p=coral" },
+            { a: "free assessment", href: "/assessment" },
             " takes one command and writes one PDF with your estimated saving at list price.",
           ],
         },
@@ -446,7 +446,7 @@ export const article: Article = {
     text: "Coral rebalances CPU and memory requests on AKS and EKS, works with your HPA, and removes the nodes you don’t need. We estimate it reduces AKS and EKS cost by 40–50%. It is an estimated range, not a promise. The free assessment works out your own figure.",
     links: [
       { label: "Kubernetes optimization with Coral", href: "/coral" },
-      { label: "Estimate your saving", href: "/assessment?p=coral" },
+      { label: "Estimate your saving", href: "/assessment" },
     ],
   },
   sources: [

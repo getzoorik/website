@@ -111,10 +111,7 @@ describe("the troubleshooting pages", () => {
       expect(page.guide.short).toBeUndefined();
       expect(root.querySelector(".ar-short")).toBeNull();
       const row = root.querySelector("section#assess")!;
-      expect(row.querySelector("a.btn-ink")).toHaveAttribute(
-        "href",
-        `/assessment?p=${page.product}`,
-      );
+      expect(row.querySelector("a.btn-ink")).toHaveAttribute("href", "/assessment");
       /* Docs is marked in the header; the page keeps its hash as the article frame does. */
       expect(navState(page.route)).toEqual({ current: "docs" });
       expect(keepsHash(page.route)).toBe(true);

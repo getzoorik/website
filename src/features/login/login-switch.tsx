@@ -4,14 +4,12 @@ import { useSyncExternalStore, type MouseEvent } from "react";
 
 import { ProductMark } from "@/components/brand/product-marks";
 import { routes } from "@/config/site";
-import { assessmentHref } from "@/content/assess";
 import { loginCopy } from "@/content/login";
 import { productOrder, products, type ProductId } from "@/content/products";
 import { addressFor, isProduct } from "@/lib/product-choice";
 
 /* The page's product is `html[data-ap]`: the first-paint script sets it from `?p=` before paint, and the switch
-   moves it. The sheet places the thumb and shows the one card from it, so this island only names the current link
-   and points the estimate at the same product. Coral on the server, so the prerender and its hydration agree. */
+   moves it. The sheet places the thumb and shows the one card from it, so this island only names the current link. Coral on the server, so the prerender and its hydration agree. */
 function watchProduct(onChange: () => void): () => void {
   const watcher = new MutationObserver(onChange);
   watcher.observe(document.documentElement, { attributes: true, attributeFilter: ["data-ap"] });
@@ -62,14 +60,5 @@ export function LoginSwitch(): React.JSX.Element {
         </a>
       ))}
     </nav>
-  );
-}
-
-/** "estimate your saving", on the product the page is on. */
-export function EstimateLink({ text }: { readonly text: string }): React.JSX.Element {
-  return (
-    <a className="lk" href={assessmentHref(useLoginProduct())}>
-      {text}
-    </a>
   );
 }

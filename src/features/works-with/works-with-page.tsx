@@ -18,7 +18,7 @@ import { Block, sectionSlug } from "@/features/open-source/os-guide-page";
  *   #setup          bullets with bold lead-ins
  *   #questions      /pricing's rows: the FAQ's, closed, with no number column (`.pr-faq`), the column not prose
  *   #read-more      each link inline, then what it holds
- *   closing row     the site's, on Coral (`/assessment?p=coral`)
+ *   closing row     the site's, on Coral (`/assessment`)
  *
  * The text is set as the mocks' `inline()` sets it (`richText`, as on /trust and /pricing): inline code whole, with
  * no break points, where the guides break it (`OsText`). These pages are not under Docs, so the header marks nothing.

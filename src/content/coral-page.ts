@@ -1,5 +1,5 @@
 import { learnPath, routes } from "@/config/site";
-import { assessContent, assessmentHref } from "@/content/assess";
+import { assessContent } from "@/content/assess";
 import { howItWorksSteps } from "@/content/how-it-works";
 import { kubernetesContent } from "@/content/kubernetes";
 import { productFilms } from "@/content/product-films";
@@ -50,7 +50,7 @@ export const coralPageContent: ProductPageContent = {
   hero: {
     title: "Kubernetes optimization",
     line: "Coral rebalances AKS and EKS workloads and nodes to reduce cost, autonomously and without any downtime.",
-    cta: { label: assessContent.assessment.cta.label, href: assessmentHref("coral") },
+    cta: { label: assessContent.assessment.cta.label, href: routes.assessment },
   },
   about: {
     title: "What is Coral?",

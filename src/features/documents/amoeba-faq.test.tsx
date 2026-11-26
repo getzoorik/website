@@ -187,7 +187,7 @@ describe("the body", () => {
       ["what-is-amoeba", "block storage optimization", "/amoeba"],
       ["what-is-amoeba", "btrfs", "/learn/glossary/btrfs"],
       ["what-does-onboarding-a-vm-change", "Amoeba product guide", "/amoeba-guide"],
-      ["how-much-can-amoeba-save", "free assessment", "/assessment?p=amoeba"],
+      ["how-much-can-amoeba-save", "free assessment", "/assessment"],
       ["how-much-can-amoeba-save", "Amoeba case study", "/amoeba-value-lab"],
       [
         "when-does-amoeba-shrink-the-pool",
@@ -195,7 +195,7 @@ describe("the body", () => {
         "/amoeba-troubleshooting#amoeba-has-not-rightsized-my-disks-yet",
       ],
       ["what-does-amoeba-cost", "priced per GB it manages", "/pricing"],
-      ["how-do-i-see-what-my", "block storage cost assessment", "/assessment?p=amoeba"],
+      ["how-do-i-see-what-my", "block storage cost assessment", "/assessment"],
     ]);
   });
 
@@ -353,8 +353,7 @@ describe("the route", () => {
     });
 
     it("ends with Amoeba's closing row", () => {
-      expect(page.querySelector('main a[href="/assessment?p=amoeba"]')).not.toBeNull();
-      expect(page.querySelector('main a[href="/assessment?p=coral"]')).toBeNull();
+      expect(page.querySelector('main a[href="/assessment"]')).not.toBeNull();
       expect(text(page.querySelector("main"))).toContain(
         "Thirty minutes with the people who build Amoeba.",
       );

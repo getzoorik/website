@@ -165,7 +165,7 @@ export const coralFaqSections: readonly FaqSection<CoralFaqQuestionId>[] = [
           "We estimate 40–50% off AKS and EKS cost. It is an estimated range, not a promise.",
           [
             "The ",
-            { href: `${routes.assessment}?p=coral`, text: "free AKS and EKS cost assessment" },
+            { href: routes.assessment, text: "free AKS and EKS cost assessment" },
             " works out your own figure from your clusters, at list price.",
           ],
         ],

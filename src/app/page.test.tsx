@@ -231,9 +231,9 @@ describe("the home page", () => {
     expect(page.textContent).not.toMatch(/(hello|sales|security)@zoorik\.com/);
   });
 
-  it("opens each product's button on that product's assessment", () => {
-    expect(hrefs("#amoeba a.btn-ink")).toEqual(["/assessment?p=amoeba"]);
-    expect(hrefs("#coral a.btn-ink")).toEqual(["/assessment?p=coral"]);
+  it("opens each product's button on the assessment", () => {
+    expect(hrefs("#amoeba a.btn-ink")).toEqual(["/assessment"]);
+    expect(hrefs("#coral a.btn-ink")).toEqual(["/assessment"]);
     /* The closing row is the dark card alone (2 Nov 2026): the offers' free card above sends to the assessment. */
     expect(hrefs("#assess a.btn-ink")).toEqual([]);
   });
@@ -278,8 +278,8 @@ describe("the home page", () => {
     /* The hero, each product and the free assessment's card; the closing row is the dark card alone. */
     expect(calls.map((a) => a.getAttribute("href"))).toEqual([
       "/assessment",
-      "/assessment?p=coral",
-      "/assessment?p=amoeba",
+      "/assessment",
+      "/assessment",
       "/assessment",
     ]);
   });

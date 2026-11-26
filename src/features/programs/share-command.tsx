@@ -12,7 +12,7 @@ import { useCopyCommand } from "@/hooks/use-copy-command";
  * The copying is the site's one copy of it (`useCopyCommand`): the clipboard, else the old `execCommand` route, else
  * the command is selected in its line so the reader is one keystroke from done; the button keeps "Copy" then.
  *
- * The button is named for what it copies (`label`, the assessment's own "Copy the Coral command"), which a screen
+ * The button is named for what it copies (`label`, the assessment's own "Copy the command"), which a screen
  * reader reads in place of the label, so "Copied" is also said once in a polite live region beside it, as every copy
  * button on the site says it. The region is `.sr-only` (absolute), so it takes no place in the line's row.
  *

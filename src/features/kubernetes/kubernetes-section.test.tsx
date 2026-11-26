@@ -24,11 +24,11 @@ describe("KubernetesSection", () => {
     expect(alias!.textContent).toBe("");
   });
 
-  test("sends the button to the assessment, opened on Coral", () => {
+  test("sends the button to the assessment", () => {
     const { container } = render(<KubernetesSection />);
     const button = container.querySelector("a.btn-ink")!;
 
-    expect(button).toHaveAttribute("href", "/assessment?p=coral");
+    expect(button).toHaveAttribute("href", "/assessment");
     /* One label, said once: no hover roll and no second, hidden label. */
     expect(button.textContent!.trim()).toBe(kubernetesContent.cta.label);
     expect(button.textContent!.trim()).toBe("Estimate your saving");

@@ -124,7 +124,7 @@ export const term: GlossaryTerm = {
           text: [
             { a: "Coral", href: "/coral" },
             " rebalances CPU and memory requests on AKS and EKS to match real use, and removes the nodes you don’t need. The ",
-            { a: "free assessment", href: "/assessment?p=coral" },
+            { a: "free assessment", href: "/assessment" },
             " estimates your own saving.",
           ],
         },

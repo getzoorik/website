@@ -155,7 +155,7 @@ export const term: GlossaryTerm = {
             ],
             [
               "The ",
-              { a: "free assessment", href: "/assessment?p=coral" },
+              { a: "free assessment", href: "/assessment" },
               " estimates your saving. It samples use with ",
               { code: "kubectl top" },
               ". Without Metrics Server, requests stay as they are and only surplus nodes count.",

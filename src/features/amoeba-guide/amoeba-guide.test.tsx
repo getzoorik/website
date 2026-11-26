@@ -409,7 +409,7 @@ describe("/amoeba-guide page", () => {
 
   it("closes with the assessment row for Amoeba", () => {
     const row = page().querySelector("#assess")!;
-    expect(row.querySelector('a[href="/assessment?p=amoeba"]')).not.toBeNull();
+    expect(row.querySelector('a[href="/assessment"]')).not.toBeNull();
     expect(row.previousElementSibling).toHaveClass("sec", "doc-body");
   });
 

@@ -43,7 +43,7 @@
    measure holds whatever the import order */
 .doc-hero .hero-in h1{max-width:20ch;font-size:clamp(2.5rem,1.5rem + 2.8vw,3.5rem);font-weight:600;line-height:1.06;letter-spacing:-.035em}
 .doc-deck{margin-top:16px;max-width:44rem;font-size:1.125rem;line-height:1.6;color:rgba(255,255,255,.78);text-wrap:pretty}
-/* the product switch (assessment, guides, FAQs): the product is set here, so no title repeats it */
+/* the product switch (guides, FAQs): the product is set here, so no title repeats it */
 .as-switch{display:inline-flex;align-items:center;gap:2px;margin-top:16px;padding:3px;border:1px solid rgba(255,255,255,.16);
   border-radius:var(--r-card);background:rgba(255,255,255,.04)}
 .as-switch a{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:var(--r-ctl);font-size:.9375rem;font-weight:500;
@@ -53,8 +53,8 @@
 @media (hover:hover){.as-switch a:not([aria-current]):hover{color:#fff;background:rgba(255,255,255,.08)}}
 .as-switch a:focus-visible{outline:2px solid var(--accent-dark);outline-offset:2px}
 .as-switch + .doc-deck{margin-top:16px}
-/* the switch with each product's category (the assessment, the product guides and the FAQs), and on the
-   guides and FAQs the small line above it that says to choose */
+/* the switch with each product's category (the product guides and the FAQs), and the small line above it
+   that says to choose */
 .ax-pick{margin-top:20px;font-size:.8125rem;font-weight:500;letter-spacing:.01em;line-height:1.4;color:rgba(255,255,255,.62)}
 .ax-pick + .as-switch{margin-top:8px}
 .ax-switch a small{font-size:.8125rem;font-weight:400;color:rgba(255,255,255,.58)}

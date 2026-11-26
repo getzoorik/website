@@ -735,10 +735,7 @@ describe("a document page's chrome", () => {
     /* Product guide and FAQ left the header: a guide is in Docs, which is no page of it. */
     expect(container.querySelector("a.nv-lbl.is-cur")).toHaveTextContent("Docs");
     expect(container.querySelector("a.nv-lbl.is-cur")).not.toHaveAttribute("aria-current");
-    expect(container.querySelector("#assess .btn-ink")).toHaveAttribute(
-      "href",
-      "/assessment?p=coral",
-    );
+    expect(container.querySelector("#assess .btn-ink")).toHaveAttribute("href", "/assessment");
     /* Nothing on a document page rises: the row's cards are drawn still. */
     expect(container.querySelectorAll("#assess .rise, #assess [data-i]")).toHaveLength(0);
     expect(text(container.querySelector("#contact p"))).toBe(

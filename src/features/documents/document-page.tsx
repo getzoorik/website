@@ -15,7 +15,7 @@ import { FooterSection } from "@/features/footer/footer-section";
  * assessment row, then the footer.
  *
  * The closing row is the site's own: "Estimate your saving" to
- * `/assessment?p=<product>` and "Book a demo". The PDFs' "Need help?" and
+ * `/assessment` and "Book a demo". The PDFs' "Need help?" and
  * "Pick a time" are not ported, and there is no print link (the PDF is the
  * print version). Nothing on a document page rises into place, so the row's
  * cards are drawn still (`reveal={false}`), as the generated mocks draw them.

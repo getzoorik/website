@@ -170,13 +170,13 @@ describe.each(pages)("the product page %s", (path, content) => {
     expect(line.querySelector('[translate="no"]')).toHaveTextContent(name);
   });
 
-  it("has one hero button, Estimate your saving, same tab, to its own assessment", () => {
+  it("has one hero button, Estimate your saving, same tab, to the assessment", () => {
     const page = renderPage(path, content);
     const buttons = [...page.querySelectorAll(".pp-hero .hero-cta a")];
     expect(buttons).toHaveLength(1);
     expect(buttons[0]).toHaveClass("btn", "btn-light");
     expect(text(buttons[0])).toBe("Estimate your saving");
-    expect(buttons[0]).toHaveAttribute("href", `/assessment?p=${product}`);
+    expect(buttons[0]).toHaveAttribute("href", "/assessment");
     expect(buttons[0]).not.toHaveAttribute("target");
     expect(buttons[0].querySelector("svg")).toHaveAttribute("aria-hidden", "true");
   });
@@ -337,10 +337,7 @@ describe.each(pages)("the product page %s", (path, content) => {
     expect(text(page.querySelector("#contact p"))).toBe(
       `Thirty minutes with the people who build ${name}.`,
     );
-    expect(page.querySelector("#assess .btn-ink")).toHaveAttribute(
-      "href",
-      `/assessment?p=${product}`,
-    );
+    expect(page.querySelector("#assess .btn-ink")).toHaveAttribute("href", "/assessment");
     const demo = page.querySelector<HTMLAnchorElement>("#assess .cta-go")!;
     expect(demo).toHaveAttribute("href", calendarUrl);
     expect(demo).toHaveAttribute("target", "_blank");

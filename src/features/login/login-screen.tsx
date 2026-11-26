@@ -5,7 +5,7 @@ import { TurningMark } from "@/components/brand/turning-mark";
 import { ExternalArrow } from "@/components/primitives/external-arrow";
 import { NamedText } from "@/components/primitives/named-text";
 import { NewTabHint } from "@/components/primitives/new-tab-hint";
-import { routes, site } from "@/config/site";
+import { site } from "@/config/site";
 import {
   loginCopy,
   loginDemo,
@@ -16,7 +16,7 @@ import {
 } from "@/content/login";
 import { HeroPhoto } from "@/features/hero/hero-photo";
 import heroImage from "@/features/hero/hero-racks-graded.webp";
-import { EstimateLink, LoginSwitch } from "@/features/login/login-switch";
+import { LoginSwitch } from "@/features/login/login-switch";
 import { ProductCard } from "@/features/login/product-card";
 import { isOffSite, offSiteProps } from "@/lib/links";
 import { FIRST_PAINT_SCRIPT } from "@/lib/product-choice";
@@ -77,9 +77,7 @@ export function LoginScreen(): JSX.Element {
             ))}
             <p className="new">
               {loginDemo.map((run) =>
-                run.href === routes.assessment ? (
-                  <EstimateLink key={run.text} text={run.text} />
-                ) : run.href ? (
+                run.href ? (
                   /* The calendar opens in a new tab and says so, to the ear and
                      the eye; the assessment is a page of this site. */
                   <a key={run.text} className="lk" href={run.href} {...offSiteProps(run.href)}>

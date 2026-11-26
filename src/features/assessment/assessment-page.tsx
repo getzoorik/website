@@ -1,204 +1,223 @@
+import { Fragment } from "react";
+
 import { AwsMark, AzureMark } from "@/components/brand/cloud-marks";
 import { SiteNav } from "@/components/layout/site-nav";
 import { ExternalArrow } from "@/components/primitives/external-arrow";
 import { NewTabHint } from "@/components/primitives/new-tab-hint";
-import { assessmentCopy, assessmentProducts } from "@/content/assessment";
+import { assessmentCopy, type TextRun } from "@/content/assessment";
 import { documents } from "@/content/documents";
 import { builtFor } from "@/content/footer";
-import { productOrder, products, type ProductId } from "@/content/products";
-import { AssessmentAfter, AssessmentFacts } from "@/features/assessment/assessment-choice";
-import { AssessmentDemos, type DemoView } from "@/features/assessment/assessment-demos";
-import { AssessmentRun, AssessmentSwitch } from "@/features/assessment/assessment-hero";
-import {
-  EyeGlyph,
-  GitHubMark,
-  PlayGlyph,
-  PythonMark,
-  SendGlyph,
-  ShieldGlyph,
-} from "@/features/assessment/assessment-marks";
-import { AssessmentProvider } from "@/features/assessment/assessment-provider";
-import { FIRST_PAINT_SCRIPT } from "@/features/assessment/first-paint";
+import { products } from "@/content/products";
+import { AssessmentDemo, type DemoFile } from "@/features/assessment/assessment-demos";
+import { AssessmentCommand } from "@/features/assessment/assessment-hero";
+import { GitHubMark, MailGlyph } from "@/features/assessment/assessment-marks";
 import { documentFacts } from "@/features/documents/document-facts";
 import { FooterSection } from "@/features/footer/footer-section";
 import { offSiteProps } from "@/lib/links";
 
-const { title, lead, sub, get, what, before, after } = assessmentCopy;
+const { title, lead, get, what, before, after } = assessmentCopy;
 
-/** A run as What you get draws it, with its report's facts read from the file at build ("2 pages · 138 KB"). */
-function demoView(product: ProductId): DemoView {
-  const { demo, run } = assessmentProducts[product];
-  const { pages, bytes } = documentFacts(demo.document);
+/** The example report under the run, its pages and size read from the file at build ("PDF · 4 pages · 219 KB"). */
+function exampleFile(): DemoFile {
+  const { pages, bytes } = documentFacts(get.document);
   const kb = Math.round(bytes / 1000);
   return {
-    product,
-    name: products[product].name,
-    kind: products[product].kind,
-    run,
-    found: demo.found,
-    saving: demo.saving,
-    file: demo.file,
-    download: demo.download,
-    pdf: documents[demo.document].pdf,
-    thumb: demo.thumb,
-    facts: `${get.kind} · PDF · ${pages} pages · ${kb} KB`,
-    spoken: `Download the ${products[product].name} example report, PDF, ${pages} pages, ${kb} KB`,
+    pdf: documents[get.document].pdf,
+    facts: `PDF · ${pages} pages · ${kb} KB`,
+    spoken: `Download ${documents[get.document].spokenName}, PDF, ${pages} pages, ${kb} KB`,
   };
+}
+
+/** A fact's runs, each code run set as code. */
+function Runs({ runs }: { readonly runs: readonly TextRun[] }): React.JSX.Element {
+  return (
+    <>
+      {runs.map((part, index) =>
+        part.code ? (
+          <code translate="no" key={index}>
+            {part.text}
+          </code>
+        ) : (
+          <Fragment key={index}>{part.text}</Fragment>
+        ),
+      )}
+    </>
+  );
 }
 
 /**
  * The whole of `/assessment`:
  *
- *   Hero           on the left "Built for Azure and AWS", the h1, its one line under the h1 (the site's hero deck) and,
- *                  under them, "Choose what to assess." over the switch with categories; on the right, What you get's terminal with the chosen product's
- *                  one line to copy, how to sign in to the cloud and where Cloud Shell keeps the PDF, each cloud by its
- *                  mark. Dark, with no turning mark.
- *   What you get   Coral's run and Amoeba's run side by side, each typed once as it comes into view, then its example
- *                  report to download. Both always, whatever the switch says. The page's one tinted band.
- *   What it does   the navy band, three facts (Reads, Runs, only when, Sends), the GitHub and PyPI cards and
- *                  "Read-only".
- *   Before you run it  three questions, each with its answer under a hairline: how long a run takes, the access it
- *                  needs and how the saving is worked out. The same on both products.
- *   After the run  "Send us your PDF" and "Book 30 minutes", then how the estimate works.
+ *   Hero              on the left "Built for Azure and AWS", the h1 and its one line (the site's hero deck); on the
+ *                     right the one command to copy, in What you get's terminal. Dark, with no turning mark.
+ *   What you get      from 1100px the heading on the left and, on the right, the run, typed once as it comes into
+ *                     view, and the example report to download, so the run stands right under the hero's command.
+ *                     The page's one tinted band.
+ *   What it does      the navy band, three facts (Reads, Runs, Sends), and under "Nothing." the code on GitHub.
+ *   Before you run it three questions, each with its answer under a hairline: how long a run takes, the access it
+ *                     needs and how the saving is worked out.
+ *   After the run     "Send us your PDF" and "Book 30 minutes".
  *
- * ─── A SERVER COMPONENT, WITH ISLANDS ──────────────────────────────────────
- * The provider holds the product; the switch, the run line, the two facts and After the run's product lines read it.
- * What you get's runs play on their own. Everything else is static.
- *
- * ─── THE FIRST-PAINT SCRIPT COMES FIRST ────────────────────────────────────
- * Ahead of the skip link, so it runs while the HTML parses, before the hero is painted (`first-paint.ts`). Every
- * link into this page is a plain `<a>`: a client-side navigation would never run the script.
+ * A server component with two islands: the command's Copy, and the run.
  */
 export function AssessmentPage(): React.JSX.Element {
-  const demos = productOrder.map(demoView);
+  const mail = `mailto:${after.send.email}?subject=${encodeURIComponent(after.send.subject)}`;
 
   return (
     <>
-      <script dangerouslySetInnerHTML={{ __html: FIRST_PAINT_SCRIPT }} />
       <a className="skip" href="#main">
         Skip to content
       </a>
       <SiteNav />
       <main id="main" tabIndex={-1}>
-        <AssessmentProvider>
-          <header className="hero doc-hero ax-hero" id="top">
-            <div className="wrap hero-in ax-hero-in">
-              <div className="ax-hero-t">
-                <div className="hero-badges">
-                  <p className="az-badge hero-badge">
-                    {/* The footer draws the same badge: its own gradient ids keep the page free of duplicates. */}
-                    <AzureMark idSuffix="ax-hero" className="az-mark" />{" "}
-                    <AwsMark crop="badge" className="az-mark az-aws" /> {builtFor.common.label}{" "}
-                    <b>{builtFor.common.platforms}</b>
-                  </p>
-                </div>
-                <h1>{title}</h1>
-                <p className="doc-deck ax-lead">{lead}</p>
-                <div className="ax-pick">
-                  <p className="ax-sub">{sub}</p>
-                  <AssessmentSwitch />
-                </div>
+        <header className="hero doc-hero ax-hero" id="top">
+          <div className="wrap hero-in ax-hero-in">
+            <div className="ax-hero-t">
+              <div className="hero-badges">
+                <p className="az-badge hero-badge">
+                  {/* The footer draws the same badge: its own gradient ids keep the page free of duplicates. */}
+                  <AzureMark idSuffix="ax-hero" className="az-mark" />{" "}
+                  <AwsMark crop="badge" className="az-mark az-aws" /> {builtFor.common.label}{" "}
+                  <b>{builtFor.common.platforms}</b>
+                </p>
               </div>
-              <AssessmentRun />
+              <h1>{title}</h1>
+              <p className="doc-deck ax-lead">{lead}</p>
             </div>
-          </header>
+            <AssessmentCommand />
+          </div>
+        </header>
 
-          <section className="sec sec-band ax-get" id="run" aria-labelledby="ax-get-h">
-            <div className="wrap">
+        <section className="sec sec-band ax-get" id="run" aria-labelledby="ax-get-h">
+          <div className="wrap">
+            <div className="ax-get-in" id="ax-demos">
               <div className="ax-head">
                 <h2 id="ax-get-h">{get.title}</h2>
               </div>
-              <AssessmentDemos demos={demos} />
+              <AssessmentDemo file={exampleFile()} />
             </div>
-          </section>
+          </div>
+        </section>
 
-          <section className="sec ax-what oc" id="what-it-does" aria-labelledby="ax-what-h">
-            <div className="wrap">
-              <div className="ax-head">
-                <h2 id="ax-what-h">{what.title}</h2>
+        <section className="sec ax-what oc" id="what-it-does" aria-labelledby="ax-what-h">
+          <div className="wrap">
+            <div className="ax-head">
+              <h2 id="ax-what-h">{what.title}</h2>
+            </div>
+            <dl className="oc-facts">
+              <div>
+                <dt>{what.reads.title}</dt>
+                <dd>{what.reads.text}</dd>
               </div>
-              <dl className="oc-facts">
-                <div>
-                  <dt>
-                    <EyeGlyph />
-                    {what.reads}
-                  </dt>
-                  <AssessmentFacts fact="reads" />
-                </div>
-                <div>
-                  <dt>
-                    <PlayGlyph />
-                    {what.runs}
-                  </dt>
-                  <AssessmentFacts fact="runs" />
-                </div>
-                <div className="oc-send">
-                  <dt>
-                    <SendGlyph />
-                    {what.sends}
-                  </dt>
-                  <dd>
-                    <b>{what.nothing}</b>
-                  </dd>
-                </div>
-              </dl>
-              <div className="brs">
-                {what.cards.map((card) => (
-                  <a className="br" href={card.href} key={card.title} {...offSiteProps(card.href)}>
+              <div>
+                <dt>{what.runs.title}</dt>
+                <dd>
+                  <Runs runs={what.runs.text} />
+                </dd>
+              </div>
+              <div className="oc-send">
+                <dt>{what.sends.title}</dt>
+                <dd>
+                  <b>{what.sends.nothing}</b>
+                  <a className="br" href={what.code.href} {...offSiteProps(what.code.href)}>
                     <span className="br-m">
-                      {card.mark === "github" ? <GitHubMark /> : <PythonMark />}
+                      <GitHubMark />
                     </span>
                     <span className="br-t">
-                      <b>{card.title}</b>
-                      <span>{card.line}</span>
+                      <b>{what.code.title}</b>
+                      <span>
+                        {what.code.line}
+                        <span className="br-dot"> · </span>
+                        <span className="br-lic">{what.code.license}</span>
+                      </span>
                     </span>
                     <ExternalArrow />
-                    <NewTabHint href={card.href} />
+                    <NewTabHint href={what.code.href} />
                   </a>
-                ))}
-                <span className="ro">
-                  <ShieldGlyph />
-                  {what.trust}
-                </span>
+                </dd>
               </div>
-            </div>
-          </section>
+            </dl>
+          </div>
+        </section>
 
-          <section className="sec ax-before" id={before.id} aria-labelledby="ax-before-h">
-            <div className="wrap">
-              <div className="ax-head">
-                <h2 id="ax-before-h">{before.title}</h2>
-              </div>
-              <div className="ax-qs">
-                {before.questions.map((question) => (
-                  <div className="ax-q" key={question.title}>
-                    <h3>{question.title}</h3>
-                    <div className="ax-a">
-                      {"items" in question ? (
-                        <ul>
-                          {question.items.map((item) => (
-                            <li key={item}>{item}</li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p>{question.text}</p>
-                      )}
-                    </div>
+        <section className="sec ax-before" id={before.id} aria-labelledby="ax-before-h">
+          <div className="wrap">
+            <div className="ax-head">
+              <h2 id="ax-before-h">{before.title}</h2>
+            </div>
+            <div className="ax-qs">
+              {before.questions.map((question) => (
+                <div className="ax-q" key={question.title}>
+                  <h3>{question.title}</h3>
+                  <div className="ax-a">
+                    {"items" in question ? (
+                      <ul>
+                        {question.items.map((item) => (
+                          <li key={item}>{item}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <>
+                        {question.paragraphs.map((paragraph) => (
+                          <p key={paragraph}>{paragraph}</p>
+                        ))}
+                        {question.link ? (
+                          <p>
+                            <a
+                              className="alink"
+                              href={question.link.href}
+                              {...offSiteProps(question.link.href)}
+                            >
+                              <span>{question.link.text}</span>
+                              <ExternalArrow />
+                              <NewTabHint href={question.link.href} />
+                            </a>
+                          </p>
+                        ) : null}
+                      </>
+                    )}
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
-          </section>
+          </div>
+        </section>
 
-          <section className="sec ax-after" id="after" aria-labelledby="ax-after-h">
-            <div className="wrap">
-              <div className="ax-head">
-                <h2 id="ax-after-h">{after.title}</h2>
-              </div>
-              <AssessmentAfter />
+        <section className="sec ax-after" id="after" aria-labelledby="ax-after-h">
+          <div className="wrap">
+            <div className="ax-head">
+              <h2 id="ax-after-h">{after.title}</h2>
             </div>
-          </section>
-        </AssessmentProvider>
+            <div className="as-grid">
+              <div className="as-card as-mini">
+                <h3 className="as-h">{after.send.title}</h3>
+                <p>{after.send.reply}</p>
+                <a className="btn-ink" href={mail}>
+                  <MailGlyph />
+                  <span>{after.send.button}</span>
+                </a>
+              </div>
+              <div className="as-cal">
+                <h3 className="as-h">{after.book.title}</h3>
+                <p>
+                  {after.book.line}
+                  {after.book.both.map((id, index) => (
+                    <Fragment key={id}>
+                      {index > 0 ? " and " : null}
+                      <span translate="no">{products[id].name}</span>
+                    </Fragment>
+                  ))}
+                  .
+                </p>
+                <a className="cta-go" href={after.book.href} {...offSiteProps(after.book.href)}>
+                  {after.book.cta}
+                  <ExternalArrow />
+                  <NewTabHint href={after.book.href} />
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
       <FooterSection />
     </>

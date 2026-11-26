@@ -1,8 +1,7 @@
 import { Fragment, type ReactNode } from "react";
 
 import { ProductMark } from "@/components/brand/product-marks";
-import { assessmentProducts } from "@/content/assessment";
-import { productOrder } from "@/content/products";
+import { assessmentCopy } from "@/content/assessment";
 import { referralsPage, type ReferralTeamIcon } from "@/content/referrals";
 import { EyeGlyph, SendGlyph, ShieldGlyph } from "@/features/assessment/assessment-marks";
 import { DocumentPage } from "@/features/documents/document-page";
@@ -22,8 +21,8 @@ import { ShareCommand } from "@/features/programs/share-command";
  * `/referrals`, coming soon, on the documents' frame:
  *
  *   hero                      the title and one line
- *   the pair                  on the band: the program on the white card ("Coming soon", the free assessment's two
- *                             commands to share, each with its Copy button), and a ready email on the navy one
+ *   the pair                  on the band: the program on the white card ("Coming soon", the free assessment's
+ *                             command to share, with its Copy button), and a ready email on the navy one
  *   How it will work          who hands what to whom: three cards joined by arrows
  *   Who you could introduce   six tiles, each with its mark and its product
  *
@@ -41,18 +40,15 @@ const TEAM_ICONS: Readonly<Record<ReferralTeamIcon, ReactNode>> = {
   shield: <ShieldGlyph className="dt-ic cp-ic" />,
 };
 
-/** The free assessment's two commands, the assessment's own (`assessment.ts`), each to copy. */
+/** The free assessment's one command, the assessment's own (`assessment.ts`), to copy. */
 function Share(): React.JSX.Element {
   return (
     <div className="cp-share">
-      {productOrder.map((id) => (
-        <ShareCommand
-          key={id}
-          command={assessmentProducts[id].run}
-          label={assessmentProducts[id].copy}
-          strings={copy}
-        />
-      ))}
+      <ShareCommand
+        command={assessmentCopy.run.command}
+        label={assessmentCopy.run.label}
+        strings={copy}
+      />
     </div>
   );
 }

@@ -399,10 +399,7 @@ describe.each(glossaryTerms.map((term) => term.slug))("/learn/glossary/%s", (slu
   it("ends on the closing row for its product", async () => {
     const row = (await main(slug)).querySelector("section#assess")!;
     const product = term.product === "both" ? null : term.product;
-    expect(row.querySelector("a.btn-ink")).toHaveAttribute(
-      "href",
-      product ? `/assessment?p=${product}` : "/assessment",
-    );
+    expect(row.querySelector("a.btn-ink")).toHaveAttribute("href", "/assessment");
     expect(text(row.querySelector("#contact p"))).toBe(
       `Thirty minutes with the people who build ${product ? products[product].name : "Coral and Amoeba"}.`,
     );

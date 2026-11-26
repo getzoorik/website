@@ -959,9 +959,7 @@ export const amoebaGuide: GuideContent<AmoebaGuideAnchor> = {
           ],
         },
       ],
-      related: [
-        { text: "Free block storage cost assessment", href: `${routes.assessment}?p=amoeba` },
-      ],
+      related: [{ text: "Free block storage cost assessment", href: routes.assessment }],
     },
     {
       id: "security-and-data",

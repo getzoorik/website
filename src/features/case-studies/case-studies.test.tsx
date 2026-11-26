@@ -393,7 +393,7 @@ describe("/coral-value-lab", () => {
       "Zoorik’s own development cluster on Azure Kubernetes Service, 4 to 12 October 2026. Costs are Azure pay-as-you-go list prices for its machines, at 730 hours a month. App figures cover the cluster’s own apps. Results depend on each cluster’s apps and machines.",
     );
     const row = container.querySelector("section#assess")!;
-    expect(row.querySelector("a.btn-ink")).toHaveAttribute("href", "/assessment?p=coral");
+    expect(row.querySelector("a.btn-ink")).toHaveAttribute("href", "/assessment");
     expect(text(row.querySelector("#contact p"))).toBe(
       "Thirty minutes with the people who build Coral.",
     );
@@ -593,7 +593,7 @@ describe("/amoeba-value-lab", () => {
     expect(text(foot)).toMatch(/^Zoorik’s own lab VMs on Azure, on 19 October 2026\./);
     expect(text(foot)).toMatch(/Results depend on each VM’s data\.$/);
     const row = container.querySelector("section#assess")!;
-    expect(row.querySelector("a.btn-ink")).toHaveAttribute("href", "/assessment?p=amoeba");
+    expect(row.querySelector("a.btn-ink")).toHaveAttribute("href", "/assessment");
     expect(text(row.querySelector("#contact p"))).toBe(
       "Thirty minutes with the people who build Amoeba.",
     );

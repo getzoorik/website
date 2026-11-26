@@ -132,7 +132,7 @@ export const term: GlossaryTerm = {
           kind: "p",
           text: [
             "The ",
-            { a: "free assessment", href: "/assessment?p=amoeba" },
+            { a: "free assessment", href: "/assessment" },
             " estimates your own saving.",
           ],
         },

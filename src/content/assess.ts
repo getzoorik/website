@@ -1,4 +1,4 @@
-import { calendarUrl, contactEmail, routes } from "@/config/site";
+import { calendarUrl, contactEmail } from "@/config/site";
 import type { ProductId } from "@/content/products";
 
 /**
@@ -17,7 +17,7 @@ export const assessContent = {
   assessment: {
     title: "Find your own number",
     body: "One command in your terminal. One PDF report with your estimated saving at list price.",
-    /** Same tab, to `/assessment`, or `/assessment?p=<product>` (`assessmentHref`). */
+    /** Same tab, to `/assessment`. */
     cta: { label: "Estimate your saving" },
   },
   contact: {
@@ -43,8 +43,3 @@ export const assessContent = {
     fine: { before: "Or write to ", email: contactEmail },
   },
 } as const;
-
-/** The assessment page, preset to one product (`/assessment?p=coral`). */
-export function assessmentHref(product?: ProductId): string {
-  return product ? `${routes.assessment}?p=${product}` : routes.assessment;
-}

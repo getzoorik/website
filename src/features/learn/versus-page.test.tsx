@@ -493,7 +493,7 @@ describe.each(
       expect(row.querySelector("summary > svg.fq-chev")).toHaveAttribute("aria-hidden", "true");
     }
     /* The last question opens Coral's own assessment. */
-    expect(rows.at(-1)!.querySelector("a")).toHaveAttribute("href", "/assessment?p=coral");
+    expect(rows.at(-1)!.querySelector("a")).toHaveAttribute("href", "/assessment");
   });
 
   it("names the sources of its prose, each a new tab, set apart by semicolons and closed by a full stop", async () => {

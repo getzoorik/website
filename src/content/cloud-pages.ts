@@ -1,6 +1,6 @@
 import { amoebaDocs, glossaryPath, learnPath, routes } from "@/config/site";
 import { amoebaGuideAndFaq } from "@/content/amoeba-page";
-import { assessContent, assessmentHref } from "@/content/assess";
+import { assessContent } from "@/content/assess";
 import type { InstallCloud } from "@/content/coral-install";
 import { coralFaqTile } from "@/content/coral-page";
 import { howItWorksSteps, type Step } from "@/content/how-it-works";
@@ -125,11 +125,11 @@ export type CloudPageContent = CoralCloudPage | AmoebaCloudPage;
 /** The four pages' date: the zero-noise rewrite of 2 Nov 2026. */
 const NOV_3 = "3 November 2026";
 
-/** The hero's button: the closing row's own words, to this product's assessment. */
-const estimate = (product: ProductId) => ({
+/** The hero's button: the closing row's own words, to the assessment. */
+const estimate = {
   label: assessContent.assessment.cta.label,
-  href: assessmentHref(product),
-});
+  href: routes.assessment,
+};
 
 /**
  * The three cards: this product's own names (and 02's note on Amoeba), read from `how-it-works.ts`, each with its line
@@ -215,7 +215,7 @@ export const aksCostOptimizationPage: CoralCloudPage = {
     eyebrow: "Coral for AKS",
     title: "AKS cost optimization",
     line: "Coral rebalances your AKS workloads and removes the nodes you don't need, without any downtime or code changes.",
-    cta: estimate("coral"),
+    cta: estimate,
     runsOn: { label: "Runs on", platforms: ["aks"] },
   },
   about: {
@@ -357,7 +357,7 @@ export const eksCostOptimizationPage: CoralCloudPage = {
     eyebrow: "Coral for EKS",
     title: "EKS cost optimization",
     line: "Coral rebalances your EKS workloads and removes the EC2 nodes you don't need, without any downtime or code changes.",
-    cta: estimate("coral"),
+    cta: estimate,
     runsOn: { label: "Runs on", platforms: ["eks"] },
   },
   about: {
@@ -500,7 +500,7 @@ export const azureManagedDiskCostOptimizationPage: AmoebaCloudPage = {
     eyebrow: "Amoeba for Azure",
     title: "Azure managed disk cost optimization",
     line: "Amoeba rightsizes the managed data disks on your Azure VMs to fit your data, without any downtime.",
-    cta: estimate("amoeba"),
+    cta: estimate,
     runsOn: { label: "Runs on", platforms: ["azure", "windows", "linux"] },
   },
   about: {
@@ -636,7 +636,7 @@ export const ebsCostOptimizationPage: AmoebaCloudPage = {
     eyebrow: "Amoeba for AWS",
     title: "EBS cost optimization",
     line: "Amoeba rightsizes the EBS data volumes on your EC2 instances to fit your data, without any downtime.",
-    cta: estimate("amoeba"),
+    cta: estimate,
     runsOn: { label: "Runs on", platforms: ["aws", "windows", "linux"] },
   },
   about: {

@@ -4,7 +4,8 @@ import { Arrow } from "@/components/primitives/arrow";
 import { ExternalArrow } from "@/components/primitives/external-arrow";
 import { NewTabHint } from "@/components/primitives/new-tab-hint";
 import { Reveal } from "@/components/primitives/reveal";
-import { assessContent, assessmentHref } from "@/content/assess";
+import { routes } from "@/config/site";
+import { assessContent } from "@/content/assess";
 import { products, type ProductId } from "@/content/products";
 import { offSiteProps } from "@/lib/links";
 
@@ -19,24 +20,23 @@ import { offSiteProps } from "@/lib/links";
  * calendar, and the dark card's fine line to the one address.
  *
  * ─── ONE COMPONENT, THREE SWITCHES ─────────────────────────────────────────
- *   · `product`: on a page that belongs to one product. The button opens that
- *     product's assessment and the dark card names only it.
- *   · `talkOnly`: /assessment, which is the assessment, and home, whose offers
- *     card just above offers the same PDF (2 Nov 2026). Only the dark card, in
- *     `div.as-grid.as-solo` (its rules are /assessment's own).
+ *   · `product`: on a page that belongs to one product. The dark card names
+ *     only it.
+ *   · `talkOnly`: home, whose offers card just above offers the same PDF. Only
+ *     the dark card, in `div.as-grid.as-solo`.
  *   · `reveal`: on by default, for home and the two product pages, where the
  *     cards rise as they arrive (`<Reveal>` at order 0 and 1, so `.rise` and
- *     `data-i="1"`). The generated pages (the docs hub, the guides, the FAQs and
- *     /assessment) draw nothing that rises, so they pass `reveal={false}` and
+ *     `data-i="1"`). The generated pages (the docs hub, the guides and the FAQs)
+ *     draw nothing that rises, so they pass `reveal={false}` and
  *     the cards are plain divs: no `.rise`, no `data-i`, no observer.
- *   /privacy and /terms have no closing row at all.
+ *   /privacy, /terms and /assessment (its own After the run) have no closing
+ *   row at all.
  *
  *   route                          props
  *   /                              talkOnly
  *   /coral, /amoeba                product
  *   /docs                          reveal={false}
  *   the guides and FAQs            product, reveal={false}
- *   /assessment                    talkOnly, reveal={false}
  *
  * ─── `#contact` IS THE DARK CARD, NOT THE SECTION ──────────────────────────
  * The section is `#assess`. "Contact" in links from outside means the card with
@@ -49,8 +49,8 @@ import { offSiteProps } from "@/lib/links";
  */
 
 export interface AssessSectionProps {
-  /** On a page that belongs to one product: the button opens that product's
-   *  assessment, and the dark card names only that product. */
+  /** On a page that belongs to one product: the dark card names only that
+   *  product. */
   readonly product?: ProductId;
   /** Only the dark card (/assessment, and home since 2 Nov 2026). */
   readonly talkOnly?: boolean;
@@ -118,7 +118,7 @@ export function AssessSection({
                   </>
                 ) : null}
               </p>
-              <a className="btn-ink" href={assessmentHref(product)}>
+              <a className="btn-ink" href={routes.assessment}>
                 {assessment.cta.label} <Arrow />
               </a>
             </Card>

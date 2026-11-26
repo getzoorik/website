@@ -210,7 +210,7 @@ describe("the page", () => {
   });
 
   it("ends with Coral's assessment row", () => {
-    const assess = page.querySelector('a[href="/assessment?p=coral"]');
+    const assess = page.querySelector('a[href="/assessment"]');
     expect(assess).not.toBeNull();
   });
 });
@@ -266,7 +266,7 @@ describe("each question", () => {
       ],
       /* "Compared in full": the Learn article by its h1, a link once it is published. */
       ...(compared.href ? [["do-i-need-coral-with-karpenter", compared.text, compared.href]] : []),
-      ["how-much-can-coral-save", "free AKS and EKS cost assessment", "/assessment?p=coral"],
+      ["how-much-can-coral-save", "free AKS and EKS cost assessment", "/assessment"],
       ...(howTo.href ? [["how-much-spare-capacity-is-kept", howTo.text, howTo.href]] : []),
     ]);
   });
